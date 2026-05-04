@@ -24,6 +24,24 @@ def read_tsv(path):
         yield from csv.DictReader(handle, delimiter="\t")
 
 
+def load_by(path, key_field):
+    rows = {}
+    if not path or not Path(path).exists():
+        return rows
+    for row in read_tsv(path):
+        key = row.get(key_field, "")
+        if key:
+            rows[key] = row
+    return rows
+
+
+def compact_text(text, limit):
+    text = " ".join((text or "").replace("\t", " ").replace("\n", " ").split())
+    if limit and len(text) > limit:
+        return text[: limit - 3] + "..."
+    return text
+
+
 def load_segments(path):
     segments = []
     for row in read_tsv(path):
@@ -77,7 +95,7 @@ def load_sidecar(path, kind):
     return rows
 
 
-def add_exact_rows(args, segments, rows, sidecars):
+def add_exact_rows(args, segments, rows, sidecars, transitions):
     for row in read_tsv(args.instruction_lift):
         start = int(row["start_vm_ip"], 16)
         delta = parse_signed_hex(row.get("delta", "0"))
@@ -87,6 +105,7 @@ def add_exact_rows(args, segments, rows, sidecars):
         top_targets = row.get("top_targets", "")
         target_entry = top_targets.split("@", 1)[0] if top_targets else ""
         sidecar = sidecars.get((row.get("source_entry", ""), target_entry, row.get("delta", "")))
+        transition = transitions.get(row.get("source_entry", ""), {})
         semantic = f"next = {top_targets or 'table[slot]'}, ip += {row.get('delta', '')}"
         if sidecar and sidecar.get("lifted_ir"):
             semantic = sidecar["lifted_ir"]
@@ -101,6 +120,13 @@ def add_exact_rows(args, segments, rows, sidecars):
         )
         if sidecar:
             validation += f";sidecar={sidecar['kind']}"
+        dispatch_expr = row.get("dispatch_formula", "")
+        if dispatch_expr and row.get("dispatch_formula_class"):
+            dispatch_expr = f"{row['dispatch_formula_class']}:{dispatch_expr}"
+        transfer_slot_expr = compact_text(transition.get("transfer_expr_top_slot_exprs", ""), args.max_expr_len)
+        if transfer_slot_expr:
+            dispatch_expr = f"{dispatch_expr}; transfer_slot={transfer_slot_expr}" if dispatch_expr else transfer_slot_expr
+        ip_advance_expr = compact_text(transition.get("transfer_expr_top_ip_exprs", ""), args.max_expr_len)
         rows.append({
             "start_vm_ip": row.get("start_vm_ip", ""),
             "end_vm_ip": f"0x{end:x}",
@@ -119,7 +145,10 @@ def add_exact_rows(args, segments, rows, sidecars):
             "target_block": segment_text(target_segment, end) if target_segment else "",
             "semantic_ir": semantic,
             "state_ir": row.get("state_class", ""),
+            "state_effect_ir": compact_text(transition.get("final_state_expr", ""), args.max_expr_len),
             "dispatch_ir": row.get("dispatch_model", "") or (sidecar.get("lifted_ir", "") if sidecar else ""),
+            "dispatch_expr_ir": compact_text(dispatch_expr, args.max_expr_len),
+            "ip_advance_expr_ir": ip_advance_expr,
             "validation": validation,
             "provenance": "vm_instruction_lift" + (f"+{sidecar['kind']}" if sidecar else ""),
         })
@@ -202,7 +231,10 @@ def add_decoded_rows(args, segments, rows, sidecars):
             "target_block": segment_text(target_segment, end) if target_segment else "",
             "semantic_ir": lifted_ir,
             "state_ir": "",
+            "state_effect_ir": "",
             "dispatch_ir": lifted_ir,
+            "dispatch_expr_ir": lifted_ir,
+            "ip_advance_expr_ir": lifted_ir,
             "validation": "file_backed_operand",
             "provenance": kind,
         })
@@ -227,7 +259,10 @@ def emit_tsv(rows):
         "target_block",
         "semantic_ir",
         "state_ir",
+        "state_effect_ir",
         "dispatch_ir",
+        "dispatch_expr_ir",
+        "ip_advance_expr_ir",
         "validation",
         "provenance",
     ]
@@ -268,9 +303,11 @@ def main():
     )
     parser.add_argument("--long-branches", default="dumps/vmtail-wide-1m-w16/vm_long_branch_catalog.tsv")
     parser.add_argument("--sampled-operands", default="dumps/vmtail-wide-1m-w16/vm_sampled_operand_catalog.tsv")
+    parser.add_argument("--transition-model", default="dumps/vmtail-wide-1m-w16/vm_transition_model.tsv")
     parser.add_argument("--eac", default="eac.elf")
     parser.add_argument("--prefix-hex-chars", type=int, default=32)
     parser.add_argument("--max-items", type=int, default=5)
+    parser.add_argument("--max-expr-len", type=int, default=220)
     parser.add_argument("--markdown", action="store_true")
     parser.add_argument("--limit", type=int, default=50)
     args = parser.parse_args()
@@ -279,8 +316,9 @@ def main():
     sidecars = {}
     sidecars.update(load_sidecar(args.long_branches, "long_branch"))
     sidecars.update(load_sidecar(args.sampled_operands, "sampled_operand"))
+    transitions = load_by(args.transition_model, "entry")
     rows = []
-    add_exact_rows(args, segments, rows, sidecars)
+    add_exact_rows(args, segments, rows, sidecars, transitions)
     add_decoded_rows(args, segments, rows, sidecars)
     rows.sort(key=lambda row: (int(row["start_vm_ip"], 16), row["row_kind"], row["source_entry"], row["delta"]))
 
