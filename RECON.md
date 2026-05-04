@@ -1358,7 +1358,7 @@ The bounded GPR+scratch-seeded predicate catalog confirms the same reduction at 
 
 The largest full-path-profile reductions are direct proof that seeding resolves live-in and scratch-frame predicates, especially entries 337, 297, 168, 347, 301, 346, 114, 340, and 189. Full-trace native branch-site counts now show no remaining GPR+scratch-seeded unknown sites.
 
-`vm_microcode_catalog.py` is the compact human-facing index over the reconstructed handlers. It joins the transition model, ISA operand layouts, static state/flag update chains, sampled/backedge long-control bytecode lifts with operand footprints, and source-level state-only plus GPR+scratch-seeded branch-predicate summaries into pseudo-IR rows. The TSV keeps one row per dispatch entry, while `vm_microcode_top.md` renders the top 30 observed entries by event count with clipped expression hashes that point back to the full lower-level TSVs.
+`vm_microcode_catalog.py` is the compact human-facing index over the reconstructed handlers. It joins the transition model, ISA operand layouts, static state/flag update chains, sampled/backedge long-control bytecode lifts with operand footprints, sampled-operand bytecode lifts with operand footprints, and source-level state-only plus GPR+scratch-seeded branch-predicate summaries into pseudo-IR rows. The TSV keeps one row per dispatch entry, while `vm_microcode_top.md` renders the top 30 observed entries by event count with clipped expression hashes that point back to the full lower-level TSVs.
 
 Microcode catalog class distribution:
 
@@ -1366,12 +1366,13 @@ Microcode catalog class distribution:
 | --- | ---: | ---: |
 | `static_validated` | 166 | 764108 |
 | `affine_dispatch_fallback` | 13 | 3438 |
-| `sampled_only` | 11 | 1397 |
-| `partial` | 12 | 21 |
+| `sampled_only` | 9 | 1392 |
+| `sampled_operand_lifted` | 3 | 6 |
+| `partial` | 11 | 20 |
 | `unobserved_static` | 155 | 0 |
 | `target_only` | 3 | 0 |
 
-The catalog currently has state/flag pseudo-IR for 335 entries covering 766060 long-run events, dispatch-slot pseudo-IR or model tags for 179 entries covering 767546 events, long-control tail IR and 8/11-byte operand footprints for 10 sparse sampled/backedge source handlers, state-only and GPR+scratch-seeded branch-predicate summaries for 163 entries covering 748543 events, and operand-layout summaries for the 190 exact-covered handlers covering 767566 events.
+The catalog currently has state/flag pseudo-IR for 335 entries covering 766060 long-run events, dispatch-slot pseudo-IR or model tags for 179 entries covering 767546 events, long-control tail IR and 8/11-byte operand footprints for 10 sparse sampled/backedge source handlers, sampled-operand tail IR and 6/10-byte operand footprints for 6 sparse/exact source handlers covering 13 sampled events, state-only and GPR+scratch-seeded branch-predicate summaries for 163 entries covering 748543 events, and operand-layout summaries for the 190 exact-covered handlers covering 767566 events.
 
 `vm_path_microcode_catalog.py` specializes that catalog by concrete handler branch path. It joins the full `vm_static_path_variants.tsv` state-trace path counts with the sampled `vm_static_path_transfer_expr.tsv` slot/IP formulas and the source-level microcode, including source branch-predicate and GPR+scratch-seeded predicate context. This is the closest current artifact to path-specialized devirtualized blocks:
 
