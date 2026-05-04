@@ -15,6 +15,7 @@ SHA-256: `0b44ad59697129534189efdb75cde2b96245f831438e9f6a53cb7725f190d739`
 - `vm_bytecode_blocks.py`: reduces direct executed VM instruction rows into contiguous bytecode coverage blocks. Default mode uses exact consumed bytes; `--include-sampled` adds logged prefix/backedge byte windows as partial coverage only.
 - `vm_bytecode_recover.py`: reconstructs VM byte values from instruction rows, verifies byte consistency, and emits segment hashes plus a unique instruction table. Default mode is exact-only; `--include-sampled` also inserts logged prefix/backedge byte windows without claiming the full instruction length is known.
 - `vm_bytecode_cfg.py`: builds a bytecode block graph from instruction rows and recovered exact bytecode segments.
+- `vm_bytecode_control_edges.py`: turns decoded long-branch and sampled-operand sidecars into explicit non-exact VM control-flow edges between recovered bytecode segments, with operand footprints and lifted target/IP-update pseudo-IR.
 - `vm_gap_report.py`: ranks bytecode and handler coverage gaps from instruction rows, recovered segments, ISA missing-exact rows, decoded long-branch sidecars, adjacent hidden-transition sidecars, and per-handler semantic observations.
 - `vm_isa_summary.py`: clusters exact recovered VM instruction signatures by source handler, fixed byte length, target distribution, and operand byte/word layout.
 - `vm_semantic_templates.py`: merges ISA schemas with static handler features into per-handler rows and ranked semantic templates.
@@ -100,6 +101,8 @@ SHA-256: `0b44ad59697129534189efdb75cde2b96245f831438e9f6a53cb7725f190d739`
 - `dumps/vmtail-wide-1m-w16/vm_bytecode_segments_filefill_hiddenfill_frontierfill_footprintfill_sampled.tsv`: best current sampled/file-backed byte recovery after target-footprint fill.
 - `dumps/vmtail-wide-1m-w16/vm_bytecode_blocks_filefill_hiddenfill_frontierfill_footprintfill_sampled.tsv`: contiguous blocks for the combined file-fill/hidden-fill/frontier-fill/footprint-fill trace.
 - `dumps/vmtail-wide-1m-w16/vm_gap_report_filefill_hiddenfill_frontierfill_footprintfill.tsv`: best current gap report after all conservative file-backed fill passes.
+- `dumps/vmtail-wide-1m-w16/vm_bytecode_control_edges.tsv`: decoded long-branch plus sampled-operand VM control-flow edges mapped onto the best recovered bytecode segments.
+- `dumps/vmtail-wide-1m-w16/vm_bytecode_control_edges_top.md`: Markdown digest of the highest-volume decoded non-exact VM control-flow edges.
 - `dumps/vmtail-wide-1m-w16/vm_state_static_slice.tsv`: static symbolic state/flag update chains for all dispatch entries.
 - `dumps/vmtail-wide-1m-w16/vm_state_static_slice_entry258.tsv`: focused static state slice for the high-volume nonlinear entry 258.
 - `dumps/vmtail-wide-1m-w16/vm_handler_tail_roles.tsv`: long-run source-handler/tail-site rows joined with register roles inferred from the 50k GPR smoke trace.
@@ -524,6 +527,7 @@ python3 vm_bytecode_blocks.py dumps/vmtail-wide-1m-w16/vm_instruction_trace_file
   --include-sampled \
   >dumps/vmtail-wide-1m-w16/vm_bytecode_blocks_filefill_sampled.tsv
 make footprint-fill
+make control-edges
 mkdir -p dumps/vmtail-wide-1m-w16-filefill
 ln -sf ../vmtail-wide-1m-w16/vm_instruction_trace_filefill.tsv \
   dumps/vmtail-wide-1m-w16-filefill/vm_instruction_trace.tsv
@@ -1106,6 +1110,8 @@ The highest-priority remaining dynamic gaps are:
 `vm_long_branch_catalog.py` now decodes the repeated sampled/backedge long-control format behind most of those source gaps. The format is file-backed and byte-verified: u32 target dispatch entry followed by a u32 signed VM-IP delta, where the high bit marks a negative/backedge delta. The catalog has 128 variants, 1638 events, 10 source handlers, 1151 backedge events, 487 forward events, 0 file-byte mismatches, and 0 operand-byte mismatches; `vm_gap_report.py` uses it to recategorize 9 missing-exact source rows / 1392 events as decoded long-branch sources.
 
 That directly lifts the top missing-source rows into pseudo-IR instead of opaque sampled-only control flow: entry 75 has `255=next = table[171], ip -= 0x6d`; entry 316 has `255=next = table[165], ip -= 0x3c4` plus `91=next = table[171], ip += 0x2d` and `91=next = table[354], ip += 0x2d`; entry 145 has `125=next = table[354], ip += 0x139`; entry 266 has `125=next = table[354], ip -= 0x2e8`. These rows still need exact consumed-byte boundaries, but their dispatch target and VM-IP update are no longer unknown.
+
+`vm_bytecode_control_edges.py` maps those decoded non-exact control variants onto the best recovered bytecode segments. It emits 140 decoded control-edge rows covering 1651 events with 0 missing source IPs and 0 missing target IPs. The split is 43 long-branch backedge rows / 1151 events, 85 long-branch forward rows / 487 events, 6 sampled-operand backedge rows / 6 events, and 6 sampled-operand forward rows / 7 events. Operand footprint coverage is 677 events at 8 bytes and 961 at 11 bytes for long branches, plus 6 events at 6 bytes and 7 events at 10 bytes for sampled operands. This makes the remaining non-exact control flow visible as segment-to-segment VM CFG edges rather than only per-handler gap rows.
 
 The static skeletons agree with that decode. All 10 long-control source handlers read a u16 at VM IP `+0x0` for the table entry and u32 at `+0x4` for the signed delta. The shorter form appears in entries 117, 266, 302, and 308, while entries 75, 145, 210, 246, 316, and 334 also read u16 at `+0x8` and byte at `+0xa`. That gives 677 events with an 8-byte minimum operand footprint and 961 events with an 11-byte footprint without claiming the whole branch span is linear instruction bytes.
 
