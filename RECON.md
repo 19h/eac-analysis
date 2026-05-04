@@ -1111,7 +1111,7 @@ Handler-level coverage in the transition model:
 | with static dispatch/IP validation | 179 | 767546 |
 | with 100% static dispatch/IP validation | 166 | 764108 |
 | with combined dispatch model | 179 | 767546 |
-| with branch-predicate provenance | 179 | 767546 |
+| with branch-predicate provenance | 163 | 748543 |
 | with tail target register/operand | 181 | 765570 |
 | with live/static slot temp | 181 | 765570 |
 | with byte/static index register | 156 | 704763 |
@@ -1210,7 +1210,7 @@ Microcode catalog class distribution:
 | `unobserved_static` | 155 | 0 |
 | `target_only` | 3 | 0 |
 
-The catalog currently has state/flag pseudo-IR for 327 entries covering 764423 long-run events, dispatch-slot pseudo-IR or model tags for 179 entries covering 767546 events, branch-predicate summaries for 179 entries covering 767546 events, and operand-layout summaries for the 190 exact-covered handlers covering 767566 events.
+The catalog currently has state/flag pseudo-IR for 327 entries covering 764423 long-run events, dispatch-slot pseudo-IR or model tags for 179 entries covering 767546 events, branch-predicate summaries for 163 entries covering 748543 events, and operand-layout summaries for the 190 exact-covered handlers covering 767566 events.
 
 `vm_path_microcode_catalog.py` specializes that catalog by concrete handler branch path. It joins the full `vm_static_path_variants.tsv` state-trace path counts with the sampled `vm_static_path_transfer_expr.tsv` slot/IP formulas and the source-level microcode, including source branch-predicate context. This is the closest current artifact to path-specialized devirtualized blocks:
 
