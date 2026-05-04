@@ -10,6 +10,7 @@ KIND_WEIGHT = {
     "uncovered_exact_destination": 100,
     "prefix_long_jump": 80,
     "missing_exact_source": 70,
+    "decoded_long_branch_source": 15,
     "backedge_sample": 40,
     "uncovered_source_start": 30,
     "target_only_entry": 10,
@@ -51,6 +52,57 @@ def parse_count_items(text):
         key, count_s = item.rsplit(":", 1)
         counts[key] += int(count_s, 10)
     return counts
+
+
+def find_long_branch_path(dump_dir: Path, explicit_path):
+    if explicit_path:
+        path = Path(explicit_path)
+        return path if path.exists() else None
+
+    candidates = [dump_dir / "vm_long_branch_catalog.tsv"]
+    if dump_dir.name.endswith("-filefill"):
+        base_name = dump_dir.name[: -len("-filefill")]
+        candidates.append(dump_dir.with_name(base_name) / "vm_long_branch_catalog.tsv")
+
+    for path in candidates:
+        if path.exists():
+            return path
+    return None
+
+
+def load_long_branches(path: Path, top=5):
+    rows = defaultdict(lambda: {
+        "events": 0,
+        "variants": 0,
+        "irs": Counter(),
+    })
+    if path is None:
+        return {}
+
+    with path.open(newline="") as handle:
+        for row in csv.DictReader(handle, delimiter="\t"):
+            entry = row.get("source_entry", "")
+            if not entry:
+                continue
+            events = int(row.get("events", "0") or 0)
+            bucket = rows[entry]
+            bucket["events"] += events
+            bucket["variants"] += 1
+            lifted_ir = row.get("lifted_ir", "")
+            if lifted_ir:
+                bucket["irs"][lifted_ir] += events
+
+    compact = {}
+    for entry, bucket in rows.items():
+        compact[entry] = {
+            "events": bucket["events"],
+            "variants": bucket["variants"],
+            "top_ir": ",".join(
+                f"{value}={key}"
+                for key, value in sorted(bucket["irs"].items(), key=lambda item: (-item[1], item[0]))[:top]
+            ),
+        }
+    return compact
 
 
 def load_segments(path: Path):
@@ -216,7 +268,7 @@ def analyze_trace(dump_dir: Path, segments, groups):
                 )
 
 
-def load_missing_exact(dump_dir: Path, groups):
+def load_missing_exact(dump_dir: Path, groups, long_branches):
     path = dump_dir / "vm_isa_missing_exact.tsv"
     if not path.exists():
         return
@@ -224,24 +276,41 @@ def load_missing_exact(dump_dir: Path, groups):
         for row in csv.DictReader(handle, delimiter="\t"):
             entry = row["source_entry"]
             events = int(row["events"], 10)
+            long_branch = long_branches.get(entry)
+            if long_branch:
+                kind = "decoded_long_branch_source"
+                detail = (
+                    f"source_target={row.get('source_target', '')};"
+                    f"unique_vm_ips={row.get('unique_vm_ips', '')};"
+                    f"top_targets={row.get('top_targets', '')};"
+                    f"top_deltas={row.get('top_ip_deltas', '')};"
+                    f"long_branch_events={long_branch['events']};"
+                    f"long_branch_variants={long_branch['variants']};"
+                    f"long_branch_top_ir={long_branch['top_ir']}"
+                )
+                status = "decoded_long_branch"
+            else:
+                kind = "missing_exact_source"
+                detail = (
+                    f"source_target={row.get('source_target', '')};"
+                    f"unique_vm_ips={row.get('unique_vm_ips', '')};"
+                    f"top_targets={row.get('top_targets', '')};"
+                    f"top_deltas={row.get('top_ip_deltas', '')}"
+                )
+                status = "missing_exact"
             group = groups.setdefault(
-                ("missing_exact_source", entry),
+                (kind, entry),
                 new_group(
-                    "missing_exact_source",
+                    kind,
                     entry,
-                    detail=(
-                        f"source_target={row.get('source_target', '')};"
-                        f"unique_vm_ips={row.get('unique_vm_ips', '')};"
-                        f"top_targets={row.get('top_targets', '')};"
-                        f"top_deltas={row.get('top_ip_deltas', '')}"
-                    ),
+                    detail=detail,
                 ),
             )
             group["events"] += events
             group["sources"][entry] += events
             group["targets"].update(parse_count_items(row.get("top_targets", "")))
             group["deltas"].update(parse_count_items(row.get("top_ip_deltas", "")))
-            group["statuses"]["missing_exact"] += events
+            group["statuses"][status] += events
             group["sites"].update(parse_count_items(row.get("top_sites", "")))
 
 
@@ -318,6 +387,8 @@ def main():
     parser = argparse.ArgumentParser(description="Prioritize VM bytecode and handler coverage gaps.")
     parser.add_argument("dump_dir", nargs="?", default="dumps/vmtail-wide-1m-w16")
     parser.add_argument("--segments", default=None)
+    parser.add_argument("--long-branches", default=None)
+    parser.add_argument("--no-long-branches", action="store_true")
     parser.add_argument("--max-items", type=int, default=8)
     parser.add_argument("--limit", type=int, default=0, help="limit emitted rows; 0 emits all")
     args = parser.parse_args()
@@ -325,10 +396,12 @@ def main():
     dump_dir = Path(args.dump_dir)
     segment_path = Path(args.segments) if args.segments else dump_dir / "vm_bytecode_segments.tsv"
     segments = load_segments(segment_path)
+    long_branch_path = None if args.no_long_branches else find_long_branch_path(dump_dir, args.long_branches)
+    long_branches = load_long_branches(long_branch_path)
     groups = {}
 
     analyze_trace(dump_dir, segments, groups)
-    load_missing_exact(dump_dir, groups)
+    load_missing_exact(dump_dir, groups, long_branches)
     load_observation_gaps(dump_dir, groups)
 
     emit_summary(groups)
