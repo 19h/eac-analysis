@@ -11,6 +11,7 @@ KIND_WEIGHT = {
     "prefix_long_jump": 80,
     "missing_exact_source": 70,
     "sampled_operand_known": 4,
+    "sampled_operand_source": 4,
     "decoded_long_branch_sample": 5,
     "decoded_long_branch_source": 15,
     "backedge_sample": 40,
@@ -203,6 +204,51 @@ def load_sampled_operands(path: Path):
                 f"ir={row.get('lifted_ir', '')}"
             )
     return variants
+
+
+def load_sampled_operand_sources(path: Path, top=5):
+    rows = defaultdict(lambda: {
+        "events": 0,
+        "variants": 0,
+        "operand_lens": Counter(),
+        "operand_shapes": Counter(),
+        "irs": Counter(),
+    })
+    if path is None:
+        return {}
+
+    with path.open(newline="", errors="replace") as handle:
+        for row in csv.DictReader(handle, delimiter="\t"):
+            entry = row.get("source_entry", "")
+            if not entry:
+                continue
+            events = int(row.get("events", "0") or 0)
+            bucket = rows[entry]
+            bucket["events"] += events
+            bucket["variants"] += 1
+            if row.get("operand_min_len"):
+                bucket["operand_lens"][row["operand_min_len"]] += events
+            if row.get("operand_shape"):
+                bucket["operand_shapes"][row["operand_shape"]] += events
+            if row.get("lifted_ir"):
+                bucket["irs"][row["lifted_ir"]] += events
+
+    compact = {}
+    for entry, bucket in rows.items():
+        compact[entry] = {
+            "events": bucket["events"],
+            "variants": bucket["variants"],
+            "operand_lens": ",".join(f"{key}:{value}" for key, value in bucket["operand_lens"].most_common(top)),
+            "operand_shapes": ",".join(
+                f"{value}={key}"
+                for key, value in sorted(bucket["operand_shapes"].items(), key=lambda item: (-item[1], item[0]))[:top]
+            ),
+            "top_ir": ",".join(
+                f"{value}={key}"
+                for key, value in sorted(bucket["irs"].items(), key=lambda item: (-item[1], item[0]))[:top]
+            ),
+        }
+    return compact
 
 
 def load_hidden_transitions(path: Path, top=3):
@@ -423,7 +469,7 @@ def analyze_trace(dump_dir: Path, segments, groups, hidden_transitions, long_bra
                 )
 
 
-def load_missing_exact(dump_dir: Path, groups, long_branches):
+def load_missing_exact(dump_dir: Path, groups, long_branches, sampled_operand_sources):
     path = dump_dir / "vm_isa_missing_exact.tsv"
     if not path.exists():
         return
@@ -446,6 +492,21 @@ def load_missing_exact(dump_dir: Path, groups, long_branches):
                     f"long_branch_top_ir={long_branch['top_ir']}"
                 )
                 status = "decoded_long_branch"
+            elif entry in sampled_operand_sources:
+                sampled = sampled_operand_sources[entry]
+                kind = "sampled_operand_source"
+                detail = (
+                    f"source_target={row.get('source_target', '')};"
+                    f"unique_vm_ips={row.get('unique_vm_ips', '')};"
+                    f"top_targets={row.get('top_targets', '')};"
+                    f"top_deltas={row.get('top_ip_deltas', '')};"
+                    f"sampled_operand_events={sampled['events']};"
+                    f"sampled_operand_variants={sampled['variants']};"
+                    f"sampled_operand_lens={sampled['operand_lens']};"
+                    f"sampled_operand_shapes={sampled['operand_shapes']};"
+                    f"sampled_operand_top_ir={sampled['top_ir']}"
+                )
+                status = "sampled_operand_known"
             else:
                 kind = "missing_exact_source"
                 detail = (
@@ -564,10 +625,11 @@ def main():
     hidden_transitions = load_hidden_transitions(hidden_path)
     sampled_operand_path = None if args.no_sampled_operands else find_sampled_operand_path(dump_dir, args.sampled_operands)
     sampled_operands = load_sampled_operands(sampled_operand_path)
+    sampled_operand_sources = load_sampled_operand_sources(sampled_operand_path)
     groups = {}
 
     analyze_trace(dump_dir, segments, groups, hidden_transitions, long_branch_variants, sampled_operands)
-    load_missing_exact(dump_dir, groups, long_branches)
+    load_missing_exact(dump_dir, groups, long_branches, sampled_operand_sources)
     load_observation_gaps(dump_dir, groups)
 
     emit_summary(groups)
