@@ -1148,6 +1148,8 @@ This is useful because source-level handlers such as entries 18, 20, 26, 64, 66,
 
 The most path-diverse source is entry 330 with 12 observed paths over 169 state-trace events. Other high-diversity handlers include entries 208 with 11 paths, 237 and 48 with 8 paths each, and entries 108, 257, 319, 292, and 105 with 7 paths each. The high-volume handlers are usually much simpler: entry 258 has two concrete paths, entry 28 has three, and entries 337, 340, 189, 347, 307, 64, and 66 have one or two dominant paths. These path counts are now joined into `vm_transition_model.tsv` and summarized in `vm_microcode_catalog.tsv`.
 
+The static interpreter also resolves a narrow class of opaque pointer predicates by using the traced VM frame location (`base+0x7836d`). Since the image base is page-aligned, the low byte of `rbp+off` is stable; byte-sized comparisons such as `cmp $0, %r12b` after `r12 = rbp + 0x170` can be resolved without knowing the absolute ASLR base. This keeps target/IP coverage unchanged but makes path records more concrete. Entry 28 is the clearest high-volume example: its two former pointer-byte unknown branches now resolve to `je:0`, and the handler remains 100% target/IP validated over 8348 state-trace events.
+
 `vm_microcode_catalog.py` is the compact human-facing index over the reconstructed handlers. It joins the transition model, ISA operand layouts, and static state/flag update chains into pseudo-IR rows. The TSV keeps one row per dispatch entry, while `vm_microcode_top.md` renders the top 30 observed entries by event count with clipped expression hashes that point back to the full lower-level TSVs.
 
 Microcode catalog class distribution:
