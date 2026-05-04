@@ -546,6 +546,59 @@ def emit_markdown(stats, args):
         print(f"  condition: `{fmt_counter(bucket['condition_texts'], 1, args.max_cell_len)}`")
 
 
+def parse_counter_text(text):
+    counter = Counter()
+    for part in (text or "").split(","):
+        if not part:
+            continue
+        key, sep, value = part.rpartition(":")
+        if not sep:
+            continue
+        try:
+            counter[key] += int(value)
+        except ValueError:
+            continue
+    return counter
+
+
+def emit_markdown_from_tsv(path, args):
+    rows = list(read_trace_rows(path))
+    total_events = sum(int(row.get("events", "0") or 0) for row in rows)
+    total_unknown = sum(int(row.get("unknown_events", "0") or 0) for row in rows)
+    classes = Counter()
+    for row in rows:
+        for key, value in parse_counter_text(row.get("top_predicate_classes", "")).items():
+            if key != "resolved":
+                classes[key] += value
+
+    print("# VM Branch Predicate Catalog")
+    print()
+    print(f"- branch events: `{total_events}`")
+    print(f"- unknown branch events: `{total_unknown}`")
+    print(f"- unknown classes: `{fmt_counter(classes, args.top)}`")
+    print()
+    print("## Top Unknown Branches")
+    print()
+    for row in sorted(
+        rows,
+        key=lambda item: (
+            -int(item.get("unknown_events", "0") or 0),
+            -int(item.get("events", "0") or 0),
+            int(item.get("source_entry", "0") or 0),
+        ),
+    )[: args.markdown_limit]:
+        unknown = int(row.get("unknown_events", "0") or 0)
+        if not unknown:
+            continue
+        print(
+            f"- entry `{row.get('source_entry', '')}` branch "
+            f"`{row.get('branch_site', '')}:{row.get('branch_mnemonic', '')}`: "
+            f"`{unknown}/{row.get('events', '')}` unknown; "
+            f"class `{row.get('top_predicate_classes', '')}`"
+        )
+        print(f"  condition: `{clip(row.get('top_conditions', ''), args.max_cell_len)}`")
+
+
 def main():
     parser = argparse.ArgumentParser(
         description="Catalog static branch predicates encountered while replaying state-aware VM handler rows."
@@ -565,7 +618,17 @@ def main():
     parser.add_argument("--top", type=int, default=5)
     parser.add_argument("--markdown", action="store_true")
     parser.add_argument("--markdown-limit", type=int, default=30)
+    parser.add_argument(
+        "--from-tsv",
+        help="render markdown from an existing vm_branch_predicates.tsv instead of replaying the trace",
+    )
     args = parser.parse_args()
+
+    if args.from_tsv:
+        if not args.markdown:
+            raise SystemExit("--from-tsv is only supported together with --markdown")
+        emit_markdown_from_tsv(args.from_tsv, args)
+        return
 
     eac = Path(args.eac).read_bytes()
     table = read_dispatch_table(args.eac)
