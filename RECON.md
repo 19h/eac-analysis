@@ -1119,7 +1119,7 @@ Top consumed-slot recoveries:
 
 After central-dispatch integration and static consumed-slot recovery, only 17 long-run instruction events lack any register/static tail-slot evidence.
 
-`vm_instruction_lift.tsv` is the current highest-level recovered instruction catalog. It joins exact unique bytecode instructions, per-signature state effects from the state-aware trace, compact state-affine tags, tail target registers, live/static slot provenance, and compact dispatch-formula tags.
+`vm_instruction_lift.tsv` is the current highest-level recovered instruction catalog. It joins exact unique bytecode instructions, per-signature state effects from the state-aware trace, compact state-affine tags, static state/dispatch validation tags, tail target registers, live/static slot provenance, and compact dispatch-formula tags.
 
 Coverage in the lift catalog:
 
