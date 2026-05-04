@@ -8,7 +8,7 @@ GPR_RUN ?= dumps/vmtail-scratch-wide-w16-fs337all-fs128/run.stderr
 PRED_ROWS ?= 128
 XFER_ROWS ?= 128
 
-.PHONY: all clean fast-replay fast-state fast-gpr fast-predicates fast-state-predicates fast-gpr-predicates fast-transfer fast-state-transfer fast-gpr-transfer fast-validators fast-paths fast-gpr-paths long-branches hidden-transitions sampled-operands hidden-fill frontier-fill footprint-fill control-edges
+.PHONY: all clean fast-replay fast-state fast-gpr fast-predicates fast-state-predicates fast-gpr-predicates fast-transfer fast-state-transfer fast-gpr-transfer fast-validators fast-paths fast-gpr-paths long-branches hidden-transitions sampled-operands hidden-fill frontier-fill footprint-fill control-edges bytecode-ir
 
 all: driver trace_preload.so vm_fast_path_profile
 
@@ -104,6 +104,10 @@ footprint-fill: frontier-fill
 control-edges: footprint-fill
 	python3 vm_bytecode_control_edges.py > dumps/vmtail-wide-1m-w16/vm_bytecode_control_edges.tsv
 	python3 vm_bytecode_control_edges.py --markdown --limit 40 > dumps/vmtail-wide-1m-w16/vm_bytecode_control_edges_top.md
+
+bytecode-ir: control-edges
+	python3 vm_bytecode_ir.py > dumps/vmtail-wide-1m-w16/vm_bytecode_ir.tsv
+	python3 vm_bytecode_ir.py --markdown --limit 50 > dumps/vmtail-wide-1m-w16/vm_bytecode_ir_top.md
 
 clean:
 	rm -f driver trace_preload.so vm_fast_path_profile
