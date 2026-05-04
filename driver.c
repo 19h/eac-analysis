@@ -21,7 +21,7 @@ enum {
     EAC_DISPATCH_CDAC7 = 0xcdac7,
     EAC_MAX_TAIL_SITES = 512,
     EAC_IP_WORD_COUNT = 16,
-    EAC_SCRATCH_WORD_COUNT = 10
+    EAC_MAX_SCRATCH_OFFSETS = 64
 };
 
 enum tail_reg {
@@ -60,6 +60,8 @@ static int g_tail_regs;
 static int g_tail_scratch;
 static struct tail_site g_tail_sites[EAC_MAX_TAIL_SITES];
 static size_t g_tail_site_count;
+static uint16_t g_scratch_offsets[EAC_MAX_SCRATCH_OFFSETS];
+static size_t g_scratch_offset_count;
 
 static const struct tail_site g_default_tail_sites[] = {
     {0x8173b, TAIL_REG_RAX},
@@ -73,9 +75,10 @@ static const struct tail_site g_default_tail_sites[] = {
     {0xc240d, TAIL_REG_RDX},
 };
 
-static const uint16_t g_scratch_offsets[EAC_SCRATCH_WORD_COUNT] = {
+static const uint16_t g_default_scratch_offsets[] = {
     0x000, 0x012, 0x060, 0x068, 0x071,
     0x081, 0x0e1, 0x13d, 0x16f, 0x1e8,
+    0x013, 0x091, 0x0ab, 0x0b3, 0x0cb, 0x19d,
 };
 
 static void put_u32(uint8_t *p, size_t off, uint32_t v) {
@@ -205,6 +208,44 @@ static void parse_extra_tail_sites(const char *spec) {
     }
 }
 
+static int add_scratch_offset(uint16_t off) {
+    for (size_t i = 0; i < g_scratch_offset_count; ++i) {
+        if (g_scratch_offsets[i] == off) return 0;
+    }
+    if (g_scratch_offset_count >= EAC_MAX_SCRATCH_OFFSETS) return -1;
+    g_scratch_offsets[g_scratch_offset_count++] = off;
+    return 0;
+}
+
+static void add_default_scratch_offsets(void) {
+    for (size_t i = 0; i < sizeof(g_default_scratch_offsets) / sizeof(g_default_scratch_offsets[0]); ++i) {
+        (void)add_scratch_offset(g_default_scratch_offsets[i]);
+    }
+}
+
+static void parse_scratch_offsets(const char *spec) {
+    if (spec == NULL || *spec == '\0') return;
+    const char *p = spec;
+    while (*p != '\0') {
+        while (*p == ' ' || *p == '\t' || *p == ',') ++p;
+        if (*p == '\0') break;
+
+        errno = 0;
+        char *end = NULL;
+        unsigned long off = strtoul(p, &end, 0);
+        if (errno != 0 || end == p || off > UINT16_MAX) {
+            fprintf(stderr, "[DRIVER] ignoring malformed scratch offset near '%s'\n", p);
+            while (*p != '\0' && *p != ',') ++p;
+            continue;
+        }
+        if (add_scratch_offset((uint16_t)off) != 0) {
+            fprintf(stderr, "[DRIVER] ignoring scratch offset 0x%lx\n", off);
+        }
+        p = end;
+        while (*p != '\0' && *p != ',') ++p;
+    }
+}
+
 static char *append_lit(char *p, char *end, const char *s) {
     while (p < end && *s != '\0') *p++ = *s++;
     return p;
@@ -257,7 +298,7 @@ static uint64_t read_frame_u64(uintptr_t frame, uint16_t off) {
 }
 
 static char *append_frame_scratch(char *p, char *end, uintptr_t frame) {
-    for (size_t i = 0; i < EAC_SCRATCH_WORD_COUNT; ++i) {
+    for (size_t i = 0; i < g_scratch_offset_count; ++i) {
         uint16_t off = g_scratch_offsets[i];
         p = append_lit(p, end, " fs");
         p = append_hex(p, end, off);
@@ -510,9 +551,14 @@ static void install_dispatch_trace(void *sym) {
     g_tail_limit = parse_ul(getenv("EAC_VMTAIL_LIMIT"), 4096);
     if (g_tail_limit == 0) g_tail_limit = 1;
     g_tail_site_count = 0;
+    g_scratch_offset_count = 0;
     if (g_tail_trace) {
         add_default_tail_sites();
         parse_extra_tail_sites(getenv("EAC_VMTAIL_SITES"));
+    }
+    if (g_tail_scratch) {
+        add_default_scratch_offsets();
+        parse_scratch_offsets(getenv("EAC_VMTAIL_SCRATCH_OFFSETS"));
     }
 
     Dl_info info;
@@ -543,10 +589,11 @@ static void install_dispatch_trace(void *sym) {
 
     fprintf(stderr,
             "[DRIVER] dispatch trace enabled base=%p sites=+0x%x,+0x%x limit=%" PRIu64
-            " detail=%d tail=%d tail_regs=%d tail_scratch=%d tail_limit=%" PRIu64 " tail_sites=%zu\n",
+            " detail=%d tail=%d tail_regs=%d tail_scratch=%d tail_limit=%" PRIu64
+            " tail_sites=%zu scratch_offsets=%zu\n",
             (void *)g_eac_base, EAC_DISPATCH_C80B9, EAC_DISPATCH_CDAC7, g_dispatch_limit,
             g_dispatch_detail, g_tail_trace, g_tail_regs, g_tail_scratch,
-            g_tail_limit, g_tail_site_count);
+            g_tail_limit, g_tail_site_count, g_scratch_offset_count);
     for (size_t i = 0; g_tail_trace && i < g_tail_site_count; ++i) {
         fprintf(stderr, "[DRIVER] tail site +0x%lx -> %s\n",
                 (unsigned long)g_tail_sites[i].off, tail_reg_name(g_tail_sites[i].reg));
