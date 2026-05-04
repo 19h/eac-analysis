@@ -970,7 +970,7 @@ static Seed *load_gpr_seeds(const char *path, size_t *seed_count) {
         }
         char *p = line;
         while ((p = strstr(p, " fs0x"))) {
-            p += 4;
+            p += 5;
             char *end = NULL;
             long off = strtol(p, &end, 16);
             if (!end || strncmp(end, "=0x", 3)) continue;
