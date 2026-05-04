@@ -15,6 +15,8 @@
 
 static FILE *g_output = NULL;
 #define printf(...) fprintf(g_output ? g_output : stdout, __VA_ARGS__)
+static const uint8_t *g_eac_image = NULL;
+static size_t g_eac_image_size = 0;
 
 enum {
     FRAME_IP_OFF = 0x0a,
@@ -22,6 +24,7 @@ enum {
     FRAME_TABLE_OFF = 0x10f,
     FRAME_STATE_OFF = 0x170,
     FRAME_BYTE_OFF = 0x194,
+    FRAME_RUNTIME_OFF = 0x7836d,
     FRAME_RUNTIME_LOW12 = 0x36d,
     REG_COUNT = 16,
     TABLE_ENTRIES = 360,
