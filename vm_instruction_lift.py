@@ -46,6 +46,15 @@ def load_state_signatures(path):
     return states
 
 
+def load_state_affine(path):
+    affine = {}
+    if not path:
+        return affine
+    for row in read_tsv(path):
+        affine[row.get("source_entry", "")] = row
+    return affine
+
+
 def load_tail_roles(path):
     roles = {}
     if not path:
@@ -107,6 +116,10 @@ def main():
         default="dumps/vmtail-state-wide-w16/vm_state_signatures.tsv",
     )
     parser.add_argument(
+        "--state-affine",
+        default="dumps/vmtail-state-wide-w16/vm_state_affine_fullfields.tsv",
+    )
+    parser.add_argument(
         "--tail-roles",
         default="dumps/vmtail-wide-1m-w16/vm_handler_tail_roles_wide_regs.tsv",
     )
@@ -129,6 +142,7 @@ def main():
     args = parser.parse_args()
 
     states = load_state_signatures(args.state_signatures)
+    state_affine = load_state_affine(args.state_affine)
     roles = load_tail_roles(args.tail_roles)
     slots = load_static_slots(args.static_slots)
     formulas = load_dispatch_formulas(args.dispatch_formulas)
@@ -138,7 +152,8 @@ def main():
     print(
         "start_vm_ip\tsource_entry\tsource_target\tdelta\tbytes\tbyte_status\t"
         "count\ttop_targets\ttop_site\tstate_class\tstate_events\ttop_state_add\t"
-        "top_flag_add\ttop_byte_add\ttarget_reg\tslot_kind\tslot_reg_or_temp\t"
+        "top_flag_add\ttop_byte_add\tstate_affine_status\tstate_affine_cv_status\t"
+        "state_affine_cv_pct\tstate_affine_terms\ttarget_reg\tslot_kind\tslot_reg_or_temp\t"
         "byte_index_reg\tstatic_load_site\tstatic_index_add_site\ttail_role_events\t"
         "dispatch_formula\tdispatch_formula_class\tdispatch_formula_pct\t"
         "dispatch_affine_status\tdispatch_affine_pct\tdispatch_affine_terms\t"
@@ -156,6 +171,7 @@ def main():
             row.get("bytes", ""),
         )
         state = states.get(state_key, {})
+        state_affine_row = state_affine.get(source_entry, {})
         role = roles.get((source_entry, source_target, site), {})
         static = slots.get((source_entry, source_target, site), {})
         formula = formulas.get(source_entry, {})
@@ -171,7 +187,12 @@ def main():
             f"{row.get('top_targets', '')}\t{site}\t"
             f"{state.get('class', '')}\t{state.get('events', '')}\t"
             f"{state.get('top_state_add', '')}\t{state.get('top_flag_add', '')}\t"
-            f"{state.get('top_byte_add', '')}\t{role.get('target_reg', '')}\t"
+            f"{state.get('top_byte_add', '')}\t"
+            f"{state_affine_row.get('full_status', '')}\t"
+            f"{state_affine_row.get('cv_status', '')}\t"
+            f"{state_affine_row.get('cv_coverage_pct', '')}\t"
+            f"{state_affine_row.get('total_terms', '')}\t"
+            f"{role.get('target_reg', '')}\t"
             f"{slot_kind}\t{slot_reg_or_temp}\t{byte_index_reg}\t"
             f"{static.get('static_load_site', '')}\t"
             f"{static.get('static_index_add_site', '')}\t"
