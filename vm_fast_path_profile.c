@@ -769,6 +769,34 @@ static uint64_t read_le64(const uint8_t *data, size_t off) {
     return v;
 }
 
+static bool read_image_value(size_t off, int size, uint64_t *out) {
+    if (!g_eac_image || size <= 0 || size > 8 || off + (size_t)size > g_eac_image_size) {
+        return false;
+    }
+    uint64_t v = 0;
+    for (int i = size - 1; i >= 0; --i) {
+        v = (v << 8) | g_eac_image[off + (size_t)i];
+    }
+    *out = v;
+    return true;
+}
+
+static bool read_frame_image_value(int64_t frame_rel_off, int size, uint64_t *out, size_t *image_off) {
+    if (frame_rel_off > -0x4000 && frame_rel_off < 0x4000) {
+        return false;
+    }
+    int64_t off = (int64_t)FRAME_RUNTIME_OFF + frame_rel_off;
+    if (off < 0) {
+        return false;
+    }
+    size_t uoff = (size_t)off;
+    if (!read_image_value(uoff, size, out)) {
+        return false;
+    }
+    if (image_off) *image_off = uoff;
+    return true;
+}
+
 static int reg_index(x86_reg reg) {
     switch (reg) {
     case X86_REG_AL: case X86_REG_AH: case X86_REG_AX: case X86_REG_EAX: case X86_REG_RAX: return 0;
@@ -890,6 +918,8 @@ static Value read_mem_op(cs_insn *insn, cs_x86_op *op, Value *regs, Frame *frame
         if (ptr.off == FRAME_STATE_OFF) return val_int(frame->state & mask_for_size(size));
         if (ptr.off == FRAME_FLAGS_OFF) return val_int(frame->flags & mask_for_size(size));
         if (ptr.off == FRAME_BYTE_OFF) return val_int(frame->byte & mask_for_size(size));
+        uint64_t image_value = 0;
+        if (read_frame_image_value(ptr.off, size, &image_value, NULL)) return val_int(image_value);
         return read_frame_mem(frame_mem, frame_mem_count, ptr.off, size);
     }
     if (ptr.ptr_kind == PK_IP) {
@@ -1187,6 +1217,13 @@ static TrackedValue read_mem_tracked(cs_insn *insn, cs_x86_op *op, TrackedValue 
         if (ptr.off == FRAME_STATE_OFF) return tracked_narrow(*state_tv, size, max_expr_len);
         if (ptr.off == FRAME_FLAGS_OFF) return tracked_narrow(*flags_tv, size, max_expr_len);
         if (ptr.off == FRAME_BYTE_OFF) return tracked_narrow(*byte_tv, size, max_expr_len);
+        uint64_t image_value = 0;
+        size_t image_off = 0;
+        if (read_frame_image_value(ptr.off, size, &image_value, &image_off)) {
+            char expr[64];
+            snprintf(expr, sizeof(expr), "image[0x%zx]", image_off);
+            return tracked_from(val_int(image_value), expr, TC_IMAGE_OFFSET, "", max_expr_len);
+        }
         return read_tracked_frame_mem(frame_mem, frame_mem_count, ptr.off, size, max_expr_len);
     }
     if (ptr.ptr_kind == PK_IP) {
@@ -1596,6 +1633,12 @@ static SymValue read_sym_mem(cs_insn *insn, cs_x86_op *op, SymValue *regs, const
         if (ptr.off == FRAME_STATE_OFF) return sym_text(state_expr, max_len);
         if (ptr.off == FRAME_FLAGS_OFF) return sym_text(flags_expr, max_len);
         if (ptr.off == FRAME_BYTE_OFF) return sym_text(byte_expr, max_len);
+        uint64_t image_value = 0;
+        if (read_frame_image_value(ptr.off, size, &image_value, NULL)) {
+            char expr[64];
+            snprintf(expr, sizeof(expr), "0x%" PRIx64, image_value & mask_for_size(size));
+            return sym_text(expr, max_len);
+        }
         SymValue seeded = read_sym_frame_mem(frame_mem, frame_mem_count, ptr.off, size, max_len);
         if (seeded.kind != SK_TEXT || seeded.text[0]) return seeded;
         char expr[64];
@@ -3323,6 +3366,8 @@ int main(int argc, char **argv) {
     uint8_t *eac = NULL;
     size_t eac_size = 0;
     if (!read_file(args.eac_path, &eac, &eac_size)) return 1;
+    g_eac_image = eac;
+    g_eac_image_size = eac_size;
     uint64_t table[TABLE_ENTRIES];
     for (int i = 0; i < TABLE_ENTRIES; ++i) {
         table[i] = read_le64(eac, TABLE_OFF + (size_t)i * 8);
