@@ -27,10 +27,12 @@ def main():
         default="dumps/vmtail-wide-1m-w16/vm_instruction_trace.tsv",
     )
     parser.add_argument("--eac", default="eac.elf")
+    parser.add_argument("--status-prefix", default="file_span_of")
     parser.add_argument(
-        "--status",
-        default="file_exact",
-        help="byte_status to use for promoted prefix rows",
+        "--max-delta",
+        type=lambda value: int(value, 0),
+        default=0x400,
+        help="largest positive prefix span to promote from file bytes",
     )
     args = parser.parse_args()
 
@@ -55,11 +57,11 @@ def main():
                 verified_exact += 1
                 if eac[start:start + len(data)] != data:
                     exact_mismatches += 1
-            elif PREFIX_RE.match(status) and delta > 0:
+            elif PREFIX_RE.match(status) and 0 < delta <= args.max_delta:
                 end = start + delta
                 if end <= len(eac):
                     row["bytes"] = eac[start:end].hex()
-                    row["byte_status"] = args.status
+                    row["byte_status"] = f"{args.status_prefix}_{delta}"
                     promoted += 1
             writer.writerow(row)
 
