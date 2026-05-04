@@ -49,6 +49,7 @@ typedef struct {
     uint32_t flags;
     uint8_t byte;
     int64_t ip_delta;
+    uint64_t ip_file_off;
     uint64_t ip_low12;
 } Frame;
 
@@ -1827,6 +1828,7 @@ static ExecResult execute_handler(Handler *h, TraceRow *row, uint64_t *table, Se
         .flags = row->pre_flags,
         .byte = row->pre_byte,
         .ip_delta = 0,
+        .ip_file_off = row->start_vm_ip,
         .ip_low12 = row->start_vm_ip & 0xfff,
     };
     Value regs[REG_COUNT];
@@ -2349,6 +2351,7 @@ static ExecResult execute_handler_branch_pred(Handler *h, TraceRow *row, uint64_
         .flags = row->pre_flags,
         .byte = row->pre_byte,
         .ip_delta = 0,
+        .ip_file_off = row->start_vm_ip,
         .ip_low12 = row->start_vm_ip & 0xfff,
     };
     TrackedValue regs[REG_COUNT];
@@ -2537,6 +2540,7 @@ static TransferResult execute_handler_transfer(Handler *h, TraceRow *row, uint64
         .flags = row->pre_flags,
         .byte = row->pre_byte,
         .ip_delta = 0,
+        .ip_file_off = row->start_vm_ip,
         .ip_low12 = row->start_vm_ip & 0xfff,
     };
     Value regs[REG_COUNT];
