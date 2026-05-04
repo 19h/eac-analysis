@@ -58,11 +58,86 @@ def ip_update_text(delta):
     return f"ip -= 0x{-value:x}"
 
 
+def operand_field_name(offset, size):
+    if size == 1:
+        return f"b{offset:x}"
+    if size == 2:
+        return f"u16_{offset:x}"
+    if size == 4:
+        return f"u32_{offset:x}"
+    return f"bytes{size}_{offset:x}"
+
+
+def parse_ip_reads(text):
+    reads = []
+    for item in (text or "").split(","):
+        if not item:
+            continue
+        if "/" not in item:
+            continue
+        offset_s, size_s = item.split("/", 1)
+        try:
+            offset = int(offset_s, 0)
+            size = int(size_s, 0)
+        except ValueError:
+            continue
+        reads.append((offset, size))
+    return reads
+
+
+def load_operand_shapes(path):
+    default = {
+        "min_len": 8,
+        "extra_reads": [],
+        "shape": "target_u32@+0,delta_u32@+4",
+    }
+    shapes = defaultdict(lambda: default)
+    if not path:
+        return shapes
+    path = Path(path)
+    if not path.exists():
+        return shapes
+
+    with path.open(newline="", errors="replace") as handle:
+        for row in csv.DictReader(handle, delimiter="\t"):
+            entry = row.get("entry", "")
+            if not entry:
+                continue
+            extra_reads = sorted(
+                (offset, size)
+                for offset, size in parse_ip_reads(row.get("ip_reads", ""))
+                if offset >= 8
+            )
+            min_len = 8
+            for offset, size in extra_reads:
+                min_len = max(min_len, offset + size)
+            shape_parts = ["target_u32@+0", "delta_u32@+4"]
+            shape_parts.extend(f"{operand_field_name(offset, size)}@+0x{offset:x}" for offset, size in extra_reads)
+            shapes[entry] = {
+                "min_len": min_len,
+                "extra_reads": extra_reads,
+                "shape": ",".join(shape_parts),
+            }
+    return shapes
+
+
+def operand_fields_text(data, extra_reads):
+    fields = []
+    for offset, size in extra_reads:
+        chunk = data[offset:offset + size]
+        if len(chunk) != size:
+            continue
+        fields.append(f"{operand_field_name(offset, size)}=0x{int.from_bytes(chunk, 'little'):x}")
+    return ",".join(fields)
+
+
 def build_rows(args):
     eac = Path(args.eac).read_bytes() if args.eac else b""
+    operand_shapes = load_operand_shapes(args.handler_semantics)
     groups = {}
     rejected = Counter()
     file_mismatches = 0
+    operand_mismatches = 0
     matched_events = 0
     total_rows = 0
 
@@ -95,8 +170,16 @@ def build_rows(args):
                 rejected["target_oob"] += 1
                 continue
             start = int(row["start_vm_ip"], 16)
+            shape = operand_shapes[row.get("source_entry", "")]
+            operand_min_len = shape["min_len"]
+            if len(data) < operand_min_len:
+                rejected["short_operand"] += 1
+                continue
+            operand_data = data[:operand_min_len]
             if eac and eac[start:start + len(data)] != data:
                 file_mismatches += 1
+            if eac and eac[start:start + operand_min_len] != operand_data:
+                operand_mismatches += 1
             matched_events += 1
             key = (
                 row.get("source_entry", ""),
@@ -116,7 +199,12 @@ def build_rows(args):
                     "statuses": Counter(),
                     "sites": Counter(),
                     "prefixes": Counter(),
+                    "operand_bytes": Counter(),
+                    "operand_fields": Counter(),
+                    "operand_statuses": Counter(),
                     "source_targets": Counter(),
+                    "operand_min_len": operand_min_len,
+                    "operand_shape": shape["shape"],
                 }
                 groups[key] = group
             group["events"] += 1
@@ -125,6 +213,15 @@ def build_rows(args):
             group["statuses"][row.get("byte_status", "")] += 1
             group["sites"][row.get("site", "")] += 1
             group["prefixes"][data[: args.prefix_bytes].hex()] += 1
+            group["operand_bytes"][operand_data.hex()] += 1
+            extra_text = operand_fields_text(data, shape["extra_reads"])
+            if extra_text:
+                group["operand_fields"][extra_text] += 1
+            if eac:
+                status = "file_match" if eac[start:start + operand_min_len] == operand_data else "file_mismatch"
+            else:
+                status = "not_checked"
+            group["operand_statuses"][status] += 1
             group["source_targets"][target_text(row.get("target_entry", ""), row.get("target", ""))] += 1
 
     rows = []
@@ -148,6 +245,11 @@ def build_rows(args):
             "raw_target_u32": raw_target,
             "raw_delta_u32": raw_delta,
             "format": "target_u32_delta_u32",
+            "operand_min_len": f"0x{group['operand_min_len']:x}",
+            "operand_shape": group["operand_shape"],
+            "operand_statuses": fmt_counter(group["operand_statuses"], args.max_items),
+            "top_operand_bytes": fmt_counter(group["operand_bytes"], args.max_items),
+            "top_extra_fields": fmt_counter(group["operand_fields"], args.max_items),
             "lifted_ir": f"next = table[{target_entry}], {ip_update_text(delta)}",
             "top_prefixes": fmt_counter(group["prefixes"], args.max_items),
         })
@@ -158,6 +260,7 @@ def build_rows(args):
         "matched_events": matched_events,
         "matched_rows": len(rows),
         "file_mismatches": file_mismatches,
+        "operand_mismatches": operand_mismatches,
         "rejected": rejected,
     }
     return rows, stats
@@ -181,6 +284,11 @@ def emit_tsv(rows):
         "raw_target_u32",
         "raw_delta_u32",
         "format",
+        "operand_min_len",
+        "operand_shape",
+        "operand_statuses",
+        "top_operand_bytes",
+        "top_extra_fields",
         "lifted_ir",
         "top_prefixes",
     ]
@@ -196,15 +304,16 @@ def emit_markdown(rows, stats, limit):
     print(f"- matched events: `{stats['matched_events']}`")
     print(f"- catalog rows: `{stats['matched_rows']}`")
     print(f"- file byte mismatches: `{stats['file_mismatches']}`")
+    print(f"- operand byte mismatches: `{stats['operand_mismatches']}`")
     rejected = ",".join(f"{key}:{value}" for key, value in stats["rejected"].most_common())
     print(f"- rejected candidates: `{rejected}`")
     print()
-    print("| Source | Target | Delta | Events | Starts | Statuses | Lift |")
-    print("| ---: | ---: | ---: | ---: | ---: | --- | --- |")
+    print("| Source | Target | Delta | Events | Footprint | Starts | Statuses | Lift |")
+    print("| ---: | ---: | ---: | ---: | ---: | ---: | --- | --- |")
     for row in rows[:limit]:
         print(
             f"| {row['source_entry']} | {row['target_entry']} | `{row['delta']}` | "
-            f"{row['events']} | {row['unique_start_ips']} | `{row['byte_statuses']}` | "
+            f"{row['events']} | `{row['operand_min_len']}` | {row['unique_start_ips']} | `{row['byte_statuses']}` | "
             f"`{row['lifted_ir']}` |"
         )
 
@@ -215,6 +324,7 @@ def main():
     )
     parser.add_argument("trace", nargs="?", default="dumps/vmtail-wide-1m-w16/vm_instruction_trace.tsv")
     parser.add_argument("--eac", default="eac.elf")
+    parser.add_argument("--handler-semantics", default="dumps/vmtail-wide-1m-w16/vm_handler_semantics.tsv")
     parser.add_argument("--dispatch-entries", type=int, default=360)
     parser.add_argument("--prefix-bytes", type=int, default=16)
     parser.add_argument("--max-items", type=int, default=8)

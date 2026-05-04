@@ -75,6 +75,8 @@ def load_long_branches(path: Path, top=5):
         "events": 0,
         "variants": 0,
         "irs": Counter(),
+        "operand_lens": Counter(),
+        "operand_shapes": Counter(),
     })
     if path is None:
         return {}
@@ -91,6 +93,12 @@ def load_long_branches(path: Path, top=5):
             lifted_ir = row.get("lifted_ir", "")
             if lifted_ir:
                 bucket["irs"][lifted_ir] += events
+            operand_min_len = row.get("operand_min_len", "")
+            if operand_min_len:
+                bucket["operand_lens"][operand_min_len] += events
+            operand_shape = row.get("operand_shape", "")
+            if operand_shape:
+                bucket["operand_shapes"][operand_shape] += events
 
     compact = {}
     for entry, bucket in rows.items():
@@ -100,6 +108,13 @@ def load_long_branches(path: Path, top=5):
             "top_ir": ",".join(
                 f"{value}={key}"
                 for key, value in sorted(bucket["irs"].items(), key=lambda item: (-item[1], item[0]))[:top]
+            ),
+            "operand_lens": ",".join(
+                f"{key}:{value}" for key, value in bucket["operand_lens"].most_common(top)
+            ),
+            "operand_shapes": ",".join(
+                f"{value}={key}"
+                for key, value in sorted(bucket["operand_shapes"].items(), key=lambda item: (-item[1], item[0]))[:top]
             ),
         }
     return compact
@@ -286,6 +301,8 @@ def load_missing_exact(dump_dir: Path, groups, long_branches):
                     f"top_deltas={row.get('top_ip_deltas', '')};"
                     f"long_branch_events={long_branch['events']};"
                     f"long_branch_variants={long_branch['variants']};"
+                    f"long_branch_operand_lens={long_branch['operand_lens']};"
+                    f"long_branch_operand_shapes={long_branch['operand_shapes']};"
                     f"long_branch_top_ir={long_branch['top_ir']}"
                 )
                 status = "decoded_long_branch"

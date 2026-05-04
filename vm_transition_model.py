@@ -104,6 +104,8 @@ def load_long_branches(path, top=5):
         "events": 0,
         "variants": 0,
         "irs": defaultdict(int),
+        "operand_lens": defaultdict(int),
+        "operand_shapes": defaultdict(int),
     })
     if not path:
         return {}
@@ -118,6 +120,12 @@ def load_long_branches(path, top=5):
         ir = row.get("lifted_ir", "")
         if ir:
             bucket["irs"][ir] += events
+        operand_min_len = row.get("operand_min_len", "")
+        if operand_min_len:
+            bucket["operand_lens"][operand_min_len] += events
+        operand_shape = row.get("operand_shape", "")
+        if operand_shape:
+            bucket["operand_shapes"][operand_shape] += events
 
     compact = {}
     for entry, bucket in rows.items():
@@ -127,6 +135,14 @@ def load_long_branches(path, top=5):
             "top_ir": ";".join(
                 f"{value}={key}"
                 for key, value in sorted(bucket["irs"].items(), key=lambda item: (-item[1], item[0]))[:top]
+            ),
+            "operand_lens": ";".join(
+                f"{value}={key}"
+                for key, value in sorted(bucket["operand_lens"].items(), key=lambda item: (-item[1], item[0]))[:top]
+            ),
+            "operand_shapes": ";".join(
+                f"{value}={key}"
+                for key, value in sorted(bucket["operand_shapes"].items(), key=lambda item: (-item[1], item[0]))[:top]
             ),
         }
     return compact
@@ -283,6 +299,8 @@ def main():
         "branch_gpr_predicate_top_unknown_conditions",
         "long_branch_events",
         "long_branch_variants",
+        "long_branch_operand_lens",
+        "long_branch_operand_shapes",
         "long_branch_top_ir",
         "target_reg",
         "slot_kind",
@@ -389,6 +407,8 @@ def main():
                 "branch_gpr_predicate_top_unknown_conditions": branch_gpr_row.get("top_unknown_conditions", ""),
                 "long_branch_events": long_branch_row.get("events", ""),
                 "long_branch_variants": long_branch_row.get("variants", ""),
+                "long_branch_operand_lens": long_branch_row.get("operand_lens", ""),
+                "long_branch_operand_shapes": long_branch_row.get("operand_shapes", ""),
                 "long_branch_top_ir": long_branch_row.get("top_ir", ""),
                 "target_reg": role.get("target_reg", ""),
                 "slot_kind": slot_kind,
