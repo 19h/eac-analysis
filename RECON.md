@@ -24,7 +24,7 @@ SHA-256: `0b44ad59697129534189efdb75cde2b96245f831438e9f6a53cb7725f190d739`
 - `vm_state_static_slice.py`: statically tracks frame/IP pointers through handler code and emits symbolic update chains for `frame+0x170` and `frame+0x23`.
 - `vm_state_static_validate.py`: concretely executes the static state slice over state-aware trace rows and validates predicted `frame+0x170` post-state.
 - `vm_static_dispatch_validate.py`: concretely executes handler slices through the final table jump and validates predicted dispatch target plus VM IP advance.
-- `vm_static_transfer_expr.py`: follows concrete state-aware trace paths while carrying symbolic expressions for the dispatch-table slot and VM IP advance.
+- `vm_static_transfer_expr.py`: follows concrete state-aware trace paths while carrying symbolic expressions for the dispatch-table slot and VM IP advance; `--by-path` emits path-conditioned formula rows.
 - `vm_static_path_profile.py`: profiles concrete branch/path variants through static handler slices over the state-aware trace.
 - `vm_dispatch_model_combine.py`: combines the static dispatch validator with affine fallback formulas for static-dispatch misses.
 - `vm_tail_registers.py`: infers per-tail-site register roles from `EAC_VMTAIL_REGS=1` traces, including target value, dispatch-slot pointer, byte index, table pointer, and frame pointer. It can also join those roles back onto an instruction trace by source handler and tail site.
@@ -97,6 +97,7 @@ SHA-256: `0b44ad59697129534189efdb75cde2b96245f831438e9f6a53cb7725f190d739`
 - `dumps/vmtail-state-wide-w16/vm_state_static_validate.tsv`: concrete validation of static state slices against the state-aware instruction trace.
 - `dumps/vmtail-state-wide-w16/vm_static_dispatch_validate.tsv`: concrete validation of static dispatch target and VM IP advance against the state-aware instruction trace.
 - `dumps/vmtail-state-wide-w16/vm_static_transfer_expr.tsv`: sampled path-sensitive symbolic dispatch-slot and VM IP-advance expressions, generated from up to 128 state-aware rows per source.
+- `dumps/vmtail-state-wide-w16/vm_static_path_transfer_expr.tsv`: path-conditioned symbolic dispatch-slot and IP-advance expressions over the same bounded transfer-expression sample.
 - `dumps/vmtail-state-wide-w16/vm_static_path_profile.tsv`: per-source branch-path profile from concrete static handler replay over the full state-aware trace.
 - `dumps/vmtail-state-wide-w16/vm_static_path_variants.tsv`: one row per distinct source-handler branch path, with per-path target distributions.
 - `dumps/vmtail-state-wide-w16/vm_dispatch_model_combined.tsv`: combined static-plus-affine dispatch model coverage for the state-aware instruction trace.
@@ -355,6 +356,9 @@ python3 vm_static_dispatch_validate.py dumps/vmtail-state-wide-w16/vm_instructio
 python3 vm_static_transfer_expr.py dumps/vmtail-state-wide-w16/vm_instruction_trace.tsv \
   --max-rows-per-source 128 --max-expr-len 320 --top 5 \
   >dumps/vmtail-state-wide-w16/vm_static_transfer_expr.tsv
+python3 vm_static_transfer_expr.py dumps/vmtail-state-wide-w16/vm_instruction_trace.tsv \
+  --max-rows-per-source 128 --max-expr-len 320 --top 5 --by-path \
+  >dumps/vmtail-state-wide-w16/vm_static_path_transfer_expr.tsv
 python3 vm_static_path_profile.py dumps/vmtail-state-wide-w16/vm_instruction_trace.tsv \
   >dumps/vmtail-state-wide-w16/vm_static_path_profile.tsv
 python3 vm_static_path_profile.py dumps/vmtail-state-wide-w16/vm_instruction_trace.tsv --by-path \
@@ -1119,6 +1123,18 @@ The model is intentionally keyed by dispatch entry rather than bytecode instruct
 | single observed IP-advance expression | 179 | 16691 |
 
 Representative recovered dispatch-slot expressions now appear directly in `vm_transition_model.tsv`. For example, entry 28 dispatches through `table[u16_0 & 0xffff]` with `ip += 0x3`, while entry 0 dispatches through `table[((u16_0 + (state0 ^ 0x1966e0e7)) - 0x251a0141) & 0xffff]` with `ip += 0x5`, modulo the 32-bit masks shown in the TSV.
+
+The `--by-path` view of the same bounded transfer-expression sample is `vm_static_path_transfer_expr.tsv`. It resolves the apparent multi-formula source handlers into concrete branch-path formulas. In the 128-row-per-source sample it observes 348 source-path rows across all 179 state-aware sources. All 335 source-path rows with a resolved static target have exactly one slot expression and one IP-advance expression:
+
+| Path-Conditioned Transfer Expressions | Source-Paths | Sample Events |
+| --- | ---: | ---: |
+| sampled source-path rows | 348 | 16691 |
+| 100% target/IP agreement | 335 | 16085 |
+| with dispatch-slot expression | 335 | 16085 |
+| single slot expression per path | 335 | 16085 |
+| multiple slot expressions per path | 0 | 0 |
+
+This is useful because source-level handlers such as entries 18, 20, 26, 64, 66, 114, 258, and 337 have multiple observed slot formulas, but each sampled concrete branch path has a single formula. That gives a clean route to path-specialized devirtualized blocks.
 
 `vm_static_path_profile.py` explains why some handlers have multiple sampled transfer expressions. It replays the full state-aware trace through the static handler interpreter and records concrete branch outcomes as path hashes. The source-level profile exactly preserves the static dispatch validator's coverage: 248300 of 248906 state-trace rows validate target and IP, and the same 606 rows end in unresolved native/long-control-flow paths. Across 179 state-aware source handlers, the replay observes 399 distinct branch paths:
 
