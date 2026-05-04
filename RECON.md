@@ -1212,8 +1212,8 @@ The seeded `--by-path` transfer-expression view observes 465 GPR+scratch-seeded 
 | --- | ---: | ---: |
 | source handlers profiled | 179 | 248906 |
 | sources with 100% target/IP validation | 166 | 248300 |
-| sources with one observed path | 75 | 43981 |
-| sources with multiple observed paths | 104 | 204925 |
+| sources with one observed path | 74 | 39028 |
+| sources with multiple observed paths | 105 | 209878 |
 | distinct source-path rows | 400 | 248906 |
 
 The most path-diverse source is entry 330 with 12 observed paths over 169 state-trace events. Other high-diversity handlers include entries 208 with 11 paths, 237 and 48 with 8 paths each, and entries 108, 257, 319, 292, and 105 with 7 paths each. The high-volume handlers are usually much simpler: entry 258 has two concrete paths, entry 28 has three, and entries 337, 340, 189, 347, 307, 64, and 66 have one or two dominant paths. These path counts are now joined into `vm_transition_model.tsv` and summarized in `vm_microcode_catalog.tsv`.
