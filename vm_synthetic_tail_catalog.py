@@ -80,6 +80,54 @@ def target_offsets(data, target_counter):
     return ";".join(rows)
 
 
+def target_values(target_counter):
+    values = set()
+    for target in target_counter:
+        try:
+            values.add(int(target))
+        except ValueError:
+            pass
+    return values
+
+
+def u16_at(data, off):
+    if off < 0 or off + 2 > len(data):
+        return None
+    return int.from_bytes(data[off:off + 2], "little")
+
+
+def tail_schema(data, target_counter):
+    targets = target_values(target_counter)
+    has_target = lambda off: u16_at(data, off) in targets
+    e801 = bytes.fromhex("e801")
+    marker8000 = bytes.fromhex("8000")
+
+    if len(data) == 4:
+        if data[2:4] == e801 and has_target(0):
+            return "target_u16@0+e801"
+        if data[0:2] == e801 and has_target(2):
+            return "e801+target_u16@2"
+    if len(data) == 6:
+        if data[0:2] == marker8000 and data[2:4] == e801 and has_target(4):
+            return "8000+e801+target_u16@4"
+        if data[0:2] == marker8000 and has_target(2) and data[4:6] == e801:
+            return "8000+target_u16@2+e801"
+        if data[2:4] == e801 and has_target(4):
+            return "prefix2+e801+target_u16@4"
+        if has_target(0) and data[2:4] == e801:
+            return "target_u16@0+e801+suffix2"
+    if len(data) == 0x0C and data.find(marker8000) >= 0 and data.find(e801) >= 0:
+        offs = [off for off in range(0, len(data) - 1) if has_target(off)]
+        if offs:
+            return "target_only_8000_tail_target@" + ",".join(f"+0x{off:x}" for off in offs)
+    if data.find(bytes.fromhex("3d01")) >= 0 and data.find(bytes.fromhex("9d01")) >= 0:
+        return "long_tail_3d01_9d01"
+    offs = [off for off in range(0, max(0, len(data) - 1)) if has_target(off)]
+    if offs:
+        return "target_u16@" + ",".join(f"+0x{off:x}" for off in offs)
+    return ""
+
+
 def make_rows(args):
     transition = load_by(args.transition_model, "entry")
     microcode = load_by(args.microcode, "entry")
@@ -156,6 +204,7 @@ def make_rows(args):
             "top_targets": fmt_counter(bucket["targets"], args.max_items),
             "u16_candidates": u16_candidates(data, bucket["targets"], args.max_table_entry),
             "target_match_offsets": target_offsets(data, bucket["targets"]),
+            "tail_schema": tail_schema(data, bucket["targets"]),
             "motifs": motifs(data),
             "byte_layout": byte_layout(Counter({hex_text: bucket["events"]}), args.max_layout_items),
         })
@@ -180,6 +229,7 @@ def emit_tsv(rows):
         "top_targets",
         "u16_candidates",
         "target_match_offsets",
+        "tail_schema",
         "motifs",
         "byte_layout",
     ]
@@ -192,13 +242,14 @@ def emit_tsv(rows):
 def emit_markdown(rows, args):
     print("# VM Synthetic Tail Catalog\n")
     print(f"Top {min(args.limit, len(rows))} unresolved synthetic tail variants by event count.\n")
-    print("| Events | Len | Hash | Tail | Targets | Target Offsets | Classes | Motifs |")
-    print("| ---: | ---: | --- | --- | --- | --- | --- | --- |")
+    print("| Events | Len | Hash | Tail | Targets | Schema | Target Offsets | Classes | Motifs |")
+    print("| ---: | ---: | --- | --- | --- | --- | --- | --- | --- |")
     for row in rows[:args.limit]:
         print(
             f"| {row['events']} | `{row['tail_len']}` | `{row['tail_hash']}` | "
             f"`{row['tail_hex'][:args.max_tail_hex]}` | `{row['top_targets']}` | "
-            f"`{row['target_match_offsets'] or '-'}` | `{row['semantic_gap_classes']}` | `{row['motifs']}` |"
+            f"`{row['tail_schema'] or '-'}` | `{row['target_match_offsets'] or '-'}` | "
+            f"`{row['semantic_gap_classes']}` | `{row['motifs']}` |"
         )
 
     by_len = Counter()
