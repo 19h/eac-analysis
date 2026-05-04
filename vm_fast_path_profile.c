@@ -1128,7 +1128,7 @@ static TrackedValue read_op_tracked(cs_insn *insn, cs_x86_op *op, TrackedValue *
     }
     if (op->type == X86_OP_REG) {
         int r = reg_index((x86_reg)op->reg);
-        if (r >= 0 && regs[r].value.kind != VK_UNKNOWN) {
+        if (r >= 0) {
             return tracked_narrow(regs[r], op->size ? op->size : 8, max_expr_len);
         }
         const char *name = r >= 0 ? tracked_reg_name(r) : insn->op_str;
