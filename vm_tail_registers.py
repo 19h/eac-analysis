@@ -9,6 +9,7 @@ from pathlib import Path
 
 FIELD_RE = re.compile(r"\b([a-z][a-z0-9_]*)=0x([0-9a-f]+)")
 TRACE_RE = re.compile(r"^\[(VMTAIL|DISPATCH)\]")
+TAIL_SITE_RE = re.compile(r"^\[DRIVER\] tail site \+0x([0-9a-f]+) -> ([a-z0-9]+)")
 DISPATCH_SLOT_SITES = {0xc80b9, 0xcdac7}
 REG_NAMES = {
     "rax", "rbx", "rcx", "rdx", "rsi", "rdi",
@@ -120,12 +121,17 @@ def main():
     site_events = Counter()
     site_targets = defaultdict(Counter)
     role_values = defaultdict(Counter)
+    preferred_target_regs = {}
     parsed_tail_events = 0
     parsed_dispatch_events = 0
     missing_entry = 0
 
     with (dump_dir / "run.stderr").open(errors="replace") as handle:
         for line in handle:
+            site_match = TAIL_SITE_RE.search(line)
+            if site_match:
+                preferred_target_regs[int(site_match.group(1), 16)] = site_match.group(2)
+                continue
             match = TRACE_RE.search(line)
             if not match:
                 continue
@@ -156,10 +162,12 @@ def main():
 
     if args.instruction_trace:
         emit_instruction_summary(
-            Path(args.instruction_trace), site_events, by_site_role, args.max_items
+            Path(args.instruction_trace), site_events, by_site_role,
+            preferred_target_regs, args.max_items
         )
     elif args.site_summary:
-        emit_site_summary(site_events, site_targets, by_site_role, args.max_items)
+        emit_site_summary(site_events, site_targets, by_site_role,
+                          preferred_target_regs, args.max_items)
     else:
         emit_role_rows(site_events, site_targets, by_site_role, role_entries, role_values, args.max_items)
 
@@ -169,11 +177,17 @@ def main():
         print(f"# missing_target_entry={missing_entry}", file=__import__("sys").stderr)
 
 
-def best_role(site, role, site_events, by_site_role):
+def best_role(site, role, site_events, by_site_role, preferred_target_regs=None):
+    preferred_reg = ""
+    if role == "target_value" and preferred_target_regs:
+        preferred_reg = preferred_target_regs.get(site, "")
     best = None
     for (role_site, reg, candidate_role), count in by_site_role.items():
         if role_site != site or candidate_role != role:
             continue
+        if preferred_reg and reg == preferred_reg:
+            best = (reg, count)
+            break
         if best is None or count > best[1] or (count == best[1] and reg < best[0]):
             best = (reg, count)
     if best is None:
@@ -184,7 +198,7 @@ def best_role(site, role, site_events, by_site_role):
     return reg, str(count), f"{pct:.1f}"
 
 
-def emit_site_summary(site_events, site_targets, by_site_role, max_items):
+def emit_site_summary(site_events, site_targets, by_site_role, preferred_target_regs, max_items):
     print(
         "site\tevents\ttarget_reg\ttarget_events\ttarget_pct\t"
         "slot_reg\tslot_events\tslot_pct\tbyte_index_reg\tbyte_index_events\t"
@@ -193,7 +207,7 @@ def emit_site_summary(site_events, site_targets, by_site_role, max_items):
         "top_targets"
     )
     for site, total in site_events.most_common():
-        target = best_role(site, "target_value", site_events, by_site_role)
+        target = best_role(site, "target_value", site_events, by_site_role, preferred_target_regs)
         slot = best_role(site, "slot_pointer", site_events, by_site_role)
         byte_index = best_role(site, "byte_index", site_events, by_site_role)
         entry_index = best_role(site, "entry_index", site_events, by_site_role)
@@ -211,7 +225,7 @@ def emit_site_summary(site_events, site_targets, by_site_role, max_items):
         )
 
 
-def emit_instruction_summary(trace_path, site_events, by_site_role, max_items):
+def emit_instruction_summary(trace_path, site_events, by_site_role, preferred_target_regs, max_items):
     rows = Counter()
     targets = defaultdict(Counter)
     deltas = defaultdict(Counter)
@@ -245,7 +259,7 @@ def emit_instruction_summary(trace_path, site_events, by_site_role, max_items):
     for (source_entry, source_target, site), count in sorted(
         rows.items(), key=lambda item: (-item[1], item[0][0], item[0][2])
     ):
-        target = best_role(site, "target_value", site_events, by_site_role)
+        target = best_role(site, "target_value", site_events, by_site_role, preferred_target_regs)
         slot = best_role(site, "slot_pointer", site_events, by_site_role)
         byte_index = best_role(site, "byte_index", site_events, by_site_role)
         frame = best_role(site, "frame_pointer", site_events, by_site_role)
