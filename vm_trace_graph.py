@@ -15,7 +15,7 @@ REG_NAMES = {
     "r8", "r9", "r10", "r11", "r12", "r13", "r14", "r15",
 }
 
-Event = namedtuple("Event", "kind site count frame vm_ip target entry words")
+Event = namedtuple("Event", "kind site count frame vm_ip target entry words vm_flags vm_state vm_byte")
 
 TAIL_RE = re.compile(
     r"^\[VMTAIL\] site=0x([0-9a-f]+) count=([0-9]+).* "
@@ -29,6 +29,7 @@ DISPATCH_RE = re.compile(
 )
 TAIL_LIMIT_RE = re.compile(r"\btail_limit=([0-9]+)")
 IP_WORD_RE = re.compile(r"\bip_w([0-9]+)=0x([0-9a-f]+)")
+HEX_FIELD_RE = re.compile(r"\b([a-z_]+)=0x([0-9a-f]+)")
 
 
 def read_dispatch_table(eac_path: Path, table_off=0xc3718, entries=360):
@@ -65,6 +66,10 @@ def build_tail_maps(eac: bytes, table, window: int):
 
 def parse_event(line: str, target_to_entry):
     words = parse_ip_words(line)
+    hex_fields = parse_hex_fields(line)
+    vm_flags = hex_fields.get("vm_flags")
+    vm_state = hex_fields.get("vm_state")
+    vm_byte = hex_fields.get("vm_byte")
 
     m = TAIL_RE.search(line)
     if m:
@@ -74,7 +79,10 @@ def parse_event(line: str, target_to_entry):
         frame = int(frame_s, 16)
         vm_ip = int(vm_ip_s, 16)
         target = int(target_s, 16)
-        return Event("tail", site, count, frame, vm_ip, target, target_to_entry.get(target), words)
+        return Event(
+            "tail", site, count, frame, vm_ip, target, target_to_entry.get(target),
+            words, vm_flags, vm_state, vm_byte,
+        )
 
     m = DISPATCH_RE.search(line)
     if m:
@@ -88,7 +96,7 @@ def parse_event(line: str, target_to_entry):
         entry = target_to_entry.get(target)
         if entry is None and idx % 8 == 0:
             entry = idx // 8
-        return Event("dispatch", site, count, frame, vm_ip, target, entry, words)
+        return Event("dispatch", site, count, frame, vm_ip, target, entry, words, vm_flags, vm_state, vm_byte)
 
     return None
 
@@ -101,6 +109,20 @@ def parse_ip_words(line: str):
     for idx, value in found:
         words[idx] = value
     return tuple(words)
+
+
+def parse_hex_fields(line: str):
+    return {name: int(value_s, 16) for name, value_s in HEX_FIELD_RE.findall(line)}
+
+
+def format_optional_hex(value):
+    return "" if value is None else f"0x{value:x}"
+
+
+def format_state_delta(before, after):
+    if before is None or after is None:
+        return ""
+    return format_signed_hex(after - before)
 
 
 def iter_trace_events(trace_path: Path, target_to_entry):
@@ -360,7 +382,8 @@ def emit_instruction_trace(trace_path: Path, table, target_to_entry, site_source
 
     print(
         "seq\tframe\tsource_entry\tsource_target\tstart_vm_ip\tend_vm_ip\t"
-        "delta\tkind\tsite\ttarget_entry\ttarget\tw0\tw1\tw2\tw3\tw4\tw5\tbytes\tbyte_status"
+        "delta\tkind\tsite\ttarget_entry\ttarget\tw0\tw1\tw2\tw3\tw4\tw5\tbytes\tbyte_status\t"
+        "pre_flags\tpost_flags\tpre_state\tpost_state\tstate_delta\tpre_byte\tpost_byte"
     )
 
     for event, tail_limit in iter_trace_events(trace_path, target_to_entry):
@@ -381,7 +404,11 @@ def emit_instruction_trace(trace_path: Path, table, target_to_entry, site_source
                         f"0x{prev.vm_ip:x}\t0x{event.vm_ip:x}\t{format_signed_hex(delta)}\t"
                         f"{event.kind}\t0x{event.site:x}\t{event.entry}\t0x{event.target:x}\t"
                         f"{words[0]}\t{words[1]}\t{words[2]}\t{words[3]}\t{words[4]}\t{words[5]}\t"
-                        f"{byte_hex}\t{byte_status}"
+                        f"{byte_hex}\t{byte_status}\t"
+                        f"{format_optional_hex(prev.vm_flags)}\t{format_optional_hex(event.vm_flags)}\t"
+                        f"{format_optional_hex(prev.vm_state)}\t{format_optional_hex(event.vm_state)}\t"
+                        f"{format_state_delta(prev.vm_state, event.vm_state)}\t"
+                        f"{format_optional_hex(prev.vm_byte)}\t{format_optional_hex(event.vm_byte)}"
                     )
                 else:
                     skipped_indirect_sites += 1

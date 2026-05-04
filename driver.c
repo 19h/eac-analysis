@@ -295,6 +295,7 @@ static void dispatch_trace_write(size_t idx, uintptr_t site, uintptr_t slot,
 
 static void tail_trace_write(uintptr_t site, uintptr_t target, uintptr_t frame,
                              uint64_t vm_ip, uintptr_t table,
+                             uint32_t vm_flags, uint32_t vm_state, uint8_t vm_byte,
                              const uint16_t ip_words[EAC_IP_WORD_COUNT]) {
     uint64_t count = __atomic_fetch_add(&g_tail_count, 1, __ATOMIC_RELAXED);
     if (count >= g_tail_limit) return;
@@ -314,6 +315,12 @@ static void tail_trace_write(uintptr_t site, uintptr_t target, uintptr_t frame,
     p = append_hex(p, end, vm_ip);
     p = append_lit(p, end, " vm_ip_off=");
     p = append_hex(p, end, vm_ip - (uintptr_t)g_eac_base);
+    p = append_lit(p, end, " vm_flags=");
+    p = append_hex(p, end, vm_flags);
+    p = append_lit(p, end, " vm_state=");
+    p = append_hex(p, end, vm_state);
+    p = append_lit(p, end, " vm_byte=");
+    p = append_hex(p, end, vm_byte);
     p = append_lit(p, end, " table=");
     p = append_hex(p, end, table);
     p = append_lit(p, end, " table_off=");
@@ -387,13 +394,16 @@ static void dispatch_sigtrap(int sig, siginfo_t *info, void *opaque) {
 
         uintptr_t frame = (uintptr_t)uc->uc_mcontext.gregs[REG_RBP];
         uint64_t vm_ip = *(const uint64_t *)(frame + 0x0a);
+        uint32_t vm_flags = *(const uint32_t *)(frame + 0x23);
+        uint32_t vm_state = *(const uint32_t *)(frame + 0x170);
+        uint8_t vm_byte = *(const uint8_t *)(frame + 0x194);
         uintptr_t table = *(const uintptr_t *)(frame + 0x10f);
         uint16_t ip_words[EAC_IP_WORD_COUNT];
         read_ip_words(vm_ip, ip_words);
         uintptr_t target = tail_reg_value(uc, g_tail_sites[i].reg);
 
         tail_trace_write(trap_site - (uintptr_t)g_eac_base, target, frame, vm_ip,
-                         table, ip_words);
+                         table, vm_flags, vm_state, vm_byte, ip_words);
         uc->uc_mcontext.gregs[REG_RIP] = (greg_t)target;
         return;
     }
