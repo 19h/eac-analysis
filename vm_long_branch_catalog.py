@@ -148,7 +148,7 @@ def build_rows(args):
             "raw_target_u32": raw_target,
             "raw_delta_u32": raw_delta,
             "format": "target_u32_delta_u32",
-            "lifted_ir": f"next = table[{target_entry}]; {ip_update_text(delta)}",
+            "lifted_ir": f"next = table[{target_entry}], {ip_update_text(delta)}",
             "top_prefixes": fmt_counter(group["prefixes"], args.max_items),
         })
 
