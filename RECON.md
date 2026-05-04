@@ -24,9 +24,9 @@ SHA-256: `0b44ad59697129534189efdb75cde2b96245f831438e9f6a53cb7725f190d739`
 - `vm_state_static_slice.py`: statically tracks frame/IP pointers through handler code and emits symbolic update chains for `frame+0x170` and `frame+0x23`.
 - `vm_state_static_validate.py`: concretely executes the static state slice over state-aware trace rows and validates predicted `frame+0x170` post-state.
 - `vm_static_dispatch_validate.py`: concretely executes handler slices through the final table jump and validates predicted dispatch target plus VM IP advance.
-- `vm_static_transfer_expr.py`: follows concrete state-aware trace paths while carrying symbolic expressions for the dispatch-table slot and VM IP advance; `--by-path` emits path-conditioned formula rows, and `--gpr-run` seeds handler-entry registers plus hot `fs0x...` scratch-frame fields.
+- `vm_static_transfer_expr.py`: legacy Python version of the path-sensitive transfer-expression sampler. Routine refreshes now use `vm_fast_path_profile --transfer-expr`, which follows concrete state-aware trace paths while carrying symbolic expressions for the dispatch-table slot and VM IP advance; `--by-path` emits path-conditioned formula rows, and `--gpr-run` seeds handler-entry registers plus hot `fs0x...` scratch-frame fields.
 - `vm_static_path_profile.py`: profiles concrete branch/path variants through static handler slices over the state-aware trace; `--gpr-run` seeds handler-entry registers and, when present, hot `fs0x...` scratch-frame fields from the previous VMTAIL snapshot to resolve live-in branch predicates.
-- `vm_fast_path_profile.c`: native Capstone/OpenSSL reimplementation of the concrete replay core. It emits the same summary/by-path TSV schemas as `vm_static_path_profile.py`, native state/static-dispatch validation schemas, a `--branch-sites` full-trace branch-outcome TSV, SHA-256 path hashes, an `--emit-dir` batch mode that regenerates all `_fast.tsv` replay artifacts through `make fast-replay` in about 15 seconds on this host, and a `--branch-predicates` sampler that replaces the slow Python predicate replay for routine refreshes.
+- `vm_fast_path_profile.c`: native Capstone/OpenSSL reimplementation of the concrete replay core. It emits the same summary/by-path TSV schemas as `vm_static_path_profile.py`, native state/static-dispatch validation schemas, a `--branch-sites` full-trace branch-outcome TSV, SHA-256 path hashes, an `--emit-dir` batch mode that regenerates all `_fast.tsv` replay artifacts through `make fast-replay` in about 15 seconds on this host, a `--branch-predicates` sampler, and a `--transfer-expr` sampler that replace the slow Python predicate/transfer replays for routine refreshes.
 - `vm_branch_predicates.py`: catalogs each static-replay branch predicate, including observed outcomes, unresolved predicate classes, and top concrete/symbolic condition expressions; for normal refreshes it is now only needed to render Markdown from the native TSVs.
 - `vm_dispatch_model_combine.py`: combines the static dispatch validator with affine fallback formulas for static-dispatch misses.
 - `vm_tail_registers.py`: infers per-tail-site register roles from `EAC_VMTAIL_REGS=1` traces, including target value, dispatch-slot pointer, byte index, table pointer, and frame pointer. It can also join those roles back onto an instruction trace by source handler and tail site.
@@ -110,9 +110,9 @@ SHA-256: `0b44ad59697129534189efdb75cde2b96245f831438e9f6a53cb7725f190d739`
 - `dumps/vmtail-state-wide-w16/vm_state_static_validate_fast.tsv`: native concrete validation of static state slices against the state-aware instruction trace.
 - `dumps/vmtail-state-wide-w16/vm_static_dispatch_validate_fast.tsv`: native concrete validation of static dispatch target and VM IP advance against the state-aware instruction trace.
 - `dumps/vmtail-state-wide-w16/vm_static_transfer_expr.tsv`: sampled path-sensitive symbolic dispatch-slot and VM IP-advance expressions, generated from up to 128 state-aware rows per source.
-- `dumps/vmtail-state-wide-w16/vm_static_transfer_expr_gpr_seeded.tsv`: same source-level transfer-expression sample, seeded with previous-tail GPRs and hot scratch-frame fields.
-- `dumps/vmtail-state-wide-w16/vm_static_path_transfer_expr.tsv`: path-conditioned symbolic dispatch-slot and IP-advance expressions over the same bounded transfer-expression sample.
-- `dumps/vmtail-state-wide-w16/vm_static_path_transfer_expr_gpr_seeded.tsv`: GPR+scratch-seeded path-conditioned symbolic dispatch-slot and IP-advance expressions.
+- `dumps/vmtail-state-wide-w16/vm_static_transfer_expr_gpr_seeded.tsv`: same native source-level transfer-expression sample, seeded with previous-tail GPRs and hot scratch-frame fields.
+- `dumps/vmtail-state-wide-w16/vm_static_path_transfer_expr.tsv`: native path-conditioned symbolic dispatch-slot and IP-advance expressions over the same bounded transfer-expression sample.
+- `dumps/vmtail-state-wide-w16/vm_static_path_transfer_expr_gpr_seeded.tsv`: native GPR+scratch-seeded path-conditioned symbolic dispatch-slot and IP-advance expressions.
 - `dumps/vmtail-state-wide-w16/vm_static_path_profile.tsv`: per-source branch-path profile from concrete static handler replay over the full state-aware trace.
 - `dumps/vmtail-state-wide-w16/vm_static_path_variants.tsv`: one row per distinct source-handler branch path, with per-path target distributions.
 - `dumps/vmtail-state-wide-w16/vm_static_path_profile_gpr_seeded.tsv`: same path profile, but seeded with entry GPRs and hot scratch-frame fields from the previous `dumps/vmtail-scratch-wide-w16/run.stderr` VMTAIL event.
@@ -376,12 +376,7 @@ python3 vm_state_affine.py dumps/vmtail-state-wide-w16/vm_instruction_trace.tsv 
   --include-flags --include-vm-byte --cv-folds 5 \
   >dumps/vmtail-state-wide-w16/vm_state_affine_fullfields.tsv
 make fast-state
-python3 vm_static_transfer_expr.py dumps/vmtail-state-wide-w16/vm_instruction_trace.tsv \
-  --max-rows-per-source 128 --max-expr-len 320 --top 5 \
-  >dumps/vmtail-state-wide-w16/vm_static_transfer_expr.tsv
-python3 vm_static_transfer_expr.py dumps/vmtail-state-wide-w16/vm_instruction_trace.tsv \
-  --max-rows-per-source 128 --max-expr-len 320 --top 5 --by-path \
-  >dumps/vmtail-state-wide-w16/vm_static_path_transfer_expr.tsv
+make fast-state-transfer
 make fast-state-predicates
 python3 vm_dispatch_model_combine.py dumps/vmtail-state-wide-w16/vm_instruction_trace.tsv \
   >dumps/vmtail-state-wide-w16/vm_dispatch_model_combined.tsv
@@ -441,14 +436,7 @@ python3 vm_tail_static_slots.py dumps/vmtail-wide-1m-w16/vm_handler_tail_roles_w
   --eac eac.elf \
   >dumps/vmtail-wide-1m-w16/vm_tail_static_slots.tsv
 make fast-gpr-paths
-python3 vm_static_transfer_expr.py dumps/vmtail-state-wide-w16/vm_instruction_trace.tsv \
-  --gpr-run dumps/vmtail-scratch-wide-w16/run.stderr \
-  --max-rows-per-source 128 --max-expr-len 320 --top 5 \
-  >dumps/vmtail-state-wide-w16/vm_static_transfer_expr_gpr_seeded.tsv
-python3 vm_static_transfer_expr.py dumps/vmtail-state-wide-w16/vm_instruction_trace.tsv \
-  --gpr-run dumps/vmtail-scratch-wide-w16/run.stderr \
-  --max-rows-per-source 128 --max-expr-len 320 --top 5 --by-path \
-  >dumps/vmtail-state-wide-w16/vm_static_path_transfer_expr_gpr_seeded.tsv
+make fast-gpr-transfer
 make fast-gpr-predicates
 python3 vm_instruction_lift.py \
   >dumps/vmtail-wide-1m-w16/vm_instruction_lift.tsv
@@ -1189,7 +1177,7 @@ Combined dispatch-model distribution in the transition model:
 
 The model is intentionally keyed by dispatch entry rather than bytecode instruction. Eleven exact-observed entries, covering 20 long-run events, still have no dispatch model tag because they were absent from the state-aware trace; the other blank rows are unobserved or sampled-only entry classes.
 
-`vm_static_transfer_expr.py` adds a path-sensitive symbolic view of the same static dispatch mechanism. It follows concrete branches from the state-aware trace, but carries symbolic expressions for the table-slot byte offset and `frame+0x0a` IP advance. The current artifact is deliberately bounded to at most 128 rows per source, so its event counts are expression-sampling counts rather than full-trace coverage counts. On that sample it covers all 179 state-aware source handlers and agrees with the concrete target/IP validator for the same 166 static-dispatch-clean handlers:
+`vm_fast_path_profile --transfer-expr` adds a path-sensitive symbolic view of the same static dispatch mechanism. It follows concrete branches from the state-aware trace, but carries symbolic expressions for the table-slot byte offset and `frame+0x0a` IP advance. The current artifact is deliberately bounded to at most 128 rows per source, so its event counts are expression-sampling counts rather than full-trace coverage counts. The native sampler emits the four bounded source/path transfer TSVs in about 10 seconds total on this host. On that sample it covers all 179 state-aware source handlers and agrees with the concrete target/IP validator for the same 166 static-dispatch-clean handlers:
 
 | Transfer-Expression Coverage | Sources | Sample Events |
 | --- | ---: | ---: |
@@ -1204,7 +1192,7 @@ Representative recovered dispatch-slot expressions now appear directly in `vm_tr
 
 The GPR+scratch-seeded source-level transfer sample preserves the same 166 fully static-clean handlers while reducing sampled branch uncertainty from 12789 to 3577 branch events. It also recovers a dispatch-slot expression for one additional sampled event, giving 167 source rows and 16149 sample events with slot expressions.
 
-The `--by-path` view of the same bounded transfer-expression sample is `vm_static_path_transfer_expr.tsv`. It resolves the apparent multi-formula source handlers into concrete branch-path formulas. In the 128-row-per-source sample it observes 349 source-path rows across all 179 state-aware sources. All 336 source-path rows with a resolved static target have exactly one slot expression and one IP-advance expression:
+The native `--transfer-expr --by-path` view of the same bounded transfer-expression sample is `vm_static_path_transfer_expr.tsv`. It resolves the apparent multi-formula source handlers into concrete branch-path formulas. In the 128-row-per-source sample it observes 349 source-path rows across all 179 state-aware sources. All 336 source-path rows with a resolved static target have exactly one slot expression and one IP-advance expression:
 
 | Path-Conditioned Transfer Expressions | Source-Paths | Sample Events |
 | --- | ---: | ---: |
