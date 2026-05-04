@@ -6,7 +6,7 @@ SHA-256: `0b44ad59697129534189efdb75cde2b96245f831438e9f6a53cb7725f190d739`
 
 ## Current Artifacts
 
-- `driver.c`: dlopen/dlsym harness for exported `x`, now also dumps the EAC memory maps, the output buffer, and the global sidecar context. Optional `EAC_DISPATCH_TRACE=1` patches selected dispatcher jumps to `int3`; `EAC_VMTAIL_TRACE=1` patches direct VM tail sites. Both trace modes log frame state plus sixteen 16-bit `ip_w*` lookahead words when detail data is available; `EAC_VMTAIL_REGS=1` also logs all GPRs at VM tail sites.
+- `driver.c`: dlopen/dlsym harness for exported `x`, now also dumps the EAC memory maps, the output buffer, and the global sidecar context. Optional `EAC_DISPATCH_TRACE=1` patches selected dispatcher jumps to `int3`; `EAC_VMTAIL_TRACE=1` patches direct VM tail sites. Both trace modes log frame state plus sixteen 16-bit `ip_w*` lookahead words when detail data is available; `EAC_VMTAIL_REGS=1` also logs all GPRs at VM tail sites, and `EAC_VMTAIL_SCRATCH=1` logs the default hot frame scratch qwords plus any comma-separated `EAC_VMTAIL_SCRATCH_OFFSETS`.
 - `trace_preload.c`: libc/network/process tracer with EAC-relative caller offsets. Network and process spawning are denied by default unless `EAC_TRACE_ALLOW_NETWORK=1` or `EAC_TRACE_ALLOW_SPAWN=1`.
 - `recon_summary.py`: summarizes a dump directory, trace call sites, dispatcher edges, executable pointer fixups, memory-vs-file mutations, and context pointers.
 - `vm_tail_scan.py`: ranks observed dispatch-table targets and suggests extra `EAC_VMTAIL_SITES=0xsite:reg,...` hooks using Capstone.
@@ -133,7 +133,7 @@ SHA-256: `0b44ad59697129534189efdb75cde2b96245f831438e9f6a53cb7725f190d739`
 - `dumps/vmtail-regs-smoke-w16/vm_tail_registers.tsv`: per-site/per-register role evidence from the GPR trace.
 - `dumps/vmtail-regs-smoke-w16/vm_tail_register_summary.tsv`: compact one-row-per-site register-role summary for lifting dispatch tails.
 - `dumps/vmtail-regs-wide-w16/run.stderr`: 250k VMTAIL trace with full GPR snapshots at each tail site.
-- `dumps/vmtail-scratch-wide-w16/run.stderr`: 250k VMTAIL trace with full GPR snapshots plus hot scratch-frame fields (`fs0x0`, `fs0x12`, `fs0x60`, `fs0x68`, `fs0x71`, `fs0x81`, `fs0xe1`, `fs0x13d`, `fs0x16f`, `fs0x1e8`).
+- `dumps/vmtail-scratch-wide-w16-fs337all/run.stderr`: 250k VMTAIL trace with full GPR snapshots plus the default hot scratch-frame fields (`fs0x0`, `fs0x12`, `fs0x60`, `fs0x68`, `fs0x71`, `fs0x81`, `fs0xe1`, `fs0x13d`, `fs0x16f`, `fs0x1e8`) and the entry-337 pointer-predicate offsets (`fs0x13`, `fs0x28`, `fs0x38`, `fs0x79`, `fs0x89`, `fs0x91`, `fs0x99`, `fs0xab`, `fs0xb3`, `fs0xcb`, `fs0xd3`, `fs0x107`, `fs0x123`, `fs0x147`, `fs0x19d`).
 - `dumps/vmtail-regs-wide-w16/vm_tail_registers.tsv`: per-site/per-register role evidence from the 250k GPR trace.
 - `dumps/vmtail-regs-wide-w16/vm_tail_register_summary.tsv`: compact one-row-per-site register-role summary from the 250k GPR trace.
 
