@@ -70,6 +70,7 @@ def main():
     parser = argparse.ArgumentParser(description="Infer VM tail register roles from EAC_VMTAIL_REGS traces.")
     parser.add_argument("dump_dir", nargs="?", default="dumps/vmtail-regs-smoke-w16")
     parser.add_argument("--eac", default="eac.elf")
+    parser.add_argument("--site-summary", action="store_true", help="emit one compact row per tail site")
     parser.add_argument("--max-items", type=int, default=8)
     args = parser.parse_args()
 
@@ -109,6 +110,59 @@ def main():
                 if value is not None:
                     role_values[key][f"0x{value:x}"] += 1
 
+    if args.site_summary:
+        emit_site_summary(site_events, site_targets, by_site_role, args.max_items)
+    else:
+        emit_role_rows(site_events, site_targets, by_site_role, role_entries, role_values, args.max_items)
+
+    print(f"# parsed_vm_tail_events={parsed_events}", file=__import__("sys").stderr)
+    if missing_entry:
+        print(f"# missing_target_entry={missing_entry}", file=__import__("sys").stderr)
+
+
+def best_role(site, role, site_events, by_site_role):
+    best = None
+    for (role_site, reg, candidate_role), count in by_site_role.items():
+        if role_site != site or candidate_role != role:
+            continue
+        if best is None or count > best[1] or (count == best[1] and reg < best[0]):
+            best = (reg, count)
+    if best is None:
+        return "", "", ""
+    reg, count = best
+    total = site_events[site]
+    pct = count * 100.0 / total if total else 0.0
+    return reg, str(count), f"{pct:.1f}"
+
+
+def emit_site_summary(site_events, site_targets, by_site_role, max_items):
+    print(
+        "site\tevents\ttarget_reg\ttarget_events\ttarget_pct\t"
+        "slot_reg\tslot_events\tslot_pct\tbyte_index_reg\tbyte_index_events\t"
+        "byte_index_pct\tentry_index_reg\tentry_index_events\tentry_index_pct\t"
+        "table_reg\ttable_events\ttable_pct\tframe_reg\tframe_events\tframe_pct\t"
+        "top_targets"
+    )
+    for site, total in site_events.most_common():
+        target = best_role(site, "target_value", site_events, by_site_role)
+        slot = best_role(site, "slot_pointer", site_events, by_site_role)
+        byte_index = best_role(site, "byte_index", site_events, by_site_role)
+        entry_index = best_role(site, "entry_index", site_events, by_site_role)
+        table = best_role(site, "table_value", site_events, by_site_role)
+        frame = best_role(site, "frame_pointer", site_events, by_site_role)
+        print(
+            f"0x{site:x}\t{total}\t"
+            f"{target[0]}\t{target[1]}\t{target[2]}\t"
+            f"{slot[0]}\t{slot[1]}\t{slot[2]}\t"
+            f"{byte_index[0]}\t{byte_index[1]}\t{byte_index[2]}\t"
+            f"{entry_index[0]}\t{entry_index[1]}\t{entry_index[2]}\t"
+            f"{table[0]}\t{table[1]}\t{table[2]}\t"
+            f"{frame[0]}\t{frame[1]}\t{frame[2]}\t"
+            f"{fmt_counter(site_targets[site], max_items)}"
+        )
+
+
+def emit_role_rows(site_events, site_targets, by_site_role, role_entries, role_values, max_items):
     print(
         "site\treg\trole\tevents\tsite_events\tcoverage_pct\t"
         "top_entries\ttop_values\ttop_site_targets"
@@ -124,10 +178,6 @@ def main():
             f"{fmt_counter(role_values[(site, reg, role)], args.max_items)}\t"
             f"{fmt_counter(site_targets[site], args.max_items)}"
         )
-
-    print(f"# parsed_vm_tail_events={parsed_events}", file=__import__("sys").stderr)
-    if missing_entry:
-        print(f"# missing_target_entry={missing_entry}", file=__import__("sys").stderr)
 
 
 if __name__ == "__main__":
