@@ -72,7 +72,7 @@ def find_target_load(insns, site, target_reg):
 
 
 def find_index_add(insns, load_site, slot_temp, byte_index_reg):
-    if not slot_temp or not byte_index_reg:
+    if not slot_temp:
         return None
     for insn in reversed(insns):
         if insn.address >= load_site:
@@ -84,13 +84,17 @@ def find_index_add(insns, load_site, slot_temp, byte_index_reg):
             continue
         for src in insn.operands[1:]:
             if src.type == X86_OP_REG and reg_name(insn, src.reg) == byte_index_reg:
-                return insn.address
+                return insn.address, byte_index_reg
+            if src.type == X86_OP_REG and not byte_index_reg:
+                candidate = reg_name(insn, src.reg)
+                if candidate and candidate != slot_temp:
+                    return insn.address, candidate
             if src.type == X86_OP_MEM:
                 mem = src.mem
                 if reg_name(insn, mem.base) == byte_index_reg:
-                    return insn.address
+                    return insn.address, byte_index_reg
                 if reg_name(insn, mem.index) == byte_index_reg:
-                    return insn.address
+                    return insn.address, byte_index_reg
     return None
 
 
@@ -117,12 +121,15 @@ def infer_row(md, eac, row, window):
     load = find_target_load(insns, site, target_reg)
     if load is None:
         return ("no_static_load", "", "", byte_index_reg, "")
-    add_site = find_index_add(insns, load["load_site"], load["slot_temp"], byte_index_reg)
-    if add_site is None:
+    index_hit = find_index_add(insns, load["load_site"], load["slot_temp"], byte_index_reg)
+    if index_hit is None:
         kind = "target_load"
         add_text = ""
     else:
         kind = "consumed_slot"
+        add_site, inferred_index_reg = index_hit
+        if not byte_index_reg:
+            byte_index_reg = inferred_index_reg
         add_text = f"0x{add_site:x}"
     return (
         kind,
