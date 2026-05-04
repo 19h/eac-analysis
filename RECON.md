@@ -32,11 +32,12 @@ SHA-256: `0b44ad59697129534189efdb75cde2b96245f831438e9f6a53cb7725f190d739`
 - `vm_tail_registers.py`: infers per-tail-site register roles from `EAC_VMTAIL_REGS=1` traces, including target value, dispatch-slot pointer, byte index, table pointer, and frame pointer. It can also join those roles back onto an instruction trace by source handler and tail site.
 - `vm_tail_static_slots.py`: statically recovers consumed dispatch-slot temporaries for tail sites where the target is loaded from `table + byte_index` and the slot pointer is clobbered before the final jump.
 - `vm_instruction_lift.py`: joins exact recovered VM instructions with per-signature state effects, compact state-affine tags, dynamic tail-register roles, static dispatch-slot provenance, and compact scalar/affine dispatch-formula tags.
-- `vm_transition_model.py`: joins handler skeletons, static state chains, validation coverage, combined dispatch-model evidence, transfer expressions, state-only and GPR+scratch-seeded branch-predicate provenance, and tail operand provenance into a one-row-per-dispatch-entry transition model.
-- `vm_microcode_catalog.py`: renders the joined handler reconstruction into a compact pseudo-IR catalog and a Markdown digest for high-volume handlers, now including source-level state-only and GPR+scratch-seeded branch-predicate summaries.
+- `vm_transition_model.py`: joins handler skeletons, static state chains, validation coverage, combined dispatch-model evidence, transfer expressions, long-control bytecode lifts, state-only and GPR+scratch-seeded branch-predicate provenance, and tail operand provenance into a one-row-per-dispatch-entry transition model.
+- `vm_microcode_catalog.py`: renders the joined handler reconstruction into a compact pseudo-IR catalog and a Markdown digest for high-volume handlers, now including source-level long-branch lifts plus state-only and GPR+scratch-seeded branch-predicate summaries.
 - `vm_path_microcode_catalog.py`: joins full concrete branch-path profiles with sampled path-conditioned transfer expressions into path-specialized pseudo-IR rows, carrying source branch-predicate context into each path row.
 - `vm_bytecode_file_atlas.py`: verifies recovered exact VM bytes against `eac.elf` and builds conservative file-backed bytecode atlas regions from observed segments plus small inferred gaps.
 - `vm_trace_file_fill.py`: promotes bounded positive `prefix_32_of_N` rows to `file_span_of_N` rows by reading bytes from `eac.elf`, preserving them as sampled/file-backed coverage rather than exact consumed instructions.
+- `vm_long_branch_catalog.py`: decodes sampled/backedge long-control bytecode rows whose first u32 is the target dispatch-table entry and whose second u32 is a signed VM-IP delta, verifies byte prefixes against `eac.elf`, and emits TSV/Markdown lift summaries.
 - `vm_instruction_compare.py`: compares exact unique VM instruction catalogs by stable instruction key.
 - `vm_dispatch_formula.py`: fits simple expressions for the final dispatch byte index `target_entry * 8` from VM bytes plus rolling state.
 - `vm_dispatch_formula_validate.py`: validates byte-only dispatch formulas against the long exact unique-instruction catalog.
@@ -76,6 +77,8 @@ SHA-256: `0b44ad59697129534189efdb75cde2b96245f831438e9f6a53cb7725f190d739`
 - `dumps/vmtail-wide-1m-w16/vm_bytecode_segments_filefill_sampled.tsv`: sampled/file-backed byte recovery from `vm_instruction_trace_filefill.tsv`.
 - `dumps/vmtail-wide-1m-w16/vm_bytecode_blocks_filefill_sampled.tsv`: contiguous coverage blocks for sampled/file-backed recovery.
 - `dumps/vmtail-wide-1m-w16/vm_gap_report_filefill.tsv`: gap report after bounded file-span coverage.
+- `dumps/vmtail-wide-1m-w16/vm_long_branch_catalog.tsv`: decoded long-control bytecode variants from sampled/backedge rows.
+- `dumps/vmtail-wide-1m-w16/vm_long_branch_top.md`: Markdown summary of the highest-volume long-control bytecode lifts.
 - `dumps/vmtail-wide-1m-w16/vm_state_static_slice.tsv`: static symbolic state/flag update chains for all dispatch entries.
 - `dumps/vmtail-wide-1m-w16/vm_state_static_slice_entry258.tsv`: focused static state slice for the high-volume nonlinear entry 258.
 - `dumps/vmtail-wide-1m-w16/vm_handler_tail_roles.tsv`: long-run source-handler/tail-site rows joined with register roles inferred from the 50k GPR smoke trace.
@@ -439,6 +442,7 @@ python3 vm_tail_static_slots.py dumps/vmtail-wide-1m-w16/vm_handler_tail_roles_w
 make fast-gpr-paths
 make fast-gpr-transfer
 make fast-gpr-predicates
+make long-branches
 python3 vm_instruction_lift.py \
   >dumps/vmtail-wide-1m-w16/vm_instruction_lift.tsv
 python3 vm_transition_model.py \
@@ -1047,7 +1051,11 @@ Against sampled byte-window segments, `uncovered_source_start` disappears and ex
 | 200 | missing exact source entry 266 (`0xaf8af`) | backedges to entries 354/171/165 |
 | 142 | missing exact source entry 145 (`0x95b5c`) | long positive jumps, including `+0x139` to entry 354 |
 
-Those gaps are better next trace targets than broad reruns: they isolate specific VM IP bands (`0x22ffb1`, `0x230111`, `0x370xxx`, `0x371xxx`, `0x310dba`, `0x31297d`, `0x3157e1`, `0x315cc0`) and sparse source handlers (`316`, `75`, `266`, `145`, `117`, `302`) that still block full bytecode/ISA recovery.
+`vm_long_branch_catalog.py` now decodes the repeated sampled/backedge long-control format behind most of those source gaps. The format is file-backed and byte-verified: u32 target dispatch entry followed by a u32 signed VM-IP delta, where the high bit marks a negative/backedge delta. The catalog has 128 variants, 1638 events, 10 source handlers, 1151 backedge events, 487 forward events, and 0 file-byte mismatches.
+
+That directly lifts the top missing-source rows into pseudo-IR instead of opaque sampled-only control flow: entry 75 has `255=next = table[171], ip -= 0x6d`; entry 316 has `255=next = table[165], ip -= 0x3c4` plus `91=next = table[171], ip += 0x2d` and `91=next = table[354], ip += 0x2d`; entry 145 has `125=next = table[354], ip += 0x139`; entry 266 has `125=next = table[354], ip -= 0x2e8`. These rows still need exact consumed-byte boundaries, but their dispatch target and VM-IP update are no longer unknown.
+
+The best next trace targets are therefore the exact byte-length/source-coverage holes rather than broad reruns: they isolate specific VM IP bands (`0x22ffb1`, `0x230111`, `0x370xxx`, `0x371xxx`, `0x310dba`, `0x31297d`, `0x3157e1`, `0x315cc0`) and sparse source handlers (`316`, `75`, `266`, `145`, `117`, `302`) that still block full bytecode/ISA recovery.
 
 The state-aware trace in `dumps/vmtail-state-wide-w16` adds `vm_flags`, `vm_state`, and `vm_byte` to every VMTAIL row. `vm_trace_graph.py --instruction-trace` uses consecutive events as pre/post snapshots for the source handler and appends:
 
@@ -1294,7 +1302,7 @@ The bounded GPR+scratch-seeded predicate catalog confirms the same reduction at 
 
 The largest full-path-profile reductions are direct proof that seeding resolves live-in and scratch-frame predicates, especially entries 337, 297, 168, 347, 301, 346, 114, 340, and 189. Full-trace native branch-site counts now show no remaining GPR+scratch-seeded unknown sites.
 
-`vm_microcode_catalog.py` is the compact human-facing index over the reconstructed handlers. It joins the transition model, ISA operand layouts, static state/flag update chains, and source-level state-only plus GPR+scratch-seeded branch-predicate summaries into pseudo-IR rows. The TSV keeps one row per dispatch entry, while `vm_microcode_top.md` renders the top 30 observed entries by event count with clipped expression hashes that point back to the full lower-level TSVs.
+`vm_microcode_catalog.py` is the compact human-facing index over the reconstructed handlers. It joins the transition model, ISA operand layouts, static state/flag update chains, sampled/backedge long-control bytecode lifts, and source-level state-only plus GPR+scratch-seeded branch-predicate summaries into pseudo-IR rows. The TSV keeps one row per dispatch entry, while `vm_microcode_top.md` renders the top 30 observed entries by event count with clipped expression hashes that point back to the full lower-level TSVs.
 
 Microcode catalog class distribution:
 
@@ -1307,7 +1315,7 @@ Microcode catalog class distribution:
 | `unobserved_static` | 155 | 0 |
 | `target_only` | 3 | 0 |
 
-The catalog currently has state/flag pseudo-IR for 335 entries covering 766060 long-run events, dispatch-slot pseudo-IR or model tags for 179 entries covering 767546 events, state-only and GPR+scratch-seeded branch-predicate summaries for 163 entries covering 748543 events, and operand-layout summaries for the 190 exact-covered handlers covering 767566 events.
+The catalog currently has state/flag pseudo-IR for 335 entries covering 766060 long-run events, dispatch-slot pseudo-IR or model tags for 179 entries covering 767546 events, long-control tail IR for 10 sparse sampled/backedge source handlers, state-only and GPR+scratch-seeded branch-predicate summaries for 163 entries covering 748543 events, and operand-layout summaries for the 190 exact-covered handlers covering 767566 events.
 
 `vm_path_microcode_catalog.py` specializes that catalog by concrete handler branch path. It joins the full `vm_static_path_variants.tsv` state-trace path counts with the sampled `vm_static_path_transfer_expr.tsv` slot/IP formulas and the source-level microcode, including source branch-predicate and GPR+scratch-seeded predicate context. This is the closest current artifact to path-specialized devirtualized blocks:
 
