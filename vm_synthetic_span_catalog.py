@@ -326,7 +326,11 @@ def top_byte_variants(byte_counter, max_items, preview_hex):
     return ";".join(top)
 
 
-def tail_u16_candidates(byte_counter, max_items, max_entry):
+def tail_u16_candidates(byte_counter, target_entry, max_items, max_entry):
+    try:
+        target_entry_i = int(target_entry)
+    except ValueError:
+        target_entry_i = None
     rows = []
     for hex_text, count in byte_counter.most_common(max_items):
         try:
@@ -337,7 +341,8 @@ def tail_u16_candidates(byte_counter, max_items, max_entry):
         for off in range(0, max(0, len(data) - 1)):
             value = int.from_bytes(data[off:off + 2], "little")
             if value <= max_entry:
-                candidates.append(f"+0x{off:x}:{value}")
+                mark = "*" if target_entry_i is not None and value == target_entry_i else ""
+                candidates.append(f"+0x{off:x}:{value}{mark}")
         if candidates:
             rows.append(f"{count}:{','.join(candidates)}")
     return ";".join(rows)
@@ -425,7 +430,9 @@ def make_groups(args):
             "static_ip_advance_site": split.get("site", ""),
             "top_prefix_variants": top_byte_variants(prefixes, args.max_items, args.preview_hex) if prefixes else "",
             "top_tail_variants": top_byte_variants(tails, args.max_items, args.preview_hex) if tails else "",
-            "tail_u16_candidates": tail_u16_candidates(tails, args.max_items, args.max_table_entry) if tails else "",
+            "tail_u16_candidates": tail_u16_candidates(
+                tails, target_entry, args.max_items, args.max_table_entry
+            ) if tails else "",
             "events": str(group["events"]),
             "unique_start_ips": str(len(group["starts"])),
             "unique_end_ips": str(len(group["ends"])),
