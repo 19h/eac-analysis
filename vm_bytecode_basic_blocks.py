@@ -275,6 +275,89 @@ def emit_markdown(blocks, args):
             print("")
 
 
+def loop_rows(blocks):
+    block_by_start = {block["start_i"]: block for block in blocks}
+    loops = []
+    for block in blocks:
+        last = block["rows"][-1]
+        target = block_by_start.get(last["end_i"])
+        if target is None or target["block"] > block["block"]:
+            continue
+        body = blocks[target["block"]: block["block"] + 1]
+        body_rows = sum(len(item["rows"]) for item in body)
+        body_events = sum(row["events_i"] for item in body for row in item["rows"])
+        loops.append({
+            "loop": len(loops),
+            "header_block": target["block"],
+            "header_vm_ip": target["start_vm_ip"],
+            "latch_block": block["block"],
+            "latch_vm_ip": last["start_vm_ip"],
+            "target_vm_ip": last["end_vm_ip"],
+            "backedge_kind": last["row_kind"],
+            "latch_events": last["events"],
+            "body_blocks": len(body),
+            "body_rows": body_rows,
+            "body_events": body_events,
+            "terminal_source_entry": last["source_entry"],
+            "terminal_target_entry": last["target_entry"],
+            "delta": last["delta"],
+            "semantic_ir": last["semantic_ir"],
+        })
+    loops.sort(key=lambda row: (-int(row["latch_events"] or 0), row["header_block"], row["latch_block"]))
+    for idx, row in enumerate(loops):
+        row["loop"] = idx
+    return loops
+
+
+def emit_loops(blocks, args):
+    fields = [
+        "loop",
+        "header_block",
+        "header_vm_ip",
+        "latch_block",
+        "latch_vm_ip",
+        "target_vm_ip",
+        "backedge_kind",
+        "latch_events",
+        "body_blocks",
+        "body_rows",
+        "body_events",
+        "terminal_source_entry",
+        "terminal_target_entry",
+        "delta",
+        "semantic_ir",
+    ]
+    writer = csv.DictWriter(sys.stdout, fieldnames=fields, delimiter="\t", lineterminator="\n")
+    writer.writeheader()
+    for row in loop_rows(blocks):
+        writer.writerow(row)
+
+
+def emit_loop_markdown(blocks, args):
+    rows = loop_rows(blocks)
+    print("# VM Bytecode Loop Backedges\n")
+    print(f"Recovered {len(rows)} block-level backedges from `{args.ir}`.\n")
+
+    def table(title, ranked):
+        print(f"## {title}\n")
+        print(f"Top {min(args.limit, len(ranked))} loops.\n")
+        print("| Latch Events | Body Events | Header | Latch | Body Blocks | Body Rows | Kind | IR |")
+        print("| ---: | ---: | --- | --- | ---: | ---: | --- | --- |")
+        for row in ranked[: args.limit]:
+            ir = row["semantic_ir"]
+            if len(ir) > args.max_semantic_len:
+                ir = ir[: args.max_semantic_len - 3] + "..."
+            print(
+                f"| {row['latch_events']} | {row['body_events']} | `{row['header_vm_ip']}` b{row['header_block']} | "
+                f"`{row['latch_vm_ip']}` b{row['latch_block']} -> `{row['target_vm_ip']}` | "
+                f"{row['body_blocks']} | {row['body_rows']} | `{row['backedge_kind']}` | `{ir}` |"
+            )
+        print("")
+
+    table("By Latch Events", rows)
+    table("By Body Events", sorted(rows, key=lambda row: (-int(row["body_events"]), row["header_block"], row["latch_block"])))
+
+
 def print_summary(blocks):
     edge_kinds = Counter()
     terminal_kinds = Counter()
@@ -307,6 +390,7 @@ def main():
     parser = argparse.ArgumentParser(description="Build inspectable VM bytecode basic blocks from recovered IR rows.")
     parser.add_argument("--ir", default="dumps/vmtail-wide-1m-w16/vm_bytecode_ir.tsv")
     parser.add_argument("--edges", action="store_true")
+    parser.add_argument("--loops", action="store_true")
     parser.add_argument("--markdown", action="store_true")
     parser.add_argument("--limit", type=int, default=40)
     parser.add_argument("--detail-blocks", type=int, default=12)
@@ -317,7 +401,11 @@ def main():
 
     rows = read_ir(args.ir)
     blocks = build_blocks(rows)
-    if args.markdown:
+    if args.loops and args.markdown:
+        emit_loop_markdown(blocks, args)
+    elif args.loops:
+        emit_loops(blocks, args)
+    elif args.markdown:
         emit_markdown(blocks, args)
     elif args.edges:
         emit_edges(blocks)
