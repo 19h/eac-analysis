@@ -15,7 +15,7 @@ SHA-256: `0b44ad59697129534189efdb75cde2b96245f831438e9f6a53cb7725f190d739`
 - `vm_bytecode_blocks.py`: reduces direct executed VM instruction rows into contiguous bytecode coverage blocks. Default mode uses exact consumed bytes; `--include-sampled` adds logged prefix/backedge byte windows as partial coverage only.
 - `vm_bytecode_recover.py`: reconstructs VM byte values from instruction rows, verifies byte consistency, and emits segment hashes plus a unique instruction table. Default mode is exact-only; `--include-sampled` also inserts logged prefix/backedge byte windows without claiming the full instruction length is known.
 - `vm_bytecode_cfg.py`: builds a bytecode block graph from instruction rows and recovered exact bytecode segments.
-- `vm_gap_report.py`: ranks bytecode and handler coverage gaps from instruction rows, recovered segments, ISA missing-exact rows, and per-handler semantic observations.
+- `vm_gap_report.py`: ranks bytecode and handler coverage gaps from instruction rows, recovered segments, ISA missing-exact rows, decoded long-branch sidecars, and per-handler semantic observations.
 - `vm_isa_summary.py`: clusters exact recovered VM instruction signatures by source handler, fixed byte length, target distribution, and operand byte/word layout.
 - `vm_semantic_templates.py`: merges ISA schemas with static handler features into per-handler rows and ranked semantic templates.
 - `vm_handler_skeleton.py`: extracts normalized frame/IP/table access skeletons from handler disassembly and groups full, dispatch-tail, or canonical decode signatures.
@@ -1023,9 +1023,10 @@ The resulting sampled/file-backed recovery has 300 segments and `0x44749` bytes,
 | Gap Class | Rows | Events |
 | --- | ---: | ---: |
 | `uncovered_exact_destination` | 284 | 942 |
-| `prefix_long_jump` | 21 | 27 |
 | `backedge_sample` | 49 | 1157 |
-| `missing_exact_source` | 12 | 1398 |
+| `decoded_long_branch_source` | 9 | 1392 |
+| `missing_exact_source` | 3 | 6 |
+| `prefix_long_jump` | 21 | 27 |
 | `target_only_entry` | 3 | 0 |
 | `unobserved_entry` | 155 | 0 |
 
@@ -1035,7 +1036,8 @@ The resulting sampled/file-backed recovery has 300 segments and `0x44749` bytes,
 | --- | ---: | ---: |
 | `uncovered_exact_destination` | 445 | 3254 |
 | `uncovered_source_start` | 158 | 1650 |
-| `missing_exact_source` | 12 | 1398 |
+| `decoded_long_branch_source` | 9 | 1392 |
+| `missing_exact_source` | 3 | 6 |
 | `backedge_sample` | 49 | 1157 |
 | `prefix_long_jump` | 90 | 493 |
 | `target_only_entry` | 3 | 0 |
@@ -1045,13 +1047,14 @@ Against sampled byte-window segments, `uncovered_source_start` disappears and ex
 
 | Events | Gap | Detail |
 | ---: | --- | --- |
-| 447 | missing exact source entry 316 (`0xb987b`) | mostly backedge `-0x3c4` to entry 165 and short forward jumps to entries 354/171 |
-| 276 | missing exact source entry 75 (`0x873fc`) | mostly backedge `-0x6d` to entry 171 |
 | 256 | exact destination `0x230111` | exact source 123, target entry 50, next sampled segment starts at `0x230122` |
-| 200 | missing exact source entry 266 (`0xaf8af`) | backedges to entries 354/171/165 |
-| 142 | missing exact source entry 145 (`0x95b5c`) | long positive jumps, including `+0x139` to entry 354 |
+| 255 | backedge sample entry 316 -> 165 | decoded long branch `next = table[165], ip -= 0x3c4`; exact consumed bytes still unavailable |
+| 255 | backedge sample entry 75 -> 171 | decoded long branch `next = table[171], ip -= 0x6d`; exact consumed bytes still unavailable |
+| 125 | prefix long jump entry 145 -> 354 | decoded long branch `next = table[354], ip += 0x139`; byte window is still shorter than the full jump |
+| 447 | decoded long-branch source entry 316 (`0xb987b`) | aggregate of 13 decoded target/delta variants; top variants go to entries 165, 171, and 354 |
+| 64 | exact destinations `0x230b1b` / `0x230e07` | exact source rows end exactly at uncovered segment boundaries |
 
-`vm_long_branch_catalog.py` now decodes the repeated sampled/backedge long-control format behind most of those source gaps. The format is file-backed and byte-verified: u32 target dispatch entry followed by a u32 signed VM-IP delta, where the high bit marks a negative/backedge delta. The catalog has 128 variants, 1638 events, 10 source handlers, 1151 backedge events, 487 forward events, and 0 file-byte mismatches.
+`vm_long_branch_catalog.py` now decodes the repeated sampled/backedge long-control format behind most of those source gaps. The format is file-backed and byte-verified: u32 target dispatch entry followed by a u32 signed VM-IP delta, where the high bit marks a negative/backedge delta. The catalog has 128 variants, 1638 events, 10 source handlers, 1151 backedge events, 487 forward events, and 0 file-byte mismatches; `vm_gap_report.py` uses it to recategorize 9 missing-exact source rows / 1392 events as decoded long-branch sources.
 
 That directly lifts the top missing-source rows into pseudo-IR instead of opaque sampled-only control flow: entry 75 has `255=next = table[171], ip -= 0x6d`; entry 316 has `255=next = table[165], ip -= 0x3c4` plus `91=next = table[171], ip += 0x2d` and `91=next = table[354], ip += 0x2d`; entry 145 has `125=next = table[354], ip += 0x139`; entry 266 has `125=next = table[354], ip -= 0x2e8`. These rows still need exact consumed-byte boundaries, but their dispatch target and VM-IP update are no longer unknown.
 
