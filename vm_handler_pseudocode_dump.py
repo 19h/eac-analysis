@@ -7,6 +7,7 @@ from collections import Counter
 from pathlib import Path
 
 from vm_pseudocode_dump import c_comment, clip, read_tsv
+from vm_synthetic_span_catalog import load_tail_ip_advances
 
 
 U8_RE = re.compile(r"\bb([0-9]+)\b")
@@ -160,7 +161,7 @@ def emit_preamble():
     print("")
 
 
-def emit_handler(row, transition, args):
+def emit_handler(row, transition, tail_ip_advances, args):
     entry = row["entry"]
     name = f"op_entry_{int(entry):03d}"
     klass = row.get("class", "")
@@ -182,8 +183,13 @@ def emit_handler(row, transition, args):
         print(f"    /* operands: {c_comment(clip(row['operand_layout'], args.max_comment_len))} */")
     if row.get("ip_reads"):
         print(f"    /* native IP reads: {c_comment(clip(row['ip_reads'], args.max_comment_len))} */")
+    tr = transition.get(entry, {})
+    if tr.get("decode_signature"):
+        print(f"    /* decode signature: {c_comment(clip(tr['decode_signature'], args.max_comment_len))} */")
+    if tr.get("dispatch_skeleton"):
+        print(f"    /* dispatch skeleton: {c_comment(clip(tr['dispatch_skeleton'], args.max_comment_len))} */")
 
-    state_expr = transition.get(entry, {}).get("final_state_expr", "") or final_expr_from_chain(row.get("state_ir", ""))
+    state_expr = tr.get("final_state_expr", "") or final_expr_from_chain(row.get("state_ir", ""))
     emit_expr_assignment("vm->state", state_expr, args.max_expr_len)
 
     flag_expr = final_expr_from_chain(row.get("flag_ir", ""))
@@ -196,13 +202,22 @@ def emit_handler(row, transition, args):
         print(f"    /* slot variants: {c_comment(clip(c_expr(row['dispatch_slot_ir']), args.max_comment_len))} */")
 
     ip_advance = constant_ip_advance(row.get("ip_advance_ir", ""))
+    ip_source = "microcode"
     if ip_advance is None:
         ip_advance = parse_delta(delta)
+        ip_source = "observed_delta"
+    if ip_advance is None and entry in tail_ip_advances:
+        ip_advance = int(tail_ip_advances[entry]["advance"])
+        ip_source = tail_ip_advances[entry]["site"]
     update = fmt_ip_update(ip_advance)
     if update:
         print(f"    {update}")
+        if ip_source not in {"microcode", "observed_delta"}:
+            print(f"    /* IP advance recovered from native tail site: {c_comment(ip_source)} */")
     elif row.get("ip_advance_ir"):
         print(f"    /* ip advance variants: {c_comment(row['ip_advance_ir'])} */")
+    elif entry in tail_ip_advances:
+        print(f"    /* native tail IP advance candidate: {tail_ip_advances[entry]['advance']} at {tail_ip_advances[entry]['site']} */")
 
     dispatch_note = likely_dispatch_comment(row)
     if dispatch_note:
@@ -244,6 +259,9 @@ def main():
     parser = argparse.ArgumentParser(description="Render VM dispatch-entry semantics as C-like handler functions.")
     parser.add_argument("--microcode", default="dumps/vmtail-wide-1m-w16/vm_microcode_catalog.tsv")
     parser.add_argument("--transition-model", default="dumps/vmtail-wide-1m-w16/vm_transition_model.tsv")
+    parser.add_argument("--handler-table", default="dumps/vmtail-wide-1m-w16/vm_handler_table.tsv")
+    parser.add_argument("--eac", default="eac.elf")
+    parser.add_argument("--tail-window", type=lambda value: int(value, 0), default=0x80)
     parser.add_argument("--limit", type=int, default=80)
     parser.add_argument("--entry", action="append", default=[])
     parser.add_argument("--all", action="store_true")
@@ -254,11 +272,12 @@ def main():
     rows = list(read_tsv(args.microcode))
     rows.sort(key=lambda row: int(row["entry"]))
     transition = load_by(args.transition_model, "entry")
+    tail_ip_advances = load_tail_ip_advances(args.handler_table, args.eac, args.tail_window)
     chosen = selected_handlers(rows, args)
 
     emit_preamble()
     for row in chosen:
-        emit_handler(row, transition, args)
+        emit_handler(row, transition, tail_ip_advances, args)
     emit_dispatch_table(chosen)
 
     classes = Counter(row.get("class", "") for row in chosen)
