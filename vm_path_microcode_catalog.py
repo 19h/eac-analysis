@@ -129,7 +129,7 @@ def emit_markdown(rows, limit):
         if row["source_branch_profile"]:
             print(f"- source branch predicates: `{row['source_branch_profile']}`")
         if row["source_branch_gpr_profile"]:
-            print(f"- source GPR-seeded branch predicates: `{row['source_branch_gpr_profile']}`")
+            print(f"- source GPR+scratch-seeded branch predicates: `{row['source_branch_gpr_profile']}`")
         if row["sample_expr_events"]:
             print(f"- sampled expression events: `{row['sample_expr_events']}`")
         if row["slot_expr"]:

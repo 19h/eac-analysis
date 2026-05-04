@@ -226,9 +226,9 @@ def emit_markdown(rows, limit):
         if row["branch_sites"]:
             print(f"- unknown branch sites: `{row['branch_sites']}`")
         if row["branch_gpr_profile"]:
-            print(f"- GPR-seeded branch predicates: `{row['branch_gpr_profile']}`")
+            print(f"- GPR+scratch-seeded branch predicates: `{row['branch_gpr_profile']}`")
         if row["branch_gpr_sites"]:
-            print(f"- GPR-seeded unknown branch sites: `{row['branch_gpr_sites']}`")
+            print(f"- GPR+scratch-seeded unknown branch sites: `{row['branch_gpr_sites']}`")
         if row["flag_ir"]:
             print(f"- flags: `{row['flag_ir']}`")
         if row["state_ir"]:
