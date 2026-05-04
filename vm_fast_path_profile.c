@@ -1079,6 +1079,19 @@ static int cmp_zf(const char *mnemonic, Value left, Value right, int size) {
         if (!strcmp(mnemonic, "cmp")) return (((l - r) & mask_for_size(size)) == 0);
         if (!strcmp(mnemonic, "test")) return ((l & r) == 0);
     }
+    if (!strcmp(mnemonic, "cmp")) {
+        unsigned lb = 0, rb = 0;
+        uint64_t ll = 0, rr = 0;
+        if (known_low_bits(left, &lb, &ll) && known_low_bits(right, &rb, &rr)) {
+            unsigned kb = lb < rb ? lb : rb;
+            unsigned bits = op_bits(size);
+            if (kb > bits) kb = bits;
+            if (kb) {
+                uint64_t mask = kb >= 64 ? UINT64_MAX : ((UINT64_C(1) << kb) - 1);
+                if ((ll & mask) != (rr & mask)) return 0;
+            }
+        }
+    }
     if (!strcmp(mnemonic, "cmp") && left.kind == VK_PTR && right.kind == VK_PTR) {
         if (left.ptr_kind == right.ptr_kind) {
             return left.off == right.off;
