@@ -39,6 +39,23 @@ from vm_static_dispatch_validate import (
 )
 
 
+REG_ALIASES = {
+    "al": "rax", "ah": "rax", "ax": "rax", "eax": "rax", "rax": "rax",
+    "bl": "rbx", "bh": "rbx", "bx": "rbx", "ebx": "rbx", "rbx": "rbx",
+    "cl": "rcx", "ch": "rcx", "cx": "rcx", "ecx": "rcx", "rcx": "rcx",
+    "dl": "rdx", "dh": "rdx", "dx": "rdx", "edx": "rdx", "rdx": "rdx",
+    "sil": "rsi", "si": "rsi", "esi": "rsi", "rsi": "rsi",
+    "dil": "rdi", "di": "rdi", "edi": "rdi", "rdi": "rdi",
+    "bpl": "rbp", "bp": "rbp", "ebp": "rbp", "rbp": "rbp",
+    "spl": "rsp", "sp": "rsp", "esp": "rsp", "rsp": "rsp",
+}
+for REG_IDX in range(8, 16):
+    REG_ALIASES[f"r{REG_IDX}b"] = f"r{REG_IDX}"
+    REG_ALIASES[f"r{REG_IDX}w"] = f"r{REG_IDX}"
+    REG_ALIASES[f"r{REG_IDX}d"] = f"r{REG_IDX}"
+    REG_ALIASES[f"r{REG_IDX}"] = f"r{REG_IDX}"
+
+
 @dataclass(frozen=True)
 class SymPtr:
     kind: str
@@ -159,11 +176,7 @@ def sym_mem_ptr(insn, op, regs, max_len):
     if mem.base == X86_REG_RBP:
         base_ptr = SymPtr("frame", 0)
     else:
-        base_ptr = regs.get(insn.reg_name(mem.base), None)
-        if base_ptr is None:
-            base_ptr = regs.get(reg_of(insn, op), None)
-        if mem.base:
-            base_ptr = regs.get(reg_name(insn, mem.base), base_ptr)
+        base_ptr = regs.get(reg_name(insn, mem.base), None)
     if not isinstance(base_ptr, SymPtr):
         return None
 
@@ -181,22 +194,7 @@ def reg_name(insn, reg_id):
     if not reg_id:
         return ""
     name = insn.reg_name(reg_id)
-    aliases = {
-        "al": "rax", "ah": "rax", "ax": "rax", "eax": "rax", "rax": "rax",
-        "bl": "rbx", "bh": "rbx", "bx": "rbx", "ebx": "rbx", "rbx": "rbx",
-        "cl": "rcx", "ch": "rcx", "cx": "rcx", "ecx": "rcx", "rcx": "rcx",
-        "dl": "rdx", "dh": "rdx", "dx": "rdx", "edx": "rdx", "rdx": "rdx",
-        "sil": "rsi", "si": "rsi", "esi": "rsi", "rsi": "rsi",
-        "dil": "rdi", "di": "rdi", "edi": "rdi", "rdi": "rdi",
-        "bpl": "rbp", "bp": "rbp", "ebp": "rbp", "rbp": "rbp",
-        "spl": "rsp", "sp": "rsp", "esp": "rsp", "rsp": "rsp",
-    }
-    for idx in range(8, 16):
-        aliases[f"r{idx}b"] = f"r{idx}"
-        aliases[f"r{idx}w"] = f"r{idx}"
-        aliases[f"r{idx}d"] = f"r{idx}"
-        aliases[f"r{idx}"] = f"r{idx}"
-    return aliases.get(name, name)
+    return REG_ALIASES.get(name, name)
 
 
 def read_sym_mem(insn, op, regs, frame_expr, max_len):
