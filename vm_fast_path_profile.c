@@ -277,6 +277,84 @@ typedef struct {
     TrackedValue value;
 } TrackedFrameMem;
 
+typedef enum { SK_TEXT, SK_PTR, SK_TARGET } SymKind;
+
+typedef struct {
+    SymKind kind;
+    char text[512];
+    PtrKind ptr_kind;
+    int64_t off;
+    char index[512];
+    int scale;
+    char slot[512];
+} SymValue;
+
+typedef struct {
+    int64_t off;
+    int size;
+    SymValue value;
+} SymFrameMem;
+
+typedef struct {
+    int source;
+    char source_target[32];
+    uint64_t events;
+    uint64_t steps;
+    uint64_t unknown_ops;
+    uint64_t branch_unknown;
+    uint64_t target_matched;
+    uint64_t target_mismatched;
+    uint64_t ip_matched;
+    uint64_t ip_mismatched;
+    uint64_t status_ok;
+    uint64_t status_unknown_target;
+    uint64_t status_falloff;
+    uint64_t status_step_limit;
+    TextCounter target_exprs;
+    TextCounter slot_exprs;
+    TextCounter ip_exprs;
+    bool has_example;
+    char example_status[32];
+    int example_pred_entry;
+    int example_actual_entry;
+    char example_bytes[512];
+    char example_target_expr[512];
+} TransferSourceStat;
+
+typedef struct {
+    int source;
+    char hash[17];
+    char source_target[32];
+    char *path;
+    uint64_t events;
+    uint64_t target_matched;
+    uint64_t target_mismatched;
+    uint64_t ip_matched;
+    uint64_t ip_mismatched;
+    uint64_t status_ok;
+    uint64_t status_unknown_target;
+    uint64_t status_falloff;
+    uint64_t status_step_limit;
+    TextCounter target_exprs;
+    TextCounter slot_exprs;
+    TextCounter ip_exprs;
+    TextCounter actual_targets;
+} TransferPathStat;
+
+typedef struct {
+    int pred_entry;
+    uint64_t pred_target;
+    int64_t pred_delta;
+    const char *status;
+    uint64_t steps;
+    uint64_t unknown;
+    uint64_t branch_unknown;
+    char target_expr[512];
+    char slot_expr[512];
+    char ip_expr[512];
+    char *path;
+} TransferResult;
+
 static Value val_int(uint64_t u) {
     Value v = {.kind = VK_INT, .u = u};
     return v;
