@@ -73,6 +73,15 @@ def load_static_dispatch_validate(path):
     return validate
 
 
+def load_dispatch_model(path):
+    model = {}
+    if not path:
+        return model
+    for row in read_tsv(path):
+        model[row.get("source_entry", "")] = row
+    return model
+
+
 def load_tail_roles(path):
     roles = {}
     if not path:
@@ -146,6 +155,10 @@ def main():
         default="dumps/vmtail-state-wide-w16/vm_static_dispatch_validate.tsv",
     )
     parser.add_argument(
+        "--dispatch-model",
+        default="dumps/vmtail-state-wide-w16/vm_dispatch_model_combined.tsv",
+    )
+    parser.add_argument(
         "--tail-roles",
         default="dumps/vmtail-wide-1m-w16/vm_handler_tail_roles_wide_regs.tsv",
     )
@@ -171,6 +184,7 @@ def main():
     state_affine = load_state_affine(args.state_affine)
     state_static_validate = load_state_static_validate(args.state_static_validate)
     static_dispatch_validate = load_static_dispatch_validate(args.static_dispatch_validate)
+    dispatch_model = load_dispatch_model(args.dispatch_model)
     roles = load_tail_roles(args.tail_roles)
     slots = load_static_slots(args.static_slots)
     formulas = load_dispatch_formulas(args.dispatch_formulas)
@@ -183,7 +197,8 @@ def main():
         "top_flag_add\ttop_byte_add\tstate_affine_status\tstate_affine_cv_status\t"
         "state_affine_cv_pct\tstate_affine_terms\tstate_static_pct\t"
         "state_static_mismatches\tstatic_dispatch_pct\tstatic_dispatch_mismatches\t"
-        "static_ip_pct\tstatic_ip_mismatches\ttarget_reg\tslot_kind\tslot_reg_or_temp\t"
+        "static_ip_pct\tstatic_ip_mismatches\tdispatch_model\tdispatch_model_pct\t"
+        "target_reg\tslot_kind\tslot_reg_or_temp\t"
         "byte_index_reg\tstatic_load_site\tstatic_index_add_site\ttail_role_events\t"
         "dispatch_formula\tdispatch_formula_class\tdispatch_formula_pct\t"
         "dispatch_affine_status\tdispatch_affine_pct\tdispatch_affine_terms\t"
@@ -204,6 +219,7 @@ def main():
         state_affine_row = state_affine.get(source_entry, {})
         static_validate_row = state_static_validate.get(source_entry, {})
         static_dispatch_row = static_dispatch_validate.get(source_entry, {})
+        dispatch_model_row = dispatch_model.get(source_entry, {})
         role = roles.get((source_entry, source_target, site), {})
         static = slots.get((source_entry, source_target, site), {})
         formula = formulas.get(source_entry, {})
@@ -230,6 +246,8 @@ def main():
             f"{static_dispatch_row.get('target_mismatched_events', '')}\t"
             f"{static_dispatch_row.get('ip_coverage_pct', '')}\t"
             f"{static_dispatch_row.get('ip_mismatched_events', '')}\t"
+            f"{dispatch_model_row.get('model', '')}\t"
+            f"{dispatch_model_row.get('coverage_pct', '')}\t"
             f"{role.get('target_reg', '')}\t"
             f"{slot_kind}\t{slot_reg_or_temp}\t{byte_index_reg}\t"
             f"{static.get('static_load_site', '')}\t"
