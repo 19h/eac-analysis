@@ -126,6 +126,7 @@ synthetic-tails: synthetic-spans
 
 pseudocode: bytecode-basic-blocks
 	python3 vm_pseudocode_dump.py --limit-blocks 60 --rows-per-block 32 > dumps/vmtail-wide-1m-w16/vm_pseudocode_top.c
+	python3 vm_program_pseudocode_dump.py --limit-blocks 80 --rows-per-block 80 > dumps/vmtail-wide-1m-w16/vm_program_pseudocode_top.c
 
 handler-pseudocode:
 	python3 vm_handler_pseudocode_dump.py --all > dumps/vmtail-wide-1m-w16/vm_handlers_pseudocode.c
