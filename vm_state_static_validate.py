@@ -181,6 +181,12 @@ def eval_bin(mnemonic, left, right, size):
         if isinstance(right, int) and mnemonic in {"add", "sub"}:
             delta = right if mnemonic == "add" else -right
             return Ptr(left.kind, left.off + sign_extend(delta, op_bits(size)))
+        if isinstance(right, Ptr) and mnemonic == "sub" and left.kind == right.kind:
+            return (left.off - right.off) & mask_for_size(size)
+        return Unknown("ptr_binop")
+    if isinstance(right, Ptr):
+        if isinstance(left, int) and mnemonic == "add":
+            return Ptr(right.kind, right.off + sign_extend(left, op_bits(size)))
         return Unknown("ptr_binop")
     if not isinstance(left, int) or not isinstance(right, int):
         return Unknown("non_int")
@@ -207,6 +213,8 @@ def cmp_zf(mnemonic, left, right, size):
         left = left_concrete
         right = right_concrete
     if not isinstance(left, int) or not isinstance(right, int):
+        if mnemonic == "cmp" and isinstance(left, Ptr) and isinstance(right, Ptr) and left.kind == right.kind:
+            return left.off == right.off
         if mnemonic == "cmp" and size >= 8:
             if isinstance(left, Ptr) and isinstance(right, int) and right == 0:
                 return False

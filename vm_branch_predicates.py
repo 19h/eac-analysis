@@ -92,7 +92,7 @@ def narrow_tracked(item, size, op_name, max_expr_len):
         classes.add("ptr_partial")
         expr = f"low{bits}({expr})"
     elif isinstance(value, Unknown):
-        expr = f"{op_name or expr}.low{bits}"
+        expr = f"low{bits}({expr})"
     return Tracked(value, clip(expr, max_expr_len), frozenset(classes))
 
 
