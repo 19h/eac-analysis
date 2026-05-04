@@ -93,8 +93,10 @@ typedef struct {
     uint64_t example_actual_target;
     uint32_t example_pred_state;
     uint32_t example_actual_state;
-    char example_status[32];
-    char example_bytes[256];
+    char state_example_status[32];
+    char state_example_bytes[256];
+    char dispatch_example_status[32];
+    char dispatch_example_bytes[256];
     bool has_dispatch_example;
     bool has_state_example;
 } SourceStat;
@@ -1297,7 +1299,7 @@ static void emit_state_validate(SourceStat stats[TABLE_ENTRIES]) {
         printf("\t");
         if (s->has_state_example) {
             printf("0x%x\t0x%x\t%s\t%s", s->example_pred_state, s->example_actual_state,
-                   s->example_status, s->example_bytes);
+                   s->state_example_status, s->state_example_bytes);
         } else {
             printf("\t\t\t");
         }
@@ -1330,7 +1332,8 @@ static void emit_dispatch_validate(SourceStat stats[TABLE_ENTRIES]) {
             if (s->example_pred_entry >= 0) printf("%d", s->example_pred_entry);
             printf("\t0x%" PRIx64 "\t", s->example_pred_target);
             if (s->example_actual_entry >= 0) printf("%d", s->example_actual_entry);
-            printf("\t0x%" PRIx64 "\t%s\t%s", s->example_actual_target, s->example_status, s->example_bytes);
+            printf("\t0x%" PRIx64 "\t%s\t%s", s->example_actual_target,
+                   s->dispatch_example_status, s->dispatch_example_bytes);
         } else {
             printf("\t\t\t\t\t");
         }
@@ -1497,6 +1500,7 @@ int main(int argc, char **argv) {
         ExecResult r = execute_handler(h, &row, table, seed, args.max_steps);
         bool target_ok = !strcmp(r.status, "ok") && r.pred_entry == row.target_entry && r.pred_target == row.target;
         bool ip_ok = r.pred_delta == row.delta;
+        bool state_ok = r.pred_state == row.post_state;
         char hash[17];
         sha_path(r.path, hash);
         char target_text[32];
@@ -1520,6 +1524,27 @@ int main(int argc, char **argv) {
         s->branch_unknown += r.branch_unknown;
         if (target_ok) s->target_matched++; else s->target_mismatched++;
         if (ip_ok) s->ip_matched++; else s->ip_mismatched++;
+        if (state_ok) {
+            s->state_matched++;
+        } else {
+            s->state_mismatched++;
+            if (!s->has_state_example) {
+                s->has_state_example = true;
+                s->example_pred_state = r.pred_state;
+                s->example_actual_state = row.post_state;
+                snprintf(s->state_example_status, sizeof(s->state_example_status), "%s", r.status);
+                format_bytes(row.bytes, row.byte_count, s->state_example_bytes, sizeof(s->state_example_bytes));
+            }
+        }
+        if ((!target_ok || !ip_ok) && !s->has_dispatch_example) {
+            s->has_dispatch_example = true;
+            s->example_pred_entry = r.pred_entry;
+            s->example_pred_target = r.pred_target;
+            s->example_actual_entry = row.target_entry;
+            s->example_actual_target = row.target;
+            snprintf(s->dispatch_example_status, sizeof(s->dispatch_example_status), "%s", r.status);
+            format_bytes(row.bytes, row.byte_count, s->dispatch_example_bytes, sizeof(s->dispatch_example_bytes));
+        }
         switch (status_index(r.status)) {
         case 0: s->status_ok++; break;
         case 1: s->status_unknown_target++; break;
@@ -1542,7 +1567,9 @@ int main(int argc, char **argv) {
     free(header.items);
     free(line);
     fclose(fp);
-    if (args.branch_sites) emit_branch_sites(branches, branch_count);
+    if (args.state_validate) emit_state_validate(stats);
+    else if (args.dispatch_validate) emit_dispatch_validate(stats);
+    else if (args.branch_sites) emit_branch_sites(branches, branch_count);
     else if (args.by_path) emit_by_path(paths, path_count, args.top_targets);
     else emit_summary(stats, paths, path_count, args.top);
     for (size_t i = 0; i < path_count; ++i) free(paths[i].text);
