@@ -35,6 +35,7 @@ from vm_static_dispatch_validate import (
 
 
 FIELD_RE = re.compile(r"\b([a-z][a-z0-9_]*)=0x([0-9a-f]+)")
+COUNT_RE = re.compile(r"\bcount=([0-9]+)")
 TRACE_RE = re.compile(r"^\[VMTAIL\]")
 REG_NAMES = {
     "rax", "rbx", "rcx", "rdx", "rsi", "rdi",
@@ -57,7 +58,11 @@ def path_hash(path):
 
 
 def parse_gpr_fields(line):
-    return {name: int(value_s, 16) for name, value_s in FIELD_RE.findall(line)}
+    fields = {name: int(value_s, 16) for name, value_s in FIELD_RE.findall(line)}
+    count = COUNT_RE.search(line)
+    if count:
+        fields["count"] = int(count.group(1), 10)
+    return fields
 
 
 def normalize_seed_value(value, fields):
