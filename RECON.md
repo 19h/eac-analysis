@@ -22,6 +22,7 @@ SHA-256: `0b44ad59697129534189efdb75cde2b96245f831438e9f6a53cb7725f190d739`
 - `vm_state_effects.py`: summarizes observed `frame+0x170`, `frame+0x23`, and `frame+0x194` changes per handler or per `(handler, delta, bytes)` signature from state-aware traces.
 - `vm_tail_registers.py`: infers per-tail-site register roles from `EAC_VMTAIL_REGS=1` traces, including target value, dispatch-slot pointer, byte index, table pointer, and frame pointer. It can also join those roles back onto an instruction trace by source handler and tail site.
 - `vm_tail_static_slots.py`: statically recovers consumed dispatch-slot temporaries for tail sites where the target is loaded from `table + byte_index` and the slot pointer is clobbered before the final jump.
+- `vm_instruction_lift.py`: joins exact recovered VM instructions with per-signature state effects, dynamic tail-register roles, and static dispatch-slot provenance.
 - `dumps/local-blocked-log/run.stderr`: blocked-network trace from the harness.
 - `dumps/local-blocked-log/postcall_*` and `postsleep_*`: in-memory EAC map/context/output dumps.
 - `dumps/dispatch-trap/run.stderr`: targeted dispatcher trace with fast harness exit.
@@ -55,6 +56,7 @@ SHA-256: `0b44ad59697129534189efdb75cde2b96245f831438e9f6a53cb7725f190d739`
 - `dumps/vmtail-wide-1m-w16/vm_handler_tail_roles.tsv`: long-run source-handler/tail-site rows joined with register roles inferred from the 50k GPR smoke trace.
 - `dumps/vmtail-wide-1m-w16/vm_handler_tail_roles_wide_regs.tsv`: same join using the 250k GPR trace for better low-frequency site coverage.
 - `dumps/vmtail-wide-1m-w16/vm_tail_static_slots.tsv`: static dispatch-slot provenance joined to each long-run source-handler/tail-site row.
+- `dumps/vmtail-wide-1m-w16/vm_instruction_lift.tsv`: one enriched row per exact recovered unique VM instruction.
 - `dumps/vmtail-wide-1m-w16/vm_gap_report.tsv`: exact-segment coverage gap ranking.
 - `dumps/vmtail-wide-1m-w16/vm_gap_report_sampled.tsv`: gap ranking after adding sampled byte-window coverage.
 - `dumps/vmtail-state-wide-w16/run.stderr`: 250k state-aware VMTAIL trace. VMTAIL rows include `vm_flags`, `vm_state`, and `vm_byte` after each handler.
@@ -334,6 +336,8 @@ python3 vm_tail_registers.py dumps/vmtail-regs-wide-w16 --eac eac.elf \
 python3 vm_tail_static_slots.py dumps/vmtail-wide-1m-w16/vm_handler_tail_roles_wide_regs.tsv \
   --eac eac.elf \
   >dumps/vmtail-wide-1m-w16/vm_tail_static_slots.tsv
+python3 vm_instruction_lift.py \
+  >dumps/vmtail-wide-1m-w16/vm_instruction_lift.tsv
 ```
 
 ## ELF Overview
@@ -919,6 +923,28 @@ Top consumed-slot recoveries:
 | 316 | `0xba0cc` | 447 | `rax` | static `rdi` | `r10` | `0xb9fb8` | `0xb9fa7` |
 
 After central-dispatch integration and static consumed-slot recovery, only 17 long-run instruction events lack any register/static tail-slot evidence.
+
+`vm_instruction_lift.tsv` is the current highest-level recovered instruction catalog. It joins exact unique bytecode instructions, per-signature state effects from the state-aware trace, tail target registers, and live/static slot provenance.
+
+Coverage in the lift catalog:
+
+| Coverage | Rows | Events |
+| --- | ---: | ---: |
+| exact unique instructions | 71355 | 767566 |
+| with state-effect signature | 43154 | 684374 |
+| with tail target register/operand | 71345 | 767549 |
+| with live/static slot temp | 71345 | 767549 |
+| with byte/static index register | 65869 | 706851 |
+
+State classes in the lifted exact catalog:
+
+| State Class | Rows | Events |
+| --- | ---: | ---: |
+| `state_add_const` | 36946 | 601868 |
+| `state_mixed` | 4315 | 55646 |
+| `state_const_post` | 1576 | 19423 |
+| `state_preserve` | 317 | 7437 |
+| not observed in state trace | 28201 | 83192 |
 
 Top auto3 tail targets:
 
