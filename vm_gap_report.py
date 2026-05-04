@@ -41,6 +41,18 @@ def fmt_set(values, max_items):
     return ",".join(shown) + suffix
 
 
+def parse_count_items(text):
+    counts = Counter()
+    if not text:
+        return counts
+    for item in text.split(","):
+        if not item:
+            continue
+        key, count_s = item.rsplit(":", 1)
+        counts[key] += int(count_s, 10)
+    return counts
+
+
 def load_segments(path: Path):
     segments = []
     with path.open(newline="") as handle:
@@ -75,6 +87,13 @@ def find_boundary_segment(boundary_by_start, offset):
 
 
 def nearest_segments(segments, offset):
+    containing = find_segment(segments, offset)
+    if containing is not None:
+        return (
+            f"inside={containing['idx']}@0x{containing['start']:x}-0x{containing['end']:x}"
+            f"+0x{offset - containing['start']:x}"
+        )
+
     prev_segment = None
     next_segment = None
     for segment in segments:
@@ -205,23 +224,25 @@ def load_missing_exact(dump_dir: Path, groups):
         for row in csv.DictReader(handle, delimiter="\t"):
             entry = row["source_entry"]
             events = int(row["events"], 10)
-            add_static_group(
-                groups,
-                "missing_exact_source",
-                entry,
-                events,
-                source=entry,
-                target=row["source_target"],
-                delta=row.get("top_ip_deltas", ""),
-                status="missing_exact",
-                site=row.get("top_sites", ""),
-                offset=int(row["source_target"], 16),
-                detail=(
-                    f"unique_vm_ips={row.get('unique_vm_ips', '')};"
-                    f"top_targets={row.get('top_targets', '')};"
-                    f"top_deltas={row.get('top_ip_deltas', '')}"
+            group = groups.setdefault(
+                ("missing_exact_source", entry),
+                new_group(
+                    "missing_exact_source",
+                    entry,
+                    detail=(
+                        f"source_target={row.get('source_target', '')};"
+                        f"unique_vm_ips={row.get('unique_vm_ips', '')};"
+                        f"top_targets={row.get('top_targets', '')};"
+                        f"top_deltas={row.get('top_ip_deltas', '')}"
+                    ),
                 ),
             )
+            group["events"] += events
+            group["sources"][entry] += events
+            group["targets"].update(parse_count_items(row.get("top_targets", "")))
+            group["deltas"].update(parse_count_items(row.get("top_ip_deltas", "")))
+            group["statuses"]["missing_exact"] += events
+            group["sites"].update(parse_count_items(row.get("top_sites", "")))
 
 
 def load_observation_gaps(dump_dir: Path, groups):
@@ -244,8 +265,8 @@ def load_observation_gaps(dump_dir: Path, groups):
                 source=entry,
                 target=row["target"],
                 status=observation,
-                offset=int(row["target"], 16),
                 detail=(
+                    f"target={row.get('target', '')};"
                     f"frame_reads={row.get('frame_reads', '')};"
                     f"frame_writes={row.get('frame_writes', '')};"
                     f"ip_reads={row.get('ip_reads', '')};"
