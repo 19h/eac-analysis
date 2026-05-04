@@ -1323,6 +1323,390 @@ static bool self_zero_insn(cs_x86_op *ops, const char *mnem) {
            (!strcmp(mnem, "xor") || !strcmp(mnem, "sub"));
 }
 
+static SymValue sym_text(const char *text, int max_len) {
+    SymValue v = {.kind = SK_TEXT, .scale = 1};
+    clip_to_buf(text ? text : "", max_len, v.text, sizeof(v.text));
+    return v;
+}
+
+static SymValue sym_ptr(PtrKind kind, int64_t off, const char *index, int scale, int max_len) {
+    SymValue v = {.kind = SK_PTR, .ptr_kind = kind, .off = off, .scale = scale ? scale : 1};
+    clip_to_buf(index ? index : "", max_len, v.index, sizeof(v.index));
+    return v;
+}
+
+static SymValue sym_target(const char *slot, int max_len) {
+    SymValue v = {.kind = SK_TARGET, .scale = 1};
+    clip_to_buf(slot ? slot : "", max_len, v.slot, sizeof(v.slot));
+    return v;
+}
+
+static void fmt_imm_buf(int64_t value, char *out, size_t out_size) {
+    uint64_t u = (uint64_t)value;
+    if (u <= UINT64_C(0xffffffff)) {
+        snprintf(out, out_size, "0x%" PRIx64, u);
+    } else {
+        snprintf(out, out_size, "-0x%" PRIx64, ((uint64_t)(-value)) & UINT64_MAX);
+    }
+}
+
+static bool needs_wrap(const char *text) {
+    if (!text || !*text) return false;
+    if (!strncmp(text, "0x", 2) || !strncmp(text, "-0x", 3)) return false;
+    if (!strncmp(text, "state", 5) || !strncmp(text, "flags", 5) || !strncmp(text, "byte", 4)) return false;
+    if (text[0] == 'b' || !strncmp(text, "u16_", 4) || !strncmp(text, "u32_", 4)) return false;
+    if (!strncmp(text, "IP[", 3) || !strncmp(text, "F[", 2) || !strncmp(text, "T[", 2)) return false;
+    size_t len = strlen(text);
+    if (len >= 2 && text[0] == '(' && text[len - 1] == ')') return false;
+    return true;
+}
+
+static void wrap_buf(const char *text, char *out, size_t out_size) {
+    if (needs_wrap(text)) snprintf(out, out_size, "(%s)", text);
+    else snprintf(out, out_size, "%s", text ? text : "");
+}
+
+static void fmt_sym_buf(SymValue value, char *out, size_t out_size, int max_len);
+
+static void merge_expr_buf(SymValue left, const char *op, SymValue right, int max_len, char *out, size_t out_size) {
+    char l[512], r[512], lw[560], rw[560], tmp[1200];
+    fmt_sym_buf(left, l, sizeof(l), max_len);
+    fmt_sym_buf(right, r, sizeof(r), max_len);
+    if (!strcmp(l, "0x0") && (!strcmp(op, "+") || !strcmp(op, "^") || !strcmp(op, "|"))) {
+        clip_to_buf(r, max_len, out, out_size);
+        return;
+    }
+    if (!strcmp(r, "0x0") && (!strcmp(op, "+") || !strcmp(op, "-") || !strcmp(op, "^") || !strcmp(op, "|"))) {
+        clip_to_buf(l, max_len, out, out_size);
+        return;
+    }
+    if (!strcmp(l, r) && (!strcmp(op, "^") || !strcmp(op, "-"))) {
+        snprintf(out, out_size, "0x0");
+        return;
+    }
+    wrap_buf(l, lw, sizeof(lw));
+    wrap_buf(r, rw, sizeof(rw));
+    snprintf(tmp, sizeof(tmp), "%s %s %s", lw, op, rw);
+    clip_to_buf(tmp, max_len, out, out_size);
+}
+
+static void add_index_buf(const char *base, SymValue extra, int sign, int max_len, char *out, size_t out_size) {
+    char e[512], zero[8] = "0x0";
+    fmt_sym_buf(extra, e, sizeof(e), max_len);
+    if (!strcmp(e, "0x0")) {
+        clip_to_buf(base ? base : "", max_len, out, out_size);
+        return;
+    }
+    if (!base || !*base) {
+        if (sign > 0) clip_to_buf(e, max_len, out, out_size);
+        else merge_expr_buf(sym_text(zero, max_len), "-", sym_text(e, max_len), max_len, out, out_size);
+        return;
+    }
+    merge_expr_buf(sym_text(base, max_len), sign > 0 ? "+" : "-", sym_text(e, max_len), max_len, out, out_size);
+}
+
+static SymValue sym_ptr_add(SymValue ptr, SymValue value, int sign, int max_len) {
+    if (value.kind == SK_TEXT && (!strncmp(value.text, "0x", 2) || !strncmp(value.text, "-0x", 3))) {
+        char *end = NULL;
+        int64_t delta = strtoll(value.text, &end, 0);
+        if (end && !*end) {
+            ptr.off += sign * delta;
+            return ptr;
+        }
+    }
+    char idx[512];
+    add_index_buf(ptr.index, value, sign, max_len, idx, sizeof(idx));
+    clip_to_buf(idx, max_len, ptr.index, sizeof(ptr.index));
+    return ptr;
+}
+
+static void fmt_ptr_buf(SymValue ptr, char *out, size_t out_size, int max_len) {
+    char tmp[1100] = {0};
+    snprintf(tmp, sizeof(tmp), "%s", ptr_kind_name(ptr.ptr_kind));
+    if (ptr.off) {
+        size_t len = strlen(tmp);
+        snprintf(tmp + len, sizeof(tmp) - len, "%c0x%llx",
+                 ptr.off >= 0 ? '+' : '-', (unsigned long long)(ptr.off >= 0 ? ptr.off : -ptr.off));
+    }
+    if (ptr.index[0]) {
+        char w[560];
+        wrap_buf(ptr.index, w, sizeof(w));
+        size_t len = strlen(tmp);
+        if (ptr.scale == 1) snprintf(tmp + len, sizeof(tmp) - len, "+%s", w);
+        else snprintf(tmp + len, sizeof(tmp) - len, "+%s*%d", w, ptr.scale);
+    }
+    clip_to_buf(tmp, max_len, out, out_size);
+}
+
+static void fmt_sym_buf(SymValue value, char *out, size_t out_size, int max_len) {
+    switch (value.kind) {
+    case SK_TEXT:
+        clip_to_buf(value.text, max_len, out, out_size);
+        return;
+    case SK_PTR:
+        fmt_ptr_buf(value, out, out_size, max_len);
+        return;
+    case SK_TARGET: {
+        char tmp[580];
+        snprintf(tmp, sizeof(tmp), "T[%s]", value.slot);
+        clip_to_buf(tmp, max_len, out, out_size);
+        return;
+    }
+    }
+}
+
+static void ptr_offset_expr_buf(SymValue ptr, int max_len, char *out, size_t out_size) {
+    char expr[900] = {0};
+    if (ptr.index[0]) {
+        if (ptr.scale != 1) {
+            char w[560], tmp[900];
+            wrap_buf(ptr.index, w, sizeof(w));
+            snprintf(tmp, sizeof(tmp), "%s*%d", w, ptr.scale);
+            clip_to_buf(tmp, max_len, expr, sizeof(expr));
+        } else {
+            clip_to_buf(ptr.index, max_len, expr, sizeof(expr));
+        }
+    }
+    if (ptr.off) {
+        char off[64];
+        fmt_imm_buf(ptr.off >= 0 ? ptr.off : -ptr.off, off, sizeof(off));
+        if (!expr[0]) {
+            fmt_imm_buf(ptr.off, expr, sizeof(expr));
+        } else {
+            char merged[900];
+            merge_expr_buf(sym_text(expr, max_len), ptr.off > 0 ? "+" : "-", sym_text(off, max_len),
+                           max_len, merged, sizeof(merged));
+            clip_to_buf(merged, max_len, expr, sizeof(expr));
+        }
+    }
+    clip_to_buf(expr[0] ? expr : "0x0", max_len, out, out_size);
+}
+
+static bool sym_mem_ptr(cs_insn *insn, cs_x86_op *op, SymValue *regs, SymValue *out, int max_len) {
+    if (op->type != X86_OP_MEM) return false;
+    x86_op_mem mem = op->mem;
+    if (mem.base == X86_REG_RIP) return false;
+    SymValue ptr;
+    if (mem.base == X86_REG_RBP) {
+        ptr = sym_ptr(PK_FRAME, mem.disp, "", 1, max_len);
+    } else {
+        int b = reg_index((x86_reg)mem.base);
+        if (b < 0 || regs[b].kind != SK_PTR) return false;
+        ptr = regs[b];
+        ptr.off += mem.disp;
+    }
+    if (mem.index) {
+        int idx = reg_index((x86_reg)mem.index);
+        SymValue index_value = idx >= 0 ? regs[idx] : sym_text("", max_len);
+        if (idx < 0) return false;
+        char index_text[512], tmp[700];
+        fmt_sym_buf(index_value, index_text, sizeof(index_text), max_len);
+        if (mem.scale != 1) {
+            char w[560];
+            wrap_buf(index_text, w, sizeof(w));
+            snprintf(tmp, sizeof(tmp), "%s*%d", w, mem.scale);
+            index_value = sym_text(tmp, max_len);
+        } else {
+            index_value = sym_text(index_text, max_len);
+        }
+        char new_index[512];
+        add_index_buf(ptr.index, index_value, 1, max_len, new_index, sizeof(new_index));
+        clip_to_buf(new_index, max_len, ptr.index, sizeof(ptr.index));
+        ptr.scale = 1;
+    }
+    *out = ptr;
+    return true;
+}
+
+static SymValue read_sym_frame_mem(SymFrameMem *mem, size_t mem_count, int64_t off, int size, int max_len) {
+    for (size_t i = 0; i < mem_count; ++i) {
+        if (mem[i].off == off && mem[i].size == size) return mem[i].value;
+    }
+    for (size_t i = 0; i < mem_count; ++i) {
+        if (mem[i].off <= off && off + size <= mem[i].off + mem[i].size) {
+            char expr[512], tmp[700];
+            fmt_sym_buf(mem[i].value, expr, sizeof(expr), max_len);
+            int shift = (int)((off - mem[i].off) * 8);
+            if (shift) {
+                char w[560];
+                wrap_buf(expr, w, sizeof(w));
+                snprintf(tmp, sizeof(tmp), "%s >> 0x%x", w, shift);
+                clip_to_buf(tmp, max_len, expr, sizeof(expr));
+            }
+            if (size != mem[i].size || shift) {
+                snprintf(tmp, sizeof(tmp), "mask%d(%s)", size * 8, expr);
+                return sym_text(tmp, max_len);
+            }
+            return sym_text(expr, max_len);
+        }
+    }
+    return sym_text("", max_len);
+}
+
+static void write_sym_frame_mem(SymFrameMem *mem, size_t *mem_count, int64_t off, int size, SymValue value) {
+    for (size_t i = 0; i < *mem_count; ++i) {
+        if (mem[i].off == off && mem[i].size == size) {
+            mem[i].value = value;
+            return;
+        }
+    }
+    if (*mem_count < 64) {
+        mem[*mem_count] = (SymFrameMem){.off = off, .size = size, .value = value};
+        (*mem_count)++;
+    }
+}
+
+static SymValue seed_sym_value(int reg, Value value, int max_len) {
+    if (value.kind == VK_PTR) return sym_ptr(value.ptr_kind, value.off, "", 1, max_len);
+    if (value.kind == VK_INT) {
+        char expr[64];
+        snprintf(expr, sizeof(expr), "seed(%s)", tracked_reg_name(reg));
+        return sym_text(expr, max_len);
+    }
+    char expr[64];
+    snprintf(expr, sizeof(expr), "?seed_%s", tracked_reg_name(reg));
+    return sym_text(expr, max_len);
+}
+
+static SymValue read_sym_mem(cs_insn *insn, cs_x86_op *op, SymValue *regs, const char *state_expr,
+                             const char *flags_expr, const char *byte_expr, int64_t ip_delta_const,
+                             const char *ip_delta_expr, SymFrameMem *frame_mem, size_t frame_mem_count,
+                             int max_len) {
+    SymValue ptr;
+    if (!sym_mem_ptr(insn, op, regs, &ptr, max_len)) {
+        char expr[256];
+        snprintf(expr, sizeof(expr), "mem[%s]", insn->op_str);
+        return sym_text(expr, max_len);
+    }
+    int size = op->size ? op->size : 8;
+    if (ptr.ptr_kind == PK_FRAME) {
+        if (ptr.off == FRAME_IP_OFF && size == 8) {
+            const char *index = strcmp(ip_delta_expr, "0x0") ? ip_delta_expr : "";
+            return sym_ptr(PK_IP, ip_delta_const, index, 1, max_len);
+        }
+        if (ptr.off == FRAME_TABLE_OFF && size == 8) return sym_ptr(PK_TABLE, 0, "", 1, max_len);
+        if (ptr.off == FRAME_STATE_OFF) return sym_text(state_expr, max_len);
+        if (ptr.off == FRAME_FLAGS_OFF) return sym_text(flags_expr, max_len);
+        if (ptr.off == FRAME_BYTE_OFF) return sym_text(byte_expr, max_len);
+        SymValue seeded = read_sym_frame_mem(frame_mem, frame_mem_count, ptr.off, size, max_len);
+        if (seeded.kind != SK_TEXT || seeded.text[0]) return seeded;
+        char expr[64];
+        snprintf(expr, sizeof(expr), "F[0x%llx]", (unsigned long long)ptr.off);
+        return sym_text(expr, max_len);
+    }
+    if (ptr.ptr_kind == PK_IP) {
+        char off[512], expr[600];
+        ptr_offset_expr_buf(ptr, max_len, off, sizeof(off));
+        if (!ptr.index[0]) {
+            if (size == 1) snprintf(expr, sizeof(expr), "b%lld", (long long)ptr.off);
+            else if (size == 2) snprintf(expr, sizeof(expr), "u16_%lld", (long long)ptr.off);
+            else if (size == 4) snprintf(expr, sizeof(expr), "u32_%lld", (long long)ptr.off);
+            else snprintf(expr, sizeof(expr), "IP[%s]/%d", off, size);
+            return sym_text(expr, max_len);
+        }
+        snprintf(expr, sizeof(expr), "IP[%s]/%d", off, size);
+        return sym_text(expr, max_len);
+    }
+    if (ptr.ptr_kind == PK_TABLE) {
+        char slot[512];
+        ptr_offset_expr_buf(ptr, max_len, slot, sizeof(slot));
+        return sym_target(slot, max_len);
+    }
+    char expr[600], p[512];
+    fmt_ptr_buf(ptr, p, sizeof(p), max_len);
+    snprintf(expr, sizeof(expr), "%s/%d", p, size);
+    return sym_text(expr, max_len);
+}
+
+static SymValue read_sym_op(cs_insn *insn, cs_x86_op *op, SymValue *regs, const char *state_expr,
+                            const char *flags_expr, const char *byte_expr, int64_t ip_delta_const,
+                            const char *ip_delta_expr, SymFrameMem *frame_mem, size_t frame_mem_count,
+                            int max_len) {
+    if (op->type == X86_OP_IMM) {
+        char expr[64];
+        fmt_imm_buf((int64_t)op->imm, expr, sizeof(expr));
+        return sym_text(expr, max_len);
+    }
+    if (op->type == X86_OP_REG) {
+        int r = reg_index((x86_reg)op->reg);
+        return r >= 0 ? regs[r] : sym_text(insn->op_str, max_len);
+    }
+    if (op->type == X86_OP_MEM) {
+        return read_sym_mem(insn, op, regs, state_expr, flags_expr, byte_expr, ip_delta_const,
+                            ip_delta_expr, frame_mem, frame_mem_count, max_len);
+    }
+    return sym_text(insn->op_str, max_len);
+}
+
+static bool write_sym_op(cs_insn *insn, cs_x86_op *op, SymValue value, SymValue *regs,
+                         char *state_expr, size_t state_size, char *flags_expr, size_t flags_size,
+                         char *byte_expr, size_t byte_size, int64_t *ip_delta_const,
+                         char *ip_delta_expr, size_t ip_size,
+                         SymFrameMem *frame_mem, size_t *frame_mem_count, int max_len) {
+    if (op->type == X86_OP_REG) {
+        int r = reg_index((x86_reg)op->reg);
+        if (r < 0) return false;
+        regs[r] = value;
+        return true;
+    }
+    if (op->type != X86_OP_MEM) return false;
+    SymValue ptr;
+    if (!sym_mem_ptr(insn, op, regs, &ptr, max_len)) return false;
+    if (ptr.ptr_kind == PK_FRAME && ptr.off == FRAME_IP_OFF) {
+        if (value.kind == SK_PTR && value.ptr_kind == PK_IP) {
+            *ip_delta_const = value.off;
+            ptr_offset_expr_buf(value, max_len, ip_delta_expr, ip_size);
+            return true;
+        }
+        return false;
+    }
+    char formatted[512];
+    fmt_sym_buf(value, formatted, sizeof(formatted), max_len);
+    if (ptr.ptr_kind == PK_FRAME && ptr.off == FRAME_STATE_OFF) {
+        clip_to_buf(formatted, max_len, state_expr, state_size);
+        return true;
+    }
+    if (ptr.ptr_kind == PK_FRAME && ptr.off == FRAME_FLAGS_OFF) {
+        clip_to_buf(formatted, max_len, flags_expr, flags_size);
+        return true;
+    }
+    if (ptr.ptr_kind == PK_FRAME && ptr.off == FRAME_BYTE_OFF) {
+        clip_to_buf(formatted, max_len, byte_expr, byte_size);
+        return true;
+    }
+    if (ptr.ptr_kind == PK_FRAME) {
+        write_sym_frame_mem(frame_mem, frame_mem_count, ptr.off, op->size ? op->size : 8, value);
+    }
+    return true;
+}
+
+static SymValue apply_sym_bin(const char *mnemonic, SymValue left, SymValue right, int size, int max_len) {
+    if ((!strcmp(mnemonic, "add") || !strcmp(mnemonic, "sub")) && left.kind == SK_PTR) {
+        return sym_ptr_add(left, right, !strcmp(mnemonic, "add") ? 1 : -1, max_len);
+    }
+    char l[512], r[512], expr[700];
+    fmt_sym_buf(left, l, sizeof(l), max_len);
+    fmt_sym_buf(right, r, sizeof(r), max_len);
+    if ((!strcmp(mnemonic, "xor") || !strcmp(mnemonic, "sub")) && !strcmp(l, r)) {
+        return sym_text("0x0", max_len);
+    }
+    const char *op = mnemonic;
+    if (!strcmp(mnemonic, "add")) op = "+";
+    else if (!strcmp(mnemonic, "sub")) op = "-";
+    else if (!strcmp(mnemonic, "xor")) op = "^";
+    else if (!strcmp(mnemonic, "and")) op = "&";
+    else if (!strcmp(mnemonic, "or")) op = "|";
+    else if (!strcmp(mnemonic, "shl")) op = "<<";
+    else if (!strcmp(mnemonic, "shr")) op = ">>";
+    merge_expr_buf(left, op, right, max_len, expr, sizeof(expr));
+    if (size && size < 8 && strcmp(mnemonic, "shl") && strcmp(mnemonic, "shr")) {
+        char tmp[760];
+        snprintf(tmp, sizeof(tmp), "mask%d(%s)", size * 8, expr);
+        return sym_text(tmp, max_len);
+    }
+    return sym_text(expr, max_len);
+}
+
 static void path_append(char **path, size_t *len, size_t *cap, uint64_t addr, const char *mnemonic, const char *outcome) {
     char item[80];
     snprintf(item, sizeof(item), "0x%" PRIx64 ":%s:%s", addr, mnemonic, outcome);
