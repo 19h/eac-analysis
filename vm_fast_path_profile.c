@@ -12,6 +12,9 @@
 #include <stdlib.h>
 #include <string.h>
 
+static FILE *g_output = NULL;
+#define printf(...) fprintf(g_output ? g_output : stdout, __VA_ARGS__)
+
 enum {
     FRAME_IP_OFF = 0x0a,
     FRAME_FLAGS_OFF = 0x23,
@@ -176,6 +179,7 @@ typedef struct {
     char *skeletons_path;
     char *eac_path;
     char *gpr_run_path;
+    char *emit_dir;
     int max_steps;
     int max_rows_per_source;
     int top;
@@ -1367,6 +1371,67 @@ static void emit_branch_sites(BranchStat *branches, size_t branch_count) {
     free(order);
 }
 
+static FILE *begin_output_file(const char *dir, const char *name) {
+    char path[4096];
+    int n = snprintf(path, sizeof(path), "%s/%s", dir, name);
+    if (n < 0 || (size_t)n >= sizeof(path)) {
+        fprintf(stderr, "output path too long: %s/%s\n", dir, name);
+        return NULL;
+    }
+    FILE *fp = fopen(path, "w");
+    if (!fp) {
+        perror(path);
+        return NULL;
+    }
+    g_output = fp;
+    return fp;
+}
+
+static bool finish_output_file(FILE *fp) {
+    if (!fp) {
+        g_output = NULL;
+        return false;
+    }
+    if (fclose(fp) != 0) {
+        perror("fclose");
+        g_output = NULL;
+        return false;
+    }
+    g_output = NULL;
+    return true;
+}
+
+static bool emit_outputs_to_dir(const Args *args, SourceStat stats[TABLE_ENTRIES],
+                                PathStat *paths, size_t path_count,
+                                BranchStat *branches, size_t branch_count) {
+#define EMIT_ONE(name, call) do { \
+        FILE *out = begin_output_file(args->emit_dir, (name)); \
+        if (!out) return false; \
+        call; \
+        if (!finish_output_file(out)) return false; \
+    } while (0)
+
+    if (args->gpr_run_path) {
+        EMIT_ONE("vm_static_path_profile_gpr_seeded_fast.tsv",
+                 emit_summary(stats, paths, path_count, args->top));
+        EMIT_ONE("vm_static_path_variants_gpr_seeded_fast.tsv",
+                 emit_by_path(paths, path_count, args->top_targets));
+        EMIT_ONE("vm_branch_sites_gpr_seeded_fast.tsv",
+                 emit_branch_sites(branches, branch_count));
+    } else {
+        EMIT_ONE("vm_state_static_validate_fast.tsv", emit_state_validate(stats));
+        EMIT_ONE("vm_static_dispatch_validate_fast.tsv", emit_dispatch_validate(stats));
+        EMIT_ONE("vm_static_path_profile_fast.tsv",
+                 emit_summary(stats, paths, path_count, args->top));
+        EMIT_ONE("vm_static_path_variants_fast.tsv",
+                 emit_by_path(paths, path_count, args->top_targets));
+        EMIT_ONE("vm_branch_sites_fast.tsv", emit_branch_sites(branches, branch_count));
+    }
+    return true;
+
+#undef EMIT_ONE
+}
+
 static bool parse_trace_header(Fields *header, TraceCols *cols) {
     cols->seq = col_index(header, "seq");
     cols->frame = col_index(header, "frame");
@@ -1407,7 +1472,7 @@ static bool parse_trace_row(Fields *f, TraceCols *cols, TraceRow *row) {
 }
 
 static void usage(const char *argv0) {
-    fprintf(stderr, "usage: %s [trace.tsv] [--by-path|--branch-sites|--state-validate|--dispatch-validate] [--gpr-run run.stderr] [--skeletons path] [--eac eac.elf]\n", argv0);
+    fprintf(stderr, "usage: %s [trace.tsv] [--by-path|--branch-sites|--state-validate|--dispatch-validate|--emit-dir dir] [--gpr-run run.stderr] [--skeletons path] [--eac eac.elf]\n", argv0);
 }
 
 static Args parse_args(int argc, char **argv) {
@@ -1426,6 +1491,7 @@ static Args parse_args(int argc, char **argv) {
         else if (!strcmp(argv[i], "--branch-sites")) args.branch_sites = true;
         else if (!strcmp(argv[i], "--state-validate")) args.state_validate = true;
         else if (!strcmp(argv[i], "--dispatch-validate")) args.dispatch_validate = true;
+        else if (!strcmp(argv[i], "--emit-dir") && i + 1 < argc) args.emit_dir = argv[++i];
         else if (!strcmp(argv[i], "--gpr-run") && i + 1 < argc) args.gpr_run_path = argv[++i];
         else if (!strcmp(argv[i], "--skeletons") && i + 1 < argc) args.skeletons_path = argv[++i];
         else if (!strcmp(argv[i], "--eac") && i + 1 < argc) args.eac_path = argv[++i];
@@ -1567,11 +1633,20 @@ int main(int argc, char **argv) {
     free(header.items);
     free(line);
     fclose(fp);
-    if (args.state_validate) emit_state_validate(stats);
-    else if (args.dispatch_validate) emit_dispatch_validate(stats);
-    else if (args.branch_sites) emit_branch_sites(branches, branch_count);
-    else if (args.by_path) emit_by_path(paths, path_count, args.top_targets);
-    else emit_summary(stats, paths, path_count, args.top);
+    int rc = 0;
+    if (args.emit_dir) {
+        if (!emit_outputs_to_dir(&args, stats, paths, path_count, branches, branch_count)) rc = 1;
+    } else if (args.state_validate) {
+        emit_state_validate(stats);
+    } else if (args.dispatch_validate) {
+        emit_dispatch_validate(stats);
+    } else if (args.branch_sites) {
+        emit_branch_sites(branches, branch_count);
+    } else if (args.by_path) {
+        emit_by_path(paths, path_count, args.top_targets);
+    } else {
+        emit_summary(stats, paths, path_count, args.top);
+    }
     for (size_t i = 0; i < path_count; ++i) free(paths[i].text);
     free(paths);
     free(branches);
@@ -1581,5 +1656,5 @@ int main(int argc, char **argv) {
     cs_close(&cs);
     free(seeds);
     free(eac);
-    return 0;
+    return rc;
 }
