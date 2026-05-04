@@ -43,8 +43,13 @@ def fmt_counter(counter, max_items, formatter=str):
     return ",".join(f"{formatter(key)}:{count}" for key, count in counter.most_common(max_items))
 
 
-def new_group():
+def new_group(source_entry="", source_target="", key_delta="", key_status="", key_bytes=""):
     return {
+        "source_entry": source_entry,
+        "source_target": source_target,
+        "key_delta": key_delta,
+        "key_status": key_status,
+        "key_bytes": key_bytes,
         "events": 0,
         "unique_start_ips": set(),
         "targets": Counter(),
@@ -81,13 +86,32 @@ def classify(group):
     return "state_mixed"
 
 
-def load_groups(path: Path):
-    groups = defaultdict(new_group)
+def load_groups(path: Path, by_signature: bool):
+    groups = {}
     missing_state_rows = 0
 
     with path.open(newline="") as handle:
         for row in csv.DictReader(handle, delimiter="\t"):
-            key = (int(row["source_entry"], 10), row["source_target"])
+            source_entry = int(row["source_entry"], 10)
+            source_target = row["source_target"]
+            if by_signature:
+                key = (
+                    source_entry,
+                    source_target,
+                    row["delta"],
+                    row["byte_status"],
+                    row["bytes"],
+                )
+            else:
+                key = (source_entry, source_target)
+            if key not in groups:
+                groups[key] = new_group(
+                    source_entry=source_entry,
+                    source_target=source_target,
+                    key_delta=row["delta"] if by_signature else "",
+                    key_status=row["byte_status"] if by_signature else "",
+                    key_bytes=row["bytes"] if by_signature else "",
+                )
             group = groups[key]
             group["events"] += 1
             group["unique_start_ips"].add(row["start_vm_ip"])
@@ -127,23 +151,26 @@ def load_groups(path: Path):
 def main():
     parser = argparse.ArgumentParser(description="Summarize observed VM frame state effects per handler.")
     parser.add_argument("trace", nargs="?", default="dumps/vmtail-state-smoke-w16/vm_instruction_trace.tsv")
+    parser.add_argument("--by-signature", action="store_true", help="group by source handler plus delta/status/bytes")
     parser.add_argument("--max-items", type=int, default=8)
     args = parser.parse_args()
 
-    groups, missing_state_rows = load_groups(Path(args.trace))
+    groups, missing_state_rows = load_groups(Path(args.trace), args.by_signature)
     print(
-        "source_entry\tsource_target\tclass\tevents\tunique_start_ips\t"
+        "source_entry\tsource_target\tkey_delta\tkey_status\tkey_bytes\tclass\tevents\tunique_start_ips\t"
         "unique_pre_states\tunique_post_states\tunique_state_add\tunique_state_xor\t"
         "top_state_add\ttop_state_xor\ttop_pre_states\ttop_post_states\t"
         "top_flag_add\ttop_flag_xor\ttop_byte_add\ttop_byte_xor\t"
         "top_targets\ttop_sites\ttop_deltas\tbyte_statuses\ttop_bytes"
     )
 
-    for (source, source_target), group in sorted(
-        groups.items(), key=lambda item: (-item[1]["events"], item[0][0])
+    for _key, group in sorted(
+        groups.items(), key=lambda item: (-item[1]["events"], item[1]["source_entry"], item[1]["key_bytes"])
     ):
         print(
-            f"{source}\t{source_target}\t{classify(group)}\t{group['events']}\t"
+            f"{group['source_entry']}\t{group['source_target']}\t"
+            f"{group['key_delta']}\t{group['key_status']}\t{group['key_bytes']}\t"
+            f"{classify(group)}\t{group['events']}\t"
             f"{len(group['unique_start_ips'])}\t{len(group['pre_states'])}\t"
             f"{len(group['post_states'])}\t{len(group['state_add'])}\t"
             f"{len(group['state_xor'])}\t"
