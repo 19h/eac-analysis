@@ -165,6 +165,29 @@ def concrete_regs(regs):
     return {reg: tracked.value for reg, tracked in regs.items()}
 
 
+def read_tracked_frame_mem(frame_mem, off, size):
+    if not frame_mem:
+        return tracked_unknown(f"frame_{off:x}", f"frame+0x{off:x}", {"unknown_frame_field"})
+    exact = frame_mem.get((off, size))
+    if exact is not None:
+        return exact
+    for (base, stored_size), value in frame_mem.items():
+        if base != off or stored_size < size:
+            continue
+        if isinstance(value.value, int):
+            narrowed = value.value & mask_for_size(size)
+            return Tracked(narrowed, value.expr, value.classes)
+        if isinstance(value.value, Ptr) and size <= stored_size:
+            return value
+    return tracked_unknown(f"frame_{off:x}", f"frame+0x{off:x}", {"unknown_frame_field"})
+
+
+def write_tracked_frame_mem(frame_mem, off, size, value):
+    if frame_mem is None:
+        return
+    frame_mem[(off, size)] = value
+
+
 def read_ip(data, off, size):
     if off < 0 or off + size > len(data):
         return tracked_unknown("ip_oob", f"ip[0x{off:x}:{size}]", {"vm_ip_read"})
@@ -181,7 +204,7 @@ def read_table(table, off, size):
     return Tracked(table[entry], f"table[{entry}]", frozenset({"table_dispatch_target"}))
 
 
-def read_mem_tracked(insn, op, regs, frame, frame_tracked, ip_bytes, table):
+def read_mem_tracked(insn, op, regs, frame, frame_tracked, ip_bytes, table, frame_mem=None):
     ptr = mem_ptr(insn, op, concrete_regs(regs))
     if ptr is None:
         return tracked_unknown("mem_ptr", f"mem[{insn.op_str}]", {"unknown_memory_pointer"})
@@ -197,7 +220,7 @@ def read_mem_tracked(insn, op, regs, frame, frame_tracked, ip_bytes, table):
             return narrow_tracked(frame_tracked["flags"], size, "flags", 256)
         if ptr.off == FRAME_BYTE_OFF:
             return narrow_tracked(frame_tracked["byte"], size, "vm_byte", 256)
-        return tracked_unknown(f"frame_{ptr.off:x}", f"frame+0x{ptr.off:x}", {"unknown_frame_field"})
+        return read_tracked_frame_mem(frame_mem, ptr.off, size)
     if ptr.kind == "ip":
         return read_ip(ip_bytes, ptr.off, size)
     if ptr.kind == "table":
@@ -205,7 +228,7 @@ def read_mem_tracked(insn, op, regs, frame, frame_tracked, ip_bytes, table):
     return tracked_unknown(ptr.kind, fmt_value(ptr), {"unknown_pointer_kind"})
 
 
-def read_op_tracked(insn, op, regs, frame, frame_tracked, ip_bytes, table, max_expr_len):
+def read_op_tracked(insn, op, regs, frame, frame_tracked, ip_bytes, table, max_expr_len, frame_mem=None):
     if op.type == X86_OP_IMM:
         return tracked_const(op.imm & MASK64, op.size or 8)
     if op.type == X86_OP_REG:
@@ -215,11 +238,11 @@ def read_op_tracked(insn, op, regs, frame, frame_tracked, ip_bytes, table, max_e
             return narrow_tracked(regs[reg], op.size or 8, op_name, max_expr_len)
         return tracked_unknown(f"livein_{reg or op_name}", f"live_in({reg or op_name})", {"live_in_reg"})
     if op.type == X86_OP_MEM:
-        return read_mem_tracked(insn, op, regs, frame, frame_tracked, ip_bytes, table)
+        return read_mem_tracked(insn, op, regs, frame, frame_tracked, ip_bytes, table, frame_mem)
     return tracked_unknown("op", insn.op_str)
 
 
-def write_op_tracked(insn, op, item, regs, frame, frame_tracked, max_expr_len):
+def write_op_tracked(insn, op, item, regs, frame, frame_tracked, max_expr_len, frame_mem=None):
     if op.type == X86_OP_REG:
         reg = reg_of(insn, op)
         if not reg:
@@ -253,6 +276,8 @@ def write_op_tracked(insn, op, item, regs, frame, frame_tracked, max_expr_len):
             frame["byte"] = item.value & 0xff
             frame_tracked["byte"] = Tracked(frame["byte"], clip(item.expr, max_expr_len), item.classes | frozenset({"vm_byte"}))
             return True
+        if ptr.kind == "frame":
+            write_tracked_frame_mem(frame_mem, ptr.off, op.size or 8, item)
         return True
     return False
 
@@ -392,6 +417,7 @@ def execute(
     }
     regs = dict(initial_regs or {})
     regs["rbp"] = Tracked(Ptr("frame", 0), "frame", frozenset({"frame_pointer"}))
+    frame_mem = {}
     pc = start
     zf = None
     condition = None
@@ -412,7 +438,7 @@ def execute(
             if ops and ops[0].type == X86_OP_IMM and ops[0].imm in insns_by_addr:
                 pc = ops[0].imm
                 continue
-            value = read_op_tracked(insn, ops[0], regs, frame, frame_tracked, ip_bytes, table, max_expr_len) if ops else tracked_unknown("jmp")
+            value = read_op_tracked(insn, ops[0], regs, frame, frame_tracked, ip_bytes, table, max_expr_len, frame_mem) if ops else tracked_unknown("jmp")
             if isinstance(value.value, int):
                 return target_to_entry.get(value.value), value.value, frame["ip_delta"], "ok", steps, unknown, branch_unknown
             return None, None, frame["ip_delta"], "unknown_target", steps, unknown + 1, branch_unknown
@@ -429,8 +455,8 @@ def execute(
             continue
 
         if mnem in {"cmp", "test"} and len(ops) >= 2:
-            left = read_op_tracked(insn, ops[0], regs, frame, frame_tracked, ip_bytes, table, max_expr_len)
-            right = read_op_tracked(insn, ops[1], regs, frame, frame_tracked, ip_bytes, table, max_expr_len)
+            left = read_op_tracked(insn, ops[0], regs, frame, frame_tracked, ip_bytes, table, max_expr_len, frame_mem)
+            right = read_op_tracked(insn, ops[1], regs, frame, frame_tracked, ip_bytes, table, max_expr_len, frame_mem)
             size = ops[0].size or ops[1].size or 8
             zf = cmp_zf(mnem, left.value, right.value, size)
             if zf is None:
@@ -452,8 +478,8 @@ def execute(
             continue
 
         if mnem in {"mov", "movabs", "movzx"} and len(ops) >= 2:
-            value = read_op_tracked(insn, ops[1], regs, frame, frame_tracked, ip_bytes, table, max_expr_len)
-            if not write_op_tracked(insn, ops[0], value, regs, frame, frame_tracked, max_expr_len):
+            value = read_op_tracked(insn, ops[1], regs, frame, frame_tracked, ip_bytes, table, max_expr_len, frame_mem)
+            if not write_op_tracked(insn, ops[0], value, regs, frame, frame_tracked, max_expr_len, frame_mem):
                 unknown += 1
             pc = next_pc
             continue
@@ -464,21 +490,21 @@ def execute(
                 value = tracked_unknown("lea", f"lea({insn.op_str})", {"unknown_memory_pointer"})
             else:
                 value = Tracked(ptr, f"{ptr.kind}+0x{ptr.off:x}", frozenset({f"{ptr.kind}_pointer"}))
-            if not write_op_tracked(insn, ops[0], value, regs, frame, frame_tracked, max_expr_len):
+            if not write_op_tracked(insn, ops[0], value, regs, frame, frame_tracked, max_expr_len, frame_mem):
                 unknown += 1
             pc = next_pc
             continue
 
         if mnem in {"add", "sub", "xor", "and", "or", "shl", "shr"} and len(ops) >= 2:
-            left = read_op_tracked(insn, ops[0], regs, frame, frame_tracked, ip_bytes, table, max_expr_len)
-            right = read_op_tracked(insn, ops[1], regs, frame, frame_tracked, ip_bytes, table, max_expr_len)
+            left = read_op_tracked(insn, ops[0], regs, frame, frame_tracked, ip_bytes, table, max_expr_len, frame_mem)
+            right = read_op_tracked(insn, ops[1], regs, frame, frame_tracked, ip_bytes, table, max_expr_len, frame_mem)
             if self_zero(insn, ops):
                 value = Tracked(0, "0x0", frozenset({"constant"}))
             else:
                 value = eval_bin_tracked(mnem, left, right, ops[0].size or 8, max_expr_len)
             if is_unknown(value.value):
                 unknown += 1
-            if not write_op_tracked(insn, ops[0], value, regs, frame, frame_tracked, max_expr_len):
+            if not write_op_tracked(insn, ops[0], value, regs, frame, frame_tracked, max_expr_len, frame_mem):
                 unknown += 1
             if isinstance(value.value, int) and mnem in {"and", "or", "xor", "sub"}:
                 zf = (value.value & mask_for_size(ops[0].size or 8)) == 0
