@@ -128,6 +128,7 @@ typedef struct {
     int seq;
     int source_entry;
     uint64_t source_target;
+    uint64_t start_vm_ip;
     int target_entry;
     uint64_t target;
     int64_t delta;
@@ -143,6 +144,7 @@ typedef struct {
     int frame;
     int source_entry;
     int source_target;
+    int start_vm_ip;
     int target_entry;
     int target;
     int delta;
@@ -447,7 +449,7 @@ static bool mem_ptr(cs_insn *insn, cs_x86_op *op, Value *regs, Value *out) {
     if (base.kind != VK_PTR) {
         return false;
     }
-    *out = val_ptr(base.ptr_kind, base.off + index_value + mem.disp);
+    *out = ptr_add(base, index_value + mem.disp);
     return true;
 }
 
@@ -515,7 +517,7 @@ static Value read_mem_op(cs_insn *insn, cs_x86_op *op, Value *regs, Frame *frame
     }
     int size = op->size ? op->size : 8;
     if (ptr.ptr_kind == PK_FRAME) {
-        if (ptr.off == FRAME_IP_OFF && size == 8) return val_ptr(PK_IP, frame->ip_delta);
+        if (ptr.off == FRAME_IP_OFF && size == 8) return val_ptr_low(PK_IP, frame->ip_delta, 12, frame->ip_low12);
         if (ptr.off == FRAME_TABLE_OFF && size == 8) return val_ptr(PK_TABLE, 0);
         if (ptr.off == FRAME_STATE_OFF) return val_int(frame->state & mask_for_size(size));
         if (ptr.off == FRAME_FLAGS_OFF) return val_int(frame->flags & mask_for_size(size));
@@ -568,6 +570,7 @@ static bool write_op(cs_insn *insn, cs_x86_op *op, Value value, Value *regs, Fra
     if (ptr.ptr_kind == PK_FRAME && ptr.off == FRAME_IP_OFF) {
         if (value.kind == VK_PTR && value.ptr_kind == PK_IP) {
             frame->ip_delta = value.off;
+            if (value.ptr_low_bits) frame->ip_low12 = value.ptr_low_base & 0xfff;
             return true;
         }
         return false;
@@ -614,7 +617,7 @@ static Value eval_bin(const char *mnemonic, Value left, Value right, int size) {
         if (right.kind == VK_INT && (!strcmp(mnemonic, "add") || !strcmp(mnemonic, "sub"))) {
             int64_t delta = sign_extend_u(right.u, bits);
             if (!strcmp(mnemonic, "sub")) delta = -delta;
-            return val_ptr(left.ptr_kind, left.off + delta);
+            return ptr_add(left, delta);
         }
         if (right.kind == VK_PTR && !strcmp(mnemonic, "sub") && left.ptr_kind == right.ptr_kind) {
             return val_int((uint64_t)(left.off - right.off) & mask);
@@ -622,7 +625,7 @@ static Value eval_bin(const char *mnemonic, Value left, Value right, int size) {
     }
     if (right.kind == VK_PTR) {
         if (left.kind == VK_INT && !strcmp(mnemonic, "add")) {
-            return val_ptr(right.ptr_kind, right.off + sign_extend_u(left.u, bits));
+            return ptr_add(right, sign_extend_u(left.u, bits));
         }
     }
     unsigned lb = 0, rb = 0;
@@ -741,7 +744,13 @@ typedef struct {
 } ExecResult;
 
 static ExecResult execute_handler(Handler *h, TraceRow *row, uint64_t *table, Seed *seed, int max_steps) {
-    Frame frame = {.state = row->pre_state, .flags = row->pre_flags, .byte = row->pre_byte, .ip_delta = 0};
+    Frame frame = {
+        .state = row->pre_state,
+        .flags = row->pre_flags,
+        .byte = row->pre_byte,
+        .ip_delta = 0,
+        .ip_low12 = row->start_vm_ip & 0xfff,
+    };
     Value regs[REG_COUNT];
     for (int i = 0; i < REG_COUNT; ++i) regs[i] = val_unknown();
     FrameMem frame_mem[64];
@@ -940,7 +949,7 @@ static Value normalize_seed(uint64_t value, uint64_t frame, bool has_frame, uint
         return val_ptr(PK_TABLE, (int64_t)value - (int64_t)table);
     }
     if (has_vm_ip && value >= vm_ip - 0x10000 && value < vm_ip + 0x10000) {
-        return val_ptr(PK_IP, (int64_t)value - (int64_t)vm_ip);
+        return val_ptr_low(PK_IP, (int64_t)value - (int64_t)vm_ip, 12, vm_ip & 0xfff);
     }
     if (has_image && value >= image_base && value < image_base + 0x650000) {
         return val_int(value - image_base);
@@ -1266,6 +1275,7 @@ static bool parse_trace_header(Fields *header, TraceCols *cols) {
     cols->frame = col_index(header, "frame");
     cols->source_entry = col_index(header, "source_entry");
     cols->source_target = col_index(header, "source_target");
+    cols->start_vm_ip = col_index(header, "start_vm_ip");
     cols->target_entry = col_index(header, "target_entry");
     cols->target = col_index(header, "target");
     cols->delta = col_index(header, "delta");
@@ -1274,7 +1284,7 @@ static bool parse_trace_header(Fields *header, TraceCols *cols) {
     cols->pre_flags = col_index(header, "pre_flags");
     cols->pre_state = col_index(header, "pre_state");
     cols->pre_byte = col_index(header, "pre_byte");
-    return cols->seq >= 0 && cols->source_entry >= 0 && cols->target_entry >= 0 &&
+    return cols->seq >= 0 && cols->source_entry >= 0 && cols->start_vm_ip >= 0 && cols->target_entry >= 0 &&
            cols->target >= 0 && cols->delta >= 0 && cols->bytes >= 0 && cols->byte_status >= 0 &&
            cols->pre_state >= 0;
 }
@@ -1286,6 +1296,7 @@ static bool parse_trace_row(Fields *f, TraceCols *cols, TraceRow *row) {
     row->seq = atoi(field(f, cols->seq));
     row->source_entry = atoi(field(f, cols->source_entry));
     row->source_target = parse_u64(field(f, cols->source_target));
+    row->start_vm_ip = parse_u64(field(f, cols->start_vm_ip));
     row->target_entry = atoi(field(f, cols->target_entry));
     row->target = parse_u64(field(f, cols->target));
     row->delta = parse_delta(field(f, cols->delta));
