@@ -2454,6 +2454,202 @@ static ExecResult execute_handler_branch_pred(Handler *h, TraceRow *row, uint64_
                         .branch_unknown = branch_unknown, .path = path};
 }
 
+static TransferResult execute_handler_transfer(Handler *h, TraceRow *row, uint64_t *table, Seed *seed,
+                                               int max_steps, int max_expr_len) {
+    Frame frame = {
+        .state = row->pre_state,
+        .flags = row->pre_flags,
+        .byte = row->pre_byte,
+        .ip_delta = 0,
+        .ip_low12 = row->start_vm_ip & 0xfff,
+    };
+    Value regs[REG_COUNT];
+    SymValue sym_regs[REG_COUNT];
+    for (int i = 0; i < REG_COUNT; ++i) {
+        regs[i] = val_unknown();
+        sym_regs[i] = sym_text(tracked_reg_name(i), max_expr_len);
+    }
+    FrameMem frame_mem[64];
+    SymFrameMem sym_frame_mem[64];
+    size_t frame_mem_count = 0, sym_frame_mem_count = 0;
+    if (seed && seed->present) {
+        for (int i = 0; i < REG_COUNT; ++i) {
+            if (seed->reg_present[i]) {
+                regs[i] = seed->regs[i];
+                sym_regs[i] = seed_sym_value(i, seed->regs[i], max_expr_len);
+            }
+        }
+        for (size_t i = 0; i < seed->mem_count && i < 64; ++i) {
+            frame_mem[frame_mem_count++] = seed->mem[i];
+            char expr[64];
+            snprintf(expr, sizeof(expr), "seed_frame(0x%llx)", (unsigned long long)seed->mem[i].off);
+            sym_frame_mem[sym_frame_mem_count++] = (SymFrameMem){
+                .off = seed->mem[i].off,
+                .size = seed->mem[i].size,
+                .value = sym_text(expr, max_expr_len),
+            };
+        }
+    }
+    regs[14] = val_ptr(PK_FRAME, 0);
+    sym_regs[14] = sym_ptr(PK_FRAME, 0, "", 1, max_expr_len);
+    char state_expr[512] = "state0";
+    char flags_expr[512] = "flags0";
+    char byte_expr[512] = "byte0";
+    int64_t ip_delta_const = 0;
+    char ip_delta_expr[512] = "0x0";
+    uint64_t pc = h->target;
+    int zf = -1;
+    uint64_t steps = 0, unknown = 0, branch_unknown = 0;
+    char *path = xstrdup("");
+    size_t path_len = 0, path_cap = 1;
+    while (steps < (uint64_t)max_steps) {
+        cs_insn *insn = find_insn(h, pc);
+        if (!insn) {
+            TransferResult tr = {.pred_entry = -1, .pred_delta = frame.ip_delta, .status = "falloff",
+                                 .steps = steps, .unknown = unknown, .branch_unknown = branch_unknown, .path = path};
+            snprintf(tr.ip_expr, sizeof(tr.ip_expr), "%s", ip_delta_expr);
+            return tr;
+        }
+        steps++;
+        cs_x86 *x86 = &insn->detail->x86;
+        cs_x86_op *ops = x86->operands;
+        uint8_t op_count = x86->op_count;
+        uint64_t next_pc = insn->address + insn->size;
+        const char *mnem = insn->mnemonic;
+        if (!strcmp(mnem, "jmp")) {
+            if (op_count && ops[0].type == X86_OP_IMM && find_insn(h, (uint64_t)ops[0].imm)) {
+                pc = (uint64_t)ops[0].imm;
+                continue;
+            }
+            Value value = op_count ? read_op(insn, &ops[0], regs, &frame, row->bytes, row->byte_count, table, frame_mem, frame_mem_count) : val_unknown();
+            SymValue sym_value = op_count ? read_sym_op(insn, &ops[0], sym_regs, state_expr, flags_expr, byte_expr,
+                                                        ip_delta_const, ip_delta_expr, sym_frame_mem,
+                                                        sym_frame_mem_count, max_expr_len)
+                                          : sym_text("?jmp", max_expr_len);
+            TransferResult tr = {.pred_entry = -1, .pred_delta = frame.ip_delta,
+                                 .steps = steps, .unknown = unknown, .branch_unknown = branch_unknown, .path = path};
+            fmt_sym_buf(sym_value, tr.target_expr, sizeof(tr.target_expr), max_expr_len);
+            if (sym_value.kind == SK_TARGET) snprintf(tr.slot_expr, sizeof(tr.slot_expr), "%s", sym_value.slot);
+            snprintf(tr.ip_expr, sizeof(tr.ip_expr), "%s", ip_delta_expr);
+            if (value.kind == VK_INT) {
+                tr.pred_entry = target_to_entry(table, value.u);
+                tr.pred_target = value.u;
+                tr.status = "ok";
+                return tr;
+            }
+            tr.status = "unknown_target";
+            tr.unknown++;
+            return tr;
+        }
+        int taken = branch_taken(mnem, zf);
+        if (taken >= 0) {
+            path_append(&path, &path_len, &path_cap, insn->address, mnem, taken ? "1" : "0");
+            pc = (taken && op_count && ops[0].type == X86_OP_IMM) ? (uint64_t)ops[0].imm : next_pc;
+            continue;
+        }
+        if (mnem[0] == 'j' && strcmp(mnem, "jmp")) {
+            path_append(&path, &path_len, &path_cap, insn->address, mnem, "?");
+            branch_unknown++;
+            pc = next_pc;
+            continue;
+        }
+        if ((!strcmp(mnem, "cmp") || !strcmp(mnem, "test")) && op_count >= 2) {
+            Value left = read_op(insn, &ops[0], regs, &frame, row->bytes, row->byte_count, table, frame_mem, frame_mem_count);
+            Value right = read_op(insn, &ops[1], regs, &frame, row->bytes, row->byte_count, table, frame_mem, frame_mem_count);
+            zf = cmp_zf(mnem, left, right, ops[0].size ? ops[0].size : (ops[1].size ? ops[1].size : 8));
+            if (zf < 0) unknown++;
+            pc = next_pc;
+            continue;
+        }
+        if (!op_count) {
+            pc = next_pc;
+            continue;
+        }
+        if ((!strcmp(mnem, "mov") || !strcmp(mnem, "movabs") || !strcmp(mnem, "movzx")) && op_count >= 2) {
+            Value value = read_op(insn, &ops[1], regs, &frame, row->bytes, row->byte_count, table, frame_mem, frame_mem_count);
+            SymValue sym_value = read_sym_op(insn, &ops[1], sym_regs, state_expr, flags_expr, byte_expr,
+                                             ip_delta_const, ip_delta_expr, sym_frame_mem, sym_frame_mem_count, max_expr_len);
+            if (!strcmp(mnem, "movzx")) {
+                char text[512];
+                fmt_sym_buf(sym_value, text, sizeof(text), max_expr_len);
+                sym_value = sym_text(text, max_expr_len);
+            }
+            if (!write_op(insn, &ops[0], value, regs, &frame, frame_mem, &frame_mem_count)) unknown++;
+            if (!write_sym_op(insn, &ops[0], sym_value, sym_regs, state_expr, sizeof(state_expr),
+                              flags_expr, sizeof(flags_expr), byte_expr, sizeof(byte_expr),
+                              &ip_delta_const, ip_delta_expr, sizeof(ip_delta_expr),
+                              sym_frame_mem, &sym_frame_mem_count, max_expr_len)) unknown++;
+            pc = next_pc;
+            continue;
+        }
+        if (!strcmp(mnem, "lea") && op_count >= 2) {
+            Value ptr;
+            if (!mem_ptr(insn, &ops[1], regs, &ptr)) ptr = val_unknown();
+            SymValue sym_ptr_value;
+            if (!sym_mem_ptr(insn, &ops[1], sym_regs, &sym_ptr_value, max_expr_len)) {
+                char expr[192];
+                snprintf(expr, sizeof(expr), "lea(%s)", insn->op_str);
+                sym_ptr_value = sym_text(expr, max_expr_len);
+            }
+            if (!write_op(insn, &ops[0], ptr, regs, &frame, frame_mem, &frame_mem_count)) unknown++;
+            if (!write_sym_op(insn, &ops[0], sym_ptr_value, sym_regs, state_expr, sizeof(state_expr),
+                              flags_expr, sizeof(flags_expr), byte_expr, sizeof(byte_expr),
+                              &ip_delta_const, ip_delta_expr, sizeof(ip_delta_expr),
+                              sym_frame_mem, &sym_frame_mem_count, max_expr_len)) unknown++;
+            pc = next_pc;
+            continue;
+        }
+        if ((!strcmp(mnem, "add") || !strcmp(mnem, "sub") || !strcmp(mnem, "xor") ||
+             !strcmp(mnem, "and") || !strcmp(mnem, "or") || !strcmp(mnem, "shl") || !strcmp(mnem, "shr")) &&
+            op_count >= 2) {
+            Value dst = read_op(insn, &ops[0], regs, &frame, row->bytes, row->byte_count, table, frame_mem, frame_mem_count);
+            Value src = read_op(insn, &ops[1], regs, &frame, row->bytes, row->byte_count, table, frame_mem, frame_mem_count);
+            SymValue sym_dst = read_sym_op(insn, &ops[0], sym_regs, state_expr, flags_expr, byte_expr,
+                                           ip_delta_const, ip_delta_expr, sym_frame_mem, sym_frame_mem_count, max_expr_len);
+            SymValue sym_src = read_sym_op(insn, &ops[1], sym_regs, state_expr, flags_expr, byte_expr,
+                                           ip_delta_const, ip_delta_expr, sym_frame_mem, sym_frame_mem_count, max_expr_len);
+            Value value;
+            SymValue sym_value;
+            if (self_zero_insn(ops, mnem)) {
+                value = val_int(0);
+                sym_value = sym_text("0x0", max_expr_len);
+            } else if (!strcmp(mnem, "shl") || !strcmp(mnem, "shr")) {
+                value = eval_shift(mnem, dst, src, ops[0].size ? ops[0].size : 8);
+                sym_value = apply_sym_bin(mnem, sym_dst, sym_src, ops[0].size ? ops[0].size : 8, max_expr_len);
+            } else {
+                value = eval_bin(mnem, dst, src, ops[0].size ? ops[0].size : 8);
+                sym_value = apply_sym_bin(mnem, sym_dst, sym_src, ops[0].size ? ops[0].size : 8, max_expr_len);
+            }
+            if (is_unknown(value)) unknown++;
+            if (!write_op(insn, &ops[0], value, regs, &frame, frame_mem, &frame_mem_count)) unknown++;
+            if (!write_sym_op(insn, &ops[0], sym_value, sym_regs, state_expr, sizeof(state_expr),
+                              flags_expr, sizeof(flags_expr), byte_expr, sizeof(byte_expr),
+                              &ip_delta_const, ip_delta_expr, sizeof(ip_delta_expr),
+                              sym_frame_mem, &sym_frame_mem_count, max_expr_len)) unknown++;
+            if (!strcmp(mnem, "and") || !strcmp(mnem, "or") || !strcmp(mnem, "xor") || !strcmp(mnem, "sub")) {
+                uint64_t concrete = 0;
+                zf = concrete_full_value(value, ops[0].size ? ops[0].size : 8, &concrete) ? (concrete == 0) : -1;
+            }
+            pc = next_pc;
+            continue;
+        }
+        if (ops[0].type == X86_OP_REG) {
+            int r = reg_index((x86_reg)ops[0].reg);
+            if (r >= 0) {
+                regs[r] = val_unknown();
+                char expr[64];
+                snprintf(expr, sizeof(expr), "?%s", mnem);
+                sym_regs[r] = sym_text(expr, max_expr_len);
+            }
+        }
+        pc = next_pc;
+    }
+    TransferResult tr = {.pred_entry = -1, .pred_delta = frame.ip_delta, .status = "step_limit",
+                         .steps = steps, .unknown = unknown, .branch_unknown = branch_unknown, .path = path};
+    snprintf(tr.ip_expr, sizeof(tr.ip_expr), "%s", ip_delta_expr);
+    return tr;
+}
+
 static int cmp_target_counter(const void *a, const void *b) {
     const TargetCounter *x = a, *y = b;
     if (x->count != y->count) return x->count < y->count ? 1 : -1;
