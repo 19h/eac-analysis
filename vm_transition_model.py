@@ -99,6 +99,39 @@ def load_branch_predicates(path, top=5):
     return compact
 
 
+def load_long_branches(path, top=5):
+    rows = defaultdict(lambda: {
+        "events": 0,
+        "variants": 0,
+        "irs": defaultdict(int),
+    })
+    if not path:
+        return {}
+    for row in read_tsv(path):
+        entry = row.get("source_entry", "")
+        if not entry:
+            continue
+        bucket = rows[entry]
+        events = int(row.get("events", "0") or 0)
+        bucket["events"] += events
+        bucket["variants"] += 1
+        ir = row.get("lifted_ir", "")
+        if ir:
+            bucket["irs"][ir] += events
+
+    compact = {}
+    for entry, bucket in rows.items():
+        compact[entry] = {
+            "events": str(bucket["events"]),
+            "variants": str(bucket["variants"]),
+            "top_ir": ";".join(
+                f"{value}={key}"
+                for key, value in sorted(bucket["irs"].items(), key=lambda item: (-item[1], item[0]))[:top]
+            ),
+        }
+    return compact
+
+
 def choose_tail_row(rows, entry, target, site):
     if not rows:
         return {}
@@ -173,6 +206,10 @@ def main():
         "--branch-predicates-gpr",
         default="dumps/vmtail-state-wide-w16/vm_branch_predicates_gpr_seeded.tsv",
     )
+    parser.add_argument(
+        "--long-branches",
+        default="dumps/vmtail-wide-1m-w16/vm_long_branch_catalog.tsv",
+    )
     parser.add_argument("--branch-top", type=int, default=5)
     args = parser.parse_args()
 
@@ -189,6 +226,7 @@ def main():
     static_slots = load_tail_rows(args.static_slots)
     branch_predicates = load_branch_predicates(args.branch_predicates, args.branch_top)
     branch_predicates_gpr = load_branch_predicates(args.branch_predicates_gpr, args.branch_top)
+    long_branches = load_long_branches(args.long_branches, args.branch_top)
 
     fieldnames = [
         "entry",
@@ -243,6 +281,9 @@ def main():
         "branch_gpr_predicate_top_classes",
         "branch_gpr_predicate_top_unknown_sites",
         "branch_gpr_predicate_top_unknown_conditions",
+        "long_branch_events",
+        "long_branch_variants",
+        "long_branch_top_ir",
         "target_reg",
         "slot_kind",
         "slot_reg_or_temp",
@@ -269,6 +310,7 @@ def main():
         path_profile,
         branch_predicates,
         branch_predicates_gpr,
+        long_branches,
     ):
         skeleton = skeletons.get(entry, {})
         state_slice = slices.get(entry, {})
@@ -281,6 +323,7 @@ def main():
         path_profile_row = path_profile.get(entry, {})
         branch_predicate_row = branch_predicates.get(entry, {})
         branch_gpr_row = branch_predicates_gpr.get(entry, {})
+        long_branch_row = long_branches.get(entry, {})
 
         target = skeleton.get("target", "") or state_slice.get("target", "")
         tail_site = skeleton.get("tail_site", "") or state_slice.get("tail_site", "")
@@ -344,6 +387,9 @@ def main():
                 "branch_gpr_predicate_top_classes": branch_gpr_row.get("top_classes", ""),
                 "branch_gpr_predicate_top_unknown_sites": branch_gpr_row.get("top_unknown_sites", ""),
                 "branch_gpr_predicate_top_unknown_conditions": branch_gpr_row.get("top_unknown_conditions", ""),
+                "long_branch_events": long_branch_row.get("events", ""),
+                "long_branch_variants": long_branch_row.get("variants", ""),
+                "long_branch_top_ir": long_branch_row.get("top_ir", ""),
                 "target_reg": role.get("target_reg", ""),
                 "slot_kind": slot_kind,
                 "slot_reg_or_temp": slot_reg_or_temp,

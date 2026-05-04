@@ -81,6 +81,8 @@ def status(row):
         pieces.append(f"dispatch_model={row['dispatch_model']}:{row.get('dispatch_model_pct', '')}%")
     if row.get("transfer_expr_target_pct"):
         pieces.append(f"transfer_expr={row['transfer_expr_target_pct']}%/{row.get('transfer_expr_events', '')}")
+    if row.get("long_branch_events"):
+        pieces.append(f"long_branch={row['long_branch_events']}/{row.get('long_branch_variants', '')}")
     return ", ".join(pieces)
 
 
@@ -117,6 +119,13 @@ def build_rows(args):
         )
         if not slot_exprs and row.get("dispatch_model"):
             slot_exprs = f"model:{row.get('dispatch_model', '')}"
+        long_branch_ir = top_expr(
+            row.get("long_branch_top_ir", ""),
+            args.max_variants,
+            args.max_expr_len,
+            args.max_field_len,
+        )
+        tail_ir = f"next = table[slot]; ip += {ip_advance}" if ip_advance else long_branch_ir
         rows.append(
             {
                 "entry": entry,
@@ -145,7 +154,8 @@ def build_rows(args):
                 ),
                 "dispatch_slot_ir": slot_exprs,
                 "ip_advance_ir": ip_advance,
-                "tail_ir": f"next = table[slot]; ip += {ip_advance}" if ip_advance else "",
+                "long_branch_ir": long_branch_ir,
+                "tail_ir": tail_ir,
                 "path_profile": (
                     f"{row.get('path_profile_unique_paths', '')} paths over "
                     f"{row.get('path_profile_events', '')} state events"
@@ -190,6 +200,7 @@ def emit_tsv(rows):
         "flag_ir",
         "dispatch_slot_ir",
         "ip_advance_ir",
+        "long_branch_ir",
         "tail_ir",
         "path_profile",
         "branch_profile",
