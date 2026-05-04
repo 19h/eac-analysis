@@ -202,7 +202,40 @@ def reg_name(insn, reg_id):
     return REG_ALIASES.get(name, name)
 
 
-def read_sym_mem(insn, op, regs, frame_expr, max_len):
+def seed_sym_value(reg, value):
+    if isinstance(value, Ptr):
+        return SymPtr(value.kind, value.off)
+    if isinstance(value, int):
+        return f"seed({reg})"
+    if isinstance(value, Unknown):
+        return f"?seed_{reg}"
+    return fmt_sym(value)
+
+
+def read_sym_frame_mem(frame_mem, off, size, max_len):
+    if not frame_mem:
+        return None
+    exact = frame_mem.get((off, size))
+    if exact is not None:
+        return exact
+    for (base, stored_size), value in frame_mem.items():
+        if base <= off and off + size <= base + stored_size:
+            expr = fmt_sym(value)
+            shift = (off - base) * 8
+            if shift:
+                expr = clip(f"{wrap(expr)} >> 0x{shift:x}", max_len)
+            if size != stored_size or shift:
+                expr = clip(f"mask{size * 8}({expr})", max_len)
+            return expr
+    return None
+
+
+def write_sym_frame_mem(frame_mem, off, size, value):
+    if frame_mem is not None:
+        frame_mem[(off, size)] = value
+
+
+def read_sym_mem(insn, op, regs, frame_expr, max_len, frame_mem=None):
     ptr = sym_mem_ptr(insn, op, regs, max_len)
     if ptr is None:
         return f"mem[{insn.op_str}]"
@@ -219,6 +252,9 @@ def read_sym_mem(insn, op, regs, frame_expr, max_len):
             return frame_expr["flags"]
         if ptr.off == FRAME_BYTE_OFF:
             return frame_expr["byte"]
+        seeded = read_sym_frame_mem(frame_mem, ptr.off, size, max_len)
+        if seeded is not None:
+            return seeded
         return f"F[0x{ptr.off:x}]"
     if ptr.kind == "ip":
         off = ptr_offset_expr(ptr, max_len)
@@ -236,17 +272,17 @@ def read_sym_mem(insn, op, regs, frame_expr, max_len):
     return f"{fmt_ptr(ptr)}/{size}"
 
 
-def read_sym_op(insn, op, regs, frame_expr, max_len):
+def read_sym_op(insn, op, regs, frame_expr, max_len, frame_mem=None):
     if op.type == X86_OP_IMM:
         return fmt_imm(op.imm)
     if op.type == X86_OP_REG:
         return regs.get(reg_name(insn, op.reg), reg_name(insn, op.reg))
     if op.type == X86_OP_MEM:
-        return read_sym_mem(insn, op, regs, frame_expr, max_len)
+        return read_sym_mem(insn, op, regs, frame_expr, max_len, frame_mem)
     return insn.op_str
 
 
-def write_sym_op(insn, op, value, regs, frame_expr, max_len):
+def write_sym_op(insn, op, value, regs, frame_expr, max_len, frame_mem=None):
     if op.type == X86_OP_REG:
         reg = reg_name(insn, op.reg)
         if reg:
@@ -272,6 +308,8 @@ def write_sym_op(insn, op, value, regs, frame_expr, max_len):
         if ptr.kind == "frame" and ptr.off == FRAME_BYTE_OFF:
             frame_expr["byte"] = fmt_sym(value)
             return True
+        if ptr.kind == "frame":
+            write_sym_frame_mem(frame_mem, ptr.off, op.size or 8, value)
         return True
     return False
 
@@ -299,7 +337,7 @@ def apply_sym_bin(mnemonic, left, right, size, max_len):
     return expr
 
 
-def execute(insns_by_addr, start, row, table, target_to_entry, max_steps, max_expr_len):
+def execute(insns_by_addr, start, row, table, target_to_entry, max_steps, max_expr_len, initial_regs=None):
     ip_bytes = bytes.fromhex(row["bytes"])
     frame = {
         "state": parse_int(row["pre_state"]) & MASK32,
@@ -307,8 +345,19 @@ def execute(insns_by_addr, start, row, table, target_to_entry, max_steps, max_ex
         "byte": parse_int(row.get("pre_byte", "0x0") or "0x0") & 0xff,
         "ip_delta": 0,
     }
-    regs = {"rbp": Ptr("frame", 0)}
-    sym_regs = {"rbp": SymPtr("frame", 0)}
+    regs = dict(initial_regs or {})
+    seed_frame_mem = dict(regs.pop("__frame_mem__", {}))
+    frame_mem = dict(seed_frame_mem)
+    sym_frame_mem = {
+        key: f"seed_frame(0x{key[0]:x})"
+        for key in seed_frame_mem
+    }
+    sym_regs = {
+        reg: seed_sym_value(reg, value)
+        for reg, value in regs.items()
+    }
+    regs["rbp"] = Ptr("frame", 0)
+    sym_regs["rbp"] = SymPtr("frame", 0)
     frame_expr = {
         "state": "state0",
         "flags": "flags0",
@@ -336,8 +385,8 @@ def execute(insns_by_addr, start, row, table, target_to_entry, max_steps, max_ex
             if ops and ops[0].type == X86_OP_IMM and ops[0].imm in insns_by_addr:
                 pc = ops[0].imm
                 continue
-            value = read_concrete_op(insn, ops[0], regs, frame, ip_bytes, table) if ops else Unknown("jmp")
-            sym_value = read_sym_op(insn, ops[0], sym_regs, frame_expr, max_expr_len) if ops else "?jmp"
+            value = read_concrete_op(insn, ops[0], regs, frame, ip_bytes, table, frame_mem) if ops else Unknown("jmp")
+            sym_value = read_sym_op(insn, ops[0], sym_regs, frame_expr, max_expr_len, sym_frame_mem) if ops else "?jmp"
             slot_expr = sym_value.slot if isinstance(sym_value, SymTarget) else ""
             target_expr = fmt_sym(sym_value)
             if isinstance(value, int):
@@ -368,8 +417,8 @@ def execute(insns_by_addr, start, row, table, target_to_entry, max_steps, max_ex
             continue
 
         if mnem in {"cmp", "test"} and len(ops) >= 2:
-            left = read_concrete_op(insn, ops[0], regs, frame, ip_bytes, table)
-            right = read_concrete_op(insn, ops[1], regs, frame, ip_bytes, table)
+            left = read_concrete_op(insn, ops[0], regs, frame, ip_bytes, table, frame_mem)
+            right = read_concrete_op(insn, ops[1], regs, frame, ip_bytes, table, frame_mem)
             zf = cmp_zf(mnem, left, right, ops[0].size or ops[1].size or 8)
             if zf is None:
                 unknown += 1
@@ -381,13 +430,13 @@ def execute(insns_by_addr, start, row, table, target_to_entry, max_steps, max_ex
             continue
 
         if mnem in {"mov", "movabs", "movzx"} and len(ops) >= 2:
-            value = read_concrete_op(insn, ops[1], regs, frame, ip_bytes, table)
-            sym_value = read_sym_op(insn, ops[1], sym_regs, frame_expr, max_expr_len)
+            value = read_concrete_op(insn, ops[1], regs, frame, ip_bytes, table, frame_mem)
+            sym_value = read_sym_op(insn, ops[1], sym_regs, frame_expr, max_expr_len, sym_frame_mem)
             if mnem == "movzx":
                 sym_value = fmt_sym(sym_value)
-            if not write_concrete_op(insn, ops[0], value, regs, frame):
+            if not write_concrete_op(insn, ops[0], value, regs, frame, frame_mem):
                 unknown += 1
-            if not write_sym_op(insn, ops[0], sym_value, sym_regs, frame_expr, max_expr_len):
+            if not write_sym_op(insn, ops[0], sym_value, sym_regs, frame_expr, max_expr_len, sym_frame_mem):
                 unknown += 1
             pc = next_pc
             continue
@@ -395,18 +444,18 @@ def execute(insns_by_addr, start, row, table, target_to_entry, max_steps, max_ex
         if mnem == "lea" and len(ops) >= 2:
             ptr = mem_ptr(insn, ops[1], regs)
             sym_ptr = sym_mem_ptr(insn, ops[1], sym_regs, max_expr_len)
-            if not write_concrete_op(insn, ops[0], ptr if ptr is not None else Unknown("lea"), regs, frame):
+            if not write_concrete_op(insn, ops[0], ptr if ptr is not None else Unknown("lea"), regs, frame, frame_mem):
                 unknown += 1
-            if not write_sym_op(insn, ops[0], sym_ptr if sym_ptr is not None else f"lea({insn.op_str})", sym_regs, frame_expr, max_expr_len):
+            if not write_sym_op(insn, ops[0], sym_ptr if sym_ptr is not None else f"lea({insn.op_str})", sym_regs, frame_expr, max_expr_len, sym_frame_mem):
                 unknown += 1
             pc = next_pc
             continue
 
         if mnem in {"add", "sub", "xor", "and", "or", "shl", "shr"} and len(ops) >= 2:
-            dst = read_concrete_op(insn, ops[0], regs, frame, ip_bytes, table)
-            src = read_concrete_op(insn, ops[1], regs, frame, ip_bytes, table)
-            sym_dst = read_sym_op(insn, ops[0], sym_regs, frame_expr, max_expr_len)
-            sym_src = read_sym_op(insn, ops[1], sym_regs, frame_expr, max_expr_len)
+            dst = read_concrete_op(insn, ops[0], regs, frame, ip_bytes, table, frame_mem)
+            src = read_concrete_op(insn, ops[1], regs, frame, ip_bytes, table, frame_mem)
+            sym_dst = read_sym_op(insn, ops[0], sym_regs, frame_expr, max_expr_len, sym_frame_mem)
+            sym_src = read_sym_op(insn, ops[1], sym_regs, frame_expr, max_expr_len, sym_frame_mem)
             if mnem == "xor" and ops[0].type == X86_OP_REG and ops[1].type == X86_OP_REG and ops[0].reg == ops[1].reg:
                 value = 0
                 sym_value = "0x0"
@@ -421,9 +470,9 @@ def execute(insns_by_addr, start, row, table, target_to_entry, max_steps, max_ex
                 sym_value = apply_sym_bin(mnem, sym_dst, sym_src, ops[0].size or 8, max_expr_len)
             if is_unknown(value):
                 unknown += 1
-            if not write_concrete_op(insn, ops[0], value, regs, frame):
+            if not write_concrete_op(insn, ops[0], value, regs, frame, frame_mem):
                 unknown += 1
-            if not write_sym_op(insn, ops[0], sym_value, sym_regs, frame_expr, max_expr_len):
+            if not write_sym_op(insn, ops[0], sym_value, sym_regs, frame_expr, max_expr_len, sym_frame_mem):
                 unknown += 1
             if mnem in {"and", "or", "xor", "sub"}:
                 zf = (value & mask_for_size(ops[0].size or 8)) == 0 if isinstance(value, int) else None
