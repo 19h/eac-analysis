@@ -159,6 +159,14 @@ def build_rows(args):
                     if row.get("branch_predicate_events", "") else ""
                 ),
                 "branch_sites": clip(row.get("branch_predicate_top_unknown_sites", ""), args.max_field_len),
+                "branch_gpr_profile": (
+                    f"{row.get('branch_gpr_predicate_unknown_events', '')}/"
+                    f"{row.get('branch_gpr_predicate_events', '')} unknown branches "
+                    f"({row.get('branch_gpr_predicate_unknown_pct', '')}%): "
+                    f"{clip(row.get('branch_gpr_predicate_top_classes', ''), args.max_field_len)}"
+                    if row.get("branch_gpr_predicate_events", "") else ""
+                ),
+                "branch_gpr_sites": clip(row.get("branch_gpr_predicate_top_unknown_sites", ""), args.max_field_len),
                 "validation": status(row),
                 "top_targets": row.get("top_targets", ""),
             }
@@ -186,6 +194,8 @@ def emit_tsv(rows):
         "path_profile",
         "branch_profile",
         "branch_sites",
+        "branch_gpr_profile",
+        "branch_gpr_sites",
         "validation",
         "top_targets",
     ]
@@ -215,6 +225,10 @@ def emit_markdown(rows, limit):
             print(f"- branch predicates: `{row['branch_profile']}`")
         if row["branch_sites"]:
             print(f"- unknown branch sites: `{row['branch_sites']}`")
+        if row["branch_gpr_profile"]:
+            print(f"- GPR-seeded branch predicates: `{row['branch_gpr_profile']}`")
+        if row["branch_gpr_sites"]:
+            print(f"- GPR-seeded unknown branch sites: `{row['branch_gpr_sites']}`")
         if row["flag_ir"]:
             print(f"- flags: `{row['flag_ir']}`")
         if row["state_ir"]:

@@ -65,6 +65,7 @@ def build_rows(args):
                 "path_hash": digest,
                 "source_class": micro.get("class", ""),
                 "source_branch_profile": micro.get("branch_profile", ""),
+                "source_branch_gpr_profile": micro.get("branch_gpr_profile", ""),
                 "events": path_row.get("events", ""),
                 "target_pct": path_row.get("target_coverage_pct", ""),
                 "ip_pct": path_row.get("ip_coverage_pct", ""),
@@ -90,6 +91,7 @@ def emit_tsv(rows):
         "path_hash",
         "source_class",
         "source_branch_profile",
+        "source_branch_gpr_profile",
         "events",
         "target_pct",
         "ip_pct",
@@ -126,6 +128,8 @@ def emit_markdown(rows, limit):
         print(f"- events: `{row['events']}`, validation: `{row['validation']}`")
         if row["source_branch_profile"]:
             print(f"- source branch predicates: `{row['source_branch_profile']}`")
+        if row["source_branch_gpr_profile"]:
+            print(f"- source GPR-seeded branch predicates: `{row['source_branch_gpr_profile']}`")
         if row["sample_expr_events"]:
             print(f"- sampled expression events: `{row['sample_expr_events']}`")
         if row["slot_expr"]:
