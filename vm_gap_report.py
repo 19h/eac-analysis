@@ -13,6 +13,7 @@ KIND_WEIGHT = {
     "decoded_long_branch_source": 15,
     "backedge_sample": 40,
     "uncovered_source_start": 30,
+    "hidden_transition_destination": 25,
     "target_only_entry": 10,
     "unobserved_entry": 1,
 }
@@ -70,6 +71,22 @@ def find_long_branch_path(dump_dir: Path, explicit_path):
     return None
 
 
+def find_hidden_transition_path(dump_dir: Path, explicit_path):
+    if explicit_path:
+        path = Path(explicit_path)
+        return path if path.exists() else None
+
+    candidates = [dump_dir / "vm_hidden_transition_catalog.tsv"]
+    if dump_dir.name.endswith("-filefill"):
+        base_name = dump_dir.name[: -len("-filefill")]
+        candidates.append(dump_dir.with_name(base_name) / "vm_hidden_transition_catalog.tsv")
+
+    for path in candidates:
+        if path.exists():
+            return path
+    return None
+
+
 def load_long_branches(path: Path, top=5):
     rows = defaultdict(lambda: {
         "events": 0,
@@ -118,6 +135,33 @@ def load_long_branches(path: Path, top=5):
             ),
         }
     return compact
+
+
+def load_hidden_transitions(path: Path, top=3):
+    by_start = defaultdict(list)
+    if path is None:
+        return by_start
+
+    with path.open(newline="", errors="replace") as handle:
+        for row in csv.DictReader(handle, delimiter="\t"):
+            starts = row.get("all_start_ips") or row.get("start_ips", "")
+            if not starts:
+                continue
+            summary = (
+                f"{row.get('hidden_source_entry', '')}->{row.get('hidden_target_entry', '')}"
+                f":{row.get('delta', '')}"
+                f":events={row.get('events', '')}"
+                f":obs={row.get('source_observations', '')}"
+            )
+            for start in starts.split(","):
+                if not start or start.startswith("..."):
+                    continue
+                by_start[start].append(summary)
+
+    return {
+        start: ",".join(summaries[:top])
+        for start, summaries in by_start.items()
+    }
 
 
 def load_segments(path: Path):
@@ -228,7 +272,7 @@ def add_static_group(groups, kind, key, events, source="", target="", delta="", 
         group["sites"][site] += events
 
 
-def analyze_trace(dump_dir: Path, segments, groups):
+def analyze_trace(dump_dir: Path, segments, groups, hidden_transitions):
     trace_path = dump_dir / "vm_instruction_trace.tsv"
     boundary_by_start = {segment["start"]: segment for segment in segments}
     with trace_path.open(newline="") as handle:
@@ -254,13 +298,19 @@ def analyze_trace(dump_dir: Path, segments, groups):
                 )
 
             if status == "exact" and delta > 0 and start_segment is not None and end_segment is None:
+                hidden = hidden_transitions.get(f"0x{end:x}", "")
+                kind = "hidden_transition_destination" if hidden else "uncovered_exact_destination"
+                detail = (
+                    f"exact positive instruction enters adjacent hidden span; hidden={hidden}"
+                    if hidden else "exact positive instruction exits recovered bytecode coverage"
+                )
                 add_trace_row(
                     groups,
-                    "uncovered_exact_destination",
+                    kind,
                     f"0x{end:x}",
                     row,
                     offset=end,
-                    detail="exact positive instruction exits recovered bytecode coverage",
+                    detail=detail,
                 )
 
             if status.startswith("prefix_"):
@@ -406,6 +456,8 @@ def main():
     parser.add_argument("--segments", default=None)
     parser.add_argument("--long-branches", default=None)
     parser.add_argument("--no-long-branches", action="store_true")
+    parser.add_argument("--hidden-transitions", default=None)
+    parser.add_argument("--no-hidden-transitions", action="store_true")
     parser.add_argument("--max-items", type=int, default=8)
     parser.add_argument("--limit", type=int, default=0, help="limit emitted rows; 0 emits all")
     args = parser.parse_args()
@@ -415,9 +467,11 @@ def main():
     segments = load_segments(segment_path)
     long_branch_path = None if args.no_long_branches else find_long_branch_path(dump_dir, args.long_branches)
     long_branches = load_long_branches(long_branch_path)
+    hidden_path = None if args.no_hidden_transitions else find_hidden_transition_path(dump_dir, args.hidden_transitions)
+    hidden_transitions = load_hidden_transitions(hidden_path)
     groups = {}
 
-    analyze_trace(dump_dir, segments, groups)
+    analyze_trace(dump_dir, segments, groups, hidden_transitions)
     load_missing_exact(dump_dir, groups, long_branches)
     load_observation_gaps(dump_dir, groups)
 

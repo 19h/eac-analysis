@@ -12,6 +12,12 @@ def fmt_delta(value):
     return f"{sign}0x{abs(value):x}"
 
 
+def ip_update_text(delta):
+    if delta >= 0:
+        return f"ip += 0x{delta:x}"
+    return f"ip -= 0x{-delta:x}"
+
+
 def fmt_counter(counter, limit):
     return ",".join(f"{key}:{count}" for key, count in counter.most_common(limit))
 
@@ -143,13 +149,15 @@ def build_rows(args):
             "prev_sources": fmt_counter(group["prev_sources"], args.max_items),
             "prev_sites": fmt_counter(group["prev_sites"], args.max_items),
             "next_targets": fmt_counter(group["next_targets"], args.max_items),
+            "all_start_ips": fmt_set(group["starts"], len(group["starts"])),
+            "all_end_ips": fmt_set(group["ends"], len(group["ends"])),
             "start_ips": fmt_set(group["starts"], args.max_items),
             "end_ips": fmt_set(group["ends"], args.max_items),
             "top_ip_reads": fmt_counter(group["ip_reads"], args.max_items),
             "top_bytes": fmt_counter(group["bytes"], args.max_items),
             "top_sha256": top_hash,
             "inference": "adjacent_unhooked_span",
-            "lifted_ir": f"inferred table[{hidden_source}] -> table[{hidden_target}], ip += {delta}",
+            "lifted_ir": f"inferred table[{hidden_source}] -> table[{hidden_target}], {ip_update_text(int(delta[1:], 16))}",
         })
 
     rows.sort(key=lambda row: (-int(row["events"]), int(row["hidden_source_entry"]), row["delta"], int(row["hidden_target_entry"])))
@@ -177,6 +185,8 @@ def emit_tsv(rows):
         "prev_sources",
         "prev_sites",
         "next_targets",
+        "all_start_ips",
+        "all_end_ips",
         "start_ips",
         "end_ips",
         "top_ip_reads",
