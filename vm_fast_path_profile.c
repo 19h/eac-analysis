@@ -7,6 +7,7 @@
 #include <errno.h>
 #include <inttypes.h>
 #include <stdbool.h>
+#include <stdarg.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -270,6 +271,12 @@ typedef struct {
     TextCounter condition_texts;
 } BranchPredStat;
 
+typedef struct {
+    int64_t off;
+    int size;
+    TrackedValue value;
+} TrackedFrameMem;
+
 static Value val_int(uint64_t u) {
     Value v = {.kind = VK_INT, .u = u};
     return v;
@@ -405,6 +412,184 @@ static char *xstrdup(const char *s) {
         exit(1);
     }
     return p;
+}
+
+static size_t max_size_t(size_t a, size_t b) {
+    return a > b ? a : b;
+}
+
+static void clip_to_buf(const char *text, int max_len, char *out, size_t out_size) {
+    if (!out_size) return;
+    if (!text) text = "";
+    size_t len = strlen(text);
+    if (max_len <= 0 || len <= (size_t)max_len || (size_t)max_len + 1 > out_size) {
+        snprintf(out, out_size, "%s", text);
+        return;
+    }
+    unsigned char digest[SHA256_DIGEST_LENGTH];
+    SHA256((const unsigned char *)text, len, digest);
+    size_t keep = max_size_t(16, (size_t)max_len - 17);
+    if (keep + 17 >= out_size) keep = out_size > 18 ? out_size - 18 : 0;
+    if (keep > len) keep = len;
+    memcpy(out, text, keep);
+    char *p = out + keep;
+    snprintf(p, out_size - keep, "...#%02x%02x%02x%02x%02x%02x",
+             digest[0], digest[1], digest[2], digest[3], digest[4], digest[5]);
+}
+
+static void tracked_set_expr(TrackedValue *tv, const char *text, int max_expr_len) {
+    clip_to_buf(text, max_expr_len, tv->expr, sizeof(tv->expr));
+}
+
+static const char *ptr_kind_name(PtrKind kind) {
+    switch (kind) {
+    case PK_FRAME: return "frame";
+    case PK_TABLE: return "table";
+    case PK_IP: return "ip";
+    }
+    return "ptr";
+}
+
+static void fmt_value_buf(Value value, const char *reason, char *out, size_t out_size) {
+    if (!out_size) return;
+    switch (value.kind) {
+    case VK_INT:
+        snprintf(out, out_size, "0x%" PRIx64, value.u);
+        return;
+    case VK_LOWBITS:
+        snprintf(out, out_size, "low%u(0x%" PRIx64 ")", value.bits, value.u);
+        return;
+    case VK_PTR: {
+        const char *sign = value.off >= 0 ? "+" : "-";
+        uint64_t off = value.off >= 0 ? (uint64_t)value.off : (uint64_t)(-value.off);
+        snprintf(out, out_size, "%s%s0x%" PRIx64, ptr_kind_name(value.ptr_kind), sign, off);
+        return;
+    }
+    case VK_UNKNOWN:
+        snprintf(out, out_size, "?%s", reason && *reason ? reason : "unknown");
+        return;
+    }
+}
+
+static TrackedValue tracked_from(Value value, const char *expr, uint64_t classes, const char *reason, int max_expr_len) {
+    TrackedValue tv = {.value = value, .classes = classes};
+    snprintf(tv.reason, sizeof(tv.reason), "%s", reason ? reason : "");
+    tracked_set_expr(&tv, expr ? expr : "", max_expr_len);
+    return tv;
+}
+
+static TrackedValue tracked_unknown(const char *reason, const char *expr, uint64_t classes, int max_expr_len) {
+    return tracked_from(val_unknown(), expr ? expr : reason, classes | TC_UNKNOWN, reason, max_expr_len);
+}
+
+static TrackedValue tracked_const(uint64_t value, int size, int max_expr_len) {
+    uint64_t masked = value & mask_for_size(size);
+    char expr[64];
+    snprintf(expr, sizeof(expr), "0x%" PRIx64, masked);
+    return tracked_from(val_int(masked), expr, TC_CONSTANT, "", max_expr_len);
+}
+
+static const char *tracked_reg_name(int idx) {
+    static const char *names[REG_COUNT] = {
+        "rax","rbx","rcx","rdx","rsi","rdi","r8","r9","r10","r11","r12","r13","r14","r15","rbp","rsp"
+    };
+    return (idx >= 0 && idx < REG_COUNT) ? names[idx] : "";
+}
+
+static void append_piece(char *out, size_t out_size, const char *piece, bool *first) {
+    if (!piece || !*piece || !out_size) return;
+    size_t len = strlen(out);
+    snprintf(out + len, len < out_size ? out_size - len : 0, "%s%s", *first ? "" : ",", piece);
+    *first = false;
+}
+
+static void class_names_buf(uint64_t classes, char *out, size_t out_size) {
+    out[0] = 0;
+    bool first = true;
+    struct ClassName { uint64_t bit; const char *name; };
+    static const struct ClassName names[] = {
+        {TC_CONSTANT, "constant"},
+        {TC_DERIVED_LIVE_IN, "derived_live_in"},
+        {TC_DERIVED_UNKNOWN, "derived_unknown"},
+        {TC_DISPATCH_TABLE_POINTER, "dispatch_table_pointer"},
+        {TC_FLAGS, "flags"},
+        {TC_FRAME_POINTER, "frame_pointer"},
+        {TC_FRAME_PTR_LOW8, "frame_ptr_low8"},
+        {TC_FRAME_SCRATCH_SEED, "frame_scratch_seed"},
+        {TC_GPR_SEED, "gpr_seed"},
+        {TC_IMAGE_OFFSET, "image_offset"},
+        {TC_LIVE_IN_REG, "live_in_reg"},
+        {TC_PTR_PARTIAL, "ptr_partial"},
+        {TC_STATE, "state"},
+        {TC_TABLE_DISPATCH_TARGET, "table_dispatch_target"},
+        {TC_TABLE_READ, "table_read"},
+        {TC_UNKNOWN, "unknown"},
+        {TC_UNKNOWN_FRAME_FIELD, "unknown_frame_field"},
+        {TC_UNKNOWN_MEMORY_POINTER, "unknown_memory_pointer"},
+        {TC_UNKNOWN_POINTER_KIND, "unknown_pointer_kind"},
+        {TC_VM_BYTE, "vm_byte"},
+        {TC_VM_BYTECODE, "vm_bytecode"},
+        {TC_VM_IP_POINTER, "vm_ip_pointer"},
+    };
+    for (size_t i = 0; i < sizeof(names) / sizeof(names[0]); ++i) {
+        if (classes & names[i].bit) append_piece(out, out_size, names[i].name, &first);
+    }
+}
+
+static int cmp_text_count(const void *a, const void *b) {
+    const TextCount *x = *(const TextCount * const *)a;
+    const TextCount *y = *(const TextCount * const *)b;
+    if (x->count != y->count) return x->count < y->count ? 1 : -1;
+    return strcmp(x->label, y->label);
+}
+
+static void counter_add(TextCounter *counter, const char *label, uint64_t add) {
+    if (!label) label = "";
+    for (size_t i = 0; i < counter->count; ++i) {
+        if (!strcmp(counter->items[i].label, label)) {
+            counter->items[i].count += add;
+            return;
+        }
+    }
+    if (counter->count == counter->cap) {
+        counter->cap = counter->cap ? counter->cap * 2 : 8;
+        counter->items = realloc(counter->items, counter->cap * sizeof(TextCount));
+        if (!counter->items) {
+            perror("realloc");
+            exit(1);
+        }
+    }
+    counter->items[counter->count].label = xstrdup(label);
+    counter->items[counter->count].count = add;
+    counter->count++;
+}
+
+static void counter_add_fmt(TextCounter *counter, uint64_t add, const char *fmt, ...) {
+    char buf[512];
+    va_list ap;
+    va_start(ap, fmt);
+    vsnprintf(buf, sizeof(buf), fmt, ap);
+    va_end(ap);
+    counter_add(counter, buf, add);
+}
+
+static void counter_print_top(TextCounter *counter, int top, int max_len) {
+    if (!counter->count) return;
+    TextCount **order = xcalloc(counter->count, sizeof(TextCount *));
+    for (size_t i = 0; i < counter->count; ++i) order[i] = &counter->items[i];
+    qsort(order, counter->count, sizeof(order[0]), cmp_text_count);
+    for (size_t i = 0; i < counter->count && (int)i < top; ++i) {
+        char label[384];
+        clip_to_buf(order[i]->label, max_len, label, sizeof(label));
+        printf("%s%s:%" PRIu64, i ? "," : "", label, order[i]->count);
+    }
+    free(order);
+}
+
+static void free_counter(TextCounter *counter) {
+    for (size_t i = 0; i < counter->count; ++i) free(counter->items[i].label);
+    free(counter->items);
+    memset(counter, 0, sizeof(*counter));
 }
 
 static Fields split_line(char *line) {
