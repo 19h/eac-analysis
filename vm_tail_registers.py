@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import argparse
+import csv
 import re
 import struct
 from collections import Counter, defaultdict
@@ -26,6 +27,14 @@ def fmt_counter(counter, max_items):
 
 def parse_fields(line):
     return {name: int(value_s, 16) for name, value_s in FIELD_RE.findall(line)}
+
+
+def parse_int(value):
+    if value is None or value == "":
+        return None
+    if value.startswith("+"):
+        return int(value[1:], 0)
+    return int(value, 0)
 
 
 def classify_event(fields, target_to_entry):
@@ -71,6 +80,10 @@ def main():
     parser.add_argument("dump_dir", nargs="?", default="dumps/vmtail-regs-smoke-w16")
     parser.add_argument("--eac", default="eac.elf")
     parser.add_argument("--site-summary", action="store_true", help="emit one compact row per tail site")
+    parser.add_argument(
+        "--instruction-trace",
+        help="join inferred register roles onto an instruction trace and emit one row per source handler/tail site",
+    )
     parser.add_argument("--max-items", type=int, default=8)
     args = parser.parse_args()
 
@@ -110,7 +123,11 @@ def main():
                 if value is not None:
                     role_values[key][f"0x{value:x}"] += 1
 
-    if args.site_summary:
+    if args.instruction_trace:
+        emit_instruction_summary(
+            Path(args.instruction_trace), site_events, by_site_role, args.max_items
+        )
+    elif args.site_summary:
         emit_site_summary(site_events, site_targets, by_site_role, args.max_items)
     else:
         emit_role_rows(site_events, site_targets, by_site_role, role_entries, role_values, args.max_items)
@@ -159,6 +176,56 @@ def emit_site_summary(site_events, site_targets, by_site_role, max_items):
             f"{table[0]}\t{table[1]}\t{table[2]}\t"
             f"{frame[0]}\t{frame[1]}\t{frame[2]}\t"
             f"{fmt_counter(site_targets[site], max_items)}"
+        )
+
+
+def emit_instruction_summary(trace_path, site_events, by_site_role, max_items):
+    rows = Counter()
+    targets = defaultdict(Counter)
+    deltas = defaultdict(Counter)
+    statuses = defaultdict(Counter)
+    with trace_path.open(newline="", errors="replace") as handle:
+        reader = csv.DictReader(handle, delimiter="\t")
+        for row in reader:
+            source_entry = parse_int(row.get("source_entry"))
+            site = parse_int(row.get("site"))
+            if source_entry is None or site is None:
+                continue
+            source_target = row.get("source_target", "")
+            key = (source_entry, source_target, site)
+            rows[key] += 1
+            target_entry = row.get("target_entry", "")
+            if target_entry:
+                targets[key][target_entry] += 1
+            delta = row.get("delta", "")
+            if delta:
+                deltas[key][delta] += 1
+            status = row.get("byte_status", "")
+            if status:
+                statuses[key][status] += 1
+
+    print(
+        "source_entry\tsource_target\tsite\tinstruction_events\tregister_trace_events\t"
+        "target_reg\ttarget_events\ttarget_pct\tslot_reg\tslot_events\tslot_pct\t"
+        "byte_index_reg\tbyte_index_events\tbyte_index_pct\tframe_reg\tframe_events\t"
+        "frame_pct\ttop_targets\ttop_deltas\tbyte_statuses"
+    )
+    for (source_entry, source_target, site), count in sorted(
+        rows.items(), key=lambda item: (-item[1], item[0][0], item[0][2])
+    ):
+        target = best_role(site, "target_value", site_events, by_site_role)
+        slot = best_role(site, "slot_pointer", site_events, by_site_role)
+        byte_index = best_role(site, "byte_index", site_events, by_site_role)
+        frame = best_role(site, "frame_pointer", site_events, by_site_role)
+        print(
+            f"{source_entry}\t{source_target}\t0x{site:x}\t{count}\t{site_events[site]}\t"
+            f"{target[0]}\t{target[1]}\t{target[2]}\t"
+            f"{slot[0]}\t{slot[1]}\t{slot[2]}\t"
+            f"{byte_index[0]}\t{byte_index[1]}\t{byte_index[2]}\t"
+            f"{frame[0]}\t{frame[1]}\t{frame[2]}\t"
+            f"{fmt_counter(targets[(source_entry, source_target, site)], max_items)}\t"
+            f"{fmt_counter(deltas[(source_entry, source_target, site)], max_items)}\t"
+            f"{fmt_counter(statuses[(source_entry, source_target, site)], max_items)}"
         )
 
 
