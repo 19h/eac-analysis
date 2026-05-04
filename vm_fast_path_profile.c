@@ -78,6 +78,8 @@ typedef struct {
     uint64_t target_mismatched;
     uint64_t ip_matched;
     uint64_t ip_mismatched;
+    uint64_t state_matched;
+    uint64_t state_mismatched;
     uint64_t status_ok;
     uint64_t status_unknown_target;
     uint64_t status_falloff;
@@ -85,6 +87,16 @@ typedef struct {
     uint64_t branch_sites[512];
     size_t branch_site_count;
     char target_text[32];
+    int example_pred_entry;
+    uint64_t example_pred_target;
+    int example_actual_entry;
+    uint64_t example_actual_target;
+    uint32_t example_pred_state;
+    uint32_t example_actual_state;
+    char example_status[32];
+    char example_bytes[256];
+    bool has_dispatch_example;
+    bool has_state_example;
 } SourceStat;
 
 typedef struct {
@@ -131,6 +143,7 @@ typedef struct {
     uint64_t start_vm_ip;
     int target_entry;
     uint64_t target;
+    uint32_t post_state;
     int64_t delta;
     uint8_t bytes[4096];
     size_t byte_count;
@@ -147,6 +160,7 @@ typedef struct {
     int start_vm_ip;
     int target_entry;
     int target;
+    int post_state;
     int delta;
     int bytes;
     int byte_status;
@@ -167,6 +181,8 @@ typedef struct {
     int max_path_len;
     bool by_path;
     bool branch_sites;
+    bool state_validate;
+    bool dispatch_validate;
 } Args;
 
 static Value val_int(uint64_t u) {
@@ -735,6 +751,7 @@ static int status_index(const char *status) {
 typedef struct {
     int pred_entry;
     uint64_t pred_target;
+    uint32_t pred_state;
     int64_t pred_delta;
     const char *status;
     uint64_t steps;
