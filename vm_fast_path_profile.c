@@ -883,7 +883,7 @@ static Value read_mem_op(cs_insn *insn, cs_x86_op *op, Value *regs, Frame *frame
     int size = op->size ? op->size : 8;
     if (ptr.ptr_kind == PK_FRAME) {
         if (ptr.off == FRAME_IP_OFF && size == 8) return val_ptr_low(PK_IP, frame->ip_delta, 12, frame->ip_low12);
-        if (ptr.off == FRAME_TABLE_OFF && size == 8) return val_ptr(PK_TABLE, 0);
+        if (ptr.off == FRAME_TABLE_OFF && size == 8) return val_ptr_low(PK_TABLE, 0, 12, TABLE_OFF & 0xfff);
         if (ptr.off == FRAME_STATE_OFF) return val_int(frame->state & mask_for_size(size));
         if (ptr.off == FRAME_FLAGS_OFF) return val_int(frame->flags & mask_for_size(size));
         if (ptr.off == FRAME_BYTE_OFF) return val_int(frame->byte & mask_for_size(size));
@@ -1986,7 +1986,7 @@ static Value normalize_seed(uint64_t value, uint64_t frame, bool has_frame, uint
         }
     }
     if (has_table && value >= table && value < table + TABLE_ENTRIES * 8u) {
-        return val_ptr(PK_TABLE, (int64_t)value - (int64_t)table);
+        return val_ptr_low(PK_TABLE, (int64_t)value - (int64_t)table, 12, table & 0xfff);
     }
     if (has_vm_ip && value >= vm_ip - 0x10000 && value < vm_ip + 0x10000) {
         return val_ptr_low(PK_IP, (int64_t)value - (int64_t)vm_ip, 12, vm_ip & 0xfff);
