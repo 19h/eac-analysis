@@ -21,6 +21,7 @@ SHA-256: `0b44ad59697129534189efdb75cde2b96245f831438e9f6a53cb7725f190d739`
 - `vm_handler_skeleton.py`: extracts normalized frame/IP/table access skeletons from handler disassembly and groups full, dispatch-tail, or canonical decode signatures.
 - `vm_state_effects.py`: summarizes observed `frame+0x170`, `frame+0x23`, and `frame+0x194` changes per handler or per `(handler, delta, bytes)` signature from state-aware traces.
 - `vm_tail_registers.py`: infers per-tail-site register roles from `EAC_VMTAIL_REGS=1` traces, including target value, dispatch-slot pointer, byte index, table pointer, and frame pointer. It can also join those roles back onto an instruction trace by source handler and tail site.
+- `vm_tail_static_slots.py`: statically recovers consumed dispatch-slot temporaries for tail sites where the target is loaded from `table + byte_index` and the slot pointer is clobbered before the final jump.
 - `dumps/local-blocked-log/run.stderr`: blocked-network trace from the harness.
 - `dumps/local-blocked-log/postcall_*` and `postsleep_*`: in-memory EAC map/context/output dumps.
 - `dumps/dispatch-trap/run.stderr`: targeted dispatcher trace with fast harness exit.
@@ -53,6 +54,7 @@ SHA-256: `0b44ad59697129534189efdb75cde2b96245f831438e9f6a53cb7725f190d739`
 - `dumps/vmtail-wide-1m-w16/vm_bytecode_blocks_sampled.tsv`: contiguous coverage blocks for exact plus sampled byte windows.
 - `dumps/vmtail-wide-1m-w16/vm_handler_tail_roles.tsv`: long-run source-handler/tail-site rows joined with register roles inferred from the 50k GPR smoke trace.
 - `dumps/vmtail-wide-1m-w16/vm_handler_tail_roles_wide_regs.tsv`: same join using the 250k GPR trace for better low-frequency site coverage.
+- `dumps/vmtail-wide-1m-w16/vm_tail_static_slots.tsv`: static dispatch-slot provenance joined to each long-run source-handler/tail-site row.
 - `dumps/vmtail-wide-1m-w16/vm_gap_report.tsv`: exact-segment coverage gap ranking.
 - `dumps/vmtail-wide-1m-w16/vm_gap_report_sampled.tsv`: gap ranking after adding sampled byte-window coverage.
 - `dumps/vmtail-state-wide-w16/run.stderr`: 250k state-aware VMTAIL trace. VMTAIL rows include `vm_flags`, `vm_state`, and `vm_byte` after each handler.
@@ -329,6 +331,9 @@ python3 vm_tail_registers.py dumps/vmtail-regs-wide-w16 --eac eac.elf --site-sum
 python3 vm_tail_registers.py dumps/vmtail-regs-wide-w16 --eac eac.elf \
   --instruction-trace dumps/vmtail-wide-1m-w16/vm_instruction_trace.tsv \
   >dumps/vmtail-wide-1m-w16/vm_handler_tail_roles_wide_regs.tsv
+python3 vm_tail_static_slots.py dumps/vmtail-wide-1m-w16/vm_handler_tail_roles_wide_regs.tsv \
+  --eac eac.elf \
+  >dumps/vmtail-wide-1m-w16/vm_tail_static_slots.tsv
 ```
 
 ## ELF Overview
@@ -843,16 +848,16 @@ Per role-row totals:
 
 | Role | Rows | Events |
 | --- | ---: | ---: |
-| `frame_pointer` | 226 | 297674 |
-| `target_value` | 199 | 272698 |
-| `slot_pointer` | 168 | 246912 |
-| `table_slot_match` | 168 | 246912 |
-| `byte_index` | 181 | 209600 |
+| `frame_pointer` | 228 | 301059 |
+| `target_value` | 201 | 276083 |
+| `slot_pointer` | 170 | 250297 |
+| `table_slot_match` | 170 | 250297 |
+| `byte_index` | 183 | 212985 |
 | `table_slot_other` | 37 | 19848 |
 | `table_value` | 10 | 2541 |
 | `entry_index` | 32 | 2336 |
 
-The compact site summary has 185 tail sites. All 185 have a 100% target register and frame register. Of those, 160 have a 100% dispatch-slot pointer register, 144 have a 100% byte-index register, and 125 have both. This recovers the register allocation for the final dispatch calculation at most observed tail sites.
+The compact site summary has 187 tail/dispatcher sites. All 187 have a 100% target register or target memory operand and frame register. Of those, 162 have a 100% dispatch-slot pointer register, 146 have a 100% byte-index register, and 127 have both. This recovers the register allocation for the final dispatch calculation at most observed tail sites.
 
 Top register-role sites:
 
@@ -869,11 +874,11 @@ Top register-role sites:
 | `0x859f9` | 7189 | `r8` | `r11` | `rdx` | `rbp` | 337,340,64,123 |
 | `0xa4a5e` | 7122 | `r14` | `r8` | `rcx` | `rbp` | 189,114,347,258 |
 
-Joining the site-role table back onto the long instruction trace gives 208 source-handler/tail-site rows covering 769216 instruction events and 202 unique source handlers. The 250k register trace covers 181 rows and 765815 long-run instruction events. In the joined long trace:
+Joining the site-role table back onto the long instruction trace gives 208 source-handler/tail-site rows covering 769216 instruction events and 202 unique source handlers. The 250k register trace plus central-dispatch traps covers 199 rows and 769199 long-run instruction events. In the joined long trace:
 
-- 157 source/site rows have a dispatch-slot register, covering 744005 instruction events.
-- 150 rows have a byte-index register, covering 702253 events.
-- 132 rows have both slot and byte-index registers, covering 682953 events.
+- 175 source/site rows have a live dispatch-slot register, covering 747389 instruction events.
+- 168 rows have a byte-index register, covering 705637 events.
+- 150 rows have both live slot and byte-index registers, covering 686337 events.
 
 Top joined handler-tail roles:
 
@@ -888,7 +893,30 @@ Top joined handler-tail roles:
 | 189 | `0x9e7af` | `0x9eac9` | 25112 | `rdx` | `r11` | `r13` | 18,297,215,174 |
 | 347 | `0xc088d` | `0xc0d7b` | 24299 | `rdi` | `r8` | partial `r11` | 18,307,297,28 |
 
-Remaining no-register rows are mostly central-tail sites, led by `0xcdac7` for source entries 216, 356, 278, 95, 311, and 264, plus low-count `0xc80b9` rows. Remaining no-slot rows are led by high-frequency sites `0x7ca96`, `0xadbfa`, `0xb1545`, and `0xc0532`; those already expose target and byte-index registers but not a direct `table + target_entry*8` register in the sampled tail snapshot.
+The central dispatcher rows are not `jmp reg` tails: `0xc80b9` and `0xcdac7` both execute `jmp *(%rax)` after computing `rax = table + rbx`. The dispatch trap logs `slot=RAX`, `idx=RBX`, `frame=RBP`, and `target=*(RAX)`, so `vm_tail_registers.py` now treats those DISPATCH rows as register-role evidence too.
+
+`vm_tail_static_slots.tsv` then fills the high-frequency live-slot gaps by slicing backward from the final target load:
+
+| Static Kind | Rows | Events | Meaning |
+| --- | ---: | ---: | --- |
+| `live_slot` | 157 | 744005 | slot pointer still live at the tail snapshot |
+| `consumed_slot` | 18 | 19300 | slot temp found statically, then clobbered before the jump |
+| `central_indirect` | 18 | 3384 | central `jmp *(%rax)` dispatcher rows |
+| `target_load` | 6 | 2510 | target load found, but dynamic byte-index register was not identified |
+| `no_static_load` | 9 | 17 | only tiny low-count rows remain unresolved |
+
+Top consumed-slot recoveries:
+
+| Entry | Site | Events | Target | Byte Index | Static Slot Temp | Load Site | Index Add |
+| ---: | ---: | ---: | --- | --- | --- | ---: | ---: |
+| 20 | `0x7ca96` | 9485 | `rcx` | `rax` | `r14` | `0x7ca6a` | `0x7ca5d` |
+| 256 | `0xadbfa` | 3880 | `r9` | `r14` | `r10` | `0xadbd0` | `0xadbae` |
+| 273 | `0xb1545` | 2115 | `r9` | `rsi` | `r13` | `0xb1519` | `0xb1502` |
+| 345 | `0xc0532` | 1883 | `r14` | `r11` | `r9` | `0xc050e` | `0xc050b` |
+| 281 | `0xb3125` | 555 | `r12` | `rcx` | `rdx` | `0xb30f5` | `0xb30eb` |
+| 291 | `0xb540d` | 479 | `rdx` | `r10` | `r9` | `0xb53d1` | `0xb53bb` |
+
+After central-dispatch integration and static consumed-slot recovery, only 17 long-run instruction events lack any register/static tail-slot evidence.
 
 Top auto3 tail targets:
 
