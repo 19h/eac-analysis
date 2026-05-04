@@ -26,8 +26,8 @@ SHA-256: `0b44ad59697129534189efdb75cde2b96245f831438e9f6a53cb7725f190d739`
 - `vm_static_dispatch_validate.py`: concretely executes handler slices through the final table jump and validates predicted dispatch target plus VM IP advance.
 - `vm_static_transfer_expr.py`: follows concrete state-aware trace paths while carrying symbolic expressions for the dispatch-table slot and VM IP advance; `--by-path` emits path-conditioned formula rows, and `--gpr-run` seeds handler-entry registers plus hot `fs0x...` scratch-frame fields.
 - `vm_static_path_profile.py`: profiles concrete branch/path variants through static handler slices over the state-aware trace; `--gpr-run` seeds handler-entry registers and, when present, hot `fs0x...` scratch-frame fields from the previous VMTAIL snapshot to resolve live-in branch predicates.
-- `vm_fast_path_profile.c`: native Capstone/OpenSSL reimplementation of the concrete replay core. It emits the same summary/by-path TSV schemas as `vm_static_path_profile.py`, native state/static-dispatch validation schemas, a `--branch-sites` full-trace branch-outcome TSV, SHA-256 path hashes, and an `--emit-dir` batch mode that regenerates all `_fast.tsv` replay artifacts through `make fast-replay` in about 15 seconds on this host.
-- `vm_branch_predicates.py`: catalogs each static-replay branch predicate, including observed outcomes, unresolved predicate classes, and top concrete/symbolic condition expressions.
+- `vm_fast_path_profile.c`: native Capstone/OpenSSL reimplementation of the concrete replay core. It emits the same summary/by-path TSV schemas as `vm_static_path_profile.py`, native state/static-dispatch validation schemas, a `--branch-sites` full-trace branch-outcome TSV, SHA-256 path hashes, an `--emit-dir` batch mode that regenerates all `_fast.tsv` replay artifacts through `make fast-replay` in about 15 seconds on this host, and a `--branch-predicates` sampler that replaces the slow Python predicate replay for routine refreshes.
+- `vm_branch_predicates.py`: catalogs each static-replay branch predicate, including observed outcomes, unresolved predicate classes, and top concrete/symbolic condition expressions; for normal refreshes it is now only needed to render Markdown from the native TSVs.
 - `vm_dispatch_model_combine.py`: combines the static dispatch validator with affine fallback formulas for static-dispatch misses.
 - `vm_tail_registers.py`: infers per-tail-site register roles from `EAC_VMTAIL_REGS=1` traces, including target value, dispatch-slot pointer, byte index, table pointer, and frame pointer. It can also join those roles back onto an instruction trace by source handler and tail site.
 - `vm_tail_static_slots.py`: statically recovers consumed dispatch-slot temporaries for tail sites where the target is loaded from `table + byte_index` and the slot pointer is clobbered before the final jump.
@@ -121,9 +121,9 @@ SHA-256: `0b44ad59697129534189efdb75cde2b96245f831438e9f6a53cb7725f190d739`
 - `dumps/vmtail-state-wide-w16/vm_static_path_profile_gpr_seeded_fast.tsv` and `vm_static_path_variants_gpr_seeded_fast.tsv`: native path-profiler outputs for the GPR+scratch-seeded replay.
 - `dumps/vmtail-state-wide-w16/vm_branch_sites_fast.tsv`: native full-trace branch-site outcome counts for the state-only replay.
 - `dumps/vmtail-state-wide-w16/vm_branch_sites_gpr_seeded_fast.tsv`: native full-trace branch-site outcome counts for the GPR+scratch-seeded replay.
-- `dumps/vmtail-state-wide-w16/vm_branch_predicates.tsv`: one row per source-handler branch site with outcome counts, unresolved predicate classes, and top condition expressions.
+- `dumps/vmtail-state-wide-w16/vm_branch_predicates.tsv`: native bounded sampler row per source-handler branch site with outcome counts, unresolved predicate classes, and top condition expressions.
 - `dumps/vmtail-state-wide-w16/vm_branch_predicates_top.md`: Markdown digest of the highest-volume unresolved branch predicates.
-- `dumps/vmtail-state-wide-w16/vm_branch_predicates_gpr_seeded.tsv`: same branch predicate catalog, seeded with previous-tail GPR snapshots and hot scratch-frame fields.
+- `dumps/vmtail-state-wide-w16/vm_branch_predicates_gpr_seeded.tsv`: same native branch predicate catalog, seeded with previous-tail GPR snapshots and hot scratch-frame fields.
 - `dumps/vmtail-state-wide-w16/vm_branch_predicates_gpr_seeded_top.md`: Markdown digest of the highest-volume unresolved GPR+scratch-seeded predicates.
 - `dumps/vmtail-state-wide-w16/vm_dispatch_model_combined.tsv`: combined static-plus-affine dispatch model coverage for the state-aware instruction trace.
 - `dumps/vmtail-state-wide-w16/vm_dispatch_formulas.tsv`: fitted dispatch-index formulas from the state-aware instruction trace.
@@ -382,12 +382,7 @@ python3 vm_static_transfer_expr.py dumps/vmtail-state-wide-w16/vm_instruction_tr
 python3 vm_static_transfer_expr.py dumps/vmtail-state-wide-w16/vm_instruction_trace.tsv \
   --max-rows-per-source 128 --max-expr-len 320 --top 5 --by-path \
   >dumps/vmtail-state-wide-w16/vm_static_path_transfer_expr.tsv
-python3 vm_branch_predicates.py dumps/vmtail-state-wide-w16/vm_instruction_trace.tsv \
-  --max-rows-per-source 128 \
-  >dumps/vmtail-state-wide-w16/vm_branch_predicates.tsv
-python3 vm_branch_predicates.py --markdown \
-  --from-tsv dumps/vmtail-state-wide-w16/vm_branch_predicates.tsv \
-  >dumps/vmtail-state-wide-w16/vm_branch_predicates_top.md
+make fast-state-predicates
 python3 vm_dispatch_model_combine.py dumps/vmtail-state-wide-w16/vm_instruction_trace.tsv \
   >dumps/vmtail-state-wide-w16/vm_dispatch_model_combined.tsv
 python3 vm_dispatch_formula.py dumps/vmtail-state-wide-w16/vm_instruction_trace.tsv \
@@ -454,13 +449,7 @@ python3 vm_static_transfer_expr.py dumps/vmtail-state-wide-w16/vm_instruction_tr
   --gpr-run dumps/vmtail-scratch-wide-w16/run.stderr \
   --max-rows-per-source 128 --max-expr-len 320 --top 5 --by-path \
   >dumps/vmtail-state-wide-w16/vm_static_path_transfer_expr_gpr_seeded.tsv
-python3 vm_branch_predicates.py dumps/vmtail-state-wide-w16/vm_instruction_trace.tsv \
-  --gpr-run dumps/vmtail-scratch-wide-w16/run.stderr \
-  --max-rows-per-source 128 \
-  >dumps/vmtail-state-wide-w16/vm_branch_predicates_gpr_seeded.tsv
-python3 vm_branch_predicates.py --markdown \
-  --from-tsv dumps/vmtail-state-wide-w16/vm_branch_predicates_gpr_seeded.tsv \
-  >dumps/vmtail-state-wide-w16/vm_branch_predicates_gpr_seeded_top.md
+make fast-gpr-predicates
 python3 vm_instruction_lift.py \
   >dumps/vmtail-wide-1m-w16/vm_instruction_lift.tsv
 python3 vm_transition_model.py \
@@ -1252,7 +1241,7 @@ The native `--branch-sites` mode gives full-trace branch outcome counts without 
 
 The static interpreter also resolves a narrow class of opaque pointer predicates by using the traced VM frame location (`base+0x7836d`). Since the image base is page-aligned, the low byte of `rbp+off` is stable; byte-sized comparisons such as `cmp $0, %r12b` after `r12 = rbp + 0x170` can be resolved without knowing the absolute ASLR base. The interpreter also preserves commutative `int + pointer` arithmetic, propagates known low bits through mixed pointer arithmetic, compares same-base pointers by offset, and clears `ZF` when unknown flag-clobbering arithmetic is encountered instead of accidentally reusing stale flags. Target/IP coverage remains unchanged, but path and branch records are more faithful. Entry 28 is the clearest high-volume example: its two former pointer-byte unknown branches now resolve to `je:0`, and the handler remains 100% target/IP validated over 8348 state-trace events. Entries 196 and 199 are the newest examples: low-bit propagation through pointer-heavy expressions splits formerly sampled `?` paths and restores transfer formulas for the high-volume native paths.
 
-`vm_branch_predicates.py` explains the remaining `?` branches by replaying concrete values plus symbolic/provenance labels for the last compare/test or flag-producing arithmetic. The current TSV artifacts are bounded to 128 rows per source because the full Python provenance pass is now the slowest part of the workflow; use native `--branch-sites` for full-trace outcome counts. The bounded state-only sample emits 855 source-handler branch-site rows and accounts for 68949 dynamic branch events; 12789 are unresolved. The replay keeps a per-handler scratch-frame store, and it now carries known low bits of frame and VM-IP pointers through simple arithmetic, so frame-local write/read pairs, low-byte frame-pointer predicates, and low-byte VM-IP predicates are no longer reported as unknown merely because they use non-VM fields such as `frame+0x81` or `frame+0x71` or compare the current bytecode pointer's low byte.
+`vm_fast_path_profile --branch-predicates` explains the remaining `?` branches by replaying concrete values plus symbolic/provenance labels for the last compare/test or flag-producing arithmetic. The current TSV artifacts are bounded to 128 rows per source; the native sampler emits the same aggregate rows/classes as the old Python replay in about 2 seconds state-only and about 3 seconds GPR+scratch-seeded on this host. Use native `--branch-sites` for full-trace outcome counts. The bounded state-only sample emits 855 source-handler branch-site rows and accounts for 68949 dynamic branch events; 12789 are unresolved. The replay keeps a per-handler scratch-frame store, and it now carries known low bits of frame and VM-IP pointers through simple arithmetic, so frame-local write/read pairs, low-byte frame-pointer predicates, and low-byte VM-IP predicates are no longer reported as unknown merely because they use non-VM fields such as `frame+0x81` or `frame+0x71` or compare the current bytecode pointer's low byte.
 
 Sampled unresolved branch-predicate classes:
 
@@ -1279,7 +1268,7 @@ Top sampled unresolved branch sites:
 
 This turns the earlier undifferentiated branch uncertainty into a concrete next target: most remaining sampled unresolved predicates are bytecode/frame pointer comparisons, seeded-GPR expressions, or unknown memory-pointer checks.
 
-That next pass is now partially implemented in `vm_static_path_profile.py --gpr-run` and `vm_branch_predicates.py --gpr-run`. The GPR+scratch trace and state-aware trace start with the same VMTAIL sequence, so row `N` can seed handler-entry registers and hot `fs0x...` frame fields from VMTAIL event `N-1`. Register values are normalized back into the static interpreter's model: values near the VM frame become `Ptr("frame", off)`, table-slot pointers become `Ptr("table", off)`, VM-bytecode pointers become `Ptr("ip", off)`, and other in-image code pointers become file offsets.
+That next pass is now implemented in the native path/predicate replay via `vm_fast_path_profile --gpr-run`. The GPR+scratch trace and state-aware trace start with the same VMTAIL sequence, so row `N` can seed handler-entry registers and hot `fs0x...` frame fields from VMTAIL event `N-1`. Register values are normalized back into the static interpreter's model: values near the VM frame become `Ptr("frame", off)`, table-slot pointers become `Ptr("table", off)`, VM-bytecode pointers become `Ptr("ip", off)`, and other in-image code pointers become file offsets.
 
 The full GPR+scratch-seeded replay slightly improves dispatch/IP validation coverage while resolving roughly two thirds of the branch uncertainty:
 
