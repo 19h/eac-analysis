@@ -26,6 +26,8 @@ SHA-256: `0b44ad59697129534189efdb75cde2b96245f831438e9f6a53cb7725f190d739`
 - `vm_bytecode_file_atlas.py`: verifies recovered exact VM bytes against `eac.elf` and builds conservative file-backed bytecode atlas regions from observed segments plus small inferred gaps.
 - `vm_trace_file_fill.py`: promotes bounded positive `prefix_32_of_N` rows to `file_span_of_N` rows by reading bytes from `eac.elf`, preserving them as sampled/file-backed coverage rather than exact consumed instructions.
 - `vm_instruction_compare.py`: compares exact unique VM instruction catalogs by stable instruction key.
+- `vm_dispatch_formula.py`: fits simple expressions for the final dispatch byte index `target_entry * 8` from VM bytes plus rolling state.
+- `vm_dispatch_formula_validate.py`: validates byte-only dispatch formulas against the long exact unique-instruction catalog.
 - `dumps/local-blocked-log/run.stderr`: blocked-network trace from the harness.
 - `dumps/local-blocked-log/postcall_*` and `postsleep_*`: in-memory EAC map/context/output dumps.
 - `dumps/dispatch-trap/run.stderr`: targeted dispatcher trace with fast harness exit.
@@ -65,6 +67,7 @@ SHA-256: `0b44ad59697129534189efdb75cde2b96245f831438e9f6a53cb7725f190d739`
 - `dumps/vmtail-wide-1m-w16/vm_tail_static_slots.tsv`: static dispatch-slot provenance joined to each long-run source-handler/tail-site row.
 - `dumps/vmtail-wide-1m-w16/vm_instruction_lift.tsv`: one enriched row per exact recovered unique VM instruction.
 - `dumps/vmtail-wide-1m-w16/vm_bytecode_file_atlas.tsv`: file-backed VM bytecode atlas built from sampled bytecode segments with `--max-gap 0x20`.
+- `dumps/vmtail-wide-1m-w16/vm_dispatch_formula_validate.tsv`: validation of byte-only dispatch formulas against long exact unique instructions.
 - `dumps/vmtail-wide-1m-w16/vm_gap_report.tsv`: exact-segment coverage gap ranking.
 - `dumps/vmtail-wide-1m-w16/vm_gap_report_sampled.tsv`: gap ranking after adding sampled byte-window coverage.
 - `dumps/vmtail-mode0-w16/*` and `dumps/vmtail-mode2-w16/*`: 250k wide-tail traces for accepted alternate `x` modes 0 and 2.
@@ -73,6 +76,7 @@ SHA-256: `0b44ad59697129534189efdb75cde2b96245f831438e9f6a53cb7725f190d739`
 - `dumps/vmtail-state-wide-w16/vm_instruction_trace.tsv`: state-aware instruction rows with appended `pre_*`, `post_*`, and `state_delta` columns.
 - `dumps/vmtail-state-wide-w16/vm_state_effects.tsv`: per-handler frame-state effect summary.
 - `dumps/vmtail-state-wide-w16/vm_state_signatures.tsv`: per-signature frame-state effect summary keyed by source handler, byte delta, byte status, and byte sequence.
+- `dumps/vmtail-state-wide-w16/vm_dispatch_formulas.tsv`: fitted dispatch-index formulas from the state-aware instruction trace.
 - `dumps/vmtail-regs-smoke-w16/run.stderr`: 50k VMTAIL trace with full GPR snapshots at each tail site.
 - `dumps/vmtail-regs-smoke-w16/vm_tail_registers.tsv`: per-site/per-register role evidence from the GPR trace.
 - `dumps/vmtail-regs-smoke-w16/vm_tail_register_summary.tsv`: compact one-row-per-site register-role summary for lifting dispatch tails.
@@ -313,6 +317,8 @@ python3 vm_state_effects.py dumps/vmtail-state-wide-w16/vm_instruction_trace.tsv
   >dumps/vmtail-state-wide-w16/vm_state_effects.tsv
 python3 vm_state_effects.py dumps/vmtail-state-wide-w16/vm_instruction_trace.tsv --by-signature \
   >dumps/vmtail-state-wide-w16/vm_state_signatures.tsv
+python3 vm_dispatch_formula.py dumps/vmtail-state-wide-w16/vm_instruction_trace.tsv \
+  >dumps/vmtail-state-wide-w16/vm_dispatch_formulas.tsv
 ```
 
 Register-role VM tail wide trace:
@@ -348,6 +354,8 @@ python3 vm_tail_static_slots.py dumps/vmtail-wide-1m-w16/vm_handler_tail_roles_w
   >dumps/vmtail-wide-1m-w16/vm_tail_static_slots.tsv
 python3 vm_instruction_lift.py \
   >dumps/vmtail-wide-1m-w16/vm_instruction_lift.tsv
+python3 vm_dispatch_formula_validate.py \
+  >dumps/vmtail-wide-1m-w16/vm_dispatch_formula_validate.tsv
 python3 vm_bytecode_file_atlas.py --max-gap 0x20 \
   >dumps/vmtail-wide-1m-w16/vm_bytecode_file_atlas.tsv
 python3 vm_trace_file_fill.py dumps/vmtail-wide-1m-w16/vm_instruction_trace.tsv \
@@ -1059,6 +1067,33 @@ State classes in the lifted exact catalog:
 | `state_const_post` | 1576 | 19423 |
 | `state_preserve` | 317 | 7437 |
 | not observed in state trace | 28201 | 83192 |
+
+The lift catalog also carries the best fitted dispatch-index formula per source handler where available. `vm_dispatch_formula.py` models the final dispatch byte index as `target_entry * 8` and searches simple byte/state expressions. This is intentionally conservative; formulas that are only constant-majority are useful for triage but not treated as decoded semantics.
+
+High-confidence byte-only dispatch formulas validated against the long exact catalog:
+
+| Entry | Formula | Events | Meaning |
+| ---: | --- | ---: | --- |
+| 28 | `u16_0` | 26610 | first instruction word is direct byte index |
+| 215 | `u16_0` | 21174 | first instruction word is direct byte index |
+| 171 | `(u16_0&0x1ff)*8` | 2533 | low 9 bits select dispatch entry |
+| 354 | `(u16_0&0x1ff)*8` | 1872 | low 9 bits select dispatch entry |
+| 165 | `(u16_0&0x1ff)*8` | 1825 | low 9 bits select dispatch entry |
+| 169 | `(u16_0&0x1ff)*8` | 1796 | low 9 bits select dispatch entry |
+| 310 | `(u16_2&0x1ff)*8` | 1614 | third byte-aligned word selects entry |
+| 200 | `u16_4` | 1511 | word at byte offset 4 is direct byte index |
+| 105 | `u16_2` | 671 | word at byte offset 2 is direct byte index |
+| 349 | `u16_2` | 503 | word at byte offset 2 is direct byte index |
+
+Byte-only formulas fully validated for 16 source handlers and 60551 long-run exact events. Direct `u16_*` formulas account for 54436 matched events; masked `u16_*` formulas account for 9753 matched events. State-dependent formulas cannot be validated against the state-less long catalog, but the state-aware trace gives full fits for these handlers:
+
+| Entry | Formula | State-Trace Events | Unique Targets |
+| ---: | --- | ---: | ---: |
+| 305 | `(state+u16_0)&0x1fff` | 2662 | 25 |
+| 91 | `(state^u16_0)&0x1fff` | 546 | 30 |
+| 107 | `(state-u16_0)&0x7ff` | 256 | 1 |
+| 217 | `(u16_1-post)&0x1fff` | 206 | 8 |
+| 74 | `(u16_0-post)&0x1fff` | 25 | 6 |
 
 Top auto3 tail targets:
 
