@@ -1414,8 +1414,9 @@ static bool self_zero_insn(cs_x86_op *ops, const char *mnem) {
            (!strcmp(mnem, "xor") || !strcmp(mnem, "sub"));
 }
 
-static bool restore_pop_insn(const char *mnem, cs_x86_op *ops, uint8_t op_count) {
-    return !strcmp(mnem, "pop") && op_count == 1 && ops[0].type == X86_OP_REG;
+static bool preserve_stack_insn(const char *mnem, cs_x86_op *ops, uint8_t op_count) {
+    return (!strcmp(mnem, "pop") || !strcmp(mnem, "push")) &&
+           op_count == 1 && ops[0].type == X86_OP_REG;
 }
 
 static SymValue sym_text(const char *text, int max_len) {
@@ -1948,7 +1949,7 @@ static ExecResult execute_handler(Handler *h, TraceRow *row, uint64_t *table, Se
             pc = next_pc;
             continue;
         }
-        if (restore_pop_insn(mnem, ops, op_count)) {
+        if (preserve_stack_insn(mnem, ops, op_count)) {
             pc = next_pc;
             continue;
         }
@@ -2526,7 +2527,7 @@ static ExecResult execute_handler_branch_pred(Handler *h, TraceRow *row, uint64_
             pc = next_pc;
             continue;
         }
-        if (restore_pop_insn(mnem, ops, op_count)) {
+        if (preserve_stack_insn(mnem, ops, op_count)) {
             pc = next_pc;
             continue;
         }
@@ -2713,7 +2714,7 @@ static TransferResult execute_handler_transfer(Handler *h, TraceRow *row, uint64
             pc = next_pc;
             continue;
         }
-        if (restore_pop_insn(mnem, ops, op_count)) {
+        if (preserve_stack_insn(mnem, ops, op_count)) {
             pc = next_pc;
             continue;
         }
