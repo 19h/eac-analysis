@@ -1194,6 +1194,8 @@ The model is intentionally keyed by dispatch entry rather than bytecode instruct
 
 Representative recovered dispatch-slot expressions now appear directly in `vm_transition_model.tsv`. For example, entry 28 dispatches through `table[u16_0 & 0xffff]` with `ip += 0x3`, while entry 0 dispatches through `table[((u16_0 + (state0 ^ 0x1966e0e7)) - 0x251a0141) & 0xffff]` with `ip += 0x5`, modulo the 32-bit masks shown in the TSV.
 
+The GPR+scratch-seeded source-level transfer sample preserves the same 166 fully static-clean handlers while reducing sampled branch uncertainty from 13177 to 4962 branch events. It also recovers a dispatch-slot expression for one additional sampled event, giving 167 source rows and 16149 sample events with slot expressions.
+
 The `--by-path` view of the same bounded transfer-expression sample is `vm_static_path_transfer_expr.tsv`. It resolves the apparent multi-formula source handlers into concrete branch-path formulas. In the 128-row-per-source sample it observes 348 source-path rows across all 179 state-aware sources. All 335 source-path rows with a resolved static target have exactly one slot expression and one IP-advance expression:
 
 | Path-Conditioned Transfer Expressions | Source-Paths | Sample Events |
@@ -1205,6 +1207,8 @@ The `--by-path` view of the same bounded transfer-expression sample is `vm_stati
 | multiple slot expressions per path | 0 | 0 |
 
 This is useful because source-level handlers such as entries 18, 20, 26, 64, 66, 114, 258, and 337 have multiple observed slot formulas, but each sampled concrete branch path has a single formula. That gives a clean route to path-specialized devirtualized blocks.
+
+The seeded `--by-path` transfer-expression view now aligns with the seeded path profile. It observes 571 GPR+scratch-seeded source-path rows in the same 16691-row sample; 558 rows covering 16148 sample events have 100% target/IP agreement and exactly one dispatch-slot expression plus one IP-advance expression. Joining those seeded expression rows back to the full seeded path table covers 571 of 717 concrete seeded paths and 244912 of 248906 state-trace events.
 
 `vm_static_path_profile.py` explains why some handlers have multiple sampled transfer expressions. It replays the full state-aware trace through the static handler interpreter and records concrete branch outcomes as path hashes. The source-level profile exactly preserves the static dispatch validator's coverage: 248300 of 248906 state-trace rows validate target and IP, and the same 606 rows end in unresolved native/long-control-flow paths. Across 179 state-aware source handlers, the replay observes 399 distinct branch paths:
 
@@ -1315,7 +1319,7 @@ The catalog currently has state/flag pseudo-IR for 327 entries covering 764423 l
 
 The top path row is entry 307 path `594cbf6454cdfe82`, with 7050 state-trace events and slot expression `(u16_1 - 0x665a9b5) & 0xffff`, followed by entry 258 path `4be73f077fec7fc7` with 6275 events and its non-affine state-derived slot expression. The Markdown digest `vm_path_microcode_top.md` is useful for quickly inspecting these high-volume specialized blocks.
 
-The GPR+scratch-seeded path microcode variant uses `vm_static_path_variants_gpr_seeded.tsv` instead. It has 717 concrete path rows; 704 paths covering 248363 state-trace events validate target and IP at 100%. Because the current path-conditioned transfer-expression sampler was generated from the state-only paths, only 280 seeded rows currently join sampled expression rows; regenerating transfer expressions with the same GPR+scratch seeds is the next natural way to fill in slot/IP formulas for the newly split paths.
+The GPR+scratch-seeded path microcode variant uses `vm_static_path_variants_gpr_seeded.tsv` and `vm_static_path_transfer_expr_gpr_seeded.tsv`. It has 717 concrete path rows; 704 paths covering 248363 state-trace events validate target and IP at 100%. The seeded transfer-expression join now supplies sampled expression rows for 571 seeded paths covering 244912 events, with sampled slot expressions on 558 paths covering 244369 events.
 
 The register-role trace in `dumps/vmtail-regs-wide-w16` logs all GPRs for 250000 VMTAIL events. `vm_tail_registers.py` compares each register to the current dispatch target, `frame+0x10f` table base, `table + target_entry*8`, and `target_entry*8`.
 
