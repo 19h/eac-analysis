@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 import argparse
 import csv
+import hashlib
 import sys
-from collections import defaultdict
 from pathlib import Path
 
 
@@ -34,23 +34,41 @@ def load_best_patterns(path):
     return patterns
 
 
-def split_updates(text, name):
+def clip(text, max_len):
+    if max_len <= 0 or len(text) <= max_len:
+        return text
+    digest = hashlib.sha256(text.encode()).hexdigest()[:12]
+    keep = max(24, max_len - 17)
+    return f"{text[:keep]}...#{digest}"
+
+
+def split_updates(text, name, max_updates, max_expr_len, max_field_len):
     if not text:
         return ""
+    items = [item for item in text.split(";") if item]
+    if max_updates > 0 and len(items) > max_updates:
+        items = items[: max_updates - 1] + [f"...{len(text.split(';')) - max_updates} omitted...", items[-1]]
     parts = []
-    for item in text.split(";"):
+    for item in items:
+        if item.startswith("..."):
+            parts.append(item)
+            continue
         fields = item.split(":", 2)
         if len(fields) == 3:
             addr, op, expr = fields
-            parts.append(f"{addr}: {name} {op}= {expr}")
-    return " | ".join(parts)
+            parts.append(f"{addr}: {name} {op}= {clip(expr, max_expr_len)}")
+    return clip(" | ".join(parts), max_field_len)
 
 
-def top_expr(text, max_variants):
+def top_expr(text, max_variants, max_expr_len, max_field_len):
     if not text:
         return ""
     variants = [part for part in text.split(";") if part]
-    return " | ".join(variants[:max_variants])
+    clipped = []
+    for variant in variants[:max_variants]:
+        count, sep, expr = variant.partition("=")
+        clipped.append(f"{count}{sep}{clip(expr, max_expr_len)}" if sep else clip(variant, max_expr_len))
+    return clip(" | ".join(clipped), max_field_len)
 
 
 def status(row):
@@ -90,8 +108,13 @@ def build_rows(args):
         entry = row.get("entry", "")
         state = slices.get(entry, {})
         pattern = patterns.get(entry, {})
-        ip_advance = top_expr(row.get("transfer_expr_top_ip_exprs", ""), 1)
-        slot_exprs = top_expr(row.get("transfer_expr_top_slot_exprs", ""), args.max_variants)
+        ip_advance = top_expr(row.get("transfer_expr_top_ip_exprs", ""), 1, args.max_expr_len, args.max_field_len)
+        slot_exprs = top_expr(
+            row.get("transfer_expr_top_slot_exprs", ""),
+            args.max_variants,
+            args.max_expr_len,
+            args.max_field_len,
+        )
         if not slot_exprs and row.get("dispatch_model"):
             slot_exprs = f"model:{row.get('dispatch_model', '')}"
         rows.append(
@@ -103,11 +126,23 @@ def build_rows(args):
                 "delta": row.get("delta", ""),
                 "shape": row.get("shape", ""),
                 "word_shape": pattern.get("word_shape", ""),
-                "operand_layout": pattern.get("byte_layout", ""),
-                "word_layout": pattern.get("word_layout", ""),
+                "operand_layout": clip(pattern.get("byte_layout", ""), args.max_field_len),
+                "word_layout": clip(pattern.get("word_layout", ""), args.max_field_len),
                 "ip_reads": row.get("ip_reads", ""),
-                "state_ir": split_updates(state.get("state_updates", ""), "state"),
-                "flag_ir": split_updates(state.get("flag_updates", ""), "flags"),
+                "state_ir": split_updates(
+                    state.get("state_updates", ""),
+                    "state",
+                    args.max_updates,
+                    args.max_expr_len,
+                    args.max_field_len,
+                ),
+                "flag_ir": split_updates(
+                    state.get("flag_updates", ""),
+                    "flags",
+                    args.max_updates,
+                    args.max_expr_len,
+                    args.max_field_len,
+                ),
                 "dispatch_slot_ir": slot_exprs,
                 "ip_advance_ir": ip_advance,
                 "tail_ir": f"next = table[slot]; ip += {ip_advance}" if ip_advance else "",
@@ -188,6 +223,9 @@ def main():
         default="dumps/vmtail-wide-1m-w16/vm_isa_patterns.tsv",
     )
     parser.add_argument("--max-variants", type=int, default=2)
+    parser.add_argument("--max-updates", type=int, default=5)
+    parser.add_argument("--max-expr-len", type=int, default=220)
+    parser.add_argument("--max-field-len", type=int, default=640)
     parser.add_argument("--markdown", action="store_true")
     parser.add_argument("--limit", type=int, default=20)
     args = parser.parse_args()
