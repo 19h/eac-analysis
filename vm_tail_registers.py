@@ -174,9 +174,9 @@ def emit_role_rows(site_events, site_targets, by_site_role, role_entries, role_v
         pct = count * 100.0 / total if total else 0.0
         print(
             f"0x{site:x}\t{reg}\t{role}\t{count}\t{total}\t{pct:.1f}\t"
-            f"{fmt_counter(role_entries[(site, reg, role)], args.max_items)}\t"
-            f"{fmt_counter(role_values[(site, reg, role)], args.max_items)}\t"
-            f"{fmt_counter(site_targets[site], args.max_items)}"
+            f"{fmt_counter(role_entries[(site, reg, role)], max_items)}\t"
+            f"{fmt_counter(role_values[(site, reg, role)], max_items)}\t"
+            f"{fmt_counter(site_targets[site], max_items)}"
         )
 
 
