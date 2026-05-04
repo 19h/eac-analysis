@@ -71,7 +71,7 @@ def read_mem(insn, op, regs, frame, ip_bytes, table, frame_mem=None):
     size = op.size or 8
     if ptr.kind == "frame":
         if ptr.off == FRAME_IP_OFF and size == 8:
-            return Ptr("ip", frame["ip_delta"])
+            return Ptr("ip", frame["ip_delta"], 12, frame.get("ip_base_low12", 0))
         if ptr.off == FRAME_TABLE_OFF and size == 8:
             return Ptr("table", 0)
         if ptr.off == FRAME_STATE_OFF:
@@ -115,6 +115,8 @@ def write_op(insn, op, value, regs, frame, frame_mem=None):
         if ptr == Ptr("frame", FRAME_IP_OFF):
             if isinstance(value, Ptr) and value.kind == "ip":
                 frame["ip_delta"] = value.off
+                if value.low_bits:
+                    frame["ip_base_low12"] = value.low_base & 0xfff
                 return True
             return False
         if ptr == Ptr("frame", FRAME_STATE_OFF):
@@ -160,6 +162,7 @@ def execute(insns_by_addr, start, row, table, target_to_entry, max_steps):
         "flags": parse_int(row.get("pre_flags", "0x0") or "0x0") & MASK32,
         "byte": parse_int(row.get("pre_byte", "0x0") or "0x0") & 0xff,
         "ip_delta": 0,
+        "ip_base_low12": (parse_int(row.get("start_vm_ip", "0x0") or "0x0") or 0) & 0xfff,
     }
     regs = {"rbp": Ptr("frame", 0)}
     frame_mem = {}

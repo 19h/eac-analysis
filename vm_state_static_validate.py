@@ -40,6 +40,8 @@ FRAME_RUNTIME_LOW12 = 0x36D
 class Ptr:
     kind: str
     off: int = 0
+    low_bits: int = 0
+    low_base: int = 0
 
 
 @dataclass(frozen=True)
@@ -111,7 +113,13 @@ def known_low_bits(value):
         return value.bits, value.value
     if isinstance(value, Ptr) and value.kind == "frame":
         return 12, (FRAME_RUNTIME_LOW12 + value.off) & 0xfff
+    if isinstance(value, Ptr) and value.low_bits:
+        return value.low_bits, (value.low_base + value.off) & ((1 << value.low_bits) - 1)
     return 0, 0
+
+
+def ptr_add(ptr, delta):
+    return Ptr(ptr.kind, ptr.off + delta, ptr.low_bits, ptr.low_base)
 
 
 def concrete_full_value(value, size):
@@ -133,9 +141,9 @@ def mem_ptr(insn, op, regs):
     base_ptr = Ptr("frame", 0) if mem.base == X86_REG_RBP else regs.get(canon_reg(insn, mem.base))
     index_value = regs.get(canon_reg(insn, mem.index), 0) if mem.index else 0
     if isinstance(base_ptr, Ptr) and isinstance(index_value, int):
-        return Ptr(base_ptr.kind, base_ptr.off + index_value * mem.scale + mem.disp)
+        return ptr_add(base_ptr, index_value * mem.scale + mem.disp)
     if isinstance(base_ptr, Ptr) and not mem.index:
-        return Ptr(base_ptr.kind, base_ptr.off + mem.disp)
+        return ptr_add(base_ptr, mem.disp)
     return None
 
 
@@ -174,7 +182,7 @@ def read_mem(insn, op, regs, frame, ip_bytes, frame_mem=None):
     size = op.size or 8
     if ptr.kind == "frame":
         if ptr.off == FRAME_IP_OFF and size == 8:
-            return Ptr("ip", 0)
+            return Ptr("ip", 0, 12, frame.get("ip_base_low12", 0))
         if ptr.off == FRAME_TABLE_OFF and size == 8:
             return Ptr("table", 0)
         if ptr.off == FRAME_STATE_OFF:
@@ -247,12 +255,12 @@ def eval_bin(mnemonic, left, right, size):
     if isinstance(left, Ptr):
         if isinstance(right, int) and mnemonic in {"add", "sub"}:
             delta = right if mnemonic == "add" else -right
-            return Ptr(left.kind, left.off + sign_extend(delta, bits))
+            return ptr_add(left, sign_extend(delta, bits))
         if isinstance(right, Ptr) and mnemonic == "sub" and left.kind == right.kind:
             return (left.off - right.off) & mask
     if isinstance(right, Ptr):
         if isinstance(left, int) and mnemonic == "add":
-            return Ptr(right.kind, right.off + sign_extend(left, bits))
+            return ptr_add(right, sign_extend(left, bits))
     left_bits, left_low = known_low_bits(left)
     right_bits, right_low = known_low_bits(right)
     if left_bits and right_bits and not (isinstance(left, int) and isinstance(right, int)):
@@ -339,6 +347,7 @@ def execute(insns_by_addr, start, tail_site, row, max_steps):
         "state": parse_int(row["pre_state"]) & MASK32,
         "flags": parse_int(row.get("pre_flags", "0x0") or "0x0") & MASK32,
         "byte": parse_int(row.get("pre_byte", "0x0") or "0x0") & 0xff,
+        "ip_base_low12": (parse_int(row.get("start_vm_ip", "0x0") or "0x0") or 0) & 0xfff,
     }
     regs = {"rbp": Ptr("frame", 0)}
     frame_mem = {}
