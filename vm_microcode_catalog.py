@@ -83,6 +83,8 @@ def status(row):
         pieces.append(f"transfer_expr={row['transfer_expr_target_pct']}%/{row.get('transfer_expr_events', '')}")
     if row.get("long_branch_events"):
         pieces.append(f"long_branch={row['long_branch_events']}/{row.get('long_branch_variants', '')}")
+    if row.get("long_branch_operand_lens"):
+        pieces.append(f"long_branch_len={row['long_branch_operand_lens']}")
     return ", ".join(pieces)
 
 
@@ -125,6 +127,12 @@ def build_rows(args):
             args.max_expr_len,
             args.max_field_len,
         )
+        long_branch_operands = top_expr(
+            row.get("long_branch_operand_shapes", ""),
+            args.max_variants,
+            args.max_expr_len,
+            args.max_field_len,
+        )
         tail_ir = f"next = table[slot]; ip += {ip_advance}" if ip_advance else long_branch_ir
         rows.append(
             {
@@ -155,6 +163,7 @@ def build_rows(args):
                 "dispatch_slot_ir": slot_exprs,
                 "ip_advance_ir": ip_advance,
                 "long_branch_ir": long_branch_ir,
+                "long_branch_operands": long_branch_operands,
                 "tail_ir": tail_ir,
                 "path_profile": (
                     f"{row.get('path_profile_unique_paths', '')} paths over "
@@ -201,6 +210,7 @@ def emit_tsv(rows):
         "dispatch_slot_ir",
         "ip_advance_ir",
         "long_branch_ir",
+        "long_branch_operands",
         "tail_ir",
         "path_profile",
         "branch_profile",

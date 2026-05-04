@@ -60,12 +60,12 @@ def ip_update_text(delta):
 
 def operand_field_name(offset, size):
     if size == 1:
-        return f"b{offset:x}"
+        return f"b{offset}"
     if size == 2:
-        return f"u16_{offset:x}"
+        return f"u16_{offset}"
     if size == 4:
-        return f"u32_{offset:x}"
-    return f"bytes{size}_{offset:x}"
+        return f"u32_{offset}"
+    return f"bytes{size}_{offset}"
 
 
 def parse_ip_reads(text):
