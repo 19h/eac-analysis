@@ -43,6 +43,19 @@ def read_ir(path):
     return rows
 
 
+def load_coverage(path):
+    coverage = defaultdict(Counter)
+    if not path or not Path(path).exists():
+        return coverage
+    with Path(path).open(newline="", errors="replace") as handle:
+        for row in csv.DictReader(handle, delimiter="\t"):
+            start = row.get("start_vm_ip", "")
+            status = row.get("byte_status", "")
+            if start and status and status != "exact":
+                coverage[parse_hex(start)][status] += 1
+    return coverage
+
+
 def leader_reasons(rows):
     starts = {row["start_i"] for row in rows}
     reasons = defaultdict(Counter)
@@ -108,7 +121,21 @@ def build_blocks(rows):
     return blocks
 
 
-def block_summary(block, block_by_start, args):
+def terminal_edge_kind(last, successor, coverage):
+    if last["row_kind"] == "exact_instruction":
+        if successor is not None:
+            return "fallthrough"
+        if coverage.get(last["end_i"]):
+            return "covered_synthetic_fallthrough"
+        return "unrecovered_fallthrough"
+    if successor is not None:
+        return "decoded_control"
+    if coverage.get(last["end_i"]):
+        return "decoded_control_covered_synthetic"
+    return "decoded_control_unrecovered"
+
+
+def block_summary(block, block_by_start, coverage, args):
     rows = block["rows"]
     last = rows[-1]
     exact_rows = [row for row in rows if row["row_kind"] == "exact_instruction"]
@@ -121,10 +148,7 @@ def block_summary(block, block_by_start, args):
 
     byte_end = last["end_i"] if last["row_kind"] == "exact_instruction" else last["start_i"] + last["operand_len_i"]
     successor = block_by_start.get(last["end_i"])
-    if last["row_kind"] == "exact_instruction":
-        edge_kind = "fallthrough" if successor is not None else "unrecovered_fallthrough"
-    else:
-        edge_kind = "decoded_control" if successor is not None else "decoded_control_unrecovered"
+    edge_kind = terminal_edge_kind(last, successor, coverage)
     semantic_tail = last.get("semantic_ir", "")
     if len(semantic_tail) > args.max_semantic_len:
         semantic_tail = semantic_tail[: args.max_semantic_len - 3] + "..."
@@ -145,6 +169,7 @@ def block_summary(block, block_by_start, args):
         "terminal_events": str(last["events_i"]),
         "source_entries": fmt_counter(source_entries, args.max_items),
         "target_entries": fmt_counter(target_entries, args.max_items),
+        "target_coverage_statuses": fmt_counter(coverage.get(last["end_i"], Counter()), args.max_items),
         "row_kinds": fmt_counter(row_kinds, args.max_items),
         "state_classes": fmt_counter(state_classes, args.max_items),
         "provenance": fmt_counter(provenance, args.max_items),
@@ -160,6 +185,7 @@ def block_summary(block, block_by_start, args):
 
 def emit_blocks(blocks, args):
     block_by_start = {block["start_i"]: block for block in blocks}
+    coverage = load_coverage(args.coverage_trace)
     fields = [
         "block",
         "start_vm_ip",
@@ -176,6 +202,7 @@ def emit_blocks(blocks, args):
         "terminal_events",
         "source_entries",
         "target_entries",
+        "target_coverage_statuses",
         "row_kinds",
         "state_classes",
         "provenance",
@@ -190,11 +217,12 @@ def emit_blocks(blocks, args):
     writer = csv.DictWriter(sys.stdout, fieldnames=fields, delimiter="\t", lineterminator="\n")
     writer.writeheader()
     for block in blocks:
-        writer.writerow(block_summary(block, block_by_start, args))
+        writer.writerow(block_summary(block, block_by_start, coverage, args))
 
 
-def emit_edges(blocks):
+def emit_edges(blocks, args):
     block_by_start = {block["start_i"]: block for block in blocks}
+    coverage = load_coverage(args.coverage_trace)
     fields = [
         "source_block",
         "source_start_vm_ip",
@@ -202,6 +230,7 @@ def emit_edges(blocks):
         "target_block",
         "target_vm_ip",
         "edge_kind",
+        "target_coverage_statuses",
         "events",
         "terminal_kind",
         "source_entry",
@@ -214,10 +243,7 @@ def emit_edges(blocks):
     for block in blocks:
         last = block["rows"][-1]
         target = block_by_start.get(last["end_i"])
-        if last["row_kind"] == "exact_instruction":
-            edge_kind = "fallthrough" if target is not None else "unrecovered_fallthrough"
-        else:
-            edge_kind = "decoded_control" if target is not None else "decoded_control_unrecovered"
+        edge_kind = terminal_edge_kind(last, target, coverage)
         writer.writerow({
             "source_block": block["block"],
             "source_start_vm_ip": block["start_vm_ip"],
@@ -225,6 +251,7 @@ def emit_edges(blocks):
             "target_block": "" if target is None else target["block"],
             "target_vm_ip": last["end_vm_ip"],
             "edge_kind": edge_kind,
+            "target_coverage_statuses": fmt_counter(coverage.get(last["end_i"], Counter()), 8),
             "events": last["events"],
             "terminal_kind": last["row_kind"],
             "source_entry": last["source_entry"],
@@ -236,7 +263,8 @@ def emit_edges(blocks):
 
 def emit_markdown(blocks, args):
     block_by_start = {block["start_i"]: block for block in blocks}
-    summaries = [block_summary(block, block_by_start, args) for block in blocks]
+    coverage = load_coverage(args.coverage_trace)
+    summaries = [block_summary(block, block_by_start, coverage, args) for block in blocks]
     summaries.sort(key=lambda row: (-int(row["events"]), int(row["block"])))
 
     print("# VM Bytecode Basic Blocks\n")
@@ -358,7 +386,8 @@ def emit_loop_markdown(blocks, args):
     table("By Body Events", sorted(rows, key=lambda row: (-int(row["body_events"]), row["header_block"], row["latch_block"])))
 
 
-def print_summary(blocks):
+def print_summary(blocks, args):
+    coverage = load_coverage(args.coverage_trace)
     edge_kinds = Counter()
     terminal_kinds = Counter()
     rows = Counter()
@@ -367,10 +396,7 @@ def print_summary(blocks):
     for block in blocks:
         last = block["rows"][-1]
         target = block_by_start.get(last["end_i"])
-        if last["row_kind"] == "exact_instruction":
-            edge_kind = "fallthrough" if target is not None else "unrecovered_fallthrough"
-        else:
-            edge_kind = "decoded_control" if target is not None else "decoded_control_unrecovered"
+        edge_kind = terminal_edge_kind(last, target, coverage)
         edge_kinds[edge_kind] += 1
         terminal_kinds[last["row_kind"]] += 1
         for row in block["rows"]:
@@ -389,6 +415,10 @@ def print_summary(blocks):
 def main():
     parser = argparse.ArgumentParser(description="Build inspectable VM bytecode basic blocks from recovered IR rows.")
     parser.add_argument("--ir", default="dumps/vmtail-wide-1m-w16/vm_bytecode_ir.tsv")
+    parser.add_argument(
+        "--coverage-trace",
+        default="dumps/vmtail-wide-1m-w16/vm_instruction_trace_filefill_hiddenfill_frontierfill_footprintfill.tsv",
+    )
     parser.add_argument("--edges", action="store_true")
     parser.add_argument("--loops", action="store_true")
     parser.add_argument("--markdown", action="store_true")
@@ -408,10 +438,10 @@ def main():
     elif args.markdown:
         emit_markdown(blocks, args)
     elif args.edges:
-        emit_edges(blocks)
+        emit_edges(blocks, args)
     else:
         emit_blocks(blocks, args)
-    print_summary(blocks)
+    print_summary(blocks, args)
 
 
 if __name__ == "__main__":
