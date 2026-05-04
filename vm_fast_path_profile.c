@@ -1972,6 +1972,19 @@ static Value normalize_seed(uint64_t value, uint64_t frame, bool has_frame, uint
     if (has_frame && value >= frame - 0x4000 && value < frame + 0x4000) {
         return val_ptr(PK_FRAME, (int64_t)value - (int64_t)frame);
     }
+    if (has_frame) {
+        static const uint64_t frame_biases[] = {
+            UINT64_C(0x1a44e4ef),
+            UINT64_C(0x61f749a7),
+            UINT64_C(0xda3b7d9),
+        };
+        for (size_t i = 0; i < sizeof(frame_biases) / sizeof(frame_biases[0]); ++i) {
+            uint64_t adjusted = value + frame_biases[i];
+            if (adjusted >= frame - 0x4000 && adjusted < frame + 0x4000) {
+                return val_ptr(PK_FRAME, ((int64_t)adjusted - (int64_t)frame) - (int64_t)frame_biases[i]);
+            }
+        }
+    }
     if (has_table && value >= table && value < table + TABLE_ENTRIES * 8u) {
         return val_ptr(PK_TABLE, (int64_t)value - (int64_t)table);
     }
@@ -2048,7 +2061,11 @@ static Seed *load_gpr_seeds(const char *path, size_t *seed_count) {
             if (!end || strncmp(end, "=0x", 3)) continue;
             uint64_t value = strtoull(end + 3, NULL, 16);
             if (seeds[idx].mem_count < sizeof(seeds[idx].mem) / sizeof(seeds[idx].mem[0])) {
-                seeds[idx].mem[seeds[idx].mem_count++] = (FrameMem){.off = off, .size = 8, .value = val_int(value)};
+                seeds[idx].mem[seeds[idx].mem_count++] = (FrameMem){
+                    .off = off,
+                    .size = 8,
+                    .value = normalize_seed(value, frame, has_frame, frame_off, has_frame_off, table, has_table, vm_ip, has_vm_ip),
+                };
             }
             p = end + 3;
         }
