@@ -5,8 +5,9 @@ LDFLAGS ?=
 STATE_DIR ?= dumps/vmtail-state-wide-w16
 TRACE ?= $(STATE_DIR)/vm_instruction_trace.tsv
 GPR_RUN ?= dumps/vmtail-scratch-wide-w16/run.stderr
+PRED_ROWS ?= 128
 
-.PHONY: all clean fast-replay fast-state fast-gpr fast-validators fast-paths fast-gpr-paths
+.PHONY: all clean fast-replay fast-state fast-gpr fast-predicates fast-validators fast-paths fast-gpr-paths
 
 all: driver trace_preload.so vm_fast_path_profile
 
@@ -26,6 +27,12 @@ fast-state: vm_fast_path_profile
 
 fast-gpr: vm_fast_path_profile
 	./vm_fast_path_profile $(TRACE) --gpr-run $(GPR_RUN) --emit-dir $(STATE_DIR)
+
+fast-predicates: vm_fast_path_profile
+	./vm_fast_path_profile $(TRACE) --branch-predicates --max-rows-per-source $(PRED_ROWS) > $(STATE_DIR)/vm_branch_predicates.tsv
+	python3 vm_branch_predicates.py --markdown --from-tsv $(STATE_DIR)/vm_branch_predicates.tsv > $(STATE_DIR)/vm_branch_predicates_top.md
+	./vm_fast_path_profile $(TRACE) --gpr-run $(GPR_RUN) --branch-predicates --max-rows-per-source $(PRED_ROWS) > $(STATE_DIR)/vm_branch_predicates_gpr_seeded.tsv
+	python3 vm_branch_predicates.py --markdown --from-tsv $(STATE_DIR)/vm_branch_predicates_gpr_seeded.tsv > $(STATE_DIR)/vm_branch_predicates_gpr_seeded_top.md
 
 fast-validators fast-paths: fast-state
 
