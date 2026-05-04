@@ -19,6 +19,7 @@ SHA-256: `0b44ad59697129534189efdb75cde2b96245f831438e9f6a53cb7725f190d739`
 - `vm_isa_summary.py`: clusters exact recovered VM instruction signatures by source handler, fixed byte length, target distribution, and operand byte/word layout.
 - `vm_semantic_templates.py`: merges ISA schemas with static handler features into per-handler rows and ranked semantic templates.
 - `vm_handler_skeleton.py`: extracts normalized frame/IP/table access skeletons from handler disassembly and groups full, dispatch-tail, or canonical decode signatures.
+- `vm_state_effects.py`: summarizes observed `frame+0x170`, `frame+0x23`, and `frame+0x194` changes per handler or per `(handler, delta, bytes)` signature from state-aware traces.
 - `dumps/local-blocked-log/run.stderr`: blocked-network trace from the harness.
 - `dumps/local-blocked-log/postcall_*` and `postsleep_*`: in-memory EAC map/context/output dumps.
 - `dumps/dispatch-trap/run.stderr`: targeted dispatcher trace with fast harness exit.
@@ -51,6 +52,10 @@ SHA-256: `0b44ad59697129534189efdb75cde2b96245f831438e9f6a53cb7725f190d739`
 - `dumps/vmtail-wide-1m-w16/vm_bytecode_blocks_sampled.tsv`: contiguous coverage blocks for exact plus sampled byte windows.
 - `dumps/vmtail-wide-1m-w16/vm_gap_report.tsv`: exact-segment coverage gap ranking.
 - `dumps/vmtail-wide-1m-w16/vm_gap_report_sampled.tsv`: gap ranking after adding sampled byte-window coverage.
+- `dumps/vmtail-state-wide-w16/run.stderr`: 250k state-aware VMTAIL trace. VMTAIL rows include `vm_flags`, `vm_state`, and `vm_byte` after each handler.
+- `dumps/vmtail-state-wide-w16/vm_instruction_trace.tsv`: state-aware instruction rows with appended `pre_*`, `post_*`, and `state_delta` columns.
+- `dumps/vmtail-state-wide-w16/vm_state_effects.tsv`: per-handler frame-state effect summary.
+- `dumps/vmtail-state-wide-w16/vm_state_signatures.tsv`: per-signature frame-state effect summary keyed by source handler, byte delta, byte status, and byte sequence.
 
 Reproduction:
 
@@ -257,6 +262,34 @@ python3 vm_handler_skeleton.py dumps/vmtail-wide-1m-w16 --groups --group-key dis
   >dumps/vmtail-wide-1m-w16/vm_handler_dispatch_groups.tsv
 python3 vm_handler_skeleton.py dumps/vmtail-wide-1m-w16 --groups --group-key skeleton \
   >dumps/vmtail-wide-1m-w16/vm_handler_skeleton_groups.tsv
+```
+
+State-aware wide-tail rerun:
+
+```sh
+make
+mkdir -p dumps/vmtail-state-wide-w16
+SPEC=$(python3 vm_tail_scan.py --all-table --eac eac.elf --window 0x1200 --limit 0 \
+  | sed -n 's/^EAC_VMTAIL_SITES=//p')
+timeout 45s env EAC_FAST_EXIT=1 \
+  EAC_DISPATCH_TRACE=1 \
+  EAC_DISPATCH_DETAIL=1 \
+  EAC_VMTAIL_TRACE=1 \
+  EAC_DISPATCH_LIMIT=4096 \
+  EAC_VMTAIL_LIMIT=250000 \
+  EAC_VMTAIL_SITES="$SPEC" \
+  EAC_DUMP_DIR=dumps/vmtail-state-wide-w16 \
+  EAC_LAUNCHERDIR=/tmp/fake_launcher \
+  LD_PRELOAD=./trace_preload.so \
+  ./driver ./eac.elf 1 x 0x800 0 \
+  >dumps/vmtail-state-wide-w16/run.stdout \
+  2>dumps/vmtail-state-wide-w16/run.stderr
+python3 vm_trace_graph.py dumps/vmtail-state-wide-w16 --eac eac.elf --window 0x1200 --instruction-trace \
+  >dumps/vmtail-state-wide-w16/vm_instruction_trace.tsv
+python3 vm_state_effects.py dumps/vmtail-state-wide-w16/vm_instruction_trace.tsv \
+  >dumps/vmtail-state-wide-w16/vm_state_effects.tsv
+python3 vm_state_effects.py dumps/vmtail-state-wide-w16/vm_instruction_trace.tsv --by-signature \
+  >dumps/vmtail-state-wide-w16/vm_state_signatures.tsv
 ```
 
 ## ELF Overview
@@ -717,6 +750,53 @@ Against sampled byte-window segments, `uncovered_source_start` disappears and ex
 | 142 | missing exact source entry 145 (`0x95b5c`) | long positive jumps, including `+0x139` to entry 354 |
 
 Those gaps are better next trace targets than broad reruns: they isolate specific VM IP bands (`0x22ffb1`, `0x230111`, `0x370xxx`, `0x371xxx`, `0x310dba`, `0x31297d`, `0x3157e1`, `0x315cc0`) and sparse source handlers (`316`, `75`, `266`, `145`, `117`, `302`) that still block full bytecode/ISA recovery.
+
+The state-aware trace in `dumps/vmtail-state-wide-w16` adds `vm_flags`, `vm_state`, and `vm_byte` to every VMTAIL row. `vm_trace_graph.py --instruction-trace` uses consecutive events as pre/post snapshots for the source handler and appends:
+
+`pre_flags`, `post_flags`, `pre_state`, `post_state`, `state_delta`, `pre_byte`, `post_byte`.
+
+This gives the first direct dynamic semantics for the rolling state at `frame+0x170`. The 250k state trace has 250000 VMTAIL records, 3385 DISPATCH records, and 249764 direct instruction rows after filtering. Handler-level grouping is intentionally broad and mostly mixed because each handler covers many byte operands:
+
+| Events | Handlers | State Class |
+| ---: | ---: | --- |
+| 244984 | 138 | `state_mixed` |
+| 2124 | 28 | `state_preserve` |
+| 2035 | 3 | `state_const_post` |
+| 621 | 22 | `state_add_const` |
+
+Per-signature grouping is much more informative. Keying by `(source handler, delta, byte_status, bytes)` shows that most observed VM instructions have a deterministic state transform:
+
+| Events | Signatures | State Class |
+| ---: | ---: | --- |
+| 221807 | 35132 | `state_add_const` |
+| 18749 | 1048 | `state_mixed` |
+| 6902 | 362 | `state_const_post` |
+| 2306 | 240 | `state_preserve` |
+
+Top deterministic state-add signatures:
+
+| Events | Entry | Delta | Bytes | State Add | Target |
+| ---: | ---: | --- | --- | --- | --- |
+| 256 | 17 | `+0x5` | `12ff6210a0` | `-0x7fff6076` | 300 |
+| 256 | 18 | `+0x3` | `4804c6` | `+0x60c92c45` | 105 |
+| 256 | 18 | `+0x3` | `580eaa` | `+0x1d32d080` | 258 |
+| 256 | 18 | `+0x3` | `584f3c` | `-0x5b689fc` | 347 |
+| 256 | 20 | `+0x4` | `e801874a` | `+0x5a0c98e5` | 181 |
+| 256 | 26 | `+0x4` | `13cfe801` | `+0x6add1670` | 168 |
+| 256 | 28 | `+0x3` | `00049a` | `-0x46223400` | 128 |
+| 256 | 258 | `+0x4` | `f3d5ce87` | `+0x383d0514` | 215 |
+
+Top state-preserving signatures are mostly loop/backedge or central-dispatch-adjacent rows:
+
+| Events | Entry | Delta | Bytes | Target |
+| ---: | ---: | --- | --- | ---: |
+| 255 | 75 | `-0x6d` | `ab0000006d0000803d019a5ae9e544f6d9c39fb63a3668ff1418b4e9c6cf3d01` | 171 |
+| 255 | 316 | `-0x3c4` | `a5000000c40300803d019a6cb3e80548381b90d9800d6d4dbe452b0a0126003d` | 165 |
+| 113 | 310 | `+0x4` | `e801a500` | 165 |
+| 91 | 310 | `+0x4` | `e8016201` | 354 |
+| 86 | 283 | `+0x5` | `10e801c462` | 258 |
+
+This strongly suggests the VM dispatch state is not opaque per handler: for most concrete bytecode signatures, `frame+0x170` advances by a deterministic 32-bit addend, while target selection still depends on the rolling state and decoded bytes.
 
 Top auto3 tail targets:
 
