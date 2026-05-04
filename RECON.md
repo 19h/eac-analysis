@@ -23,6 +23,8 @@ SHA-256: `0b44ad59697129534189efdb75cde2b96245f831438e9f6a53cb7725f190d739`
 - `vm_tail_registers.py`: infers per-tail-site register roles from `EAC_VMTAIL_REGS=1` traces, including target value, dispatch-slot pointer, byte index, table pointer, and frame pointer. It can also join those roles back onto an instruction trace by source handler and tail site.
 - `vm_tail_static_slots.py`: statically recovers consumed dispatch-slot temporaries for tail sites where the target is loaded from `table + byte_index` and the slot pointer is clobbered before the final jump.
 - `vm_instruction_lift.py`: joins exact recovered VM instructions with per-signature state effects, dynamic tail-register roles, and static dispatch-slot provenance.
+- `vm_bytecode_file_atlas.py`: verifies recovered exact VM bytes against `eac.elf` and builds conservative file-backed bytecode atlas regions from observed segments plus small inferred gaps.
+- `vm_instruction_compare.py`: compares exact unique VM instruction catalogs by stable instruction key.
 - `dumps/local-blocked-log/run.stderr`: blocked-network trace from the harness.
 - `dumps/local-blocked-log/postcall_*` and `postsleep_*`: in-memory EAC map/context/output dumps.
 - `dumps/dispatch-trap/run.stderr`: targeted dispatcher trace with fast harness exit.
@@ -57,8 +59,11 @@ SHA-256: `0b44ad59697129534189efdb75cde2b96245f831438e9f6a53cb7725f190d739`
 - `dumps/vmtail-wide-1m-w16/vm_handler_tail_roles_wide_regs.tsv`: same join using the 250k GPR trace for better low-frequency site coverage.
 - `dumps/vmtail-wide-1m-w16/vm_tail_static_slots.tsv`: static dispatch-slot provenance joined to each long-run source-handler/tail-site row.
 - `dumps/vmtail-wide-1m-w16/vm_instruction_lift.tsv`: one enriched row per exact recovered unique VM instruction.
+- `dumps/vmtail-wide-1m-w16/vm_bytecode_file_atlas.tsv`: file-backed VM bytecode atlas built from sampled bytecode segments with `--max-gap 0x20`.
 - `dumps/vmtail-wide-1m-w16/vm_gap_report.tsv`: exact-segment coverage gap ranking.
 - `dumps/vmtail-wide-1m-w16/vm_gap_report_sampled.tsv`: gap ranking after adding sampled byte-window coverage.
+- `dumps/vmtail-mode0-w16/*` and `dumps/vmtail-mode2-w16/*`: 250k wide-tail traces for accepted alternate `x` modes 0 and 2.
+- `dumps/vmtail-mode-compare.tsv`: exact unique-instruction comparison for mode 0, mode 1 250k, mode 1 long, and mode 2.
 - `dumps/vmtail-state-wide-w16/run.stderr`: 250k state-aware VMTAIL trace. VMTAIL rows include `vm_flags`, `vm_state`, and `vm_byte` after each handler.
 - `dumps/vmtail-state-wide-w16/vm_instruction_trace.tsv`: state-aware instruction rows with appended `pre_*`, `post_*`, and `state_delta` columns.
 - `dumps/vmtail-state-wide-w16/vm_state_effects.tsv`: per-handler frame-state effect summary.
@@ -338,6 +343,47 @@ python3 vm_tail_static_slots.py dumps/vmtail-wide-1m-w16/vm_handler_tail_roles_w
   >dumps/vmtail-wide-1m-w16/vm_tail_static_slots.tsv
 python3 vm_instruction_lift.py \
   >dumps/vmtail-wide-1m-w16/vm_instruction_lift.tsv
+python3 vm_bytecode_file_atlas.py --max-gap 0x20 \
+  >dumps/vmtail-wide-1m-w16/vm_bytecode_file_atlas.tsv
+```
+
+Mode-variation checks:
+
+```sh
+make
+SPEC=$(python3 vm_tail_scan.py --all-table --eac eac.elf --window 0x1200 --limit 0 \
+  | sed -n 's/^EAC_VMTAIL_SITES=//p')
+for MODE in 0 2; do
+  DIR=dumps/vmtail-mode${MODE}-w16
+  mkdir -p "$DIR"
+  timeout 45s env EAC_FAST_EXIT=1 \
+    EAC_DISPATCH_TRACE=1 \
+    EAC_DISPATCH_DETAIL=1 \
+    EAC_VMTAIL_TRACE=1 \
+    EAC_DISPATCH_LIMIT=4096 \
+    EAC_VMTAIL_LIMIT=250000 \
+    EAC_VMTAIL_SITES="$SPEC" \
+    EAC_DUMP_DIR="$DIR" \
+    EAC_LAUNCHERDIR=/tmp/fake_launcher \
+    LD_PRELOAD=./trace_preload.so \
+    ./driver ./eac.elf "$MODE" x 0x800 0 \
+    >"$DIR/run.stdout" \
+    2>"$DIR/run.stderr"
+  python3 vm_trace_graph.py "$DIR" --eac eac.elf --window 0x1200 --instruction-trace \
+    >"$DIR/vm_instruction_trace.tsv"
+  python3 vm_bytecode_recover.py "$DIR/vm_instruction_trace.tsv" \
+    >"$DIR/vm_bytecode_segments.tsv"
+  python3 vm_bytecode_recover.py "$DIR/vm_instruction_trace.tsv" --instructions \
+    >"$DIR/vm_instruction_unique.tsv"
+  python3 vm_bytecode_recover.py "$DIR/vm_instruction_trace.tsv" --include-sampled \
+    >"$DIR/vm_bytecode_segments_sampled.tsv"
+done
+python3 vm_instruction_compare.py \
+  dumps/vmtail-wide-1m-w16/vm_instruction_unique.tsv \
+  dumps/vmtail-wide-w16/vm_instruction_unique.tsv \
+  dumps/vmtail-mode0-w16/vm_instruction_unique.tsv \
+  dumps/vmtail-mode2-w16/vm_instruction_unique.tsv \
+  >dumps/vmtail-mode-compare.tsv
 ```
 
 ## ELF Overview
@@ -774,6 +820,31 @@ The bytecode block graph in `vm_bytecode_block_edges.tsv` aggregates instruction
 | 3254 | 445 | `out_of_recovered` |
 
 The `out_of_recovered` edges are exact positive steps whose destination offset has not yet been recovered as an exact byte segment start; these are useful targets for varied-input traces.
+
+Alternate accepted `x` modes do not currently expand the VM path. Mode 0 and mode 2 both returned success (`out[0] = 1`) and produced 250000 VMTAIL rows plus 3385 DISPATCH rows, but their exact unique instruction catalogs are identical to the existing 250k mode-1 trace:
+
+| Catalog | Rows | Events | New Rows vs Long Mode 1 | New Events |
+| --- | ---: | ---: | ---: | ---: |
+| `dumps/vmtail-wide-w16/vm_instruction_unique.tsv` | 39636 | 248906 | 0 | 0 |
+| `dumps/vmtail-mode0-w16/vm_instruction_unique.tsv` | 39636 | 248906 | 0 | 0 |
+| `dumps/vmtail-mode2-w16/vm_instruction_unique.tsv` | 39636 | 248906 | 0 | 0 |
+
+This means the next coverage gains are more likely to come from deeper state/path exploration or targeted VM IP gaps than from the public mode field alone.
+
+Every exact recovered VM instruction byte sequence in `vm_instruction_unique.tsv` matches `eac.elf` at the same VM IP file offset: 71355 exact instruction byte checks, 0 mismatches. This proves the observed VM bytecode is file-backed on this path rather than dynamically decrypted into unrelated memory.
+
+`vm_bytecode_file_atlas.tsv` uses that fact conservatively. With sampled segments and `--max-gap 0x20`, it builds 67 file-backed VM bytecode atlas regions:
+
+| Metric | Value |
+| --- | ---: |
+| atlas regions | 67 |
+| file-backed atlas size | `0x43d34` |
+| observed sampled bytes | `0x42dbd` |
+| inferred small-gap bytes | `0xf77` |
+| observed events represented by atlas segments | 769216 |
+| summed unique start IPs | 71513 |
+
+The inferred gap bytes are not claimed as executed instructions. They are byte-accurate ELF contents between nearby observed VM bytecode spans and are useful for static decode experiments, especially around exact-destination gaps such as `0x230111`, `0x230b1b`, `0x230e07`, and `0x3703d8`.
 
 `vm_gap_report.py` prioritizes the remaining coverage holes. Against exact-only segments it reports:
 
