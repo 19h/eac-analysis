@@ -24,6 +24,7 @@ SHA-256: `0b44ad59697129534189efdb75cde2b96245f831438e9f6a53cb7725f190d739`
 - `vm_state_static_slice.py`: statically tracks frame/IP pointers through handler code and emits symbolic update chains for `frame+0x170` and `frame+0x23`.
 - `vm_state_static_validate.py`: concretely executes the static state slice over state-aware trace rows and validates predicted `frame+0x170` post-state.
 - `vm_static_dispatch_validate.py`: concretely executes handler slices through the final table jump and validates predicted dispatch target plus VM IP advance.
+- `vm_dispatch_model_combine.py`: combines the static dispatch validator with affine fallback formulas for static-dispatch misses.
 - `vm_tail_registers.py`: infers per-tail-site register roles from `EAC_VMTAIL_REGS=1` traces, including target value, dispatch-slot pointer, byte index, table pointer, and frame pointer. It can also join those roles back onto an instruction trace by source handler and tail site.
 - `vm_tail_static_slots.py`: statically recovers consumed dispatch-slot temporaries for tail sites where the target is loaded from `table + byte_index` and the slot pointer is clobbered before the final jump.
 - `vm_instruction_lift.py`: joins exact recovered VM instructions with per-signature state effects, compact state-affine tags, dynamic tail-register roles, static dispatch-slot provenance, and compact scalar/affine dispatch-formula tags.
@@ -88,6 +89,7 @@ SHA-256: `0b44ad59697129534189efdb75cde2b96245f831438e9f6a53cb7725f190d739`
 - `dumps/vmtail-state-wide-w16/vm_state_affine_fullfields.tsv`: affine `frame+0x170` post-state formulas using all traced state fields, with 5-fold validation.
 - `dumps/vmtail-state-wide-w16/vm_state_static_validate.tsv`: concrete validation of static state slices against the state-aware instruction trace.
 - `dumps/vmtail-state-wide-w16/vm_static_dispatch_validate.tsv`: concrete validation of static dispatch target and VM IP advance against the state-aware instruction trace.
+- `dumps/vmtail-state-wide-w16/vm_dispatch_model_combined.tsv`: combined static-plus-affine dispatch model coverage for the state-aware instruction trace.
 - `dumps/vmtail-state-wide-w16/vm_dispatch_formulas.tsv`: fitted dispatch-index formulas from the state-aware instruction trace.
 - `dumps/vmtail-state-wide-w16/vm_dispatch_affine.tsv`: exact affine dispatch-index fits from the state-aware instruction trace.
 - `dumps/vmtail-state-wide-w16/vm_dispatch_affine_cv.tsv`: 5-fold held-out validation of affine dispatch-index fits.
@@ -340,6 +342,8 @@ python3 vm_state_static_validate.py dumps/vmtail-state-wide-w16/vm_instruction_t
   >dumps/vmtail-state-wide-w16/vm_state_static_validate.tsv
 python3 vm_static_dispatch_validate.py dumps/vmtail-state-wide-w16/vm_instruction_trace.tsv \
   >dumps/vmtail-state-wide-w16/vm_static_dispatch_validate.tsv
+python3 vm_dispatch_model_combine.py dumps/vmtail-state-wide-w16/vm_instruction_trace.tsv \
+  >dumps/vmtail-state-wide-w16/vm_dispatch_model_combined.tsv
 python3 vm_dispatch_formula.py dumps/vmtail-state-wide-w16/vm_instruction_trace.tsv \
   >dumps/vmtail-state-wide-w16/vm_dispatch_formulas.tsv
 python3 vm_dispatch_affine.py dumps/vmtail-state-wide-w16/vm_instruction_trace.tsv \
@@ -1041,6 +1045,17 @@ Here `flags'` is itself conditionally transformed from `frame+0x23` by subtract/
 
 `vm_static_dispatch_validate.py` extends the same concrete slice through the final table lookup and VM IP write. It validates both dispatch target and `frame+0x0a` advance for 248300 of 248906 state-trace rows, or 99.7565%. The 606 misses are concentrated in 13 sources that use native `ret`/stack control-flow or long control-flow-like windows before the VM tail: entries 356, 216, 95, 278, 311, 102, 264, 321, 85, 78, 284, 241, and 101. In the lifted long catalog, 71237 exact rows and 764108 events come from sources with 100% static dispatch/IP validation. The validator covers 43 of the 48 robust dispatch-affine sources at 100%, covering 9139 exact rows and 99661 events.
 
+`vm_dispatch_model_combine.py` closes that dynamic gap by preferring the static dispatch validator and falling back to affine dispatch bit formulas for static-target misses. On the state-aware trace, the combined model validates all 248906 exact instruction rows:
+
+| Dispatch Model | Sources | Events |
+| --- | ---: | ---: |
+| `static_100` | 166 | 248300 |
+| `affine_robust_fallback` | 5 | 360 |
+| `affine_partial_fallback` | 3 | 241 |
+| `affine_single_fallback` | 5 | 5 |
+
+The affine fallback uses formulas fitted over state/post-state/byte features, so it is a validated dynamic dispatch model rather than a purely static one. In the lifted long catalog, the combined model tags 71343 rows and 767546 events; 12 exact rows and 20 events remain untagged only because their source handlers were not present in the state-aware trace.
+
 The register-role trace in `dumps/vmtail-regs-wide-w16` logs all GPRs for 250000 VMTAIL events. `vm_tail_registers.py` compares each register to the current dispatch target, `frame+0x10f` table base, `table + target_entry*8`, and `target_entry*8`.
 
 Per role-row totals:
@@ -1136,6 +1151,7 @@ Coverage in the lift catalog:
 | from source with 100% static state validation | 71339 | 767542 |
 | from source with static dispatch/IP validation | 71343 | 767546 |
 | from source with 100% static dispatch/IP validation | 71237 | 764108 |
+| with combined dispatch model | 71343 | 767546 |
 | with scalar dispatch formula tag | 71343 | 767546 |
 | from source with affine dispatch fit | 11753 | 126720 |
 | from source with robust affine CV | 9197 | 101596 |
