@@ -169,6 +169,10 @@ def main():
         "--branch-predicates",
         default="dumps/vmtail-state-wide-w16/vm_branch_predicates.tsv",
     )
+    parser.add_argument(
+        "--branch-predicates-gpr",
+        default="dumps/vmtail-state-wide-w16/vm_branch_predicates_gpr_seeded.tsv",
+    )
     parser.add_argument("--branch-top", type=int, default=5)
     args = parser.parse_args()
 
@@ -184,6 +188,7 @@ def main():
     tail_roles = load_tail_rows(args.tail_roles)
     static_slots = load_tail_rows(args.static_slots)
     branch_predicates = load_branch_predicates(args.branch_predicates, args.branch_top)
+    branch_predicates_gpr = load_branch_predicates(args.branch_predicates_gpr, args.branch_top)
 
     fieldnames = [
         "entry",
@@ -232,6 +237,12 @@ def main():
         "branch_predicate_top_classes",
         "branch_predicate_top_unknown_sites",
         "branch_predicate_top_unknown_conditions",
+        "branch_gpr_predicate_events",
+        "branch_gpr_predicate_unknown_events",
+        "branch_gpr_predicate_unknown_pct",
+        "branch_gpr_predicate_top_classes",
+        "branch_gpr_predicate_top_unknown_sites",
+        "branch_gpr_predicate_top_unknown_conditions",
         "target_reg",
         "slot_kind",
         "slot_reg_or_temp",
@@ -257,6 +268,7 @@ def main():
         transfer_expr,
         path_profile,
         branch_predicates,
+        branch_predicates_gpr,
     ):
         skeleton = skeletons.get(entry, {})
         state_slice = slices.get(entry, {})
@@ -268,6 +280,7 @@ def main():
         transfer_expr_row = transfer_expr.get(entry, {})
         path_profile_row = path_profile.get(entry, {})
         branch_predicate_row = branch_predicates.get(entry, {})
+        branch_gpr_row = branch_predicates_gpr.get(entry, {})
 
         target = skeleton.get("target", "") or state_slice.get("target", "")
         tail_site = skeleton.get("tail_site", "") or state_slice.get("tail_site", "")
@@ -325,6 +338,12 @@ def main():
                 "branch_predicate_top_classes": branch_predicate_row.get("top_classes", ""),
                 "branch_predicate_top_unknown_sites": branch_predicate_row.get("top_unknown_sites", ""),
                 "branch_predicate_top_unknown_conditions": branch_predicate_row.get("top_unknown_conditions", ""),
+                "branch_gpr_predicate_events": branch_gpr_row.get("events", ""),
+                "branch_gpr_predicate_unknown_events": branch_gpr_row.get("unknown_events", ""),
+                "branch_gpr_predicate_unknown_pct": branch_gpr_row.get("unknown_pct", ""),
+                "branch_gpr_predicate_top_classes": branch_gpr_row.get("top_classes", ""),
+                "branch_gpr_predicate_top_unknown_sites": branch_gpr_row.get("top_unknown_sites", ""),
+                "branch_gpr_predicate_top_unknown_conditions": branch_gpr_row.get("top_unknown_conditions", ""),
                 "target_reg": role.get("target_reg", ""),
                 "slot_kind": slot_kind,
                 "slot_reg_or_temp": slot_reg_or_temp,
