@@ -84,6 +84,10 @@ def main():
         default="dumps/vmtail-state-wide-w16/vm_static_transfer_expr.tsv",
     )
     parser.add_argument(
+        "--path-profile",
+        default="dumps/vmtail-state-wide-w16/vm_static_path_profile.tsv",
+    )
+    parser.add_argument(
         "--tail-roles",
         default="dumps/vmtail-wide-1m-w16/vm_handler_tail_roles_wide_regs.tsv",
     )
@@ -101,6 +105,7 @@ def main():
     dispatch_model = load_by(args.dispatch_model, "source_entry")
     dispatch_affine_cv = load_by(args.dispatch_affine_cv, "source_entry")
     transfer_expr = load_by(args.transfer_expr, "source_entry")
+    path_profile = load_by(args.path_profile, "source_entry")
     tail_roles = load_tail_rows(args.tail_roles)
     static_slots = load_tail_rows(args.static_slots)
 
@@ -141,6 +146,10 @@ def main():
         "transfer_expr_unique_ip_exprs",
         "transfer_expr_top_slot_exprs",
         "transfer_expr_top_ip_exprs",
+        "path_profile_events",
+        "path_profile_unique_paths",
+        "path_profile_branch_sites",
+        "path_profile_top_paths",
         "target_reg",
         "slot_kind",
         "slot_reg_or_temp",
@@ -164,6 +173,7 @@ def main():
         dispatch_model,
         dispatch_affine_cv,
         transfer_expr,
+        path_profile,
     ):
         skeleton = skeletons.get(entry, {})
         state_slice = slices.get(entry, {})
@@ -173,6 +183,7 @@ def main():
         dispatch_model_row = dispatch_model.get(entry, {})
         dispatch_affine_row = dispatch_affine_cv.get(entry, {})
         transfer_expr_row = transfer_expr.get(entry, {})
+        path_profile_row = path_profile.get(entry, {})
 
         target = skeleton.get("target", "") or state_slice.get("target", "")
         tail_site = skeleton.get("tail_site", "") or state_slice.get("tail_site", "")
@@ -220,6 +231,10 @@ def main():
                 "transfer_expr_unique_ip_exprs": transfer_expr_row.get("unique_ip_exprs", ""),
                 "transfer_expr_top_slot_exprs": transfer_expr_row.get("top_slot_exprs", ""),
                 "transfer_expr_top_ip_exprs": transfer_expr_row.get("top_ip_exprs", ""),
+                "path_profile_events": path_profile_row.get("events", ""),
+                "path_profile_unique_paths": path_profile_row.get("unique_paths", ""),
+                "path_profile_branch_sites": path_profile_row.get("branch_sites", ""),
+                "path_profile_top_paths": path_profile_row.get("top_paths", ""),
                 "target_reg": role.get("target_reg", ""),
                 "slot_kind": slot_kind,
                 "slot_reg_or_temp": slot_reg_or_temp,

@@ -146,6 +146,11 @@ def build_rows(args):
                 "dispatch_slot_ir": slot_exprs,
                 "ip_advance_ir": ip_advance,
                 "tail_ir": f"next = table[slot]; ip += {ip_advance}" if ip_advance else "",
+                "path_profile": (
+                    f"{row.get('path_profile_unique_paths', '')} paths over "
+                    f"{row.get('path_profile_events', '')} state events"
+                    if row.get("path_profile_unique_paths", "") else ""
+                ),
                 "validation": status(row),
                 "top_targets": row.get("top_targets", ""),
             }
@@ -170,6 +175,7 @@ def emit_tsv(rows):
         "dispatch_slot_ir",
         "ip_advance_ir",
         "tail_ir",
+        "path_profile",
         "validation",
         "top_targets",
     ]
@@ -193,6 +199,8 @@ def emit_markdown(rows, limit):
             print(f"- words: `{row['word_layout']}`")
         if row["validation"]:
             print(f"- validation: `{row['validation']}`")
+        if row["path_profile"]:
+            print(f"- paths: `{row['path_profile']}`")
         if row["flag_ir"]:
             print(f"- flags: `{row['flag_ir']}`")
         if row["state_ir"]:
