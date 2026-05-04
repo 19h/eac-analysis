@@ -1695,6 +1695,302 @@ static void update_branch_stats_from_path(BranchStat **branches, size_t *count, 
     free(copy);
 }
 
+static BranchPredStat *find_branch_pred_stat(BranchPredStat **stats, size_t *count, size_t *cap,
+                                             int source, const char *source_target, uint64_t site,
+                                             const char *mnemonic) {
+    for (size_t i = 0; i < *count; ++i) {
+        if ((*stats)[i].source == source && (*stats)[i].site == site &&
+            !strcmp((*stats)[i].mnemonic, mnemonic)) {
+            return &(*stats)[i];
+        }
+    }
+    if (*count == *cap) {
+        *cap = *cap ? *cap * 2 : 1024;
+        *stats = realloc(*stats, *cap * sizeof(BranchPredStat));
+        if (!*stats) {
+            perror("realloc");
+            exit(1);
+        }
+    }
+    BranchPredStat *b = &(*stats)[(*count)++];
+    memset(b, 0, sizeof(*b));
+    b->source = source;
+    b->site = site;
+    snprintf(b->mnemonic, sizeof(b->mnemonic), "%s", mnemonic);
+    snprintf(b->source_target, sizeof(b->source_target), "%s", source_target);
+    return b;
+}
+
+static const char *classify_condition(BranchCondition *cond, const char *branch_mnemonic, bool outcome_unknown) {
+    if (!cond || !cond->present) return "missing_condition";
+    if (outcome_unknown && strcmp(branch_mnemonic, "je") && strcmp(branch_mnemonic, "jz") &&
+        strcmp(branch_mnemonic, "jne") && strcmp(branch_mnemonic, "jnz")) {
+        return "unsupported_jcc";
+    }
+    if (cond->zf >= 0) return "resolved";
+    uint64_t classes = cond->left.classes | cond->right.classes;
+    if (classes & TC_LIVE_IN_REG) {
+        return (classes & (TC_DERIVED_LIVE_IN | TC_DERIVED_UNKNOWN)) ? "derived_live_in" : "live_in_reg";
+    }
+    if (classes & TC_GPR_SEED) return "seeded_gpr_unresolved";
+    if (classes & TC_UNKNOWN_MEMORY_POINTER) return "unknown_memory_pointer";
+    if (classes & TC_UNKNOWN_FRAME_FIELD) return "unknown_frame_field";
+    if (classes & TC_VM_BYTECODE) return "vm_bytecode_unresolved";
+    if (classes & (TC_STATE | TC_FLAGS | TC_VM_BYTE)) return "state_unresolved";
+    if (classes & TC_UNKNOWN) return "unknown_operand";
+    return "unresolved";
+}
+
+static void condition_text_buf(BranchCondition *cond, char *out, size_t out_size, int max_len) {
+    if (!cond || !cond->present) {
+        snprintf(out, out_size, "-");
+        return;
+    }
+    char left_value[128], right_value[128], classes[512], zf[8], tmp[1400];
+    fmt_value_buf(cond->left.value, cond->left.reason, left_value, sizeof(left_value));
+    fmt_value_buf(cond->right.value, cond->right.reason, right_value, sizeof(right_value));
+    class_names_buf(cond->left.classes | cond->right.classes, classes, sizeof(classes));
+    snprintf(zf, sizeof(zf), "%s", cond->zf < 0 ? "None" : (cond->zf ? "True" : "False"));
+    snprintf(tmp, sizeof(tmp), "0x%" PRIx64 ":%s:%s:%s(%s) ? %s(%s):zf=%s:%s",
+             cond->site, cond->mnemonic, cond->op_str,
+             cond->left.expr, left_value, cond->right.expr, right_value, zf, classes);
+    clip_to_buf(tmp, max_len, out, out_size);
+}
+
+static void update_branch_pred(BranchPredStat **stats, size_t *count, size_t *cap,
+                               int source, const char *source_target, cs_insn *insn,
+                               int outcome, BranchCondition *cond, uint64_t steps,
+                               int max_cell_len) {
+    BranchPredStat *b = find_branch_pred_stat(stats, count, cap, source, source_target,
+                                              insn->address, insn->mnemonic);
+    b->events++;
+    b->steps += steps;
+    const char *outcome_s = "unknown";
+    if (outcome > 0) {
+        b->taken++;
+        outcome_s = "taken";
+    } else if (outcome == 0) {
+        b->not_taken++;
+        outcome_s = "not_taken";
+    } else {
+        b->unknown++;
+    }
+    counter_add(&b->classes, classify_condition(cond, insn->mnemonic, outcome < 0), 1);
+    counter_add(&b->outcomes, outcome_s, 1);
+    if (!cond || !cond->present) {
+        counter_add(&b->condition_sites, "-", 1);
+        counter_add(&b->condition_mnemonics, "-", 1);
+        counter_add(&b->condition_ops, "-", 1);
+        counter_add(&b->left_exprs, "-", 1);
+        counter_add(&b->right_exprs, "-", 1);
+        counter_add(&b->left_values, "-", 1);
+        counter_add(&b->right_values, "-", 1);
+        counter_add(&b->zf_values, "-", 1);
+        counter_add(&b->condition_texts, "-", 1);
+        return;
+    }
+    char value[256], text[512], zf[8];
+    counter_add_fmt(&b->condition_sites, 1, "0x%" PRIx64, cond->site);
+    counter_add(&b->condition_mnemonics, cond->mnemonic, 1);
+    counter_add(&b->condition_ops, cond->op_str, 1);
+    counter_add(&b->left_exprs, cond->left.expr, 1);
+    counter_add(&b->right_exprs, cond->right.expr, 1);
+    fmt_value_buf(cond->left.value, cond->left.reason, value, sizeof(value));
+    counter_add(&b->left_values, value, 1);
+    fmt_value_buf(cond->right.value, cond->right.reason, value, sizeof(value));
+    counter_add(&b->right_values, value, 1);
+    snprintf(zf, sizeof(zf), "%s", cond->zf < 0 ? "None" : (cond->zf ? "True" : "False"));
+    counter_add(&b->zf_values, zf, 1);
+    condition_text_buf(cond, text, sizeof(text), max_cell_len);
+    counter_add(&b->condition_texts, text, 1);
+}
+
+static ExecResult execute_handler_branch_pred(Handler *h, TraceRow *row, uint64_t *table, Seed *seed,
+                                              int max_steps, int max_expr_len, int max_cell_len,
+                                              BranchPredStat **pred_stats, size_t *pred_count, size_t *pred_cap,
+                                              int source, const char *source_target) {
+    Frame frame = {
+        .state = row->pre_state,
+        .flags = row->pre_flags,
+        .byte = row->pre_byte,
+        .ip_delta = 0,
+        .ip_low12 = row->start_vm_ip & 0xfff,
+    };
+    TrackedValue regs[REG_COUNT];
+    for (int i = 0; i < REG_COUNT; ++i) {
+        char reason[64], expr[80];
+        snprintf(reason, sizeof(reason), "livein_%s", tracked_reg_name(i));
+        snprintf(expr, sizeof(expr), "live_in(%s)", tracked_reg_name(i));
+        regs[i] = tracked_unknown(reason, expr, TC_LIVE_IN_REG, max_expr_len);
+    }
+    TrackedFrameMem frame_mem[64];
+    size_t frame_mem_count = 0;
+    if (seed && seed->present) {
+        for (int i = 0; i < REG_COUNT; ++i) {
+            if (seed->reg_present[i]) regs[i] = tracked_seed_from_value(i, seed->regs[i], max_expr_len);
+        }
+        for (size_t i = 0; i < seed->mem_count && i < 64; ++i) {
+            char expr[64];
+            snprintf(expr, sizeof(expr), "seed_frame(0x%llx)", (unsigned long long)seed->mem[i].off);
+            frame_mem[frame_mem_count++] = (TrackedFrameMem){
+                .off = seed->mem[i].off,
+                .size = seed->mem[i].size,
+                .value = tracked_from(seed->mem[i].value, expr, TC_FRAME_SCRATCH_SEED, "", max_expr_len),
+            };
+        }
+    }
+    regs[14] = tracked_from(val_ptr(PK_FRAME, 0), "frame", TC_FRAME_POINTER, "", max_expr_len);
+    TrackedValue state_tv = tracked_from(val_int(frame.state), "state0", TC_STATE, "", max_expr_len);
+    TrackedValue flags_tv = tracked_from(val_int(frame.flags), "flags0", TC_FLAGS, "", max_expr_len);
+    TrackedValue byte_tv = tracked_from(val_int(frame.byte), "vm_byte0", TC_VM_BYTE, "", max_expr_len);
+    TrackedValue ip_tv = tracked_from(val_ptr_low(PK_IP, 0, 12, frame.ip_low12), "ip+0x0", TC_VM_IP_POINTER, "", max_expr_len);
+    uint64_t pc = h->target;
+    int zf = -1;
+    BranchCondition cond = {0};
+    cond.zf = -1;
+    uint64_t steps = 0, unknown = 0, branch_unknown = 0;
+    char *path = xstrdup("");
+    size_t path_len = 0, path_cap = 1;
+    while (steps < (uint64_t)max_steps) {
+        cs_insn *insn = find_insn(h, pc);
+        if (!insn) {
+            return (ExecResult){.pred_entry = -1, .pred_state = frame.state, .pred_delta = frame.ip_delta,
+                                .status = "falloff", .steps = steps, .unknown = unknown,
+                                .branch_unknown = branch_unknown, .path = path};
+        }
+        steps++;
+        cs_x86 *x86 = &insn->detail->x86;
+        cs_x86_op *ops = x86->operands;
+        uint8_t op_count = x86->op_count;
+        uint64_t next_pc = insn->address + insn->size;
+        const char *mnem = insn->mnemonic;
+        if (!strcmp(mnem, "jmp")) {
+            if (op_count && ops[0].type == X86_OP_IMM && find_insn(h, (uint64_t)ops[0].imm)) {
+                pc = (uint64_t)ops[0].imm;
+                continue;
+            }
+            TrackedValue v = op_count
+                ? read_op_tracked(insn, &ops[0], regs, &frame, &state_tv, &flags_tv, &byte_tv, &ip_tv,
+                                  row->bytes, row->byte_count, table, frame_mem, frame_mem_count, max_expr_len)
+                : tracked_unknown("jmp", "?jmp", 0, max_expr_len);
+            if (v.value.kind == VK_INT) {
+                return (ExecResult){.pred_entry = target_to_entry(table, v.value.u), .pred_target = v.value.u,
+                                    .pred_state = frame.state, .pred_delta = frame.ip_delta, .status = "ok",
+                                    .steps = steps, .unknown = unknown, .branch_unknown = branch_unknown, .path = path};
+            }
+            return (ExecResult){.pred_entry = -1, .pred_state = frame.state, .pred_delta = frame.ip_delta,
+                                .status = "unknown_target", .steps = steps, .unknown = unknown + 1,
+                                .branch_unknown = branch_unknown, .path = path};
+        }
+        int taken = branch_taken(mnem, zf);
+        if (taken >= 0) {
+            update_branch_pred(pred_stats, pred_count, pred_cap, source, source_target, insn, taken, &cond, steps, max_cell_len);
+            path_append(&path, &path_len, &path_cap, insn->address, mnem, taken ? "1" : "0");
+            pc = (taken && op_count && ops[0].type == X86_OP_IMM) ? (uint64_t)ops[0].imm : next_pc;
+            continue;
+        }
+        if (mnem[0] == 'j' && strcmp(mnem, "jmp")) {
+            update_branch_pred(pred_stats, pred_count, pred_cap, source, source_target, insn, -1, &cond, steps, max_cell_len);
+            path_append(&path, &path_len, &path_cap, insn->address, mnem, "?");
+            branch_unknown++;
+            pc = next_pc;
+            continue;
+        }
+        if ((!strcmp(mnem, "cmp") || !strcmp(mnem, "test")) && op_count >= 2) {
+            TrackedValue left = read_op_tracked(insn, &ops[0], regs, &frame, &state_tv, &flags_tv, &byte_tv, &ip_tv,
+                                                row->bytes, row->byte_count, table, frame_mem, frame_mem_count, max_expr_len);
+            TrackedValue right = read_op_tracked(insn, &ops[1], regs, &frame, &state_tv, &flags_tv, &byte_tv, &ip_tv,
+                                                 row->bytes, row->byte_count, table, frame_mem, frame_mem_count, max_expr_len);
+            int size = ops[0].size ? ops[0].size : (ops[1].size ? ops[1].size : 8);
+            zf = cmp_zf(mnem, left.value, right.value, size);
+            if (zf < 0) unknown++;
+            cond.present = true;
+            cond.site = insn->address;
+            snprintf(cond.mnemonic, sizeof(cond.mnemonic), "%s", mnem);
+            snprintf(cond.op_str, sizeof(cond.op_str), "%s", insn->op_str);
+            cond.left = left;
+            cond.right = right;
+            cond.zf = zf;
+            pc = next_pc;
+            continue;
+        }
+        if (!op_count) {
+            pc = next_pc;
+            continue;
+        }
+        if ((!strcmp(mnem, "mov") || !strcmp(mnem, "movabs") || !strcmp(mnem, "movzx")) && op_count >= 2) {
+            TrackedValue value = read_op_tracked(insn, &ops[1], regs, &frame, &state_tv, &flags_tv, &byte_tv, &ip_tv,
+                                                 row->bytes, row->byte_count, table, frame_mem, frame_mem_count, max_expr_len);
+            if (!write_op_tracked(insn, &ops[0], value, regs, &frame, &state_tv, &flags_tv, &byte_tv, &ip_tv,
+                                  frame_mem, &frame_mem_count, max_expr_len)) unknown++;
+            pc = next_pc;
+            continue;
+        }
+        if (!strcmp(mnem, "lea") && op_count >= 2) {
+            Value ptr;
+            TrackedValue value;
+            if (mem_ptr_tracked(insn, &ops[1], regs, &ptr)) {
+                char expr[96];
+                snprintf(expr, sizeof(expr), "%s+0x%llx", ptr_kind_name(ptr.ptr_kind), (unsigned long long)ptr.off);
+                uint64_t cls = ptr.ptr_kind == PK_FRAME ? TC_FRAME_POINTER :
+                               ptr.ptr_kind == PK_TABLE ? TC_DISPATCH_TABLE_POINTER : TC_VM_IP_POINTER;
+                value = tracked_from(ptr, expr, cls, "", max_expr_len);
+            } else {
+                char expr[192];
+                snprintf(expr, sizeof(expr), "lea(%s)", insn->op_str);
+                value = tracked_unknown("lea", expr, TC_UNKNOWN_MEMORY_POINTER, max_expr_len);
+            }
+            if (!write_op_tracked(insn, &ops[0], value, regs, &frame, &state_tv, &flags_tv, &byte_tv, &ip_tv,
+                                  frame_mem, &frame_mem_count, max_expr_len)) unknown++;
+            pc = next_pc;
+            continue;
+        }
+        if ((!strcmp(mnem, "add") || !strcmp(mnem, "sub") || !strcmp(mnem, "xor") ||
+             !strcmp(mnem, "and") || !strcmp(mnem, "or") || !strcmp(mnem, "shl") || !strcmp(mnem, "shr")) &&
+            op_count >= 2) {
+            TrackedValue dst = read_op_tracked(insn, &ops[0], regs, &frame, &state_tv, &flags_tv, &byte_tv, &ip_tv,
+                                               row->bytes, row->byte_count, table, frame_mem, frame_mem_count, max_expr_len);
+            TrackedValue src = read_op_tracked(insn, &ops[1], regs, &frame, &state_tv, &flags_tv, &byte_tv, &ip_tv,
+                                               row->bytes, row->byte_count, table, frame_mem, frame_mem_count, max_expr_len);
+            TrackedValue value;
+            if (self_zero_insn(ops, mnem)) {
+                value = tracked_const(0, ops[0].size ? ops[0].size : 8, max_expr_len);
+            } else {
+                value = eval_bin_tracked(mnem, dst, src, ops[0].size ? ops[0].size : 8, max_expr_len);
+            }
+            if (is_unknown(value.value)) unknown++;
+            if (!write_op_tracked(insn, &ops[0], value, regs, &frame, &state_tv, &flags_tv, &byte_tv, &ip_tv,
+                                  frame_mem, &frame_mem_count, max_expr_len)) unknown++;
+            if (!strcmp(mnem, "and") || !strcmp(mnem, "or") || !strcmp(mnem, "xor") || !strcmp(mnem, "sub")) {
+                uint64_t concrete = 0;
+                zf = concrete_full_value(value.value, ops[0].size ? ops[0].size : 8, &concrete) ? (concrete == 0) : -1;
+                cond.present = true;
+                cond.site = insn->address;
+                snprintf(cond.mnemonic, sizeof(cond.mnemonic), "%s", mnem);
+                snprintf(cond.op_str, sizeof(cond.op_str), "%s", insn->op_str);
+                cond.left = value;
+                cond.right = tracked_const(0, ops[0].size ? ops[0].size : 8, max_expr_len);
+                cond.zf = zf;
+            }
+            pc = next_pc;
+            continue;
+        }
+        if (ops[0].type == X86_OP_REG) {
+            int r = reg_index((x86_reg)ops[0].reg);
+            if (r >= 0) {
+                char expr[192], reason[64];
+                snprintf(reason, sizeof(reason), "%s", mnem);
+                snprintf(expr, sizeof(expr), "?%s(%s)", mnem, insn->op_str);
+                regs[r] = tracked_unknown(reason, expr, 0, max_expr_len);
+            }
+        }
+        pc = next_pc;
+    }
+    return (ExecResult){.pred_entry = -1, .pred_state = frame.state, .pred_delta = frame.ip_delta,
+                        .status = "step_limit", .steps = steps, .unknown = unknown,
+                        .branch_unknown = branch_unknown, .path = path};
+}
+
 static int cmp_target_counter(const void *a, const void *b) {
     const TargetCounter *x = a, *y = b;
     if (x->count != y->count) return x->count < y->count ? 1 : -1;
