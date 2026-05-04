@@ -242,51 +242,26 @@ def write_op(insn, op, value, regs, frame, frame_mem=None):
 def eval_bin(mnemonic, left, right, size):
     if is_unknown(left) or is_unknown(right):
         return Unknown("binop")
+    bits = op_bits(size)
+    mask = mask_for_size(size)
     if isinstance(left, Ptr):
         if isinstance(right, int) and mnemonic in {"add", "sub"}:
             delta = right if mnemonic == "add" else -right
-            return Ptr(left.kind, left.off + sign_extend(delta, op_bits(size)))
+            return Ptr(left.kind, left.off + sign_extend(delta, bits))
         if isinstance(right, Ptr) and mnemonic == "sub" and left.kind == right.kind:
-            return (left.off - right.off) & mask_for_size(size)
-        if mnemonic not in {"add", "sub"}:
-            left_bits, left_low = known_low_bits(left)
-            right_bits, right_low = known_low_bits(right)
-            known_bits = min(left_bits, right_bits, op_bits(size))
-            if known_bits:
-                low_mask = (1 << known_bits) - 1
-                if mnemonic == "and" and isinstance(right, int) and right & ~low_mask == 0:
-                    return (left_low & right) & mask_for_size(size)
-                if mnemonic == "xor":
-                    return make_lowbits(known_bits, left_low ^ right_low)
-                if mnemonic == "and":
-                    return make_lowbits(known_bits, left_low & right_low)
-                if mnemonic == "or":
-                    return make_lowbits(known_bits, left_low | right_low)
-        return Unknown("ptr_binop")
+            return (left.off - right.off) & mask
     if isinstance(right, Ptr):
         if isinstance(left, int) and mnemonic == "add":
-            return Ptr(right.kind, right.off + sign_extend(left, op_bits(size)))
-        if mnemonic not in {"add", "sub"} or isinstance(left, int):
-            left_bits, left_low = known_low_bits(left)
-            right_bits, right_low = known_low_bits(right)
-            known_bits = min(left_bits, right_bits, op_bits(size))
-            if known_bits:
-                low_mask = (1 << known_bits) - 1
-                if mnemonic == "and" and isinstance(left, int) and left & ~low_mask == 0:
-                    return (left & right_low) & mask_for_size(size)
-                if mnemonic == "sub":
-                    return make_lowbits(known_bits, left_low - right_low)
-                if mnemonic == "xor":
-                    return make_lowbits(known_bits, left_low ^ right_low)
-                if mnemonic == "and":
-                    return make_lowbits(known_bits, left_low & right_low)
-                if mnemonic == "or":
-                    return make_lowbits(known_bits, left_low | right_low)
-        return Unknown("ptr_binop")
+            return Ptr(right.kind, right.off + sign_extend(left, bits))
     left_bits, left_low = known_low_bits(left)
     right_bits, right_low = known_low_bits(right)
     if left_bits and right_bits and not (isinstance(left, int) and isinstance(right, int)):
-        known_bits = min(left_bits, right_bits, op_bits(size))
+        known_bits = min(left_bits, right_bits, bits)
+        low_mask = (1 << known_bits) - 1
+        if mnemonic == "and" and isinstance(right, int) and right & ~low_mask == 0:
+            return (left_low & right) & mask
+        if mnemonic == "and" and isinstance(left, int) and left & ~low_mask == 0:
+            return (left & right_low) & mask
         if mnemonic == "add":
             return make_lowbits(known_bits, left_low + right_low)
         if mnemonic == "sub":
@@ -299,7 +274,6 @@ def eval_bin(mnemonic, left, right, size):
             return make_lowbits(known_bits, left_low | right_low)
     if not isinstance(left, int) or not isinstance(right, int):
         return Unknown("non_int")
-    mask = mask_for_size(size)
     if mnemonic == "add":
         return (left + right) & mask
     if mnemonic == "sub":
