@@ -2,6 +2,7 @@
 import argparse
 import csv
 import hashlib
+import re
 import sys
 from collections import Counter, defaultdict
 from dataclasses import dataclass
@@ -36,6 +37,16 @@ from vm_state_static_validate import (
 from vm_static_dispatch_validate import eval_shift, parse_delta, read_dispatch_table
 
 
+FIELD_RE = re.compile(r"\b([a-z][a-z0-9_]*)=0x([0-9a-f]+)")
+COUNT_RE = re.compile(r"\bcount=([0-9]+)")
+TRACE_RE = re.compile(r"^\[VMTAIL\]")
+REG_NAMES = {
+    "rax", "rbx", "rcx", "rdx", "rsi", "rdi",
+    "r8", "r9", "r10", "r11", "r12", "r13", "r14", "r15",
+    "rbp", "rsp",
+}
+
+
 @dataclass(frozen=True)
 class Tracked:
     value: object
@@ -68,6 +79,60 @@ def tracked_unknown(reason, expr=None, classes=()):
 
 def tracked_const(value, size=8):
     return Tracked(value & mask_for_size(size), f"0x{value & mask_for_size(size):x}", frozenset({"constant"}))
+
+
+def tracked_seed_value(reg, value, fields):
+    frame = fields.get("frame")
+    table = fields.get("table")
+    vm_ip = fields.get("vm_ip")
+    image_base = None
+    if frame is not None and fields.get("frame_off") is not None:
+        image_base = frame - fields["frame_off"]
+
+    classes = {"gpr_seed"}
+    if frame is not None and frame - 0x4000 <= value < frame + 0x4000:
+        classes.add("frame_pointer")
+        return Tracked(Ptr("frame", value - frame), f"seed({reg})", frozenset(classes))
+    if table is not None and table <= value < table + 360 * 8:
+        classes.add("dispatch_table_pointer")
+        return Tracked(Ptr("table", value - table), f"seed({reg})", frozenset(classes))
+    if vm_ip is not None and vm_ip - 0x10000 <= value < vm_ip + 0x10000:
+        classes.add("vm_ip_pointer")
+        return Tracked(Ptr("ip", value - vm_ip), f"seed({reg})", frozenset(classes))
+    if image_base is not None and image_base <= value < image_base + 0x650000:
+        classes.add("image_offset")
+        return Tracked(value - image_base, f"seed({reg})", frozenset(classes))
+    return Tracked(value, f"seed({reg})", frozenset(classes))
+
+
+def parse_gpr_fields(line):
+    fields = {name: int(value_s, 16) for name, value_s in FIELD_RE.findall(line)}
+    count = COUNT_RE.search(line)
+    if count:
+        fields["count"] = int(count.group(1), 10)
+    return fields
+
+
+def load_gpr_seeds(path):
+    if not path:
+        return {}
+    seeds = {}
+    with Path(path).open(errors="replace") as handle:
+        for line in handle:
+            if not TRACE_RE.search(line):
+                continue
+            fields = parse_gpr_fields(line)
+            count = fields.get("count")
+            if count is None:
+                continue
+            regs = {
+                reg: tracked_seed_value(reg, fields[reg], fields)
+                for reg in REG_NAMES
+                if reg in fields
+            }
+            # Instruction row N starts at the previous VMTAIL event's exit state.
+            seeds[str(count + 1)] = regs
+    return seeds
 
 
 def combine_expr(mnemonic, left, right, max_expr_len):
@@ -225,6 +290,8 @@ def classify_condition(condition, branch_mnemonic, outcome):
     classes = set(condition["left"].classes) | set(condition["right"].classes)
     if "live_in_reg" in classes:
         return "derived_live_in" if "derived_live_in" in classes or "derived_unknown" in classes else "live_in_reg"
+    if "gpr_seed" in classes:
+        return "seeded_gpr_unresolved"
     if "unknown_memory_pointer" in classes:
         return "unknown_memory_pointer"
     if "unknown_frame_field" in classes:
@@ -297,7 +364,19 @@ def update_branch(stats, source, target, insn, outcome, condition, steps, max_le
     bucket["condition_texts"][condition_text(condition, max_len)] += 1
 
 
-def execute(insns_by_addr, start, row, table, target_to_entry, max_steps, max_expr_len, stats, source, source_target):
+def execute(
+    insns_by_addr,
+    start,
+    row,
+    table,
+    target_to_entry,
+    max_steps,
+    max_expr_len,
+    stats,
+    source,
+    source_target,
+    initial_regs=None,
+):
     ip_bytes = bytes.fromhex(row["bytes"])
     frame = {
         "state": parse_int(row["pre_state"]) & MASK32,
@@ -311,7 +390,8 @@ def execute(insns_by_addr, start, row, table, target_to_entry, max_steps, max_ex
         "byte": Tracked(frame["byte"], "vm_byte0", frozenset({"vm_byte"})),
         "ip_ptr": Tracked(Ptr("ip", 0), "ip+0x0", frozenset({"vm_ip_pointer"})),
     }
-    regs = {"rbp": Tracked(Ptr("frame", 0), "frame", frozenset({"frame_pointer"}))}
+    regs = dict(initial_regs or {})
+    regs["rbp"] = Tracked(Ptr("frame", 0), "frame", frozenset({"frame_pointer"}))
     pc = start
     zf = None
     condition = None
@@ -619,6 +699,10 @@ def main():
     parser.add_argument("--markdown", action="store_true")
     parser.add_argument("--markdown-limit", type=int, default=30)
     parser.add_argument(
+        "--gpr-run",
+        help="seed handler-entry registers from the previous VMTAIL line in an EAC_VMTAIL_REGS run.stderr",
+    )
+    parser.add_argument(
         "--from-tsv",
         help="render markdown from an existing vm_branch_predicates.tsv instead of replaying the trace",
     )
@@ -635,6 +719,7 @@ def main():
     target_to_entry = {target: idx for idx, target in enumerate(table)}
     md = make_disassembler()
     skeletons = read_skeletons(args.skeletons)
+    gpr_seeds = load_gpr_seeds(args.gpr_run)
     decoded = {}
     counts = defaultdict(int)
     stats = defaultdict(make_bucket)
@@ -674,6 +759,7 @@ def main():
             stats,
             source,
             skel.get("target", ""),
+            gpr_seeds.get(row.get("seq", "")),
         )
         rows += 1
         counts[source] += 1
