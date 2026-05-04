@@ -77,7 +77,7 @@ def load_sidecar(path, kind):
     return rows
 
 
-def add_exact_rows(args, segments, rows):
+def add_exact_rows(args, segments, rows, sidecars):
     for row in read_tsv(args.instruction_lift):
         start = int(row["start_vm_ip"], 16)
         delta = parse_signed_hex(row.get("delta", "0"))
@@ -86,11 +86,21 @@ def add_exact_rows(args, segments, rows):
         target_segment = find_segment(segments, end)
         top_targets = row.get("top_targets", "")
         target_entry = top_targets.split("@", 1)[0] if top_targets else ""
+        sidecar = sidecars.get((row.get("source_entry", ""), target_entry, row.get("delta", "")))
         semantic = f"next = {top_targets or 'table[slot]'}, ip += {row.get('delta', '')}"
+        if sidecar and sidecar.get("lifted_ir"):
+            semantic = sidecar["lifted_ir"]
         if row.get("dispatch_model"):
             semantic += f"; dispatch_model={row['dispatch_model']}"
         if row.get("state_class"):
             semantic += f"; state={row['state_class']}"
+        validation = (
+            f"state_static={row.get('state_static_pct', '')}%;"
+            f"dispatch_static={row.get('static_dispatch_pct', '')}%;"
+            f"ip_static={row.get('static_ip_pct', '')}%"
+        )
+        if sidecar:
+            validation += f";sidecar={sidecar['kind']}"
         rows.append({
             "start_vm_ip": row.get("start_vm_ip", ""),
             "end_vm_ip": f"0x{end:x}",
@@ -103,26 +113,19 @@ def add_exact_rows(args, segments, rows):
             "events": row.get("count", ""),
             "bytes": row.get("bytes", ""),
             "byte_status": row.get("byte_status", ""),
-            "operand_min_len": f"0x{len(row.get('bytes', '')) // 2:x}",
-            "operand_shape": row.get("shape", ""),
+            "operand_min_len": sidecar.get("operand_min_len", "") if sidecar else f"0x{len(row.get('bytes', '')) // 2:x}",
+            "operand_shape": sidecar.get("operand_shape", "") if sidecar else row.get("shape", ""),
             "source_block": segment_text(source_segment, start),
             "target_block": segment_text(target_segment, end) if target_segment else "",
             "semantic_ir": semantic,
             "state_ir": row.get("state_class", ""),
-            "dispatch_ir": row.get("dispatch_model", ""),
-            "validation": (
-                f"state_static={row.get('state_static_pct', '')}%;"
-                f"dispatch_static={row.get('static_dispatch_pct', '')}%;"
-                f"ip_static={row.get('static_ip_pct', '')}%"
-            ),
-            "provenance": "vm_instruction_lift",
+            "dispatch_ir": row.get("dispatch_model", "") or (sidecar.get("lifted_ir", "") if sidecar else ""),
+            "validation": validation,
+            "provenance": "vm_instruction_lift" + (f"+{sidecar['kind']}" if sidecar else ""),
         })
 
 
-def add_decoded_rows(args, segments, rows):
-    sidecars = {}
-    sidecars.update(load_sidecar(args.long_branches, "long_branch"))
-    sidecars.update(load_sidecar(args.sampled_operands, "sampled_operand"))
+def add_decoded_rows(args, segments, rows, sidecars):
     groups = {}
     eac = Path(args.eac).read_bytes() if args.eac else b""
 
@@ -273,9 +276,12 @@ def main():
     args = parser.parse_args()
 
     segments = load_segments(args.segments)
+    sidecars = {}
+    sidecars.update(load_sidecar(args.long_branches, "long_branch"))
+    sidecars.update(load_sidecar(args.sampled_operands, "sampled_operand"))
     rows = []
-    add_exact_rows(args, segments, rows)
-    add_decoded_rows(args, segments, rows)
+    add_exact_rows(args, segments, rows, sidecars)
+    add_decoded_rows(args, segments, rows, sidecars)
     rows.sort(key=lambda row: (int(row["start_vm_ip"], 16), row["row_kind"], row["source_entry"], row["delta"]))
 
     if args.markdown:
