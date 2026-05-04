@@ -41,6 +41,7 @@ SHA-256: `0b44ad59697129534189efdb75cde2b96245f831438e9f6a53cb7725f190d739`
 - `vm_hidden_transition_catalog.py`: catalogs adjacent trace pairs where the previous target handler is not the next hooked source, yielding file-backed hidden VM spans for unhooked or central-dispatch paths.
 - `vm_trace_hidden_fill.py`: inserts those adjacent hidden spans as synthetic `hidden_span_of_N` rows so bytecode recovery can cover them as sampled/file-backed bytes.
 - `vm_trace_frontier_fill.py`: inserts small file-backed `frontier_span_of_N` rows when an exact instruction lands at a recovered segment end and the next recovered segment starts within a conservative gap threshold.
+- `vm_trace_target_footprint_fill.py`: inserts file-backed target-handler read footprints at exact destinations whose target handler has a known exact shape, sampled operand footprint, or decoded long-branch operand footprint.
 - `vm_sampled_operand_catalog.py`: catalogs the remaining sampled non-long-branch rows with static operand footprints, verifies those operand bytes against `eac.elf`, and turns the last sparse prefix/backedge samples into explicit target/delta rows.
 - `vm_instruction_compare.py`: compares exact unique VM instruction catalogs by stable instruction key.
 - `vm_dispatch_formula.py`: fits simple expressions for the final dispatch byte index `target_entry * 8` from VM bytes plus rolling state.
@@ -92,9 +93,13 @@ SHA-256: `0b44ad59697129534189efdb75cde2b96245f831438e9f6a53cb7725f190d739`
 - `dumps/vmtail-wide-1m-w16/vm_bytecode_blocks_filefill_hiddenfill_sampled.tsv`: contiguous blocks for the combined file-fill/hidden-fill trace.
 - `dumps/vmtail-wide-1m-w16/vm_gap_report_filefill_hiddenfill.tsv`: gap report after combined file-fill and hidden-span coverage.
 - `dumps/vmtail-wide-1m-w16/vm_instruction_trace_filefill_hiddenfill_frontierfill.tsv`: combined file-fill/hidden-fill trace plus small exact-destination frontier spans.
-- `dumps/vmtail-wide-1m-w16/vm_bytecode_segments_filefill_hiddenfill_frontierfill_sampled.tsv`: best current sampled/file-backed byte recovery after small frontier fill.
+- `dumps/vmtail-wide-1m-w16/vm_bytecode_segments_filefill_hiddenfill_frontierfill_sampled.tsv`: sampled/file-backed byte recovery after small frontier fill.
 - `dumps/vmtail-wide-1m-w16/vm_bytecode_blocks_filefill_hiddenfill_frontierfill_sampled.tsv`: contiguous blocks for the combined file-fill/hidden-fill/frontier-fill trace.
-- `dumps/vmtail-wide-1m-w16/vm_gap_report_filefill_hiddenfill_frontierfill.tsv`: best current gap report after combined file-fill, hidden-span, and frontier-span coverage.
+- `dumps/vmtail-wide-1m-w16/vm_gap_report_filefill_hiddenfill_frontierfill.tsv`: gap report after combined file-fill, hidden-span, and frontier-span coverage.
+- `dumps/vmtail-wide-1m-w16/vm_instruction_trace_filefill_hiddenfill_frontierfill_footprintfill.tsv`: combined trace plus target-handler footprint spans for exact-destination starts.
+- `dumps/vmtail-wide-1m-w16/vm_bytecode_segments_filefill_hiddenfill_frontierfill_footprintfill_sampled.tsv`: best current sampled/file-backed byte recovery after target-footprint fill.
+- `dumps/vmtail-wide-1m-w16/vm_bytecode_blocks_filefill_hiddenfill_frontierfill_footprintfill_sampled.tsv`: contiguous blocks for the combined file-fill/hidden-fill/frontier-fill/footprint-fill trace.
+- `dumps/vmtail-wide-1m-w16/vm_gap_report_filefill_hiddenfill_frontierfill_footprintfill.tsv`: best current gap report after all conservative file-backed fill passes.
 - `dumps/vmtail-wide-1m-w16/vm_state_static_slice.tsv`: static symbolic state/flag update chains for all dispatch entries.
 - `dumps/vmtail-wide-1m-w16/vm_state_static_slice_entry258.tsv`: focused static state slice for the high-volume nonlinear entry 258.
 - `dumps/vmtail-wide-1m-w16/vm_handler_tail_roles.tsv`: long-run source-handler/tail-site rows joined with register roles inferred from the 50k GPR smoke trace.
@@ -518,7 +523,7 @@ python3 vm_bytecode_recover.py dumps/vmtail-wide-1m-w16/vm_instruction_trace_fil
 python3 vm_bytecode_blocks.py dumps/vmtail-wide-1m-w16/vm_instruction_trace_filefill.tsv \
   --include-sampled \
   >dumps/vmtail-wide-1m-w16/vm_bytecode_blocks_filefill_sampled.tsv
-make frontier-fill
+make footprint-fill
 mkdir -p dumps/vmtail-wide-1m-w16-filefill
 ln -sf ../vmtail-wide-1m-w16/vm_instruction_trace_filefill.tsv \
   dumps/vmtail-wide-1m-w16-filefill/vm_instruction_trace.tsv
@@ -1058,6 +1063,8 @@ The resulting sampled/file-backed recovery has 300 segments and `0x44749` bytes,
 
 `vm_trace_frontier_fill.py` then handles the exact-destination boundary frontiers conservatively. It only inserts a file-backed span when an exact positive instruction lands at the end of a recovered segment and the next recovered segment starts within `0x20` bytes. On the combined file-fill/hidden-fill trace this inserts 45 rows / `0x269` event-bytes (`frontier_span_of_10`: 4, `frontier_span_of_14`: 40, `frontier_span_of_17`: 1), raises sampled/file-backed byte recovery to 38 segments / `0x45657` bytes, and still has 0 byte conflicts. The remaining uncovered exact destinations drop to 22 rows / 23 events.
 
+`vm_trace_target_footprint_fill.py` covers those remaining exact-destination starts as target-handler read footprints instead of full instructions. Every remaining exact frontier lands on a handler with a known footprint: sampled operands for entries 175, 195, and 299; exact 10-byte shapes for entries 278 and 356; and a decoded long-branch operand footprint for entry 246. This inserts 23 rows / `0x97` event-bytes (`sampled_operand`: 20 rows, `exact_shape`: 2 rows, `long_branch_operand`: 1 row), raises sampled/file-backed recovery to 38 segments / `0x456e8` bytes, keeps 0 conflicts, and removes the `uncovered_exact_destination` class from the best gap report.
+
 `vm_gap_report.py` prioritizes the remaining coverage holes. Against exact-only segments it reports:
 
 | Gap Class | Rows | Events |
@@ -1072,7 +1079,7 @@ The resulting sampled/file-backed recovery has 300 segments and `0x44749` bytes,
 | `uncovered_source_start` | 158 | 1650 |
 | `unobserved_entry` | 155 | 0 |
 
-Against the combined file-fill/hidden-fill/frontier-fill segments, `uncovered_source_start`, `hidden_transition_destination`, generic backedge/prefix samples, and generic missing exact sources disappear. The current best gap classes are:
+Against the combined file-fill/hidden-fill/frontier-fill/footprint-fill segments, `uncovered_source_start`, `hidden_transition_destination`, generic backedge/prefix samples, generic missing exact sources, and uncovered exact destinations disappear. The current best gap classes are:
 
 | Gap Class | Rows | Events |
 | --- | ---: | ---: |
@@ -1081,7 +1088,6 @@ Against the combined file-fill/hidden-fill/frontier-fill segments, `uncovered_so
 | `sampled_operand_known` | 12 | 13 |
 | `sampled_operand_source` | 3 | 6 |
 | `target_only_entry` | 3 | 0 |
-| `uncovered_exact_destination` | 22 | 23 |
 | `unobserved_entry` | 155 | 0 |
 
 The highest-priority remaining dynamic gaps are:
@@ -1096,7 +1102,6 @@ The highest-priority remaining dynamic gaps are:
 | 109 | decoded long-branch source entry 302 (`0xb7586`) | aggregate of 9 decoded target/delta variants; top variant goes to entry 171 |
 | 255 | decoded long-branch sample entry 316 -> 165 | `next = table[165], ip -= 0x3c4`; exact consumed bytes still unavailable |
 | 255 | decoded long-branch sample entry 75 -> 171 | `next = table[171], ip -= 0x6d`; exact consumed bytes still unavailable |
-| 2 | uncovered exact destination `0x24bd2a` | highest remaining exact positive instruction that exits recovered bytecode coverage |
 
 `vm_long_branch_catalog.py` now decodes the repeated sampled/backedge long-control format behind most of those source gaps. The format is file-backed and byte-verified: u32 target dispatch entry followed by a u32 signed VM-IP delta, where the high bit marks a negative/backedge delta. The catalog has 128 variants, 1638 events, 10 source handlers, 1151 backedge events, 487 forward events, 0 file-byte mismatches, and 0 operand-byte mismatches; `vm_gap_report.py` uses it to recategorize 9 missing-exact source rows / 1392 events as decoded long-branch sources.
 
@@ -1104,7 +1109,7 @@ That directly lifts the top missing-source rows into pseudo-IR instead of opaque
 
 The static skeletons agree with that decode. All 10 long-control source handlers read a u16 at VM IP `+0x0` for the table entry and u32 at `+0x4` for the signed delta. The shorter form appears in entries 117, 266, 302, and 308, while entries 75, 145, 210, 246, 316, and 334 also read u16 at `+0x8` and byte at `+0xa`. That gives 677 events with an 8-byte minimum operand footprint and 961 events with an 11-byte footprint without claiming the whole branch span is linear instruction bytes.
 
-The best next trace targets are therefore the exact byte-length/source-coverage holes rather than broad reruns: they isolate long-control VM IP bands (`0x22ffb1`, `0x370xxx`, `0x371xxx`, `0x310dba`, `0x31297d`, `0x3157e1`, `0x315cc0`), the highest exact uncovered exits such as `0x24bd2a`, and sparse source handlers (`316`, `75`, `266`, `145`, `117`, `302`, plus sampled-operand sources `175`, `195`, and `299`) that still block full bytecode/ISA recovery.
+The best next trace targets are therefore exact byte-length and semantic-resolution holes rather than broad reruns: they isolate long-control VM IP bands (`0x22ffb1`, `0x370xxx`, `0x371xxx`, `0x310dba`, `0x31297d`, `0x3157e1`, `0x315cc0`) and sparse source handlers (`316`, `75`, `266`, `145`, `117`, `302`, plus footprint-filled target starts for `175`, `195`, `299`, `278`, `356`, and `246`) that still block full bytecode/ISA recovery.
 
 The state-aware trace in `dumps/vmtail-state-wide-w16` adds `vm_flags`, `vm_state`, and `vm_byte` to every VMTAIL row. `vm_trace_graph.py --instruction-trace` uses consecutive events as pre/post snapshots for the source handler and appends:
 
