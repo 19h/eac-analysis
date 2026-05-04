@@ -2688,6 +2688,111 @@ static void print_top_actual_targets(PathStat *p, int limit) {
     }
 }
 
+static void counter_print_top_exprs(TextCounter *counter, int top) {
+    if (!counter->count) return;
+    TextCount **order = xcalloc(counter->count, sizeof(TextCount *));
+    for (size_t i = 0; i < counter->count; ++i) order[i] = &counter->items[i];
+    qsort(order, counter->count, sizeof(order[0]), cmp_text_count);
+    for (size_t i = 0; i < counter->count && (int)i < top; ++i) {
+        printf("%s%" PRIu64 "=%s", i ? ";" : "", order[i]->count, order[i]->label);
+    }
+    free(order);
+}
+
+static TransferPathStat *find_transfer_path(TransferPathStat **paths, size_t *count, size_t *cap,
+                                            int source, const char hash[17], const char *path,
+                                            const char *source_target) {
+    for (size_t i = 0; i < *count; ++i) {
+        if ((*paths)[i].source == source && !strcmp((*paths)[i].hash, hash)) return &(*paths)[i];
+    }
+    if (*count == *cap) {
+        *cap = *cap ? *cap * 2 : 512;
+        *paths = realloc(*paths, *cap * sizeof(TransferPathStat));
+        if (!*paths) {
+            perror("realloc");
+            exit(1);
+        }
+    }
+    TransferPathStat *p = &(*paths)[(*count)++];
+    memset(p, 0, sizeof(*p));
+    p->source = source;
+    memcpy(p->hash, hash, 17);
+    p->path = xstrdup(path && *path ? path : "-");
+    snprintf(p->source_target, sizeof(p->source_target), "%s", source_target);
+    return p;
+}
+
+static void add_transfer_actual_target(TransferPathStat *p, int entry, uint64_t target) {
+    char label[64];
+    snprintf(label, sizeof(label), "%d@0x%" PRIx64, entry, target);
+    counter_add(&p->actual_targets, label, 1);
+}
+
+static void add_transfer_status_source(TransferSourceStat *s, const char *status) {
+    switch (status_index(status)) {
+    case 0: s->status_ok++; break;
+    case 1: s->status_unknown_target++; break;
+    case 2: s->status_falloff++; break;
+    default: s->status_step_limit++; break;
+    }
+}
+
+static void add_transfer_status_path(TransferPathStat *p, const char *status) {
+    switch (status_index(status)) {
+    case 0: p->status_ok++; break;
+    case 1: p->status_unknown_target++; break;
+    case 2: p->status_falloff++; break;
+    default: p->status_step_limit++; break;
+    }
+}
+
+static void print_transfer_statuses(uint64_t falloff, uint64_t ok, uint64_t step_limit, uint64_t unknown_target) {
+    bool first = true;
+    if (falloff) { printf("falloff:%" PRIu64, falloff); first = false; }
+    if (ok) { printf("%sok:%" PRIu64, first ? "" : ",", ok); first = false; }
+    if (step_limit) { printf("%sstep_limit:%" PRIu64, first ? "" : ",", step_limit); first = false; }
+    if (unknown_target) { printf("%sunknown_target:%" PRIu64, first ? "" : ",", unknown_target); }
+}
+
+static void update_transfer_stats(TransferSourceStat stats[TABLE_ENTRIES],
+                                  TransferPathStat **paths, size_t *path_count, size_t *path_cap,
+                                  int source, const char *source_target, TraceRow *row,
+                                  TransferResult *tr, bool target_ok, bool ip_ok, int top_targets) {
+    (void)top_targets;
+    TransferSourceStat *s = &stats[source];
+    s->source = source;
+    snprintf(s->source_target, sizeof(s->source_target), "%s", source_target);
+    s->events++;
+    s->steps += tr->steps;
+    s->unknown_ops += tr->unknown;
+    s->branch_unknown += tr->branch_unknown;
+    if (target_ok) s->target_matched++; else s->target_mismatched++;
+    if (ip_ok) s->ip_matched++; else s->ip_mismatched++;
+    add_transfer_status_source(s, tr->status);
+    if (tr->target_expr[0]) counter_add(&s->target_exprs, tr->target_expr, 1);
+    if (tr->slot_expr[0]) counter_add(&s->slot_exprs, tr->slot_expr, 1);
+    if (tr->ip_expr[0]) counter_add(&s->ip_exprs, tr->ip_expr, 1);
+    if (!target_ok && !s->has_example) {
+        s->has_example = true;
+        snprintf(s->example_status, sizeof(s->example_status), "%s", tr->status);
+        s->example_pred_entry = tr->pred_entry;
+        s->example_actual_entry = row->target_entry;
+        format_bytes(row->bytes, row->byte_count, s->example_bytes, sizeof(s->example_bytes));
+        snprintf(s->example_target_expr, sizeof(s->example_target_expr), "%s", tr->target_expr);
+    }
+    char hash[17];
+    sha_path(tr->path, hash);
+    TransferPathStat *p = find_transfer_path(paths, path_count, path_cap, source, hash, tr->path, source_target);
+    p->events++;
+    if (target_ok) p->target_matched++; else p->target_mismatched++;
+    if (ip_ok) p->ip_matched++; else p->ip_mismatched++;
+    add_transfer_status_path(p, tr->status);
+    if (tr->target_expr[0]) counter_add(&p->target_exprs, tr->target_expr, 1);
+    if (tr->slot_expr[0]) counter_add(&p->slot_exprs, tr->slot_expr, 1);
+    if (tr->ip_expr[0]) counter_add(&p->ip_exprs, tr->ip_expr, 1);
+    add_transfer_actual_target(p, row->target_entry, row->target);
+}
+
 static int cmp_path_events(const void *a, const void *b) {
     const PathStat *x = *(const PathStat * const *)a;
     const PathStat *y = *(const PathStat * const *)b;
@@ -2776,6 +2881,104 @@ static void emit_summary(SourceStat stats[TABLE_ENTRIES], PathStat *paths, size_
         print_statuses(s->status_ok, s->status_unknown_target, s->status_falloff, s->status_step_limit);
         printf("\n");
     }
+}
+
+static int cmp_transfer_source(const void *a, const void *b, void *arg) {
+    TransferSourceStat *stats = arg;
+    int x = *(const int *)a, y = *(const int *)b;
+    if (stats[x].events != stats[y].events) return stats[x].events < stats[y].events ? 1 : -1;
+    return x - y;
+}
+
+static int cmp_transfer_path_events(const void *a, const void *b) {
+    const TransferPathStat *x = *(const TransferPathStat * const *)a;
+    const TransferPathStat *y = *(const TransferPathStat * const *)b;
+    if (x->events != y->events) return x->events < y->events ? 1 : -1;
+    if (x->source != y->source) return x->source - y->source;
+    return strcmp(x->hash, y->hash);
+}
+
+static void emit_transfer_summary(TransferSourceStat stats[TABLE_ENTRIES], int top) {
+    printf("source_entry\tsource_target\tevents\ttarget_matched_events\t"
+           "target_coverage_pct\ttarget_mismatched_events\tip_matched_events\t"
+           "ip_coverage_pct\tip_mismatched_events\tunknown_ops\tbranch_unknown\t"
+           "avg_steps\tstatuses\tunique_target_exprs\tunique_slot_exprs\t"
+           "unique_ip_exprs\ttop_target_exprs\ttop_slot_exprs\ttop_ip_exprs\t"
+           "example_status\texample_pred_entry\texample_actual_entry\t"
+           "example_bytes\texample_target_expr\n");
+    int order[TABLE_ENTRIES], n = 0;
+    for (int i = 0; i < TABLE_ENTRIES; ++i) if (stats[i].events) order[n++] = i;
+#if defined(__GLIBC__)
+    qsort_r(order, (size_t)n, sizeof(order[0]), cmp_transfer_source, stats);
+#endif
+    for (int oi = 0; oi < n; ++oi) {
+        int source = order[oi];
+        TransferSourceStat *s = &stats[source];
+        printf("%d\t%s\t%" PRIu64 "\t%" PRIu64 "\t%.1f\t%" PRIu64 "\t%" PRIu64 "\t%.1f\t%" PRIu64 "\t"
+               "%" PRIu64 "\t%" PRIu64 "\t%.1f\t",
+               source, s->source_target, s->events, s->target_matched,
+               s->events ? s->target_matched * 100.0 / s->events : 0.0, s->target_mismatched,
+               s->ip_matched, s->events ? s->ip_matched * 100.0 / s->events : 0.0, s->ip_mismatched,
+               s->unknown_ops, s->branch_unknown, s->events ? s->steps * 1.0 / s->events : 0.0);
+        print_transfer_statuses(s->status_falloff, s->status_ok, s->status_step_limit, s->status_unknown_target);
+        printf("\t%zu\t%zu\t%zu\t", s->target_exprs.count, s->slot_exprs.count, s->ip_exprs.count);
+        counter_print_top_exprs(&s->target_exprs, top);
+        printf("\t");
+        counter_print_top_exprs(&s->slot_exprs, top);
+        printf("\t");
+        counter_print_top_exprs(&s->ip_exprs, top);
+        printf("\t%s\t", s->has_example ? s->example_status : "");
+        if (s->has_example) printf("%d", s->example_pred_entry);
+        printf("\t");
+        if (s->has_example) printf("%d", s->example_actual_entry);
+        printf("\t%s\t%s\n", s->has_example ? s->example_bytes : "", s->has_example ? s->example_target_expr : "");
+    }
+}
+
+static void emit_transfer_by_path(TransferPathStat *paths, size_t path_count, int top, int max_path_len) {
+    printf("source_entry\tsource_target\tpath_hash\tevents\ttarget_matched_events\t"
+           "target_coverage_pct\tip_matched_events\tip_coverage_pct\tstatuses\t"
+           "unique_target_exprs\tunique_slot_exprs\tunique_ip_exprs\t"
+           "top_target_exprs\ttop_slot_exprs\ttop_ip_exprs\ttop_actual_targets\tpath\n");
+    TransferPathStat **order = xcalloc(path_count ? path_count : 1, sizeof(TransferPathStat *));
+    for (size_t i = 0; i < path_count; ++i) order[i] = &paths[i];
+    qsort(order, path_count, sizeof(order[0]), cmp_transfer_path_events);
+    for (size_t i = 0; i < path_count; ++i) {
+        TransferPathStat *p = order[i];
+        printf("%d\t%s\t%s\t%" PRIu64 "\t%" PRIu64 "\t%.1f\t%" PRIu64 "\t%.1f\t",
+               p->source, p->source_target, p->hash, p->events, p->target_matched,
+               p->events ? p->target_matched * 100.0 / p->events : 0.0,
+               p->ip_matched, p->events ? p->ip_matched * 100.0 / p->events : 0.0);
+        print_transfer_statuses(p->status_falloff, p->status_ok, p->status_step_limit, p->status_unknown_target);
+        printf("\t%zu\t%zu\t%zu\t", p->target_exprs.count, p->slot_exprs.count, p->ip_exprs.count);
+        counter_print_top_exprs(&p->target_exprs, top);
+        printf("\t");
+        counter_print_top_exprs(&p->slot_exprs, top);
+        printf("\t");
+        counter_print_top_exprs(&p->ip_exprs, top);
+        printf("\t");
+        counter_print_top(&p->actual_targets, top, 0);
+        char path[512];
+        clip_to_buf(p->path, max_path_len, path, sizeof(path));
+        printf("\t%s\n", path);
+    }
+    free(order);
+}
+
+static void free_transfer_stats(TransferSourceStat stats[TABLE_ENTRIES], TransferPathStat *paths, size_t path_count) {
+    for (int i = 0; i < TABLE_ENTRIES; ++i) {
+        free_counter(&stats[i].target_exprs);
+        free_counter(&stats[i].slot_exprs);
+        free_counter(&stats[i].ip_exprs);
+    }
+    for (size_t i = 0; i < path_count; ++i) {
+        free(paths[i].path);
+        free_counter(&paths[i].target_exprs);
+        free_counter(&paths[i].slot_exprs);
+        free_counter(&paths[i].ip_exprs);
+        free_counter(&paths[i].actual_targets);
+    }
+    free(paths);
 }
 
 static void emit_state_validate(SourceStat stats[TABLE_ENTRIES]) {
