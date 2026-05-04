@@ -409,7 +409,7 @@ timeout 45s env EAC_FAST_EXIT=1 \
   ./driver ./eac.elf 1 x 0x800 0 \
   >dumps/vmtail-regs-wide-w16/run.stdout \
   2>dumps/vmtail-regs-wide-w16/run.stderr
-mkdir -p dumps/vmtail-scratch-wide-w16
+mkdir -p dumps/vmtail-scratch-wide-w16-fs337all
 timeout 60s env EAC_FAST_EXIT=1 \
   EAC_DISPATCH_TRACE=1 \
   EAC_DISPATCH_DETAIL=1 \
@@ -419,12 +419,12 @@ timeout 60s env EAC_FAST_EXIT=1 \
   EAC_DISPATCH_LIMIT=4096 \
   EAC_VMTAIL_LIMIT=250000 \
   EAC_VMTAIL_SITES="$SPEC" \
-  EAC_DUMP_DIR=dumps/vmtail-scratch-wide-w16 \
+  EAC_DUMP_DIR=dumps/vmtail-scratch-wide-w16-fs337all \
   EAC_LAUNCHERDIR=/tmp/fake_launcher \
   LD_PRELOAD=./trace_preload.so \
   ./driver ./eac.elf 1 x 0x800 0 \
-  >dumps/vmtail-scratch-wide-w16/run.stdout \
-  2>dumps/vmtail-scratch-wide-w16/run.stderr
+  >dumps/vmtail-scratch-wide-w16-fs337all/run.stdout \
+  2>dumps/vmtail-scratch-wide-w16-fs337all/run.stderr
 python3 vm_tail_registers.py dumps/vmtail-regs-wide-w16 --eac eac.elf \
   >dumps/vmtail-regs-wide-w16/vm_tail_registers.tsv
 python3 vm_tail_registers.py dumps/vmtail-regs-wide-w16 --eac eac.elf --site-summary \
@@ -1190,7 +1190,7 @@ The model is intentionally keyed by dispatch entry rather than bytecode instruct
 
 Representative recovered dispatch-slot expressions now appear directly in `vm_transition_model.tsv`. For example, entry 28 dispatches through `table[u16_0 & 0xffff]` with `ip += 0x3`, while entry 0 dispatches through `table[((u16_0 + (state0 ^ 0x1966e0e7)) - 0x251a0141) & 0xffff]` with `ip += 0x5`, modulo the 32-bit masks shown in the TSV.
 
-The GPR+scratch-seeded source-level transfer sample preserves the same 166 fully static-clean handlers while reducing sampled branch uncertainty from 12789 to 2029 branch events. It also recovers a dispatch-slot expression for one additional sampled event, giving 167 source rows and 16149 sample events with slot expressions.
+The GPR+scratch-seeded source-level transfer sample preserves the same 166 fully static-clean handlers while reducing sampled branch uncertainty from 12789 to 1912 branch events. It also recovers a dispatch-slot expression for one additional sampled event, giving 167 source rows and 16149 sample events with slot expressions.
 
 The native `--transfer-expr --by-path` view of the same bounded transfer-expression sample is `vm_static_path_transfer_expr.tsv`. It resolves the apparent multi-formula source handlers into concrete branch-path formulas. In the 128-row-per-source sample it observes 349 source-path rows across all 179 state-aware sources. All 336 source-path rows with a resolved static target have exactly one slot expression and one IP-advance expression:
 
@@ -1204,7 +1204,7 @@ The native `--transfer-expr --by-path` view of the same bounded transfer-express
 
 This is useful because source-level handlers such as entries 18, 20, 26, 64, 66, 114, 258, and 337 have multiple observed slot formulas, but each sampled concrete branch path has a single formula. That gives a clean route to path-specialized devirtualized blocks.
 
-The seeded `--by-path` transfer-expression view observes 465 GPR+scratch-seeded source-path rows in the same 16691-row sample; 452 rows covering 16148 sample events have 100% target/IP agreement and exactly one dispatch-slot expression plus one IP-advance expression. Joining those seeded expression rows back to the native seeded path table covers 465 of 588 concrete paths, covering 245198 state-trace events; 452 paths covering 244655 events have sampled slot expressions.
+The seeded `--by-path` transfer-expression view observes 459 GPR+scratch-seeded source-path rows in the same 16691-row sample; 446 rows covering 16148 sample events have 100% target/IP agreement and exactly one dispatch-slot expression plus one IP-advance expression. Joining those seeded expression rows back to the native seeded path table covers 459 of 586 concrete paths, covering 245167 state-trace events; 446 paths covering 244624 events have sampled slot expressions.
 
 `vm_static_path_profile.py` explains why some handlers have multiple sampled transfer expressions. It replays the full state-aware trace through the static handler interpreter and records concrete branch outcomes as path hashes. The source-level profile exactly preserves the static dispatch validator's coverage: 248300 of 248906 state-trace rows validate target and IP, and the same 606 rows end in unresolved native/long-control-flow paths. Across 179 state-aware source handlers, the replay observes 400 distinct branch paths:
 
@@ -1218,16 +1218,16 @@ The seeded `--by-path` transfer-expression view observes 465 GPR+scratch-seeded 
 
 The most path-diverse source is entry 330 with 12 observed paths over 169 state-trace events. Other high-diversity handlers include entries 208 with 11 paths, 237 and 48 with 8 paths each, and entries 108, 257, 319, 292, and 105 with 7 paths each. The high-volume handlers are usually much simpler: entry 258 has two concrete paths, entry 28 has three, and entries 337, 340, 189, 347, 307, 64, and 66 have one or two dominant paths. These path counts are now joined into `vm_transition_model.tsv` and summarized in `vm_microcode_catalog.tsv`.
 
-`vm_fast_path_profile` is the native version of this concrete replay loop. It uses Capstone C for handler decoding, OpenSSL SHA-256 for path hashes, and direct TSV streaming for trace rows. On the full GPR+scratch-seeded 248906-row trace it completes in about 9 seconds for a single replay pass, while preserving the same target/IP coverage as Python: 248363 validated events. The `--emit-dir` batch mode now makes `make fast-replay` regenerate all eight `_fast.tsv` replay artifacts in two passes (`elapsed=0:14.70` on this host), and `make fast-replay fast-predicates fast-transfer` refreshes replay, predicate, and transfer artifacts in `elapsed=0:29.93`. Its low-bit frame, VM-IP, biased scratch-frame seed, and dispatch-table pointer arithmetic resolves more branch outcomes than the Python path profiler, producing 588 seeded source-path rows, 575 fully target/IP-validated paths, 8587 branch-unknown events, and 1197897 unknown ops. The matched `_fast.tsv` path microcode catalogs now use those native path rows for the concrete devirtualized view.
+`vm_fast_path_profile` is the native version of this concrete replay loop. It uses Capstone C for handler decoding, OpenSSL SHA-256 for path hashes, and direct TSV streaming for trace rows. On the full GPR+scratch-seeded 248906-row trace it completes in about 9 seconds for a single replay pass, while preserving the same target/IP coverage as Python: 248363 validated events. The `--emit-dir` batch mode now makes `make fast-replay` regenerate all eight `_fast.tsv` replay artifacts in two passes (`elapsed=0:14.70` on this host), and `make fast-replay fast-predicates fast-transfer` refreshes replay, predicate, and transfer artifacts in about 30 seconds. Its low-bit frame, VM-IP, biased scratch-frame seed, expanded scratch-frame, and dispatch-table pointer arithmetic resolves more branch outcomes than the Python path profiler, producing 586 seeded source-path rows, 573 fully target/IP-validated paths, 2385 branch-unknown events, and 863768 unknown ops. The matched `_fast.tsv` path microcode catalogs now use those native path rows for the concrete devirtualized view.
 
-The native `--branch-sites` mode gives full-trace branch outcome counts without the slow Python provenance pass. It emits 855 branch-site rows and accounts for 1007971 dynamic branch evaluations. State-only replay leaves 209434 branch events unresolved, while GPR+scratch seeding reduces that to 8587:
+The native `--branch-sites` mode gives full-trace branch outcome counts without the slow Python provenance pass. It emits 855 branch-site rows and accounts for 1007971 dynamic branch evaluations. State-only replay leaves 209434 branch events unresolved, while GPR+scratch seeding reduces that to 2385:
 
 | Native Branch Sites | Rows | Dynamic Branch Events | Unknown Branch Events |
 | --- | ---: | ---: | ---: |
 | state-only replay | 855 | 1007971 | 209434 |
-| GPR+scratch-seeded replay | 855 | 1007971 | 8587 |
+| GPR+scratch-seeded replay | 855 | 1007971 | 2385 |
 
-The static interpreter also resolves a narrow class of opaque pointer predicates by using the traced VM frame location (`base+0x7836d`). Since the image base is page-aligned, the low byte of `rbp+off` is stable; byte-sized comparisons such as `cmp $0, %r12b` after `r12 = rbp + 0x170` can be resolved without knowing the absolute ASLR base. The interpreter preserves commutative `int + pointer` arithmetic, propagates known low bits through mixed pointer arithmetic, compares same-base pointers by offset, and clears `ZF` when unknown flag-clobbering arithmetic is encountered instead of accidentally reusing stale flags. It now also normalizes scratch seeds that become frame pointers only after obfuscating biases (`0x1a44e4ef`, `0x61f749a7`, `0xda3b7d9`) and carries stable low bits for dispatch-table pointers. Target/IP coverage remains unchanged, but path and branch records are more faithful. Entry 28 remains the clearest high-volume frame-pointer example; the newer scratch/table low-bit normalization removes the sampled `vm_bytecode_unresolved` class from the GPR-seeded predicate catalog.
+The static interpreter also resolves a narrow class of opaque pointer predicates by using the traced VM frame location (`base+0x7836d`). Since the image base is page-aligned, the low byte of `rbp+off` is stable; byte-sized comparisons such as `cmp $0, %r12b` after `r12 = rbp + 0x170` can be resolved without knowing the absolute ASLR base. The interpreter preserves commutative `int + pointer` arithmetic, propagates known low bits through mixed pointer arithmetic, compares same-base pointers by offset, and clears `ZF` when unknown flag-clobbering arithmetic is encountered instead of accidentally reusing stale flags. It now also normalizes scratch seeds that become frame pointers only after obfuscating biases (`0x1a44e4ef`, `0x61f749a7`, `0xda3b7d9`) and carries stable low bits for dispatch-table pointers. The enriched scratch trace adds all 16 dynamic frame offsets used by entry 337's `0xbeee0` pointer predicate, removing that site from the sampled unresolved predicate catalog and cutting its full-trace unknown count from 6202 to zero. Target/IP coverage remains unchanged, but path and branch records are more faithful.
 
 `vm_fast_path_profile --branch-predicates` explains the remaining `?` branches by replaying concrete values plus symbolic/provenance labels for the last compare/test or flag-producing arithmetic. The current TSV artifacts are bounded to 128 rows per source; the native sampler emits the same aggregate rows/classes as the old Python replay in about 2 seconds state-only and about 3 seconds GPR+scratch-seeded on this host. Use native `--branch-sites` for full-trace outcome counts. The bounded state-only sample emits 855 source-handler branch-site rows and accounts for 68949 dynamic branch events; 12789 are unresolved. The replay keeps a per-handler scratch-frame store, and it now carries known low bits of frame and VM-IP pointers through simple arithmetic, so frame-local write/read pairs, low-byte frame-pointer predicates, and low-byte VM-IP predicates are no longer reported as unknown merely because they use non-VM fields such as `frame+0x81` or `frame+0x71` or compare the current bytecode pointer's low byte.
 
