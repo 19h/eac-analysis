@@ -6,7 +6,7 @@ SHA-256: `0b44ad59697129534189efdb75cde2b96245f831438e9f6a53cb7725f190d739`
 
 ## Current Artifacts
 
-- `driver.c`: dlopen/dlsym harness for exported `x`, now also dumps the EAC memory maps, the output buffer, and the global sidecar context. Optional `EAC_DISPATCH_TRACE=1` patches selected dispatcher jumps to `int3`; `EAC_VMTAIL_TRACE=1` patches direct VM tail sites. Both trace modes log frame state plus sixteen 16-bit `ip_w*` lookahead words when detail data is available.
+- `driver.c`: dlopen/dlsym harness for exported `x`, now also dumps the EAC memory maps, the output buffer, and the global sidecar context. Optional `EAC_DISPATCH_TRACE=1` patches selected dispatcher jumps to `int3`; `EAC_VMTAIL_TRACE=1` patches direct VM tail sites. Both trace modes log frame state plus sixteen 16-bit `ip_w*` lookahead words when detail data is available; `EAC_VMTAIL_REGS=1` also logs all GPRs at VM tail sites.
 - `trace_preload.c`: libc/network/process tracer with EAC-relative caller offsets. Network and process spawning are denied by default unless `EAC_TRACE_ALLOW_NETWORK=1` or `EAC_TRACE_ALLOW_SPAWN=1`.
 - `recon_summary.py`: summarizes a dump directory, trace call sites, dispatcher edges, executable pointer fixups, memory-vs-file mutations, and context pointers.
 - `vm_tail_scan.py`: ranks observed dispatch-table targets and suggests extra `EAC_VMTAIL_SITES=0xsite:reg,...` hooks using Capstone.
@@ -20,6 +20,7 @@ SHA-256: `0b44ad59697129534189efdb75cde2b96245f831438e9f6a53cb7725f190d739`
 - `vm_semantic_templates.py`: merges ISA schemas with static handler features into per-handler rows and ranked semantic templates.
 - `vm_handler_skeleton.py`: extracts normalized frame/IP/table access skeletons from handler disassembly and groups full, dispatch-tail, or canonical decode signatures.
 - `vm_state_effects.py`: summarizes observed `frame+0x170`, `frame+0x23`, and `frame+0x194` changes per handler or per `(handler, delta, bytes)` signature from state-aware traces.
+- `vm_tail_registers.py`: infers per-tail-site register roles from `EAC_VMTAIL_REGS=1` traces, including target value, dispatch-slot pointer, byte index, table pointer, and frame pointer.
 - `dumps/local-blocked-log/run.stderr`: blocked-network trace from the harness.
 - `dumps/local-blocked-log/postcall_*` and `postsleep_*`: in-memory EAC map/context/output dumps.
 - `dumps/dispatch-trap/run.stderr`: targeted dispatcher trace with fast harness exit.
@@ -56,6 +57,9 @@ SHA-256: `0b44ad59697129534189efdb75cde2b96245f831438e9f6a53cb7725f190d739`
 - `dumps/vmtail-state-wide-w16/vm_instruction_trace.tsv`: state-aware instruction rows with appended `pre_*`, `post_*`, and `state_delta` columns.
 - `dumps/vmtail-state-wide-w16/vm_state_effects.tsv`: per-handler frame-state effect summary.
 - `dumps/vmtail-state-wide-w16/vm_state_signatures.tsv`: per-signature frame-state effect summary keyed by source handler, byte delta, byte status, and byte sequence.
+- `dumps/vmtail-regs-smoke-w16/run.stderr`: 50k VMTAIL trace with full GPR snapshots at each tail site.
+- `dumps/vmtail-regs-smoke-w16/vm_tail_registers.tsv`: per-site/per-register role evidence from the GPR trace.
+- `dumps/vmtail-regs-smoke-w16/vm_tail_register_summary.tsv`: compact one-row-per-site register-role summary for lifting dispatch tails.
 
 Reproduction:
 
@@ -290,6 +294,33 @@ python3 vm_state_effects.py dumps/vmtail-state-wide-w16/vm_instruction_trace.tsv
   >dumps/vmtail-state-wide-w16/vm_state_effects.tsv
 python3 vm_state_effects.py dumps/vmtail-state-wide-w16/vm_instruction_trace.tsv --by-signature \
   >dumps/vmtail-state-wide-w16/vm_state_signatures.tsv
+```
+
+Register-role VM tail smoke trace:
+
+```sh
+make
+mkdir -p dumps/vmtail-regs-smoke-w16
+SPEC=$(python3 vm_tail_scan.py --all-table --eac eac.elf --window 0x1200 --limit 0 \
+  | sed -n 's/^EAC_VMTAIL_SITES=//p')
+timeout 30s env EAC_FAST_EXIT=1 \
+  EAC_DISPATCH_TRACE=1 \
+  EAC_DISPATCH_DETAIL=1 \
+  EAC_VMTAIL_TRACE=1 \
+  EAC_VMTAIL_REGS=1 \
+  EAC_DISPATCH_LIMIT=4096 \
+  EAC_VMTAIL_LIMIT=50000 \
+  EAC_VMTAIL_SITES="$SPEC" \
+  EAC_DUMP_DIR=dumps/vmtail-regs-smoke-w16 \
+  EAC_LAUNCHERDIR=/tmp/fake_launcher \
+  LD_PRELOAD=./trace_preload.so \
+  ./driver ./eac.elf 1 x 0x800 0 \
+  >dumps/vmtail-regs-smoke-w16/run.stdout \
+  2>dumps/vmtail-regs-smoke-w16/run.stderr
+python3 vm_tail_registers.py dumps/vmtail-regs-smoke-w16 --eac eac.elf \
+  >dumps/vmtail-regs-smoke-w16/vm_tail_registers.tsv
+python3 vm_tail_registers.py dumps/vmtail-regs-smoke-w16 --eac eac.elf --site-summary \
+  >dumps/vmtail-regs-smoke-w16/vm_tail_register_summary.tsv
 ```
 
 ## ELF Overview
@@ -797,6 +828,38 @@ Top state-preserving signatures are mostly loop/backedge or central-dispatch-adj
 | 86 | 283 | `+0x5` | `10e801c462` | 258 |
 
 This strongly suggests the VM dispatch state is not opaque per handler: for most concrete bytecode signatures, `frame+0x170` advances by a deterministic 32-bit addend, while target selection still depends on the rolling state and decoded bytes.
+
+The register-role trace in `dumps/vmtail-regs-smoke-w16` logs all GPRs for 50000 VMTAIL events. `vm_tail_registers.py` compares each register to the current dispatch target, `frame+0x10f` table base, `table + target_entry*8`, and `target_entry*8`.
+
+Per role-row totals:
+
+| Role | Rows | Events |
+| --- | ---: | ---: |
+| `frame_pointer` | 163 | 59736 |
+| `target_value` | 149 | 53996 |
+| `slot_pointer` | 130 | 49242 |
+| `table_slot_match` | 130 | 49242 |
+| `byte_index` | 130 | 41673 |
+| `table_slot_other` | 23 | 4165 |
+| `entry_index` | 15 | 558 |
+| `table_value` | 5 | 439 |
+
+The compact site summary has 139 tail sites. All 139 have a 100% target register and frame register. Of those, 123 have a 100% dispatch-slot pointer register, 105 have a 100% byte-index register, and 95 have both. This recovers the register allocation for the final dispatch calculation at most observed tail sites.
+
+Top register-role sites:
+
+| Site | Events | Target | Slot Ptr | Byte Index | Frame | Top Targets |
+| ---: | ---: | --- | --- | --- | --- | --- |
+| `0xae32f` | 2476 | `r11` | `r10` | `rcx` | `rbp` | 215,43,237,307 |
+| `0x7e7ca` | 1754 | `r11` | `rbx` | `r14` | `rbp` | 347,300,189,168 |
+| `0xa4a5e` | 1571 | `r14` | `r8` | `rcx` | `rbp` | 301,347,189,114 |
+| `0xc0d7b` | 1553 | `rdi` | `r8` | partial `r11` | `r10` | 168,20,28,158 |
+| `0x90893` | 1462 | `rdi` | `r11` | `rdx` | `rbp` | 199,66,185,268 |
+| `0x859f9` | 1358 | `r8` | `r11` | `rdx` | `rbp` | 123,340,337,189 |
+| `0xa0a9c` | 1351 | `rax` | `r11` | `r8` | `rbp` | 127,258,114,184 |
+| `0x9eac9` | 1346 | `rdx` | `r11` | `r13` | `rbp` | 43,307,184,297 |
+| `0xbf126` | 1342 | `rbx` | `r10` | `r11` | `rbp` | 253,66,196,174 |
+| `0xbf886` | 1300 | `r15` | `r8` | `r14` | `r11` | 28,161,307,66 |
 
 Top auto3 tail targets:
 
