@@ -8,7 +8,7 @@ GPR_RUN ?= dumps/vmtail-scratch-wide-w16-fs337all-fs128/run.stderr
 PRED_ROWS ?= 128
 XFER_ROWS ?= 128
 
-.PHONY: all clean fast-replay fast-state fast-gpr fast-predicates fast-state-predicates fast-gpr-predicates fast-transfer fast-state-transfer fast-gpr-transfer fast-validators fast-paths fast-gpr-paths long-branches hidden-transitions sampled-operands hidden-fill frontier-fill footprint-fill
+.PHONY: all clean fast-replay fast-state fast-gpr fast-predicates fast-state-predicates fast-gpr-predicates fast-transfer fast-state-transfer fast-gpr-transfer fast-validators fast-paths fast-gpr-paths long-branches hidden-transitions sampled-operands hidden-fill frontier-fill footprint-fill control-edges
 
 all: driver trace_preload.so vm_fast_path_profile
 
@@ -100,6 +100,10 @@ footprint-fill: frontier-fill
 	ln -sf ../vmtail-wide-1m-w16/vm_isa_missing_exact.tsv dumps/vmtail-wide-1m-w16-filefill-hiddenfill-frontierfill-footprintfill/vm_isa_missing_exact.tsv
 	ln -sf ../vmtail-wide-1m-w16/vm_handler_semantics.tsv dumps/vmtail-wide-1m-w16-filefill-hiddenfill-frontierfill-footprintfill/vm_handler_semantics.tsv
 	python3 vm_gap_report.py dumps/vmtail-wide-1m-w16-filefill-hiddenfill-frontierfill-footprintfill --long-branches dumps/vmtail-wide-1m-w16/vm_long_branch_catalog.tsv --hidden-transitions dumps/vmtail-wide-1m-w16/vm_hidden_transition_catalog.tsv --sampled-operands dumps/vmtail-wide-1m-w16/vm_sampled_operand_catalog.tsv > dumps/vmtail-wide-1m-w16/vm_gap_report_filefill_hiddenfill_frontierfill_footprintfill.tsv
+
+control-edges: footprint-fill
+	python3 vm_bytecode_control_edges.py > dumps/vmtail-wide-1m-w16/vm_bytecode_control_edges.tsv
+	python3 vm_bytecode_control_edges.py --markdown --limit 40 > dumps/vmtail-wide-1m-w16/vm_bytecode_control_edges_top.md
 
 clean:
 	rm -f driver trace_preload.so vm_fast_path_profile
