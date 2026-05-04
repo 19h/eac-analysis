@@ -1113,6 +1113,21 @@ The model is intentionally keyed by dispatch entry rather than bytecode instruct
 
 Representative recovered dispatch-slot expressions now appear directly in `vm_transition_model.tsv`. For example, entry 28 dispatches through `table[u16_0 & 0xffff]` with `ip += 0x3`, while entry 0 dispatches through `table[((u16_0 + (state0 ^ 0x1966e0e7)) - 0x251a0141) & 0xffff]` with `ip += 0x5`, modulo the 32-bit masks shown in the TSV.
 
+`vm_microcode_catalog.py` is the compact human-facing index over the reconstructed handlers. It joins the transition model, ISA operand layouts, and static state/flag update chains into pseudo-IR rows. The TSV keeps one row per dispatch entry, while `vm_microcode_top.md` renders the top 30 observed entries by event count with clipped expression hashes that point back to the full lower-level TSVs.
+
+Microcode catalog class distribution:
+
+| Class | Entries | Long-Run Events |
+| --- | ---: | ---: |
+| `static_validated` | 166 | 764108 |
+| `affine_dispatch_fallback` | 13 | 3438 |
+| `sampled_only` | 11 | 1397 |
+| `partial` | 12 | 21 |
+| `unobserved_static` | 155 | 0 |
+| `target_only` | 3 | 0 |
+
+The catalog currently has state/flag pseudo-IR for 327 entries covering 764423 long-run events, dispatch-slot pseudo-IR or model tags for 179 entries covering 767546 events, and operand-layout summaries for the 190 exact-covered handlers covering 767566 events.
+
 The register-role trace in `dumps/vmtail-regs-wide-w16` logs all GPRs for 250000 VMTAIL events. `vm_tail_registers.py` compares each register to the current dispatch target, `frame+0x10f` table base, `table + target_entry*8`, and `target_entry*8`.
 
 Per role-row totals:
