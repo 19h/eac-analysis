@@ -385,10 +385,6 @@ python3 vm_static_transfer_expr.py dumps/vmtail-state-wide-w16/vm_instruction_tr
 python3 vm_static_transfer_expr.py dumps/vmtail-state-wide-w16/vm_instruction_trace.tsv \
   --max-rows-per-source 128 --max-expr-len 320 --top 5 --by-path \
   >dumps/vmtail-state-wide-w16/vm_static_path_transfer_expr.tsv
-python3 vm_static_path_profile.py dumps/vmtail-state-wide-w16/vm_instruction_trace.tsv \
-  >dumps/vmtail-state-wide-w16/vm_static_path_profile.tsv
-python3 vm_static_path_profile.py dumps/vmtail-state-wide-w16/vm_instruction_trace.tsv --by-path \
-  >dumps/vmtail-state-wide-w16/vm_static_path_variants.tsv
 ./vm_fast_path_profile dumps/vmtail-state-wide-w16/vm_instruction_trace.tsv \
   >dumps/vmtail-state-wide-w16/vm_static_path_profile_fast.tsv
 ./vm_fast_path_profile dumps/vmtail-state-wide-w16/vm_instruction_trace.tsv --by-path \
@@ -458,12 +454,6 @@ python3 vm_tail_registers.py dumps/vmtail-regs-wide-w16 --eac eac.elf \
 python3 vm_tail_static_slots.py dumps/vmtail-wide-1m-w16/vm_handler_tail_roles_wide_regs.tsv \
   --eac eac.elf \
   >dumps/vmtail-wide-1m-w16/vm_tail_static_slots.tsv
-python3 vm_static_path_profile.py dumps/vmtail-state-wide-w16/vm_instruction_trace.tsv \
-  --gpr-run dumps/vmtail-scratch-wide-w16/run.stderr \
-  >dumps/vmtail-state-wide-w16/vm_static_path_profile_gpr_seeded.tsv
-python3 vm_static_path_profile.py dumps/vmtail-state-wide-w16/vm_instruction_trace.tsv \
-  --gpr-run dumps/vmtail-scratch-wide-w16/run.stderr --by-path \
-  >dumps/vmtail-state-wide-w16/vm_static_path_variants_gpr_seeded.tsv
 ./vm_fast_path_profile dumps/vmtail-state-wide-w16/vm_instruction_trace.tsv \
   --gpr-run dumps/vmtail-scratch-wide-w16/run.stderr \
   >dumps/vmtail-state-wide-w16/vm_static_path_profile_gpr_seeded_fast.tsv
