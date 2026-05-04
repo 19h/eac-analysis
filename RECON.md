@@ -26,7 +26,7 @@ SHA-256: `0b44ad59697129534189efdb75cde2b96245f831438e9f6a53cb7725f190d739`
 - `vm_static_dispatch_validate.py`: concretely executes handler slices through the final table jump and validates predicted dispatch target plus VM IP advance.
 - `vm_static_transfer_expr.py`: legacy Python version of the path-sensitive transfer-expression sampler. Routine refreshes now use `vm_fast_path_profile --transfer-expr`, which follows concrete state-aware trace paths while carrying symbolic expressions for the dispatch-table slot and VM IP advance; `--by-path` emits path-conditioned formula rows, and `--gpr-run` seeds handler-entry registers plus hot `fs0x...` scratch-frame fields.
 - `vm_static_path_profile.py`: profiles concrete branch/path variants through static handler slices over the state-aware trace; `--gpr-run` seeds handler-entry registers and, when present, hot `fs0x...` scratch-frame fields from the previous VMTAIL snapshot to resolve live-in branch predicates.
-- `vm_fast_path_profile.c`: native Capstone/OpenSSL reimplementation of the concrete replay core. It emits the same summary/by-path TSV schemas as `vm_static_path_profile.py`, native state/static-dispatch validation schemas, a `--branch-sites` full-trace branch-outcome TSV, SHA-256 path hashes, an `--emit-dir` batch mode that regenerates all `_fast.tsv` replay artifacts through `make fast-replay` in about 15 seconds on this host, a `--branch-predicates` sampler, and a `--transfer-expr` sampler that replace the slow Python predicate/transfer replays for routine refreshes; `make fast-replay fast-predicates fast-transfer` now refreshes the replay, predicate, and transfer artifacts in about 30 seconds.
+- `vm_fast_path_profile.c`: native Capstone/OpenSSL reimplementation of the concrete replay core. It emits the same summary/by-path TSV schemas as `vm_static_path_profile.py`, native state/static-dispatch validation schemas, a `--branch-sites` full-trace branch-outcome TSV, SHA-256 path hashes, an `--emit-dir` batch mode that regenerates all `_fast.tsv` replay artifacts through `make fast-replay`, a `--branch-predicates` sampler, and a `--transfer-expr` sampler that replace the slow Python predicate/transfer replays for routine refreshes. The native model now preserves restore-trampoline `push`/`pop` register values, reads safe image-backed frame/IP values, normalizes frame/table/IP/stack pointers, and uses low-bit inequality proofs; `make fast-replay fast-predicates fast-transfer` refreshes replay, predicate, and transfer artifacts in `elapsed=0:31.69` on this host.
 - `vm_branch_predicates.py`: catalogs each static-replay branch predicate, including observed outcomes, unresolved predicate classes, and top concrete/symbolic condition expressions; for normal refreshes it is now only needed to render Markdown from the native TSVs.
 - `vm_dispatch_model_combine.py`: combines the static dispatch validator with affine fallback formulas for static-dispatch misses.
 - `vm_tail_registers.py`: infers per-tail-site register roles from `EAC_VMTAIL_REGS=1` traces, including target value, dispatch-slot pointer, byte index, table pointer, and frame pointer. It can also join those roles back onto an instruction trace by source handler and tail site.
@@ -115,7 +115,7 @@ SHA-256: `0b44ad59697129534189efdb75cde2b96245f831438e9f6a53cb7725f190d739`
 - `dumps/vmtail-state-wide-w16/vm_static_path_transfer_expr_gpr_seeded.tsv`: native GPR+scratch-seeded path-conditioned symbolic dispatch-slot and IP-advance expressions.
 - `dumps/vmtail-state-wide-w16/vm_static_path_profile.tsv`: per-source branch-path profile from concrete static handler replay over the full state-aware trace.
 - `dumps/vmtail-state-wide-w16/vm_static_path_variants.tsv`: one row per distinct source-handler branch path, with per-path target distributions.
-- `dumps/vmtail-state-wide-w16/vm_static_path_profile_gpr_seeded.tsv`: same path profile, but seeded with entry GPRs and hot scratch-frame fields from the previous `dumps/vmtail-scratch-wide-w16-fs337all/run.stderr` VMTAIL event.
+- `dumps/vmtail-state-wide-w16/vm_static_path_profile_gpr_seeded.tsv`: same path profile, but seeded with entry GPRs and hot scratch-frame fields from the previous `dumps/vmtail-scratch-wide-w16-fs337all-fs128/run.stderr` VMTAIL event.
 - `dumps/vmtail-state-wide-w16/vm_static_path_variants_gpr_seeded.tsv`: one row per GPR+scratch-seeded source-handler branch path.
 - `dumps/vmtail-state-wide-w16/vm_static_path_profile_fast.tsv` and `vm_static_path_variants_fast.tsv`: native path-profiler outputs for the state-only replay.
 - `dumps/vmtail-state-wide-w16/vm_static_path_profile_gpr_seeded_fast.tsv` and `vm_static_path_variants_gpr_seeded_fast.tsv`: native path-profiler outputs for the GPR+scratch-seeded replay.
@@ -125,6 +125,7 @@ SHA-256: `0b44ad59697129534189efdb75cde2b96245f831438e9f6a53cb7725f190d739`
 - `dumps/vmtail-state-wide-w16/vm_branch_predicates_top.md`: Markdown digest of the highest-volume unresolved branch predicates.
 - `dumps/vmtail-state-wide-w16/vm_branch_predicates_gpr_seeded.tsv`: same native branch predicate catalog, seeded with previous-tail GPR snapshots and hot scratch-frame fields.
 - `dumps/vmtail-state-wide-w16/vm_branch_predicates_gpr_seeded_top.md`: Markdown digest of the highest-volume unresolved GPR+scratch-seeded predicates.
+- `dumps/vmtail-state-wide-w16/vm_branch_predicates_gpr_seeded_full.tsv`: unbounded GPR+scratch-seeded predicate provenance over all 1007971 dynamic branch evaluations; current unresolved count is zero.
 - `dumps/vmtail-state-wide-w16/vm_dispatch_model_combined.tsv`: combined static-plus-affine dispatch model coverage for the state-aware instruction trace.
 - `dumps/vmtail-state-wide-w16/vm_dispatch_formulas.tsv`: fitted dispatch-index formulas from the state-aware instruction trace.
 - `dumps/vmtail-state-wide-w16/vm_dispatch_affine.tsv`: exact affine dispatch-index fits from the state-aware instruction trace.
@@ -133,7 +134,7 @@ SHA-256: `0b44ad59697129534189efdb75cde2b96245f831438e9f6a53cb7725f190d739`
 - `dumps/vmtail-regs-smoke-w16/vm_tail_registers.tsv`: per-site/per-register role evidence from the GPR trace.
 - `dumps/vmtail-regs-smoke-w16/vm_tail_register_summary.tsv`: compact one-row-per-site register-role summary for lifting dispatch tails.
 - `dumps/vmtail-regs-wide-w16/run.stderr`: 250k VMTAIL trace with full GPR snapshots at each tail site.
-- `dumps/vmtail-scratch-wide-w16-fs337all/run.stderr`: 250k VMTAIL trace with full GPR snapshots plus the default hot scratch-frame fields (`fs0x0`, `fs0x12`, `fs0x60`, `fs0x68`, `fs0x71`, `fs0x81`, `fs0xe1`, `fs0x13d`, `fs0x16f`, `fs0x1e8`) and the entry-337 pointer-predicate offsets (`fs0x13`, `fs0x28`, `fs0x38`, `fs0x79`, `fs0x89`, `fs0x91`, `fs0x99`, `fs0xab`, `fs0xb3`, `fs0xcb`, `fs0xd3`, `fs0x107`, `fs0x123`, `fs0x147`, `fs0x19d`).
+- `dumps/vmtail-scratch-wide-w16-fs337all-fs128/run.stderr`: 250k VMTAIL trace with full GPR snapshots plus the default hot scratch-frame fields (`fs0x0`, `fs0x12`, `fs0x60`, `fs0x68`, `fs0x71`, `fs0x81`, `fs0xe1`, `fs0x13d`, `fs0x16f`, `fs0x1e8`), the entry-337 pointer-predicate offsets (`fs0x13`, `fs0x28`, `fs0x38`, `fs0x79`, `fs0x89`, `fs0x91`, `fs0x99`, `fs0xab`, `fs0xb3`, `fs0xcb`, `fs0xd3`, `fs0x107`, `fs0x123`, `fs0x147`, `fs0x19d`), and `fs0x128` for entry 95's final frame-bit predicate.
 - `dumps/vmtail-regs-wide-w16/vm_tail_registers.tsv`: per-site/per-register role evidence from the 250k GPR trace.
 - `dumps/vmtail-regs-wide-w16/vm_tail_register_summary.tsv`: compact one-row-per-site register-role summary from the 250k GPR trace.
 
@@ -409,7 +410,7 @@ timeout 45s env EAC_FAST_EXIT=1 \
   ./driver ./eac.elf 1 x 0x800 0 \
   >dumps/vmtail-regs-wide-w16/run.stdout \
   2>dumps/vmtail-regs-wide-w16/run.stderr
-mkdir -p dumps/vmtail-scratch-wide-w16-fs337all
+mkdir -p dumps/vmtail-scratch-wide-w16-fs337all-fs128
 timeout 60s env EAC_FAST_EXIT=1 \
   EAC_DISPATCH_TRACE=1 \
   EAC_DISPATCH_DETAIL=1 \
@@ -419,12 +420,12 @@ timeout 60s env EAC_FAST_EXIT=1 \
   EAC_DISPATCH_LIMIT=4096 \
   EAC_VMTAIL_LIMIT=250000 \
   EAC_VMTAIL_SITES="$SPEC" \
-  EAC_DUMP_DIR=dumps/vmtail-scratch-wide-w16-fs337all \
+  EAC_DUMP_DIR=dumps/vmtail-scratch-wide-w16-fs337all-fs128 \
   EAC_LAUNCHERDIR=/tmp/fake_launcher \
   LD_PRELOAD=./trace_preload.so \
   ./driver ./eac.elf 1 x 0x800 0 \
-  >dumps/vmtail-scratch-wide-w16-fs337all/run.stdout \
-  2>dumps/vmtail-scratch-wide-w16-fs337all/run.stderr
+  >dumps/vmtail-scratch-wide-w16-fs337all-fs128/run.stdout \
+  2>dumps/vmtail-scratch-wide-w16-fs337all-fs128/run.stderr
 python3 vm_tail_registers.py dumps/vmtail-regs-wide-w16 --eac eac.elf \
   >dumps/vmtail-regs-wide-w16/vm_tail_registers.tsv
 python3 vm_tail_registers.py dumps/vmtail-regs-wide-w16 --eac eac.elf --site-summary \
