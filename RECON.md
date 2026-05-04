@@ -1067,6 +1067,7 @@ Coverage in the lift catalog:
 | with byte/static index register | 65869 | 706851 |
 | with scalar dispatch formula tag | 71343 | 767546 |
 | from source with affine dispatch fit | 11753 | 126720 |
+| from source with robust affine CV | 9197 | 101596 |
 
 State classes in the lifted exact catalog:
 
@@ -1105,9 +1106,11 @@ Byte-only formulas fully validated for 16 source handlers and 60551 long-run exa
 | 217 | `(u16_1-post)&0x1fff` | 206 | 8 |
 | 74 | `(u16_0-post)&0x1fff` | 25 | 6 |
 
-`vm_dispatch_affine.py` adds a broader GF(2) affine solver over byte bits, pre-dispatch state bits, and post-state bits. It exactly fits 108 of 179 state-trace source handlers, covering 44812 of 248906 state-trace events; 71 high-volume handlers remain inconsistent under this model. The lifted long catalog carries the affine fit status by source handler, tagging 11753 exact rows and 126720 long-run events as belonging to state-trace-fitted sources. These affine rows are triage hypotheses unless they are simple byte-only forms or otherwise independently validated.
+`vm_dispatch_affine.py` adds a broader GF(2) affine solver over byte bits, pre-dispatch state bits, and post-state bits. It exactly fits 108 of 179 state-trace source handlers, covering 44812 of 248906 state-trace events; 71 high-volume handlers remain inconsistent under this model. The lifted long catalog carries the affine fit status by source handler, tagging 11753 exact rows and 126720 long-run events as belonging to state-trace-fitted sources.
 
-Representative affine fits from the state-aware trace:
+`vm_dispatch_affine_cv.py` applies a 5-fold held-out check to the same feature family. It finds 48 robust source handlers covering 33784 state-trace events with 100% held-out prediction. Another 50 sources are partial, covering 11207 state-trace events, 70 sources have no train-fold fit, and 11 one-off sources have no usable held-out split. In the lifted long catalog, the robust affine subset covers 9197 exact rows and 101596 events. Non-robust affine rows are triage hypotheses unless they are simple byte-only forms or otherwise independently validated.
+
+Representative robust affine fits from the state-aware trace:
 
 | Entry | Events | Unique Targets | Terms | Notes |
 | ---: | ---: | ---: | --- | --- |
