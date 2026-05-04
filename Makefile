@@ -4,7 +4,7 @@ LDFLAGS ?=
 
 STATE_DIR ?= dumps/vmtail-state-wide-w16
 TRACE ?= $(STATE_DIR)/vm_instruction_trace.tsv
-GPR_RUN ?= dumps/vmtail-scratch-wide-w16/run.stderr
+GPR_RUN ?= dumps/vmtail-scratch-wide-w16-fs337all/run.stderr
 PRED_ROWS ?= 128
 XFER_ROWS ?= 128
 
