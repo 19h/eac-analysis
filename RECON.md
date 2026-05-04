@@ -15,7 +15,7 @@ SHA-256: `0b44ad59697129534189efdb75cde2b96245f831438e9f6a53cb7725f190d739`
 - `vm_bytecode_blocks.py`: reduces direct executed VM instruction rows into contiguous bytecode coverage blocks. Default mode uses exact consumed bytes; `--include-sampled` adds logged prefix/backedge byte windows as partial coverage only.
 - `vm_bytecode_recover.py`: reconstructs VM byte values from instruction rows, verifies byte consistency, and emits segment hashes plus a unique instruction table. Default mode is exact-only; `--include-sampled` also inserts logged prefix/backedge byte windows without claiming the full instruction length is known.
 - `vm_bytecode_cfg.py`: builds a bytecode block graph from instruction rows and recovered exact bytecode segments.
-- `vm_gap_report.py`: ranks bytecode and handler coverage gaps from instruction rows, recovered segments, ISA missing-exact rows, decoded long-branch sidecars, and per-handler semantic observations.
+- `vm_gap_report.py`: ranks bytecode and handler coverage gaps from instruction rows, recovered segments, ISA missing-exact rows, decoded long-branch sidecars, adjacent hidden-transition sidecars, and per-handler semantic observations.
 - `vm_isa_summary.py`: clusters exact recovered VM instruction signatures by source handler, fixed byte length, target distribution, and operand byte/word layout.
 - `vm_semantic_templates.py`: merges ISA schemas with static handler features into per-handler rows and ranked semantic templates.
 - `vm_handler_skeleton.py`: extracts normalized frame/IP/table access skeletons from handler disassembly and groups full, dispatch-tail, or canonical decode signatures.
@@ -37,7 +37,9 @@ SHA-256: `0b44ad59697129534189efdb75cde2b96245f831438e9f6a53cb7725f190d739`
 - `vm_path_microcode_catalog.py`: joins full concrete branch-path profiles with sampled path-conditioned transfer expressions into path-specialized pseudo-IR rows, carrying source branch-predicate context into each path row.
 - `vm_bytecode_file_atlas.py`: verifies recovered exact VM bytes against `eac.elf` and builds conservative file-backed bytecode atlas regions from observed segments plus small inferred gaps.
 - `vm_trace_file_fill.py`: promotes bounded positive `prefix_32_of_N` rows to `file_span_of_N` rows by reading bytes from `eac.elf`, preserving them as sampled/file-backed coverage rather than exact consumed instructions.
-- `vm_long_branch_catalog.py`: decodes sampled/backedge long-control bytecode rows whose first u32 is the target dispatch-table entry and whose second u32 is a signed VM-IP delta, verifies byte prefixes against `eac.elf`, and emits TSV/Markdown lift summaries.
+- `vm_long_branch_catalog.py`: decodes sampled/backedge long-control bytecode rows whose first u32 is the target dispatch-table entry and whose second u32 is a signed VM-IP delta, verifies byte prefixes and static operand footprints against `eac.elf`, and emits TSV/Markdown lift summaries.
+- `vm_hidden_transition_catalog.py`: catalogs adjacent trace pairs where the previous target handler is not the next hooked source, yielding file-backed hidden VM spans for unhooked or central-dispatch paths.
+- `vm_trace_hidden_fill.py`: inserts those adjacent hidden spans as synthetic `hidden_span_of_N` rows so bytecode recovery can cover them as sampled/file-backed bytes.
 - `vm_instruction_compare.py`: compares exact unique VM instruction catalogs by stable instruction key.
 - `vm_dispatch_formula.py`: fits simple expressions for the final dispatch byte index `target_entry * 8` from VM bytes plus rolling state.
 - `vm_dispatch_formula_validate.py`: validates byte-only dispatch formulas against the long exact unique-instruction catalog.
@@ -79,6 +81,12 @@ SHA-256: `0b44ad59697129534189efdb75cde2b96245f831438e9f6a53cb7725f190d739`
 - `dumps/vmtail-wide-1m-w16/vm_gap_report_filefill.tsv`: gap report after bounded file-span coverage.
 - `dumps/vmtail-wide-1m-w16/vm_long_branch_catalog.tsv`: decoded long-control bytecode variants from sampled/backedge rows.
 - `dumps/vmtail-wide-1m-w16/vm_long_branch_top.md`: Markdown summary of the highest-volume long-control bytecode lifts.
+- `dumps/vmtail-wide-1m-w16/vm_hidden_transition_catalog.tsv`: adjacent unhooked-span catalog for previous-target-to-next-hooked-source gaps.
+- `dumps/vmtail-wide-1m-w16/vm_hidden_transition_top.md`: Markdown summary of the highest-volume hidden transition spans.
+- `dumps/vmtail-wide-1m-w16/vm_instruction_trace_filefill_hiddenfill.tsv`: bounded prefix file-fill trace plus synthetic adjacent hidden-span rows.
+- `dumps/vmtail-wide-1m-w16/vm_bytecode_segments_filefill_hiddenfill_sampled.tsv`: best current sampled/file-backed byte recovery, combining exact, sampled, bounded prefix file-fill, and adjacent hidden spans.
+- `dumps/vmtail-wide-1m-w16/vm_bytecode_blocks_filefill_hiddenfill_sampled.tsv`: contiguous blocks for the combined file-fill/hidden-fill trace.
+- `dumps/vmtail-wide-1m-w16/vm_gap_report_filefill_hiddenfill.tsv`: gap report after combined file-fill and hidden-span coverage.
 - `dumps/vmtail-wide-1m-w16/vm_state_static_slice.tsv`: static symbolic state/flag update chains for all dispatch entries.
 - `dumps/vmtail-wide-1m-w16/vm_state_static_slice_entry258.tsv`: focused static state slice for the high-volume nonlinear entry 258.
 - `dumps/vmtail-wide-1m-w16/vm_handler_tail_roles.tsv`: long-run source-handler/tail-site rows joined with register roles inferred from the 50k GPR smoke trace.
@@ -320,6 +328,7 @@ python3 vm_bytecode_blocks.py dumps/vmtail-wide-1m-w16/vm_instruction_trace.tsv 
 python3 vm_bytecode_recover.py dumps/vmtail-wide-1m-w16/vm_instruction_trace.tsv --include-sampled \
   >dumps/vmtail-wide-1m-w16/vm_bytecode_segments_sampled.tsv
 make long-branches
+make hidden-transitions
 python3 vm_gap_report.py dumps/vmtail-wide-1m-w16 \
   >dumps/vmtail-wide-1m-w16/vm_gap_report.tsv
 python3 vm_gap_report.py dumps/vmtail-wide-1m-w16 \
@@ -500,6 +509,7 @@ python3 vm_bytecode_recover.py dumps/vmtail-wide-1m-w16/vm_instruction_trace_fil
 python3 vm_bytecode_blocks.py dumps/vmtail-wide-1m-w16/vm_instruction_trace_filefill.tsv \
   --include-sampled \
   >dumps/vmtail-wide-1m-w16/vm_bytecode_blocks_filefill_sampled.tsv
+make hidden-fill
 mkdir -p dumps/vmtail-wide-1m-w16-filefill
 ln -sf ../vmtail-wide-1m-w16/vm_instruction_trace_filefill.tsv \
   dumps/vmtail-wide-1m-w16-filefill/vm_instruction_trace.tsv
