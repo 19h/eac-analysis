@@ -66,7 +66,7 @@ def final_expr_from_chain(text):
 
 def parse_count_exprs(text):
     exprs = []
-    for item in (text or "").split(";"):
+    for item in re.split(r";|\s+\|\s+(?=\d+=)", text or ""):
         item = item.strip()
         if not item or "=" not in item:
             continue
@@ -78,7 +78,10 @@ def parse_count_exprs(text):
 def single_expr(text):
     exprs = parse_count_exprs(text)
     if len(exprs) == 1:
-        return exprs[0][1]
+        expr = exprs[0][1]
+        if re.search(r"\b\d+=", expr):
+            return ""
+        return expr
     return ""
 
 
