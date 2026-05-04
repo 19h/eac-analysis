@@ -20,7 +20,7 @@ SHA-256: `0b44ad59697129534189efdb75cde2b96245f831438e9f6a53cb7725f190d739`
 - `vm_semantic_templates.py`: merges ISA schemas with static handler features into per-handler rows and ranked semantic templates.
 - `vm_handler_skeleton.py`: extracts normalized frame/IP/table access skeletons from handler disassembly and groups full, dispatch-tail, or canonical decode signatures.
 - `vm_state_effects.py`: summarizes observed `frame+0x170`, `frame+0x23`, and `frame+0x194` changes per handler or per `(handler, delta, bytes)` signature from state-aware traces.
-- `vm_tail_registers.py`: infers per-tail-site register roles from `EAC_VMTAIL_REGS=1` traces, including target value, dispatch-slot pointer, byte index, table pointer, and frame pointer.
+- `vm_tail_registers.py`: infers per-tail-site register roles from `EAC_VMTAIL_REGS=1` traces, including target value, dispatch-slot pointer, byte index, table pointer, and frame pointer. It can also join those roles back onto an instruction trace by source handler and tail site.
 - `dumps/local-blocked-log/run.stderr`: blocked-network trace from the harness.
 - `dumps/local-blocked-log/postcall_*` and `postsleep_*`: in-memory EAC map/context/output dumps.
 - `dumps/dispatch-trap/run.stderr`: targeted dispatcher trace with fast harness exit.
@@ -51,6 +51,7 @@ SHA-256: `0b44ad59697129534189efdb75cde2b96245f831438e9f6a53cb7725f190d739`
 - `dumps/vmtail-wide-1m-w16/vm_handler_skeleton_groups.tsv`: observed handlers grouped by full normalized handler skeleton.
 - `dumps/vmtail-wide-1m-w16/vm_bytecode_segments_sampled.tsv`: exact plus sampled byte-window recovery; conflict-checked but not full-instruction exactness for sampled rows.
 - `dumps/vmtail-wide-1m-w16/vm_bytecode_blocks_sampled.tsv`: contiguous coverage blocks for exact plus sampled byte windows.
+- `dumps/vmtail-wide-1m-w16/vm_handler_tail_roles.tsv`: long-run source-handler/tail-site rows joined with register roles inferred from the GPR smoke trace.
 - `dumps/vmtail-wide-1m-w16/vm_gap_report.tsv`: exact-segment coverage gap ranking.
 - `dumps/vmtail-wide-1m-w16/vm_gap_report_sampled.tsv`: gap ranking after adding sampled byte-window coverage.
 - `dumps/vmtail-state-wide-w16/run.stderr`: 250k state-aware VMTAIL trace. VMTAIL rows include `vm_flags`, `vm_state`, and `vm_byte` after each handler.
@@ -321,6 +322,9 @@ python3 vm_tail_registers.py dumps/vmtail-regs-smoke-w16 --eac eac.elf \
   >dumps/vmtail-regs-smoke-w16/vm_tail_registers.tsv
 python3 vm_tail_registers.py dumps/vmtail-regs-smoke-w16 --eac eac.elf --site-summary \
   >dumps/vmtail-regs-smoke-w16/vm_tail_register_summary.tsv
+python3 vm_tail_registers.py dumps/vmtail-regs-smoke-w16 --eac eac.elf \
+  --instruction-trace dumps/vmtail-wide-1m-w16/vm_instruction_trace.tsv \
+  >dumps/vmtail-wide-1m-w16/vm_handler_tail_roles.tsv
 ```
 
 ## ELF Overview
@@ -860,6 +864,27 @@ Top register-role sites:
 | `0x9eac9` | 1346 | `rdx` | `r11` | `r13` | `rbp` | 43,307,184,297 |
 | `0xbf126` | 1342 | `rbx` | `r10` | `r11` | `rbp` | 253,66,196,174 |
 | `0xbf886` | 1300 | `r15` | `r8` | `r14` | `r11` | 28,161,307,66 |
+
+Joining the site-role table back onto the long instruction trace gives 208 source-handler/tail-site rows covering 769216 instruction events and 202 unique source handlers. The 50k register smoke covers 139 rows, but those rows account for 763972 long-run instruction events. In the joined long trace:
+
+- 123 source/site rows have a dispatch-slot register, covering 742425 instruction events.
+- 110 rows have a byte-index register, covering 635421 events.
+- 100 rows have both slot and byte-index registers, covering 616384 events.
+
+Top joined handler-tail roles:
+
+| Entry | Handler | Site | Events | Target | Slot Ptr | Byte Index | Top Targets |
+| ---: | ---: | ---: | ---: | --- | --- | --- | --- |
+| 258 | `0xadf2c` | `0xae32f` | 28058 | `r11` | `r10` | `rcx` | 307,199,297,215 |
+| 28 | `0x7e390` | `0x7e7ca` | 26610 | `r11` | `rbx` | `r14` | 347,258,340,337 |
+| 337 | `0xbec0e` | `0xbf126` | 26534 | `rbx` | `r10` | `r11` | 297,66,307,28 |
+| 340 | `0xbf435` | `0xbf886` | 26112 | `r15` | `r8` | `r14` | 307,28,66,185 |
+| 18 | `0x7be9b` | `0x7c308` | 25448 | `rcx` | `r13` | none | 114,189,347,258 |
+| 114 | `0x90319` | `0x90893` | 25300 | `rdi` | `r11` | `rdx` | 66,185,215,18 |
+| 189 | `0x9e7af` | `0x9eac9` | 25112 | `rdx` | `r11` | `r13` | 18,297,215,174 |
+| 347 | `0xc088d` | `0xc0d7b` | 24299 | `rdi` | `r8` | partial `r11` | 18,307,297,28 |
+
+Remaining high-value source/site rows without register coverage are mostly lower-frequency or central-tail rows, led by `0xcdac7` for source entries 216, 356, 278, 95, 311, and 264. A longer `EAC_VMTAIL_REGS=1` trace or a targeted trace for `0xcdac7`, `0x7ca96`, `0xadbfa`, `0xb1545`, and `0xc0532` would fill the remaining lift metadata.
 
 Top auto3 tail targets:
 
