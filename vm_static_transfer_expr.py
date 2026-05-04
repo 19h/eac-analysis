@@ -77,6 +77,10 @@ def clip(text, max_len):
     return f"{text[:keep]}...#{digest}"
 
 
+def path_hash(path):
+    return hashlib.sha256(";".join(path).encode()).hexdigest()[:16]
+
+
 def fmt_imm(value):
     value &= 0xffffffffffffffff
     if value <= 0xffffffff:
@@ -316,11 +320,12 @@ def execute(insns_by_addr, start, row, table, target_to_entry, max_steps, max_ex
     steps = 0
     unknown = 0
     branch_unknown = 0
+    path = []
 
     while steps < max_steps:
         insn = insns_by_addr.get(pc)
         if insn is None:
-            return None, None, frame["ip_delta"], "falloff", "", "", frame_expr["ip_delta_expr"], steps, unknown, branch_unknown
+            return None, None, frame["ip_delta"], "falloff", "", "", frame_expr["ip_delta_expr"], steps, unknown, branch_unknown, path
         steps += 1
         mnem = insn.mnemonic
         ops = insn.operands
@@ -346,14 +351,17 @@ def execute(insns_by_addr, start, row, table, target_to_entry, max_steps, max_ex
                     steps,
                     unknown,
                     branch_unknown,
+                    path,
                 )
-            return None, None, frame["ip_delta"], "unknown_target", target_expr, slot_expr, frame_expr["ip_delta_expr"], steps, unknown + 1, branch_unknown
+            return None, None, frame["ip_delta"], "unknown_target", target_expr, slot_expr, frame_expr["ip_delta_expr"], steps, unknown + 1, branch_unknown, path
 
         taken = branch_taken(mnem, zf)
         if taken is not None:
+            path.append(f"0x{insn.address:x}:{mnem}:{1 if taken else 0}")
             pc = ops[0].imm if taken and ops and ops[0].type == X86_OP_IMM else next_pc
             continue
         if mnem.startswith("j") and mnem != "jmp":
+            path.append(f"0x{insn.address:x}:{mnem}:?")
             branch_unknown += 1
             pc = next_pc
             continue
@@ -426,7 +434,7 @@ def execute(insns_by_addr, start, row, table, target_to_entry, max_steps, max_ex
             sym_regs[reg_name(insn, ops[0].reg)] = f"?{mnem}"
         pc = next_pc
 
-    return None, None, frame["ip_delta"], "step_limit", "", "", frame_expr["ip_delta_expr"], steps, unknown, branch_unknown
+    return None, None, frame["ip_delta"], "step_limit", "", "", frame_expr["ip_delta_expr"], steps, unknown, branch_unknown, path
 
 
 def top_exprs(counter, max_items):
@@ -434,6 +442,10 @@ def top_exprs(counter, max_items):
     for expr, count in counter.most_common(max_items):
         parts.append(f"{count}={expr}")
     return ";".join(parts)
+
+
+def top_counter(counter, max_items):
+    return ",".join(f"{key}:{value}" for key, value in counter.most_common(max_items))
 
 
 def main():
@@ -452,6 +464,8 @@ def main():
     parser.add_argument("--max-rows-per-source", type=int, default=0)
     parser.add_argument("--max-expr-len", type=int, default=240)
     parser.add_argument("--top", type=int, default=3)
+    parser.add_argument("--by-path", action="store_true")
+    parser.add_argument("--max-path-len", type=int, default=260)
     args = parser.parse_args()
 
     eac = Path(args.eac).read_bytes()
@@ -466,6 +480,12 @@ def main():
     target_exprs = defaultdict(Counter)
     slot_exprs = defaultdict(Counter)
     ip_exprs = defaultdict(Counter)
+    path_stats = defaultdict(Counter)
+    path_target_exprs = defaultdict(Counter)
+    path_slot_exprs = defaultdict(Counter)
+    path_ip_exprs = defaultdict(Counter)
+    path_actual_targets = defaultdict(Counter)
+    path_texts = {}
 
     for row in read_trace_rows(args.trace):
         if row.get("byte_status") != "exact" or not row.get("pre_state"):
@@ -487,12 +507,14 @@ def main():
             _insns, by_addr = disassemble_region(md, eac, target, stop)
             decoded[source] = (target, by_addr)
         target, by_addr = decoded[source]
-        pred_entry, pred_target, pred_delta, status, target_expr, slot_expr, ip_expr, steps, unknown, branch_unknown = execute(
+        pred_entry, pred_target, pred_delta, status, target_expr, slot_expr, ip_expr, steps, unknown, branch_unknown, path = execute(
             by_addr, target, row, table, target_to_entry, args.max_steps, args.max_expr_len
         )
         actual_entry = int(row["target_entry"])
         actual_target = parse_int(row["target"])
         actual_delta = parse_delta(row["delta"])
+        target_ok = status == "ok" and pred_entry == actual_entry and pred_target == actual_target
+        ip_ok = pred_delta == actual_delta
 
         bucket = stats[source]
         bucket["events"] += 1
@@ -500,7 +522,7 @@ def main():
         bucket["unknown_ops"] += unknown
         bucket["branch_unknown"] += branch_unknown
         bucket[f"status_{status}"] += 1
-        if status == "ok" and pred_entry == actual_entry and pred_target == actual_target:
+        if target_ok:
             bucket["target_matched"] += 1
         else:
             bucket["target_mismatched"] += 1
@@ -511,7 +533,7 @@ def main():
                 bucket["example_actual_entry"] = actual_entry
                 bucket["example_bytes"] = row.get("bytes", "")
                 bucket["example_target_expr"] = target_expr
-        if pred_delta == actual_delta:
+        if ip_ok:
             bucket["ip_matched"] += 1
         else:
             bucket["ip_mismatched"] += 1
@@ -522,8 +544,56 @@ def main():
             slot_exprs[source][slot_expr] += 1
         if ip_expr:
             ip_exprs[source][ip_expr] += 1
+        digest = path_hash(path)
+        path_key = (source, digest)
+        path_bucket = path_stats[path_key]
+        path_bucket["events"] += 1
+        path_bucket["target_matched" if target_ok else "target_mismatched"] += 1
+        path_bucket["ip_matched" if ip_ok else "ip_mismatched"] += 1
+        path_bucket[f"status_{status}"] += 1
+        path_bucket["source_target"] = skel.get("target", "")
+        if target_expr:
+            path_target_exprs[path_key][target_expr] += 1
+        if slot_expr:
+            path_slot_exprs[path_key][slot_expr] += 1
+        if ip_expr:
+            path_ip_exprs[path_key][ip_expr] += 1
+        path_actual_targets[path_key][f"{actual_entry}@0x{actual_target:x}"] += 1
+        path_texts[path_key] = ";".join(path) if path else "-"
         targets[source] = skel.get("target", "")
         counts[source] += 1
+
+    if args.by_path:
+        print(
+            "source_entry\tsource_target\tpath_hash\tevents\ttarget_matched_events\t"
+            "target_coverage_pct\tip_matched_events\tip_coverage_pct\tstatuses\t"
+            "unique_target_exprs\tunique_slot_exprs\tunique_ip_exprs\t"
+            "top_target_exprs\ttop_slot_exprs\ttop_ip_exprs\ttop_actual_targets\tpath"
+        )
+        for (source, digest), bucket in sorted(
+            path_stats.items(), key=lambda item: (-item[1]["events"], int(item[0][0]), item[0][1])
+        ):
+            events = bucket["events"]
+            statuses = ",".join(
+                f"{key[7:]}:{value}" for key, value in sorted(bucket.items())
+                if key.startswith("status_")
+            )
+            print(
+                f"{source}\t{bucket.get('source_target', '')}\t{digest}\t{events}\t"
+                f"{bucket['target_matched']}\t"
+                f"{bucket['target_matched'] * 100.0 / events if events else 0.0:.1f}\t"
+                f"{bucket['ip_matched']}\t"
+                f"{bucket['ip_matched'] * 100.0 / events if events else 0.0:.1f}\t"
+                f"{statuses}\t{len(path_target_exprs[(source, digest)])}\t"
+                f"{len(path_slot_exprs[(source, digest)])}\t"
+                f"{len(path_ip_exprs[(source, digest)])}\t"
+                f"{top_exprs(path_target_exprs[(source, digest)], args.top)}\t"
+                f"{top_exprs(path_slot_exprs[(source, digest)], args.top)}\t"
+                f"{top_exprs(path_ip_exprs[(source, digest)], args.top)}\t"
+                f"{top_counter(path_actual_targets[(source, digest)], args.top)}\t"
+                f"{clip(path_texts[(source, digest)], args.max_path_len)}"
+            )
+        return
 
     print(
         "source_entry\tsource_target\tevents\ttarget_matched_events\t"
