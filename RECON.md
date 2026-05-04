@@ -28,6 +28,7 @@ SHA-256: `0b44ad59697129534189efdb75cde2b96245f831438e9f6a53cb7725f190d739`
 - `vm_tail_registers.py`: infers per-tail-site register roles from `EAC_VMTAIL_REGS=1` traces, including target value, dispatch-slot pointer, byte index, table pointer, and frame pointer. It can also join those roles back onto an instruction trace by source handler and tail site.
 - `vm_tail_static_slots.py`: statically recovers consumed dispatch-slot temporaries for tail sites where the target is loaded from `table + byte_index` and the slot pointer is clobbered before the final jump.
 - `vm_instruction_lift.py`: joins exact recovered VM instructions with per-signature state effects, compact state-affine tags, dynamic tail-register roles, static dispatch-slot provenance, and compact scalar/affine dispatch-formula tags.
+- `vm_transition_model.py`: joins handler skeletons, static state chains, validation coverage, combined dispatch-model evidence, and tail operand provenance into a one-row-per-dispatch-entry transition model.
 - `vm_bytecode_file_atlas.py`: verifies recovered exact VM bytes against `eac.elf` and builds conservative file-backed bytecode atlas regions from observed segments plus small inferred gaps.
 - `vm_trace_file_fill.py`: promotes bounded positive `prefix_32_of_N` rows to `file_span_of_N` rows by reading bytes from `eac.elf`, preserving them as sampled/file-backed coverage rather than exact consumed instructions.
 - `vm_instruction_compare.py`: compares exact unique VM instruction catalogs by stable instruction key.
@@ -75,6 +76,7 @@ SHA-256: `0b44ad59697129534189efdb75cde2b96245f831438e9f6a53cb7725f190d739`
 - `dumps/vmtail-wide-1m-w16/vm_handler_tail_roles_wide_regs.tsv`: same join using the 250k GPR trace for better low-frequency site coverage.
 - `dumps/vmtail-wide-1m-w16/vm_tail_static_slots.tsv`: static dispatch-slot provenance joined to each long-run source-handler/tail-site row.
 - `dumps/vmtail-wide-1m-w16/vm_instruction_lift.tsv`: one enriched row per exact recovered unique VM instruction.
+- `dumps/vmtail-wide-1m-w16/vm_transition_model.tsv`: one consolidated transition-model row per dispatch entry.
 - `dumps/vmtail-wide-1m-w16/vm_bytecode_file_atlas.tsv`: file-backed VM bytecode atlas built from sampled bytecode segments with `--max-gap 0x20`.
 - `dumps/vmtail-wide-1m-w16/vm_dispatch_formula_validate.tsv`: validation of byte-only dispatch formulas against long exact unique instructions.
 - `dumps/vmtail-wide-1m-w16/vm_gap_report.tsv`: exact-segment coverage gap ranking.
@@ -385,6 +387,8 @@ python3 vm_tail_static_slots.py dumps/vmtail-wide-1m-w16/vm_handler_tail_roles_w
   >dumps/vmtail-wide-1m-w16/vm_tail_static_slots.tsv
 python3 vm_instruction_lift.py \
   >dumps/vmtail-wide-1m-w16/vm_instruction_lift.tsv
+python3 vm_transition_model.py \
+  >dumps/vmtail-wide-1m-w16/vm_transition_model.tsv
 python3 vm_dispatch_formula_validate.py \
   >dumps/vmtail-wide-1m-w16/vm_dispatch_formula_validate.tsv
 python3 vm_bytecode_file_atlas.py --max-gap 0x20 \
@@ -1055,6 +1059,34 @@ Here `flags'` is itself conditionally transformed from `frame+0x23` by subtract/
 | `affine_single_fallback` | 5 | 5 |
 
 The affine fallback uses formulas fitted over state/post-state/byte features, so it is a validated dynamic dispatch model rather than a purely static one. In the lifted long catalog, the combined model tags 71343 rows and 767546 events; 12 exact rows and 20 events remain untagged only because their source handlers were not present in the state-aware trace.
+
+`vm_transition_model.py` consolidates the handler-level reconstruction into `vm_transition_model.tsv`, one row for each of the 360 dispatch entries. It joins the long-run handler skeleton, static state/flag update chain, state and dispatch validation percentages, affine CV status, combined dispatch model, and tail operand provenance. The observation mix is 190 exact-covered entries, 155 unobserved entries, 7 sampled backedge entries, 4 sampled long/sparse entries, 3 target-only entries, and 1 central/long-control-flow entry.
+
+Handler-level coverage in the transition model:
+
+| Coverage | Entries | Long-Run Events |
+| --- | ---: | ---: |
+| observed in skeleton profile | 202 | 768964 |
+| with static state writes | 327 | 764423 |
+| with static state validation | 179 | 767546 |
+| with 100% static state validation | 176 | 767542 |
+| with static dispatch/IP validation | 179 | 767546 |
+| with 100% static dispatch/IP validation | 166 | 764108 |
+| with combined dispatch model | 179 | 767546 |
+| with tail target register/operand | 181 | 765570 |
+| with live/static slot temp | 181 | 765570 |
+| with byte/static index register | 156 | 704763 |
+
+Combined dispatch-model distribution in the transition model:
+
+| Dispatch Model | Entries | Long-Run Events |
+| --- | ---: | ---: |
+| `static_100` | 166 | 764108 |
+| `affine_robust_fallback` | 5 | 1935 |
+| `affine_partial_fallback` | 3 | 1497 |
+| `affine_single_fallback` | 5 | 6 |
+
+The model is intentionally keyed by dispatch entry rather than bytecode instruction. Eleven exact-observed entries, covering 20 long-run events, still have no dispatch model tag because they were absent from the state-aware trace; the other blank rows are unobserved or sampled-only entry classes.
 
 The register-role trace in `dumps/vmtail-regs-wide-w16` logs all GPRs for 250000 VMTAIL events. `vm_tail_registers.py` compares each register to the current dispatch target, `frame+0x10f` table base, `table + target_entry*8`, and `target_entry*8`.
 
