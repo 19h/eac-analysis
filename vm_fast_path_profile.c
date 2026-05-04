@@ -883,8 +883,15 @@ static void write_frame_mem(FrameMem *mem, size_t *mem_count, int64_t off, int s
     }
 }
 
-static Value read_ip(uint8_t *bytes, size_t byte_count, int64_t off, int size) {
-    if (off < 0 || (size_t)off + (size_t)size > byte_count || size <= 0 || size > 8) {
+static Value read_ip(uint8_t *bytes, size_t byte_count, uint64_t ip_file_off, int64_t off, int size) {
+    if (off < 0 || size <= 0 || size > 8) {
+        return val_unknown();
+    }
+    if ((size_t)off + (size_t)size > byte_count) {
+        uint64_t image_value = 0;
+        if (read_image_value((size_t)(ip_file_off + (uint64_t)off), size, &image_value)) {
+            return val_int(image_value);
+        }
         return val_unknown();
     }
     uint64_t v = 0;
@@ -924,7 +931,7 @@ static Value read_mem_op(cs_insn *insn, cs_x86_op *op, Value *regs, Frame *frame
         return read_frame_mem(frame_mem, frame_mem_count, ptr.off, size);
     }
     if (ptr.ptr_kind == PK_IP) {
-        return read_ip(ip_bytes, ip_len, ptr.off, size);
+        return read_ip(ip_bytes, ip_len, frame->ip_file_off, ptr.off, size);
     }
     if (ptr.ptr_kind == PK_TABLE) {
         return read_table(table, ptr.off, size);
@@ -1160,8 +1167,21 @@ static void write_tracked_frame_mem(TrackedFrameMem *mem, size_t *mem_count, int
     }
 }
 
-static TrackedValue read_ip_tracked(uint8_t *bytes, size_t byte_count, int64_t off, int size, int max_expr_len) {
-    if (off < 0 || (size_t)off + (size_t)size > byte_count || size <= 0 || size > 8) {
+static TrackedValue read_ip_tracked(uint8_t *bytes, size_t byte_count, uint64_t ip_file_off,
+                                    int64_t off, int size, int max_expr_len) {
+    if (off < 0 || size <= 0 || size > 8) {
+        char expr[64];
+        snprintf(expr, sizeof(expr), "ip[0x%llx:%d]", (unsigned long long)off, size);
+        return tracked_unknown("ip_oob", expr, TC_VM_BYTECODE, max_expr_len);
+    }
+    if ((size_t)off + (size_t)size > byte_count) {
+        uint64_t image_value = 0;
+        size_t image_off = (size_t)(ip_file_off + (uint64_t)off);
+        if (read_image_value(image_off, size, &image_value)) {
+            char expr[64];
+            snprintf(expr, sizeof(expr), "image[0x%zx]", image_off);
+            return tracked_from(val_int(image_value), expr, TC_VM_BYTECODE | TC_IMAGE_OFFSET, "", max_expr_len);
+        }
         char expr[64];
         snprintf(expr, sizeof(expr), "ip[0x%llx:%d]", (unsigned long long)off, size);
         return tracked_unknown("ip_oob", expr, TC_VM_BYTECODE, max_expr_len);
@@ -1228,7 +1248,7 @@ static TrackedValue read_mem_tracked(cs_insn *insn, cs_x86_op *op, TrackedValue 
         return read_tracked_frame_mem(frame_mem, frame_mem_count, ptr.off, size, max_expr_len);
     }
     if (ptr.ptr_kind == PK_IP) {
-        return read_ip_tracked(ip_bytes, ip_len, ptr.off, size, max_expr_len);
+        return read_ip_tracked(ip_bytes, ip_len, frame->ip_file_off, ptr.off, size, max_expr_len);
     }
     if (ptr.ptr_kind == PK_TABLE) {
         return read_table_tracked(table, ptr.off, size, max_expr_len);
