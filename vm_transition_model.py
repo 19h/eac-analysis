@@ -80,6 +80,10 @@ def main():
         default="dumps/vmtail-state-wide-w16/vm_dispatch_affine_cv.tsv",
     )
     parser.add_argument(
+        "--transfer-expr",
+        default="dumps/vmtail-state-wide-w16/vm_static_transfer_expr.tsv",
+    )
+    parser.add_argument(
         "--tail-roles",
         default="dumps/vmtail-wide-1m-w16/vm_handler_tail_roles_wide_regs.tsv",
     )
@@ -96,6 +100,7 @@ def main():
     static_dispatch = load_by(args.static_dispatch_validate, "source_entry")
     dispatch_model = load_by(args.dispatch_model, "source_entry")
     dispatch_affine_cv = load_by(args.dispatch_affine_cv, "source_entry")
+    transfer_expr = load_by(args.transfer_expr, "source_entry")
     tail_roles = load_tail_rows(args.tail_roles)
     static_slots = load_tail_rows(args.static_slots)
 
@@ -129,6 +134,13 @@ def main():
         "dispatch_affine_cv_status",
         "dispatch_affine_cv_pct",
         "dispatch_affine_terms",
+        "transfer_expr_events",
+        "transfer_expr_target_pct",
+        "transfer_expr_ip_pct",
+        "transfer_expr_unique_slot_exprs",
+        "transfer_expr_unique_ip_exprs",
+        "transfer_expr_top_slot_exprs",
+        "transfer_expr_top_ip_exprs",
         "target_reg",
         "slot_kind",
         "slot_reg_or_temp",
@@ -151,6 +163,7 @@ def main():
         static_dispatch,
         dispatch_model,
         dispatch_affine_cv,
+        transfer_expr,
     ):
         skeleton = skeletons.get(entry, {})
         state_slice = slices.get(entry, {})
@@ -159,6 +172,7 @@ def main():
         static_dispatch_row = static_dispatch.get(entry, {})
         dispatch_model_row = dispatch_model.get(entry, {})
         dispatch_affine_row = dispatch_affine_cv.get(entry, {})
+        transfer_expr_row = transfer_expr.get(entry, {})
 
         target = skeleton.get("target", "") or state_slice.get("target", "")
         tail_site = skeleton.get("tail_site", "") or state_slice.get("tail_site", "")
@@ -199,6 +213,13 @@ def main():
                 "dispatch_affine_cv_status": dispatch_affine_row.get("cv_status", ""),
                 "dispatch_affine_cv_pct": dispatch_affine_row.get("coverage_pct", ""),
                 "dispatch_affine_terms": dispatch_affine_row.get("full_terms", ""),
+                "transfer_expr_events": transfer_expr_row.get("events", ""),
+                "transfer_expr_target_pct": transfer_expr_row.get("target_coverage_pct", ""),
+                "transfer_expr_ip_pct": transfer_expr_row.get("ip_coverage_pct", ""),
+                "transfer_expr_unique_slot_exprs": transfer_expr_row.get("unique_slot_exprs", ""),
+                "transfer_expr_unique_ip_exprs": transfer_expr_row.get("unique_ip_exprs", ""),
+                "transfer_expr_top_slot_exprs": transfer_expr_row.get("top_slot_exprs", ""),
+                "transfer_expr_top_ip_exprs": transfer_expr_row.get("top_ip_exprs", ""),
                 "target_reg": role.get("target_reg", ""),
                 "slot_kind": slot_kind,
                 "slot_reg_or_temp": slot_reg_or_temp,
