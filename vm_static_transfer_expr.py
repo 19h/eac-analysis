@@ -14,6 +14,7 @@ from vm_state_static_validate import (
     FRAME_IP_OFF,
     FRAME_STATE_OFF,
     FRAME_TABLE_OFF,
+    LowBits,
     MASK32,
     Ptr,
     Unknown,
@@ -100,6 +101,8 @@ def wrap(text):
 def fmt_sym(value):
     if isinstance(value, int):
         return fmt_imm(value)
+    if isinstance(value, LowBits):
+        return f"low{value.bits}(0x{value.value:x})"
     if isinstance(value, SymPtr):
         return fmt_ptr(value)
     if isinstance(value, SymTarget):

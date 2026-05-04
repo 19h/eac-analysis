@@ -33,6 +33,7 @@ FRAME_BYTE_OFF = 0x194
 MASK64 = 0xffffffffffffffff
 MASK32 = 0xffffffff
 FRAME_RUNTIME_LOW8 = 0x6D
+FRAME_RUNTIME_LOW12 = 0x36D
 
 
 @dataclass(frozen=True)
@@ -44,6 +45,12 @@ class Ptr:
 @dataclass(frozen=True)
 class Unknown:
     reason: str = "unknown"
+
+
+@dataclass(frozen=True)
+class LowBits:
+    bits: int
+    value: int
 
 
 def is_unknown(value):
@@ -91,6 +98,30 @@ def sign_extend(value, bits):
     mask = (1 << bits) - 1
     value &= mask
     return value - (1 << bits) if value & sign else value
+
+
+def make_lowbits(bits, value):
+    return LowBits(bits, value & ((1 << bits) - 1))
+
+
+def known_low_bits(value):
+    if isinstance(value, int):
+        return 64, value & MASK64
+    if isinstance(value, LowBits):
+        return value.bits, value.value
+    if isinstance(value, Ptr) and value.kind == "frame":
+        return 12, (FRAME_RUNTIME_LOW12 + value.off) & 0xfff
+    return 0, 0
+
+
+def concrete_full_value(value, size):
+    bits = op_bits(size)
+    if isinstance(value, int):
+        return value & mask_for_size(size)
+    known_bits, low = known_low_bits(value)
+    if known_bits >= bits:
+        return low & mask_for_size(size)
+    return None
 
 
 def mem_ptr(insn, op, regs):
@@ -183,13 +214,23 @@ def write_op(insn, op, value, regs, frame, frame_mem=None):
             return False
         if is_unknown(value):
             return False
+        concrete_value = concrete_full_value(value, op.size or 8)
         if ptr == Ptr("frame", FRAME_STATE_OFF):
+            if concrete_value is None:
+                return False
+            value = concrete_value
             frame["state"] = value & MASK32
             return True
         if ptr == Ptr("frame", FRAME_FLAGS_OFF):
+            if concrete_value is None:
+                return False
+            value = concrete_value
             frame["flags"] = value & MASK32
             return True
         if ptr == Ptr("frame", FRAME_BYTE_OFF):
+            if concrete_value is None:
+                return False
+            value = concrete_value
             frame["byte"] = value & 0xff
             return True
         if ptr.kind == "frame":
@@ -207,11 +248,55 @@ def eval_bin(mnemonic, left, right, size):
             return Ptr(left.kind, left.off + sign_extend(delta, op_bits(size)))
         if isinstance(right, Ptr) and mnemonic == "sub" and left.kind == right.kind:
             return (left.off - right.off) & mask_for_size(size)
+        if mnemonic not in {"add", "sub"}:
+            left_bits, left_low = known_low_bits(left)
+            right_bits, right_low = known_low_bits(right)
+            known_bits = min(left_bits, right_bits, op_bits(size))
+            if known_bits:
+                low_mask = (1 << known_bits) - 1
+                if mnemonic == "and" and isinstance(right, int) and right & ~low_mask == 0:
+                    return (left_low & right) & mask_for_size(size)
+                if mnemonic == "xor":
+                    return make_lowbits(known_bits, left_low ^ right_low)
+                if mnemonic == "and":
+                    return make_lowbits(known_bits, left_low & right_low)
+                if mnemonic == "or":
+                    return make_lowbits(known_bits, left_low | right_low)
         return Unknown("ptr_binop")
     if isinstance(right, Ptr):
         if isinstance(left, int) and mnemonic == "add":
             return Ptr(right.kind, right.off + sign_extend(left, op_bits(size)))
+        if mnemonic not in {"add", "sub"} or isinstance(left, int):
+            left_bits, left_low = known_low_bits(left)
+            right_bits, right_low = known_low_bits(right)
+            known_bits = min(left_bits, right_bits, op_bits(size))
+            if known_bits:
+                low_mask = (1 << known_bits) - 1
+                if mnemonic == "and" and isinstance(left, int) and left & ~low_mask == 0:
+                    return (left & right_low) & mask_for_size(size)
+                if mnemonic == "sub":
+                    return make_lowbits(known_bits, left_low - right_low)
+                if mnemonic == "xor":
+                    return make_lowbits(known_bits, left_low ^ right_low)
+                if mnemonic == "and":
+                    return make_lowbits(known_bits, left_low & right_low)
+                if mnemonic == "or":
+                    return make_lowbits(known_bits, left_low | right_low)
         return Unknown("ptr_binop")
+    left_bits, left_low = known_low_bits(left)
+    right_bits, right_low = known_low_bits(right)
+    if left_bits and right_bits and not (isinstance(left, int) and isinstance(right, int)):
+        known_bits = min(left_bits, right_bits, op_bits(size))
+        if mnemonic == "add":
+            return make_lowbits(known_bits, left_low + right_low)
+        if mnemonic == "sub":
+            return make_lowbits(known_bits, left_low - right_low)
+        if mnemonic == "xor":
+            return make_lowbits(known_bits, left_low ^ right_low)
+        if mnemonic == "and":
+            return make_lowbits(known_bits, left_low & right_low)
+        if mnemonic == "or":
+            return make_lowbits(known_bits, left_low | right_low)
     if not isinstance(left, int) or not isinstance(right, int):
         return Unknown("non_int")
     mask = mask_for_size(size)
@@ -256,11 +341,7 @@ def cmp_zf(mnemonic, left, right, size):
 
 
 def concrete_compare_value(value, size):
-    if isinstance(value, int):
-        return value & mask_for_size(size)
-    if isinstance(value, Ptr) and value.kind == "frame" and size == 1:
-        return (FRAME_RUNTIME_LOW8 + value.off) & 0xff
-    return None
+    return concrete_full_value(value, size)
 
 
 def branch_taken(mnemonic, zf):
@@ -367,7 +448,8 @@ def execute(insns_by_addr, start, tail_site, row, max_steps):
             if not write_op(insn, ops[0], value, regs, frame, frame_mem):
                 unknown += 1
             if mnem in {"and", "or", "xor", "sub"}:
-                zf = (value & mask_for_size(ops[0].size or 8)) == 0 if isinstance(value, int) else None
+                concrete_value = concrete_compare_value(value, ops[0].size or 8)
+                zf = (concrete_value == 0) if concrete_value is not None else None
             pc = next_pc
             continue
 

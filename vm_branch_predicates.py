@@ -16,6 +16,7 @@ from vm_state_static_validate import (
     FRAME_IP_OFF,
     FRAME_STATE_OFF,
     FRAME_TABLE_OFF,
+    LowBits,
     MASK32,
     MASK64,
     Ptr,
@@ -65,6 +66,8 @@ def clip(text, max_len):
 def fmt_value(value):
     if isinstance(value, int):
         return f"0x{value:x}"
+    if isinstance(value, LowBits):
+        return f"low{value.bits}(0x{value.value:x})"
     if isinstance(value, Ptr):
         sign = "+" if value.off >= 0 else "-"
         return f"{value.kind}{sign}0x{abs(value.off):x}"

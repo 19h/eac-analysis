@@ -18,6 +18,7 @@ from vm_state_static_validate import (
     Ptr,
     Unknown,
     branch_taken,
+    concrete_full_value,
     cmp_zf,
     disassemble_region,
     eval_bin,
@@ -109,18 +110,28 @@ def write_op(insn, op, value, regs, frame, frame_mem=None):
         ptr = mem_ptr(insn, op, regs)
         if ptr is None or is_unknown(value):
             return False
+        concrete_value = concrete_full_value(value, op.size or 8)
         if ptr == Ptr("frame", FRAME_IP_OFF):
             if isinstance(value, Ptr) and value.kind == "ip":
                 frame["ip_delta"] = value.off
                 return True
             return False
         if ptr == Ptr("frame", FRAME_STATE_OFF):
+            if concrete_value is None:
+                return False
+            value = concrete_value
             frame["state"] = value & MASK32
             return True
         if ptr == Ptr("frame", FRAME_FLAGS_OFF):
+            if concrete_value is None:
+                return False
+            value = concrete_value
             frame["flags"] = value & MASK32
             return True
         if ptr == Ptr("frame", FRAME_BYTE_OFF):
+            if concrete_value is None:
+                return False
+            value = concrete_value
             frame["byte"] = value & 0xff
             return True
         if ptr.kind == "frame":
