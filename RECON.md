@@ -32,8 +32,8 @@ SHA-256: `0b44ad59697129534189efdb75cde2b96245f831438e9f6a53cb7725f190d739`
 - `vm_tail_registers.py`: infers per-tail-site register roles from `EAC_VMTAIL_REGS=1` traces, including target value, dispatch-slot pointer, byte index, table pointer, and frame pointer. It can also join those roles back onto an instruction trace by source handler and tail site.
 - `vm_tail_static_slots.py`: statically recovers consumed dispatch-slot temporaries for tail sites where the target is loaded from `table + byte_index` and the slot pointer is clobbered before the final jump.
 - `vm_instruction_lift.py`: joins exact recovered VM instructions with per-signature state effects, compact state-affine tags, dynamic tail-register roles, static dispatch-slot provenance, and compact scalar/affine dispatch-formula tags.
-- `vm_transition_model.py`: joins handler skeletons, static state chains, validation coverage, combined dispatch-model evidence, transfer expressions, long-control bytecode lifts, state-only and GPR+scratch-seeded branch-predicate provenance, and tail operand provenance into a one-row-per-dispatch-entry transition model.
-- `vm_microcode_catalog.py`: renders the joined handler reconstruction into a compact pseudo-IR catalog and a Markdown digest for high-volume handlers, now including source-level long-branch lifts plus state-only and GPR+scratch-seeded branch-predicate summaries.
+- `vm_transition_model.py`: joins handler skeletons, static state chains, validation coverage, combined dispatch-model evidence, transfer expressions, long-control and sampled-operand bytecode lifts, state-only and GPR+scratch-seeded branch-predicate provenance, and tail operand provenance into a one-row-per-dispatch-entry transition model.
+- `vm_microcode_catalog.py`: renders the joined handler reconstruction into a compact pseudo-IR catalog and a Markdown digest for high-volume handlers, now including source-level long-branch lifts, sampled-operand lifts, and state-only plus GPR+scratch-seeded branch-predicate summaries.
 - `vm_path_microcode_catalog.py`: joins full concrete branch-path profiles with sampled path-conditioned transfer expressions into path-specialized pseudo-IR rows, carrying source branch-predicate context into each path row.
 - `vm_bytecode_file_atlas.py`: verifies recovered exact VM bytes against `eac.elf` and builds conservative file-backed bytecode atlas regions from observed segments plus small inferred gaps.
 - `vm_trace_file_fill.py`: promotes bounded positive `prefix_32_of_N` rows to `file_span_of_N` rows by reading bytes from `eac.elf`, preserving them as sampled/file-backed coverage rather than exact consumed instructions.
@@ -1211,7 +1211,7 @@ The static dispatch validator extends the same concrete slice through the final 
 
 The affine fallback uses formulas fitted over state/post-state/byte features, so it is a validated dynamic dispatch model rather than a purely static one. In the lifted long catalog, the combined model tags 71343 rows and 767546 events; 12 exact rows and 20 events remain untagged only because their source handlers were not present in the state-aware trace.
 
-`vm_transition_model.py` consolidates the handler-level reconstruction into `vm_transition_model.tsv`, one row for each of the 360 dispatch entries. It joins the long-run handler skeleton, static state/flag update chain, state and dispatch validation percentages, affine CV status, sampled transfer expressions, decoded long-control bytecode lifts with operand footprints, branch-predicate provenance, combined dispatch model, and tail operand provenance. The observation mix is 190 exact-covered entries, 155 unobserved entries, 7 sampled backedge entries, 4 sampled long/sparse entries, 3 target-only entries, and 1 central/long-control-flow entry.
+`vm_transition_model.py` consolidates the handler-level reconstruction into `vm_transition_model.tsv`, one row for each of the 360 dispatch entries. It joins the long-run handler skeleton, static state/flag update chain, state and dispatch validation percentages, affine CV status, sampled transfer expressions, decoded long-control bytecode lifts with operand footprints, sampled-operand lifts with operand footprints, branch-predicate provenance, combined dispatch model, and tail operand provenance. The observation mix is 190 exact-covered entries, 155 unobserved entries, 7 sampled backedge entries, 4 sampled long/sparse entries, 3 target-only entries, and 1 central/long-control-flow entry.
 
 Handler-level coverage in the transition model:
 
@@ -1229,7 +1229,7 @@ Handler-level coverage in the transition model:
 | with live/static slot temp | 181 | 765570 |
 | with byte/static index register | 156 | 704763 |
 
-The long-control sidecar attaches decoded target/IP-update variants and static operand footprints to 10 transition-model entries, covering 1638 sampled/backedge catalog events across 128 variants. This is tracked separately from the `observed_events` column because some sampled rows, notably source entry 308, are underrepresented in exact source-profile event counts.
+The long-control sidecar attaches decoded target/IP-update variants and static operand footprints to 10 transition-model entries, covering 1638 sampled/backedge catalog events across 128 variants. The sampled-operand sidecar attaches 13 additional sparse non-long sampled events across 12 variants to 6 entries: 95, 175, 195, 278, 299, and 311. These sidecars are tracked separately from the `observed_events` column because some sampled rows, notably source entry 308 and the central/sparse sampled operands, are underrepresented in exact source-profile event counts.
 
 Combined dispatch-model distribution in the transition model:
 
