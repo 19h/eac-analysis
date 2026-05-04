@@ -1178,7 +1178,8 @@ static TrackedValue read_mem_tracked(cs_insn *insn, cs_x86_op *op, TrackedValue 
                                 ip_tv->expr, TC_VM_IP_POINTER, "", max_expr_len);
         }
         if (ptr.off == FRAME_TABLE_OFF && size == 8) {
-            return tracked_from(val_ptr(PK_TABLE, 0), "dispatch_table", TC_DISPATCH_TABLE_POINTER, "", max_expr_len);
+            return tracked_from(val_ptr_low(PK_TABLE, 0, 12, TABLE_OFF & 0xfff),
+                                "dispatch_table", TC_DISPATCH_TABLE_POINTER, "", max_expr_len);
         }
         if (ptr.off == FRAME_STATE_OFF) return tracked_narrow(*state_tv, size, max_expr_len);
         if (ptr.off == FRAME_FLAGS_OFF) return tracked_narrow(*flags_tv, size, max_expr_len);
