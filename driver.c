@@ -55,6 +55,7 @@ static uint64_t g_tail_count;
 static uint64_t g_tail_limit = 4096;
 static int g_dispatch_detail;
 static int g_tail_trace;
+static int g_tail_regs;
 static struct tail_site g_tail_sites[EAC_MAX_TAIL_SITES];
 static size_t g_tail_site_count;
 
@@ -242,6 +243,36 @@ static char *append_ip_words(char *p, char *end, const uint16_t words[EAC_IP_WOR
     return p;
 }
 
+#if defined(__x86_64__)
+static char *append_gpr(char *p, char *end, const char *name, const ucontext_t *uc, int reg) {
+    p = append_lit(p, end, " ");
+    p = append_lit(p, end, name);
+    p = append_lit(p, end, "=");
+    p = append_hex(p, end, (uintptr_t)uc->uc_mcontext.gregs[reg]);
+    return p;
+}
+
+static char *append_gprs(char *p, char *end, const ucontext_t *uc) {
+    p = append_gpr(p, end, "rax", uc, REG_RAX);
+    p = append_gpr(p, end, "rbx", uc, REG_RBX);
+    p = append_gpr(p, end, "rcx", uc, REG_RCX);
+    p = append_gpr(p, end, "rdx", uc, REG_RDX);
+    p = append_gpr(p, end, "rsi", uc, REG_RSI);
+    p = append_gpr(p, end, "rdi", uc, REG_RDI);
+    p = append_gpr(p, end, "r8", uc, REG_R8);
+    p = append_gpr(p, end, "r9", uc, REG_R9);
+    p = append_gpr(p, end, "r10", uc, REG_R10);
+    p = append_gpr(p, end, "r11", uc, REG_R11);
+    p = append_gpr(p, end, "r12", uc, REG_R12);
+    p = append_gpr(p, end, "r13", uc, REG_R13);
+    p = append_gpr(p, end, "r14", uc, REG_R14);
+    p = append_gpr(p, end, "r15", uc, REG_R15);
+    p = append_gpr(p, end, "rbp", uc, REG_RBP);
+    p = append_gpr(p, end, "rsp", uc, REG_RSP);
+    return p;
+}
+#endif
+
 static void dispatch_trace_write(size_t idx, uintptr_t site, uintptr_t slot,
                                  uintptr_t index, uintptr_t target,
                                  uintptr_t frame, uint64_t vm_ip,
@@ -296,11 +327,14 @@ static void dispatch_trace_write(size_t idx, uintptr_t site, uintptr_t slot,
 static void tail_trace_write(uintptr_t site, uintptr_t target, uintptr_t frame,
                              uint64_t vm_ip, uintptr_t table,
                              uint32_t vm_flags, uint32_t vm_state, uint8_t vm_byte,
+#if defined(__x86_64__)
+                             const ucontext_t *uc,
+#endif
                              const uint16_t ip_words[EAC_IP_WORD_COUNT]) {
     uint64_t count = __atomic_fetch_add(&g_tail_count, 1, __ATOMIC_RELAXED);
     if (count >= g_tail_limit) return;
 
-    char buf[1024];
+    char buf[4096];
     char *p = buf;
     char *end = buf + sizeof(buf) - 1;
     p = append_lit(p, end, "[VMTAIL] site=");
@@ -325,6 +359,11 @@ static void tail_trace_write(uintptr_t site, uintptr_t target, uintptr_t frame,
     p = append_hex(p, end, table);
     p = append_lit(p, end, " table_off=");
     p = append_hex(p, end, table - (uintptr_t)g_eac_base);
+#if defined(__x86_64__)
+    if (g_tail_regs) {
+        p = append_gprs(p, end, uc);
+    }
+#endif
     p = append_ip_words(p, end, ip_words);
     p = append_lit(p, end, " target=");
     p = append_hex(p, end, target);
@@ -403,7 +442,11 @@ static void dispatch_sigtrap(int sig, siginfo_t *info, void *opaque) {
         uintptr_t target = tail_reg_value(uc, g_tail_sites[i].reg);
 
         tail_trace_write(trap_site - (uintptr_t)g_eac_base, target, frame, vm_ip,
-                         table, vm_flags, vm_state, vm_byte, ip_words);
+                         table, vm_flags, vm_state, vm_byte,
+#if defined(__x86_64__)
+                         uc,
+#endif
+                         ip_words);
         uc->uc_mcontext.gregs[REG_RIP] = (greg_t)target;
         return;
     }
@@ -435,6 +478,7 @@ static void install_dispatch_trace(void *sym) {
     if (g_dispatch_limit == 0) g_dispatch_limit = 1;
     g_dispatch_detail = env_is_one_driver("EAC_DISPATCH_DETAIL");
     g_tail_trace = env_is_one_driver("EAC_VMTAIL_TRACE");
+    g_tail_regs = env_is_one_driver("EAC_VMTAIL_REGS");
     g_tail_limit = parse_ul(getenv("EAC_VMTAIL_LIMIT"), 4096);
     if (g_tail_limit == 0) g_tail_limit = 1;
     g_tail_site_count = 0;
