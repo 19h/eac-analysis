@@ -513,6 +513,10 @@ def main():
     parser.add_argument("--max-steps", type=int, default=2000)
     parser.add_argument("--max-rows-per-source", type=int, default=0)
     parser.add_argument("--max-expr-len", type=int, default=240)
+    parser.add_argument(
+        "--gpr-run",
+        help="seed handler-entry registers and fs0x... scratch fields from the previous VMTAIL line",
+    )
     parser.add_argument("--top", type=int, default=3)
     parser.add_argument("--by-path", action="store_true")
     parser.add_argument("--max-path-len", type=int, default=260)
@@ -523,6 +527,7 @@ def main():
     target_to_entry = {target: idx for idx, target in enumerate(table)}
     md = make_disassembler()
     skeletons = read_skeletons(args.skeletons)
+    gpr_seeds = load_gpr_seeds(args.gpr_run)
     decoded = {}
     counts = defaultdict(int)
     stats = defaultdict(Counter)
@@ -558,7 +563,14 @@ def main():
             decoded[source] = (target, by_addr)
         target, by_addr = decoded[source]
         pred_entry, pred_target, pred_delta, status, target_expr, slot_expr, ip_expr, steps, unknown, branch_unknown, path = execute(
-            by_addr, target, row, table, target_to_entry, args.max_steps, args.max_expr_len
+            by_addr,
+            target,
+            row,
+            table,
+            target_to_entry,
+            args.max_steps,
+            args.max_expr_len,
+            gpr_seeds.get(row.get("seq", "")),
         )
         actual_entry = int(row["target_entry"])
         actual_target = parse_int(row["target"])
