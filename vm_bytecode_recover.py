@@ -25,13 +25,17 @@ def load_rows(path: Path, include_sampled: bool):
         for row in csv.DictReader(handle, delimiter="\t"):
             delta = parse_signed_hex(row["delta"])
             status = row["byte_status"]
-            if delta <= 0:
-                continue
-            if not include_sampled and status != "exact":
-                continue
             byte_hex = row["bytes"]
-            if len(byte_hex) != delta * 2 and status == "exact":
-                raise ValueError(f"exact row has mismatched byte length: seq={row['seq']}")
+            byte_len = len(byte_hex) // 2
+            if status == "exact":
+                if delta <= 0:
+                    continue
+                if len(byte_hex) != delta * 2:
+                    raise ValueError(f"exact row has mismatched byte length: seq={row['seq']}")
+            elif not include_sampled:
+                continue
+            elif byte_len == 0:
+                continue
             row["_start"] = int(row["start_vm_ip"], 16)
             row["_end"] = int(row["end_vm_ip"], 16)
             row["_delta"] = delta

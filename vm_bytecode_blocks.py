@@ -23,12 +23,17 @@ def load_rows(path: Path, include_sampled: bool):
         for row in csv.DictReader(handle, delimiter="\t"):
             status = row["byte_status"]
             delta = parse_signed_hex(row["delta"])
-            if delta <= 0:
-                continue
-            if not include_sampled and status != "exact":
+            byte_len = len(row["bytes"]) // 2
+            if status == "exact":
+                if delta <= 0:
+                    continue
+                coverage_len = delta
+            elif include_sampled and byte_len > 0:
+                coverage_len = byte_len
+            else:
                 continue
             start = int(row["start_vm_ip"], 16)
-            end = int(row["end_vm_ip"], 16)
+            end = start + coverage_len
             if end <= start:
                 continue
             rows.append((start, end, row))
