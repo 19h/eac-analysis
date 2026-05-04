@@ -1058,6 +1058,8 @@ Against sampled byte-window segments, `uncovered_source_start` disappears and ex
 
 That directly lifts the top missing-source rows into pseudo-IR instead of opaque sampled-only control flow: entry 75 has `255=next = table[171], ip -= 0x6d`; entry 316 has `255=next = table[165], ip -= 0x3c4` plus `91=next = table[171], ip += 0x2d` and `91=next = table[354], ip += 0x2d`; entry 145 has `125=next = table[354], ip += 0x139`; entry 266 has `125=next = table[354], ip -= 0x2e8`. These rows still need exact consumed-byte boundaries, but their dispatch target and VM-IP update are no longer unknown.
 
+The static skeletons agree with that decode. All 10 long-control source handlers read a u16 at VM IP `+0x0` for the table entry and u32 at `+0x4` for the signed delta. The shorter form appears in entries 117, 266, 302, and 308, while entries 75, 145, 210, 246, 316, and 334 also read u16 at `+0x8` and byte at `+0xa`, giving an 8-byte or 11-byte minimum operand footprint without claiming the whole branch span is linear instruction bytes.
+
 The best next trace targets are therefore the exact byte-length/source-coverage holes rather than broad reruns: they isolate specific VM IP bands (`0x22ffb1`, `0x230111`, `0x370xxx`, `0x371xxx`, `0x310dba`, `0x31297d`, `0x3157e1`, `0x315cc0`) and sparse source handlers (`316`, `75`, `266`, `145`, `117`, `302`) that still block full bytecode/ISA recovery.
 
 The state-aware trace in `dumps/vmtail-state-wide-w16` adds `vm_flags`, `vm_state`, and `vm_byte` to every VMTAIL row. `vm_trace_graph.py --instruction-trace` uses consecutive events as pre/post snapshots for the source handler and appends:
