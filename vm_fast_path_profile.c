@@ -2208,6 +2208,72 @@ static void emit_branch_sites(BranchStat *branches, size_t branch_count) {
     free(order);
 }
 
+static int cmp_branch_pred_unknowns(const void *a, const void *b) {
+    const BranchPredStat *x = *(const BranchPredStat * const *)a;
+    const BranchPredStat *y = *(const BranchPredStat * const *)b;
+    if (x->unknown != y->unknown) return x->unknown < y->unknown ? 1 : -1;
+    if (x->events != y->events) return x->events < y->events ? 1 : -1;
+    if (x->source != y->source) return x->source - y->source;
+    if (x->site != y->site) return x->site < y->site ? -1 : 1;
+    return strcmp(x->mnemonic, y->mnemonic);
+}
+
+static void emit_branch_predicates(BranchPredStat *stats, size_t stat_count, int top, int max_cell_len) {
+    printf("source_entry\tsource_target\tbranch_site\tbranch_mnemonic\tevents\t"
+           "taken_events\tnot_taken_events\tunknown_events\tunknown_pct\tavg_steps_to_branch\t"
+           "top_predicate_classes\tcondition_sites\tcondition_mnemonics\ttop_condition_ops\t"
+           "top_left_exprs\ttop_right_exprs\ttop_left_values\ttop_right_values\tzf_values\ttop_conditions\n");
+    BranchPredStat **order = xcalloc(stat_count ? stat_count : 1, sizeof(BranchPredStat *));
+    for (size_t i = 0; i < stat_count; ++i) order[i] = &stats[i];
+    qsort(order, stat_count, sizeof(order[0]), cmp_branch_pred_unknowns);
+    for (size_t i = 0; i < stat_count; ++i) {
+        BranchPredStat *b = order[i];
+        printf("%d\t%s\t0x%" PRIx64 "\t%s\t%" PRIu64 "\t%" PRIu64 "\t%" PRIu64 "\t%" PRIu64 "\t%.1f\t%.1f\t",
+               b->source, b->source_target, b->site, b->mnemonic, b->events,
+               b->taken, b->not_taken, b->unknown,
+               b->events ? b->unknown * 100.0 / b->events : 0.0,
+               b->events ? b->steps * 1.0 / b->events : 0.0);
+        counter_print_top(&b->classes, top, 0);
+        printf("\t");
+        counter_print_top(&b->condition_sites, top, 0);
+        printf("\t");
+        counter_print_top(&b->condition_mnemonics, top, 0);
+        printf("\t");
+        counter_print_top(&b->condition_ops, top, max_cell_len);
+        printf("\t");
+        counter_print_top(&b->left_exprs, top, max_cell_len);
+        printf("\t");
+        counter_print_top(&b->right_exprs, top, max_cell_len);
+        printf("\t");
+        counter_print_top(&b->left_values, top, max_cell_len);
+        printf("\t");
+        counter_print_top(&b->right_values, top, max_cell_len);
+        printf("\t");
+        counter_print_top(&b->zf_values, top, 0);
+        printf("\t");
+        counter_print_top(&b->condition_texts, top, max_cell_len);
+        printf("\n");
+    }
+    free(order);
+}
+
+static void free_branch_predicates(BranchPredStat *stats, size_t stat_count) {
+    for (size_t i = 0; i < stat_count; ++i) {
+        free_counter(&stats[i].classes);
+        free_counter(&stats[i].outcomes);
+        free_counter(&stats[i].condition_sites);
+        free_counter(&stats[i].condition_mnemonics);
+        free_counter(&stats[i].condition_ops);
+        free_counter(&stats[i].left_exprs);
+        free_counter(&stats[i].right_exprs);
+        free_counter(&stats[i].left_values);
+        free_counter(&stats[i].right_values);
+        free_counter(&stats[i].zf_values);
+        free_counter(&stats[i].condition_texts);
+    }
+    free(stats);
+}
+
 static FILE *begin_output_file(const char *dir, const char *name) {
     char path[4096];
     int n = snprintf(path, sizeof(path), "%s/%s", dir, name);
@@ -2309,7 +2375,7 @@ static bool parse_trace_row(Fields *f, TraceCols *cols, TraceRow *row) {
 }
 
 static void usage(const char *argv0) {
-    fprintf(stderr, "usage: %s [trace.tsv] [--by-path|--branch-sites|--state-validate|--dispatch-validate|--emit-dir dir] [--gpr-run run.stderr] [--skeletons path] [--eac eac.elf]\n", argv0);
+    fprintf(stderr, "usage: %s [trace.tsv] [--by-path|--branch-sites|--branch-predicates|--state-validate|--dispatch-validate|--emit-dir dir] [--gpr-run run.stderr] [--skeletons path] [--eac eac.elf]\n", argv0);
 }
 
 static Args parse_args(int argc, char **argv) {
@@ -2319,6 +2385,8 @@ static Args parse_args(int argc, char **argv) {
         .eac_path = "eac.elf",
         .max_steps = 2000,
         .max_rows_per_source = 0,
+        .max_expr_len = 320,
+        .max_cell_len = 260,
         .top = 5,
         .top_targets = 8,
         .max_path_len = 260,
@@ -2326,6 +2394,7 @@ static Args parse_args(int argc, char **argv) {
     for (int i = 1; i < argc; ++i) {
         if (!strcmp(argv[i], "--by-path")) args.by_path = true;
         else if (!strcmp(argv[i], "--branch-sites")) args.branch_sites = true;
+        else if (!strcmp(argv[i], "--branch-predicates")) args.branch_predicates = true;
         else if (!strcmp(argv[i], "--state-validate")) args.state_validate = true;
         else if (!strcmp(argv[i], "--dispatch-validate")) args.dispatch_validate = true;
         else if (!strcmp(argv[i], "--emit-dir") && i + 1 < argc) args.emit_dir = argv[++i];
@@ -2334,6 +2403,8 @@ static Args parse_args(int argc, char **argv) {
         else if (!strcmp(argv[i], "--eac") && i + 1 < argc) args.eac_path = argv[++i];
         else if (!strcmp(argv[i], "--max-steps") && i + 1 < argc) args.max_steps = atoi(argv[++i]);
         else if (!strcmp(argv[i], "--max-rows-per-source") && i + 1 < argc) args.max_rows_per_source = atoi(argv[++i]);
+        else if (!strcmp(argv[i], "--max-expr-len") && i + 1 < argc) args.max_expr_len = atoi(argv[++i]);
+        else if (!strcmp(argv[i], "--max-cell-len") && i + 1 < argc) args.max_cell_len = atoi(argv[++i]);
         else if (!strcmp(argv[i], "--top") && i + 1 < argc) args.top = atoi(argv[++i]);
         else if (!strcmp(argv[i], "--top-targets") && i + 1 < argc) args.top_targets = atoi(argv[++i]);
         else if (!strcmp(argv[i], "--max-path-len") && i + 1 < argc) args.max_path_len = atoi(argv[++i]);
@@ -2388,6 +2459,8 @@ int main(int argc, char **argv) {
     size_t path_count = 0, path_cap = 0;
     BranchStat *branches = NULL;
     size_t branch_count = 0, branch_cap = 0;
+    BranchPredStat *branch_preds = NULL;
+    size_t branch_pred_count = 0, branch_pred_cap = 0;
     while (getline(&line, &line_cap, fp) >= 0) {
         Fields f = split_line(line);
         TraceRow row;
@@ -2400,14 +2473,17 @@ int main(int argc, char **argv) {
         if (!h->present) continue;
         if (!decode_handler(cs, h, eac, eac_size, 0x1200)) continue;
         Seed *seed = (seeds && row.seq >= 0 && (size_t)row.seq < seed_count) ? &seeds[row.seq] : NULL;
-        ExecResult r = execute_handler(h, &row, table, seed, args.max_steps);
+        char target_text[32];
+        snprintf(target_text, sizeof(target_text), "0x%" PRIx64, h->target);
+        ExecResult r = args.branch_predicates
+            ? execute_handler_branch_pred(h, &row, table, seed, args.max_steps, args.max_expr_len, args.max_cell_len,
+                                          &branch_preds, &branch_pred_count, &branch_pred_cap, source, target_text)
+            : execute_handler(h, &row, table, seed, args.max_steps);
         bool target_ok = !strcmp(r.status, "ok") && r.pred_entry == row.target_entry && r.pred_target == row.target;
         bool ip_ok = r.pred_delta == row.delta;
         bool state_ok = r.pred_state == row.post_state;
         char hash[17];
         sha_path(r.path, hash);
-        char target_text[32];
-        snprintf(target_text, sizeof(target_text), "0x%" PRIx64, h->target);
         PathStat *p = find_path(&paths, &path_count, &path_cap, source, hash, r.path, target_text);
         p->events++;
         if (target_ok) p->target_matched++;
@@ -2477,6 +2553,8 @@ int main(int argc, char **argv) {
         emit_state_validate(stats);
     } else if (args.dispatch_validate) {
         emit_dispatch_validate(stats);
+    } else if (args.branch_predicates) {
+        emit_branch_predicates(branch_preds, branch_pred_count, args.top, args.max_cell_len);
     } else if (args.branch_sites) {
         emit_branch_sites(branches, branch_count);
     } else if (args.by_path) {
@@ -2487,6 +2565,7 @@ int main(int argc, char **argv) {
     for (size_t i = 0; i < path_count; ++i) free(paths[i].text);
     free(paths);
     free(branches);
+    free_branch_predicates(branch_preds, branch_pred_count);
     for (int i = 0; i < TABLE_ENTRIES; ++i) {
         if (handlers[i].insns) cs_free(handlers[i].insns, handlers[i].insn_count);
     }
