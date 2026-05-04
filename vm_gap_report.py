@@ -10,6 +10,7 @@ KIND_WEIGHT = {
     "uncovered_exact_destination": 100,
     "prefix_long_jump": 80,
     "missing_exact_source": 70,
+    "decoded_long_branch_sample": 5,
     "decoded_long_branch_source": 15,
     "backedge_sample": 40,
     "uncovered_source_start": 30,
@@ -137,6 +138,29 @@ def load_long_branches(path: Path, top=5):
             ),
         }
     return compact
+
+
+def load_long_branch_variants(path: Path):
+    variants = {}
+    if path is None:
+        return variants
+
+    with path.open(newline="", errors="replace") as handle:
+        for row in csv.DictReader(handle, delimiter="\t"):
+            key = (
+                row.get("source_entry", ""),
+                row.get("target_entry", ""),
+                row.get("delta", ""),
+            )
+            if not all(key):
+                continue
+            variants[key] = (
+                f"long_branch_events={row.get('events', '')};"
+                f"operand_min_len={row.get('operand_min_len', '')};"
+                f"operand_shape={row.get('operand_shape', '')};"
+                f"ir={row.get('lifted_ir', '')}"
+            )
+    return variants
 
 
 def load_hidden_transitions(path: Path, top=3):
@@ -274,7 +298,7 @@ def add_static_group(groups, kind, key, events, source="", target="", delta="", 
         group["sites"][site] += events
 
 
-def analyze_trace(dump_dir: Path, segments, groups, hidden_transitions):
+def analyze_trace(dump_dir: Path, segments, groups, hidden_transitions, long_branch_variants):
     trace_path = dump_dir / "vm_instruction_trace.tsv"
     boundary_by_start = {segment["start"]: segment for segment in segments}
     with trace_path.open(newline="") as handle:
@@ -316,22 +340,34 @@ def analyze_trace(dump_dir: Path, segments, groups, hidden_transitions):
                 )
 
             if status.startswith("prefix_"):
+                long_branch = long_branch_variants.get((row["source_entry"], row["target_entry"], row["delta"]), "")
+                kind = "decoded_long_branch_sample" if long_branch else "prefix_long_jump"
+                detail = (
+                    f"positive VM IP delta exceeds logged byte window; {long_branch}"
+                    if long_branch else "positive VM IP delta exceeds logged byte window"
+                )
                 add_trace_row(
                     groups,
-                    "prefix_long_jump",
+                    kind,
                     f"{row['source_entry']}->{row['target_entry']}:{status}",
                     row,
                     offset=end,
-                    detail="positive VM IP delta exceeds logged byte window",
+                    detail=detail,
                 )
             elif status.startswith("backedge"):
+                long_branch = long_branch_variants.get((row["source_entry"], row["target_entry"], row["delta"]), "")
+                kind = "decoded_long_branch_sample" if long_branch else "backedge_sample"
+                detail = (
+                    f"negative VM IP delta, exact consumed bytes unavailable from forward lookahead; {long_branch}"
+                    if long_branch else "negative VM IP delta, exact consumed bytes unavailable from forward lookahead"
+                )
                 add_trace_row(
                     groups,
-                    "backedge_sample",
+                    kind,
                     f"{row['source_entry']}->{row['target_entry']}:{row['delta']}",
                     row,
                     offset=end,
-                    detail="negative VM IP delta, exact consumed bytes unavailable from forward lookahead",
+                    detail=detail,
                 )
 
 
@@ -469,11 +505,12 @@ def main():
     segments = load_segments(segment_path)
     long_branch_path = None if args.no_long_branches else find_long_branch_path(dump_dir, args.long_branches)
     long_branches = load_long_branches(long_branch_path)
+    long_branch_variants = load_long_branch_variants(long_branch_path)
     hidden_path = None if args.no_hidden_transitions else find_hidden_transition_path(dump_dir, args.hidden_transitions)
     hidden_transitions = load_hidden_transitions(hidden_path)
     groups = {}
 
-    analyze_trace(dump_dir, segments, groups, hidden_transitions)
+    analyze_trace(dump_dir, segments, groups, hidden_transitions, long_branch_variants)
     load_missing_exact(dump_dir, groups, long_branches)
     load_observation_gaps(dump_dir, groups)
 
