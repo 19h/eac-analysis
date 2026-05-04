@@ -789,7 +789,7 @@ static ExecResult execute_handler(Handler *h, TraceRow *row, uint64_t *table, Se
     while (steps < (uint64_t)max_steps) {
         cs_insn *insn = find_insn(h, pc);
         if (!insn) {
-            return (ExecResult){.pred_entry = -1, .pred_delta = frame.ip_delta, .status = "falloff",
+            return (ExecResult){.pred_entry = -1, .pred_state = frame.state, .pred_delta = frame.ip_delta, .status = "falloff",
                                 .steps = steps, .unknown = unknown, .branch_unknown = branch_unknown, .path = path};
         }
         steps++;
@@ -805,10 +805,10 @@ static ExecResult execute_handler(Handler *h, TraceRow *row, uint64_t *table, Se
             }
             Value v = op_count ? read_op(insn, &ops[0], regs, &frame, row->bytes, row->byte_count, table, frame_mem, frame_mem_count) : val_unknown();
             if (v.kind == VK_INT) {
-                return (ExecResult){.pred_entry = target_to_entry(table, v.u), .pred_target = v.u, .pred_delta = frame.ip_delta,
+                return (ExecResult){.pred_entry = target_to_entry(table, v.u), .pred_target = v.u, .pred_state = frame.state, .pred_delta = frame.ip_delta,
                                     .status = "ok", .steps = steps, .unknown = unknown, .branch_unknown = branch_unknown, .path = path};
             }
-            return (ExecResult){.pred_entry = -1, .pred_delta = frame.ip_delta, .status = "unknown_target",
+            return (ExecResult){.pred_entry = -1, .pred_state = frame.state, .pred_delta = frame.ip_delta, .status = "unknown_target",
                                 .steps = steps, .unknown = unknown + 1, .branch_unknown = branch_unknown, .path = path};
         }
         int taken = branch_taken(mnem, zf);
@@ -876,7 +876,7 @@ static ExecResult execute_handler(Handler *h, TraceRow *row, uint64_t *table, Se
         }
         pc = next_pc;
     }
-    return (ExecResult){.pred_entry = -1, .pred_delta = frame.ip_delta, .status = "step_limit",
+    return (ExecResult){.pred_entry = -1, .pred_state = frame.state, .pred_delta = frame.ip_delta, .status = "step_limit",
                         .steps = steps, .unknown = unknown, .branch_unknown = branch_unknown, .path = path};
 }
 
@@ -1162,6 +1162,21 @@ static void print_statuses(uint64_t ok, uint64_t unknown_target, uint64_t fallof
     if (unknown_target) { printf("%sunknown_target:%" PRIu64, first ? "" : ",", unknown_target); }
 }
 
+static void format_bytes(const uint8_t *bytes, size_t count, char *out, size_t out_size) {
+    size_t pos = 0;
+    if (!out_size) return;
+    for (size_t i = 0; i < count && pos + 2 < out_size; ++i) {
+        int n = snprintf(out + pos, out_size - pos, "%02x", bytes[i]);
+        if (n < 0) break;
+        pos += (size_t)n;
+    }
+    out[out_size - 1] = 0;
+}
+
+static void print_statuses_for_stat(SourceStat *s) {
+    print_statuses(s->status_ok, s->status_unknown_target, s->status_falloff, s->status_step_limit);
+}
+
 static void print_top_actual_targets(PathStat *p, int limit) {
     TargetCounter tmp[32];
     memcpy(tmp, p->targets, sizeof(tmp));
@@ -1261,6 +1276,68 @@ static void emit_summary(SourceStat stats[TABLE_ENTRIES], PathStat *paths, size_
     }
 }
 
+static void emit_state_validate(SourceStat stats[TABLE_ENTRIES]) {
+    printf("source_entry\tsource_target\tevents\tmatched_events\tcoverage_pct\tmismatched_events\t"
+           "unknown_ops\tbranch_unknown\tavg_steps\tstatuses\texample_pred\texample_actual\t"
+           "example_status\texample_bytes\n");
+    int order[TABLE_ENTRIES], n = 0;
+    for (int i = 0; i < TABLE_ENTRIES; ++i) if (stats[i].events) order[n++] = i;
+#if defined(__GLIBC__)
+    qsort_r(order, (size_t)n, sizeof(order[0]), cmp_source_summary, stats);
+#endif
+    for (int oi = 0; oi < n; ++oi) {
+        int source = order[oi];
+        SourceStat *s = &stats[source];
+        printf("%d\t%s\t%" PRIu64 "\t%" PRIu64 "\t%.1f\t%" PRIu64 "\t%" PRIu64 "\t%" PRIu64 "\t%.1f\t",
+               source, s->target_text, s->events, s->state_matched,
+               s->events ? s->state_matched * 100.0 / s->events : 0.0,
+               s->state_mismatched, s->unknown_ops, s->branch_unknown,
+               s->events ? s->steps * 1.0 / s->events : 0.0);
+        print_statuses_for_stat(s);
+        printf("\t");
+        if (s->has_state_example) {
+            printf("0x%x\t0x%x\t%s\t%s", s->example_pred_state, s->example_actual_state,
+                   s->example_status, s->example_bytes);
+        } else {
+            printf("\t\t\t");
+        }
+        printf("\n");
+    }
+}
+
+static void emit_dispatch_validate(SourceStat stats[TABLE_ENTRIES]) {
+    printf("source_entry\tsource_target\tevents\ttarget_matched_events\ttarget_coverage_pct\t"
+           "target_mismatched_events\tip_matched_events\tip_coverage_pct\tip_mismatched_events\t"
+           "unknown_ops\tbranch_unknown\tavg_steps\tstatuses\texample_pred_entry\texample_pred_target\t"
+           "example_actual_entry\texample_actual_target\texample_status\texample_bytes\n");
+    int order[TABLE_ENTRIES], n = 0;
+    for (int i = 0; i < TABLE_ENTRIES; ++i) if (stats[i].events) order[n++] = i;
+#if defined(__GLIBC__)
+    qsort_r(order, (size_t)n, sizeof(order[0]), cmp_source_summary, stats);
+#endif
+    for (int oi = 0; oi < n; ++oi) {
+        int source = order[oi];
+        SourceStat *s = &stats[source];
+        printf("%d\t%s\t%" PRIu64 "\t%" PRIu64 "\t%.1f\t%" PRIu64 "\t%" PRIu64 "\t%.1f\t%" PRIu64 "\t"
+               "%" PRIu64 "\t%" PRIu64 "\t%.1f\t",
+               source, s->target_text, s->events, s->target_matched,
+               s->events ? s->target_matched * 100.0 / s->events : 0.0, s->target_mismatched,
+               s->ip_matched, s->events ? s->ip_matched * 100.0 / s->events : 0.0, s->ip_mismatched,
+               s->unknown_ops, s->branch_unknown, s->events ? s->steps * 1.0 / s->events : 0.0);
+        print_statuses_for_stat(s);
+        printf("\t");
+        if (s->has_dispatch_example) {
+            if (s->example_pred_entry >= 0) printf("%d", s->example_pred_entry);
+            printf("\t0x%" PRIx64 "\t", s->example_pred_target);
+            if (s->example_actual_entry >= 0) printf("%d", s->example_actual_entry);
+            printf("\t0x%" PRIx64 "\t%s\t%s", s->example_actual_target, s->example_status, s->example_bytes);
+        } else {
+            printf("\t\t\t\t\t");
+        }
+        printf("\n");
+    }
+}
+
 static int cmp_branch_unknowns(const void *a, const void *b) {
     const BranchStat *x = *(const BranchStat * const *)a;
     const BranchStat *y = *(const BranchStat * const *)b;
@@ -1295,6 +1372,7 @@ static bool parse_trace_header(Fields *header, TraceCols *cols) {
     cols->start_vm_ip = col_index(header, "start_vm_ip");
     cols->target_entry = col_index(header, "target_entry");
     cols->target = col_index(header, "target");
+    cols->post_state = col_index(header, "post_state");
     cols->delta = col_index(header, "delta");
     cols->bytes = col_index(header, "bytes");
     cols->byte_status = col_index(header, "byte_status");
@@ -1303,7 +1381,7 @@ static bool parse_trace_header(Fields *header, TraceCols *cols) {
     cols->pre_byte = col_index(header, "pre_byte");
     return cols->seq >= 0 && cols->source_entry >= 0 && cols->start_vm_ip >= 0 && cols->target_entry >= 0 &&
            cols->target >= 0 && cols->delta >= 0 && cols->bytes >= 0 && cols->byte_status >= 0 &&
-           cols->pre_state >= 0;
+           cols->pre_state >= 0 && cols->post_state >= 0;
 }
 
 static bool parse_trace_row(Fields *f, TraceCols *cols, TraceRow *row) {
@@ -1316,6 +1394,7 @@ static bool parse_trace_row(Fields *f, TraceCols *cols, TraceRow *row) {
     row->start_vm_ip = parse_u64(field(f, cols->start_vm_ip));
     row->target_entry = atoi(field(f, cols->target_entry));
     row->target = parse_u64(field(f, cols->target));
+    row->post_state = (uint32_t)parse_u64(field(f, cols->post_state));
     row->delta = parse_delta(field(f, cols->delta));
     row->byte_count = parse_hex_bytes(field(f, cols->bytes), row->bytes, sizeof(row->bytes));
     row->pre_flags = (uint32_t)parse_u64(field(f, cols->pre_flags));
@@ -1325,7 +1404,7 @@ static bool parse_trace_row(Fields *f, TraceCols *cols, TraceRow *row) {
 }
 
 static void usage(const char *argv0) {
-    fprintf(stderr, "usage: %s [trace.tsv] [--by-path|--branch-sites] [--gpr-run run.stderr] [--skeletons path] [--eac eac.elf]\n", argv0);
+    fprintf(stderr, "usage: %s [trace.tsv] [--by-path|--branch-sites|--state-validate|--dispatch-validate] [--gpr-run run.stderr] [--skeletons path] [--eac eac.elf]\n", argv0);
 }
 
 static Args parse_args(int argc, char **argv) {
@@ -1342,6 +1421,8 @@ static Args parse_args(int argc, char **argv) {
     for (int i = 1; i < argc; ++i) {
         if (!strcmp(argv[i], "--by-path")) args.by_path = true;
         else if (!strcmp(argv[i], "--branch-sites")) args.branch_sites = true;
+        else if (!strcmp(argv[i], "--state-validate")) args.state_validate = true;
+        else if (!strcmp(argv[i], "--dispatch-validate")) args.dispatch_validate = true;
         else if (!strcmp(argv[i], "--gpr-run") && i + 1 < argc) args.gpr_run_path = argv[++i];
         else if (!strcmp(argv[i], "--skeletons") && i + 1 < argc) args.skeletons_path = argv[++i];
         else if (!strcmp(argv[i], "--eac") && i + 1 < argc) args.eac_path = argv[++i];
