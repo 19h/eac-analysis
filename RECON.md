@@ -319,6 +319,7 @@ python3 vm_bytecode_blocks.py dumps/vmtail-wide-1m-w16/vm_instruction_trace.tsv 
   >dumps/vmtail-wide-1m-w16/vm_bytecode_blocks_sampled.tsv
 python3 vm_bytecode_recover.py dumps/vmtail-wide-1m-w16/vm_instruction_trace.tsv --include-sampled \
   >dumps/vmtail-wide-1m-w16/vm_bytecode_segments_sampled.tsv
+make long-branches
 python3 vm_gap_report.py dumps/vmtail-wide-1m-w16 \
   >dumps/vmtail-wide-1m-w16/vm_gap_report.tsv
 python3 vm_gap_report.py dumps/vmtail-wide-1m-w16 \
@@ -442,7 +443,6 @@ python3 vm_tail_static_slots.py dumps/vmtail-wide-1m-w16/vm_handler_tail_roles_w
 make fast-gpr-paths
 make fast-gpr-transfer
 make fast-gpr-predicates
-make long-branches
 python3 vm_instruction_lift.py \
   >dumps/vmtail-wide-1m-w16/vm_instruction_lift.tsv
 python3 vm_transition_model.py \
