@@ -24,7 +24,7 @@ SHA-256: `0b44ad59697129534189efdb75cde2b96245f831438e9f6a53cb7725f190d739`
 - `vm_state_static_slice.py`: statically tracks frame/IP pointers through handler code and emits symbolic update chains for `frame+0x170` and `frame+0x23`.
 - `vm_state_static_validate.py`: concretely executes the static state slice over state-aware trace rows and validates predicted `frame+0x170` post-state.
 - `vm_static_dispatch_validate.py`: concretely executes handler slices through the final table jump and validates predicted dispatch target plus VM IP advance.
-- `vm_static_transfer_expr.py`: follows concrete state-aware trace paths while carrying symbolic expressions for the dispatch-table slot and VM IP advance; `--by-path` emits path-conditioned formula rows.
+- `vm_static_transfer_expr.py`: follows concrete state-aware trace paths while carrying symbolic expressions for the dispatch-table slot and VM IP advance; `--by-path` emits path-conditioned formula rows, and `--gpr-run` seeds handler-entry registers plus hot `fs0x...` scratch-frame fields.
 - `vm_static_path_profile.py`: profiles concrete branch/path variants through static handler slices over the state-aware trace; `--gpr-run` seeds handler-entry registers and, when present, hot `fs0x...` scratch-frame fields from the previous VMTAIL snapshot to resolve live-in branch predicates.
 - `vm_branch_predicates.py`: catalogs each static-replay branch predicate, including observed outcomes, unresolved predicate classes, and top concrete/symbolic condition expressions.
 - `vm_dispatch_model_combine.py`: combines the static dispatch validator with affine fallback formulas for static-dispatch misses.
@@ -103,7 +103,9 @@ SHA-256: `0b44ad59697129534189efdb75cde2b96245f831438e9f6a53cb7725f190d739`
 - `dumps/vmtail-state-wide-w16/vm_state_static_validate.tsv`: concrete validation of static state slices against the state-aware instruction trace.
 - `dumps/vmtail-state-wide-w16/vm_static_dispatch_validate.tsv`: concrete validation of static dispatch target and VM IP advance against the state-aware instruction trace.
 - `dumps/vmtail-state-wide-w16/vm_static_transfer_expr.tsv`: sampled path-sensitive symbolic dispatch-slot and VM IP-advance expressions, generated from up to 128 state-aware rows per source.
+- `dumps/vmtail-state-wide-w16/vm_static_transfer_expr_gpr_seeded.tsv`: same source-level transfer-expression sample, seeded with previous-tail GPRs and hot scratch-frame fields.
 - `dumps/vmtail-state-wide-w16/vm_static_path_transfer_expr.tsv`: path-conditioned symbolic dispatch-slot and IP-advance expressions over the same bounded transfer-expression sample.
+- `dumps/vmtail-state-wide-w16/vm_static_path_transfer_expr_gpr_seeded.tsv`: GPR+scratch-seeded path-conditioned symbolic dispatch-slot and IP-advance expressions.
 - `dumps/vmtail-state-wide-w16/vm_static_path_profile.tsv`: per-source branch-path profile from concrete static handler replay over the full state-aware trace.
 - `dumps/vmtail-state-wide-w16/vm_static_path_variants.tsv`: one row per distinct source-handler branch path, with per-path target distributions.
 - `dumps/vmtail-state-wide-w16/vm_static_path_profile_gpr_seeded.tsv`: same path profile, but seeded with entry GPRs and hot scratch-frame fields from the previous `dumps/vmtail-scratch-wide-w16/run.stderr` VMTAIL event.
@@ -444,6 +446,14 @@ python3 vm_static_path_profile.py dumps/vmtail-state-wide-w16/vm_instruction_tra
 python3 vm_static_path_profile.py dumps/vmtail-state-wide-w16/vm_instruction_trace.tsv \
   --gpr-run dumps/vmtail-scratch-wide-w16/run.stderr --by-path \
   >dumps/vmtail-state-wide-w16/vm_static_path_variants_gpr_seeded.tsv
+python3 vm_static_transfer_expr.py dumps/vmtail-state-wide-w16/vm_instruction_trace.tsv \
+  --gpr-run dumps/vmtail-scratch-wide-w16/run.stderr \
+  --max-rows-per-source 128 --max-expr-len 320 --top 5 \
+  >dumps/vmtail-state-wide-w16/vm_static_transfer_expr_gpr_seeded.tsv
+python3 vm_static_transfer_expr.py dumps/vmtail-state-wide-w16/vm_instruction_trace.tsv \
+  --gpr-run dumps/vmtail-scratch-wide-w16/run.stderr \
+  --max-rows-per-source 128 --max-expr-len 320 --top 5 --by-path \
+  >dumps/vmtail-state-wide-w16/vm_static_path_transfer_expr_gpr_seeded.tsv
 python3 vm_branch_predicates.py dumps/vmtail-state-wide-w16/vm_instruction_trace.tsv \
   --gpr-run dumps/vmtail-scratch-wide-w16/run.stderr \
   >dumps/vmtail-state-wide-w16/vm_branch_predicates_gpr_seeded.tsv
@@ -464,9 +474,11 @@ python3 vm_path_microcode_catalog.py --markdown --limit 30 \
   >dumps/vmtail-wide-1m-w16/vm_path_microcode_top.md
 python3 vm_path_microcode_catalog.py \
   --path-variants dumps/vmtail-state-wide-w16/vm_static_path_variants_gpr_seeded.tsv \
+  --path-transfer-expr dumps/vmtail-state-wide-w16/vm_static_path_transfer_expr_gpr_seeded.tsv \
   >dumps/vmtail-wide-1m-w16/vm_path_microcode_catalog_gpr_seeded.tsv
 python3 vm_path_microcode_catalog.py \
   --path-variants dumps/vmtail-state-wide-w16/vm_static_path_variants_gpr_seeded.tsv \
+  --path-transfer-expr dumps/vmtail-state-wide-w16/vm_static_path_transfer_expr_gpr_seeded.tsv \
   --markdown --limit 30 \
   >dumps/vmtail-wide-1m-w16/vm_path_microcode_gpr_seeded_top.md
 python3 vm_dispatch_formula_validate.py \
