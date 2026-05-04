@@ -900,9 +900,8 @@ The central dispatcher rows are not `jmp reg` tails: `0xc80b9` and `0xcdac7` bot
 | Static Kind | Rows | Events | Meaning |
 | --- | ---: | ---: | --- |
 | `live_slot` | 157 | 744005 | slot pointer still live at the tail snapshot |
-| `consumed_slot` | 18 | 19300 | slot temp found statically, then clobbered before the jump |
+| `consumed_slot` | 24 | 21810 | slot temp found statically, then clobbered before the jump |
 | `central_indirect` | 18 | 3384 | central `jmp *(%rax)` dispatcher rows |
-| `target_load` | 6 | 2510 | target load found, but dynamic byte-index register was not identified |
 | `no_static_load` | 9 | 17 | only tiny low-count rows remain unresolved |
 
 Top consumed-slot recoveries:
@@ -913,8 +912,11 @@ Top consumed-slot recoveries:
 | 256 | `0xadbfa` | 3880 | `r9` | `r14` | `r10` | `0xadbd0` | `0xadbae` |
 | 273 | `0xb1545` | 2115 | `r9` | `rsi` | `r13` | `0xb1519` | `0xb1502` |
 | 345 | `0xc0532` | 1883 | `r14` | `r11` | `r9` | `0xc050e` | `0xc050b` |
+| 292 | `0xb593d` | 651 | `rbx` | static `r9` | `r14` | `0xb590a` | `0xb58f2` |
+| 90 | `0x8b6db` | 567 | `r12` | static `r12` | `r15` | `0x8b6a1` | `0x8b695` |
 | 281 | `0xb3125` | 555 | `r12` | `rcx` | `rdx` | `0xb30f5` | `0xb30eb` |
 | 291 | `0xb540d` | 479 | `rdx` | `r10` | `r9` | `0xb53d1` | `0xb53bb` |
+| 316 | `0xba0cc` | 447 | `rax` | static `rdi` | `r10` | `0xb9fb8` | `0xb9fa7` |
 
 After central-dispatch integration and static consumed-slot recovery, only 17 long-run instruction events lack any register/static tail-slot evidence.
 
