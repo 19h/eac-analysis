@@ -40,6 +40,7 @@ SHA-256: `0b44ad59697129534189efdb75cde2b96245f831438e9f6a53cb7725f190d739`
 - `vm_long_branch_catalog.py`: decodes sampled/backedge long-control bytecode rows whose first u32 is the target dispatch-table entry and whose second u32 is a signed VM-IP delta, verifies byte prefixes and static operand footprints against `eac.elf`, and emits TSV/Markdown lift summaries.
 - `vm_hidden_transition_catalog.py`: catalogs adjacent trace pairs where the previous target handler is not the next hooked source, yielding file-backed hidden VM spans for unhooked or central-dispatch paths.
 - `vm_trace_hidden_fill.py`: inserts those adjacent hidden spans as synthetic `hidden_span_of_N` rows so bytecode recovery can cover them as sampled/file-backed bytes.
+- `vm_sampled_operand_catalog.py`: catalogs the remaining sampled non-long-branch rows with static operand footprints, verifies those operand bytes against `eac.elf`, and turns the last sparse prefix/backedge samples into explicit target/delta rows.
 - `vm_instruction_compare.py`: compares exact unique VM instruction catalogs by stable instruction key.
 - `vm_dispatch_formula.py`: fits simple expressions for the final dispatch byte index `target_entry * 8` from VM bytes plus rolling state.
 - `vm_dispatch_formula_validate.py`: validates byte-only dispatch formulas against the long exact unique-instruction catalog.
@@ -83,6 +84,8 @@ SHA-256: `0b44ad59697129534189efdb75cde2b96245f831438e9f6a53cb7725f190d739`
 - `dumps/vmtail-wide-1m-w16/vm_long_branch_top.md`: Markdown summary of the highest-volume long-control bytecode lifts.
 - `dumps/vmtail-wide-1m-w16/vm_hidden_transition_catalog.tsv`: adjacent unhooked-span catalog for previous-target-to-next-hooked-source gaps.
 - `dumps/vmtail-wide-1m-w16/vm_hidden_transition_top.md`: Markdown summary of the highest-volume hidden transition spans.
+- `dumps/vmtail-wide-1m-w16/vm_sampled_operand_catalog.tsv`: byte-verified sampled operand variants for the remaining non-long sparse prefix/backedge rows.
+- `dumps/vmtail-wide-1m-w16/vm_sampled_operand_top.md`: Markdown summary of those sampled operand variants.
 - `dumps/vmtail-wide-1m-w16/vm_instruction_trace_filefill_hiddenfill.tsv`: bounded prefix file-fill trace plus synthetic adjacent hidden-span rows.
 - `dumps/vmtail-wide-1m-w16/vm_bytecode_segments_filefill_hiddenfill_sampled.tsv`: best current sampled/file-backed byte recovery, combining exact, sampled, bounded prefix file-fill, and adjacent hidden spans.
 - `dumps/vmtail-wide-1m-w16/vm_bytecode_blocks_filefill_hiddenfill_sampled.tsv`: contiguous blocks for the combined file-fill/hidden-fill trace.
@@ -329,6 +332,7 @@ python3 vm_bytecode_recover.py dumps/vmtail-wide-1m-w16/vm_instruction_trace.tsv
   >dumps/vmtail-wide-1m-w16/vm_bytecode_segments_sampled.tsv
 make long-branches
 make hidden-transitions
+make sampled-operands
 python3 vm_gap_report.py dumps/vmtail-wide-1m-w16 \
   >dumps/vmtail-wide-1m-w16/vm_gap_report.tsv
 python3 vm_gap_report.py dumps/vmtail-wide-1m-w16 \
@@ -1032,12 +1036,12 @@ The resulting sampled/file-backed recovery has 300 segments and `0x44749` bytes,
 
 | Gap Class | Rows | Events |
 | --- | ---: | ---: |
-| `hidden_transition_destination` | 217 | 874 |
-| `uncovered_exact_destination` | 67 | 68 |
-| `backedge_sample` | 49 | 1157 |
+| `decoded_long_branch_sample` | 58 | 1171 |
 | `decoded_long_branch_source` | 9 | 1392 |
-| `missing_exact_source` | 3 | 6 |
-| `prefix_long_jump` | 21 | 27 |
+| `hidden_transition_destination` | 217 | 874 |
+| `sampled_operand_known` | 12 | 13 |
+| `sampled_operand_source` | 3 | 6 |
+| `uncovered_exact_destination` | 67 | 68 |
 | `target_only_entry` | 3 | 0 |
 | `unobserved_entry` | 155 | 0 |
 
@@ -1045,30 +1049,47 @@ The resulting sampled/file-backed recovery has 300 segments and `0x44749` bytes,
 
 `vm_trace_hidden_fill.py` inserts those spans as synthetic `hidden_span_of_N` rows. On the raw trace it adds 1529 rows / `0x6577` event-bytes and raises sampled recovery to 117 segments / `0x43a91` bytes with 0 conflicts. Composed after bounded prefix file-fill, it gives the best current byte coverage: 83 segments / `0x453ee` bytes with 0 conflicts. In `vm_gap_report_filefill_hiddenfill.tsv`, the `hidden_transition_destination` class disappears because those spans are now covered; remaining uncovered exact destinations are only 67 rows / 68 events.
 
+`vm_sampled_operand_catalog.py` covers the final non-long sampled rows. It matches 13 events across 12 source/target/delta variants with 0 operand byte mismatches. Entries 175, 195, and 299 use 6-byte static operand footprints, while entries 95, 278, and 311 use 10-byte footprints. With that sidecar loaded, the best gap report has no generic `backedge_sample`, `prefix_long_jump`, or `missing_exact_source` buckets; those rows become `sampled_operand_known` and the remaining source-level sparse rows become `sampled_operand_source`.
+
 `vm_gap_report.py` prioritizes the remaining coverage holes. Against exact-only segments it reports:
 
 | Gap Class | Rows | Events |
 | --- | ---: | ---: |
+| `decoded_long_branch_sample` | 127 | 1637 |
+| `decoded_long_branch_source` | 9 | 1392 |
 | `hidden_transition_destination` | 272 | 2117 |
+| `sampled_operand_known` | 12 | 13 |
+| `sampled_operand_source` | 3 | 6 |
+| `target_only_entry` | 3 | 0 |
 | `uncovered_exact_destination` | 173 | 1137 |
 | `uncovered_source_start` | 158 | 1650 |
-| `decoded_long_branch_source` | 9 | 1392 |
-| `missing_exact_source` | 3 | 6 |
-| `backedge_sample` | 49 | 1157 |
-| `prefix_long_jump` | 90 | 493 |
-| `target_only_entry` | 3 | 0 |
 | `unobserved_entry` | 155 | 0 |
 
-Against the combined file-fill/hidden-fill segments, `uncovered_source_start` and `hidden_transition_destination` disappear, and exact-destination gaps fall to 67 rows / 68 events. The highest-priority remaining dynamic gaps are:
+Against the combined file-fill/hidden-fill segments, `uncovered_source_start`, `hidden_transition_destination`, generic backedge/prefix samples, and generic missing exact sources disappear. The current best gap classes are:
+
+| Gap Class | Rows | Events |
+| --- | ---: | ---: |
+| `decoded_long_branch_sample` | 58 | 1171 |
+| `decoded_long_branch_source` | 9 | 1392 |
+| `sampled_operand_known` | 12 | 13 |
+| `sampled_operand_source` | 3 | 6 |
+| `target_only_entry` | 3 | 0 |
+| `uncovered_exact_destination` | 67 | 68 |
+| `unobserved_entry` | 155 | 0 |
+
+The highest-priority remaining dynamic gaps are:
 
 | Events | Gap | Detail |
 | ---: | --- | --- |
-| 255 | backedge sample entry 316 -> 165 | decoded long branch `next = table[165], ip -= 0x3c4`; exact consumed bytes still unavailable |
-| 255 | backedge sample entry 75 -> 171 | decoded long branch `next = table[171], ip -= 0x6d`; exact consumed bytes still unavailable |
 | 447 | decoded long-branch source entry 316 (`0xb987b`) | aggregate of 13 decoded target/delta variants; top variants go to entries 165, 171, and 354 |
-| 125 | backedge sample entry 266 -> 354 | decoded long branch `next = table[354], ip -= 0x2e8`; exact consumed bytes still unavailable |
 | 276 | decoded long-branch source entry 75 (`0x873fc`) | aggregate of 12 decoded target/delta variants; top variant goes to entry 171 |
-| 91 | backedge sample entry 308 -> 171 | decoded long branch `next = table[171], ip -= 0x51a4`; exact consumed bytes still unavailable |
+| 200 | decoded long-branch source entry 266 (`0xaf8af`) | aggregate of 13 decoded target/delta variants; top variants go to entries 354 and 171 |
+| 142 | decoded long-branch source entry 145 (`0x95b5c`) | aggregate of 11 decoded target/delta variants; top variant goes to entry 354 |
+| 122 | decoded long-branch source entry 117 (`0x90acd`) | aggregate of 14 decoded target/delta variants; top variants go to entries 354 and 165 |
+| 109 | decoded long-branch source entry 302 (`0xb7586`) | aggregate of 9 decoded target/delta variants; top variant goes to entry 171 |
+| 255 | decoded long-branch sample entry 316 -> 165 | `next = table[165], ip -= 0x3c4`; exact consumed bytes still unavailable |
+| 255 | decoded long-branch sample entry 75 -> 171 | `next = table[171], ip -= 0x6d`; exact consumed bytes still unavailable |
+| 2 | uncovered exact destination `0x24bd2a` | highest remaining exact positive instruction that exits recovered bytecode coverage |
 
 `vm_long_branch_catalog.py` now decodes the repeated sampled/backedge long-control format behind most of those source gaps. The format is file-backed and byte-verified: u32 target dispatch entry followed by a u32 signed VM-IP delta, where the high bit marks a negative/backedge delta. The catalog has 128 variants, 1638 events, 10 source handlers, 1151 backedge events, 487 forward events, 0 file-byte mismatches, and 0 operand-byte mismatches; `vm_gap_report.py` uses it to recategorize 9 missing-exact source rows / 1392 events as decoded long-branch sources.
 
