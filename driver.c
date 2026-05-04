@@ -20,7 +20,8 @@ enum {
     EAC_DISPATCH_C80B9 = 0xc80b9,
     EAC_DISPATCH_CDAC7 = 0xcdac7,
     EAC_MAX_TAIL_SITES = 512,
-    EAC_IP_WORD_COUNT = 16
+    EAC_IP_WORD_COUNT = 16,
+    EAC_SCRATCH_WORD_COUNT = 10
 };
 
 enum tail_reg {
@@ -56,6 +57,7 @@ static uint64_t g_tail_limit = 4096;
 static int g_dispatch_detail;
 static int g_tail_trace;
 static int g_tail_regs;
+static int g_tail_scratch;
 static struct tail_site g_tail_sites[EAC_MAX_TAIL_SITES];
 static size_t g_tail_site_count;
 
@@ -69,6 +71,11 @@ static const struct tail_site g_default_tail_sites[] = {
     {0xbb8a8, TAIL_REG_RAX},
     {0xbba0c, TAIL_REG_R12},
     {0xc240d, TAIL_REG_RDX},
+};
+
+static const uint16_t g_scratch_offsets[EAC_SCRATCH_WORD_COUNT] = {
+    0x000, 0x012, 0x060, 0x068, 0x071,
+    0x081, 0x0e1, 0x13d, 0x16f, 0x1e8,
 };
 
 static void put_u32(uint8_t *p, size_t off, uint32_t v) {
@@ -243,6 +250,23 @@ static char *append_ip_words(char *p, char *end, const uint16_t words[EAC_IP_WOR
     return p;
 }
 
+static uint64_t read_frame_u64(uintptr_t frame, uint16_t off) {
+    uint64_t value = 0;
+    memcpy(&value, (const void *)(frame + off), sizeof(value));
+    return value;
+}
+
+static char *append_frame_scratch(char *p, char *end, uintptr_t frame) {
+    for (size_t i = 0; i < EAC_SCRATCH_WORD_COUNT; ++i) {
+        uint16_t off = g_scratch_offsets[i];
+        p = append_lit(p, end, " fs");
+        p = append_hex(p, end, off);
+        p = append_lit(p, end, "=");
+        p = append_hex(p, end, read_frame_u64(frame, off));
+    }
+    return p;
+}
+
 #if defined(__x86_64__)
 static char *append_gpr(char *p, char *end, const char *name, const ucontext_t *uc, int reg) {
     p = append_lit(p, end, " ");
@@ -334,7 +358,7 @@ static void tail_trace_write(uintptr_t site, uintptr_t target, uintptr_t frame,
     uint64_t count = __atomic_fetch_add(&g_tail_count, 1, __ATOMIC_RELAXED);
     if (count >= g_tail_limit) return;
 
-    char buf[4096];
+    char buf[8192];
     char *p = buf;
     char *end = buf + sizeof(buf) - 1;
     p = append_lit(p, end, "[VMTAIL] site=");
@@ -364,6 +388,9 @@ static void tail_trace_write(uintptr_t site, uintptr_t target, uintptr_t frame,
         p = append_gprs(p, end, uc);
     }
 #endif
+    if (g_tail_scratch) {
+        p = append_frame_scratch(p, end, frame);
+    }
     p = append_ip_words(p, end, ip_words);
     p = append_lit(p, end, " target=");
     p = append_hex(p, end, target);
@@ -479,6 +506,7 @@ static void install_dispatch_trace(void *sym) {
     g_dispatch_detail = env_is_one_driver("EAC_DISPATCH_DETAIL");
     g_tail_trace = env_is_one_driver("EAC_VMTAIL_TRACE");
     g_tail_regs = env_is_one_driver("EAC_VMTAIL_REGS");
+    g_tail_scratch = env_is_one_driver("EAC_VMTAIL_SCRATCH");
     g_tail_limit = parse_ul(getenv("EAC_VMTAIL_LIMIT"), 4096);
     if (g_tail_limit == 0) g_tail_limit = 1;
     g_tail_site_count = 0;
@@ -515,9 +543,10 @@ static void install_dispatch_trace(void *sym) {
 
     fprintf(stderr,
             "[DRIVER] dispatch trace enabled base=%p sites=+0x%x,+0x%x limit=%" PRIu64
-            " detail=%d tail=%d tail_limit=%" PRIu64 " tail_sites=%zu\n",
+            " detail=%d tail=%d tail_regs=%d tail_scratch=%d tail_limit=%" PRIu64 " tail_sites=%zu\n",
             (void *)g_eac_base, EAC_DISPATCH_C80B9, EAC_DISPATCH_CDAC7, g_dispatch_limit,
-            g_dispatch_detail, g_tail_trace, g_tail_limit, g_tail_site_count);
+            g_dispatch_detail, g_tail_trace, g_tail_regs, g_tail_scratch,
+            g_tail_limit, g_tail_site_count);
     for (size_t i = 0; g_tail_trace && i < g_tail_site_count; ++i) {
         fprintf(stderr, "[DRIVER] tail site +0x%lx -> %s\n",
                 (unsigned long)g_tail_sites[i].off, tail_reg_name(g_tail_sites[i].reg));

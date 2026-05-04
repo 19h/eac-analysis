@@ -101,6 +101,20 @@ def load_gpr_seeds(path):
                 for reg in REG_NAMES
                 if reg in fields
             }
+            frame_mem = {}
+            for name, value in fields.items():
+                if not name.startswith("fs"):
+                    continue
+                off_s = name[2:]
+                if off_s.startswith("0x"):
+                    off_s = off_s[2:]
+                try:
+                    off = int(off_s, 16)
+                except ValueError:
+                    continue
+                frame_mem[(off, 8)] = value
+            if frame_mem:
+                regs["__frame_mem__"] = frame_mem
             # Instruction row N starts at the previous VMTAIL event's exit state.
             seeds[str(count + 1)] = regs
     return seeds
@@ -115,8 +129,8 @@ def execute(insns_by_addr, start, row, table, target_to_entry, max_steps, initia
         "ip_delta": 0,
     }
     regs = dict(initial_regs or {})
+    frame_mem = dict(regs.pop("__frame_mem__", {}))
     regs["rbp"] = Ptr("frame", 0)
-    frame_mem = {}
     pc = start
     zf = None
     steps = 0
