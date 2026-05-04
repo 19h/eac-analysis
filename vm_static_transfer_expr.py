@@ -37,6 +37,7 @@ from vm_static_dispatch_validate import (
     read_op as read_concrete_op,
     write_op as write_concrete_op,
 )
+from vm_static_path_profile import load_gpr_seeds
 
 
 REG_ALIASES = {
