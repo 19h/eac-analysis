@@ -29,6 +29,7 @@ SHA-256: `0b44ad59697129534189efdb75cde2b96245f831438e9f6a53cb7725f190d739`
 - `vm_dispatch_formula.py`: fits simple expressions for the final dispatch byte index `target_entry * 8` from VM bytes plus rolling state.
 - `vm_dispatch_formula_validate.py`: validates byte-only dispatch formulas against the long exact unique-instruction catalog.
 - `vm_dispatch_affine.py`: fits exact GF(2) affine dispatch-index bit formulas from byte, state, and post-state features in a state-aware trace.
+- `vm_dispatch_affine_cv.py`: cross-validates affine dispatch-index formulas by training on held-out folds of the state-aware trace.
 - `dumps/local-blocked-log/run.stderr`: blocked-network trace from the harness.
 - `dumps/local-blocked-log/postcall_*` and `postsleep_*`: in-memory EAC map/context/output dumps.
 - `dumps/dispatch-trap/run.stderr`: targeted dispatcher trace with fast harness exit.
@@ -79,6 +80,7 @@ SHA-256: `0b44ad59697129534189efdb75cde2b96245f831438e9f6a53cb7725f190d739`
 - `dumps/vmtail-state-wide-w16/vm_state_signatures.tsv`: per-signature frame-state effect summary keyed by source handler, byte delta, byte status, and byte sequence.
 - `dumps/vmtail-state-wide-w16/vm_dispatch_formulas.tsv`: fitted dispatch-index formulas from the state-aware instruction trace.
 - `dumps/vmtail-state-wide-w16/vm_dispatch_affine.tsv`: exact affine dispatch-index fits from the state-aware instruction trace.
+- `dumps/vmtail-state-wide-w16/vm_dispatch_affine_cv.tsv`: 5-fold held-out validation of affine dispatch-index fits.
 - `dumps/vmtail-regs-smoke-w16/run.stderr`: 50k VMTAIL trace with full GPR snapshots at each tail site.
 - `dumps/vmtail-regs-smoke-w16/vm_tail_registers.tsv`: per-site/per-register role evidence from the GPR trace.
 - `dumps/vmtail-regs-smoke-w16/vm_tail_register_summary.tsv`: compact one-row-per-site register-role summary for lifting dispatch tails.
@@ -323,6 +325,8 @@ python3 vm_dispatch_formula.py dumps/vmtail-state-wide-w16/vm_instruction_trace.
   >dumps/vmtail-state-wide-w16/vm_dispatch_formulas.tsv
 python3 vm_dispatch_affine.py dumps/vmtail-state-wide-w16/vm_instruction_trace.tsv \
   >dumps/vmtail-state-wide-w16/vm_dispatch_affine.tsv
+python3 vm_dispatch_affine_cv.py dumps/vmtail-state-wide-w16/vm_instruction_trace.tsv \
+  >dumps/vmtail-state-wide-w16/vm_dispatch_affine_cv.tsv
 ```
 
 Register-role VM tail wide trace:

@@ -84,6 +84,15 @@ def load_dispatch_affine(path):
     return affine
 
 
+def load_dispatch_affine_cv(path):
+    cv = {}
+    if not path:
+        return cv
+    for row in read_tsv(path):
+        cv[row.get("source_entry", "")] = row
+    return cv
+
+
 def main():
     parser = argparse.ArgumentParser(
         description="Join recovered VM instructions with state effects and tail dispatch roles."
@@ -113,6 +122,10 @@ def main():
         "--dispatch-affine",
         default="dumps/vmtail-state-wide-w16/vm_dispatch_affine.tsv",
     )
+    parser.add_argument(
+        "--dispatch-affine-cv",
+        default="dumps/vmtail-state-wide-w16/vm_dispatch_affine_cv.tsv",
+    )
     args = parser.parse_args()
 
     states = load_state_signatures(args.state_signatures)
@@ -120,6 +133,7 @@ def main():
     slots = load_static_slots(args.static_slots)
     formulas = load_dispatch_formulas(args.dispatch_formulas)
     affine = load_dispatch_affine(args.dispatch_affine)
+    affine_cv = load_dispatch_affine_cv(args.dispatch_affine_cv)
 
     print(
         "start_vm_ip\tsource_entry\tsource_target\tdelta\tbytes\tbyte_status\t"
@@ -127,7 +141,8 @@ def main():
         "top_flag_add\ttop_byte_add\ttarget_reg\tslot_kind\tslot_reg_or_temp\t"
         "byte_index_reg\tstatic_load_site\tstatic_index_add_site\ttail_role_events\t"
         "dispatch_formula\tdispatch_formula_class\tdispatch_formula_pct\t"
-        "dispatch_affine_status\tdispatch_affine_pct\tdispatch_affine_terms"
+        "dispatch_affine_status\tdispatch_affine_pct\tdispatch_affine_terms\t"
+        "dispatch_affine_cv_status\tdispatch_affine_cv_pct"
     )
     for row in read_tsv(args.instructions):
         site = first_site(row.get("top_sites", ""))
@@ -145,6 +160,7 @@ def main():
         static = slots.get((source_entry, source_target, site), {})
         formula = formulas.get(source_entry, {})
         affine_row = affine.get(source_entry, {})
+        affine_cv_row = affine_cv.get(source_entry, {})
         slot_kind = static.get("static_kind", "")
         slot_reg_or_temp = static.get("static_slot_temp", "") or role.get("slot_reg", "")
         byte_index_reg = static.get("static_index_reg", "") or role.get("byte_index_reg", "")
@@ -165,7 +181,9 @@ def main():
             f"{formula.get('coverage_pct', '')}\t"
             f"{affine_row.get('status', '')}\t"
             f"{affine_row.get('coverage_pct', '')}\t"
-            f"{affine_row.get('total_terms', '')}"
+            f"{affine_row.get('total_terms', '')}\t"
+            f"{affine_cv_row.get('cv_status', '')}\t"
+            f"{affine_cv_row.get('coverage_pct', '')}"
         )
 
 
