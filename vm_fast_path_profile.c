@@ -106,6 +106,17 @@ typedef struct {
 } PathStat;
 
 typedef struct {
+    int source;
+    char source_target[32];
+    uint64_t site;
+    char mnemonic[16];
+    uint64_t events;
+    uint64_t taken;
+    uint64_t not_taken;
+    uint64_t unknown;
+} BranchStat;
+
+typedef struct {
     char **items;
     int count;
 } Fields;
@@ -150,6 +161,7 @@ typedef struct {
     int top_targets;
     int max_path_len;
     bool by_path;
+    bool branch_sites;
 } Args;
 
 static Value val_int(uint64_t u) {
@@ -1040,6 +1052,52 @@ static void add_target_counter(PathStat *p, int entry, uint64_t target) {
     }
 }
 
+static BranchStat *find_branch_stat(BranchStat **branches, size_t *count, size_t *cap,
+                                    int source, const char *source_target, uint64_t site, const char *mnemonic) {
+    for (size_t i = 0; i < *count; ++i) {
+        if ((*branches)[i].source == source && (*branches)[i].site == site &&
+            !strcmp((*branches)[i].mnemonic, mnemonic)) {
+            return &(*branches)[i];
+        }
+    }
+    if (*count == *cap) {
+        *cap = *cap ? *cap * 2 : 1024;
+        *branches = realloc(*branches, *cap * sizeof(BranchStat));
+        if (!*branches) {
+            perror("realloc");
+            exit(1);
+        }
+    }
+    BranchStat *b = &(*branches)[(*count)++];
+    memset(b, 0, sizeof(*b));
+    b->source = source;
+    b->site = site;
+    snprintf(b->mnemonic, sizeof(b->mnemonic), "%s", mnemonic);
+    snprintf(b->source_target, sizeof(b->source_target), "%s", source_target);
+    return b;
+}
+
+static void update_branch_stats_from_path(BranchStat **branches, size_t *count, size_t *cap,
+                                          int source, const char *source_target, const char *path) {
+    if (!path || !*path) return;
+    char *copy = xstrdup(path);
+    for (char *tok = strtok(copy, ";"); tok; tok = strtok(NULL, ";")) {
+        char *first = strchr(tok, ':');
+        if (!first) continue;
+        *first = 0;
+        char *second = strchr(first + 1, ':');
+        if (!second) continue;
+        *second = 0;
+        const char *outcome = second + 1;
+        BranchStat *b = find_branch_stat(branches, count, cap, source, source_target, parse_u64(tok), first + 1);
+        b->events++;
+        if (!strcmp(outcome, "1")) b->taken++;
+        else if (!strcmp(outcome, "0")) b->not_taken++;
+        else b->unknown++;
+    }
+    free(copy);
+}
+
 static int cmp_target_counter(const void *a, const void *b) {
     const TargetCounter *x = a, *y = b;
     if (x->count != y->count) return x->count < y->count ? 1 : -1;
@@ -1153,6 +1211,32 @@ static void emit_summary(SourceStat stats[TABLE_ENTRIES], PathStat *paths, size_
     }
 }
 
+static int cmp_branch_unknowns(const void *a, const void *b) {
+    const BranchStat *x = *(const BranchStat * const *)a;
+    const BranchStat *y = *(const BranchStat * const *)b;
+    if (x->unknown != y->unknown) return x->unknown < y->unknown ? 1 : -1;
+    if (x->events != y->events) return x->events < y->events ? 1 : -1;
+    if (x->source != y->source) return x->source - y->source;
+    if (x->site != y->site) return x->site < y->site ? -1 : 1;
+    return strcmp(x->mnemonic, y->mnemonic);
+}
+
+static void emit_branch_sites(BranchStat *branches, size_t branch_count) {
+    printf("source_entry\tsource_target\tbranch_site\tbranch_mnemonic\tevents\t"
+           "taken_events\tnot_taken_events\tunknown_events\tunknown_pct\n");
+    BranchStat **order = xcalloc(branch_count ? branch_count : 1, sizeof(BranchStat *));
+    for (size_t i = 0; i < branch_count; ++i) order[i] = &branches[i];
+    qsort(order, branch_count, sizeof(order[0]), cmp_branch_unknowns);
+    for (size_t i = 0; i < branch_count; ++i) {
+        BranchStat *b = order[i];
+        printf("%d\t%s\t0x%" PRIx64 "\t%s\t%" PRIu64 "\t%" PRIu64 "\t%" PRIu64 "\t%" PRIu64 "\t%.1f\n",
+               b->source, b->source_target, b->site, b->mnemonic, b->events,
+               b->taken, b->not_taken, b->unknown,
+               b->events ? b->unknown * 100.0 / b->events : 0.0);
+    }
+    free(order);
+}
+
 static bool parse_trace_header(Fields *header, TraceCols *cols) {
     cols->seq = col_index(header, "seq");
     cols->frame = col_index(header, "frame");
@@ -1189,7 +1273,7 @@ static bool parse_trace_row(Fields *f, TraceCols *cols, TraceRow *row) {
 }
 
 static void usage(const char *argv0) {
-    fprintf(stderr, "usage: %s [trace.tsv] [--by-path] [--gpr-run run.stderr] [--skeletons path] [--eac eac.elf]\n", argv0);
+    fprintf(stderr, "usage: %s [trace.tsv] [--by-path|--branch-sites] [--gpr-run run.stderr] [--skeletons path] [--eac eac.elf]\n", argv0);
 }
 
 static Args parse_args(int argc, char **argv) {
@@ -1205,6 +1289,7 @@ static Args parse_args(int argc, char **argv) {
     };
     for (int i = 1; i < argc; ++i) {
         if (!strcmp(argv[i], "--by-path")) args.by_path = true;
+        else if (!strcmp(argv[i], "--branch-sites")) args.branch_sites = true;
         else if (!strcmp(argv[i], "--gpr-run") && i + 1 < argc) args.gpr_run_path = argv[++i];
         else if (!strcmp(argv[i], "--skeletons") && i + 1 < argc) args.skeletons_path = argv[++i];
         else if (!strcmp(argv[i], "--eac") && i + 1 < argc) args.eac_path = argv[++i];
@@ -1262,6 +1347,8 @@ int main(int argc, char **argv) {
     uint64_t source_counts[TABLE_ENTRIES] = {0};
     PathStat *paths = NULL;
     size_t path_count = 0, path_cap = 0;
+    BranchStat *branches = NULL;
+    size_t branch_count = 0, branch_cap = 0;
     while (getline(&line, &line_cap, fp) >= 0) {
         Fields f = split_line(line);
         TraceRow row;
@@ -1307,6 +1394,7 @@ int main(int argc, char **argv) {
         default: s->status_step_limit++; break;
         }
         if (r.path && *r.path) {
+            update_branch_stats_from_path(&branches, &branch_count, &branch_cap, source, target_text, r.path);
             char *copy = xstrdup(r.path);
             for (char *tok = strtok(copy, ";"); tok; tok = strtok(NULL, ";")) {
                 char *colon = strchr(tok, ':');
@@ -1321,10 +1409,12 @@ int main(int argc, char **argv) {
     free(header.items);
     free(line);
     fclose(fp);
-    if (args.by_path) emit_by_path(paths, path_count, args.top_targets);
+    if (args.branch_sites) emit_branch_sites(branches, branch_count);
+    else if (args.by_path) emit_by_path(paths, path_count, args.top_targets);
     else emit_summary(stats, paths, path_count, args.top);
     for (size_t i = 0; i < path_count; ++i) free(paths[i].text);
     free(paths);
+    free(branches);
     for (int i = 0; i < TABLE_ENTRIES; ++i) {
         if (handlers[i].insns) cs_free(handlers[i].insns, handlers[i].insn_count);
     }
