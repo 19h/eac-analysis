@@ -1032,7 +1032,8 @@ The resulting sampled/file-backed recovery has 300 segments and `0x44749` bytes,
 
 | Gap Class | Rows | Events |
 | --- | ---: | ---: |
-| `uncovered_exact_destination` | 284 | 942 |
+| `hidden_transition_destination` | 217 | 874 |
+| `uncovered_exact_destination` | 67 | 68 |
 | `backedge_sample` | 49 | 1157 |
 | `decoded_long_branch_source` | 9 | 1392 |
 | `missing_exact_source` | 3 | 6 |
@@ -1040,11 +1041,16 @@ The resulting sampled/file-backed recovery has 300 segments and `0x44749` bytes,
 | `target_only_entry` | 3 | 0 |
 | `unobserved_entry` | 155 | 0 |
 
+`vm_hidden_transition_catalog.py` attacks the remaining exact-destination holes from the dynamic sequence itself. When row N targets handler X but row N+1 is the next hooked source Y in the same frame, the bytes from row N's end VM IP to row N+1's start VM IP are a file-backed adjacent hidden span. The catalog has 121 grouped rows, 1529 hidden-span events, and 272 unique hidden starts. The top row is target-only entry 50 to next hooked entry 171, `+0x11`, 320 events over starts `0x230111` and `0x230b1b`.
+
+`vm_trace_hidden_fill.py` inserts those spans as synthetic `hidden_span_of_N` rows. On the raw trace it adds 1529 rows / `0x6577` event-bytes and raises sampled recovery to 117 segments / `0x43a91` bytes with 0 conflicts. Composed after bounded prefix file-fill, it gives the best current byte coverage: 83 segments / `0x453ee` bytes with 0 conflicts. In `vm_gap_report_filefill_hiddenfill.tsv`, the `hidden_transition_destination` class disappears because those spans are now covered; remaining uncovered exact destinations are only 67 rows / 68 events.
+
 `vm_gap_report.py` prioritizes the remaining coverage holes. Against exact-only segments it reports:
 
 | Gap Class | Rows | Events |
 | --- | ---: | ---: |
-| `uncovered_exact_destination` | 445 | 3254 |
+| `hidden_transition_destination` | 272 | 2117 |
+| `uncovered_exact_destination` | 173 | 1137 |
 | `uncovered_source_start` | 158 | 1650 |
 | `decoded_long_branch_source` | 9 | 1392 |
 | `missing_exact_source` | 3 | 6 |
@@ -1053,22 +1059,22 @@ The resulting sampled/file-backed recovery has 300 segments and `0x44749` bytes,
 | `target_only_entry` | 3 | 0 |
 | `unobserved_entry` | 155 | 0 |
 
-Against sampled byte-window segments, `uncovered_source_start` disappears and exact-destination gaps fall to 287 rows / 996 events. The highest-priority remaining dynamic gaps are:
+Against the combined file-fill/hidden-fill segments, `uncovered_source_start` and `hidden_transition_destination` disappear, and exact-destination gaps fall to 67 rows / 68 events. The highest-priority remaining dynamic gaps are:
 
 | Events | Gap | Detail |
 | ---: | --- | --- |
-| 256 | exact destination `0x230111` | exact source 123, target entry 50, next sampled segment starts at `0x230122` |
 | 255 | backedge sample entry 316 -> 165 | decoded long branch `next = table[165], ip -= 0x3c4`; exact consumed bytes still unavailable |
 | 255 | backedge sample entry 75 -> 171 | decoded long branch `next = table[171], ip -= 0x6d`; exact consumed bytes still unavailable |
-| 125 | prefix long jump entry 145 -> 354 | decoded long branch `next = table[354], ip += 0x139`; byte window is still shorter than the full jump |
 | 447 | decoded long-branch source entry 316 (`0xb987b`) | aggregate of 13 decoded target/delta variants; top variants go to entries 165, 171, and 354 |
-| 64 | exact destinations `0x230b1b` / `0x230e07` | exact source rows end exactly at uncovered segment boundaries |
+| 125 | backedge sample entry 266 -> 354 | decoded long branch `next = table[354], ip -= 0x2e8`; exact consumed bytes still unavailable |
+| 276 | decoded long-branch source entry 75 (`0x873fc`) | aggregate of 12 decoded target/delta variants; top variant goes to entry 171 |
+| 91 | backedge sample entry 308 -> 171 | decoded long branch `next = table[171], ip -= 0x51a4`; exact consumed bytes still unavailable |
 
-`vm_long_branch_catalog.py` now decodes the repeated sampled/backedge long-control format behind most of those source gaps. The format is file-backed and byte-verified: u32 target dispatch entry followed by a u32 signed VM-IP delta, where the high bit marks a negative/backedge delta. The catalog has 128 variants, 1638 events, 10 source handlers, 1151 backedge events, 487 forward events, and 0 file-byte mismatches; `vm_gap_report.py` uses it to recategorize 9 missing-exact source rows / 1392 events as decoded long-branch sources.
+`vm_long_branch_catalog.py` now decodes the repeated sampled/backedge long-control format behind most of those source gaps. The format is file-backed and byte-verified: u32 target dispatch entry followed by a u32 signed VM-IP delta, where the high bit marks a negative/backedge delta. The catalog has 128 variants, 1638 events, 10 source handlers, 1151 backedge events, 487 forward events, 0 file-byte mismatches, and 0 operand-byte mismatches; `vm_gap_report.py` uses it to recategorize 9 missing-exact source rows / 1392 events as decoded long-branch sources.
 
 That directly lifts the top missing-source rows into pseudo-IR instead of opaque sampled-only control flow: entry 75 has `255=next = table[171], ip -= 0x6d`; entry 316 has `255=next = table[165], ip -= 0x3c4` plus `91=next = table[171], ip += 0x2d` and `91=next = table[354], ip += 0x2d`; entry 145 has `125=next = table[354], ip += 0x139`; entry 266 has `125=next = table[354], ip -= 0x2e8`. These rows still need exact consumed-byte boundaries, but their dispatch target and VM-IP update are no longer unknown.
 
-The static skeletons agree with that decode. All 10 long-control source handlers read a u16 at VM IP `+0x0` for the table entry and u32 at `+0x4` for the signed delta. The shorter form appears in entries 117, 266, 302, and 308, while entries 75, 145, 210, 246, 316, and 334 also read u16 at `+0x8` and byte at `+0xa`, giving an 8-byte or 11-byte minimum operand footprint without claiming the whole branch span is linear instruction bytes.
+The static skeletons agree with that decode. All 10 long-control source handlers read a u16 at VM IP `+0x0` for the table entry and u32 at `+0x4` for the signed delta. The shorter form appears in entries 117, 266, 302, and 308, while entries 75, 145, 210, 246, 316, and 334 also read u16 at `+0x8` and byte at `+0xa`. That gives 677 events with an 8-byte minimum operand footprint and 961 events with an 11-byte footprint without claiming the whole branch span is linear instruction bytes.
 
 The best next trace targets are therefore the exact byte-length/source-coverage holes rather than broad reruns: they isolate specific VM IP bands (`0x22ffb1`, `0x230111`, `0x370xxx`, `0x371xxx`, `0x310dba`, `0x31297d`, `0x3157e1`, `0x315cc0`) and sparse source handlers (`316`, `75`, `266`, `145`, `117`, `302`) that still block full bytecode/ISA recovery.
 
@@ -1172,7 +1178,7 @@ The static dispatch validator extends the same concrete slice through the final 
 
 The affine fallback uses formulas fitted over state/post-state/byte features, so it is a validated dynamic dispatch model rather than a purely static one. In the lifted long catalog, the combined model tags 71343 rows and 767546 events; 12 exact rows and 20 events remain untagged only because their source handlers were not present in the state-aware trace.
 
-`vm_transition_model.py` consolidates the handler-level reconstruction into `vm_transition_model.tsv`, one row for each of the 360 dispatch entries. It joins the long-run handler skeleton, static state/flag update chain, state and dispatch validation percentages, affine CV status, sampled transfer expressions, decoded long-control bytecode lifts, branch-predicate provenance, combined dispatch model, and tail operand provenance. The observation mix is 190 exact-covered entries, 155 unobserved entries, 7 sampled backedge entries, 4 sampled long/sparse entries, 3 target-only entries, and 1 central/long-control-flow entry.
+`vm_transition_model.py` consolidates the handler-level reconstruction into `vm_transition_model.tsv`, one row for each of the 360 dispatch entries. It joins the long-run handler skeleton, static state/flag update chain, state and dispatch validation percentages, affine CV status, sampled transfer expressions, decoded long-control bytecode lifts with operand footprints, branch-predicate provenance, combined dispatch model, and tail operand provenance. The observation mix is 190 exact-covered entries, 155 unobserved entries, 7 sampled backedge entries, 4 sampled long/sparse entries, 3 target-only entries, and 1 central/long-control-flow entry.
 
 Handler-level coverage in the transition model:
 
@@ -1190,7 +1196,7 @@ Handler-level coverage in the transition model:
 | with live/static slot temp | 181 | 765570 |
 | with byte/static index register | 156 | 704763 |
 
-The long-control sidecar attaches decoded target/IP-update variants to 10 transition-model entries, covering 1638 sampled/backedge catalog events across 128 variants. This is tracked separately from the `observed_events` column because some sampled rows, notably source entry 308, are underrepresented in exact source-profile event counts.
+The long-control sidecar attaches decoded target/IP-update variants and static operand footprints to 10 transition-model entries, covering 1638 sampled/backedge catalog events across 128 variants. This is tracked separately from the `observed_events` column because some sampled rows, notably source entry 308, are underrepresented in exact source-profile event counts.
 
 Combined dispatch-model distribution in the transition model:
 
@@ -1319,7 +1325,7 @@ The bounded GPR+scratch-seeded predicate catalog confirms the same reduction at 
 
 The largest full-path-profile reductions are direct proof that seeding resolves live-in and scratch-frame predicates, especially entries 337, 297, 168, 347, 301, 346, 114, 340, and 189. Full-trace native branch-site counts now show no remaining GPR+scratch-seeded unknown sites.
 
-`vm_microcode_catalog.py` is the compact human-facing index over the reconstructed handlers. It joins the transition model, ISA operand layouts, static state/flag update chains, sampled/backedge long-control bytecode lifts, and source-level state-only plus GPR+scratch-seeded branch-predicate summaries into pseudo-IR rows. The TSV keeps one row per dispatch entry, while `vm_microcode_top.md` renders the top 30 observed entries by event count with clipped expression hashes that point back to the full lower-level TSVs.
+`vm_microcode_catalog.py` is the compact human-facing index over the reconstructed handlers. It joins the transition model, ISA operand layouts, static state/flag update chains, sampled/backedge long-control bytecode lifts with operand footprints, and source-level state-only plus GPR+scratch-seeded branch-predicate summaries into pseudo-IR rows. The TSV keeps one row per dispatch entry, while `vm_microcode_top.md` renders the top 30 observed entries by event count with clipped expression hashes that point back to the full lower-level TSVs.
 
 Microcode catalog class distribution:
 
@@ -1332,7 +1338,7 @@ Microcode catalog class distribution:
 | `unobserved_static` | 155 | 0 |
 | `target_only` | 3 | 0 |
 
-The catalog currently has state/flag pseudo-IR for 335 entries covering 766060 long-run events, dispatch-slot pseudo-IR or model tags for 179 entries covering 767546 events, long-control tail IR for 10 sparse sampled/backedge source handlers, state-only and GPR+scratch-seeded branch-predicate summaries for 163 entries covering 748543 events, and operand-layout summaries for the 190 exact-covered handlers covering 767566 events.
+The catalog currently has state/flag pseudo-IR for 335 entries covering 766060 long-run events, dispatch-slot pseudo-IR or model tags for 179 entries covering 767546 events, long-control tail IR and 8/11-byte operand footprints for 10 sparse sampled/backedge source handlers, state-only and GPR+scratch-seeded branch-predicate summaries for 163 entries covering 748543 events, and operand-layout summaries for the 190 exact-covered handlers covering 767566 events.
 
 `vm_path_microcode_catalog.py` specializes that catalog by concrete handler branch path. It joins the full `vm_static_path_variants.tsv` state-trace path counts with the sampled `vm_static_path_transfer_expr.tsv` slot/IP formulas and the source-level microcode, including source branch-predicate and GPR+scratch-seeded predicate context. This is the closest current artifact to path-specialized devirtualized blocks:
 
