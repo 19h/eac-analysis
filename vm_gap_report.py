@@ -10,6 +10,7 @@ KIND_WEIGHT = {
     "uncovered_exact_destination": 100,
     "prefix_long_jump": 80,
     "missing_exact_source": 70,
+    "sampled_operand_known": 4,
     "decoded_long_branch_sample": 5,
     "decoded_long_branch_source": 15,
     "backedge_sample": 40,
@@ -90,6 +91,23 @@ def find_hidden_transition_path(dump_dir: Path, explicit_path):
     return None
 
 
+def find_sampled_operand_path(dump_dir: Path, explicit_path):
+    if explicit_path:
+        path = Path(explicit_path)
+        return path if path.exists() else None
+
+    candidates = [dump_dir / "vm_sampled_operand_catalog.tsv"]
+    for suffix in ("-filefill-hiddenfill", "-filefill", "-hiddenfill"):
+        if dump_dir.name.endswith(suffix):
+            base_name = dump_dir.name[: -len(suffix)]
+            candidates.append(dump_dir.with_name(base_name) / "vm_sampled_operand_catalog.tsv")
+
+    for path in candidates:
+        if path.exists():
+            return path
+    return None
+
+
 def load_long_branches(path: Path, top=5):
     rows = defaultdict(lambda: {
         "events": 0,
@@ -158,6 +176,30 @@ def load_long_branch_variants(path: Path):
                 f"long_branch_events={row.get('events', '')};"
                 f"operand_min_len={row.get('operand_min_len', '')};"
                 f"operand_shape={row.get('operand_shape', '')};"
+                f"ir={row.get('lifted_ir', '')}"
+            )
+    return variants
+
+
+def load_sampled_operands(path: Path):
+    variants = {}
+    if path is None:
+        return variants
+
+    with path.open(newline="", errors="replace") as handle:
+        for row in csv.DictReader(handle, delimiter="\t"):
+            key = (
+                row.get("source_entry", ""),
+                row.get("target_entry", ""),
+                row.get("delta", ""),
+            )
+            if not all(key):
+                continue
+            variants[key] = (
+                f"sampled_operand_events={row.get('events', '')};"
+                f"operand_min_len={row.get('operand_min_len', '')};"
+                f"operand_shape={row.get('operand_shape', '')};"
+                f"source_observations={row.get('source_observations', '')};"
                 f"ir={row.get('lifted_ir', '')}"
             )
     return variants
@@ -298,7 +340,7 @@ def add_static_group(groups, kind, key, events, source="", target="", delta="", 
         group["sites"][site] += events
 
 
-def analyze_trace(dump_dir: Path, segments, groups, hidden_transitions, long_branch_variants):
+def analyze_trace(dump_dir: Path, segments, groups, hidden_transitions, long_branch_variants, sampled_operands):
     trace_path = dump_dir / "vm_instruction_trace.tsv"
     boundary_by_start = {segment["start"]: segment for segment in segments}
     with trace_path.open(newline="") as handle:
@@ -341,11 +383,16 @@ def analyze_trace(dump_dir: Path, segments, groups, hidden_transitions, long_bra
 
             if status.startswith("prefix_"):
                 long_branch = long_branch_variants.get((row["source_entry"], row["target_entry"], row["delta"]), "")
-                kind = "decoded_long_branch_sample" if long_branch else "prefix_long_jump"
-                detail = (
-                    f"positive VM IP delta exceeds logged byte window; {long_branch}"
-                    if long_branch else "positive VM IP delta exceeds logged byte window"
-                )
+                sampled_operand = sampled_operands.get((row["source_entry"], row["target_entry"], row["delta"]), "")
+                if long_branch:
+                    kind = "decoded_long_branch_sample"
+                    detail = f"positive VM IP delta exceeds logged byte window; {long_branch}"
+                elif sampled_operand:
+                    kind = "sampled_operand_known"
+                    detail = f"positive VM IP delta exceeds logged byte window; {sampled_operand}"
+                else:
+                    kind = "prefix_long_jump"
+                    detail = "positive VM IP delta exceeds logged byte window"
                 add_trace_row(
                     groups,
                     kind,
@@ -356,11 +403,16 @@ def analyze_trace(dump_dir: Path, segments, groups, hidden_transitions, long_bra
                 )
             elif status.startswith("backedge"):
                 long_branch = long_branch_variants.get((row["source_entry"], row["target_entry"], row["delta"]), "")
-                kind = "decoded_long_branch_sample" if long_branch else "backedge_sample"
-                detail = (
-                    f"negative VM IP delta, exact consumed bytes unavailable from forward lookahead; {long_branch}"
-                    if long_branch else "negative VM IP delta, exact consumed bytes unavailable from forward lookahead"
-                )
+                sampled_operand = sampled_operands.get((row["source_entry"], row["target_entry"], row["delta"]), "")
+                if long_branch:
+                    kind = "decoded_long_branch_sample"
+                    detail = f"negative VM IP delta, exact consumed bytes unavailable from forward lookahead; {long_branch}"
+                elif sampled_operand:
+                    kind = "sampled_operand_known"
+                    detail = f"negative VM IP delta, exact consumed bytes unavailable from forward lookahead; {sampled_operand}"
+                else:
+                    kind = "backedge_sample"
+                    detail = "negative VM IP delta, exact consumed bytes unavailable from forward lookahead"
                 add_trace_row(
                     groups,
                     kind,
@@ -496,6 +548,8 @@ def main():
     parser.add_argument("--no-long-branches", action="store_true")
     parser.add_argument("--hidden-transitions", default=None)
     parser.add_argument("--no-hidden-transitions", action="store_true")
+    parser.add_argument("--sampled-operands", default=None)
+    parser.add_argument("--no-sampled-operands", action="store_true")
     parser.add_argument("--max-items", type=int, default=8)
     parser.add_argument("--limit", type=int, default=0, help="limit emitted rows; 0 emits all")
     args = parser.parse_args()
@@ -508,9 +562,11 @@ def main():
     long_branch_variants = load_long_branch_variants(long_branch_path)
     hidden_path = None if args.no_hidden_transitions else find_hidden_transition_path(dump_dir, args.hidden_transitions)
     hidden_transitions = load_hidden_transitions(hidden_path)
+    sampled_operand_path = None if args.no_sampled_operands else find_sampled_operand_path(dump_dir, args.sampled_operands)
+    sampled_operands = load_sampled_operands(sampled_operand_path)
     groups = {}
 
-    analyze_trace(dump_dir, segments, groups, hidden_transitions, long_branch_variants)
+    analyze_trace(dump_dir, segments, groups, hidden_transitions, long_branch_variants, sampled_operands)
     load_missing_exact(dump_dir, groups, long_branches)
     load_observation_gaps(dump_dir, groups)
 
