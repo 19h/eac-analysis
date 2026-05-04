@@ -1193,14 +1193,14 @@ Representative recovered dispatch-slot expressions now appear directly in `vm_tr
 
 The GPR+scratch-seeded source-level transfer sample preserves the same 171 source rows with 100% target/IP agreement while removing sampled branch uncertainty entirely. With the enriched `fs0x128` trace and native pointer model, all 179 sampled source rows and all 16691 sampled events carry dispatch-slot expressions.
 
-The native `--transfer-expr --by-path` view of the same bounded transfer-expression sample is `vm_static_path_transfer_expr.tsv`. It resolves the apparent multi-formula source handlers into concrete branch-path formulas. In the 128-row-per-source sample it observes 349 source-path rows across all 179 state-aware sources. All 336 source-path rows with a resolved static target have exactly one slot expression and one IP-advance expression:
+The native `--transfer-expr --by-path` view of the same bounded transfer-expression sample is `vm_static_path_transfer_expr.tsv`. It resolves the apparent multi-formula source handlers into concrete branch-path formulas. In the 128-row-per-source sample it observes 352 source-path rows across all 179 state-aware sources. All 341 source-path rows with 100% target/IP agreement have exactly one slot expression and one IP-advance expression:
 
 | Path-Conditioned Transfer Expressions | Source-Paths | Sample Events |
 | --- | ---: | ---: |
-| sampled source-path rows | 349 | 16691 |
-| 100% target/IP agreement | 336 | 16085 |
-| with dispatch-slot expression | 336 | 16085 |
-| single slot expression per path | 336 | 16085 |
+| sampled source-path rows | 352 | 16691 |
+| 100% target/IP agreement | 341 | 16153 |
+| with dispatch-slot expression | 352 | 16691 |
+| single slot expression per path | 352 | 16691 |
 | multiple slot expressions per path | 0 | 0 |
 
 This is useful because source-level handlers such as entries 18, 20, 26, 64, 66, 114, 258, and 337 have multiple observed slot formulas, but each sampled concrete branch path has a single formula. That gives a clean route to path-specialized devirtualized blocks.
@@ -1315,14 +1315,14 @@ The catalog currently has state/flag pseudo-IR for 335 entries covering 766060 l
 | --- | ---: | ---: |
 | concrete source-handler paths | 400 | 248906 |
 | 100% target/IP validated paths | 387 | 248300 |
-| paths with sampled expression rows | 349 | 246298 |
-| paths with sampled slot expression | 336 | 245692 |
+| paths with sampled expression rows | 343 | 245901 |
+| paths with sampled slot expression | 343 | 245901 |
 | paths from static-validated sources | 387 | 248300 |
 | paths from affine-dispatch fallback sources | 13 | 606 |
 
-The native state-only path microcode variant is the better match for the refreshed low-bit path formulas: it has 400 concrete path rows, 387 fully target/IP-validated paths, sampled expression rows for 349 paths covering 246298 events, and sampled slot expressions for 336 paths covering 245692 events. The top native path row is entry 307 path `594cbf6454cdfe82`, with 7050 state-trace events and slot expression `(u16_1 - 0x665a9b5) & 0xffff`, followed by entry 258 path `4be73f077fec7fc7` with 6275 events and its non-affine state-derived slot expression. The Markdown digests `vm_path_microcode_top.md` and `vm_path_microcode_fast_top.md` are useful for quickly inspecting these high-volume specialized blocks.
+The native state-only path microcode variant is the better match for the refreshed low-bit path formulas: it has 403 concrete path rows, 392 fully target/IP-validated paths, sampled expression rows for 352 paths covering 246298 events, and sampled slot expressions for the same 352 paths. The top native path row is entry 307 path `594cbf6454cdfe82`, with 7050 state-trace events and slot expression `(u16_1 - 0x665a9b5) & 0xffff`, followed by entry 258 path `4be73f077fec7fc7` with 6275 events and its non-affine state-derived slot expression. The Markdown digests `vm_path_microcode_top.md` and `vm_path_microcode_fast_top.md` are useful for quickly inspecting these high-volume specialized blocks.
 
-The legacy GPR+scratch-seeded path microcode variant uses `vm_static_path_variants_gpr_seeded.tsv` and `vm_static_path_transfer_expr_gpr_seeded.tsv`. It now has 737 concrete path rows; 724 paths covering 248363 state-trace events validate target and IP at 100%. The native seeded variant is the stronger concrete view after biased scratch-frame, expanded scratch-frame, and table-low-bit normalization: 586 paths, 573 validated paths, sampled expression rows for 459 paths covering 245167 events, and sampled slot expressions for 446 paths covering 244624 events.
+The legacy GPR+scratch-seeded path microcode variant uses `vm_static_path_variants_gpr_seeded.tsv` and `vm_static_path_transfer_expr_gpr_seeded.tsv`. It has 737 concrete path rows; 724 paths covering 248363 state-trace events validate target and IP at 100%. The native seeded variant is the stronger concrete view after biased scratch-frame, stack-pointer, image-backed, low-bit, restore-trampoline, and `fs0x128` normalization: 570 paths, 560 validated paths, and sampled expression/slot rows for 462 paths covering 245646 events.
 
 The register-role trace in `dumps/vmtail-regs-wide-w16` logs all GPRs for 250000 VMTAIL events. `vm_tail_registers.py` compares each register to the current dispatch target, `frame+0x10f` table base, `table + target_entry*8`, and `target_entry*8`.
 
