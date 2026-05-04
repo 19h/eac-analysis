@@ -22,12 +22,13 @@ SHA-256: `0b44ad59697129534189efdb75cde2b96245f831438e9f6a53cb7725f190d739`
 - `vm_state_effects.py`: summarizes observed `frame+0x170`, `frame+0x23`, and `frame+0x194` changes per handler or per `(handler, delta, bytes)` signature from state-aware traces.
 - `vm_tail_registers.py`: infers per-tail-site register roles from `EAC_VMTAIL_REGS=1` traces, including target value, dispatch-slot pointer, byte index, table pointer, and frame pointer. It can also join those roles back onto an instruction trace by source handler and tail site.
 - `vm_tail_static_slots.py`: statically recovers consumed dispatch-slot temporaries for tail sites where the target is loaded from `table + byte_index` and the slot pointer is clobbered before the final jump.
-- `vm_instruction_lift.py`: joins exact recovered VM instructions with per-signature state effects, dynamic tail-register roles, and static dispatch-slot provenance.
+- `vm_instruction_lift.py`: joins exact recovered VM instructions with per-signature state effects, dynamic tail-register roles, static dispatch-slot provenance, and compact scalar/affine dispatch-formula tags.
 - `vm_bytecode_file_atlas.py`: verifies recovered exact VM bytes against `eac.elf` and builds conservative file-backed bytecode atlas regions from observed segments plus small inferred gaps.
 - `vm_trace_file_fill.py`: promotes bounded positive `prefix_32_of_N` rows to `file_span_of_N` rows by reading bytes from `eac.elf`, preserving them as sampled/file-backed coverage rather than exact consumed instructions.
 - `vm_instruction_compare.py`: compares exact unique VM instruction catalogs by stable instruction key.
 - `vm_dispatch_formula.py`: fits simple expressions for the final dispatch byte index `target_entry * 8` from VM bytes plus rolling state.
 - `vm_dispatch_formula_validate.py`: validates byte-only dispatch formulas against the long exact unique-instruction catalog.
+- `vm_dispatch_affine.py`: fits exact GF(2) affine dispatch-index bit formulas from byte, state, and post-state features in a state-aware trace.
 - `dumps/local-blocked-log/run.stderr`: blocked-network trace from the harness.
 - `dumps/local-blocked-log/postcall_*` and `postsleep_*`: in-memory EAC map/context/output dumps.
 - `dumps/dispatch-trap/run.stderr`: targeted dispatcher trace with fast harness exit.
@@ -77,6 +78,7 @@ SHA-256: `0b44ad59697129534189efdb75cde2b96245f831438e9f6a53cb7725f190d739`
 - `dumps/vmtail-state-wide-w16/vm_state_effects.tsv`: per-handler frame-state effect summary.
 - `dumps/vmtail-state-wide-w16/vm_state_signatures.tsv`: per-signature frame-state effect summary keyed by source handler, byte delta, byte status, and byte sequence.
 - `dumps/vmtail-state-wide-w16/vm_dispatch_formulas.tsv`: fitted dispatch-index formulas from the state-aware instruction trace.
+- `dumps/vmtail-state-wide-w16/vm_dispatch_affine.tsv`: exact affine dispatch-index fits from the state-aware instruction trace.
 - `dumps/vmtail-regs-smoke-w16/run.stderr`: 50k VMTAIL trace with full GPR snapshots at each tail site.
 - `dumps/vmtail-regs-smoke-w16/vm_tail_registers.tsv`: per-site/per-register role evidence from the GPR trace.
 - `dumps/vmtail-regs-smoke-w16/vm_tail_register_summary.tsv`: compact one-row-per-site register-role summary for lifting dispatch tails.
@@ -319,6 +321,8 @@ python3 vm_state_effects.py dumps/vmtail-state-wide-w16/vm_instruction_trace.tsv
   >dumps/vmtail-state-wide-w16/vm_state_signatures.tsv
 python3 vm_dispatch_formula.py dumps/vmtail-state-wide-w16/vm_instruction_trace.tsv \
   >dumps/vmtail-state-wide-w16/vm_dispatch_formulas.tsv
+python3 vm_dispatch_affine.py dumps/vmtail-state-wide-w16/vm_instruction_trace.tsv \
+  >dumps/vmtail-state-wide-w16/vm_dispatch_affine.tsv
 ```
 
 Register-role VM tail wide trace:
@@ -1046,7 +1050,7 @@ Top consumed-slot recoveries:
 
 After central-dispatch integration and static consumed-slot recovery, only 17 long-run instruction events lack any register/static tail-slot evidence.
 
-`vm_instruction_lift.tsv` is the current highest-level recovered instruction catalog. It joins exact unique bytecode instructions, per-signature state effects from the state-aware trace, tail target registers, and live/static slot provenance.
+`vm_instruction_lift.tsv` is the current highest-level recovered instruction catalog. It joins exact unique bytecode instructions, per-signature state effects from the state-aware trace, tail target registers, live/static slot provenance, and compact dispatch-formula tags.
 
 Coverage in the lift catalog:
 
@@ -1057,6 +1061,8 @@ Coverage in the lift catalog:
 | with tail target register/operand | 71345 | 767549 |
 | with live/static slot temp | 71345 | 767549 |
 | with byte/static index register | 65869 | 706851 |
+| with scalar dispatch formula tag | 71343 | 767546 |
+| from source with affine dispatch fit | 11753 | 126720 |
 
 State classes in the lifted exact catalog:
 
@@ -1094,6 +1100,18 @@ Byte-only formulas fully validated for 16 source handlers and 60551 long-run exa
 | 107 | `(state-u16_0)&0x7ff` | 256 | 1 |
 | 217 | `(u16_1-post)&0x1fff` | 206 | 8 |
 | 74 | `(u16_0-post)&0x1fff` | 25 | 6 |
+
+`vm_dispatch_affine.py` adds a broader GF(2) affine solver over byte bits, pre-dispatch state bits, and post-state bits. It exactly fits 108 of 179 state-trace source handlers, covering 44812 of 248906 state-trace events; 71 high-volume handlers remain inconsistent under this model. The lifted long catalog carries the affine fit status by source handler, tagging 11753 exact rows and 126720 long-run events as belonging to state-trace-fitted sources. These affine rows are triage hypotheses unless they are simple byte-only forms or otherwise independently validated.
+
+Representative affine fits from the state-aware trace:
+
+| Entry | Events | Unique Targets | Terms | Notes |
+| ---: | ---: | ---: | --- | --- |
+| 28 | 8348 | 80 | 9 byte | equivalent to direct `u16_0` index bits |
+| 215 | 7121 | 78 | 9 byte | equivalent to direct `u16_0` index bits |
+| 172 | 4530 | 64 | 9 byte + constants | byte-offset 2/3 index bits with fixed inversions |
+| 315 | 3298 | 25 | 9 byte + constants | byte-offset 2/3 index bits with fixed inversions |
+| 203 | 3283 | 59 | 8 byte + 1 post | mostly direct `u16_0`, with bit 11 from post-state |
 
 Top auto3 tail targets:
 
