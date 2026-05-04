@@ -1182,14 +1182,14 @@ The most path-diverse source is entry 330 with 12 observed paths over 169 state-
 
 The static interpreter also resolves a narrow class of opaque pointer predicates by using the traced VM frame location (`base+0x7836d`). Since the image base is page-aligned, the low byte of `rbp+off` is stable; byte-sized comparisons such as `cmp $0, %r12b` after `r12 = rbp + 0x170` can be resolved without knowing the absolute ASLR base. The interpreter also preserves commutative `int + pointer` arithmetic, compares same-base pointers by offset, and clears `ZF` when unknown flag-clobbering arithmetic is encountered instead of accidentally reusing stale flags. Target/IP coverage remains unchanged, but path and branch records are more faithful. Entry 28 is the clearest high-volume example: its two former pointer-byte unknown branches now resolve to `je:0`, and the handler remains 100% target/IP validated over 8348 state-trace events.
 
-`vm_branch_predicates.py` explains the remaining `?` branches by replaying the full state-aware trace with concrete values plus symbolic/provenance labels for the last compare/test or flag-producing arithmetic. It emits 855 source-handler branch-site rows and accounts for 1007971 dynamic branch events. Of those, 220254 are still unresolved, now matching the `branch_unknown` total in both `vm_state_static_validate.tsv` and `vm_static_path_profile.tsv`.
+`vm_branch_predicates.py` explains the remaining `?` branches by replaying the full state-aware trace with concrete values plus symbolic/provenance labels for the last compare/test or flag-producing arithmetic. It emits 855 source-handler branch-site rows and accounts for 1007971 dynamic branch events. Of those, 220186 are still unresolved, now matching the `branch_unknown` total in both `vm_state_static_validate.tsv` and `vm_static_path_profile.tsv`. The replay keeps a per-handler scratch-frame store, so frame-local write/read pairs are no longer reported as unknown merely because they use non-VM fields such as `frame+0x81` or `frame+0x71`.
 
 Unresolved branch-predicate classes:
 
 | Class | Dynamic Branch Events | Interpretation |
 | --- | ---: | --- |
 | `live_in_reg` | 106661 | direct low-byte predicate on a register not initialized in the current handler slice |
-| `unknown_frame_field` | 53296 | predicate derived from a scratch frame field outside the modeled VM IP/state/flags/byte/table fields |
+| `unknown_frame_field` | 53228 | predicate derived from a scratch frame field outside the modeled VM IP/state/flags/byte/table fields |
 | `derived_live_in` | 47633 | arithmetic expression involving one or more live-in registers |
 | `unresolved` | 5799 | no stronger provenance class after concrete replay |
 | `vm_bytecode_unresolved` | 4953 | expression includes bytecode words but still depends on unknown operands |
@@ -1219,8 +1219,8 @@ The full GPR-seeded replay preserves the same dispatch/IP validation coverage wh
 
 | Path Replay | Source-Path Rows | Target/IP Validated Events | Unknown Branch Events | Unknown Ops |
 | --- | ---: | ---: | ---: | ---: |
-| state-only static replay | 399 | 248300 / 248906 | 220254 | 19215728 |
-| GPR-seeded replay | 653 | 248300 / 248906 | 111506 | 18442648 |
+| state-only static replay | 399 | 248300 / 248906 | 220186 | 19207328 |
+| GPR-seeded replay | 653 | 248300 / 248906 | 111438 | 18434157 |
 
 The path-row count increases because formerly unknown live-in predicates now split into concrete taken/not-taken paths. The seeded by-path table has 653 source-path rows over the same 248906 state-trace events; 640 of those paths, covering 248300 events, validate target and IP at 100%. Top branch-unknown reductions by source are:
 
@@ -1243,8 +1243,8 @@ The GPR-seeded predicate catalog confirms the same reduction at branch-site leve
 
 | Predicate Catalog | Unknown Branch Events | Top Remaining Classes |
 | --- | ---: | --- |
-| state-only predicates | 220254 | `live_in_reg:106661`, `unknown_frame_field:53296`, `derived_live_in:47633` |
-| GPR-seeded predicates | 111506 | `unknown_frame_field:53233`, `seeded_gpr_unresolved:45609`, `unresolved:5799` |
+| state-only predicates | 220186 | `live_in_reg:106661`, `unknown_frame_field:53228`, `derived_live_in:47633` |
+| GPR-seeded predicates | 111438 | `unknown_frame_field:53165`, `seeded_gpr_unresolved:45609`, `unresolved:5799` |
 
 Top GPR-seeded unresolved sites are no longer simple live-in tests. They are scratch-frame or complex seeded-GPR expressions: entry 337 branches `0xbeea3` and `0xbeee0`, entry 199 branch `0xa094b`, entry 196 branch `0x9fd8f`, and entry 157 branch `0x98e31`. The largest per-site reductions are direct proof that GPR seeding is resolving the live-in predicates: entry 18 `0x7bed4` drops by 7084 unknown events, entry 114 `0x90334` by 7037, entry 66 `0x85621` by 6865, entry 340 `0xbf457` by 6625, and entry 307 `0xb80ac` by 6337.
 
