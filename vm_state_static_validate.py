@@ -32,6 +32,7 @@ FRAME_STATE_OFF = 0x170
 FRAME_BYTE_OFF = 0x194
 MASK64 = 0xffffffffffffffff
 MASK32 = 0xffffffff
+FRAME_RUNTIME_LOW8 = 0x6D
 
 
 @dataclass(frozen=True)
@@ -200,13 +201,33 @@ def eval_bin(mnemonic, left, right, size):
 def cmp_zf(mnemonic, left, right, size):
     if is_unknown(left) or is_unknown(right):
         return None
+    left_concrete = concrete_compare_value(left, size)
+    right_concrete = concrete_compare_value(right, size)
+    if left_concrete is not None and right_concrete is not None:
+        left = left_concrete
+        right = right_concrete
     if not isinstance(left, int) or not isinstance(right, int):
+        if mnemonic == "cmp" and size >= 8:
+            if isinstance(left, Ptr) and isinstance(right, int) and right == 0:
+                return False
+            if isinstance(right, Ptr) and isinstance(left, int) and left == 0:
+                return False
+        if mnemonic == "test" and size >= 8 and isinstance(left, Ptr) and left == right:
+            return False
         return None
     mask = mask_for_size(size)
     if mnemonic == "cmp":
         return ((left - right) & mask) == 0
     if mnemonic == "test":
         return (left & right) == 0
+    return None
+
+
+def concrete_compare_value(value, size):
+    if isinstance(value, int):
+        return value & mask_for_size(size)
+    if isinstance(value, Ptr) and value.kind == "frame" and size == 1:
+        return (FRAME_RUNTIME_LOW8 + value.off) & 0xff
     return None
 
 
