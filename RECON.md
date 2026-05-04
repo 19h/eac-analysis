@@ -32,6 +32,7 @@ SHA-256: `0b44ad59697129534189efdb75cde2b96245f831438e9f6a53cb7725f190d739`
 - `vm_instruction_lift.py`: joins exact recovered VM instructions with per-signature state effects, compact state-affine tags, dynamic tail-register roles, static dispatch-slot provenance, and compact scalar/affine dispatch-formula tags.
 - `vm_transition_model.py`: joins handler skeletons, static state chains, validation coverage, combined dispatch-model evidence, transfer expressions, and tail operand provenance into a one-row-per-dispatch-entry transition model.
 - `vm_microcode_catalog.py`: renders the joined handler reconstruction into a compact pseudo-IR catalog and a Markdown digest for high-volume handlers.
+- `vm_path_microcode_catalog.py`: joins full concrete branch-path profiles with sampled path-conditioned transfer expressions into path-specialized pseudo-IR rows.
 - `vm_bytecode_file_atlas.py`: verifies recovered exact VM bytes against `eac.elf` and builds conservative file-backed bytecode atlas regions from observed segments plus small inferred gaps.
 - `vm_trace_file_fill.py`: promotes bounded positive `prefix_32_of_N` rows to `file_span_of_N` rows by reading bytes from `eac.elf`, preserving them as sampled/file-backed coverage rather than exact consumed instructions.
 - `vm_instruction_compare.py`: compares exact unique VM instruction catalogs by stable instruction key.
@@ -82,6 +83,8 @@ SHA-256: `0b44ad59697129534189efdb75cde2b96245f831438e9f6a53cb7725f190d739`
 - `dumps/vmtail-wide-1m-w16/vm_transition_model.tsv`: one consolidated transition-model row per dispatch entry.
 - `dumps/vmtail-wide-1m-w16/vm_microcode_catalog.tsv`: compact pseudo-IR row per dispatch entry.
 - `dumps/vmtail-wide-1m-w16/vm_microcode_top.md`: Markdown digest for the top observed dispatch entries by long-run event count.
+- `dumps/vmtail-wide-1m-w16/vm_path_microcode_catalog.tsv`: compact pseudo-IR row per concrete source-handler branch path.
+- `dumps/vmtail-wide-1m-w16/vm_path_microcode_top.md`: Markdown digest for the top concrete branch paths by state-trace event count.
 - `dumps/vmtail-wide-1m-w16/vm_bytecode_file_atlas.tsv`: file-backed VM bytecode atlas built from sampled bytecode segments with `--max-gap 0x20`.
 - `dumps/vmtail-wide-1m-w16/vm_dispatch_formula_validate.tsv`: validation of byte-only dispatch formulas against long exact unique instructions.
 - `dumps/vmtail-wide-1m-w16/vm_gap_report.tsv`: exact-segment coverage gap ranking.
@@ -412,6 +415,10 @@ python3 vm_microcode_catalog.py \
   >dumps/vmtail-wide-1m-w16/vm_microcode_catalog.tsv
 python3 vm_microcode_catalog.py --markdown --limit 30 \
   >dumps/vmtail-wide-1m-w16/vm_microcode_top.md
+python3 vm_path_microcode_catalog.py \
+  >dumps/vmtail-wide-1m-w16/vm_path_microcode_catalog.tsv
+python3 vm_path_microcode_catalog.py --markdown --limit 30 \
+  >dumps/vmtail-wide-1m-w16/vm_path_microcode_top.md
 python3 vm_dispatch_formula_validate.py \
   >dumps/vmtail-wide-1m-w16/vm_dispatch_formula_validate.tsv
 python3 vm_bytecode_file_atlas.py --max-gap 0x20 \
@@ -1164,6 +1171,19 @@ Microcode catalog class distribution:
 | `target_only` | 3 | 0 |
 
 The catalog currently has state/flag pseudo-IR for 327 entries covering 764423 long-run events, dispatch-slot pseudo-IR or model tags for 179 entries covering 767546 events, and operand-layout summaries for the 190 exact-covered handlers covering 767566 events.
+
+`vm_path_microcode_catalog.py` specializes that catalog by concrete handler branch path. It joins the full `vm_static_path_variants.tsv` state-trace path counts with the sampled `vm_static_path_transfer_expr.tsv` slot/IP formulas and the source-level microcode. This is the closest current artifact to path-specialized devirtualized blocks:
+
+| Path Microcode Coverage | Paths | State-Trace Events |
+| --- | ---: | ---: |
+| concrete source-handler paths | 399 | 248906 |
+| 100% target/IP validated paths | 386 | 248300 |
+| paths with sampled expression rows | 348 | 246298 |
+| paths with sampled slot expression | 335 | 245692 |
+| paths from static-validated sources | 386 | 248300 |
+| paths from affine-dispatch fallback sources | 13 | 606 |
+
+The top path row is entry 307 path `594cbf6454cdfe82`, with 7050 state-trace events and slot expression `(u16_1 - 0x665a9b5) & 0xffff`, followed by entry 258 path `4be73f077fec7fc7` with 6275 events and its non-affine state-derived slot expression. The Markdown digest `vm_path_microcode_top.md` is useful for quickly inspecting these high-volume specialized blocks.
 
 The register-role trace in `dumps/vmtail-regs-wide-w16` logs all GPRs for 250000 VMTAIL events. `vm_tail_registers.py` compares each register to the current dispatch target, `frame+0x10f` table base, `table + target_entry*8`, and `target_entry*8`.
 
