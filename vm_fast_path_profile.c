@@ -32,7 +32,7 @@ enum {
 };
 
 typedef enum { VK_INT, VK_PTR, VK_UNKNOWN, VK_LOWBITS } ValueKind;
-typedef enum { PK_FRAME, PK_TABLE, PK_IP } PtrKind;
+typedef enum { PK_FRAME, PK_TABLE, PK_IP, PK_STACK } PtrKind;
 
 typedef struct {
     ValueKind kind;
@@ -223,6 +223,7 @@ enum {
     TC_PTR_PARTIAL = UINT64_C(1) << 19,
     TC_FRAME_PTR_LOW8 = UINT64_C(1) << 20,
     TC_UNKNOWN_POINTER_KIND = UINT64_C(1) << 21,
+    TC_STACK_POINTER = UINT64_C(1) << 22,
 };
 
 typedef struct {
@@ -529,8 +530,19 @@ static const char *ptr_kind_name(PtrKind kind) {
     case PK_FRAME: return "frame";
     case PK_TABLE: return "table";
     case PK_IP: return "ip";
+    case PK_STACK: return "stack";
     }
     return "ptr";
+}
+
+static uint64_t pointer_class(PtrKind kind) {
+    switch (kind) {
+    case PK_FRAME: return TC_FRAME_POINTER;
+    case PK_TABLE: return TC_DISPATCH_TABLE_POINTER;
+    case PK_IP: return TC_VM_IP_POINTER;
+    case PK_STACK: return TC_STACK_POINTER;
+    }
+    return TC_UNKNOWN_POINTER_KIND;
 }
 
 static void fmt_value_buf(Value value, const char *reason, char *out, size_t out_size) {
@@ -604,6 +616,7 @@ static void class_names_buf(uint64_t classes, char *out, size_t out_size) {
         {TC_LIVE_IN_REG, "live_in_reg"},
         {TC_PTR_PARTIAL, "ptr_partial"},
         {TC_STATE, "state"},
+        {TC_STACK_POINTER, "stack_pointer"},
         {TC_TABLE_DISPATCH_TARGET, "table_dispatch_target"},
         {TC_TABLE_READ, "table_read"},
         {TC_UNKNOWN, "unknown"},
@@ -1066,8 +1079,13 @@ static int cmp_zf(const char *mnemonic, Value left, Value right, int size) {
         if (!strcmp(mnemonic, "cmp")) return (((l - r) & mask_for_size(size)) == 0);
         if (!strcmp(mnemonic, "test")) return ((l & r) == 0);
     }
-    if (!strcmp(mnemonic, "cmp") && left.kind == VK_PTR && right.kind == VK_PTR && left.ptr_kind == right.ptr_kind) {
-        return left.off == right.off;
+    if (!strcmp(mnemonic, "cmp") && left.kind == VK_PTR && right.kind == VK_PTR) {
+        if (left.ptr_kind == right.ptr_kind) {
+            return left.off == right.off;
+        }
+        if (left.ptr_kind == PK_STACK || right.ptr_kind == PK_STACK) {
+            return 0;
+        }
     }
     if (!strcmp(mnemonic, "cmp") && size >= 8) {
         if (left.kind == VK_PTR && right.kind == VK_INT && right.u == 0) return 0;
@@ -1096,9 +1114,7 @@ static bool mem_ptr_tracked(cs_insn *insn, cs_x86_op *op, TrackedValue *regs, Va
 static TrackedValue tracked_seed_from_value(int reg, Value value, int max_expr_len) {
     uint64_t classes = TC_GPR_SEED;
     if (value.kind == VK_PTR) {
-        if (value.ptr_kind == PK_FRAME) classes |= TC_FRAME_POINTER;
-        else if (value.ptr_kind == PK_TABLE) classes |= TC_DISPATCH_TABLE_POINTER;
-        else if (value.ptr_kind == PK_IP) classes |= TC_VM_IP_POINTER;
+        classes |= pointer_class(value.ptr_kind);
     } else if (value.kind == VK_INT) {
         classes |= TC_IMAGE_OFFSET;
     }
@@ -2039,7 +2055,7 @@ static bool find_dec_field(const char *line, const char *key, uint64_t *out) {
 
 static Value normalize_seed(uint64_t value, uint64_t frame, bool has_frame, uint64_t frame_off,
                             bool has_frame_off, uint64_t table, bool has_table,
-                            uint64_t vm_ip, bool has_vm_ip) {
+                            uint64_t vm_ip, bool has_vm_ip, uint64_t rsp, bool has_rsp) {
     uint64_t image_base = 0;
     bool has_image = false;
     if (has_frame && has_frame_off) {
@@ -2059,6 +2075,24 @@ static Value normalize_seed(uint64_t value, uint64_t frame, bool has_frame, uint
             uint64_t adjusted = value + frame_biases[i];
             if (adjusted >= frame - 0x4000 && adjusted < frame + 0x4000) {
                 return val_ptr(PK_FRAME, ((int64_t)adjusted - (int64_t)frame) - (int64_t)frame_biases[i]);
+            }
+        }
+    }
+    if (has_rsp && value >= rsp - 0x4000 && value < rsp + 0x4000) {
+        return val_ptr_low(PK_STACK, (int64_t)value - (int64_t)rsp, 12, rsp & 0xfff);
+    }
+    if (has_rsp) {
+        static const uint64_t stack_biases[] = {
+            UINT64_C(0x1a44e4ef),
+            UINT64_C(0x61f749a7),
+            UINT64_C(0xda3b7d9),
+        };
+        for (size_t i = 0; i < sizeof(stack_biases) / sizeof(stack_biases[0]); ++i) {
+            uint64_t adjusted = value + stack_biases[i];
+            if (adjusted >= rsp - 0x4000 && adjusted < rsp + 0x4000) {
+                return val_ptr_low(PK_STACK,
+                                   ((int64_t)adjusted - (int64_t)rsp) - (int64_t)stack_biases[i],
+                                   12, rsp & 0xfff);
             }
         }
     }
@@ -2114,11 +2148,12 @@ static Seed *load_gpr_seeds(const char *path, size_t *seed_count) {
             memset(seeds + cap, 0, (new_cap - cap) * sizeof(Seed));
             cap = new_cap;
         }
-        uint64_t frame = 0, frame_off = 0, table = 0, vm_ip = 0;
+        uint64_t frame = 0, frame_off = 0, table = 0, vm_ip = 0, rsp = 0;
         bool has_frame = find_hex_field(line, "frame", &frame);
         bool has_frame_off = find_hex_field(line, "frame_off", &frame_off);
         bool has_table = find_hex_field(line, "table", &table);
         bool has_vm_ip = find_hex_field(line, "vm_ip", &vm_ip);
+        bool has_rsp = find_hex_field(line, "rsp", &rsp);
         seeds[idx].present = true;
         static const char *regs[REG_COUNT] = {
             "rax","rbx","rcx","rdx","rsi","rdi","r8","r9","r10","r11","r12","r13","r14","r15","rbp","rsp"
@@ -2126,7 +2161,8 @@ static Seed *load_gpr_seeds(const char *path, size_t *seed_count) {
         for (int r = 0; r < REG_COUNT; ++r) {
             uint64_t value = 0;
             if (find_hex_field(line, regs[r], &value)) {
-                seeds[idx].regs[r] = normalize_seed(value, frame, has_frame, frame_off, has_frame_off, table, has_table, vm_ip, has_vm_ip);
+                seeds[idx].regs[r] = normalize_seed(value, frame, has_frame, frame_off, has_frame_off,
+                                                   table, has_table, vm_ip, has_vm_ip, rsp, has_rsp);
                 seeds[idx].reg_present[r] = true;
             }
         }
@@ -2141,7 +2177,8 @@ static Seed *load_gpr_seeds(const char *path, size_t *seed_count) {
                 seeds[idx].mem[seeds[idx].mem_count++] = (FrameMem){
                     .off = off,
                     .size = 8,
-                    .value = normalize_seed(value, frame, has_frame, frame_off, has_frame_off, table, has_table, vm_ip, has_vm_ip),
+                    .value = normalize_seed(value, frame, has_frame, frame_off, has_frame_off,
+                                           table, has_table, vm_ip, has_vm_ip, rsp, has_rsp),
                 };
             }
             p = end + 3;
@@ -2494,9 +2531,7 @@ static ExecResult execute_handler_branch_pred(Handler *h, TraceRow *row, uint64_
             if (mem_ptr_tracked(insn, &ops[1], regs, &ptr)) {
                 char expr[96];
                 snprintf(expr, sizeof(expr), "%s+0x%llx", ptr_kind_name(ptr.ptr_kind), (unsigned long long)ptr.off);
-                uint64_t cls = ptr.ptr_kind == PK_FRAME ? TC_FRAME_POINTER :
-                               ptr.ptr_kind == PK_TABLE ? TC_DISPATCH_TABLE_POINTER : TC_VM_IP_POINTER;
-                value = tracked_from(ptr, expr, cls, "", max_expr_len);
+                value = tracked_from(ptr, expr, pointer_class(ptr.ptr_kind), "", max_expr_len);
             } else {
                 char expr[192];
                 snprintf(expr, sizeof(expr), "lea(%s)", insn->op_str);
