@@ -85,6 +85,10 @@ def status(row):
         pieces.append(f"long_branch={row['long_branch_events']}/{row.get('long_branch_variants', '')}")
     if row.get("long_branch_operand_lens"):
         pieces.append(f"long_branch_len={row['long_branch_operand_lens']}")
+    if row.get("sampled_operand_events"):
+        pieces.append(f"sampled_operand={row['sampled_operand_events']}/{row.get('sampled_operand_variants', '')}")
+    if row.get("sampled_operand_lens"):
+        pieces.append(f"sampled_operand_len={row['sampled_operand_lens']}")
     return ", ".join(pieces)
 
 
@@ -95,6 +99,8 @@ def classify(row):
         return "static_validated"
     if row.get("dispatch_model", "").startswith("affine_"):
         return "affine_dispatch_fallback"
+    if row.get("sampled_operand_events"):
+        return "sampled_operand_lifted"
     if row.get("observation", "").startswith("sampled"):
         return "sampled_only"
     if row.get("observation") == "target_only":
@@ -133,7 +139,19 @@ def build_rows(args):
             args.max_expr_len,
             args.max_field_len,
         )
-        tail_ir = f"next = table[slot]; ip += {ip_advance}" if ip_advance else long_branch_ir
+        sampled_operand_ir = top_expr(
+            row.get("sampled_operand_top_ir", ""),
+            args.max_variants,
+            args.max_expr_len,
+            args.max_field_len,
+        )
+        sampled_operand_operands = top_expr(
+            row.get("sampled_operand_shapes", ""),
+            args.max_variants,
+            args.max_expr_len,
+            args.max_field_len,
+        )
+        tail_ir = f"next = table[slot]; ip += {ip_advance}" if ip_advance else long_branch_ir or sampled_operand_ir
         rows.append(
             {
                 "entry": entry,
@@ -164,6 +182,8 @@ def build_rows(args):
                 "ip_advance_ir": ip_advance,
                 "long_branch_ir": long_branch_ir,
                 "long_branch_operands": long_branch_operands,
+                "sampled_operand_ir": sampled_operand_ir,
+                "sampled_operand_operands": sampled_operand_operands,
                 "tail_ir": tail_ir,
                 "path_profile": (
                     f"{row.get('path_profile_unique_paths', '')} paths over "
@@ -211,6 +231,8 @@ def emit_tsv(rows):
         "ip_advance_ir",
         "long_branch_ir",
         "long_branch_operands",
+        "sampled_operand_ir",
+        "sampled_operand_operands",
         "tail_ir",
         "path_profile",
         "branch_profile",
@@ -256,8 +278,12 @@ def emit_markdown(rows, limit):
             print(f"- state: `{row['state_ir']}`")
         if row["dispatch_slot_ir"]:
             print(f"- slot: `{row['dispatch_slot_ir']}`")
+        if row["sampled_operand_ir"]:
+            print(f"- sampled operand tail: `{row['sampled_operand_ir']}`")
         if row["tail_ir"]:
             print(f"- tail: `{row['tail_ir']}`")
+        if row["sampled_operand_operands"]:
+            print(f"- sampled operand footprints: `{row['sampled_operand_operands']}`")
         if row["top_targets"]:
             print(f"- top targets: `{row['top_targets']}`")
         print()

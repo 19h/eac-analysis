@@ -148,6 +148,55 @@ def load_long_branches(path, top=5):
     return compact
 
 
+def load_sampled_operands(path, top=5):
+    rows = defaultdict(lambda: {
+        "events": 0,
+        "variants": 0,
+        "irs": defaultdict(int),
+        "operand_lens": defaultdict(int),
+        "operand_shapes": defaultdict(int),
+    })
+    if not path:
+        return {}
+    for row in read_tsv(path):
+        entry = row.get("source_entry", "")
+        if not entry:
+            continue
+        bucket = rows[entry]
+        events = int(row.get("events", "0") or 0)
+        bucket["events"] += events
+        bucket["variants"] += 1
+        ir = row.get("lifted_ir", "")
+        if ir:
+            bucket["irs"][ir] += events
+        operand_min_len = row.get("operand_min_len", "")
+        if operand_min_len:
+            bucket["operand_lens"][operand_min_len] += events
+        operand_shape = row.get("operand_shape", "")
+        if operand_shape:
+            bucket["operand_shapes"][operand_shape] += events
+
+    compact = {}
+    for entry, bucket in rows.items():
+        compact[entry] = {
+            "events": str(bucket["events"]),
+            "variants": str(bucket["variants"]),
+            "top_ir": ";".join(
+                f"{value}={key}"
+                for key, value in sorted(bucket["irs"].items(), key=lambda item: (-item[1], item[0]))[:top]
+            ),
+            "operand_lens": ";".join(
+                f"{value}={key}"
+                for key, value in sorted(bucket["operand_lens"].items(), key=lambda item: (-item[1], item[0]))[:top]
+            ),
+            "operand_shapes": ";".join(
+                f"{value}={key}"
+                for key, value in sorted(bucket["operand_shapes"].items(), key=lambda item: (-item[1], item[0]))[:top]
+            ),
+        }
+    return compact
+
+
 def choose_tail_row(rows, entry, target, site):
     if not rows:
         return {}
@@ -226,6 +275,10 @@ def main():
         "--long-branches",
         default="dumps/vmtail-wide-1m-w16/vm_long_branch_catalog.tsv",
     )
+    parser.add_argument(
+        "--sampled-operands",
+        default="dumps/vmtail-wide-1m-w16/vm_sampled_operand_catalog.tsv",
+    )
     parser.add_argument("--branch-top", type=int, default=5)
     args = parser.parse_args()
 
@@ -243,6 +296,7 @@ def main():
     branch_predicates = load_branch_predicates(args.branch_predicates, args.branch_top)
     branch_predicates_gpr = load_branch_predicates(args.branch_predicates_gpr, args.branch_top)
     long_branches = load_long_branches(args.long_branches, args.branch_top)
+    sampled_operands = load_sampled_operands(args.sampled_operands, args.branch_top)
 
     fieldnames = [
         "entry",
@@ -302,6 +356,11 @@ def main():
         "long_branch_operand_lens",
         "long_branch_operand_shapes",
         "long_branch_top_ir",
+        "sampled_operand_events",
+        "sampled_operand_variants",
+        "sampled_operand_lens",
+        "sampled_operand_shapes",
+        "sampled_operand_top_ir",
         "target_reg",
         "slot_kind",
         "slot_reg_or_temp",
@@ -329,6 +388,7 @@ def main():
         branch_predicates,
         branch_predicates_gpr,
         long_branches,
+        sampled_operands,
     ):
         skeleton = skeletons.get(entry, {})
         state_slice = slices.get(entry, {})
@@ -342,6 +402,7 @@ def main():
         branch_predicate_row = branch_predicates.get(entry, {})
         branch_gpr_row = branch_predicates_gpr.get(entry, {})
         long_branch_row = long_branches.get(entry, {})
+        sampled_operand_row = sampled_operands.get(entry, {})
 
         target = skeleton.get("target", "") or state_slice.get("target", "")
         tail_site = skeleton.get("tail_site", "") or state_slice.get("tail_site", "")
@@ -410,6 +471,11 @@ def main():
                 "long_branch_operand_lens": long_branch_row.get("operand_lens", ""),
                 "long_branch_operand_shapes": long_branch_row.get("operand_shapes", ""),
                 "long_branch_top_ir": long_branch_row.get("top_ir", ""),
+                "sampled_operand_events": sampled_operand_row.get("events", ""),
+                "sampled_operand_variants": sampled_operand_row.get("variants", ""),
+                "sampled_operand_lens": sampled_operand_row.get("operand_lens", ""),
+                "sampled_operand_shapes": sampled_operand_row.get("operand_shapes", ""),
+                "sampled_operand_top_ir": sampled_operand_row.get("top_ir", ""),
                 "target_reg": role.get("target_reg", ""),
                 "slot_kind": slot_kind,
                 "slot_reg_or_temp": slot_reg_or_temp,
