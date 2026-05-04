@@ -1,0 +1,318 @@
+#!/usr/bin/env python3
+import argparse
+import csv
+import sys
+from collections import Counter, defaultdict
+from pathlib import Path
+
+
+KIND_WEIGHT = {
+    "uncovered_exact_destination": 100,
+    "prefix_long_jump": 80,
+    "missing_exact_source": 70,
+    "backedge_sample": 40,
+    "uncovered_source_start": 30,
+    "target_only_entry": 10,
+    "unobserved_entry": 1,
+}
+
+
+def parse_signed_hex(text):
+    if text.startswith("+0x"):
+        return int(text[1:], 16)
+    if text.startswith("-0x"):
+        return -int(text[3:], 16)
+    return int(text, 0)
+
+
+def fmt_counter(counter, max_items):
+    return ",".join(f"{key}:{count}" for key, count in counter.most_common(max_items))
+
+
+def fmt_set(values, max_items):
+    if not values:
+        return ""
+    try:
+        ordered = sorted(values, key=lambda value: int(value, 16) if value.startswith("0x") else value)
+    except ValueError:
+        ordered = sorted(values)
+    shown = ordered[:max_items]
+    suffix = f",...+{len(ordered) - len(shown)}" if len(ordered) > len(shown) else ""
+    return ",".join(shown) + suffix
+
+
+def load_segments(path: Path):
+    segments = []
+    with path.open(newline="") as handle:
+        for row in csv.DictReader(handle, delimiter="\t"):
+            segments.append({
+                "idx": int(row["segment"], 10),
+                "start": int(row["start"], 16),
+                "end": int(row["end"], 16),
+            })
+    segments.sort(key=lambda row: row["start"])
+    return segments
+
+
+def find_segment(segments, offset):
+    lo = 0
+    hi = len(segments)
+    while lo < hi:
+        mid = (lo + hi) // 2
+        if segments[mid]["end"] <= offset:
+            lo = mid + 1
+        else:
+            hi = mid
+    if lo < len(segments):
+        segment = segments[lo]
+        if segment["start"] <= offset < segment["end"]:
+            return segment
+    return None
+
+
+def find_boundary_segment(boundary_by_start, offset):
+    return boundary_by_start.get(offset)
+
+
+def nearest_segments(segments, offset):
+    prev_segment = None
+    next_segment = None
+    for segment in segments:
+        if segment["end"] <= offset:
+            prev_segment = segment
+            continue
+        next_segment = segment
+        break
+    parts = []
+    if prev_segment is not None:
+        parts.append(
+            f"prev={prev_segment['idx']}@0x{prev_segment['start']:x}-0x{prev_segment['end']:x}"
+            f"+0x{offset - prev_segment['end']:x}"
+        )
+    if next_segment is not None:
+        parts.append(
+            f"next={next_segment['idx']}@0x{next_segment['start']:x}-0x{next_segment['end']:x}"
+            f"-0x{next_segment['start'] - offset:x}"
+        )
+    return ";".join(parts)
+
+
+def new_group(kind, key, offset=None, detail=""):
+    return {
+        "kind": kind,
+        "key": key,
+        "offset": offset,
+        "detail": detail,
+        "events": 0,
+        "starts": set(),
+        "ends": set(),
+        "sources": Counter(),
+        "targets": Counter(),
+        "deltas": Counter(),
+        "statuses": Counter(),
+        "sites": Counter(),
+    }
+
+
+def add_trace_row(groups, kind, key, row, offset=None, detail=""):
+    group = groups.setdefault((kind, key), new_group(kind, key, offset, detail))
+    group["events"] += 1
+    group["starts"].add(row["start_vm_ip"])
+    group["ends"].add(row["end_vm_ip"])
+    group["sources"][row["source_entry"]] += 1
+    group["targets"][row["target_entry"]] += 1
+    group["deltas"][row["delta"]] += 1
+    group["statuses"][row["byte_status"]] += 1
+    group["sites"][f"{row['kind']}@{row['site']}"] += 1
+
+
+def add_static_group(groups, kind, key, events, source="", target="", delta="", status="", site="",
+                     offset=None, detail=""):
+    group = groups.setdefault((kind, key), new_group(kind, key, offset, detail))
+    group["events"] += events
+    if source:
+        group["sources"][source] += events
+    if target:
+        group["targets"][target] += events
+    if delta:
+        group["deltas"][delta] += events
+    if status:
+        group["statuses"][status] += events
+    if site:
+        group["sites"][site] += events
+
+
+def analyze_trace(dump_dir: Path, segments, groups):
+    trace_path = dump_dir / "vm_instruction_trace.tsv"
+    boundary_by_start = {segment["start"]: segment for segment in segments}
+    with trace_path.open(newline="") as handle:
+        for row in csv.DictReader(handle, delimiter="\t"):
+            start = int(row["start_vm_ip"], 16)
+            end = int(row["end_vm_ip"], 16)
+            delta = parse_signed_hex(row["delta"])
+            status = row["byte_status"]
+
+            start_segment = find_segment(segments, start)
+            end_segment = find_segment(segments, end)
+            if end_segment is None:
+                end_segment = find_boundary_segment(boundary_by_start, end)
+
+            if start_segment is None:
+                add_trace_row(
+                    groups,
+                    "uncovered_source_start",
+                    f"0x{start:x}",
+                    row,
+                    offset=start,
+                    detail="instruction source VM IP is not in an exact recovered segment",
+                )
+
+            if status == "exact" and delta > 0 and start_segment is not None and end_segment is None:
+                add_trace_row(
+                    groups,
+                    "uncovered_exact_destination",
+                    f"0x{end:x}",
+                    row,
+                    offset=end,
+                    detail="exact positive instruction exits recovered bytecode coverage",
+                )
+
+            if status.startswith("prefix_"):
+                add_trace_row(
+                    groups,
+                    "prefix_long_jump",
+                    f"{row['source_entry']}->{row['target_entry']}:{status}",
+                    row,
+                    offset=end,
+                    detail="positive VM IP delta exceeds logged byte window",
+                )
+            elif status.startswith("backedge"):
+                add_trace_row(
+                    groups,
+                    "backedge_sample",
+                    f"{row['source_entry']}->{row['target_entry']}:{row['delta']}",
+                    row,
+                    offset=end,
+                    detail="negative VM IP delta, exact consumed bytes unavailable from forward lookahead",
+                )
+
+
+def load_missing_exact(dump_dir: Path, groups):
+    path = dump_dir / "vm_isa_missing_exact.tsv"
+    if not path.exists():
+        return
+    with path.open(newline="") as handle:
+        for row in csv.DictReader(handle, delimiter="\t"):
+            entry = row["source_entry"]
+            events = int(row["events"], 10)
+            add_static_group(
+                groups,
+                "missing_exact_source",
+                entry,
+                events,
+                source=entry,
+                target=row["source_target"],
+                delta=row.get("top_ip_deltas", ""),
+                status="missing_exact",
+                site=row.get("top_sites", ""),
+                offset=int(row["source_target"], 16),
+                detail=(
+                    f"unique_vm_ips={row.get('unique_vm_ips', '')};"
+                    f"top_targets={row.get('top_targets', '')};"
+                    f"top_deltas={row.get('top_ip_deltas', '')}"
+                ),
+            )
+
+
+def load_observation_gaps(dump_dir: Path, groups):
+    path = dump_dir / "vm_handler_semantics.tsv"
+    if not path.exists():
+        return
+    with path.open(newline="") as handle:
+        for row in csv.DictReader(handle, delimiter="\t"):
+            observation = row["observation"]
+            if observation not in {"unobserved", "target_only"}:
+                continue
+            kind = "unobserved_entry" if observation == "unobserved" else "target_only_entry"
+            entry = row["entry"]
+            events = int(row["events"], 10)
+            add_static_group(
+                groups,
+                kind,
+                entry,
+                events,
+                source=entry,
+                target=row["target"],
+                status=observation,
+                offset=int(row["target"], 16),
+                detail=(
+                    f"frame_reads={row.get('frame_reads', '')};"
+                    f"frame_writes={row.get('frame_writes', '')};"
+                    f"ip_reads={row.get('ip_reads', '')};"
+                    f"rets={row.get('rets', '')}"
+                ),
+            )
+
+
+def emit_report(groups, segments, max_items, limit):
+    rows = list(groups.values())
+    for row in rows:
+        row["priority"] = KIND_WEIGHT.get(row["kind"], 0) * max(row["events"], 1)
+        row["nearest"] = nearest_segments(segments, row["offset"]) if row["offset"] is not None else ""
+
+    rows.sort(key=lambda row: (-row["priority"], -row["events"], row["kind"], row["key"]))
+    if limit:
+        rows = rows[:limit]
+
+    print(
+        "rank\tkind\tkey\tpriority\tevents\tunique_start_ips\tunique_end_ips\t"
+        "sources\ttargets\tdeltas\tstatuses\tsites\tnearest_recovered\tsample_starts\t"
+        "sample_ends\tdetail"
+    )
+    for rank, row in enumerate(rows, 1):
+        print(
+            f"{rank}\t{row['kind']}\t{row['key']}\t{row['priority']}\t{row['events']}\t"
+            f"{len(row['starts'])}\t{len(row['ends'])}\t"
+            f"{fmt_counter(row['sources'], max_items)}\t"
+            f"{fmt_counter(row['targets'], max_items)}\t"
+            f"{fmt_counter(row['deltas'], max_items)}\t"
+            f"{fmt_counter(row['statuses'], max_items)}\t"
+            f"{fmt_counter(row['sites'], max_items)}\t"
+            f"{row['nearest']}\t{fmt_set(row['starts'], max_items)}\t"
+            f"{fmt_set(row['ends'], max_items)}\t{row['detail']}"
+        )
+
+
+def emit_summary(groups):
+    by_kind = Counter()
+    events_by_kind = Counter()
+    for group in groups.values():
+        by_kind[group["kind"]] += 1
+        events_by_kind[group["kind"]] += group["events"]
+    for kind, count in sorted(by_kind.items()):
+        print(f"{kind}: rows={count} events={events_by_kind[kind]}", file=sys.stderr)
+
+
+def main():
+    parser = argparse.ArgumentParser(description="Prioritize VM bytecode and handler coverage gaps.")
+    parser.add_argument("dump_dir", nargs="?", default="dumps/vmtail-wide-1m-w16")
+    parser.add_argument("--segments", default=None)
+    parser.add_argument("--max-items", type=int, default=8)
+    parser.add_argument("--limit", type=int, default=0, help="limit emitted rows; 0 emits all")
+    args = parser.parse_args()
+
+    dump_dir = Path(args.dump_dir)
+    segment_path = Path(args.segments) if args.segments else dump_dir / "vm_bytecode_segments.tsv"
+    segments = load_segments(segment_path)
+    groups = {}
+
+    analyze_trace(dump_dir, segments, groups)
+    load_missing_exact(dump_dir, groups)
+    load_observation_gaps(dump_dir, groups)
+
+    emit_summary(groups)
+    emit_report(groups, segments, args.max_items, args.limit)
+
+
+if __name__ == "__main__":
+    main()

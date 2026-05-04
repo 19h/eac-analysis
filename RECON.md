@@ -36,16 +36,16 @@ SHA-256: `0b44ad59697129534189efdb75cde2b96245f831438e9f6a53cb7725f190d739`
 - `dumps/vmtail-wide-1m/*`: earlier longer `0x1200` wide-tail run using the old shorter lookahead. The harness reached about 767k VM tail events before fast exit and expanded exact bytecode recovery from `0x24948` to `0x41d31` bytes with no byte conflicts.
 - `dumps/vmtail-wide-w16/*`: current 250k comparison run with sixteen `ip_w*` words. It keeps the same direct graph shape as `dumps/vmtail-wide` but improves exact byte recovery to `0x24c51` bytes and reduces prefix-only instruction rows from 697 to 90.
 - `dumps/vmtail-wide-1m-w16/*`: current long `0x1200` wide-tail run with sixteen `ip_w*` words. It improves long-run exact recovery from `0x41d31` to `0x421d3` bytes, raises exact-covered handlers from 171 to 190, and leaves no byte conflicts.
-- `dumps/vmtail-wide-1m/vm_isa_handlers.tsv`: exact-covered handler schema summary.
-- `dumps/vmtail-wide-1m/vm_isa_patterns.tsv`: exact-covered `(source handler, byte length)` operand-layout summary.
-- `dumps/vmtail-wide-1m/vm_isa_families.tsv`: operand-layout families grouped by byte length, shape, and constant byte positions.
-- `dumps/vmtail-wide-1m/vm_isa_missing_exact.tsv`: dynamic source handlers that still have no exact positive byte schema.
-- `dumps/vmtail-wide-1m/vm_handler_semantics.tsv`: one semantic row per dispatch-table entry, combining observation class, ISA shape, frame/IP/table access patterns, and dynamic target profile.
-- `dumps/vmtail-wide-1m/vm_semantic_templates.tsv`: ranked semantic templates grouped by observation class, byte shape, constant positions, static IP reads, frame writes, and dispatch-table access.
-- `dumps/vmtail-wide-1m/vm_handler_skeletons.tsv`: one row per dispatch-table entry with full normalized frame/IP/table skeleton, final dispatch suffix, and canonical decode signature.
-- `dumps/vmtail-wide-1m/vm_handler_decode_groups.tsv`: observed handlers grouped by canonical decode signature.
-- `dumps/vmtail-wide-1m/vm_handler_dispatch_groups.tsv`: observed handlers grouped by final dispatch-tail skeleton.
-- `dumps/vmtail-wide-1m/vm_handler_skeleton_groups.tsv`: observed handlers grouped by full normalized handler skeleton.
+- `dumps/vmtail-wide-1m-w16/vm_isa_handlers.tsv`: exact-covered handler schema summary.
+- `dumps/vmtail-wide-1m-w16/vm_isa_patterns.tsv`: exact-covered `(source handler, byte length)` operand-layout summary.
+- `dumps/vmtail-wide-1m-w16/vm_isa_families.tsv`: operand-layout families grouped by byte length, shape, and constant byte positions.
+- `dumps/vmtail-wide-1m-w16/vm_isa_missing_exact.tsv`: dynamic source handlers that still have no exact positive byte schema.
+- `dumps/vmtail-wide-1m-w16/vm_handler_semantics.tsv`: one semantic row per dispatch-table entry, combining observation class, ISA shape, frame/IP/table access patterns, and dynamic target profile.
+- `dumps/vmtail-wide-1m-w16/vm_semantic_templates.tsv`: ranked semantic templates grouped by observation class, byte shape, constant positions, static IP reads, frame writes, and dispatch-table access.
+- `dumps/vmtail-wide-1m-w16/vm_handler_skeletons.tsv`: one row per dispatch-table entry with full normalized frame/IP/table skeleton, final dispatch suffix, and canonical decode signature.
+- `dumps/vmtail-wide-1m-w16/vm_handler_decode_groups.tsv`: observed handlers grouped by canonical decode signature.
+- `dumps/vmtail-wide-1m-w16/vm_handler_dispatch_groups.tsv`: observed handlers grouped by final dispatch-tail skeleton.
+- `dumps/vmtail-wide-1m-w16/vm_handler_skeleton_groups.tsv`: observed handlers grouped by full normalized handler skeleton.
 
 Reproduction:
 
@@ -137,11 +137,11 @@ python3 vm_handler_table.py dumps/vmtail-allstatic --eac eac.elf \
   >dumps/vmtail-allstatic/vm_handler_table.tsv
 ```
 
-Wide-tail rerun:
+Wide-tail rerun with the current 16-word tracer:
 
 ```sh
 make
-mkdir -p dumps/vmtail-wide
+mkdir -p dumps/vmtail-wide-w16
 SPEC=$(python3 vm_tail_scan.py --all-table --eac eac.elf --window 0x1200 --limit 0 \
   | sed -n 's/^EAC_VMTAIL_SITES=//p')
 timeout 30s env EAC_FAST_EXIT=1 \
@@ -151,98 +151,98 @@ timeout 30s env EAC_FAST_EXIT=1 \
   EAC_DISPATCH_LIMIT=4096 \
   EAC_VMTAIL_LIMIT=250000 \
   EAC_VMTAIL_SITES="$SPEC" \
-  EAC_DUMP_DIR=dumps/vmtail-wide \
+  EAC_DUMP_DIR=dumps/vmtail-wide-w16 \
   EAC_LAUNCHERDIR=/tmp/fake_launcher \
   LD_PRELOAD=./trace_preload.so \
   ./driver ./eac.elf 1 x 0x800 0 \
-  >dumps/vmtail-wide/run.stdout \
-  2>dumps/vmtail-wide/run.stderr
-python3 vm_tail_scan.py dumps/vmtail-wide --eac eac.elf --window 0x1200 --table-report \
-  >dumps/vmtail-wide/vm_table.tsv
-python3 vm_trace_graph.py dumps/vmtail-wide --eac eac.elf --window 0x1200 --sequential \
-  >dumps/vmtail-wide/vm_seq_edges.tsv
-python3 vm_trace_graph.py dumps/vmtail-wide --eac eac.elf --window 0x1200 --source-profile \
-  >dumps/vmtail-wide/vm_source_profile.tsv
-python3 vm_trace_graph.py dumps/vmtail-wide --eac eac.elf --window 0x1200 --instruction-trace \
-  >dumps/vmtail-wide/vm_instruction_trace.tsv
-python3 vm_handler_table.py dumps/vmtail-wide --eac eac.elf --window 0x1200 \
-  >dumps/vmtail-wide/vm_handler_table.tsv
-python3 vm_bytecode_blocks.py dumps/vmtail-wide/vm_instruction_trace.tsv \
-  >dumps/vmtail-wide/vm_bytecode_blocks.tsv
-python3 vm_bytecode_recover.py dumps/vmtail-wide/vm_instruction_trace.tsv \
-  >dumps/vmtail-wide/vm_bytecode_segments.tsv
-python3 vm_bytecode_recover.py dumps/vmtail-wide/vm_instruction_trace.tsv --instructions \
-  >dumps/vmtail-wide/vm_instruction_unique.tsv
-python3 vm_bytecode_cfg.py dumps/vmtail-wide/vm_instruction_trace.tsv \
-  --segments dumps/vmtail-wide/vm_bytecode_segments.tsv \
-  >dumps/vmtail-wide/vm_bytecode_block_edges.tsv
+  >dumps/vmtail-wide-w16/run.stdout \
+  2>dumps/vmtail-wide-w16/run.stderr
+python3 vm_tail_scan.py dumps/vmtail-wide-w16 --eac eac.elf --window 0x1200 --table-report \
+  >dumps/vmtail-wide-w16/vm_table.tsv
+python3 vm_trace_graph.py dumps/vmtail-wide-w16 --eac eac.elf --window 0x1200 --sequential \
+  >dumps/vmtail-wide-w16/vm_seq_edges.tsv
+python3 vm_trace_graph.py dumps/vmtail-wide-w16 --eac eac.elf --window 0x1200 --source-profile \
+  >dumps/vmtail-wide-w16/vm_source_profile.tsv
+python3 vm_trace_graph.py dumps/vmtail-wide-w16 --eac eac.elf --window 0x1200 --instruction-trace \
+  >dumps/vmtail-wide-w16/vm_instruction_trace.tsv
+python3 vm_handler_table.py dumps/vmtail-wide-w16 --eac eac.elf --window 0x1200 \
+  >dumps/vmtail-wide-w16/vm_handler_table.tsv
+python3 vm_bytecode_blocks.py dumps/vmtail-wide-w16/vm_instruction_trace.tsv \
+  >dumps/vmtail-wide-w16/vm_bytecode_blocks.tsv
+python3 vm_bytecode_recover.py dumps/vmtail-wide-w16/vm_instruction_trace.tsv \
+  >dumps/vmtail-wide-w16/vm_bytecode_segments.tsv
+python3 vm_bytecode_recover.py dumps/vmtail-wide-w16/vm_instruction_trace.tsv --instructions \
+  >dumps/vmtail-wide-w16/vm_instruction_unique.tsv
+python3 vm_bytecode_cfg.py dumps/vmtail-wide-w16/vm_instruction_trace.tsv \
+  --segments dumps/vmtail-wide-w16/vm_bytecode_segments.tsv \
+  >dumps/vmtail-wide-w16/vm_bytecode_block_edges.tsv
 ```
 
-Long wide-tail rerun:
+Long wide-tail rerun with the current 16-word tracer:
 
 ```sh
 make
-mkdir -p dumps/vmtail-wide-1m
+mkdir -p dumps/vmtail-wide-1m-w16
 SPEC=$(python3 vm_tail_scan.py --all-table --eac eac.elf --window 0x1200 --limit 0 \
   | sed -n 's/^EAC_VMTAIL_SITES=//p')
-timeout 60s env EAC_FAST_EXIT=1 \
+timeout 75s env EAC_FAST_EXIT=1 \
   EAC_DISPATCH_TRACE=1 \
   EAC_DISPATCH_DETAIL=1 \
   EAC_VMTAIL_TRACE=1 \
   EAC_DISPATCH_LIMIT=4096 \
   EAC_VMTAIL_LIMIT=1000000 \
   EAC_VMTAIL_SITES="$SPEC" \
-  EAC_DUMP_DIR=dumps/vmtail-wide-1m \
+  EAC_DUMP_DIR=dumps/vmtail-wide-1m-w16 \
   EAC_LAUNCHERDIR=/tmp/fake_launcher \
   LD_PRELOAD=./trace_preload.so \
   ./driver ./eac.elf 1 x 0x800 0 \
-  >dumps/vmtail-wide-1m/run.stdout \
-  2>dumps/vmtail-wide-1m/run.stderr
-python3 recon_summary.py dumps/vmtail-wide-1m --eac eac.elf \
-  >dumps/vmtail-wide-1m/recon_summary.txt
-python3 vm_tail_scan.py dumps/vmtail-wide-1m --eac eac.elf --window 0x1200 --table-report \
-  >dumps/vmtail-wide-1m/vm_table.tsv
-python3 vm_trace_graph.py dumps/vmtail-wide-1m --eac eac.elf --window 0x1200 \
-  >dumps/vmtail-wide-1m/vm_edges.tsv
-python3 vm_trace_graph.py dumps/vmtail-wide-1m --eac eac.elf --window 0x1200 --sequential \
-  >dumps/vmtail-wide-1m/vm_seq_edges.tsv
-python3 vm_trace_graph.py dumps/vmtail-wide-1m --eac eac.elf --window 0x1200 --source-profile \
-  >dumps/vmtail-wide-1m/vm_source_profile.tsv
-python3 vm_trace_graph.py dumps/vmtail-wide-1m --eac eac.elf --window 0x1200 --instruction-trace \
-  >dumps/vmtail-wide-1m/vm_instruction_trace.tsv
-python3 vm_handler_table.py dumps/vmtail-wide-1m --eac eac.elf --window 0x1200 \
-  >dumps/vmtail-wide-1m/vm_handler_table.tsv
-python3 vm_bytecode_blocks.py dumps/vmtail-wide-1m/vm_instruction_trace.tsv \
-  >dumps/vmtail-wide-1m/vm_bytecode_blocks.tsv
-python3 vm_bytecode_recover.py dumps/vmtail-wide-1m/vm_instruction_trace.tsv \
-  >dumps/vmtail-wide-1m/vm_bytecode_segments.tsv
-python3 vm_bytecode_recover.py dumps/vmtail-wide-1m/vm_instruction_trace.tsv --instructions \
-  >dumps/vmtail-wide-1m/vm_instruction_unique.tsv
-python3 vm_bytecode_cfg.py dumps/vmtail-wide-1m/vm_instruction_trace.tsv \
-  --segments dumps/vmtail-wide-1m/vm_bytecode_segments.tsv \
-  >dumps/vmtail-wide-1m/vm_bytecode_block_edges.tsv
-python3 vm_isa_summary.py dumps/vmtail-wide-1m/vm_instruction_unique.tsv \
-  >dumps/vmtail-wide-1m/vm_isa_handlers.tsv
-python3 vm_isa_summary.py dumps/vmtail-wide-1m/vm_instruction_unique.tsv --patterns \
-  >dumps/vmtail-wide-1m/vm_isa_patterns.tsv
-python3 vm_isa_summary.py dumps/vmtail-wide-1m/vm_instruction_unique.tsv --families \
-  >dumps/vmtail-wide-1m/vm_isa_families.tsv
-python3 vm_isa_summary.py dumps/vmtail-wide-1m/vm_instruction_unique.tsv \
-  --source-profile dumps/vmtail-wide-1m/vm_source_profile.tsv \
+  >dumps/vmtail-wide-1m-w16/run.stdout \
+  2>dumps/vmtail-wide-1m-w16/run.stderr
+python3 recon_summary.py dumps/vmtail-wide-1m-w16 --eac eac.elf \
+  >dumps/vmtail-wide-1m-w16/recon_summary.txt
+python3 vm_tail_scan.py dumps/vmtail-wide-1m-w16 --eac eac.elf --window 0x1200 --table-report \
+  >dumps/vmtail-wide-1m-w16/vm_table.tsv
+python3 vm_trace_graph.py dumps/vmtail-wide-1m-w16 --eac eac.elf --window 0x1200 \
+  >dumps/vmtail-wide-1m-w16/vm_edges.tsv
+python3 vm_trace_graph.py dumps/vmtail-wide-1m-w16 --eac eac.elf --window 0x1200 --sequential \
+  >dumps/vmtail-wide-1m-w16/vm_seq_edges.tsv
+python3 vm_trace_graph.py dumps/vmtail-wide-1m-w16 --eac eac.elf --window 0x1200 --source-profile \
+  >dumps/vmtail-wide-1m-w16/vm_source_profile.tsv
+python3 vm_trace_graph.py dumps/vmtail-wide-1m-w16 --eac eac.elf --window 0x1200 --instruction-trace \
+  >dumps/vmtail-wide-1m-w16/vm_instruction_trace.tsv
+python3 vm_handler_table.py dumps/vmtail-wide-1m-w16 --eac eac.elf --window 0x1200 \
+  >dumps/vmtail-wide-1m-w16/vm_handler_table.tsv
+python3 vm_bytecode_blocks.py dumps/vmtail-wide-1m-w16/vm_instruction_trace.tsv \
+  >dumps/vmtail-wide-1m-w16/vm_bytecode_blocks.tsv
+python3 vm_bytecode_recover.py dumps/vmtail-wide-1m-w16/vm_instruction_trace.tsv \
+  >dumps/vmtail-wide-1m-w16/vm_bytecode_segments.tsv
+python3 vm_bytecode_recover.py dumps/vmtail-wide-1m-w16/vm_instruction_trace.tsv --instructions \
+  >dumps/vmtail-wide-1m-w16/vm_instruction_unique.tsv
+python3 vm_bytecode_cfg.py dumps/vmtail-wide-1m-w16/vm_instruction_trace.tsv \
+  --segments dumps/vmtail-wide-1m-w16/vm_bytecode_segments.tsv \
+  >dumps/vmtail-wide-1m-w16/vm_bytecode_block_edges.tsv
+python3 vm_isa_summary.py dumps/vmtail-wide-1m-w16/vm_instruction_unique.tsv \
+  >dumps/vmtail-wide-1m-w16/vm_isa_handlers.tsv
+python3 vm_isa_summary.py dumps/vmtail-wide-1m-w16/vm_instruction_unique.tsv --patterns \
+  >dumps/vmtail-wide-1m-w16/vm_isa_patterns.tsv
+python3 vm_isa_summary.py dumps/vmtail-wide-1m-w16/vm_instruction_unique.tsv --families \
+  >dumps/vmtail-wide-1m-w16/vm_isa_families.tsv
+python3 vm_isa_summary.py dumps/vmtail-wide-1m-w16/vm_instruction_unique.tsv \
+  --source-profile dumps/vmtail-wide-1m-w16/vm_source_profile.tsv \
   --missing-exact \
-  >dumps/vmtail-wide-1m/vm_isa_missing_exact.tsv
-python3 vm_semantic_templates.py dumps/vmtail-wide-1m \
-  >dumps/vmtail-wide-1m/vm_semantic_templates.tsv
-python3 vm_semantic_templates.py dumps/vmtail-wide-1m --per-handler \
-  >dumps/vmtail-wide-1m/vm_handler_semantics.tsv
-python3 vm_handler_skeleton.py dumps/vmtail-wide-1m \
-  >dumps/vmtail-wide-1m/vm_handler_skeletons.tsv
-python3 vm_handler_skeleton.py dumps/vmtail-wide-1m --groups --group-key decode \
-  >dumps/vmtail-wide-1m/vm_handler_decode_groups.tsv
-python3 vm_handler_skeleton.py dumps/vmtail-wide-1m --groups --group-key dispatch \
-  >dumps/vmtail-wide-1m/vm_handler_dispatch_groups.tsv
-python3 vm_handler_skeleton.py dumps/vmtail-wide-1m --groups --group-key skeleton \
-  >dumps/vmtail-wide-1m/vm_handler_skeleton_groups.tsv
+  >dumps/vmtail-wide-1m-w16/vm_isa_missing_exact.tsv
+python3 vm_semantic_templates.py dumps/vmtail-wide-1m-w16 \
+  >dumps/vmtail-wide-1m-w16/vm_semantic_templates.tsv
+python3 vm_semantic_templates.py dumps/vmtail-wide-1m-w16 --per-handler \
+  >dumps/vmtail-wide-1m-w16/vm_handler_semantics.tsv
+python3 vm_handler_skeleton.py dumps/vmtail-wide-1m-w16 \
+  >dumps/vmtail-wide-1m-w16/vm_handler_skeletons.tsv
+python3 vm_handler_skeleton.py dumps/vmtail-wide-1m-w16 --groups --group-key decode \
+  >dumps/vmtail-wide-1m-w16/vm_handler_decode_groups.tsv
+python3 vm_handler_skeleton.py dumps/vmtail-wide-1m-w16 --groups --group-key dispatch \
+  >dumps/vmtail-wide-1m-w16/vm_handler_dispatch_groups.tsv
+python3 vm_handler_skeleton.py dumps/vmtail-wide-1m-w16 --groups --group-key skeleton \
+  >dumps/vmtail-wide-1m-w16/vm_handler_skeleton_groups.tsv
 ```
 
 ## ELF Overview
@@ -449,37 +449,39 @@ The older `dumps/vmtail-allstatic` graph skipped 842 unhooked-source candidates 
 
 The wider `dumps/vmtail-wide` rerun used an all-table `0x1200` tail scan. It removed the unhooked-source gap and skipped only 782 indirect-site candidates. Its direct graph has 4296 transition rows over 249764 observed branch events: 4263 tail rows, 33 central-dispatch rows, 191 source entries, 195 target entries, and 4284 distinct source-target entry pairs.
 
-The longer `dumps/vmtail-wide-1m` rerun used the same `0x1200` all-table scan with `EAC_VMTAIL_LIMIT=1000000`. The harness fast-exited after the final VMTAIL counter reached 767345; 767334 VMTAIL records were complete line-start records, and 3385 central-dispatch records were present. After direct-edge filtering it skipped 1605 indirect-site candidates and kept 4795 transition rows over 769113 branch events: 4756 tail rows, 39 central-dispatch rows, 202 source entries, 205 target entries, and 4782 distinct source-target entry pairs.
+The current `dumps/vmtail-wide-w16` comparison run repeats that 250k trace with sixteen `ip_w*` lookahead words. The direct graph stayed the same size, but instruction recovery improved from 248299 to 248906 exact rows, prefix-only rows dropped from 697 to 90, and exact byte recovery grew from `0x24948` to `0x24c51` bytes with no conflicts.
+
+The current long `dumps/vmtail-wide-1m-w16` run used the same `0x1200` all-table scan with `EAC_VMTAIL_LIMIT=1000000`. It produced 767437 complete VMTAIL line records and 3385 central-dispatch records. After direct-edge filtering it skipped 1605 indirect-site candidates and kept 4795 transition rows over 769216 branch events: 4756 tail rows covering 765832 events, 39 central-dispatch rows covering 3384 events, 202 source entries, 205 target entries, and 4782 distinct source-target entry pairs.
 
 Top sequential VM transitions in the long run:
 
 | Count | Source Entry | Site | Target Entry | Target | VM IP Delta |
 | ---: | ---: | --- | ---: | --- | --- |
-| 2146 | 28 | `0x7e7ca` | 347 | `0xc088d` | `+0x3` |
+| 2147 | 28 | `0x7e7ca` | 347 | `0xc088d` | `+0x3` |
 | 2091 | 64 | `0x8536e` | 18 | `0x7be9b` | `+0x4` |
 | 2041 | 114 | `0x90893` | 66 | `0x855ff` | `+0x4` |
 | 1928 | 347 | `0xc0d7b` | 18 | `0x7be9b` | `+0x4` |
 | 1894 | 189 | `0x9eac9` | 18 | `0x7be9b` | `+0x4` |
 | 1787 | 337 | `0xbf126` | 297 | `0xb64d7` | `+0x4` |
 | 1754 | 307 | `0xb837a` | 114 | `0x90319` | `+0x3` |
-| 1747 | 340 | `0xbf886` | 307 | `0xb8064` | `+0x4` |
+| 1748 | 340 | `0xbf886` | 307 | `0xb8064` | `+0x4` |
 | 1729 | 18 | `0x7c308` | 114 | `0x90319` | `+0x3` |
 | 1702 | 340 | `0xbf886` | 28 | `0x7e390` | `+0x4` |
 
-The source profile in `vm_source_profile.tsv` covers 191 source handlers in the wide run. The longer `vmtail-wide-1m` profile covers 202 source handlers. The hottest long-run sources are strongly site-stable:
+The source profile in `vm_source_profile.tsv` covers 191 source handlers in the 250k wide run. The current long W16 profile covers 202 source handlers. The hottest long-run sources are strongly site-stable:
 
 | Events | Source Entry | Source Target | Outgoing Site | VM IP Delta |
 | ---: | ---: | --- | --- | --- |
-| 28055 | 258 | `0xadf2c` | `0xae32f` | `+0x4` |
-| 26605 | 28 | `0x7e390` | `0x7e7ca` | `+0x3` |
-| 26531 | 337 | `0xbec0e` | `0xbf126` | `+0x4` |
-| 26110 | 340 | `0xbf435` | `0xbf886` | `+0x4` |
-| 25445 | 18 | `0x7be9b` | `0x7c308` | `+0x3` |
-| 25296 | 114 | `0x90319` | `0x90893` | `+0x4` |
-| 25104 | 189 | `0x9e7af` | `0x9eac9` | `+0x4` |
-| 24294 | 347 | `0xc088d` | `0xc0d7b` | `+0x4` |
-| 24092 | 307 | `0xb8064` | `0xb837a` | `+0x3` |
-| 23676 | 64 | `0x85059` | `0x8536e` | `+0x4` |
+| 28058 | 258 | `0xadf2c` | `0xae32f` | `+0x4` |
+| 26610 | 28 | `0x7e390` | `0x7e7ca` | `+0x3` |
+| 26534 | 337 | `0xbec0e` | `0xbf126` | `+0x4` |
+| 26112 | 340 | `0xbf435` | `0xbf886` | `+0x4` |
+| 25448 | 18 | `0x7be9b` | `0x7c308` | `+0x3` |
+| 25300 | 114 | `0x90319` | `0x90893` | `+0x4` |
+| 25112 | 189 | `0x9e7af` | `0x9eac9` | `+0x4` |
+| 24299 | 347 | `0xc088d` | `0xc0d7b` | `+0x4` |
+| 24095 | 307 | `0xb8064` | `0xb837a` | `+0x3` |
+| 23678 | 64 | `0x85059` | `0x8536e` | `+0x4` |
 
 The combined handler table in `vm_handler_table.tsv` now provides one row for every dispatch-table entry. It includes static span length, conditional-branch/jump/call/return counts, frame-relative reads/writes, inferred bytecode-pointer reads, inferred dispatch-table reads, and the dynamic source profile where available. The static dataflow is intentionally lightweight: it tracks registers derived from `rbp`, the VM bytecode pointer loaded from `frame+0x0a`, and the dispatch table loaded from `frame+0x10f`.
 
@@ -487,61 +489,61 @@ Current handler-table facts:
 
 - 360 dispatch entries are present.
 - The `0x800`/`0x900` scan missed 12 long-tail entries; the `0x1200` wide scan finds a candidate for every dispatch entry.
-- 11 of those previously missed entries were observed as targets in the wide runs; entry 32 (`0x7efa8`) remains unobserved even in `vmtail-wide-1m`.
-- Entry 69 (`0x85f24`) is still special. The wide linear scan associates it with entry 70's tail site after a `ret`, so its dynamic edges should be treated as helper-return/continuation behavior rather than a normal direct tail. In `vmtail-wide-1m` it was reached 23 times as a target but only contributes 2 direct source events after filtering; it reads richer bytecode operands through `frame+0x0a` and writes `frame+0x1dc`.
+- 11 of those previously missed entries were observed as targets in the wide runs; entry 32 (`0x7efa8`) remains unobserved even in `vmtail-wide-1m-w16`.
+- Entry 69 (`0x85f24`) is still special. The wide linear scan associates it with entry 70's tail site after a `ret`, so its dynamic edges should be treated as helper-return/continuation behavior rather than a normal direct tail. In `vmtail-wide-1m-w16` it was reached 23 times as a target but only contributes 2 direct source events after filtering; it reads richer bytecode operands through `frame+0x0a` and writes `frame+0x1dc`.
 - All 360 wide handler-table rows now have an inferred dispatch-table read, but entry 69's read belongs to the post-`ret` linear span and should not be interpreted as its own direct tail path.
 - Only entries 264 (`0xaf4cf`) and 265 (`0xaf57f`) contain direct `call` instructions in the scanned span. Entry 264 was observed and fans into central-dispatch targets 169, 171, 310, 354, and 165.
 
 Weighted by source events in the long run, dominant VM IP deltas are:
 
-| Events | Source Rows | VM IP Delta |
-| ---: | ---: | --- |
-| 463785 | 2224 | `+0x4` |
-| 182851 | 733 | `+0x3` |
-| 51701 | 785 | `+0x5` |
-| 45208 | 613 | `+0x2` |
-| 20473 | 362 | `+0x6` |
-| 3275 | 28 | `+0xa` |
-| 255 | 1 | `-0x6d` |
-| 255 | 1 | `-0x3c4` |
-| 230 | 7 | `-0x40` |
-| 182 | 2 | `+0x2d` |
+| Events | VM IP Delta |
+| ---: | --- |
+| 463848 | `+0x4` |
+| 182878 | `+0x3` |
+| 51707 | `+0x5` |
+| 45212 | `+0x2` |
+| 20476 | `+0x6` |
+| 3275 | `+0xa` |
+| 255 | `-0x6d` |
+| 255 | `-0x3c4` |
+| 230 | `-0x40` |
+| 182 | `+0x2d` |
 
-The executed-instruction listing in `vm_instruction_trace.tsv` has 769113 direct rows from the long wide trace. Each row attributes a branch to the previous direct source handler and records the bytecode pointer before and after that handler. The `bytes` column is exact when the positive delta fits in the logged `ip_w*` window, otherwise it is marked as a prefix or backedge sample.
+The executed-instruction listing in `vm_instruction_trace.tsv` has 769216 direct rows from the current long W16 trace. Each row attributes a branch to the previous direct source handler and records the bytecode pointer before and after that handler. The `bytes` column is exact when the positive delta fits in the logged `ip_w*` window, otherwise it is marked as a prefix or backedge sample. The current driver logs 32 bytes of VM bytecode lookahead, so prefix statuses are now `prefix_32_of_N`.
 
 Instruction-trace coverage:
 
 - 202 source handlers.
-- 71510 unique start VM IP offsets.
-- 64450 distinct `(source_entry, delta, bytes)` signatures.
-- 764018 rows have exact consumed bytes.
+- 71513 unique start VM IP offsets.
+- 64472 distinct `(source_entry, delta, bytes)` signatures.
+- 767566 rows have exact consumed bytes.
 - 1157 rows are backedge samples.
-- 3938 rows are positive jumps longer than the logged byte window and keep only a prefix sample.
+- 493 rows are positive jumps longer than the logged byte window and keep only a 32-byte prefix sample.
 
-The exact bytecode block reducer in `vm_bytecode_blocks.tsv` merges exact positive instruction intervals. It produced 557 contiguous blocks covering `0x41d31` bytes of VM bytecode and 764018 exact instruction events. The largest event bands are:
+The exact bytecode block reducer in `vm_bytecode_blocks.tsv` merges exact positive instruction intervals. It produced 445 contiguous blocks covering `0x421d3` bytes of VM bytecode and 767566 exact instruction events. The largest event bands are:
 
 | Events | Band | Blocks | Exact Bytes |
 | ---: | --- | ---: | ---: |
-| 501973 | `0x310000` | 85 | `0xa465` |
-| 87549 | `0x230000` | 9 | `0x12e6` |
+| 488367 | `0x310000` | 41 | `0x9a78` |
+| 87614 | `0x230000` | 7 | `0x1300` |
 | 47699 | `0x370000` | 21 | `0x1bdb` |
 | 27989 | `0x220000` | 2 | `0x2d3` |
-| 27164 | `0x360000` | 94 | `0xb46d` |
-| 24580 | `0x330000` | 79 | `0xa946` |
-| 10341 | `0x340000` | 39 | `0x51f2` |
-| 6160 | `0x260000` | 10 | `0x16ca` |
+| 27184 | `0x360000` | 75 | `0xb52e` |
+| 24595 | `0x330000` | 64 | `0xa9df` |
+| 19619 | `0x300000` | 6 | `0x2500` |
+| 10358 | `0x340000` | 26 | `0x527a` |
+| 6192 | `0x260000` | 2 | `0x171a` |
 | 5859 | `0x170000` | 39 | `0x561e` |
-| 5414 | `0x240000` | 16 | `0x27f0` |
 
 The bytecode recovery pass in `vm_bytecode_segments.tsv` inserts every exact byte slice into a sparse VM byte map and checks that repeated observations agree byte-for-byte. Current result:
 
-- 764018 exact rows inserted.
-- 557 recovered byte segments.
-- `0x41d31` total exact bytes.
+- 767566 exact rows inserted.
+- 445 recovered byte segments.
+- `0x421d3` total exact bytes.
 - 0 conflicting byte offsets.
 - 0 conflicting byte observations.
 
-`vm_instruction_unique.tsv` collapses the exact trace to 71240 unique executed instruction signatures. The most repeated signatures are still the loop body beginning at `0x22ff44`, where many adjacent rows execute exactly 256 times. Example rows:
+`vm_instruction_unique.tsv` collapses the exact trace to 71355 unique executed instruction signatures. The most repeated signatures are still the loop body beginning at `0x22ff44`, where many adjacent rows execute exactly 256 times. Example rows:
 
 | Count | Start VM IP | Source Entry | Delta | Bytes | Target Entry |
 | ---: | --- | ---: | --- | --- | ---: |
@@ -553,49 +555,52 @@ The bytecode recovery pass in `vm_bytecode_segments.tsv` inserts every exact byt
 
 `vm_isa_summary.py` clusters those exact signatures into handler-level schemas. Because it only accepts exact positive byte slices, it deliberately excludes backedges and prefix-only long jumps. Current exact-covered result:
 
-- 171 source handlers have exact positive byte schemas.
-- 171 `(source handler, byte length)` patterns are present, so every exact-covered source handler is fixed-width in this run.
-- 31 dynamic source handlers, accounting for 5095 direct events, remain outside the exact schema set because they only appeared through backedges, long positive jumps with prefix samples, or other non-exact rows.
+- 190 source handlers have exact positive byte schemas.
+- 190 `(source handler, byte length)` patterns are present, so every exact-covered source handler is fixed-width in this run.
+- 12 dynamic source handlers, accounting for 1398 direct events, remain outside the exact schema set because they only appeared through backedges, long positive jumps with prefix samples, or other non-exact rows.
 
 Exact fixed-width distribution:
 
 | Events | Source Handlers | VM IP Delta |
 | ---: | ---: | --- |
-| 463785 | 56 | `+0x4` |
-| 182851 | 13 | `+0x3` |
-| 51701 | 79 | `+0x5` |
-| 45208 | 11 | `+0x2` |
-| 20473 | 12 | `+0x6` |
+| 463848 | 56 | `+0x4` |
+| 182878 | 13 | `+0x3` |
+| 51707 | 79 | `+0x5` |
+| 45212 | 11 | `+0x2` |
+| 20476 | 12 | `+0x6` |
+| 3275 | 10 | `+0xa` |
+| 169 | 8 | `+0xd` |
+| 1 | 1 | `+0x20` |
 
-The family view groups those 171 exact handler schemas into 61 operand-layout families covering all 764018 exact events. The shape alphabet is event-weighted per byte position: `C` = constant, `E` = small enum, `V` = high-cardinality variable.
+The family view groups those 190 exact handler schemas into 75 operand-layout families covering all 767566 exact events. The shape alphabet is event-weighted per byte position: `C` = constant, `E` = small enum, `V` = high-cardinality variable.
 
 Top exact ISA families:
 
 | Events | Entries | Delta | Shape | Constant Bytes |
 | ---: | ---: | --- | --- | --- |
-| 259786 | 30 | `+0x4` | `VVVV` | none |
-| 160324 | 7 | `+0x3` | `VVV` | none |
-| 97027 | 11 | `+0x4` | `VVCC` | `b2=0xe8,b3=0x01` |
-| 52996 | 3 | `+0x4` | `VVVE` | none |
-| 50537 | 6 | `+0x4` | `CCVV` | `b0=0xe8,b1=0x01` |
-| 38978 | 8 | `+0x2` | `VV` | none |
-| 21755 | 2 | `+0x3` | `VVE` | none |
-| 11882 | 6 | `+0x6` | `VVVVVV` | none |
-| 10566 | 3 | `+0x5` | `CCCVV` | `b0=0x00,b1=0x3d,b2=0x01` |
-| 6647 | 7 | `+0x5` | `VVVCC` | `b3=0x3d,b4=0x01` |
+| 259824 | 30 | `+0x4` | `VVVV` | none |
+| 160347 | 7 | `+0x3` | `VVV` | none |
+| 97037 | 11 | `+0x4` | `VVCC` | `b2=0xe8,b3=0x01` |
+| 52999 | 3 | `+0x4` | `VVVE` | none |
+| 50549 | 6 | `+0x4` | `CCVV` | `b0=0xe8,b1=0x01` |
+| 38982 | 8 | `+0x2` | `VV` | none |
+| 21759 | 2 | `+0x3` | `VVE` | none |
+| 11883 | 6 | `+0x6` | `VVVVVV` | none |
+| 10568 | 3 | `+0x5` | `CCCVV` | `b0=0x00,b1=0x3d,b2=0x01` |
+| 6648 | 7 | `+0x5` | `VVVCC` | `b3=0x3d,b4=0x01` |
 
 High-weight operand-layout patterns show repeated constants inside otherwise encoded operands:
 
 | Events | Entry | Target | Delta | Shape | Stable Bytes |
 | ---: | ---: | --- | --- | --- | --- |
-| 12091 | 184 | `0x9d694` | `+0x4` | `VVCC` | `b2=0xe8,b3=0x01` |
-| 11741 | 174 | `0x9bd8f` | `+0x4` | `VVCC` | `b2=0xe8,b3=0x01` |
-| 10873 | 305 | `0xb78b0` | `+0x4` | `VVCC` | `b2=0xe8,b3=0x01` |
-| 10597 | 123 | `0x91a59` | `+0x4` | `VVCC` | `b2=0xe8,b3=0x01` |
-| 10132 | 176 | `0x9c10b` | `+0x4` | `CCVV` | `b0=0xe8,b1=0x01` |
-| 9920 | 315 | `0xb9451` | `+0x4` | `CCVV` | `b0=0xe8,b1=0x01` |
+| 12094 | 184 | `0x9d694` | `+0x4` | `VVCC` | `b2=0xe8,b3=0x01` |
+| 11742 | 174 | `0x9bd8f` | `+0x4` | `VVCC` | `b2=0xe8,b3=0x01` |
+| 10874 | 305 | `0xb78b0` | `+0x4` | `VVCC` | `b2=0xe8,b3=0x01` |
+| 10598 | 123 | `0x91a59` | `+0x4` | `VVCC` | `b2=0xe8,b3=0x01` |
+| 10138 | 176 | `0x9c10b` | `+0x4` | `CCVV` | `b0=0xe8,b1=0x01` |
+| 9921 | 315 | `0xb9451` | `+0x4` | `CCVV` | `b0=0xe8,b1=0x01` |
 | 4380 | 301 | `0xb708d` | `+0x5` | `CCCVV` | `b0=0x00,b1=0x3d,b2=0x01` |
-| 3575 | 220 | `0xa522e` | `+0x5` | `CCCVV` | `b0=0x00,b1=0x3d,b2=0x01` |
+| 3576 | 220 | `0xa522e` | `+0x5` | `CCCVV` | `b0=0x00,b1=0x3d,b2=0x01` |
 | 2509 | 167 | `0x9a8d2` | `+0x6` | `CCCCVV` | `b0=0xe8,b1=0x01,b2=0x3d,b3=0x01` |
 
 Two central-dispatch targets now have compact enum/constant schemas in exact coverage:
@@ -612,25 +617,25 @@ Two central-dispatch targets now have compact enum/constant schemas in exact cov
 Current semantic-template coverage:
 
 - 360 per-handler semantic rows.
-- 147 ranked semantic templates.
-- 120 exact templates covering 171 source handlers and 764018 exact events.
-- 10 `central_or_long` templates covering 3379 non-exact events.
-- 7 `sampled_backedge` templates covering 1405 non-exact events.
-- 10 `sampled_long_or_sparse` templates covering 311 non-exact events.
+- 150 ranked semantic templates.
+- 139 exact templates covering 190 source handlers and 767566 exact events.
+- 1 `central_or_long` template covering 1 non-exact event.
+- 6 `sampled_backedge` templates covering 1159 non-exact events.
+- 4 `sampled_long_or_sparse` templates covering 238 non-exact events.
 - 155 dispatch entries remain unobserved on this synthetic path.
 
 Top exact semantic templates:
 
 | Events | Entries | Delta | Shape | Constants | IP Reads | Frame Writes |
 | ---: | ---: | --- | --- | --- | --- | --- |
-| 77027 | 3 | `+0x4` | `VVVV` | none | `+0x2/2,+0x0/2` | `0x23,0x170,0x0,0x16f,0xa` |
-| 71689 | 3 | `+0x3` | `VVV` | none | `+0x2/1,+0x0/2` | `0x23,0x170,0x194,0xa` |
-| 63472 | 8 | `+0x4` | `VVCC` | `b2=0xe8,b3=0x01` | `+0x2/2,+0x0/2` | `0x23,0x170,0xa` |
-| 50825 | 2 | `+0x4` | `VVVV` | none | `+0x2/2,+0x0/2` | `0x170,0x23,0x0,0x16f,0xa` |
-| 44729 | 2 | `+0x3` | `VVV` | none | `+0x0/1,+0x1/2` | `0x170,0x23,0x194,0xa` |
-| 43906 | 2 | `+0x3` | `VVV` | none | `+0x2/1,+0x0/2` | `0x170,0x23,0x194,0xa` |
-| 41290 | 5 | `+0x4` | `CCVV` | `b0=0xe8,b1=0x01` | `+0x0/2,+0x2/2` | `0x170,0x23,0xa` |
-| 39919 | 5 | `+0x4` | `VVVV` | none | `+0x0/2,+0x2/2` | `0x170,0x23,0x81,0xa` |
+| 77036 | 3 | `+0x4` | `VVVV` | none | `+0x2/2,+0x0/2` | `0x23,0x170,0x0,0x16f,0xa` |
+| 71699 | 3 | `+0x3` | `VVV` | none | `+0x2/1,+0x0/2` | `0x23,0x170,0x194,0xa` |
+| 63478 | 8 | `+0x4` | `VVCC` | `b2=0xe8,b3=0x01` | `+0x2/2,+0x0/2` | `0x23,0x170,0xa` |
+| 50833 | 2 | `+0x4` | `VVVV` | none | `+0x2/2,+0x0/2` | `0x170,0x23,0x0,0x16f,0xa` |
+| 44735 | 2 | `+0x3` | `VVV` | none | `+0x0/1,+0x1/2` | `0x170,0x23,0x194,0xa` |
+| 43913 | 2 | `+0x3` | `VVV` | none | `+0x2/1,+0x0/2` | `0x170,0x23,0x194,0xa` |
+| 41302 | 5 | `+0x4` | `CCVV` | `b0=0xe8,b1=0x01` | `+0x0/2,+0x2/2` | `0x170,0x23,0xa` |
+| 39922 | 5 | `+0x4` | `VVVV` | none | `+0x0/2,+0x2/2` | `0x170,0x23,0x81,0xa` |
 
 `vm_handler_skeleton.py` keeps ordered access skeletons instead of just sets. The full skeleton is still intentionally noisy, so the most useful grouping is the canonical decode signature, which keeps only:
 
@@ -639,31 +644,31 @@ Top exact semantic templates:
 Current decode-signature coverage:
 
 - 360 per-handler skeleton rows.
-- 186 observed decode groups covering 202 observed source handlers and 769113 direct events.
-- 156 exact decode groups covering 171 exact handlers and 764018 exact events.
-- 10 `central_or_long` decode groups covering 3379 events.
-- 7 `sampled_backedge` decode groups covering 1405 events.
-- 13 `sampled_long_or_sparse` decode groups covering 311 events.
+- 186 observed decode groups covering 202 observed source handlers in the classified source profile.
+- 175 exact decode groups covering 190 exact handlers and 767566 exact events.
+- 1 `central_or_long` decode group covering 1 event.
+- 6 `sampled_backedge` decode groups covering 1159 events.
+- 4 `sampled_long_or_sparse` decode groups covering 238 events.
 
 Top exact decode groups:
 
 | Events | Entries | Delta | Shape | Decode Signature |
 | ---: | ---: | --- | --- | --- |
-| 43042 | 4 | `+0x4` | `VVVV` | `IPADV+0x0;RIP+0x0/2;RF+0x170:xor;TDYN;RTdyn;WF+0xa` |
-| 28646 | 2 | `+0x4` | `VVVV` | `IPADV+0x0;RIP+0x0/2;RF+0x170:add;WF+0x170:or;TDYN;RTdyn;WF+0xa` |
-| 28055 | 1 | `+0x4` | `VVVV` | `IPADV+0x0;RIP+0x0/2;RF+0x170:sub;WF+0x170:and;TDYN;RTdyn;WF+0xa` |
-| 26605 | 1 | `+0x3` | `VVV` | `IPADV+0x0;RIP+0x0/2;WF+0x170:or;TDYN;RTdyn;WF+0xa` |
-| 26110 | 1 | `+0x4` | `VVVE` | `IPADV+0x0;RIP+0x0/2;RF+0x170:add;WF+0x170:sub;TDYN;RTdyn;WF+0xa` |
-| 25445 | 1 | `+0x3` | `VVV` | `IPADV+0x0;RIP+0x0/2;RF+0x170:sub;WF+0x170:sub;TDYN;RTdyn;WF+0xa` |
-| 25296 | 1 | `+0x4` | `VVVV` | `IPADV+0x0;RIP+0x0/2;RF+0x170:add;WF+0x170:sub;TDYN;RTdyn;WF+0xa` |
-| 25104 | 1 | `+0x4` | `VVVV` | `IPADV+0x2;RIP+0x2/2;RF+0x170:add;WF+0x170:add;TDYN;RTdyn;WF+0xa` |
+| 43048 | 4 | `+0x4` | `VVVV` | `IPADV+0x0;RIP+0x0/2;RF+0x170:xor;TDYN;RTdyn;WF+0xa` |
+| 28649 | 2 | `+0x4` | `VVVV` | `IPADV+0x0;RIP+0x0/2;RF+0x170:add;WF+0x170:or;TDYN;RTdyn;WF+0xa` |
+| 28058 | 1 | `+0x4` | `VVVV` | `IPADV+0x0;RIP+0x0/2;RF+0x170:sub;WF+0x170:and;TDYN;RTdyn;WF+0xa` |
+| 26610 | 1 | `+0x3` | `VVV` | `IPADV+0x0;RIP+0x0/2;WF+0x170:or;TDYN;RTdyn;WF+0xa` |
+| 26112 | 1 | `+0x4` | `VVVE` | `IPADV+0x0;RIP+0x0/2;RF+0x170:add;WF+0x170:sub;TDYN;RTdyn;WF+0xa` |
+| 25448 | 1 | `+0x3` | `VVV` | `IPADV+0x0;RIP+0x0/2;RF+0x170:sub;WF+0x170:sub;TDYN;RTdyn;WF+0xa` |
+| 25300 | 1 | `+0x4` | `VVVV` | `IPADV+0x0;RIP+0x0/2;RF+0x170:add;WF+0x170:sub;TDYN;RTdyn;WF+0xa` |
+| 25112 | 1 | `+0x4` | `VVVV` | `IPADV+0x2;RIP+0x2/2;RF+0x170:add;WF+0x170:add;TDYN;RTdyn;WF+0xa` |
 
-The bytecode block graph in `vm_bytecode_block_edges.tsv` aggregates instruction rows by recovered bytecode segment. It has 1114 aggregate edges. By event weight:
+The bytecode block graph in `vm_bytecode_block_edges.tsv` aggregates instruction rows by recovered bytecode segment. It has 890 aggregate edges. By event weight:
 
 | Events | Edge Rows | Class |
 | ---: | ---: | --- |
-| 757319 | 557 | `intra_block` |
-| 6699 | 557 | `out_of_recovered` |
+| 764312 | 445 | `intra_block` |
+| 3254 | 445 | `out_of_recovered` |
 
 The `out_of_recovered` edges are exact positive steps whose destination offset has not yet been recovered as an exact byte segment start; these are useful targets for varied-input traces.
 
