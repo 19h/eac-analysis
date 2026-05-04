@@ -3237,7 +3237,7 @@ static bool parse_trace_row(Fields *f, TraceCols *cols, TraceRow *row) {
 }
 
 static void usage(const char *argv0) {
-    fprintf(stderr, "usage: %s [trace.tsv] [--by-path|--branch-sites|--branch-predicates|--state-validate|--dispatch-validate|--emit-dir dir] [--gpr-run run.stderr] [--skeletons path] [--eac eac.elf]\n", argv0);
+    fprintf(stderr, "usage: %s [trace.tsv] [--by-path|--branch-sites|--branch-predicates|--transfer-expr|--state-validate|--dispatch-validate|--emit-dir dir] [--gpr-run run.stderr] [--skeletons path] [--eac eac.elf]\n", argv0);
 }
 
 static Args parse_args(int argc, char **argv) {
@@ -3257,6 +3257,7 @@ static Args parse_args(int argc, char **argv) {
         if (!strcmp(argv[i], "--by-path")) args.by_path = true;
         else if (!strcmp(argv[i], "--branch-sites")) args.branch_sites = true;
         else if (!strcmp(argv[i], "--branch-predicates")) args.branch_predicates = true;
+        else if (!strcmp(argv[i], "--transfer-expr")) args.transfer_expr = true;
         else if (!strcmp(argv[i], "--state-validate")) args.state_validate = true;
         else if (!strcmp(argv[i], "--dispatch-validate")) args.dispatch_validate = true;
         else if (!strcmp(argv[i], "--emit-dir") && i + 1 < argc) args.emit_dir = argv[++i];
@@ -3323,6 +3324,9 @@ int main(int argc, char **argv) {
     size_t branch_count = 0, branch_cap = 0;
     BranchPredStat *branch_preds = NULL;
     size_t branch_pred_count = 0, branch_pred_cap = 0;
+    TransferSourceStat transfer_stats[TABLE_ENTRIES] = {0};
+    TransferPathStat *transfer_paths = NULL;
+    size_t transfer_path_count = 0, transfer_path_cap = 0;
     while (getline(&line, &line_cap, fp) >= 0) {
         Fields f = split_line(line);
         TraceRow row;
@@ -3337,6 +3341,16 @@ int main(int argc, char **argv) {
         Seed *seed = (seeds && row.seq >= 0 && (size_t)row.seq < seed_count) ? &seeds[row.seq] : NULL;
         char target_text[32];
         snprintf(target_text, sizeof(target_text), "0x%" PRIx64, h->target);
+        if (args.transfer_expr) {
+            TransferResult tr = execute_handler_transfer(h, &row, table, seed, args.max_steps, args.max_expr_len);
+            bool target_ok = !strcmp(tr.status, "ok") && tr.pred_entry == row.target_entry && tr.pred_target == row.target;
+            bool ip_ok = tr.pred_delta == row.delta;
+            update_transfer_stats(transfer_stats, &transfer_paths, &transfer_path_count, &transfer_path_cap,
+                                  source, target_text, &row, &tr, target_ok, ip_ok, args.top_targets);
+            free(tr.path);
+            source_counts[source]++;
+            continue;
+        }
         ExecResult r = args.branch_predicates
             ? execute_handler_branch_pred(h, &row, table, seed, args.max_steps, args.max_expr_len, args.max_cell_len,
                                           &branch_preds, &branch_pred_count, &branch_pred_cap, source, target_text)
@@ -3415,6 +3429,9 @@ int main(int argc, char **argv) {
         emit_state_validate(stats);
     } else if (args.dispatch_validate) {
         emit_dispatch_validate(stats);
+    } else if (args.transfer_expr) {
+        if (args.by_path) emit_transfer_by_path(transfer_paths, transfer_path_count, args.top, args.max_path_len);
+        else emit_transfer_summary(transfer_stats, args.top);
     } else if (args.branch_predicates) {
         emit_branch_predicates(branch_preds, branch_pred_count, args.top, args.max_cell_len);
     } else if (args.branch_sites) {
@@ -3428,6 +3445,7 @@ int main(int argc, char **argv) {
     free(paths);
     free(branches);
     free_branch_predicates(branch_preds, branch_pred_count);
+    free_transfer_stats(transfer_stats, transfer_paths, transfer_path_count);
     for (int i = 0; i < TABLE_ENTRIES; ++i) {
         if (handlers[i].insns) cs_free(handlers[i].insns, handlers[i].insn_count);
     }
