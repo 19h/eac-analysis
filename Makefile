@@ -65,7 +65,7 @@ sampled-operands:
 	python3 vm_sampled_operand_catalog.py dumps/vmtail-wide-1m-w16/vm_instruction_trace.tsv > dumps/vmtail-wide-1m-w16/vm_sampled_operand_catalog.tsv
 	python3 vm_sampled_operand_catalog.py dumps/vmtail-wide-1m-w16/vm_instruction_trace.tsv --markdown --limit 30 > dumps/vmtail-wide-1m-w16/vm_sampled_operand_top.md
 
-hidden-fill:
+hidden-fill: long-branches hidden-transitions sampled-operands
 	python3 vm_trace_hidden_fill.py dumps/vmtail-wide-1m-w16/vm_instruction_trace.tsv > dumps/vmtail-wide-1m-w16/vm_instruction_trace_hiddenfill.tsv
 	python3 vm_bytecode_recover.py dumps/vmtail-wide-1m-w16/vm_instruction_trace_hiddenfill.tsv --include-sampled > dumps/vmtail-wide-1m-w16/vm_bytecode_segments_hiddenfill_sampled.tsv
 	python3 vm_bytecode_blocks.py dumps/vmtail-wide-1m-w16/vm_instruction_trace_hiddenfill.tsv --include-sampled > dumps/vmtail-wide-1m-w16/vm_bytecode_blocks_hiddenfill_sampled.tsv
@@ -77,7 +77,7 @@ hidden-fill:
 	ln -sf ../vmtail-wide-1m-w16/vm_bytecode_segments_filefill_hiddenfill_sampled.tsv dumps/vmtail-wide-1m-w16-filefill-hiddenfill/vm_bytecode_segments.tsv
 	ln -sf ../vmtail-wide-1m-w16/vm_isa_missing_exact.tsv dumps/vmtail-wide-1m-w16-filefill-hiddenfill/vm_isa_missing_exact.tsv
 	ln -sf ../vmtail-wide-1m-w16/vm_handler_semantics.tsv dumps/vmtail-wide-1m-w16-filefill-hiddenfill/vm_handler_semantics.tsv
-	python3 vm_gap_report.py dumps/vmtail-wide-1m-w16-filefill-hiddenfill --long-branches dumps/vmtail-wide-1m-w16/vm_long_branch_catalog.tsv --hidden-transitions dumps/vmtail-wide-1m-w16/vm_hidden_transition_catalog.tsv > dumps/vmtail-wide-1m-w16/vm_gap_report_filefill_hiddenfill.tsv
+	python3 vm_gap_report.py dumps/vmtail-wide-1m-w16-filefill-hiddenfill --long-branches dumps/vmtail-wide-1m-w16/vm_long_branch_catalog.tsv --hidden-transitions dumps/vmtail-wide-1m-w16/vm_hidden_transition_catalog.tsv --sampled-operands dumps/vmtail-wide-1m-w16/vm_sampled_operand_catalog.tsv > dumps/vmtail-wide-1m-w16/vm_gap_report_filefill_hiddenfill.tsv
 
 clean:
 	rm -f driver trace_preload.so vm_fast_path_profile
