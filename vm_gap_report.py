@@ -61,9 +61,10 @@ def find_long_branch_path(dump_dir: Path, explicit_path):
         return path if path.exists() else None
 
     candidates = [dump_dir / "vm_long_branch_catalog.tsv"]
-    if dump_dir.name.endswith("-filefill"):
-        base_name = dump_dir.name[: -len("-filefill")]
-        candidates.append(dump_dir.with_name(base_name) / "vm_long_branch_catalog.tsv")
+    for suffix in ("-filefill-hiddenfill", "-filefill", "-hiddenfill"):
+        if dump_dir.name.endswith(suffix):
+            base_name = dump_dir.name[: -len(suffix)]
+            candidates.append(dump_dir.with_name(base_name) / "vm_long_branch_catalog.tsv")
 
     for path in candidates:
         if path.exists():
@@ -77,9 +78,10 @@ def find_hidden_transition_path(dump_dir: Path, explicit_path):
         return path if path.exists() else None
 
     candidates = [dump_dir / "vm_hidden_transition_catalog.tsv"]
-    if dump_dir.name.endswith("-filefill"):
-        base_name = dump_dir.name[: -len("-filefill")]
-        candidates.append(dump_dir.with_name(base_name) / "vm_hidden_transition_catalog.tsv")
+    for suffix in ("-filefill-hiddenfill", "-filefill", "-hiddenfill"):
+        if dump_dir.name.endswith(suffix):
+            base_name = dump_dir.name[: -len(suffix)]
+            candidates.append(dump_dir.with_name(base_name) / "vm_hidden_transition_catalog.tsv")
 
     for path in candidates:
         if path.exists():
