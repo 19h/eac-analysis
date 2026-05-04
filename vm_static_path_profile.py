@@ -2,6 +2,7 @@
 import argparse
 import csv
 import hashlib
+import re
 from collections import Counter, defaultdict
 from pathlib import Path
 
@@ -33,6 +34,15 @@ from vm_static_dispatch_validate import (
 )
 
 
+FIELD_RE = re.compile(r"\b([a-z][a-z0-9_]*)=0x([0-9a-f]+)")
+TRACE_RE = re.compile(r"^\[VMTAIL\]")
+REG_NAMES = {
+    "rax", "rbx", "rcx", "rdx", "rsi", "rdi",
+    "r8", "r9", "r10", "r11", "r12", "r13", "r14", "r15",
+    "rbp", "rsp",
+}
+
+
 def clip(text, max_len):
     if len(text) <= max_len:
         return text
@@ -46,7 +56,52 @@ def path_hash(path):
     return hashlib.sha256(text.encode()).hexdigest()[:16]
 
 
-def execute(insns_by_addr, start, row, table, target_to_entry, max_steps):
+def parse_gpr_fields(line):
+    return {name: int(value_s, 16) for name, value_s in FIELD_RE.findall(line)}
+
+
+def normalize_seed_value(value, fields):
+    frame = fields.get("frame")
+    table = fields.get("table")
+    vm_ip = fields.get("vm_ip")
+    image_base = None
+    if frame is not None and fields.get("frame_off") is not None:
+        image_base = frame - fields["frame_off"]
+
+    if frame is not None and frame - 0x4000 <= value < frame + 0x4000:
+        return Ptr("frame", value - frame)
+    if table is not None and table <= value < table + 360 * 8:
+        return Ptr("table", value - table)
+    if vm_ip is not None and vm_ip - 0x10000 <= value < vm_ip + 0x10000:
+        return Ptr("ip", value - vm_ip)
+    if image_base is not None and image_base <= value < image_base + 0x650000:
+        return value - image_base
+    return value
+
+
+def load_gpr_seeds(path):
+    if not path:
+        return {}
+    seeds = {}
+    with Path(path).open(errors="replace") as handle:
+        for line in handle:
+            if not TRACE_RE.search(line):
+                continue
+            fields = parse_gpr_fields(line)
+            count = fields.get("count")
+            if count is None:
+                continue
+            regs = {
+                reg: normalize_seed_value(fields[reg], fields)
+                for reg in REG_NAMES
+                if reg in fields
+            }
+            # Instruction row N starts at the previous VMTAIL event's exit state.
+            seeds[str(count + 1)] = regs
+    return seeds
+
+
+def execute(insns_by_addr, start, row, table, target_to_entry, max_steps, initial_regs=None):
     ip_bytes = bytes.fromhex(row["bytes"])
     frame = {
         "state": parse_int(row["pre_state"]) & MASK32,
@@ -54,7 +109,8 @@ def execute(insns_by_addr, start, row, table, target_to_entry, max_steps):
         "byte": parse_int(row.get("pre_byte", "0x0") or "0x0") & 0xff,
         "ip_delta": 0,
     }
-    regs = {"rbp": Ptr("frame", 0)}
+    regs = dict(initial_regs or {})
+    regs["rbp"] = Ptr("frame", 0)
     pc = start
     zf = None
     steps = 0
@@ -222,6 +278,10 @@ def main():
     parser.add_argument("--window", type=lambda value: int(value, 0), default=0x1200)
     parser.add_argument("--max-steps", type=int, default=2000)
     parser.add_argument("--max-rows-per-source", type=int, default=0)
+    parser.add_argument(
+        "--gpr-run",
+        help="seed handler-entry registers from the previous VMTAIL line in an EAC_VMTAIL_REGS run.stderr",
+    )
     parser.add_argument("--by-path", action="store_true")
     parser.add_argument("--top", type=int, default=5)
     parser.add_argument("--top-targets", type=int, default=8)
@@ -233,6 +293,7 @@ def main():
     target_to_entry = {target: idx for idx, target in enumerate(table)}
     md = make_disassembler()
     skeletons = read_skeletons(args.skeletons)
+    gpr_seeds = load_gpr_seeds(args.gpr_run)
     decoded = {}
     counts = defaultdict(int)
     source_stats = defaultdict(Counter)
@@ -265,7 +326,7 @@ def main():
             decoded[source] = (target, by_addr)
         target, by_addr = decoded[source]
         pred_entry, pred_target, pred_delta, status, steps, unknown, branch_unknown, path = execute(
-            by_addr, target, row, table, target_to_entry, args.max_steps
+            by_addr, target, row, table, target_to_entry, args.max_steps, gpr_seeds.get(row.get("seq", ""))
         )
         actual_entry = int(row["target_entry"])
         actual_target = parse_int(row["target"])
