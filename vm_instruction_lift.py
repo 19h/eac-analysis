@@ -66,6 +66,15 @@ def load_static_slots(path):
     return slots
 
 
+def load_dispatch_formulas(path):
+    formulas = {}
+    if not path:
+        return formulas
+    for row in read_tsv(path):
+        formulas[row.get("source_entry", "")] = row
+    return formulas
+
+
 def main():
     parser = argparse.ArgumentParser(
         description="Join recovered VM instructions with state effects and tail dispatch roles."
@@ -87,17 +96,23 @@ def main():
         "--static-slots",
         default="dumps/vmtail-wide-1m-w16/vm_tail_static_slots.tsv",
     )
+    parser.add_argument(
+        "--dispatch-formulas",
+        default="dumps/vmtail-state-wide-w16/vm_dispatch_formulas.tsv",
+    )
     args = parser.parse_args()
 
     states = load_state_signatures(args.state_signatures)
     roles = load_tail_roles(args.tail_roles)
     slots = load_static_slots(args.static_slots)
+    formulas = load_dispatch_formulas(args.dispatch_formulas)
 
     print(
         "start_vm_ip\tsource_entry\tsource_target\tdelta\tbytes\tbyte_status\t"
         "count\ttop_targets\ttop_site\tstate_class\tstate_events\ttop_state_add\t"
         "top_flag_add\ttop_byte_add\ttarget_reg\tslot_kind\tslot_reg_or_temp\t"
-        "byte_index_reg\tstatic_load_site\tstatic_index_add_site\ttail_role_events"
+        "byte_index_reg\tstatic_load_site\tstatic_index_add_site\ttail_role_events\t"
+        "dispatch_formula\tdispatch_formula_class\tdispatch_formula_pct"
     )
     for row in read_tsv(args.instructions):
         site = first_site(row.get("top_sites", ""))
@@ -113,6 +128,7 @@ def main():
         state = states.get(state_key, {})
         role = roles.get((source_entry, source_target, site), {})
         static = slots.get((source_entry, source_target, site), {})
+        formula = formulas.get(source_entry, {})
         slot_kind = static.get("static_kind", "")
         slot_reg_or_temp = static.get("static_slot_temp", "") or role.get("slot_reg", "")
         byte_index_reg = static.get("static_index_reg", "") or role.get("byte_index_reg", "")
@@ -127,7 +143,10 @@ def main():
             f"{slot_kind}\t{slot_reg_or_temp}\t{byte_index_reg}\t"
             f"{static.get('static_load_site', '')}\t"
             f"{static.get('static_index_add_site', '')}\t"
-            f"{role.get('register_trace_events', '')}"
+            f"{role.get('register_trace_events', '')}\t"
+            f"{formula.get('best_formula', '')}\t"
+            f"{formula.get('best_class', '')}\t"
+            f"{formula.get('coverage_pct', '')}"
         )
 
 
