@@ -26,13 +26,14 @@ SHA-256: `0b44ad59697129534189efdb75cde2b96245f831438e9f6a53cb7725f190d739`
 - `vm_static_dispatch_validate.py`: concretely executes handler slices through the final table jump and validates predicted dispatch target plus VM IP advance.
 - `vm_static_transfer_expr.py`: follows concrete state-aware trace paths while carrying symbolic expressions for the dispatch-table slot and VM IP advance; `--by-path` emits path-conditioned formula rows.
 - `vm_static_path_profile.py`: profiles concrete branch/path variants through static handler slices over the state-aware trace.
+- `vm_branch_predicates.py`: catalogs each static-replay branch predicate, including observed outcomes, unresolved predicate classes, and top concrete/symbolic condition expressions.
 - `vm_dispatch_model_combine.py`: combines the static dispatch validator with affine fallback formulas for static-dispatch misses.
 - `vm_tail_registers.py`: infers per-tail-site register roles from `EAC_VMTAIL_REGS=1` traces, including target value, dispatch-slot pointer, byte index, table pointer, and frame pointer. It can also join those roles back onto an instruction trace by source handler and tail site.
 - `vm_tail_static_slots.py`: statically recovers consumed dispatch-slot temporaries for tail sites where the target is loaded from `table + byte_index` and the slot pointer is clobbered before the final jump.
 - `vm_instruction_lift.py`: joins exact recovered VM instructions with per-signature state effects, compact state-affine tags, dynamic tail-register roles, static dispatch-slot provenance, and compact scalar/affine dispatch-formula tags.
-- `vm_transition_model.py`: joins handler skeletons, static state chains, validation coverage, combined dispatch-model evidence, transfer expressions, and tail operand provenance into a one-row-per-dispatch-entry transition model.
-- `vm_microcode_catalog.py`: renders the joined handler reconstruction into a compact pseudo-IR catalog and a Markdown digest for high-volume handlers.
-- `vm_path_microcode_catalog.py`: joins full concrete branch-path profiles with sampled path-conditioned transfer expressions into path-specialized pseudo-IR rows.
+- `vm_transition_model.py`: joins handler skeletons, static state chains, validation coverage, combined dispatch-model evidence, transfer expressions, branch-predicate provenance, and tail operand provenance into a one-row-per-dispatch-entry transition model.
+- `vm_microcode_catalog.py`: renders the joined handler reconstruction into a compact pseudo-IR catalog and a Markdown digest for high-volume handlers, now including source-level branch-predicate summaries.
+- `vm_path_microcode_catalog.py`: joins full concrete branch-path profiles with sampled path-conditioned transfer expressions into path-specialized pseudo-IR rows, carrying source branch-predicate context into each path row.
 - `vm_bytecode_file_atlas.py`: verifies recovered exact VM bytes against `eac.elf` and builds conservative file-backed bytecode atlas regions from observed segments plus small inferred gaps.
 - `vm_trace_file_fill.py`: promotes bounded positive `prefix_32_of_N` rows to `file_span_of_N` rows by reading bytes from `eac.elf`, preserving them as sampled/file-backed coverage rather than exact consumed instructions.
 - `vm_instruction_compare.py`: compares exact unique VM instruction catalogs by stable instruction key.
@@ -103,6 +104,8 @@ SHA-256: `0b44ad59697129534189efdb75cde2b96245f831438e9f6a53cb7725f190d739`
 - `dumps/vmtail-state-wide-w16/vm_static_path_transfer_expr.tsv`: path-conditioned symbolic dispatch-slot and IP-advance expressions over the same bounded transfer-expression sample.
 - `dumps/vmtail-state-wide-w16/vm_static_path_profile.tsv`: per-source branch-path profile from concrete static handler replay over the full state-aware trace.
 - `dumps/vmtail-state-wide-w16/vm_static_path_variants.tsv`: one row per distinct source-handler branch path, with per-path target distributions.
+- `dumps/vmtail-state-wide-w16/vm_branch_predicates.tsv`: one row per source-handler branch site with outcome counts, unresolved predicate classes, and top condition expressions.
+- `dumps/vmtail-state-wide-w16/vm_branch_predicates_top.md`: Markdown digest of the highest-volume unresolved branch predicates.
 - `dumps/vmtail-state-wide-w16/vm_dispatch_model_combined.tsv`: combined static-plus-affine dispatch model coverage for the state-aware instruction trace.
 - `dumps/vmtail-state-wide-w16/vm_dispatch_formulas.tsv`: fitted dispatch-index formulas from the state-aware instruction trace.
 - `dumps/vmtail-state-wide-w16/vm_dispatch_affine.tsv`: exact affine dispatch-index fits from the state-aware instruction trace.
@@ -366,6 +369,11 @@ python3 vm_static_path_profile.py dumps/vmtail-state-wide-w16/vm_instruction_tra
   >dumps/vmtail-state-wide-w16/vm_static_path_profile.tsv
 python3 vm_static_path_profile.py dumps/vmtail-state-wide-w16/vm_instruction_trace.tsv --by-path \
   >dumps/vmtail-state-wide-w16/vm_static_path_variants.tsv
+python3 vm_branch_predicates.py dumps/vmtail-state-wide-w16/vm_instruction_trace.tsv \
+  >dumps/vmtail-state-wide-w16/vm_branch_predicates.tsv
+python3 vm_branch_predicates.py --markdown \
+  --from-tsv dumps/vmtail-state-wide-w16/vm_branch_predicates.tsv \
+  >dumps/vmtail-state-wide-w16/vm_branch_predicates_top.md
 python3 vm_dispatch_model_combine.py dumps/vmtail-state-wide-w16/vm_instruction_trace.tsv \
   >dumps/vmtail-state-wide-w16/vm_dispatch_model_combined.tsv
 python3 vm_dispatch_formula.py dumps/vmtail-state-wide-w16/vm_instruction_trace.tsv \
