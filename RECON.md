@@ -25,7 +25,7 @@ SHA-256: `0b44ad59697129534189efdb75cde2b96245f831438e9f6a53cb7725f190d739`
 - `vm_state_static_validate.py`: concretely executes the static state slice over state-aware trace rows and validates predicted `frame+0x170` post-state.
 - `vm_static_dispatch_validate.py`: concretely executes handler slices through the final table jump and validates predicted dispatch target plus VM IP advance.
 - `vm_static_transfer_expr.py`: follows concrete state-aware trace paths while carrying symbolic expressions for the dispatch-table slot and VM IP advance; `--by-path` emits path-conditioned formula rows.
-- `vm_static_path_profile.py`: profiles concrete branch/path variants through static handler slices over the state-aware trace.
+- `vm_static_path_profile.py`: profiles concrete branch/path variants through static handler slices over the state-aware trace; `--gpr-run` seeds handler-entry registers from the previous VMTAIL GPR snapshot to resolve live-in branch predicates.
 - `vm_branch_predicates.py`: catalogs each static-replay branch predicate, including observed outcomes, unresolved predicate classes, and top concrete/symbolic condition expressions.
 - `vm_dispatch_model_combine.py`: combines the static dispatch validator with affine fallback formulas for static-dispatch misses.
 - `vm_tail_registers.py`: infers per-tail-site register roles from `EAC_VMTAIL_REGS=1` traces, including target value, dispatch-slot pointer, byte index, table pointer, and frame pointer. It can also join those roles back onto an instruction trace by source handler and tail site.
@@ -104,6 +104,8 @@ SHA-256: `0b44ad59697129534189efdb75cde2b96245f831438e9f6a53cb7725f190d739`
 - `dumps/vmtail-state-wide-w16/vm_static_path_transfer_expr.tsv`: path-conditioned symbolic dispatch-slot and IP-advance expressions over the same bounded transfer-expression sample.
 - `dumps/vmtail-state-wide-w16/vm_static_path_profile.tsv`: per-source branch-path profile from concrete static handler replay over the full state-aware trace.
 - `dumps/vmtail-state-wide-w16/vm_static_path_variants.tsv`: one row per distinct source-handler branch path, with per-path target distributions.
+- `dumps/vmtail-state-wide-w16/vm_static_path_profile_gpr_seeded.tsv`: same path profile, but seeded with entry GPRs from the previous `dumps/vmtail-regs-wide-w16/run.stderr` VMTAIL event.
+- `dumps/vmtail-state-wide-w16/vm_static_path_variants_gpr_seeded.tsv`: one row per GPR-seeded source-handler branch path.
 - `dumps/vmtail-state-wide-w16/vm_branch_predicates.tsv`: one row per source-handler branch site with outcome counts, unresolved predicate classes, and top condition expressions.
 - `dumps/vmtail-state-wide-w16/vm_branch_predicates_top.md`: Markdown digest of the highest-volume unresolved branch predicates.
 - `dumps/vmtail-state-wide-w16/vm_dispatch_model_combined.tsv`: combined static-plus-affine dispatch model coverage for the state-aware instruction trace.
@@ -415,6 +417,12 @@ python3 vm_tail_registers.py dumps/vmtail-regs-wide-w16 --eac eac.elf \
 python3 vm_tail_static_slots.py dumps/vmtail-wide-1m-w16/vm_handler_tail_roles_wide_regs.tsv \
   --eac eac.elf \
   >dumps/vmtail-wide-1m-w16/vm_tail_static_slots.tsv
+python3 vm_static_path_profile.py dumps/vmtail-state-wide-w16/vm_instruction_trace.tsv \
+  --gpr-run dumps/vmtail-regs-wide-w16/run.stderr \
+  >dumps/vmtail-state-wide-w16/vm_static_path_profile_gpr_seeded.tsv
+python3 vm_static_path_profile.py dumps/vmtail-state-wide-w16/vm_instruction_trace.tsv \
+  --gpr-run dumps/vmtail-regs-wide-w16/run.stderr --by-path \
+  >dumps/vmtail-state-wide-w16/vm_static_path_variants_gpr_seeded.tsv
 python3 vm_instruction_lift.py \
   >dumps/vmtail-wide-1m-w16/vm_instruction_lift.tsv
 python3 vm_transition_model.py \
@@ -1196,6 +1204,32 @@ Top unresolved branch sites:
 | 297 | `0xb64f9:je` | 6483 / 6483 | `live_in_reg` | `live_in(rsi) == 0` |
 
 This turns the earlier undifferentiated branch uncertainty into a concrete next target: most unresolved path predicates are not unknown bytecode semantics; they are live-in scratch registers or scratch frame fields carried across handler boundaries. The likely next payoff is a sequential GPR/liveness pass that seeds handler-entry registers from the previous VMTAIL snapshot.
+
+That next pass is now partially implemented in `vm_static_path_profile.py --gpr-run`. The GPR trace and state-aware trace start with the same VMTAIL sequence, so row `N` can seed handler-entry registers from GPR VMTAIL event `N-1`. Register values are normalized back into the static interpreter's model: values near the VM frame become `Ptr("frame", off)`, table-slot pointers become `Ptr("table", off)`, VM-bytecode pointers become `Ptr("ip", off)`, and other in-image code pointers become file offsets.
+
+The full GPR-seeded replay preserves the same dispatch/IP validation coverage while resolving about half of the branch uncertainty:
+
+| Path Replay | Source-Path Rows | Target/IP Validated Events | Unknown Branch Events | Unknown Ops |
+| --- | ---: | ---: | ---: | ---: |
+| state-only static replay | 399 | 248300 / 248906 | 220254 | 19215728 |
+| GPR-seeded replay | 653 | 248300 / 248906 | 111506 | 18442648 |
+
+The path-row count increases because formerly unknown live-in predicates now split into concrete taken/not-taken paths. The seeded by-path table has 653 source-path rows over the same 248906 state-trace events; 640 of those paths, covering 248300 events, validate target and IP at 100%. Top branch-unknown reductions by source are:
+
+| Entry | Events | Unknown Branches Before | Unknown Branches After | Reduction |
+| ---: | ---: | ---: | ---: | ---: |
+| 297 | 6483 | 12966 | 1116 | 11850 |
+| 18 | 7392 | 7392 | 308 | 7084 |
+| 114 | 7722 | 7722 | 685 | 7037 |
+| 66 | 7189 | 7189 | 324 | 6865 |
+| 340 | 7549 | 7549 | 924 | 6625 |
+| 168 | 4535 | 9070 | 2638 | 6432 |
+| 307 | 7050 | 7050 | 713 | 6337 |
+| 189 | 7459 | 7459 | 1478 | 5981 |
+| 347 | 8151 | 8151 | 2987 | 5164 |
+| 43 | 5309 | 5309 | 355 | 4954 |
+
+This confirms that cross-handler register carry is real VM control-flow state, not merely junk. The remaining unresolved predicates after GPR seeding are now concentrated in scratch frame fields, derived live-in arithmetic, and handlers where the current static slice still loses memory provenance.
 
 `vm_microcode_catalog.py` is the compact human-facing index over the reconstructed handlers. It joins the transition model, ISA operand layouts, static state/flag update chains, and source-level branch-predicate summaries into pseudo-IR rows. The TSV keeps one row per dispatch entry, while `vm_microcode_top.md` renders the top 30 observed entries by event count with clipped expression hashes that point back to the full lower-level TSVs.
 
