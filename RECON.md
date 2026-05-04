@@ -1237,38 +1237,36 @@ The seeded `--by-path` transfer-expression view now aligns with the seeded path 
 
 The most path-diverse source is entry 330 with 12 observed paths over 169 state-trace events. Other high-diversity handlers include entries 208 with 11 paths, 237 and 48 with 8 paths each, and entries 108, 257, 319, 292, and 105 with 7 paths each. The high-volume handlers are usually much simpler: entry 258 has two concrete paths, entry 28 has three, and entries 337, 340, 189, 347, 307, 64, and 66 have one or two dominant paths. These path counts are now joined into `vm_transition_model.tsv` and summarized in `vm_microcode_catalog.tsv`.
 
+`vm_fast_path_profile` is the native version of this concrete replay loop. It uses Capstone C for handler decoding, OpenSSL SHA-256 for path hashes, and direct TSV streaming for trace rows. On the full GPR+scratch-seeded 248906-row trace it completes in about 8 seconds (`elapsed=0:07.77` in the measured run), while preserving the same target/IP coverage as Python: 248363 validated events. Its low-bit frame-pointer arithmetic currently resolves more branch outcomes than the Python path profiler, producing 743 seeded source-path rows, 730 fully target/IP-validated paths, 44542 branch-unknown events, and 7392888 unknown ops. Those native outputs are kept as `_fast.tsv` artifacts until downstream joins are switched deliberately.
+
 The static interpreter also resolves a narrow class of opaque pointer predicates by using the traced VM frame location (`base+0x7836d`). Since the image base is page-aligned, the low byte of `rbp+off` is stable; byte-sized comparisons such as `cmp $0, %r12b` after `r12 = rbp + 0x170` can be resolved without knowing the absolute ASLR base. The interpreter also preserves commutative `int + pointer` arithmetic, compares same-base pointers by offset, and clears `ZF` when unknown flag-clobbering arithmetic is encountered instead of accidentally reusing stale flags. Target/IP coverage remains unchanged, but path and branch records are more faithful. Entry 28 is the clearest high-volume example: its two former pointer-byte unknown branches now resolve to `je:0`, and the handler remains 100% target/IP validated over 8348 state-trace events.
 
 `vm_branch_predicates.py` explains the remaining `?` branches by replaying concrete values plus symbolic/provenance labels for the last compare/test or flag-producing arithmetic. The current TSV artifacts are bounded to 128 rows per source because the full Python provenance pass is now the slowest part of the workflow and should move to a C replay core. The bounded state-only sample emits 855 source-handler branch-site rows and accounts for 68949 dynamic branch events; 13045 are unresolved. The replay keeps a per-handler scratch-frame store, and it now carries known low bits of frame pointers through simple arithmetic, so frame-local write/read pairs and low-byte frame-pointer predicates are no longer reported as unknown merely because they use non-VM fields such as `frame+0x81` or `frame+0x71`.
 
-Unresolved branch-predicate classes:
+Sampled unresolved branch-predicate classes:
 
 | Class | Dynamic Branch Events | Interpretation |
 | --- | ---: | --- |
-| `live_in_reg` | 106661 | direct low-byte predicate on a register not initialized in the current handler slice |
-| `unknown_frame_field` | 53228 | predicate derived from a scratch frame field outside the modeled VM IP/state/flags/byte/table fields |
-| `derived_live_in` | 47633 | arithmetic expression involving one or more live-in registers |
-| `unresolved` | 5799 | no stronger provenance class after concrete replay |
-| `vm_bytecode_unresolved` | 4953 | expression includes bytecode words but still depends on unknown operands |
 | `unknown_memory_pointer` | 1774 | load address could not be reduced to modeled frame/IP/table pointers |
+| `vm_bytecode_unresolved` | 1024 | expression includes bytecode words but still depends on unknown operands |
+| `seeded_gpr_unresolved` | 968 | expression still depends on seeded cross-handler GPR values |
 | `unknown_operand` | 138 | remaining unsupported or unknown operand case |
+| `unresolved` | 128 | no stronger provenance class after concrete replay |
 
-Top unresolved branch sites:
+Top sampled unresolved branch sites:
 
 | Entry | Branch | Unknown / Events | Class | Top Condition |
 | ---: | --- | ---: | --- | --- |
-| 347 | `0xc093d:je` | 8151 / 8151 | `derived_live_in` | `low8(((live_in(r11) + 0x386de7c7) - live_in(rsi))) == 0` |
-| 114 | `0x90334:je` | 7722 / 7722 | `live_in_reg` | `live_in(rsi) == 0` |
-| 340 | `0xbf457:je` | 7549 / 7549 | `live_in_reg` | `live_in(r10) == 0` |
-| 337 | `0xbeea3:je` | 7502 / 7502 | `unknown_frame_field` | expression derived from `frame+0x81` and `frame+0x23` |
-| 337 | `0xbeee0:je` | 7502 / 7502 | `derived_live_in` | expression mixes `live_in(rdi)`, frame scratch fields, and constants |
-| 189 | `0x9e880:je` | 7459 / 7459 | `live_in_reg` | `live_in(r8) == 0` |
-| 18 | `0x7bed4:je` | 7392 / 7392 | `live_in_reg` | `live_in(rdi) == 0` |
-| 66 | `0x85621:je` | 7189 / 7189 | `live_in_reg` | `live_in(r14) == 0` |
-| 307 | `0xb80ac:je` | 7050 / 7050 | `live_in_reg` | `live_in(r13) == 0` |
-| 297 | `0xb64f9:je` | 6483 / 6483 | `live_in_reg` | `live_in(rsi) == 0` |
+| 26 | `0x7ddeb:jne` | 128 / 128 | `vm_bytecode_unresolved` | compares `u16_2 + frame` against a seeded frame-derived pointer |
+| 33 | `0x7f916:jne` | 128 / 128 | `vm_bytecode_unresolved` | compares `u16_0 + frame` against a seeded frame-derived pointer |
+| 176 | `0x9c25d:je` | 128 / 128 | `unresolved` | low-byte compare of the VM IP pointer |
+| 196 | `0x9fd8f:je` | 128 / 128 | `vm_bytecode_unresolved` | bytecode/state/frame mixed expression |
+| 199 | `0xa094b:je` | 128 / 128 | `seeded_gpr_unresolved` | complex seeded-GPR expression |
+| 243 | `0xaad24:jne` | 128 / 128 | `vm_bytecode_unresolved` | compares `u16_2 + frame` against a seeded frame-derived pointer |
+| 287 | `0xb47a7:jne` | 128 / 128 | `vm_bytecode_unresolved` | compares `u16_2 + frame` against a seeded frame-derived pointer |
+| 305 | `0xb7978:jne` | 128 / 128 | `vm_bytecode_unresolved` | compares `u16_2 + frame` against a seeded frame-derived pointer |
 
-This turns the earlier undifferentiated branch uncertainty into a concrete next target: most unresolved path predicates are not unknown bytecode semantics; they are live-in scratch registers or scratch frame fields carried across handler boundaries.
+This turns the earlier undifferentiated branch uncertainty into a concrete next target: most remaining sampled unresolved predicates are bytecode/frame pointer comparisons, seeded-GPR expressions, or unknown memory-pointer checks.
 
 That next pass is now partially implemented in `vm_static_path_profile.py --gpr-run` and `vm_branch_predicates.py --gpr-run`. The GPR+scratch trace and state-aware trace start with the same VMTAIL sequence, so row `N` can seed handler-entry registers and hot `fs0x...` frame fields from VMTAIL event `N-1`. Register values are normalized back into the static interpreter's model: values near the VM frame become `Ptr("frame", off)`, table-slot pointers become `Ptr("table", off)`, VM-bytecode pointers become `Ptr("ip", off)`, and other in-image code pointers become file offsets.
 
@@ -1278,6 +1276,7 @@ The full GPR+scratch-seeded replay slightly improves dispatch/IP validation cove
 | --- | ---: | ---: | ---: | ---: |
 | state-only static replay | 399 | 248300 / 248906 | 216899 | 15504477 |
 | GPR+scratch-seeded replay | 740 | 248363 / 248906 | 56390 | 10430334 |
+| GPR+scratch-seeded native replay | 743 | 248363 / 248906 | 44542 | 7392888 |
 
 The path-row count increases because formerly unknown live-in predicates now split into concrete taken/not-taken paths. The seeded by-path table has 740 source-path rows over the same 248906 state-trace events; 727 of those paths, covering 248363 events, validate target and IP at 100%. Top branch-unknown reductions by source are:
 
