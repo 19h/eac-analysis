@@ -51,7 +51,8 @@ SHA-256: `0b44ad59697129534189efdb75cde2b96245f831438e9f6a53cb7725f190d739`
 - `dumps/vmtail-wide-1m-w16/vm_handler_skeleton_groups.tsv`: observed handlers grouped by full normalized handler skeleton.
 - `dumps/vmtail-wide-1m-w16/vm_bytecode_segments_sampled.tsv`: exact plus sampled byte-window recovery; conflict-checked but not full-instruction exactness for sampled rows.
 - `dumps/vmtail-wide-1m-w16/vm_bytecode_blocks_sampled.tsv`: contiguous coverage blocks for exact plus sampled byte windows.
-- `dumps/vmtail-wide-1m-w16/vm_handler_tail_roles.tsv`: long-run source-handler/tail-site rows joined with register roles inferred from the GPR smoke trace.
+- `dumps/vmtail-wide-1m-w16/vm_handler_tail_roles.tsv`: long-run source-handler/tail-site rows joined with register roles inferred from the 50k GPR smoke trace.
+- `dumps/vmtail-wide-1m-w16/vm_handler_tail_roles_wide_regs.tsv`: same join using the 250k GPR trace for better low-frequency site coverage.
 - `dumps/vmtail-wide-1m-w16/vm_gap_report.tsv`: exact-segment coverage gap ranking.
 - `dumps/vmtail-wide-1m-w16/vm_gap_report_sampled.tsv`: gap ranking after adding sampled byte-window coverage.
 - `dumps/vmtail-state-wide-w16/run.stderr`: 250k state-aware VMTAIL trace. VMTAIL rows include `vm_flags`, `vm_state`, and `vm_byte` after each handler.
@@ -61,6 +62,9 @@ SHA-256: `0b44ad59697129534189efdb75cde2b96245f831438e9f6a53cb7725f190d739`
 - `dumps/vmtail-regs-smoke-w16/run.stderr`: 50k VMTAIL trace with full GPR snapshots at each tail site.
 - `dumps/vmtail-regs-smoke-w16/vm_tail_registers.tsv`: per-site/per-register role evidence from the GPR trace.
 - `dumps/vmtail-regs-smoke-w16/vm_tail_register_summary.tsv`: compact one-row-per-site register-role summary for lifting dispatch tails.
+- `dumps/vmtail-regs-wide-w16/run.stderr`: 250k VMTAIL trace with full GPR snapshots at each tail site.
+- `dumps/vmtail-regs-wide-w16/vm_tail_registers.tsv`: per-site/per-register role evidence from the 250k GPR trace.
+- `dumps/vmtail-regs-wide-w16/vm_tail_register_summary.tsv`: compact one-row-per-site register-role summary from the 250k GPR trace.
 
 Reproduction:
 
@@ -297,34 +301,34 @@ python3 vm_state_effects.py dumps/vmtail-state-wide-w16/vm_instruction_trace.tsv
   >dumps/vmtail-state-wide-w16/vm_state_signatures.tsv
 ```
 
-Register-role VM tail smoke trace:
+Register-role VM tail wide trace:
 
 ```sh
 make
-mkdir -p dumps/vmtail-regs-smoke-w16
+mkdir -p dumps/vmtail-regs-wide-w16
 SPEC=$(python3 vm_tail_scan.py --all-table --eac eac.elf --window 0x1200 --limit 0 \
   | sed -n 's/^EAC_VMTAIL_SITES=//p')
-timeout 30s env EAC_FAST_EXIT=1 \
+timeout 45s env EAC_FAST_EXIT=1 \
   EAC_DISPATCH_TRACE=1 \
   EAC_DISPATCH_DETAIL=1 \
   EAC_VMTAIL_TRACE=1 \
   EAC_VMTAIL_REGS=1 \
   EAC_DISPATCH_LIMIT=4096 \
-  EAC_VMTAIL_LIMIT=50000 \
+  EAC_VMTAIL_LIMIT=250000 \
   EAC_VMTAIL_SITES="$SPEC" \
-  EAC_DUMP_DIR=dumps/vmtail-regs-smoke-w16 \
+  EAC_DUMP_DIR=dumps/vmtail-regs-wide-w16 \
   EAC_LAUNCHERDIR=/tmp/fake_launcher \
   LD_PRELOAD=./trace_preload.so \
   ./driver ./eac.elf 1 x 0x800 0 \
-  >dumps/vmtail-regs-smoke-w16/run.stdout \
-  2>dumps/vmtail-regs-smoke-w16/run.stderr
-python3 vm_tail_registers.py dumps/vmtail-regs-smoke-w16 --eac eac.elf \
-  >dumps/vmtail-regs-smoke-w16/vm_tail_registers.tsv
-python3 vm_tail_registers.py dumps/vmtail-regs-smoke-w16 --eac eac.elf --site-summary \
-  >dumps/vmtail-regs-smoke-w16/vm_tail_register_summary.tsv
-python3 vm_tail_registers.py dumps/vmtail-regs-smoke-w16 --eac eac.elf \
+  >dumps/vmtail-regs-wide-w16/run.stdout \
+  2>dumps/vmtail-regs-wide-w16/run.stderr
+python3 vm_tail_registers.py dumps/vmtail-regs-wide-w16 --eac eac.elf \
+  >dumps/vmtail-regs-wide-w16/vm_tail_registers.tsv
+python3 vm_tail_registers.py dumps/vmtail-regs-wide-w16 --eac eac.elf --site-summary \
+  >dumps/vmtail-regs-wide-w16/vm_tail_register_summary.tsv
+python3 vm_tail_registers.py dumps/vmtail-regs-wide-w16 --eac eac.elf \
   --instruction-trace dumps/vmtail-wide-1m-w16/vm_instruction_trace.tsv \
-  >dumps/vmtail-wide-1m-w16/vm_handler_tail_roles.tsv
+  >dumps/vmtail-wide-1m-w16/vm_handler_tail_roles_wide_regs.tsv
 ```
 
 ## ELF Overview
@@ -833,43 +837,43 @@ Top state-preserving signatures are mostly loop/backedge or central-dispatch-adj
 
 This strongly suggests the VM dispatch state is not opaque per handler: for most concrete bytecode signatures, `frame+0x170` advances by a deterministic 32-bit addend, while target selection still depends on the rolling state and decoded bytes.
 
-The register-role trace in `dumps/vmtail-regs-smoke-w16` logs all GPRs for 50000 VMTAIL events. `vm_tail_registers.py` compares each register to the current dispatch target, `frame+0x10f` table base, `table + target_entry*8`, and `target_entry*8`.
+The register-role trace in `dumps/vmtail-regs-wide-w16` logs all GPRs for 250000 VMTAIL events. `vm_tail_registers.py` compares each register to the current dispatch target, `frame+0x10f` table base, `table + target_entry*8`, and `target_entry*8`.
 
 Per role-row totals:
 
 | Role | Rows | Events |
 | --- | ---: | ---: |
-| `frame_pointer` | 163 | 59736 |
-| `target_value` | 149 | 53996 |
-| `slot_pointer` | 130 | 49242 |
-| `table_slot_match` | 130 | 49242 |
-| `byte_index` | 130 | 41673 |
-| `table_slot_other` | 23 | 4165 |
-| `entry_index` | 15 | 558 |
-| `table_value` | 5 | 439 |
+| `frame_pointer` | 226 | 297674 |
+| `target_value` | 199 | 272698 |
+| `slot_pointer` | 168 | 246912 |
+| `table_slot_match` | 168 | 246912 |
+| `byte_index` | 181 | 209600 |
+| `table_slot_other` | 37 | 19848 |
+| `table_value` | 10 | 2541 |
+| `entry_index` | 32 | 2336 |
 
-The compact site summary has 139 tail sites. All 139 have a 100% target register and frame register. Of those, 123 have a 100% dispatch-slot pointer register, 105 have a 100% byte-index register, and 95 have both. This recovers the register allocation for the final dispatch calculation at most observed tail sites.
+The compact site summary has 185 tail sites. All 185 have a 100% target register and frame register. Of those, 160 have a 100% dispatch-slot pointer register, 144 have a 100% byte-index register, and 125 have both. This recovers the register allocation for the final dispatch calculation at most observed tail sites.
 
 Top register-role sites:
 
 | Site | Events | Target | Slot Ptr | Byte Index | Frame | Top Targets |
 | ---: | ---: | --- | --- | --- | --- | --- |
-| `0xae32f` | 2476 | `r11` | `r10` | `rcx` | `rbp` | 215,43,237,307 |
-| `0x7e7ca` | 1754 | `r11` | `rbx` | `r14` | `rbp` | 347,300,189,168 |
-| `0xa4a5e` | 1571 | `r14` | `r8` | `rcx` | `rbp` | 301,347,189,114 |
-| `0xc0d7b` | 1553 | `rdi` | `r8` | partial `r11` | `r10` | 168,20,28,158 |
-| `0x90893` | 1462 | `rdi` | `r11` | `rdx` | `rbp` | 199,66,185,268 |
-| `0x859f9` | 1358 | `r8` | `r11` | `rdx` | `rbp` | 123,340,337,189 |
-| `0xa0a9c` | 1351 | `rax` | `r11` | `r8` | `rbp` | 127,258,114,184 |
-| `0x9eac9` | 1346 | `rdx` | `r11` | `r13` | `rbp` | 43,307,184,297 |
-| `0xbf126` | 1342 | `rbx` | `r10` | `r11` | `rbp` | 253,66,196,174 |
-| `0xbf886` | 1300 | `r15` | `r8` | `r14` | `r11` | 28,161,307,66 |
+| `0xae32f` | 9696 | `r11` | `r10` | `rcx` | `rbp` | 215,43,307,297 |
+| `0x7e7ca` | 8351 | `r11` | `rbx` | `r14` | `rbp` | 347,189,43,258 |
+| `0xc0d7b` | 8166 | `rdi` | `r8` | partial `r11` | `r10` | 18,168,28,297 |
+| `0x90893` | 7732 | `rdi` | `r11` | `rdx` | `rbp` | 66,185,199,158 |
+| `0xbf886` | 7554 | `r15` | `r8` | `r14` | `r11` | 28,307,66,161 |
+| `0xbf126` | 7506 | `rbx` | `r10` | `r11` | `rbp` | 66,174,297,196 |
+| `0x9eac9` | 7466 | `rdx` | `r11` | `r13` | `rbp` | 43,307,297,18 |
+| `0x7c308` | 7406 | `rcx` | `r13` | partial `r9` | `rbp` | 114,347,258,300 |
+| `0x859f9` | 7189 | `r8` | `r11` | `rdx` | `rbp` | 337,340,64,123 |
+| `0xa4a5e` | 7122 | `r14` | `r8` | `rcx` | `rbp` | 189,114,347,258 |
 
-Joining the site-role table back onto the long instruction trace gives 208 source-handler/tail-site rows covering 769216 instruction events and 202 unique source handlers. The 50k register smoke covers 139 rows, but those rows account for 763972 long-run instruction events. In the joined long trace:
+Joining the site-role table back onto the long instruction trace gives 208 source-handler/tail-site rows covering 769216 instruction events and 202 unique source handlers. The 250k register trace covers 181 rows and 765815 long-run instruction events. In the joined long trace:
 
-- 123 source/site rows have a dispatch-slot register, covering 742425 instruction events.
-- 110 rows have a byte-index register, covering 635421 events.
-- 100 rows have both slot and byte-index registers, covering 616384 events.
+- 157 source/site rows have a dispatch-slot register, covering 744005 instruction events.
+- 150 rows have a byte-index register, covering 702253 events.
+- 132 rows have both slot and byte-index registers, covering 682953 events.
 
 Top joined handler-tail roles:
 
@@ -884,7 +888,7 @@ Top joined handler-tail roles:
 | 189 | `0x9e7af` | `0x9eac9` | 25112 | `rdx` | `r11` | `r13` | 18,297,215,174 |
 | 347 | `0xc088d` | `0xc0d7b` | 24299 | `rdi` | `r8` | partial `r11` | 18,307,297,28 |
 
-Remaining high-value source/site rows without register coverage are mostly lower-frequency or central-tail rows, led by `0xcdac7` for source entries 216, 356, 278, 95, 311, and 264. A longer `EAC_VMTAIL_REGS=1` trace or a targeted trace for `0xcdac7`, `0x7ca96`, `0xadbfa`, `0xb1545`, and `0xc0532` would fill the remaining lift metadata.
+Remaining no-register rows are mostly central-tail sites, led by `0xcdac7` for source entries 216, 356, 278, 95, 311, and 264, plus low-count `0xc80b9` rows. Remaining no-slot rows are led by high-frequency sites `0x7ca96`, `0xadbfa`, `0xb1545`, and `0xc0532`; those already expose target and byte-index registers but not a direct `table + target_entry*8` register in the sampled tail snapshot.
 
 Top auto3 tail targets:
 
