@@ -1098,7 +1098,7 @@ Here `flags'` is itself conditionally transformed from `frame+0x23` by subtract/
 
 The affine fallback uses formulas fitted over state/post-state/byte features, so it is a validated dynamic dispatch model rather than a purely static one. In the lifted long catalog, the combined model tags 71343 rows and 767546 events; 12 exact rows and 20 events remain untagged only because their source handlers were not present in the state-aware trace.
 
-`vm_transition_model.py` consolidates the handler-level reconstruction into `vm_transition_model.tsv`, one row for each of the 360 dispatch entries. It joins the long-run handler skeleton, static state/flag update chain, state and dispatch validation percentages, affine CV status, sampled transfer expressions, combined dispatch model, and tail operand provenance. The observation mix is 190 exact-covered entries, 155 unobserved entries, 7 sampled backedge entries, 4 sampled long/sparse entries, 3 target-only entries, and 1 central/long-control-flow entry.
+`vm_transition_model.py` consolidates the handler-level reconstruction into `vm_transition_model.tsv`, one row for each of the 360 dispatch entries. It joins the long-run handler skeleton, static state/flag update chain, state and dispatch validation percentages, affine CV status, sampled transfer expressions, branch-predicate provenance, combined dispatch model, and tail operand provenance. The observation mix is 190 exact-covered entries, 155 unobserved entries, 7 sampled backedge entries, 4 sampled long/sparse entries, 3 target-only entries, and 1 central/long-control-flow entry.
 
 Handler-level coverage in the transition model:
 
@@ -1111,6 +1111,7 @@ Handler-level coverage in the transition model:
 | with static dispatch/IP validation | 179 | 767546 |
 | with 100% static dispatch/IP validation | 166 | 764108 |
 | with combined dispatch model | 179 | 767546 |
+| with branch-predicate provenance | 179 | 767546 |
 | with tail target register/operand | 181 | 765570 |
 | with live/static slot temp | 181 | 765570 |
 | with byte/static index register | 156 | 704763 |
@@ -1163,9 +1164,40 @@ This is useful because source-level handlers such as entries 18, 20, 26, 64, 66,
 
 The most path-diverse source is entry 330 with 12 observed paths over 169 state-trace events. Other high-diversity handlers include entries 208 with 11 paths, 237 and 48 with 8 paths each, and entries 108, 257, 319, 292, and 105 with 7 paths each. The high-volume handlers are usually much simpler: entry 258 has two concrete paths, entry 28 has three, and entries 337, 340, 189, 347, 307, 64, and 66 have one or two dominant paths. These path counts are now joined into `vm_transition_model.tsv` and summarized in `vm_microcode_catalog.tsv`.
 
-The static interpreter also resolves a narrow class of opaque pointer predicates by using the traced VM frame location (`base+0x7836d`). Since the image base is page-aligned, the low byte of `rbp+off` is stable; byte-sized comparisons such as `cmp $0, %r12b` after `r12 = rbp + 0x170` can be resolved without knowing the absolute ASLR base. This keeps target/IP coverage unchanged but makes path records more concrete. Entry 28 is the clearest high-volume example: its two former pointer-byte unknown branches now resolve to `je:0`, and the handler remains 100% target/IP validated over 8348 state-trace events.
+The static interpreter also resolves a narrow class of opaque pointer predicates by using the traced VM frame location (`base+0x7836d`). Since the image base is page-aligned, the low byte of `rbp+off` is stable; byte-sized comparisons such as `cmp $0, %r12b` after `r12 = rbp + 0x170` can be resolved without knowing the absolute ASLR base. The interpreter also preserves commutative `int + pointer` arithmetic, compares same-base pointers by offset, and clears `ZF` when unknown flag-clobbering arithmetic is encountered instead of accidentally reusing stale flags. Target/IP coverage remains unchanged, but path and branch records are more faithful. Entry 28 is the clearest high-volume example: its two former pointer-byte unknown branches now resolve to `je:0`, and the handler remains 100% target/IP validated over 8348 state-trace events.
 
-`vm_microcode_catalog.py` is the compact human-facing index over the reconstructed handlers. It joins the transition model, ISA operand layouts, and static state/flag update chains into pseudo-IR rows. The TSV keeps one row per dispatch entry, while `vm_microcode_top.md` renders the top 30 observed entries by event count with clipped expression hashes that point back to the full lower-level TSVs.
+`vm_branch_predicates.py` explains the remaining `?` branches by replaying the full state-aware trace with concrete values plus symbolic/provenance labels for the last compare/test or flag-producing arithmetic. It emits 855 source-handler branch-site rows and accounts for 1007971 dynamic branch events. Of those, 220254 are still unresolved, now matching the `branch_unknown` total in both `vm_state_static_validate.tsv` and `vm_static_path_profile.tsv`.
+
+Unresolved branch-predicate classes:
+
+| Class | Dynamic Branch Events | Interpretation |
+| --- | ---: | --- |
+| `live_in_reg` | 106661 | direct low-byte predicate on a register not initialized in the current handler slice |
+| `unknown_frame_field` | 53296 | predicate derived from a scratch frame field outside the modeled VM IP/state/flags/byte/table fields |
+| `derived_live_in` | 47633 | arithmetic expression involving one or more live-in registers |
+| `unresolved` | 5799 | no stronger provenance class after concrete replay |
+| `vm_bytecode_unresolved` | 4953 | expression includes bytecode words but still depends on unknown operands |
+| `unknown_memory_pointer` | 1774 | load address could not be reduced to modeled frame/IP/table pointers |
+| `unknown_operand` | 138 | remaining unsupported or unknown operand case |
+
+Top unresolved branch sites:
+
+| Entry | Branch | Unknown / Events | Class | Top Condition |
+| ---: | --- | ---: | --- | --- |
+| 347 | `0xc093d:je` | 8151 / 8151 | `derived_live_in` | `low8(((live_in(r11) + 0x386de7c7) - live_in(rsi))) == 0` |
+| 114 | `0x90334:je` | 7722 / 7722 | `live_in_reg` | `live_in(rsi) == 0` |
+| 340 | `0xbf457:je` | 7549 / 7549 | `live_in_reg` | `live_in(r10) == 0` |
+| 337 | `0xbeea3:je` | 7502 / 7502 | `unknown_frame_field` | expression derived from `frame+0x81` and `frame+0x23` |
+| 337 | `0xbeee0:je` | 7502 / 7502 | `derived_live_in` | expression mixes `live_in(rdi)`, frame scratch fields, and constants |
+| 189 | `0x9e880:je` | 7459 / 7459 | `live_in_reg` | `live_in(r8) == 0` |
+| 18 | `0x7bed4:je` | 7392 / 7392 | `live_in_reg` | `live_in(rdi) == 0` |
+| 66 | `0x85621:je` | 7189 / 7189 | `live_in_reg` | `live_in(r14) == 0` |
+| 307 | `0xb80ac:je` | 7050 / 7050 | `live_in_reg` | `live_in(r13) == 0` |
+| 297 | `0xb64f9:je` | 6483 / 6483 | `live_in_reg` | `live_in(rsi) == 0` |
+
+This turns the earlier undifferentiated branch uncertainty into a concrete next target: most unresolved path predicates are not unknown bytecode semantics; they are live-in scratch registers or scratch frame fields carried across handler boundaries. The likely next payoff is a sequential GPR/liveness pass that seeds handler-entry registers from the previous VMTAIL snapshot.
+
+`vm_microcode_catalog.py` is the compact human-facing index over the reconstructed handlers. It joins the transition model, ISA operand layouts, static state/flag update chains, and source-level branch-predicate summaries into pseudo-IR rows. The TSV keeps one row per dispatch entry, while `vm_microcode_top.md` renders the top 30 observed entries by event count with clipped expression hashes that point back to the full lower-level TSVs.
 
 Microcode catalog class distribution:
 
@@ -1178,9 +1210,9 @@ Microcode catalog class distribution:
 | `unobserved_static` | 155 | 0 |
 | `target_only` | 3 | 0 |
 
-The catalog currently has state/flag pseudo-IR for 327 entries covering 764423 long-run events, dispatch-slot pseudo-IR or model tags for 179 entries covering 767546 events, and operand-layout summaries for the 190 exact-covered handlers covering 767566 events.
+The catalog currently has state/flag pseudo-IR for 327 entries covering 764423 long-run events, dispatch-slot pseudo-IR or model tags for 179 entries covering 767546 events, branch-predicate summaries for 179 entries covering 767546 events, and operand-layout summaries for the 190 exact-covered handlers covering 767566 events.
 
-`vm_path_microcode_catalog.py` specializes that catalog by concrete handler branch path. It joins the full `vm_static_path_variants.tsv` state-trace path counts with the sampled `vm_static_path_transfer_expr.tsv` slot/IP formulas and the source-level microcode. This is the closest current artifact to path-specialized devirtualized blocks:
+`vm_path_microcode_catalog.py` specializes that catalog by concrete handler branch path. It joins the full `vm_static_path_variants.tsv` state-trace path counts with the sampled `vm_static_path_transfer_expr.tsv` slot/IP formulas and the source-level microcode, including source branch-predicate context. This is the closest current artifact to path-specialized devirtualized blocks:
 
 | Path Microcode Coverage | Paths | State-Trace Events |
 | --- | ---: | ---: |
