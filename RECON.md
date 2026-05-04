@@ -6,11 +6,11 @@ SHA-256: `0b44ad59697129534189efdb75cde2b96245f831438e9f6a53cb7725f190d739`
 
 ## Current Artifacts
 
-- `driver.c`: dlopen/dlsym harness for exported `x`, now also dumps the EAC memory maps, the output buffer, and the global sidecar context. Optional `EAC_DISPATCH_TRACE=1` patches selected dispatcher jumps to `int3` and logs the resolved target from the signal context.
+- `driver.c`: dlopen/dlsym harness for exported `x`, now also dumps the EAC memory maps, the output buffer, and the global sidecar context. Optional `EAC_DISPATCH_TRACE=1` patches selected dispatcher jumps to `int3`; `EAC_VMTAIL_TRACE=1` patches direct VM tail sites. Both trace modes log frame state plus sixteen 16-bit `ip_w*` lookahead words when detail data is available.
 - `trace_preload.c`: libc/network/process tracer with EAC-relative caller offsets. Network and process spawning are denied by default unless `EAC_TRACE_ALLOW_NETWORK=1` or `EAC_TRACE_ALLOW_SPAWN=1`.
 - `recon_summary.py`: summarizes a dump directory, trace call sites, dispatcher edges, executable pointer fixups, memory-vs-file mutations, and context pointers.
 - `vm_tail_scan.py`: ranks observed dispatch-table targets and suggests extra `EAC_VMTAIL_SITES=0xsite:reg,...` hooks using Capstone.
-- `vm_trace_graph.py`: converts a traced run into VM edge TSV form; default output is site-based, and `--sequential` emits dynamic per-frame transitions from ordered trace events.
+- `vm_trace_graph.py`: converts a traced run into VM edge TSV form; default output is site-based, and `--sequential` emits dynamic per-frame transitions from ordered trace events. It parses arbitrary `ip_wN` fields; legacy TSVs still print `w0..w5`, but exact byte reconstruction uses the full logged lookahead window.
 - `vm_handler_table.py`: merges dispatch-table metadata, dynamic trace profiles, and static Capstone handler features into one TSV.
 - `vm_bytecode_blocks.py`: reduces direct executed VM instruction rows into contiguous exact bytecode coverage blocks.
 - `vm_bytecode_recover.py`: reconstructs exact VM byte values from instruction rows, verifies byte consistency, and emits segment hashes plus a unique instruction table.
@@ -25,7 +25,7 @@ SHA-256: `0b44ad59697129534189efdb75cde2b96245f831438e9f6a53cb7725f190d739`
 - `dumps/vmtail-allstatic/vm_table.tsv`: one row per dispatch-table entry with static tail candidate and observed hit counts.
 - `dumps/vmtail-allstatic/vm_edges.tsv`: recovered VM edge list from the all-static trace.
 - `dumps/vmtail-allstatic/vm_seq_edges.tsv`: dynamic sequential VM edge list from the same trace.
-- `dumps/vmtail-allstatic/vm_source_profile.tsv`: per-source handler profile of outgoing sites, targets, VM IP deltas, and `ip_w0..ip_w5` words.
+- `dumps/vmtail-allstatic/vm_source_profile.tsv`: per-source handler profile of outgoing sites, targets, VM IP deltas, and the first six logged `ip_w*` words.
 - `dumps/vmtail-allstatic/vm_handler_table.tsv`: combined static/dynamic handler table for all 360 dispatch entries.
 - `dumps/vmtail-wide/*`: repeat of the all-static trace using a wider `0x1200` static tail-site scan, covering long-tail handlers that the earlier `0x800` scan missed.
 - `dumps/vmtail-wide/vm_instruction_trace.tsv`: direct executed VM instruction rows with source handler, start/end VM IP, target handler, logged words, consumed bytes, and byte exactness.
@@ -33,7 +33,9 @@ SHA-256: `0b44ad59697129534189efdb75cde2b96245f831438e9f6a53cb7725f190d739`
 - `dumps/vmtail-wide/vm_bytecode_segments.tsv`: conflict-checked exact byte segments with SHA-256 hashes and byte previews.
 - `dumps/vmtail-wide/vm_instruction_unique.tsv`: deduplicated exact instruction rows collapsed by `(start_vm_ip, source_entry, delta, bytes)`.
 - `dumps/vmtail-wide/vm_bytecode_block_edges.tsv`: aggregate control-flow edges between recovered bytecode segments.
-- `dumps/vmtail-wide-1m/*`: longer `0x1200` wide-tail run. The harness reached about 767k VM tail events before fast exit and expanded exact bytecode recovery from `0x24948` to `0x41d31` bytes with no byte conflicts.
+- `dumps/vmtail-wide-1m/*`: earlier longer `0x1200` wide-tail run using the old shorter lookahead. The harness reached about 767k VM tail events before fast exit and expanded exact bytecode recovery from `0x24948` to `0x41d31` bytes with no byte conflicts.
+- `dumps/vmtail-wide-w16/*`: current 250k comparison run with sixteen `ip_w*` words. It keeps the same direct graph shape as `dumps/vmtail-wide` but improves exact byte recovery to `0x24c51` bytes and reduces prefix-only instruction rows from 697 to 90.
+- `dumps/vmtail-wide-1m-w16/*`: current long `0x1200` wide-tail run with sixteen `ip_w*` words. It improves long-run exact recovery from `0x41d31` to `0x421d3` bytes, raises exact-covered handlers from 171 to 190, and leaves no byte conflicts.
 - `dumps/vmtail-wide-1m/vm_isa_handlers.tsv`: exact-covered handler schema summary.
 - `dumps/vmtail-wide-1m/vm_isa_patterns.tsv`: exact-covered `(source handler, byte length)` operand-layout summary.
 - `dumps/vmtail-wide-1m/vm_isa_families.tsv`: operand-layout families grouped by byte length, shape, and constant byte positions.
