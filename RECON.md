@@ -26,7 +26,7 @@ SHA-256: `0b44ad59697129534189efdb75cde2b96245f831438e9f6a53cb7725f190d739`
 - `vm_static_dispatch_validate.py`: concretely executes handler slices through the final table jump and validates predicted dispatch target plus VM IP advance.
 - `vm_static_transfer_expr.py`: follows concrete state-aware trace paths while carrying symbolic expressions for the dispatch-table slot and VM IP advance; `--by-path` emits path-conditioned formula rows, and `--gpr-run` seeds handler-entry registers plus hot `fs0x...` scratch-frame fields.
 - `vm_static_path_profile.py`: profiles concrete branch/path variants through static handler slices over the state-aware trace; `--gpr-run` seeds handler-entry registers and, when present, hot `fs0x...` scratch-frame fields from the previous VMTAIL snapshot to resolve live-in branch predicates.
-- `vm_fast_path_profile.c`: native Capstone/OpenSSL reimplementation of the concrete replay core. It emits the same summary/by-path TSV schemas as `vm_static_path_profile.py`, native state/static-dispatch validation schemas, a `--branch-sites` full-trace branch-outcome TSV, SHA-256 path hashes, and runs the full GPR+scratch-seeded state trace in about 9 seconds on this host.
+- `vm_fast_path_profile.c`: native Capstone/OpenSSL reimplementation of the concrete replay core. It emits the same summary/by-path TSV schemas as `vm_static_path_profile.py`, native state/static-dispatch validation schemas, a `--branch-sites` full-trace branch-outcome TSV, SHA-256 path hashes, and an `--emit-dir` batch mode that regenerates all `_fast.tsv` replay artifacts through `make fast-replay` in about 15 seconds on this host.
 - `vm_branch_predicates.py`: catalogs each static-replay branch predicate, including observed outcomes, unresolved predicate classes, and top concrete/symbolic condition expressions.
 - `vm_dispatch_model_combine.py`: combines the static dispatch validator with affine fallback formulas for static-dispatch misses.
 - `vm_tail_registers.py`: infers per-tail-site register roles from `EAC_VMTAIL_REGS=1` traces, including target value, dispatch-slot pointer, byte index, table pointer, and frame pointer. It can also join those roles back onto an instruction trace by source handler and tail site.
@@ -375,22 +375,13 @@ python3 vm_state_affine.py dumps/vmtail-state-wide-w16/vm_instruction_trace.tsv 
 python3 vm_state_affine.py dumps/vmtail-state-wide-w16/vm_instruction_trace.tsv \
   --include-flags --include-vm-byte --cv-folds 5 \
   >dumps/vmtail-state-wide-w16/vm_state_affine_fullfields.tsv
-./vm_fast_path_profile dumps/vmtail-state-wide-w16/vm_instruction_trace.tsv --state-validate \
-  >dumps/vmtail-state-wide-w16/vm_state_static_validate_fast.tsv
-./vm_fast_path_profile dumps/vmtail-state-wide-w16/vm_instruction_trace.tsv --dispatch-validate \
-  >dumps/vmtail-state-wide-w16/vm_static_dispatch_validate_fast.tsv
+make fast-state
 python3 vm_static_transfer_expr.py dumps/vmtail-state-wide-w16/vm_instruction_trace.tsv \
   --max-rows-per-source 128 --max-expr-len 320 --top 5 \
   >dumps/vmtail-state-wide-w16/vm_static_transfer_expr.tsv
 python3 vm_static_transfer_expr.py dumps/vmtail-state-wide-w16/vm_instruction_trace.tsv \
   --max-rows-per-source 128 --max-expr-len 320 --top 5 --by-path \
   >dumps/vmtail-state-wide-w16/vm_static_path_transfer_expr.tsv
-./vm_fast_path_profile dumps/vmtail-state-wide-w16/vm_instruction_trace.tsv \
-  >dumps/vmtail-state-wide-w16/vm_static_path_profile_fast.tsv
-./vm_fast_path_profile dumps/vmtail-state-wide-w16/vm_instruction_trace.tsv --by-path \
-  >dumps/vmtail-state-wide-w16/vm_static_path_variants_fast.tsv
-./vm_fast_path_profile dumps/vmtail-state-wide-w16/vm_instruction_trace.tsv --branch-sites \
-  >dumps/vmtail-state-wide-w16/vm_branch_sites_fast.tsv
 python3 vm_branch_predicates.py dumps/vmtail-state-wide-w16/vm_instruction_trace.tsv \
   --max-rows-per-source 128 \
   >dumps/vmtail-state-wide-w16/vm_branch_predicates.tsv
@@ -1250,7 +1241,7 @@ The seeded `--by-path` transfer-expression view observes 582 GPR+scratch-seeded 
 
 The most path-diverse source is entry 330 with 12 observed paths over 169 state-trace events. Other high-diversity handlers include entries 208 with 11 paths, 237 and 48 with 8 paths each, and entries 108, 257, 319, 292, and 105 with 7 paths each. The high-volume handlers are usually much simpler: entry 258 has two concrete paths, entry 28 has three, and entries 337, 340, 189, 347, 307, 64, and 66 have one or two dominant paths. These path counts are now joined into `vm_transition_model.tsv` and summarized in `vm_microcode_catalog.tsv`.
 
-`vm_fast_path_profile` is the native version of this concrete replay loop. It uses Capstone C for handler decoding, OpenSSL SHA-256 for path hashes, and direct TSV streaming for trace rows. On the full GPR+scratch-seeded 248906-row trace it completes in about 9 seconds (`elapsed=0:09.06` in the measured seeded by-path run), while preserving the same target/IP coverage as Python: 248363 validated events. Its low-bit frame and VM-IP pointer arithmetic resolves more branch outcomes than the Python path profiler, producing 737 seeded source-path rows, 724 fully target/IP-validated paths, 40939 branch-unknown events, and 4629410 unknown ops. The matched `_fast.tsv` path microcode catalogs now use those native path rows for the concrete devirtualized view.
+`vm_fast_path_profile` is the native version of this concrete replay loop. It uses Capstone C for handler decoding, OpenSSL SHA-256 for path hashes, and direct TSV streaming for trace rows. On the full GPR+scratch-seeded 248906-row trace it completes in about 9 seconds for a single replay pass, while preserving the same target/IP coverage as Python: 248363 validated events. The `--emit-dir` batch mode now makes `make fast-replay` regenerate all eight `_fast.tsv` replay artifacts in two passes (`elapsed=0:14.88` on this host). Its low-bit frame and VM-IP pointer arithmetic resolves more branch outcomes than the Python path profiler, producing 737 seeded source-path rows, 724 fully target/IP-validated paths, 40939 branch-unknown events, and 4629410 unknown ops. The matched `_fast.tsv` path microcode catalogs now use those native path rows for the concrete devirtualized view.
 
 The native `--branch-sites` mode gives full-trace branch outcome counts without the slow Python provenance pass. It emits 855 branch-site rows and accounts for 1007971 dynamic branch evaluations. State-only replay leaves 209434 branch events unresolved, while GPR+scratch seeding reduces that to 40939:
 
