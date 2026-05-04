@@ -191,6 +191,7 @@ typedef struct {
     bool by_path;
     bool branch_sites;
     bool branch_predicates;
+    bool transfer_expr;
     bool state_validate;
     bool dispatch_validate;
 } Args;
