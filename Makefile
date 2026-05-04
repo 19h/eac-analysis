@@ -8,7 +8,7 @@ GPR_RUN ?= dumps/vmtail-scratch-wide-w16-fs337all-fs128/run.stderr
 PRED_ROWS ?= 128
 XFER_ROWS ?= 128
 
-.PHONY: all clean fast-replay fast-state fast-gpr fast-predicates fast-state-predicates fast-gpr-predicates fast-transfer fast-state-transfer fast-gpr-transfer fast-validators fast-paths fast-gpr-paths long-branches hidden-transitions sampled-operands hidden-fill frontier-fill footprint-fill control-edges bytecode-ir bytecode-basic-blocks synthetic-spans
+.PHONY: all clean fast-replay fast-state fast-gpr fast-predicates fast-state-predicates fast-gpr-predicates fast-transfer fast-state-transfer fast-gpr-transfer fast-validators fast-paths fast-gpr-paths long-branches hidden-transitions sampled-operands hidden-fill frontier-fill footprint-fill control-edges bytecode-ir bytecode-basic-blocks synthetic-spans synthetic-tails
 
 all: driver trace_preload.so vm_fast_path_profile
 
@@ -119,6 +119,10 @@ bytecode-basic-blocks:
 synthetic-spans: bytecode-basic-blocks
 	python3 vm_synthetic_span_catalog.py > dumps/vmtail-wide-1m-w16/vm_synthetic_span_catalog.tsv
 	python3 vm_synthetic_span_catalog.py --markdown --limit 50 > dumps/vmtail-wide-1m-w16/vm_synthetic_span_top.md
+
+synthetic-tails: synthetic-spans
+	python3 vm_synthetic_tail_catalog.py > dumps/vmtail-wide-1m-w16/vm_synthetic_tail_catalog.tsv
+	python3 vm_synthetic_tail_catalog.py --markdown --limit 50 > dumps/vmtail-wide-1m-w16/vm_synthetic_tail_top.md
 
 clean:
 	rm -f driver trace_preload.so vm_fast_path_profile
