@@ -64,6 +64,7 @@ def build_rows(args):
                 "source_target": path_row.get("source_target", ""),
                 "path_hash": digest,
                 "source_class": micro.get("class", ""),
+                "source_branch_profile": micro.get("branch_profile", ""),
                 "events": path_row.get("events", ""),
                 "target_pct": path_row.get("target_coverage_pct", ""),
                 "ip_pct": path_row.get("ip_coverage_pct", ""),
@@ -88,6 +89,7 @@ def emit_tsv(rows):
         "source_target",
         "path_hash",
         "source_class",
+        "source_branch_profile",
         "events",
         "target_pct",
         "ip_pct",
@@ -122,6 +124,8 @@ def emit_markdown(rows, limit):
         print(f"## Entry {row['source_entry']} Path {row['path_hash']}")
         print(f"- target: `{row['source_target']}`, class: `{row['source_class']}`")
         print(f"- events: `{row['events']}`, validation: `{row['validation']}`")
+        if row["source_branch_profile"]:
+            print(f"- source branch predicates: `{row['source_branch_profile']}`")
         if row["sample_expr_events"]:
             print(f"- sampled expression events: `{row['sample_expr_events']}`")
         if row["slot_expr"]:

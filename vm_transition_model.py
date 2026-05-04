@@ -2,6 +2,7 @@
 import argparse
 import csv
 import sys
+from collections import defaultdict
 from pathlib import Path
 
 
@@ -27,6 +28,75 @@ def load_tail_rows(path):
         key = (row.get("source_entry", ""), row.get("source_target", ""), row.get("site", ""))
         rows[key] = row
     return rows
+
+
+def parse_counter_text(text):
+    items = []
+    for part in (text or "").split(","):
+        if not part:
+            continue
+        key, sep, value = part.rpartition(":")
+        if not sep:
+            continue
+        try:
+            items.append((key, int(value)))
+        except ValueError:
+            continue
+    return items
+
+
+def load_branch_predicates(path, top=5):
+    rows = defaultdict(lambda: {
+        "events": 0,
+        "unknown_events": 0,
+        "classes": defaultdict(int),
+        "sites": defaultdict(int),
+        "conditions": defaultdict(int),
+    })
+    if not path:
+        return {}
+    for row in read_tsv(path):
+        entry = row.get("source_entry", "")
+        if not entry:
+            continue
+        bucket = rows[entry]
+        events = int(row.get("events", "0") or 0)
+        unknown = int(row.get("unknown_events", "0") or 0)
+        bucket["events"] += events
+        bucket["unknown_events"] += unknown
+        for key, value in parse_counter_text(row.get("top_predicate_classes", "")):
+            if key != "resolved":
+                bucket["classes"][key] += value
+        if unknown:
+            class_head = row.get("top_predicate_classes", "").split(",", 1)[0].rsplit(":", 1)[0]
+            site_key = f"{row.get('branch_site', '')}:{row.get('branch_mnemonic', '')}:{class_head}"
+            bucket["sites"][site_key] += unknown
+            condition = row.get("top_conditions", "")
+            if condition:
+                bucket["conditions"][condition] += unknown
+
+    compact = {}
+    for entry, bucket in rows.items():
+        events = bucket["events"]
+        unknown = bucket["unknown_events"]
+        compact[entry] = {
+            "events": str(events),
+            "unknown_events": str(unknown),
+            "unknown_pct": f"{unknown * 100.0 / events if events else 0.0:.1f}",
+            "top_classes": ",".join(
+                f"{key}:{value}"
+                for key, value in sorted(bucket["classes"].items(), key=lambda item: (-item[1], item[0]))[:top]
+            ),
+            "top_unknown_sites": ",".join(
+                f"{key}:{value}"
+                for key, value in sorted(bucket["sites"].items(), key=lambda item: (-item[1], item[0]))[:top]
+            ),
+            "top_unknown_conditions": ",".join(
+                f"{key}:{value}"
+                for key, value in sorted(bucket["conditions"].items(), key=lambda item: (-item[1], item[0]))[:top]
+            ),
+        }
+    return compact
 
 
 def choose_tail_row(rows, entry, target, site):
@@ -95,6 +165,11 @@ def main():
         "--static-slots",
         default="dumps/vmtail-wide-1m-w16/vm_tail_static_slots.tsv",
     )
+    parser.add_argument(
+        "--branch-predicates",
+        default="dumps/vmtail-state-wide-w16/vm_branch_predicates.tsv",
+    )
+    parser.add_argument("--branch-top", type=int, default=5)
     args = parser.parse_args()
 
     skeletons = load_by(args.skeletons, "entry")
@@ -108,6 +183,7 @@ def main():
     path_profile = load_by(args.path_profile, "source_entry")
     tail_roles = load_tail_rows(args.tail_roles)
     static_slots = load_tail_rows(args.static_slots)
+    branch_predicates = load_branch_predicates(args.branch_predicates, args.branch_top)
 
     fieldnames = [
         "entry",
@@ -150,6 +226,12 @@ def main():
         "path_profile_unique_paths",
         "path_profile_branch_sites",
         "path_profile_top_paths",
+        "branch_predicate_events",
+        "branch_predicate_unknown_events",
+        "branch_predicate_unknown_pct",
+        "branch_predicate_top_classes",
+        "branch_predicate_top_unknown_sites",
+        "branch_predicate_top_unknown_conditions",
         "target_reg",
         "slot_kind",
         "slot_reg_or_temp",
@@ -174,6 +256,7 @@ def main():
         dispatch_affine_cv,
         transfer_expr,
         path_profile,
+        branch_predicates,
     ):
         skeleton = skeletons.get(entry, {})
         state_slice = slices.get(entry, {})
@@ -184,6 +267,7 @@ def main():
         dispatch_affine_row = dispatch_affine_cv.get(entry, {})
         transfer_expr_row = transfer_expr.get(entry, {})
         path_profile_row = path_profile.get(entry, {})
+        branch_predicate_row = branch_predicates.get(entry, {})
 
         target = skeleton.get("target", "") or state_slice.get("target", "")
         tail_site = skeleton.get("tail_site", "") or state_slice.get("tail_site", "")
@@ -235,6 +319,12 @@ def main():
                 "path_profile_unique_paths": path_profile_row.get("unique_paths", ""),
                 "path_profile_branch_sites": path_profile_row.get("branch_sites", ""),
                 "path_profile_top_paths": path_profile_row.get("top_paths", ""),
+                "branch_predicate_events": branch_predicate_row.get("events", ""),
+                "branch_predicate_unknown_events": branch_predicate_row.get("unknown_events", ""),
+                "branch_predicate_unknown_pct": branch_predicate_row.get("unknown_pct", ""),
+                "branch_predicate_top_classes": branch_predicate_row.get("top_classes", ""),
+                "branch_predicate_top_unknown_sites": branch_predicate_row.get("top_unknown_sites", ""),
+                "branch_predicate_top_unknown_conditions": branch_predicate_row.get("top_unknown_conditions", ""),
                 "target_reg": role.get("target_reg", ""),
                 "slot_kind": slot_kind,
                 "slot_reg_or_temp": slot_reg_or_temp,

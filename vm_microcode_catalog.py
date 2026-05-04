@@ -151,6 +151,14 @@ def build_rows(args):
                     f"{row.get('path_profile_events', '')} state events"
                     if row.get("path_profile_unique_paths", "") else ""
                 ),
+                "branch_profile": (
+                    f"{row.get('branch_predicate_unknown_events', '')}/"
+                    f"{row.get('branch_predicate_events', '')} unknown branches "
+                    f"({row.get('branch_predicate_unknown_pct', '')}%): "
+                    f"{clip(row.get('branch_predicate_top_classes', ''), args.max_field_len)}"
+                    if row.get("branch_predicate_events", "") else ""
+                ),
+                "branch_sites": clip(row.get("branch_predicate_top_unknown_sites", ""), args.max_field_len),
                 "validation": status(row),
                 "top_targets": row.get("top_targets", ""),
             }
@@ -176,6 +184,8 @@ def emit_tsv(rows):
         "ip_advance_ir",
         "tail_ir",
         "path_profile",
+        "branch_profile",
+        "branch_sites",
         "validation",
         "top_targets",
     ]
@@ -201,6 +211,10 @@ def emit_markdown(rows, limit):
             print(f"- validation: `{row['validation']}`")
         if row["path_profile"]:
             print(f"- paths: `{row['path_profile']}`")
+        if row["branch_profile"]:
+            print(f"- branch predicates: `{row['branch_profile']}`")
+        if row["branch_sites"]:
+            print(f"- unknown branch sites: `{row['branch_sites']}`")
         if row["flag_ir"]:
             print(f"- flags: `{row['flag_ir']}`")
         if row["state_ir"]:
