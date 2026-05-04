@@ -20,9 +20,10 @@ SHA-256: `0b44ad59697129534189efdb75cde2b96245f831438e9f6a53cb7725f190d739`
 - `vm_semantic_templates.py`: merges ISA schemas with static handler features into per-handler rows and ranked semantic templates.
 - `vm_handler_skeleton.py`: extracts normalized frame/IP/table access skeletons from handler disassembly and groups full, dispatch-tail, or canonical decode signatures.
 - `vm_state_effects.py`: summarizes observed `frame+0x170`, `frame+0x23`, and `frame+0x194` changes per handler or per `(handler, delta, bytes)` signature from state-aware traces.
+- `vm_state_affine.py`: fits and cross-validates affine formulas for the `frame+0x170` post-state from pre-state, instruction bytes, and optional traced flag/byte fields.
 - `vm_tail_registers.py`: infers per-tail-site register roles from `EAC_VMTAIL_REGS=1` traces, including target value, dispatch-slot pointer, byte index, table pointer, and frame pointer. It can also join those roles back onto an instruction trace by source handler and tail site.
 - `vm_tail_static_slots.py`: statically recovers consumed dispatch-slot temporaries for tail sites where the target is loaded from `table + byte_index` and the slot pointer is clobbered before the final jump.
-- `vm_instruction_lift.py`: joins exact recovered VM instructions with per-signature state effects, dynamic tail-register roles, static dispatch-slot provenance, and compact scalar/affine dispatch-formula tags.
+- `vm_instruction_lift.py`: joins exact recovered VM instructions with per-signature state effects, compact state-affine tags, dynamic tail-register roles, static dispatch-slot provenance, and compact scalar/affine dispatch-formula tags.
 - `vm_bytecode_file_atlas.py`: verifies recovered exact VM bytes against `eac.elf` and builds conservative file-backed bytecode atlas regions from observed segments plus small inferred gaps.
 - `vm_trace_file_fill.py`: promotes bounded positive `prefix_32_of_N` rows to `file_span_of_N` rows by reading bytes from `eac.elf`, preserving them as sampled/file-backed coverage rather than exact consumed instructions.
 - `vm_instruction_compare.py`: compares exact unique VM instruction catalogs by stable instruction key.
@@ -78,6 +79,8 @@ SHA-256: `0b44ad59697129534189efdb75cde2b96245f831438e9f6a53cb7725f190d739`
 - `dumps/vmtail-state-wide-w16/vm_instruction_trace.tsv`: state-aware instruction rows with appended `pre_*`, `post_*`, and `state_delta` columns.
 - `dumps/vmtail-state-wide-w16/vm_state_effects.tsv`: per-handler frame-state effect summary.
 - `dumps/vmtail-state-wide-w16/vm_state_signatures.tsv`: per-signature frame-state effect summary keyed by source handler, byte delta, byte status, and byte sequence.
+- `dumps/vmtail-state-wide-w16/vm_state_affine.tsv`: affine `frame+0x170` post-state formulas using pre-state and instruction bytes, with 5-fold validation.
+- `dumps/vmtail-state-wide-w16/vm_state_affine_fullfields.tsv`: affine `frame+0x170` post-state formulas using all traced state fields, with 5-fold validation.
 - `dumps/vmtail-state-wide-w16/vm_dispatch_formulas.tsv`: fitted dispatch-index formulas from the state-aware instruction trace.
 - `dumps/vmtail-state-wide-w16/vm_dispatch_affine.tsv`: exact affine dispatch-index fits from the state-aware instruction trace.
 - `dumps/vmtail-state-wide-w16/vm_dispatch_affine_cv.tsv`: 5-fold held-out validation of affine dispatch-index fits.
@@ -321,6 +324,11 @@ python3 vm_state_effects.py dumps/vmtail-state-wide-w16/vm_instruction_trace.tsv
   >dumps/vmtail-state-wide-w16/vm_state_effects.tsv
 python3 vm_state_effects.py dumps/vmtail-state-wide-w16/vm_instruction_trace.tsv --by-signature \
   >dumps/vmtail-state-wide-w16/vm_state_signatures.tsv
+python3 vm_state_affine.py dumps/vmtail-state-wide-w16/vm_instruction_trace.tsv --cv-folds 5 \
+  >dumps/vmtail-state-wide-w16/vm_state_affine.tsv
+python3 vm_state_affine.py dumps/vmtail-state-wide-w16/vm_instruction_trace.tsv \
+  --include-flags --include-vm-byte --cv-folds 5 \
+  >dumps/vmtail-state-wide-w16/vm_state_affine_fullfields.tsv
 python3 vm_dispatch_formula.py dumps/vmtail-state-wide-w16/vm_instruction_trace.tsv \
   >dumps/vmtail-state-wide-w16/vm_dispatch_formulas.tsv
 python3 vm_dispatch_affine.py dumps/vmtail-state-wide-w16/vm_instruction_trace.tsv \
