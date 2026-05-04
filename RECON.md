@@ -18,6 +18,7 @@ SHA-256: `0b44ad59697129534189efdb75cde2b96245f831438e9f6a53cb7725f190d739`
 - `vm_bytecode_control_edges.py`: turns decoded long-branch and sampled-operand sidecars into explicit non-exact VM control-flow edges between recovered bytecode segments, with operand footprints and lifted target/IP-update pseudo-IR.
 - `vm_bytecode_ir.py`: merges exact instruction lifts and decoded non-exact sidecars into a VM-IP sorted recovered bytecode IR table with source/target blocks, operand footprints, compact state/dispatch/IP expressions, validation provenance, and pseudo-IR.
 - `vm_bytecode_basic_blocks.py`: splits the unified bytecode IR into recovered VM basic blocks, terminal edges with final-trace synthetic coverage status, Markdown block listings, and loop/backedge catalogs.
+- `vm_synthetic_span_catalog.py`: catalogs byte-covered synthetic VM spans that still lack direct semantic IR rows, separating known handler/operand prefixes, unresolved tails, target-only spans, and footprint-only coverage.
 - `vm_gap_report.py`: ranks bytecode and handler coverage gaps from instruction rows, recovered segments, ISA missing-exact rows, decoded long-branch sidecars, adjacent hidden-transition sidecars, and per-handler semantic observations.
 - `vm_isa_summary.py`: clusters exact recovered VM instruction signatures by source handler, fixed byte length, target distribution, and operand byte/word layout.
 - `vm_semantic_templates.py`: merges ISA schemas with static handler features into per-handler rows and ranked semantic templates.
@@ -112,6 +113,8 @@ SHA-256: `0b44ad59697129534189efdb75cde2b96245f831438e9f6a53cb7725f190d739`
 - `dumps/vmtail-wide-1m-w16/vm_bytecode_basic_blocks_top.md`: Markdown digest and short listings for the hottest recovered VM basic blocks.
 - `dumps/vmtail-wide-1m-w16/vm_bytecode_loops.tsv`: block-level backedge and loop-body catalog derived from recovered bytecode blocks.
 - `dumps/vmtail-wide-1m-w16/vm_bytecode_loops_top.md`: Markdown loop digest ranked by latch-event count and body-event count.
+- `dumps/vmtail-wide-1m-w16/vm_synthetic_span_catalog.tsv`: semantic-gap catalog for file-backed synthetic spans from hidden, frontier, and target-footprint fill.
+- `dumps/vmtail-wide-1m-w16/vm_synthetic_span_top.md`: Markdown digest of the highest-volume synthetic span semantic gaps.
 - `dumps/vmtail-wide-1m-w16/vm_state_static_slice.tsv`: static symbolic state/flag update chains for all dispatch entries.
 - `dumps/vmtail-wide-1m-w16/vm_state_static_slice_entry258.tsv`: focused static state slice for the high-volume nonlinear entry 258.
 - `dumps/vmtail-wide-1m-w16/vm_handler_tail_roles.tsv`: long-run source-handler/tail-site rows joined with register roles inferred from the 50k GPR smoke trace.

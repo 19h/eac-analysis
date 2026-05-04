@@ -97,6 +97,8 @@ def operand_len(row, prefix):
         item = item.strip()
         if not item:
             continue
+        if "=" in item:
+            item = item.rsplit("=", 1)[1]
         try:
             value = int(item, 16)
         except ValueError:
