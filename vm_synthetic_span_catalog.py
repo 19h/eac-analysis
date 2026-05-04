@@ -6,6 +6,10 @@ import sys
 from collections import Counter, defaultdict
 from pathlib import Path
 
+from capstone.x86_const import X86_OP_IMM, X86_OP_MEM, X86_OP_REG, X86_REG_RBP
+
+from vm_state_static_validate import make_disassembler
+
 
 def parse_hex(text):
     if not text:
@@ -51,6 +55,122 @@ def load_by(path, key):
         if value:
             rows[value] = row
     return rows
+
+
+REG_ALIASES = {
+    "al": "rax", "ah": "rax", "ax": "rax", "eax": "rax", "rax": "rax",
+    "bl": "rbx", "bh": "rbx", "bx": "rbx", "ebx": "rbx", "rbx": "rbx",
+    "cl": "rcx", "ch": "rcx", "cx": "rcx", "ecx": "rcx", "rcx": "rcx",
+    "dl": "rdx", "dh": "rdx", "dx": "rdx", "edx": "rdx", "rdx": "rdx",
+    "sil": "rsi", "si": "rsi", "esi": "rsi", "rsi": "rsi",
+    "dil": "rdi", "di": "rdi", "edi": "rdi", "rdi": "rdi",
+    "bpl": "rbp", "bp": "rbp", "ebp": "rbp", "rbp": "rbp",
+    "spl": "rsp", "sp": "rsp", "esp": "rsp", "rsp": "rsp",
+}
+for REG_IDX in range(8, 16):
+    REG_ALIASES[f"r{REG_IDX}b"] = f"r{REG_IDX}"
+    REG_ALIASES[f"r{REG_IDX}w"] = f"r{REG_IDX}"
+    REG_ALIASES[f"r{REG_IDX}d"] = f"r{REG_IDX}"
+    REG_ALIASES[f"r{REG_IDX}"] = f"r{REG_IDX}"
+
+FRAME_IP_OFF = 0x0A
+
+
+def canon_reg(insn, reg_id):
+    if not reg_id:
+        return ""
+    name = insn.reg_name(reg_id)
+    return REG_ALIASES.get(name, name)
+
+
+def reg_of(insn, op):
+    if op.type != X86_OP_REG:
+        return ""
+    return canon_reg(insn, op.reg)
+
+
+def mem_frame_offset(insn, op, reg_offsets):
+    if op.type != X86_OP_MEM:
+        return None
+    mem = op.mem
+    if mem.index:
+        return None
+    if mem.base == X86_REG_RBP:
+        return mem.disp
+    base = canon_reg(insn, mem.base)
+    if base in reg_offsets:
+        return reg_offsets[base] + mem.disp
+    return None
+
+
+def extract_tail_ip_advance(eac, md, tail_site, window):
+    if tail_site is None:
+        return None, ""
+    start = max(0, tail_site - window)
+    stop = min(len(eac), tail_site + 8)
+    reg_offsets = {"rbp": 0}
+    last = None
+    for insn in md.disasm(eac[start:stop], start):
+        if insn.address > tail_site:
+            break
+        try:
+            ops = insn.operands
+        except Exception:
+            continue
+        if insn.mnemonic == "jmp" and insn.address >= tail_site:
+            break
+        if insn.mnemonic in {"mov", "movabs"} and len(ops) >= 2 and ops[0].type == X86_OP_REG:
+            dst = reg_of(insn, ops[0])
+            if ops[1].type == X86_OP_REG and canon_reg(insn, ops[1].reg) == "rbp":
+                reg_offsets[dst] = 0
+            elif ops[1].type == X86_OP_REG and canon_reg(insn, ops[1].reg) in reg_offsets:
+                reg_offsets[dst] = reg_offsets[canon_reg(insn, ops[1].reg)]
+            else:
+                reg_offsets.pop(dst, None)
+            continue
+        if insn.mnemonic == "lea" and len(ops) >= 2 and ops[0].type == X86_OP_REG:
+            dst = reg_of(insn, ops[0])
+            off = mem_frame_offset(insn, ops[1], reg_offsets)
+            if off is None:
+                reg_offsets.pop(dst, None)
+            else:
+                reg_offsets[dst] = off
+            continue
+        if insn.mnemonic in {"add", "sub"} and len(ops) >= 2:
+            sign = 1 if insn.mnemonic == "add" else -1
+            if ops[0].type == X86_OP_REG:
+                dst = reg_of(insn, ops[0])
+                if dst in reg_offsets and ops[1].type == X86_OP_IMM:
+                    reg_offsets[dst] += sign * ops[1].imm
+                elif dst in reg_offsets:
+                    reg_offsets.pop(dst, None)
+                continue
+            if ops[0].type == X86_OP_MEM and ops[1].type == X86_OP_IMM:
+                off = mem_frame_offset(insn, ops[0], reg_offsets)
+                if off == FRAME_IP_OFF:
+                    last = (sign * ops[1].imm, insn.address)
+                continue
+        if ops and ops[0].type == X86_OP_REG and insn.mnemonic not in {"cmp", "test"}:
+            reg_offsets.pop(reg_of(insn, ops[0]), None)
+    if not last:
+        return None, ""
+    advance, site = last
+    return advance, f"tail_ip_add@0x{site:x}"
+
+
+def load_tail_ip_advances(handler_table, eac_path, window):
+    rows = load_by(handler_table, "entry")
+    if not rows or not eac_path or not Path(eac_path).exists():
+        return {}
+    eac = Path(eac_path).read_bytes()
+    md = make_disassembler()
+    advances = {}
+    for entry, row in rows.items():
+        tail_site = parse_hex(row.get("tail_site", ""))
+        advance, site = extract_tail_ip_advance(eac, md, tail_site, window)
+        if advance is not None:
+            advances[entry] = {"advance": advance, "site": site}
+    return advances
 
 
 def load_terminal_coverage(path):
@@ -121,7 +241,7 @@ def source_footprint(entry, transition):
     return 0, ""
 
 
-def semantic_gap_class(kind, entry, span_len, transition, microcode):
+def semantic_gap_class(kind, entry, span_len, transition, microcode, tail_ip_advances):
     tr = transition.get(entry, {})
     mc = microcode.get(entry, {})
     footprint, source = source_footprint(entry, transition)
@@ -129,6 +249,10 @@ def semantic_gap_class(kind, entry, span_len, transition, microcode):
     if kind == "target_footprint":
         return "operand_footprint_only", footprint, source, span_len - footprint if footprint else span_len
     if klass == "target_only":
+        advance = tail_ip_advances.get(entry, {})
+        ip_advance = int(advance.get("advance", 0) or 0)
+        if 0 < ip_advance <= span_len:
+            return "target_only_prefix_plus_tail", ip_advance, "target_only_static_ip_advance", span_len - ip_advance
         return "target_only_span", footprint, source, span_len - footprint if footprint else span_len
     if footprint and footprint == span_len:
         return "single_known_footprint", footprint, source, 0
@@ -179,9 +303,50 @@ def byte_layout(byte_counter, max_items):
     return ";".join(pieces)
 
 
+def split_byte_counters(byte_counter, prefix_len):
+    prefixes = Counter()
+    tails = Counter()
+    if not prefix_len:
+        return prefixes, tails
+    for hex_text, count in byte_counter.items():
+        try:
+            data = bytes.fromhex(hex_text)
+        except ValueError:
+            continue
+        prefixes[data[:prefix_len].hex()] += count
+        tails[data[prefix_len:].hex()] += count
+    return prefixes, tails
+
+
+def top_byte_variants(byte_counter, max_items, preview_hex):
+    top = []
+    for data, count in byte_counter.most_common(max_items):
+        digest = hashlib.sha256(bytes.fromhex(data)).hexdigest()[:12] if data else ""
+        top.append(f"{digest}:{count}:{data[:preview_hex]}")
+    return ";".join(top)
+
+
+def tail_u16_candidates(byte_counter, max_items, max_entry):
+    rows = []
+    for hex_text, count in byte_counter.most_common(max_items):
+        try:
+            data = bytes.fromhex(hex_text)
+        except ValueError:
+            continue
+        candidates = []
+        for off in range(0, max(0, len(data) - 1)):
+            value = int.from_bytes(data[off:off + 2], "little")
+            if value <= max_entry:
+                candidates.append(f"+0x{off:x}:{value}")
+        if candidates:
+            rows.append(f"{count}:{','.join(candidates)}")
+    return ";".join(rows)
+
+
 def make_groups(args):
     transition = load_by(args.transition_model, "entry")
     microcode = load_by(args.microcode, "entry")
+    tail_ip_advances = load_tail_ip_advances(args.handler_table, args.eac, args.tail_window)
     terminal = load_terminal_coverage(args.block_edges)
     groups = {}
 
@@ -199,7 +364,7 @@ def make_groups(args):
             except (KeyError, ValueError):
                 span_len = 0
         gap_class, footprint, footprint_source, unresolved = semantic_gap_class(
-            kind, source_entry, span_len, transition, microcode
+            kind, source_entry, span_len, transition, microcode, tail_ip_advances
         )
         key = (kind, status, source_entry, target_entry, gap_class, footprint_source, str(footprint), str(unresolved))
         group = groups.setdefault(key, {
@@ -238,10 +403,10 @@ def make_groups(args):
         tr = transition.get(source_entry, {})
         mc = microcode.get(source_entry, {})
         target_mc = microcode.get(target_entry, {})
-        top_bytes = []
-        for data, count in group["bytes"].most_common(args.max_items):
-            digest = hashlib.sha256(bytes.fromhex(data)).hexdigest()[:12] if data else ""
-            top_bytes.append(f"{digest}:{count}:{data[:args.preview_hex]}")
+        footprint_i = int(footprint)
+        unresolved_i = int(unresolved)
+        prefixes, tails = split_byte_counters(group["bytes"], footprint_i)
+        split = tail_ip_advances.get(source_entry, {}) if footprint_source == "target_only_static_ip_advance" else {}
         rows.append({
             "kind": kind,
             "byte_status": status,
@@ -256,7 +421,11 @@ def make_groups(args):
             "span_len": f"0x{parse_len_status(status):x}" if parse_len_status(status) else "",
             "known_footprint_len": f"0x{int(footprint):x}" if footprint else "",
             "known_footprint_source": footprint_source,
-            "unresolved_tail_len": f"0x{int(unresolved):x}" if int(unresolved) >= 0 else f"-0x{abs(int(unresolved)):x}",
+            "unresolved_tail_len": f"0x{unresolved_i:x}" if unresolved_i >= 0 else f"-0x{abs(unresolved_i):x}",
+            "static_ip_advance_site": split.get("site", ""),
+            "top_prefix_variants": top_byte_variants(prefixes, args.max_items, args.preview_hex) if prefixes else "",
+            "top_tail_variants": top_byte_variants(tails, args.max_items, args.preview_hex) if tails else "",
+            "tail_u16_candidates": tail_u16_candidates(tails, args.max_items, args.max_table_entry) if tails else "",
             "events": str(group["events"]),
             "unique_start_ips": str(len(group["starts"])),
             "unique_end_ips": str(len(group["ends"])),
@@ -269,7 +438,7 @@ def make_groups(args):
             ),
             "top_deltas": ",".join(f"{key}:{value}" for key, value in group["deltas"].most_common(args.max_items)),
             "byte_layout": byte_layout(group["bytes"], args.max_layout_items),
-            "top_byte_variants": ";".join(top_bytes),
+            "top_byte_variants": top_byte_variants(group["bytes"], args.max_items, args.preview_hex),
             "source_state_ir": compact(mc.get("state_ir", ""), args.max_expr_len),
             "source_dispatch_ir": compact(mc.get("dispatch_slot_ir", ""), args.max_expr_len),
             "source_ip_ir": compact(mc.get("ip_advance_ir", ""), args.max_expr_len),
@@ -296,6 +465,10 @@ def emit_tsv(rows):
         "known_footprint_len",
         "known_footprint_source",
         "unresolved_tail_len",
+        "static_ip_advance_site",
+        "top_prefix_variants",
+        "top_tail_variants",
+        "tail_u16_candidates",
         "events",
         "unique_start_ips",
         "unique_end_ips",
@@ -322,16 +495,18 @@ def emit_tsv(rows):
 def emit_markdown(rows, args):
     print("# VM Synthetic Span Catalog\n")
     print(f"Top {min(args.limit, len(rows))} synthetic span groups by event count.\n")
-    print("| Events | Term Events | Kind | Status | Source | Target | Class | Known | Tail | Bytes |")
-    print("| ---: | ---: | --- | --- | ---: | ---: | --- | --- | --- | --- |")
+    print("| Events | Term Events | Kind | Status | Source | Target | Class | Known | Tail | Tail Candidates | Bytes |")
+    print("| ---: | ---: | --- | --- | ---: | ---: | --- | --- | --- | --- | --- |")
     for row in rows[: args.limit]:
         known = row["known_footprint_len"] or "-"
         if row["known_footprint_source"]:
             known += f" {row['known_footprint_source']}"
+        tail_candidates = row["tail_u16_candidates"] or "-"
         print(
             f"| {row['events']} | {row['terminal_events']} | `{row['kind']}` | `{row['byte_status']}` | "
             f"{row['source_entry']} `{row['source_class']}` | {row['target_entry']} `{row['target_class']}` | "
             f"`{row['semantic_gap_class']}` | `{known}` | `{row['unresolved_tail_len']}` | "
+            f"`{tail_candidates[:args.max_markdown_bytes]}` | "
             f"`{row['top_byte_variants'][:args.max_markdown_bytes]}` |"
         )
 
@@ -360,7 +535,11 @@ def main():
     )
     parser.add_argument("--transition-model", default="dumps/vmtail-wide-1m-w16/vm_transition_model.tsv")
     parser.add_argument("--microcode", default="dumps/vmtail-wide-1m-w16/vm_microcode_catalog.tsv")
+    parser.add_argument("--handler-table", default="dumps/vmtail-wide-1m-w16/vm_handler_table.tsv")
     parser.add_argument("--block-edges", default="dumps/vmtail-wide-1m-w16/vm_bytecode_basic_block_edges.tsv")
+    parser.add_argument("--eac", default="eac.elf")
+    parser.add_argument("--tail-window", type=lambda value: int(value, 0), default=0x80)
+    parser.add_argument("--max-table-entry", type=lambda value: int(value, 0), default=359)
     parser.add_argument("--max-items", type=int, default=6)
     parser.add_argument("--max-layout-items", type=int, default=16)
     parser.add_argument("--preview-hex", type=int, default=48)
