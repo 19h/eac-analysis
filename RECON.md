@@ -1157,7 +1157,7 @@ The static dispatch validator extends the same concrete slice through the final 
 
 The affine fallback uses formulas fitted over state/post-state/byte features, so it is a validated dynamic dispatch model rather than a purely static one. In the lifted long catalog, the combined model tags 71343 rows and 767546 events; 12 exact rows and 20 events remain untagged only because their source handlers were not present in the state-aware trace.
 
-`vm_transition_model.py` consolidates the handler-level reconstruction into `vm_transition_model.tsv`, one row for each of the 360 dispatch entries. It joins the long-run handler skeleton, static state/flag update chain, state and dispatch validation percentages, affine CV status, sampled transfer expressions, branch-predicate provenance, combined dispatch model, and tail operand provenance. The observation mix is 190 exact-covered entries, 155 unobserved entries, 7 sampled backedge entries, 4 sampled long/sparse entries, 3 target-only entries, and 1 central/long-control-flow entry.
+`vm_transition_model.py` consolidates the handler-level reconstruction into `vm_transition_model.tsv`, one row for each of the 360 dispatch entries. It joins the long-run handler skeleton, static state/flag update chain, state and dispatch validation percentages, affine CV status, sampled transfer expressions, decoded long-control bytecode lifts, branch-predicate provenance, combined dispatch model, and tail operand provenance. The observation mix is 190 exact-covered entries, 155 unobserved entries, 7 sampled backedge entries, 4 sampled long/sparse entries, 3 target-only entries, and 1 central/long-control-flow entry.
 
 Handler-level coverage in the transition model:
 
@@ -1174,6 +1174,8 @@ Handler-level coverage in the transition model:
 | with tail target register/operand | 181 | 765570 |
 | with live/static slot temp | 181 | 765570 |
 | with byte/static index register | 156 | 704763 |
+
+The long-control sidecar attaches decoded target/IP-update variants to 10 transition-model entries, covering 1638 sampled/backedge catalog events across 128 variants. This is tracked separately from the `observed_events` column because some sampled rows, notably source entry 308, are underrepresented in exact source-profile event counts.
 
 Combined dispatch-model distribution in the transition model:
 
