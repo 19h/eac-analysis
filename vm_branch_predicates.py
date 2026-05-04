@@ -527,8 +527,9 @@ def execute(
                 unknown += 1
             if not write_op_tracked(insn, ops[0], value, regs, frame, frame_tracked, max_expr_len, frame_mem):
                 unknown += 1
-            if isinstance(value.value, int) and mnem in {"and", "or", "xor", "sub"}:
-                zf = (value.value & mask_for_size(ops[0].size or 8)) == 0
+            concrete_value = concrete_compare_value(value.value, ops[0].size or 8)
+            if concrete_value is not None and mnem in {"and", "or", "xor", "sub"}:
+                zf = concrete_value == 0
                 condition = {
                     "site": insn.address,
                     "mnemonic": mnem,

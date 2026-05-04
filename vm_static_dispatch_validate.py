@@ -19,6 +19,7 @@ from vm_state_static_validate import (
     Unknown,
     branch_taken,
     concrete_full_value,
+    concrete_compare_value,
     cmp_zf,
     disassemble_region,
     eval_bin,
@@ -238,7 +239,8 @@ def execute(insns_by_addr, start, row, table, target_to_entry, max_steps):
             if not write_op(insn, ops[0], value, regs, frame, frame_mem):
                 unknown += 1
             if mnem in {"and", "or", "xor", "sub"}:
-                zf = (value & mask_for_size(ops[0].size or 8)) == 0 if isinstance(value, int) else None
+                concrete_value = concrete_compare_value(value, ops[0].size or 8)
+                zf = (concrete_value == 0) if concrete_value is not None else None
             pc = next_pc
             continue
 
