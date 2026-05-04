@@ -1271,16 +1271,16 @@ The path-row count increases because formerly unknown live-in predicates now spl
 | Entry | Events | Unknown Branches Before | Unknown Branches After | Reduction |
 | ---: | ---: | ---: | ---: | ---: |
 | 297 | 6483 | 12966 | 1116 | 11850 |
+| 337 | 7502 | 15004 | 6254 | 8750 |
+| 168 | 4535 | 9070 | 1214 | 7856 |
+| 301 | 2037 | 8148 | 732 | 7416 |
 | 18 | 7392 | 7392 | 308 | 7084 |
 | 114 | 7722 | 7722 | 685 | 7037 |
 | 66 | 7189 | 7189 | 324 | 6865 |
 | 340 | 7549 | 7549 | 924 | 6625 |
-| 168 | 4535 | 9070 | 2634 | 6436 |
 | 307 | 7050 | 7050 | 714 | 6336 |
+| 347 | 8151 | 8151 | 2168 | 5983 |
 | 189 | 7459 | 7459 | 1478 | 5981 |
-| 301 | 2037 | 8148 | 2180 | 5968 |
-| 347 | 8151 | 8151 | 2987 | 5164 |
-| 43 | 5309 | 5309 | 355 | 4954 |
 
 This confirms that cross-handler register carry and hot scratch-frame fields are real VM control-flow state, not merely junk. The remaining unresolved predicates after GPR+scratch seeding are now concentrated in complex seeded expressions, bytecode-dependent formulas, and handlers where the current static slice still loses memory provenance.
 
@@ -1291,7 +1291,7 @@ The bounded GPR+scratch-seeded predicate catalog confirms the same reduction at 
 | state-only predicates | 13045 | `live_in_reg:6153`, `unknown_frame_field:3316`, `unknown_memory_pointer:1774` |
 | GPR+scratch-seeded predicates | 4032 | `unknown_memory_pointer:1774`, `vm_bytecode_unresolved:1024`, `seeded_gpr_unresolved:968` |
 
-Top GPR+scratch-seeded unresolved sites are no longer simple live-in tests. They are scratch-frame, bytecode-dependent, or complex seeded-GPR expressions: entry 337 branches `0xbeea3` and `0xbeee0`, entry 199 branch `0xa094b`, entry 196 branch `0x9fd8f`, and entry 268 branches `0xb01e9` and `0xb029a`. The largest per-site reductions are direct proof that seeding resolves live-in and scratch-frame predicates: entry 18 `0x7bed4` drops by 7084 unknown events, entry 114 `0x90334` by 7037, entry 66 `0x85621` by 6865, entry 340 `0xbf457` by 6625, and entry 307 `0xb80ac` by 6336.
+Top sampled GPR+scratch-seeded unresolved sites are no longer simple live-in tests. They are VM-bytecode/frame comparisons, unknown memory-pointer checks, or complex seeded-GPR expressions: entries 26, 33, 196, 243, 287, 305, 315, and 346 compare `u16_N + frame` against seeded frame-derived pointers; entry 356 still has several unknown memory-pointer checks; entry 337 `0xbeee0` remains a complex seeded expression. The largest full-path-profile reductions are direct proof that seeding resolves live-in and scratch-frame predicates, especially entries 297, 337, 168, 301, 18, 114, 66, 340, and 307.
 
 `vm_microcode_catalog.py` is the compact human-facing index over the reconstructed handlers. It joins the transition model, ISA operand layouts, static state/flag update chains, and source-level state-only plus GPR+scratch-seeded branch-predicate summaries into pseudo-IR rows. The TSV keeps one row per dispatch entry, while `vm_microcode_top.md` renders the top 30 observed entries by event count with clipped expression hashes that point back to the full lower-level TSVs.
 
