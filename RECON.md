@@ -86,6 +86,8 @@ SHA-256: `0b44ad59697129534189efdb75cde2b96245f831438e9f6a53cb7725f190d739`
 - `dumps/vmtail-wide-1m-w16/vm_microcode_top.md`: Markdown digest for the top observed dispatch entries by long-run event count.
 - `dumps/vmtail-wide-1m-w16/vm_path_microcode_catalog.tsv`: compact pseudo-IR row per concrete source-handler branch path.
 - `dumps/vmtail-wide-1m-w16/vm_path_microcode_top.md`: Markdown digest for the top concrete branch paths by state-trace event count.
+- `dumps/vmtail-wide-1m-w16/vm_path_microcode_catalog_gpr_seeded.tsv`: compact pseudo-IR row per GPR+scratch-seeded concrete source-handler branch path.
+- `dumps/vmtail-wide-1m-w16/vm_path_microcode_gpr_seeded_top.md`: Markdown digest for the top GPR+scratch-seeded concrete branch paths.
 - `dumps/vmtail-wide-1m-w16/vm_bytecode_file_atlas.tsv`: file-backed VM bytecode atlas built from sampled bytecode segments with `--max-gap 0x20`.
 - `dumps/vmtail-wide-1m-w16/vm_dispatch_formula_validate.tsv`: validation of byte-only dispatch formulas against long exact unique instructions.
 - `dumps/vmtail-wide-1m-w16/vm_gap_report.tsv`: exact-segment coverage gap ranking.
@@ -104,12 +106,12 @@ SHA-256: `0b44ad59697129534189efdb75cde2b96245f831438e9f6a53cb7725f190d739`
 - `dumps/vmtail-state-wide-w16/vm_static_path_transfer_expr.tsv`: path-conditioned symbolic dispatch-slot and IP-advance expressions over the same bounded transfer-expression sample.
 - `dumps/vmtail-state-wide-w16/vm_static_path_profile.tsv`: per-source branch-path profile from concrete static handler replay over the full state-aware trace.
 - `dumps/vmtail-state-wide-w16/vm_static_path_variants.tsv`: one row per distinct source-handler branch path, with per-path target distributions.
-- `dumps/vmtail-state-wide-w16/vm_static_path_profile_gpr_seeded.tsv`: same path profile, but seeded with entry GPRs from the previous `dumps/vmtail-regs-wide-w16/run.stderr` VMTAIL event.
-- `dumps/vmtail-state-wide-w16/vm_static_path_variants_gpr_seeded.tsv`: one row per GPR-seeded source-handler branch path.
+- `dumps/vmtail-state-wide-w16/vm_static_path_profile_gpr_seeded.tsv`: same path profile, but seeded with entry GPRs and hot scratch-frame fields from the previous `dumps/vmtail-scratch-wide-w16/run.stderr` VMTAIL event.
+- `dumps/vmtail-state-wide-w16/vm_static_path_variants_gpr_seeded.tsv`: one row per GPR+scratch-seeded source-handler branch path.
 - `dumps/vmtail-state-wide-w16/vm_branch_predicates.tsv`: one row per source-handler branch site with outcome counts, unresolved predicate classes, and top condition expressions.
 - `dumps/vmtail-state-wide-w16/vm_branch_predicates_top.md`: Markdown digest of the highest-volume unresolved branch predicates.
-- `dumps/vmtail-state-wide-w16/vm_branch_predicates_gpr_seeded.tsv`: same branch predicate catalog, seeded with previous-tail GPR snapshots.
-- `dumps/vmtail-state-wide-w16/vm_branch_predicates_gpr_seeded_top.md`: Markdown digest of the highest-volume unresolved GPR-seeded predicates.
+- `dumps/vmtail-state-wide-w16/vm_branch_predicates_gpr_seeded.tsv`: same branch predicate catalog, seeded with previous-tail GPR snapshots and hot scratch-frame fields.
+- `dumps/vmtail-state-wide-w16/vm_branch_predicates_gpr_seeded_top.md`: Markdown digest of the highest-volume unresolved GPR+scratch-seeded predicates.
 - `dumps/vmtail-state-wide-w16/vm_dispatch_model_combined.tsv`: combined static-plus-affine dispatch model coverage for the state-aware instruction trace.
 - `dumps/vmtail-state-wide-w16/vm_dispatch_formulas.tsv`: fitted dispatch-index formulas from the state-aware instruction trace.
 - `dumps/vmtail-state-wide-w16/vm_dispatch_affine.tsv`: exact affine dispatch-index fits from the state-aware instruction trace.
@@ -118,6 +120,7 @@ SHA-256: `0b44ad59697129534189efdb75cde2b96245f831438e9f6a53cb7725f190d739`
 - `dumps/vmtail-regs-smoke-w16/vm_tail_registers.tsv`: per-site/per-register role evidence from the GPR trace.
 - `dumps/vmtail-regs-smoke-w16/vm_tail_register_summary.tsv`: compact one-row-per-site register-role summary for lifting dispatch tails.
 - `dumps/vmtail-regs-wide-w16/run.stderr`: 250k VMTAIL trace with full GPR snapshots at each tail site.
+- `dumps/vmtail-scratch-wide-w16/run.stderr`: 250k VMTAIL trace with full GPR snapshots plus hot scratch-frame fields (`fs0x0`, `fs0x12`, `fs0x60`, `fs0x68`, `fs0x71`, `fs0x81`, `fs0xe1`, `fs0x13d`, `fs0x16f`, `fs0x1e8`).
 - `dumps/vmtail-regs-wide-w16/vm_tail_registers.tsv`: per-site/per-register role evidence from the 250k GPR trace.
 - `dumps/vmtail-regs-wide-w16/vm_tail_register_summary.tsv`: compact one-row-per-site register-role summary from the 250k GPR trace.
 
@@ -409,6 +412,22 @@ timeout 45s env EAC_FAST_EXIT=1 \
   ./driver ./eac.elf 1 x 0x800 0 \
   >dumps/vmtail-regs-wide-w16/run.stdout \
   2>dumps/vmtail-regs-wide-w16/run.stderr
+mkdir -p dumps/vmtail-scratch-wide-w16
+timeout 60s env EAC_FAST_EXIT=1 \
+  EAC_DISPATCH_TRACE=1 \
+  EAC_DISPATCH_DETAIL=1 \
+  EAC_VMTAIL_TRACE=1 \
+  EAC_VMTAIL_REGS=1 \
+  EAC_VMTAIL_SCRATCH=1 \
+  EAC_DISPATCH_LIMIT=4096 \
+  EAC_VMTAIL_LIMIT=250000 \
+  EAC_VMTAIL_SITES="$SPEC" \
+  EAC_DUMP_DIR=dumps/vmtail-scratch-wide-w16 \
+  EAC_LAUNCHERDIR=/tmp/fake_launcher \
+  LD_PRELOAD=./trace_preload.so \
+  ./driver ./eac.elf 1 x 0x800 0 \
+  >dumps/vmtail-scratch-wide-w16/run.stdout \
+  2>dumps/vmtail-scratch-wide-w16/run.stderr
 python3 vm_tail_registers.py dumps/vmtail-regs-wide-w16 --eac eac.elf \
   >dumps/vmtail-regs-wide-w16/vm_tail_registers.tsv
 python3 vm_tail_registers.py dumps/vmtail-regs-wide-w16 --eac eac.elf --site-summary \
@@ -420,13 +439,13 @@ python3 vm_tail_static_slots.py dumps/vmtail-wide-1m-w16/vm_handler_tail_roles_w
   --eac eac.elf \
   >dumps/vmtail-wide-1m-w16/vm_tail_static_slots.tsv
 python3 vm_static_path_profile.py dumps/vmtail-state-wide-w16/vm_instruction_trace.tsv \
-  --gpr-run dumps/vmtail-regs-wide-w16/run.stderr \
+  --gpr-run dumps/vmtail-scratch-wide-w16/run.stderr \
   >dumps/vmtail-state-wide-w16/vm_static_path_profile_gpr_seeded.tsv
 python3 vm_static_path_profile.py dumps/vmtail-state-wide-w16/vm_instruction_trace.tsv \
-  --gpr-run dumps/vmtail-regs-wide-w16/run.stderr --by-path \
+  --gpr-run dumps/vmtail-scratch-wide-w16/run.stderr --by-path \
   >dumps/vmtail-state-wide-w16/vm_static_path_variants_gpr_seeded.tsv
 python3 vm_branch_predicates.py dumps/vmtail-state-wide-w16/vm_instruction_trace.tsv \
-  --gpr-run dumps/vmtail-regs-wide-w16/run.stderr \
+  --gpr-run dumps/vmtail-scratch-wide-w16/run.stderr \
   >dumps/vmtail-state-wide-w16/vm_branch_predicates_gpr_seeded.tsv
 python3 vm_branch_predicates.py --markdown \
   --from-tsv dumps/vmtail-state-wide-w16/vm_branch_predicates_gpr_seeded.tsv \
@@ -443,6 +462,13 @@ python3 vm_path_microcode_catalog.py \
   >dumps/vmtail-wide-1m-w16/vm_path_microcode_catalog.tsv
 python3 vm_path_microcode_catalog.py --markdown --limit 30 \
   >dumps/vmtail-wide-1m-w16/vm_path_microcode_top.md
+python3 vm_path_microcode_catalog.py \
+  --path-variants dumps/vmtail-state-wide-w16/vm_static_path_variants_gpr_seeded.tsv \
+  >dumps/vmtail-wide-1m-w16/vm_path_microcode_catalog_gpr_seeded.tsv
+python3 vm_path_microcode_catalog.py \
+  --path-variants dumps/vmtail-state-wide-w16/vm_static_path_variants_gpr_seeded.tsv \
+  --markdown --limit 30 \
+  >dumps/vmtail-wide-1m-w16/vm_path_microcode_gpr_seeded_top.md
 python3 vm_dispatch_formula_validate.py \
   >dumps/vmtail-wide-1m-w16/vm_dispatch_formula_validate.tsv
 python3 vm_bytecode_file_atlas.py --max-gap 0x20 \
