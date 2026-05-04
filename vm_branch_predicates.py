@@ -130,6 +130,24 @@ def load_gpr_seeds(path):
                 for reg in REG_NAMES
                 if reg in fields
             }
+            frame_mem = {}
+            for name, value in fields.items():
+                if not name.startswith("fs"):
+                    continue
+                off_s = name[2:]
+                if off_s.startswith("0x"):
+                    off_s = off_s[2:]
+                try:
+                    off = int(off_s, 16)
+                except ValueError:
+                    continue
+                frame_mem[(off, 8)] = Tracked(
+                    value,
+                    f"seed_frame(0x{off:x})",
+                    frozenset({"frame_scratch_seed"}),
+                )
+            if frame_mem:
+                regs["__frame_mem__"] = frame_mem
             # Instruction row N starts at the previous VMTAIL event's exit state.
             seeds[str(count + 1)] = regs
     return seeds
@@ -416,8 +434,8 @@ def execute(
         "ip_ptr": Tracked(Ptr("ip", 0), "ip+0x0", frozenset({"vm_ip_pointer"})),
     }
     regs = dict(initial_regs or {})
+    frame_mem = dict(regs.pop("__frame_mem__", {}))
     regs["rbp"] = Tracked(Ptr("frame", 0), "frame", frozenset({"frame_pointer"}))
-    frame_mem = {}
     pc = start
     zf = None
     condition = None
