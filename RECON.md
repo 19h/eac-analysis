@@ -12,9 +12,10 @@ SHA-256: `0b44ad59697129534189efdb75cde2b96245f831438e9f6a53cb7725f190d739`
 - `vm_tail_scan.py`: ranks observed dispatch-table targets and suggests extra `EAC_VMTAIL_SITES=0xsite:reg,...` hooks using Capstone.
 - `vm_trace_graph.py`: converts a traced run into VM edge TSV form; default output is site-based, and `--sequential` emits dynamic per-frame transitions from ordered trace events. It parses arbitrary `ip_wN` fields; legacy TSVs still print `w0..w5`, but exact byte reconstruction uses the full logged lookahead window.
 - `vm_handler_table.py`: merges dispatch-table metadata, dynamic trace profiles, and static Capstone handler features into one TSV.
-- `vm_bytecode_blocks.py`: reduces direct executed VM instruction rows into contiguous exact bytecode coverage blocks.
-- `vm_bytecode_recover.py`: reconstructs exact VM byte values from instruction rows, verifies byte consistency, and emits segment hashes plus a unique instruction table.
+- `vm_bytecode_blocks.py`: reduces direct executed VM instruction rows into contiguous bytecode coverage blocks. Default mode uses exact consumed bytes; `--include-sampled` adds logged prefix/backedge byte windows as partial coverage only.
+- `vm_bytecode_recover.py`: reconstructs VM byte values from instruction rows, verifies byte consistency, and emits segment hashes plus a unique instruction table. Default mode is exact-only; `--include-sampled` also inserts logged prefix/backedge byte windows without claiming the full instruction length is known.
 - `vm_bytecode_cfg.py`: builds a bytecode block graph from instruction rows and recovered exact bytecode segments.
+- `vm_gap_report.py`: ranks bytecode and handler coverage gaps from instruction rows, recovered segments, ISA missing-exact rows, and per-handler semantic observations.
 - `vm_isa_summary.py`: clusters exact recovered VM instruction signatures by source handler, fixed byte length, target distribution, and operand byte/word layout.
 - `vm_semantic_templates.py`: merges ISA schemas with static handler features into per-handler rows and ranked semantic templates.
 - `vm_handler_skeleton.py`: extracts normalized frame/IP/table access skeletons from handler disassembly and groups full, dispatch-tail, or canonical decode signatures.
@@ -46,6 +47,10 @@ SHA-256: `0b44ad59697129534189efdb75cde2b96245f831438e9f6a53cb7725f190d739`
 - `dumps/vmtail-wide-1m-w16/vm_handler_decode_groups.tsv`: observed handlers grouped by canonical decode signature.
 - `dumps/vmtail-wide-1m-w16/vm_handler_dispatch_groups.tsv`: observed handlers grouped by final dispatch-tail skeleton.
 - `dumps/vmtail-wide-1m-w16/vm_handler_skeleton_groups.tsv`: observed handlers grouped by full normalized handler skeleton.
+- `dumps/vmtail-wide-1m-w16/vm_bytecode_segments_sampled.tsv`: exact plus sampled byte-window recovery; conflict-checked but not full-instruction exactness for sampled rows.
+- `dumps/vmtail-wide-1m-w16/vm_bytecode_blocks_sampled.tsv`: contiguous coverage blocks for exact plus sampled byte windows.
+- `dumps/vmtail-wide-1m-w16/vm_gap_report.tsv`: exact-segment coverage gap ranking.
+- `dumps/vmtail-wide-1m-w16/vm_gap_report_sampled.tsv`: gap ranking after adding sampled byte-window coverage.
 
 Reproduction:
 
@@ -221,6 +226,15 @@ python3 vm_bytecode_recover.py dumps/vmtail-wide-1m-w16/vm_instruction_trace.tsv
 python3 vm_bytecode_cfg.py dumps/vmtail-wide-1m-w16/vm_instruction_trace.tsv \
   --segments dumps/vmtail-wide-1m-w16/vm_bytecode_segments.tsv \
   >dumps/vmtail-wide-1m-w16/vm_bytecode_block_edges.tsv
+python3 vm_bytecode_blocks.py dumps/vmtail-wide-1m-w16/vm_instruction_trace.tsv --include-sampled \
+  >dumps/vmtail-wide-1m-w16/vm_bytecode_blocks_sampled.tsv
+python3 vm_bytecode_recover.py dumps/vmtail-wide-1m-w16/vm_instruction_trace.tsv --include-sampled \
+  >dumps/vmtail-wide-1m-w16/vm_bytecode_segments_sampled.tsv
+python3 vm_gap_report.py dumps/vmtail-wide-1m-w16 \
+  >dumps/vmtail-wide-1m-w16/vm_gap_report.tsv
+python3 vm_gap_report.py dumps/vmtail-wide-1m-w16 \
+  --segments dumps/vmtail-wide-1m-w16/vm_bytecode_segments_sampled.tsv \
+  >dumps/vmtail-wide-1m-w16/vm_gap_report_sampled.tsv
 python3 vm_isa_summary.py dumps/vmtail-wide-1m-w16/vm_instruction_unique.tsv \
   >dumps/vmtail-wide-1m-w16/vm_isa_handlers.tsv
 python3 vm_isa_summary.py dumps/vmtail-wide-1m-w16/vm_instruction_unique.tsv --patterns \
@@ -543,6 +557,14 @@ The bytecode recovery pass in `vm_bytecode_segments.tsv` inserts every exact byt
 - 0 conflicting byte offsets.
 - 0 conflicting byte observations.
 
+The sampled recovery pass in `vm_bytecode_segments_sampled.tsv` additionally inserts the logged byte windows from prefix-only long jumps and backedge samples. These bytes are valid observed lookahead bytes, but the full VM instruction length remains unknown for sampled rows. Current sampled result:
+
+- 769216 trace rows inserted as exact or sampled byte windows.
+- 337 recovered byte segments after sampled windows merge nearby exact segments.
+- `0x42dbd` total observed bytes, adding `0xbea` bytes over exact-only recovery.
+- 0 conflicting byte offsets.
+- 0 conflicting byte observations.
+
 `vm_instruction_unique.tsv` collapses the exact trace to 71355 unique executed instruction signatures. The most repeated signatures are still the loop body beginning at `0x22ff44`, where many adjacent rows execute exactly 256 times. Example rows:
 
 | Count | Start VM IP | Source Entry | Delta | Bytes | Target Entry |
@@ -671,6 +693,30 @@ The bytecode block graph in `vm_bytecode_block_edges.tsv` aggregates instruction
 | 3254 | 445 | `out_of_recovered` |
 
 The `out_of_recovered` edges are exact positive steps whose destination offset has not yet been recovered as an exact byte segment start; these are useful targets for varied-input traces.
+
+`vm_gap_report.py` prioritizes the remaining coverage holes. Against exact-only segments it reports:
+
+| Gap Class | Rows | Events |
+| --- | ---: | ---: |
+| `uncovered_exact_destination` | 445 | 3254 |
+| `uncovered_source_start` | 158 | 1650 |
+| `missing_exact_source` | 12 | 1398 |
+| `backedge_sample` | 49 | 1157 |
+| `prefix_long_jump` | 90 | 493 |
+| `target_only_entry` | 3 | 0 |
+| `unobserved_entry` | 155 | 0 |
+
+Against sampled byte-window segments, `uncovered_source_start` disappears and exact-destination gaps fall to 287 rows / 996 events. The highest-priority remaining dynamic gaps are:
+
+| Events | Gap | Detail |
+| ---: | --- | --- |
+| 447 | missing exact source entry 316 (`0xb987b`) | mostly backedge `-0x3c4` to entry 165 and short forward jumps to entries 354/171 |
+| 276 | missing exact source entry 75 (`0x873fc`) | mostly backedge `-0x6d` to entry 171 |
+| 256 | exact destination `0x230111` | exact source 123, target entry 50, next sampled segment starts at `0x230122` |
+| 200 | missing exact source entry 266 (`0xaf8af`) | backedges to entries 354/171/165 |
+| 142 | missing exact source entry 145 (`0x95b5c`) | long positive jumps, including `+0x139` to entry 354 |
+
+Those gaps are better next trace targets than broad reruns: they isolate specific VM IP bands (`0x22ffb1`, `0x230111`, `0x370xxx`, `0x371xxx`, `0x310dba`, `0x31297d`, `0x3157e1`, `0x315cc0`) and sparse source handlers (`316`, `75`, `266`, `145`, `117`, `302`) that still block full bytecode/ISA recovery.
 
 Top auto3 tail targets:
 
