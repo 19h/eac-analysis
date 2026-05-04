@@ -21,6 +21,7 @@ SHA-256: `0b44ad59697129534189efdb75cde2b96245f831438e9f6a53cb7725f190d739`
 - `vm_handler_skeleton.py`: extracts normalized frame/IP/table access skeletons from handler disassembly and groups full, dispatch-tail, or canonical decode signatures.
 - `vm_state_effects.py`: summarizes observed `frame+0x170`, `frame+0x23`, and `frame+0x194` changes per handler or per `(handler, delta, bytes)` signature from state-aware traces.
 - `vm_state_affine.py`: fits and cross-validates affine formulas for the `frame+0x170` post-state from pre-state, instruction bytes, and optional traced flag/byte fields.
+- `vm_state_static_slice.py`: statically tracks frame/IP pointers through handler code and emits symbolic update chains for `frame+0x170` and `frame+0x23`.
 - `vm_tail_registers.py`: infers per-tail-site register roles from `EAC_VMTAIL_REGS=1` traces, including target value, dispatch-slot pointer, byte index, table pointer, and frame pointer. It can also join those roles back onto an instruction trace by source handler and tail site.
 - `vm_tail_static_slots.py`: statically recovers consumed dispatch-slot temporaries for tail sites where the target is loaded from `table + byte_index` and the slot pointer is clobbered before the final jump.
 - `vm_instruction_lift.py`: joins exact recovered VM instructions with per-signature state effects, compact state-affine tags, dynamic tail-register roles, static dispatch-slot provenance, and compact scalar/affine dispatch-formula tags.
@@ -65,6 +66,8 @@ SHA-256: `0b44ad59697129534189efdb75cde2b96245f831438e9f6a53cb7725f190d739`
 - `dumps/vmtail-wide-1m-w16/vm_bytecode_segments_filefill_sampled.tsv`: sampled/file-backed byte recovery from `vm_instruction_trace_filefill.tsv`.
 - `dumps/vmtail-wide-1m-w16/vm_bytecode_blocks_filefill_sampled.tsv`: contiguous coverage blocks for sampled/file-backed recovery.
 - `dumps/vmtail-wide-1m-w16/vm_gap_report_filefill.tsv`: gap report after bounded file-span coverage.
+- `dumps/vmtail-wide-1m-w16/vm_state_static_slice.tsv`: static symbolic state/flag update chains for all dispatch entries.
+- `dumps/vmtail-wide-1m-w16/vm_state_static_slice_entry258.tsv`: focused static state slice for the high-volume nonlinear entry 258.
 - `dumps/vmtail-wide-1m-w16/vm_handler_tail_roles.tsv`: long-run source-handler/tail-site rows joined with register roles inferred from the 50k GPR smoke trace.
 - `dumps/vmtail-wide-1m-w16/vm_handler_tail_roles_wide_regs.tsv`: same join using the 250k GPR trace for better low-frequency site coverage.
 - `dumps/vmtail-wide-1m-w16/vm_tail_static_slots.tsv`: static dispatch-slot provenance joined to each long-run source-handler/tail-site row.
@@ -378,6 +381,10 @@ python3 vm_trace_file_fill.py dumps/vmtail-wide-1m-w16/vm_instruction_trace.tsv 
   --eac eac.elf \
   --max-delta 0x400 \
   >dumps/vmtail-wide-1m-w16/vm_instruction_trace_filefill.tsv
+python3 vm_state_static_slice.py \
+  >dumps/vmtail-wide-1m-w16/vm_state_static_slice.tsv
+python3 vm_state_static_slice.py --entries 258 \
+  >dumps/vmtail-wide-1m-w16/vm_state_static_slice_entry258.tsv
 python3 vm_bytecode_recover.py dumps/vmtail-wide-1m-w16/vm_instruction_trace_filefill.tsv \
   --include-sampled \
   >dumps/vmtail-wide-1m-w16/vm_bytecode_segments_filefill_sampled.tsv
@@ -998,6 +1005,29 @@ Representative robust state-affine fits from `vm_state_affine_fullfields.tsv`:
 | 91 | 546 | 193 | 7 state + 9 byte | combines preserved state bits with instruction bytes |
 
 In the lifted long catalog, robust state-affine sources cover 5413 exact rows and 60256 events. The intersection of robust state-affine and robust dispatch-affine evidence covers 35 source handlers, 1019 exact rows, and 10319 long-run events; this is the current strongest subset for direct devirtualized handler semantics. The high-volume mixed handlers still fail affine state modeling, so they likely use arithmetic carry/borrow or untraced intermediate state rather than a pure GF(2) update.
+
+`vm_state_static_slice.py` statically slices the same state mechanism directly from handler code. It tracks frame pointers, VM IP reads, and writes to `frame+0x170`/`frame+0x23`. Across all 360 dispatch entries, 327 entries have at least one static state write, covering 764423 long-run events. The state update count distribution is:
+
+| State Writes | Entries | Long-Run Events |
+| ---: | ---: | ---: |
+| 0 | 33 | 4541 |
+| 1 | 109 | 67694 |
+| 2 | 59 | 65512 |
+| 3 | 36 | 100665 |
+| 4 | 31 | 160304 |
+| 5 | 32 | 146798 |
+| 6 | 23 | 68838 |
+| 7 | 15 | 131229 |
+| 8+ | 22 | 23383 |
+
+The static slice explains why the high-volume affine failures are hard: 123 entries have four or more state writes, covering 530552 long-run events. Entry 258 is the best current example. Its branch-linearized static state chain has four writes:
+
+1. `state ^= 0x11095fd5`
+2. `state += flags'`
+3. `state ^= u16_2 - flags'`
+4. `state &= (u16_0 - state) ^ 0x5812e92c`
+
+Here `flags'` is itself conditionally transformed from `frame+0x23` by subtract/or/xor constants. The final `AND` after subtracting the evolving state is non-affine and matches the dynamic failure mode.
 
 The register-role trace in `dumps/vmtail-regs-wide-w16` logs all GPRs for 250000 VMTAIL events. `vm_tail_registers.py` compares each register to the current dispatch target, `frame+0x10f` table base, `table + target_entry*8`, and `target_entry*8`.
 
