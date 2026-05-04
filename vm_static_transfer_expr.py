@@ -424,8 +424,8 @@ def execute(insns_by_addr, start, row, table, target_to_entry, max_steps, max_ex
                 unknown += 1
             if not write_sym_op(insn, ops[0], sym_value, sym_regs, frame_expr, max_expr_len):
                 unknown += 1
-            if isinstance(value, int) and mnem in {"and", "or", "xor", "sub"}:
-                zf = (value & mask_for_size(ops[0].size or 8)) == 0
+            if mnem in {"and", "or", "xor", "sub"}:
+                zf = (value & mask_for_size(ops[0].size or 8)) == 0 if isinstance(value, int) else None
             pc = next_pc
             continue
 

@@ -133,8 +133,8 @@ def execute(insns_by_addr, start, row, table, target_to_entry, max_steps):
                 unknown += 1
             if not write_op(insn, ops[0], value, regs, frame):
                 unknown += 1
-            if isinstance(value, int) and mnem in {"and", "or", "xor", "sub"}:
-                zf = (value & mask_for_size(ops[0].size or 8)) == 0
+            if mnem in {"and", "or", "xor", "sub"}:
+                zf = (value & mask_for_size(ops[0].size or 8)) == 0 if isinstance(value, int) else None
             pc = next_pc
             continue
 
