@@ -17,6 +17,7 @@ SHA-256: `0b44ad59697129534189efdb75cde2b96245f831438e9f6a53cb7725f190d739`
 - `vm_bytecode_cfg.py`: builds a bytecode block graph from instruction rows and recovered exact bytecode segments.
 - `vm_bytecode_control_edges.py`: turns decoded long-branch and sampled-operand sidecars into explicit non-exact VM control-flow edges between recovered bytecode segments, with operand footprints and lifted target/IP-update pseudo-IR.
 - `vm_bytecode_ir.py`: merges exact instruction lifts and decoded non-exact sidecars into a VM-IP sorted recovered bytecode IR table with source/target blocks, operand footprints, validation provenance, and pseudo-IR.
+- `vm_bytecode_basic_blocks.py`: splits the unified bytecode IR into recovered VM basic blocks, terminal edges, Markdown block listings, and loop/backedge catalogs.
 - `vm_gap_report.py`: ranks bytecode and handler coverage gaps from instruction rows, recovered segments, ISA missing-exact rows, decoded long-branch sidecars, adjacent hidden-transition sidecars, and per-handler semantic observations.
 - `vm_isa_summary.py`: clusters exact recovered VM instruction signatures by source handler, fixed byte length, target distribution, and operand byte/word layout.
 - `vm_semantic_templates.py`: merges ISA schemas with static handler features into per-handler rows and ranked semantic templates.
@@ -106,6 +107,11 @@ SHA-256: `0b44ad59697129534189efdb75cde2b96245f831438e9f6a53cb7725f190d739`
 - `dumps/vmtail-wide-1m-w16/vm_bytecode_control_edges_top.md`: Markdown digest of the highest-volume decoded non-exact VM control-flow edges.
 - `dumps/vmtail-wide-1m-w16/vm_bytecode_ir.tsv`: unified VM-IP sorted recovered bytecode IR rows combining exact instruction lifts with decoded long-branch and sampled-operand sidecars.
 - `dumps/vmtail-wide-1m-w16/vm_bytecode_ir_top.md`: Markdown digest of the highest-volume recovered bytecode IR rows.
+- `dumps/vmtail-wide-1m-w16/vm_bytecode_basic_blocks.tsv`: recovered VM basic blocks split from the unified bytecode IR.
+- `dumps/vmtail-wide-1m-w16/vm_bytecode_basic_block_edges.tsv`: terminal VM block edges, including decoded-control and fallthrough/unrecovered-fallthrough terminals.
+- `dumps/vmtail-wide-1m-w16/vm_bytecode_basic_blocks_top.md`: Markdown digest and short listings for the hottest recovered VM basic blocks.
+- `dumps/vmtail-wide-1m-w16/vm_bytecode_loops.tsv`: block-level backedge and loop-body catalog derived from recovered bytecode blocks.
+- `dumps/vmtail-wide-1m-w16/vm_bytecode_loops_top.md`: Markdown loop digest ranked by latch-event count and body-event count.
 - `dumps/vmtail-wide-1m-w16/vm_state_static_slice.tsv`: static symbolic state/flag update chains for all dispatch entries.
 - `dumps/vmtail-wide-1m-w16/vm_state_static_slice_entry258.tsv`: focused static state slice for the high-volume nonlinear entry 258.
 - `dumps/vmtail-wide-1m-w16/vm_handler_tail_roles.tsv`: long-run source-handler/tail-site rows joined with register roles inferred from the 50k GPR smoke trace.
@@ -532,6 +538,7 @@ python3 vm_bytecode_blocks.py dumps/vmtail-wide-1m-w16/vm_instruction_trace_file
 make footprint-fill
 make control-edges
 make bytecode-ir
+make bytecode-basic-blocks
 mkdir -p dumps/vmtail-wide-1m-w16-filefill
 ln -sf ../vmtail-wide-1m-w16/vm_instruction_trace_filefill.tsv \
   dumps/vmtail-wide-1m-w16-filefill/vm_instruction_trace.tsv
@@ -1118,6 +1125,8 @@ That directly lifts the top missing-source rows into pseudo-IR instead of opaque
 `vm_bytecode_control_edges.py` maps those decoded non-exact control variants onto the best recovered bytecode segments. It emits 140 decoded control-edge rows covering 1651 events with 0 missing source IPs and 0 missing target IPs. The split is 43 long-branch backedge rows / 1151 events, 85 long-branch forward rows / 487 events, 6 sampled-operand backedge rows / 6 events, and 6 sampled-operand forward rows / 7 events. Operand footprint coverage is 677 events at 8 bytes and 961 at 11 bytes for long branches, plus 6 events at 6 bytes and 7 events at 10 bytes for sampled operands. This makes the remaining non-exact control flow visible as segment-to-segment VM CFG edges rather than only per-handler gap rows.
 
 `vm_bytecode_ir.py` merges the exact instruction lifts and decoded sidecars into one VM-IP sorted behavior table. It emits 71513 rows: 71355 exact instruction rows / 767566 events, 53 non-exact long-branch backedge rows / 1151 events, 93 non-exact long-branch forward rows / 486 events, 6 sampled-operand backedge rows / 6 events, and 6 sampled-operand forward rows / 7 events. The remaining long-branch forward event is already exact at VM IP `0x122aaa`, so it stays in the exact row count but is annotated with `vm_instruction_lift+long_branch`, `target_u32@+0,delta_u32@+4`, and `next = table[171], ip += 0x20`. This gives a single per-VM-IP listing for the recovered bytecode behavior rather than separate exact-lift and decoded-gap views.
+
+`vm_bytecode_basic_blocks.py` compresses that IR into 498 recovered VM basic blocks while preserving all 769216 IR events. Terminal split: 340 exact-instruction terminals, 53 long-branch backedge terminals, 93 long-branch forward terminals, 6 sampled-operand backedge terminals, and 6 sampled-operand forward terminals. Edge split: 158 decoded-control terminals, 53 known fallthrough terminals, and 287 unrecovered fallthrough terminals where the exact instruction ends at a not-yet-lifted destination/footprint row. The loop catalog has 59 block-level backedges: 53 long-branch and 6 sampled-operand. The hottest latch-count loops are `0x22ffb1 -> 0x22ff44` / 255 events, `0x2303ae -> 0x22ffea` / 255 events, `0x371714 -> 0x37142c` / 125 events, and `0x315cc0 -> 0x310b1c` / 91 events; by loop-body event count the largest recovered regions are the sampled-operand loop `0x34355f -> 0x30e872` with 541190 body events / 27744 IR rows and the long-branch loop `0x315cc0 -> 0x310b1c` with 498494 body events / 5477 IR rows.
 
 The static skeletons agree with that decode. All 10 long-control source handlers read a u16 at VM IP `+0x0` for the table entry and u32 at `+0x4` for the signed delta. The shorter form appears in entries 117, 266, 302, and 308, while entries 75, 145, 210, 246, 316, and 334 also read u16 at `+0x8` and byte at `+0xa`. That gives 677 events with an 8-byte minimum operand footprint and 961 events with an 11-byte footprint without claiming the whole branch span is linear instruction bytes.
 

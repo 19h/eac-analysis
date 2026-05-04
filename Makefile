@@ -8,7 +8,7 @@ GPR_RUN ?= dumps/vmtail-scratch-wide-w16-fs337all-fs128/run.stderr
 PRED_ROWS ?= 128
 XFER_ROWS ?= 128
 
-.PHONY: all clean fast-replay fast-state fast-gpr fast-predicates fast-state-predicates fast-gpr-predicates fast-transfer fast-state-transfer fast-gpr-transfer fast-validators fast-paths fast-gpr-paths long-branches hidden-transitions sampled-operands hidden-fill frontier-fill footprint-fill control-edges bytecode-ir
+.PHONY: all clean fast-replay fast-state fast-gpr fast-predicates fast-state-predicates fast-gpr-predicates fast-transfer fast-state-transfer fast-gpr-transfer fast-validators fast-paths fast-gpr-paths long-branches hidden-transitions sampled-operands hidden-fill frontier-fill footprint-fill control-edges bytecode-ir bytecode-basic-blocks
 
 all: driver trace_preload.so vm_fast_path_profile
 
@@ -108,6 +108,13 @@ control-edges: footprint-fill
 bytecode-ir: control-edges
 	python3 vm_bytecode_ir.py > dumps/vmtail-wide-1m-w16/vm_bytecode_ir.tsv
 	python3 vm_bytecode_ir.py --markdown --limit 50 > dumps/vmtail-wide-1m-w16/vm_bytecode_ir_top.md
+
+bytecode-basic-blocks: bytecode-ir
+	python3 vm_bytecode_basic_blocks.py > dumps/vmtail-wide-1m-w16/vm_bytecode_basic_blocks.tsv
+	python3 vm_bytecode_basic_blocks.py --edges > dumps/vmtail-wide-1m-w16/vm_bytecode_basic_block_edges.tsv
+	python3 vm_bytecode_basic_blocks.py --markdown --limit 40 --detail-blocks 12 --rows-per-block 20 > dumps/vmtail-wide-1m-w16/vm_bytecode_basic_blocks_top.md
+	python3 vm_bytecode_basic_blocks.py --loops > dumps/vmtail-wide-1m-w16/vm_bytecode_loops.tsv
+	python3 vm_bytecode_basic_blocks.py --loops --markdown --limit 40 > dumps/vmtail-wide-1m-w16/vm_bytecode_loops_top.md
 
 clean:
 	rm -f driver trace_preload.so vm_fast_path_profile
