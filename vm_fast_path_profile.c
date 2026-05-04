@@ -967,6 +967,283 @@ static int branch_taken(const char *mnemonic, int zf) {
     return -1;
 }
 
+static bool mem_ptr_tracked(cs_insn *insn, cs_x86_op *op, TrackedValue *regs, Value *out) {
+    Value values[REG_COUNT];
+    for (int i = 0; i < REG_COUNT; ++i) values[i] = regs[i].value;
+    return mem_ptr(insn, op, values, out);
+}
+
+static TrackedValue tracked_seed_from_value(int reg, Value value, int max_expr_len) {
+    uint64_t classes = TC_GPR_SEED;
+    if (value.kind == VK_PTR) {
+        if (value.ptr_kind == PK_FRAME) classes |= TC_FRAME_POINTER;
+        else if (value.ptr_kind == PK_TABLE) classes |= TC_DISPATCH_TABLE_POINTER;
+        else if (value.ptr_kind == PK_IP) classes |= TC_VM_IP_POINTER;
+    } else if (value.kind == VK_INT) {
+        classes |= TC_IMAGE_OFFSET;
+    }
+    char expr[64];
+    snprintf(expr, sizeof(expr), "seed(%s)", tracked_reg_name(reg));
+    return tracked_from(value, expr, classes, "", max_expr_len);
+}
+
+static TrackedValue tracked_narrow(TrackedValue item, int size, int max_expr_len) {
+    if (size <= 0 || size >= 8) {
+        return item;
+    }
+    uint64_t mask = mask_for_size(size);
+    int bits = size * 8;
+    if (item.value.kind == VK_INT) {
+        item.value.u &= mask;
+    } else if (item.value.kind == VK_PTR && item.value.ptr_kind == PK_FRAME && size == 1) {
+        item.classes |= TC_FRAME_PTR_LOW8;
+        char expr[512];
+        snprintf(expr, sizeof(expr), "low8(%s)", item.expr);
+        tracked_set_expr(&item, expr, max_expr_len);
+    } else if (item.value.kind == VK_PTR) {
+        item.classes |= TC_PTR_PARTIAL;
+        char expr[512];
+        snprintf(expr, sizeof(expr), "low%d(%s)", bits, item.expr);
+        tracked_set_expr(&item, expr, max_expr_len);
+    } else if (item.value.kind == VK_UNKNOWN) {
+        char expr[512];
+        snprintf(expr, sizeof(expr), "low%d(%s)", bits, item.expr);
+        tracked_set_expr(&item, expr, max_expr_len);
+    }
+    return item;
+}
+
+static TrackedValue read_tracked_frame_mem(TrackedFrameMem *mem, size_t mem_count, int64_t off, int size, int max_expr_len) {
+    for (size_t i = 0; i < mem_count; ++i) {
+        if (mem[i].off == off && mem[i].size == size) {
+            return mem[i].value;
+        }
+    }
+    for (size_t i = 0; i < mem_count; ++i) {
+        if (mem[i].off == off && mem[i].size >= size) {
+            TrackedValue v = mem[i].value;
+            if (v.value.kind == VK_INT) {
+                v.value.u &= mask_for_size(size);
+            }
+            return v;
+        }
+    }
+    char reason[64], expr[64];
+    snprintf(reason, sizeof(reason), "frame_%llx", (unsigned long long)off);
+    snprintf(expr, sizeof(expr), "frame+0x%llx", (unsigned long long)off);
+    return tracked_unknown(reason, expr, TC_UNKNOWN_FRAME_FIELD, max_expr_len);
+}
+
+static void write_tracked_frame_mem(TrackedFrameMem *mem, size_t *mem_count, int64_t off, int size, TrackedValue value) {
+    for (size_t i = 0; i < *mem_count; ++i) {
+        if (mem[i].off == off && mem[i].size == size) {
+            mem[i].value = value;
+            return;
+        }
+    }
+    if (*mem_count < 64) {
+        mem[*mem_count] = (TrackedFrameMem){.off = off, .size = size, .value = value};
+        (*mem_count)++;
+    }
+}
+
+static TrackedValue read_ip_tracked(uint8_t *bytes, size_t byte_count, int64_t off, int size, int max_expr_len) {
+    if (off < 0 || (size_t)off + (size_t)size > byte_count || size <= 0 || size > 8) {
+        char expr[64];
+        snprintf(expr, sizeof(expr), "ip[0x%llx:%d]", (unsigned long long)off, size);
+        return tracked_unknown("ip_oob", expr, TC_VM_BYTECODE, max_expr_len);
+    }
+    uint64_t v = 0;
+    for (int i = size - 1; i >= 0; --i) v = (v << 8) | bytes[(size_t)off + (size_t)i];
+    char expr[64];
+    snprintf(expr, sizeof(expr), "u%d_%lld", size * 8, (long long)off);
+    return tracked_from(val_int(v), expr, TC_VM_BYTECODE, "", max_expr_len);
+}
+
+static TrackedValue read_table_tracked(uint64_t *table, int64_t off, int size, int max_expr_len) {
+    if (size != 8 || off < 0 || (off % 8) != 0) {
+        char expr[64];
+        snprintf(expr, sizeof(expr), "table+0x%llx", (unsigned long long)off);
+        return tracked_unknown("table_read", expr, TC_TABLE_READ, max_expr_len);
+    }
+    int entry = (int)(off / 8);
+    if (entry < 0 || entry >= TABLE_ENTRIES) {
+        char expr[64];
+        snprintf(expr, sizeof(expr), "table[%d]", entry);
+        return tracked_unknown("table_oob", expr, TC_TABLE_READ, max_expr_len);
+    }
+    char expr[64];
+    snprintf(expr, sizeof(expr), "table[%d]", entry);
+    return tracked_from(val_int(table[entry]), expr, TC_TABLE_DISPATCH_TARGET, "", max_expr_len);
+}
+
+static TrackedValue read_mem_tracked(cs_insn *insn, cs_x86_op *op, TrackedValue *regs, Frame *frame,
+                                     TrackedValue *state_tv, TrackedValue *flags_tv,
+                                     TrackedValue *byte_tv, TrackedValue *ip_tv,
+                                     uint8_t *ip_bytes, size_t ip_len, uint64_t *table,
+                                     TrackedFrameMem *frame_mem, size_t frame_mem_count,
+                                     int max_expr_len) {
+    Value ptr;
+    if (!mem_ptr_tracked(insn, op, regs, &ptr)) {
+        char expr[256];
+        snprintf(expr, sizeof(expr), "mem[%s]", insn->op_str);
+        return tracked_unknown("mem_ptr", expr, TC_UNKNOWN_MEMORY_POINTER, max_expr_len);
+    }
+    int size = op->size ? op->size : 8;
+    if (ptr.ptr_kind == PK_FRAME) {
+        if (ptr.off == FRAME_IP_OFF && size == 8) {
+            Value base = ip_tv->value;
+            uint64_t low_bits = (base.kind == VK_PTR && base.ptr_kind == PK_IP) ? base.ptr_low_bits : 0;
+            uint64_t low_base = (base.kind == VK_PTR && base.ptr_kind == PK_IP) ? base.ptr_low_base : 0;
+            return tracked_from(val_ptr_low(PK_IP, frame->ip_delta, (unsigned)low_bits, low_base),
+                                ip_tv->expr, TC_VM_IP_POINTER, "", max_expr_len);
+        }
+        if (ptr.off == FRAME_TABLE_OFF && size == 8) {
+            return tracked_from(val_ptr(PK_TABLE, 0), "dispatch_table", TC_DISPATCH_TABLE_POINTER, "", max_expr_len);
+        }
+        if (ptr.off == FRAME_STATE_OFF) return tracked_narrow(*state_tv, size, max_expr_len);
+        if (ptr.off == FRAME_FLAGS_OFF) return tracked_narrow(*flags_tv, size, max_expr_len);
+        if (ptr.off == FRAME_BYTE_OFF) return tracked_narrow(*byte_tv, size, max_expr_len);
+        return read_tracked_frame_mem(frame_mem, frame_mem_count, ptr.off, size, max_expr_len);
+    }
+    if (ptr.ptr_kind == PK_IP) {
+        return read_ip_tracked(ip_bytes, ip_len, ptr.off, size, max_expr_len);
+    }
+    if (ptr.ptr_kind == PK_TABLE) {
+        return read_table_tracked(table, ptr.off, size, max_expr_len);
+    }
+    char expr[64];
+    snprintf(expr, sizeof(expr), "%s+0x%llx", ptr_kind_name(ptr.ptr_kind), (unsigned long long)ptr.off);
+    return tracked_unknown(ptr_kind_name(ptr.ptr_kind), expr, TC_UNKNOWN_POINTER_KIND, max_expr_len);
+}
+
+static TrackedValue read_op_tracked(cs_insn *insn, cs_x86_op *op, TrackedValue *regs, Frame *frame,
+                                    TrackedValue *state_tv, TrackedValue *flags_tv,
+                                    TrackedValue *byte_tv, TrackedValue *ip_tv,
+                                    uint8_t *ip_bytes, size_t ip_len, uint64_t *table,
+                                    TrackedFrameMem *frame_mem, size_t frame_mem_count,
+                                    int max_expr_len) {
+    if (op->type == X86_OP_IMM) {
+        return tracked_const((uint64_t)op->imm, op->size ? op->size : 8, max_expr_len);
+    }
+    if (op->type == X86_OP_REG) {
+        int r = reg_index((x86_reg)op->reg);
+        if (r >= 0 && regs[r].value.kind != VK_UNKNOWN) {
+            return tracked_narrow(regs[r], op->size ? op->size : 8, max_expr_len);
+        }
+        const char *name = r >= 0 ? tracked_reg_name(r) : insn->op_str;
+        char reason[64], expr[80];
+        snprintf(reason, sizeof(reason), "livein_%s", name);
+        snprintf(expr, sizeof(expr), "live_in(%s)", name);
+        return tracked_unknown(reason, expr, TC_LIVE_IN_REG, max_expr_len);
+    }
+    if (op->type == X86_OP_MEM) {
+        return read_mem_tracked(insn, op, regs, frame, state_tv, flags_tv, byte_tv, ip_tv,
+                                ip_bytes, ip_len, table, frame_mem, frame_mem_count, max_expr_len);
+    }
+    return tracked_unknown("op", insn->op_str, 0, max_expr_len);
+}
+
+static bool write_op_tracked(cs_insn *insn, cs_x86_op *op, TrackedValue value, TrackedValue *regs,
+                             Frame *frame, TrackedValue *state_tv, TrackedValue *flags_tv,
+                             TrackedValue *byte_tv, TrackedValue *ip_tv,
+                             TrackedFrameMem *frame_mem, size_t *frame_mem_count,
+                             int max_expr_len) {
+    int size = op->size ? op->size : 8;
+    if (op->type == X86_OP_REG) {
+        int r = reg_index((x86_reg)op->reg);
+        if (r < 0) return false;
+        if (value.value.kind == VK_INT) value.value.u &= mask_for_size(size);
+        regs[r] = value;
+        return true;
+    }
+    if (op->type != X86_OP_MEM || is_unknown(value.value)) {
+        return false;
+    }
+    Value ptr;
+    if (!mem_ptr_tracked(insn, op, regs, &ptr)) {
+        return false;
+    }
+    uint64_t concrete = 0;
+    if (ptr.ptr_kind == PK_FRAME && ptr.off == FRAME_IP_OFF) {
+        if (value.value.kind == VK_PTR && value.value.ptr_kind == PK_IP) {
+            frame->ip_delta = value.value.off;
+            if (value.value.ptr_low_bits) frame->ip_low12 = value.value.ptr_low_base & 0xfff;
+            *ip_tv = value;
+            ip_tv->classes |= TC_VM_IP_POINTER;
+            return true;
+        }
+        return false;
+    }
+    if (ptr.ptr_kind == PK_FRAME && ptr.off == FRAME_STATE_OFF) {
+        if (!concrete_full_value(value.value, size, &concrete)) return false;
+        frame->state = (uint32_t)concrete;
+        *state_tv = value;
+        state_tv->value = val_int(frame->state);
+        state_tv->classes |= TC_STATE;
+        tracked_set_expr(state_tv, value.expr, max_expr_len);
+        return true;
+    }
+    if (ptr.ptr_kind == PK_FRAME && ptr.off == FRAME_FLAGS_OFF) {
+        if (!concrete_full_value(value.value, size, &concrete)) return false;
+        frame->flags = (uint32_t)concrete;
+        *flags_tv = value;
+        flags_tv->value = val_int(frame->flags);
+        flags_tv->classes |= TC_FLAGS;
+        tracked_set_expr(flags_tv, value.expr, max_expr_len);
+        return true;
+    }
+    if (ptr.ptr_kind == PK_FRAME && ptr.off == FRAME_BYTE_OFF) {
+        if (!concrete_full_value(value.value, size, &concrete)) return false;
+        frame->byte = (uint8_t)concrete;
+        *byte_tv = value;
+        byte_tv->value = val_int(frame->byte);
+        byte_tv->classes |= TC_VM_BYTE;
+        tracked_set_expr(byte_tv, value.expr, max_expr_len);
+        return true;
+    }
+    if (ptr.ptr_kind == PK_FRAME) {
+        write_tracked_frame_mem(frame_mem, frame_mem_count, ptr.off, size, value);
+    }
+    return true;
+}
+
+static void combine_expr_buf(const char *mnemonic, TrackedValue left, TrackedValue right,
+                             int max_expr_len, char *out, size_t out_size) {
+    const char *op = mnemonic;
+    if (!strcmp(mnemonic, "add")) op = "+";
+    else if (!strcmp(mnemonic, "sub")) op = "-";
+    else if (!strcmp(mnemonic, "xor")) op = "^";
+    else if (!strcmp(mnemonic, "and")) op = "&";
+    else if (!strcmp(mnemonic, "or")) op = "|";
+    else if (!strcmp(mnemonic, "shl")) op = "<<";
+    else if (!strcmp(mnemonic, "shr")) op = ">>";
+    char tmp[900];
+    snprintf(tmp, sizeof(tmp), "(%s %s %s)", left.expr, op, right.expr);
+    clip_to_buf(tmp, max_expr_len, out, out_size);
+}
+
+static TrackedValue eval_bin_tracked(const char *mnemonic, TrackedValue left, TrackedValue right,
+                                     int size, int max_expr_len) {
+    Value value = (!strcmp(mnemonic, "shl") || !strcmp(mnemonic, "shr"))
+        ? eval_shift(mnemonic, left.value, right.value, size)
+        : eval_bin(mnemonic, left.value, right.value, size);
+    uint64_t classes = left.classes | right.classes;
+    if (is_unknown(value)) classes |= TC_DERIVED_UNKNOWN;
+    if ((classes & TC_LIVE_IN_REG) &&
+        ((left.classes != (TC_UNKNOWN | TC_LIVE_IN_REG)) || (right.classes != TC_CONSTANT))) {
+        classes |= TC_DERIVED_LIVE_IN;
+    }
+    char expr[384];
+    combine_expr_buf(mnemonic, left, right, max_expr_len, expr, sizeof(expr));
+    return tracked_from(value, expr, classes, is_unknown(value) ? "binop" : "", max_expr_len);
+}
+
+static bool self_zero_insn(cs_x86_op *ops, const char *mnem) {
+    return ops[0].type == X86_OP_REG && ops[1].type == X86_OP_REG && ops[0].reg == ops[1].reg &&
+           (!strcmp(mnem, "xor") || !strcmp(mnem, "sub"));
+}
+
 static void path_append(char **path, size_t *len, size_t *cap, uint64_t addr, const char *mnemonic, const char *outcome) {
     char item[80];
     snprintf(item, sizeof(item), "0x%" PRIx64 ":%s:%s", addr, mnemonic, outcome);
