@@ -182,14 +182,93 @@ typedef struct {
     char *emit_dir;
     int max_steps;
     int max_rows_per_source;
+    int max_expr_len;
+    int max_cell_len;
     int top;
     int top_targets;
     int max_path_len;
     bool by_path;
     bool branch_sites;
+    bool branch_predicates;
     bool state_validate;
     bool dispatch_validate;
 } Args;
+
+enum {
+    TC_UNKNOWN = UINT64_C(1) << 0,
+    TC_CONSTANT = UINT64_C(1) << 1,
+    TC_LIVE_IN_REG = UINT64_C(1) << 2,
+    TC_DERIVED_UNKNOWN = UINT64_C(1) << 3,
+    TC_DERIVED_LIVE_IN = UINT64_C(1) << 4,
+    TC_GPR_SEED = UINT64_C(1) << 5,
+    TC_FRAME_POINTER = UINT64_C(1) << 6,
+    TC_DISPATCH_TABLE_POINTER = UINT64_C(1) << 7,
+    TC_VM_IP_POINTER = UINT64_C(1) << 8,
+    TC_IMAGE_OFFSET = UINT64_C(1) << 9,
+    TC_FRAME_SCRATCH_SEED = UINT64_C(1) << 10,
+    TC_VM_BYTECODE = UINT64_C(1) << 11,
+    TC_STATE = UINT64_C(1) << 12,
+    TC_FLAGS = UINT64_C(1) << 13,
+    TC_VM_BYTE = UINT64_C(1) << 14,
+    TC_UNKNOWN_MEMORY_POINTER = UINT64_C(1) << 15,
+    TC_UNKNOWN_FRAME_FIELD = UINT64_C(1) << 16,
+    TC_TABLE_DISPATCH_TARGET = UINT64_C(1) << 17,
+    TC_TABLE_READ = UINT64_C(1) << 18,
+    TC_PTR_PARTIAL = UINT64_C(1) << 19,
+    TC_FRAME_PTR_LOW8 = UINT64_C(1) << 20,
+    TC_UNKNOWN_POINTER_KIND = UINT64_C(1) << 21,
+};
+
+typedef struct {
+    Value value;
+    char expr[384];
+    char reason[64];
+    uint64_t classes;
+} TrackedValue;
+
+typedef struct {
+    uint64_t site;
+    char mnemonic[16];
+    char op_str[160];
+    TrackedValue left;
+    TrackedValue right;
+    int zf;
+    bool present;
+} BranchCondition;
+
+typedef struct {
+    char *label;
+    uint64_t count;
+} TextCount;
+
+typedef struct {
+    TextCount *items;
+    size_t count;
+    size_t cap;
+} TextCounter;
+
+typedef struct {
+    int source;
+    char source_target[32];
+    uint64_t site;
+    char mnemonic[16];
+    uint64_t events;
+    uint64_t steps;
+    uint64_t taken;
+    uint64_t not_taken;
+    uint64_t unknown;
+    TextCounter classes;
+    TextCounter outcomes;
+    TextCounter condition_sites;
+    TextCounter condition_mnemonics;
+    TextCounter condition_ops;
+    TextCounter left_exprs;
+    TextCounter right_exprs;
+    TextCounter left_values;
+    TextCounter right_values;
+    TextCounter zf_values;
+    TextCounter condition_texts;
+} BranchPredStat;
 
 static Value val_int(uint64_t u) {
     Value v = {.kind = VK_INT, .u = u};
