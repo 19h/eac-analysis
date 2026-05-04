@@ -26,6 +26,7 @@ SHA-256: `0b44ad59697129534189efdb75cde2b96245f831438e9f6a53cb7725f190d739`
 - `vm_static_dispatch_validate.py`: concretely executes handler slices through the final table jump and validates predicted dispatch target plus VM IP advance.
 - `vm_static_transfer_expr.py`: follows concrete state-aware trace paths while carrying symbolic expressions for the dispatch-table slot and VM IP advance; `--by-path` emits path-conditioned formula rows, and `--gpr-run` seeds handler-entry registers plus hot `fs0x...` scratch-frame fields.
 - `vm_static_path_profile.py`: profiles concrete branch/path variants through static handler slices over the state-aware trace; `--gpr-run` seeds handler-entry registers and, when present, hot `fs0x...` scratch-frame fields from the previous VMTAIL snapshot to resolve live-in branch predicates.
+- `vm_fast_path_profile.c`: native Capstone/OpenSSL reimplementation of the concrete path profiler. It emits the same summary/by-path TSV schemas as `vm_static_path_profile.py`, including SHA-256 path hashes, and runs the full GPR+scratch-seeded state trace in about 8 seconds on this host.
 - `vm_branch_predicates.py`: catalogs each static-replay branch predicate, including observed outcomes, unresolved predicate classes, and top concrete/symbolic condition expressions.
 - `vm_dispatch_model_combine.py`: combines the static dispatch validator with affine fallback formulas for static-dispatch misses.
 - `vm_tail_registers.py`: infers per-tail-site register roles from `EAC_VMTAIL_REGS=1` traces, including target value, dispatch-slot pointer, byte index, table pointer, and frame pointer. It can also join those roles back onto an instruction trace by source handler and tail site.
@@ -110,6 +111,8 @@ SHA-256: `0b44ad59697129534189efdb75cde2b96245f831438e9f6a53cb7725f190d739`
 - `dumps/vmtail-state-wide-w16/vm_static_path_variants.tsv`: one row per distinct source-handler branch path, with per-path target distributions.
 - `dumps/vmtail-state-wide-w16/vm_static_path_profile_gpr_seeded.tsv`: same path profile, but seeded with entry GPRs and hot scratch-frame fields from the previous `dumps/vmtail-scratch-wide-w16/run.stderr` VMTAIL event.
 - `dumps/vmtail-state-wide-w16/vm_static_path_variants_gpr_seeded.tsv`: one row per GPR+scratch-seeded source-handler branch path.
+- `dumps/vmtail-state-wide-w16/vm_static_path_profile_fast.tsv` and `vm_static_path_variants_fast.tsv`: native path-profiler outputs for the state-only replay.
+- `dumps/vmtail-state-wide-w16/vm_static_path_profile_gpr_seeded_fast.tsv` and `vm_static_path_variants_gpr_seeded_fast.tsv`: native path-profiler outputs for the GPR+scratch-seeded replay.
 - `dumps/vmtail-state-wide-w16/vm_branch_predicates.tsv`: one row per source-handler branch site with outcome counts, unresolved predicate classes, and top condition expressions.
 - `dumps/vmtail-state-wide-w16/vm_branch_predicates_top.md`: Markdown digest of the highest-volume unresolved branch predicates.
 - `dumps/vmtail-state-wide-w16/vm_branch_predicates_gpr_seeded.tsv`: same branch predicate catalog, seeded with previous-tail GPR snapshots and hot scratch-frame fields.
@@ -378,6 +381,10 @@ python3 vm_static_path_profile.py dumps/vmtail-state-wide-w16/vm_instruction_tra
   >dumps/vmtail-state-wide-w16/vm_static_path_profile.tsv
 python3 vm_static_path_profile.py dumps/vmtail-state-wide-w16/vm_instruction_trace.tsv --by-path \
   >dumps/vmtail-state-wide-w16/vm_static_path_variants.tsv
+./vm_fast_path_profile dumps/vmtail-state-wide-w16/vm_instruction_trace.tsv \
+  >dumps/vmtail-state-wide-w16/vm_static_path_profile_fast.tsv
+./vm_fast_path_profile dumps/vmtail-state-wide-w16/vm_instruction_trace.tsv --by-path \
+  >dumps/vmtail-state-wide-w16/vm_static_path_variants_fast.tsv
 python3 vm_branch_predicates.py dumps/vmtail-state-wide-w16/vm_instruction_trace.tsv \
   --max-rows-per-source 128 \
   >dumps/vmtail-state-wide-w16/vm_branch_predicates.tsv
@@ -447,6 +454,12 @@ python3 vm_static_path_profile.py dumps/vmtail-state-wide-w16/vm_instruction_tra
 python3 vm_static_path_profile.py dumps/vmtail-state-wide-w16/vm_instruction_trace.tsv \
   --gpr-run dumps/vmtail-scratch-wide-w16/run.stderr --by-path \
   >dumps/vmtail-state-wide-w16/vm_static_path_variants_gpr_seeded.tsv
+./vm_fast_path_profile dumps/vmtail-state-wide-w16/vm_instruction_trace.tsv \
+  --gpr-run dumps/vmtail-scratch-wide-w16/run.stderr \
+  >dumps/vmtail-state-wide-w16/vm_static_path_profile_gpr_seeded_fast.tsv
+./vm_fast_path_profile dumps/vmtail-state-wide-w16/vm_instruction_trace.tsv \
+  --gpr-run dumps/vmtail-scratch-wide-w16/run.stderr --by-path \
+  >dumps/vmtail-state-wide-w16/vm_static_path_variants_gpr_seeded_fast.tsv
 python3 vm_static_transfer_expr.py dumps/vmtail-state-wide-w16/vm_instruction_trace.tsv \
   --gpr-run dumps/vmtail-scratch-wide-w16/run.stderr \
   --max-rows-per-source 128 --max-expr-len 320 --top 5 \
