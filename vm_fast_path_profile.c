@@ -2407,6 +2407,10 @@ static ExecResult execute_handler_branch_pred(Handler *h, TraceRow *row, uint64_
             pc = next_pc;
             continue;
         }
+        if (restore_pop_insn(mnem, ops, op_count)) {
+            pc = next_pc;
+            continue;
+        }
         if ((!strcmp(mnem, "mov") || !strcmp(mnem, "movabs") || !strcmp(mnem, "movzx")) && op_count >= 2) {
             TrackedValue value = read_op_tracked(insn, &ops[1], regs, &frame, &state_tv, &flags_tv, &byte_tv, &ip_tv,
                                                  row->bytes, row->byte_count, table, frame_mem, frame_mem_count, max_expr_len);
@@ -2588,6 +2592,10 @@ static TransferResult execute_handler_transfer(Handler *h, TraceRow *row, uint64
             continue;
         }
         if (!op_count) {
+            pc = next_pc;
+            continue;
+        }
+        if (restore_pop_insn(mnem, ops, op_count)) {
             pc = next_pc;
             continue;
         }
