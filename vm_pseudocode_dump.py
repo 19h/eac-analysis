@@ -99,15 +99,28 @@ def row_to_c(row, max_expr_len):
 
 
 def load_rows(ir_path):
+    rows = list(read_tsv(ir_path))
+    rows.sort(key=lambda row: parse_hex(row.get("start_vm_ip", "0x0")))
+    return rows
+
+
+def map_rows_to_blocks(rows, blocks):
     rows_by_block = defaultdict(list)
-    for row in read_tsv(ir_path):
-        block_field = row.get("source_block", "")
-        if not block_field or "@" not in block_field:
-            continue
-        block = block_field.split("@", 1)[0]
-        rows_by_block[block].append(row)
-    for rows in rows_by_block.values():
-        rows.sort(key=lambda row: parse_hex(row.get("start_vm_ip", "0x0")))
+    row_idx = 0
+    sorted_blocks = sorted(blocks, key=lambda row: parse_hex(row.get("start_vm_ip") or "0x0"))
+    for block in sorted_blocks:
+        start = parse_hex(block.get("start_vm_ip") or "0x0")
+        end = parse_hex(block.get("byte_end_min") or block.get("terminal_vm_ip") or "0x0")
+        while row_idx < len(rows) and parse_hex(rows[row_idx].get("end_vm_ip", "0x0")) <= start:
+            row_idx += 1
+        scan = row_idx
+        while scan < len(rows):
+            row_start = parse_hex(rows[scan].get("start_vm_ip", "0x0"))
+            if row_start >= end:
+                break
+            if row_start >= start:
+                rows_by_block[block["block"]].append(rows[scan])
+            scan += 1
     return rows_by_block
 
 
@@ -223,7 +236,7 @@ def main():
 
     blocks = list(read_tsv(args.blocks))
     chosen = selected_blocks(blocks, args)
-    rows_by_block = load_rows(args.ir)
+    rows_by_block = map_rows_to_blocks(load_rows(args.ir), blocks)
     edges = load_edges(args.edges)
 
     emit_preamble()
