@@ -117,7 +117,7 @@ def load_long_branches(path, top=5):
         events = int(row.get("events", "0") or 0)
         bucket["events"] += events
         bucket["variants"] += 1
-        ir = row.get("lifted_ir", "")
+        ir = row.get("lifted_ir", "").replace(";", ",")
         if ir:
             bucket["irs"][ir] += events
         operand_min_len = row.get("operand_min_len", "")
@@ -166,7 +166,7 @@ def load_sampled_operands(path, top=5):
         events = int(row.get("events", "0") or 0)
         bucket["events"] += events
         bucket["variants"] += 1
-        ir = row.get("lifted_ir", "")
+        ir = row.get("lifted_ir", "").replace(";", ",")
         if ir:
             bucket["irs"][ir] += events
         operand_min_len = row.get("operand_min_len", "")
