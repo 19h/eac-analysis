@@ -24,6 +24,7 @@ SHA-256: `0b44ad59697129534189efdb75cde2b96245f831438e9f6a53cb7725f190d739`
 - `vm_tail_static_slots.py`: statically recovers consumed dispatch-slot temporaries for tail sites where the target is loaded from `table + byte_index` and the slot pointer is clobbered before the final jump.
 - `vm_instruction_lift.py`: joins exact recovered VM instructions with per-signature state effects, dynamic tail-register roles, and static dispatch-slot provenance.
 - `vm_bytecode_file_atlas.py`: verifies recovered exact VM bytes against `eac.elf` and builds conservative file-backed bytecode atlas regions from observed segments plus small inferred gaps.
+- `vm_trace_file_fill.py`: promotes bounded positive `prefix_32_of_N` rows to `file_span_of_N` rows by reading bytes from `eac.elf`, preserving them as sampled/file-backed coverage rather than exact consumed instructions.
 - `vm_instruction_compare.py`: compares exact unique VM instruction catalogs by stable instruction key.
 - `dumps/local-blocked-log/run.stderr`: blocked-network trace from the harness.
 - `dumps/local-blocked-log/postcall_*` and `postsleep_*`: in-memory EAC map/context/output dumps.
@@ -55,6 +56,10 @@ SHA-256: `0b44ad59697129534189efdb75cde2b96245f831438e9f6a53cb7725f190d739`
 - `dumps/vmtail-wide-1m-w16/vm_handler_skeleton_groups.tsv`: observed handlers grouped by full normalized handler skeleton.
 - `dumps/vmtail-wide-1m-w16/vm_bytecode_segments_sampled.tsv`: exact plus sampled byte-window recovery; conflict-checked but not full-instruction exactness for sampled rows.
 - `dumps/vmtail-wide-1m-w16/vm_bytecode_blocks_sampled.tsv`: contiguous coverage blocks for exact plus sampled byte windows.
+- `dumps/vmtail-wide-1m-w16/vm_instruction_trace_filefill.tsv`: bounded file-backed span trace with 466 promoted `file_span_of_N` rows.
+- `dumps/vmtail-wide-1m-w16/vm_bytecode_segments_filefill_sampled.tsv`: sampled/file-backed byte recovery from `vm_instruction_trace_filefill.tsv`.
+- `dumps/vmtail-wide-1m-w16/vm_bytecode_blocks_filefill_sampled.tsv`: contiguous coverage blocks for sampled/file-backed recovery.
+- `dumps/vmtail-wide-1m-w16/vm_gap_report_filefill.tsv`: gap report after bounded file-span coverage.
 - `dumps/vmtail-wide-1m-w16/vm_handler_tail_roles.tsv`: long-run source-handler/tail-site rows joined with register roles inferred from the 50k GPR smoke trace.
 - `dumps/vmtail-wide-1m-w16/vm_handler_tail_roles_wide_regs.tsv`: same join using the 250k GPR trace for better low-frequency site coverage.
 - `dumps/vmtail-wide-1m-w16/vm_tail_static_slots.tsv`: static dispatch-slot provenance joined to each long-run source-handler/tail-site row.
@@ -345,6 +350,27 @@ python3 vm_instruction_lift.py \
   >dumps/vmtail-wide-1m-w16/vm_instruction_lift.tsv
 python3 vm_bytecode_file_atlas.py --max-gap 0x20 \
   >dumps/vmtail-wide-1m-w16/vm_bytecode_file_atlas.tsv
+python3 vm_trace_file_fill.py dumps/vmtail-wide-1m-w16/vm_instruction_trace.tsv \
+  --eac eac.elf \
+  --max-delta 0x400 \
+  >dumps/vmtail-wide-1m-w16/vm_instruction_trace_filefill.tsv
+python3 vm_bytecode_recover.py dumps/vmtail-wide-1m-w16/vm_instruction_trace_filefill.tsv \
+  --include-sampled \
+  >dumps/vmtail-wide-1m-w16/vm_bytecode_segments_filefill_sampled.tsv
+python3 vm_bytecode_blocks.py dumps/vmtail-wide-1m-w16/vm_instruction_trace_filefill.tsv \
+  --include-sampled \
+  >dumps/vmtail-wide-1m-w16/vm_bytecode_blocks_filefill_sampled.tsv
+mkdir -p dumps/vmtail-wide-1m-w16-filefill
+ln -sf ../vmtail-wide-1m-w16/vm_instruction_trace_filefill.tsv \
+  dumps/vmtail-wide-1m-w16-filefill/vm_instruction_trace.tsv
+ln -sf ../vmtail-wide-1m-w16/vm_bytecode_segments_filefill_sampled.tsv \
+  dumps/vmtail-wide-1m-w16-filefill/vm_bytecode_segments.tsv
+ln -sf ../vmtail-wide-1m-w16/vm_isa_missing_exact.tsv \
+  dumps/vmtail-wide-1m-w16-filefill/vm_isa_missing_exact.tsv
+ln -sf ../vmtail-wide-1m-w16/vm_handler_semantics.tsv \
+  dumps/vmtail-wide-1m-w16-filefill/vm_handler_semantics.tsv
+python3 vm_gap_report.py dumps/vmtail-wide-1m-w16-filefill \
+  >dumps/vmtail-wide-1m-w16/vm_gap_report_filefill.tsv
 ```
 
 Mode-variation checks:
@@ -845,6 +871,23 @@ Every exact recovered VM instruction byte sequence in `vm_instruction_unique.tsv
 | summed unique start IPs | 71513 |
 
 The inferred gap bytes are not claimed as executed instructions. They are byte-accurate ELF contents between nearby observed VM bytecode spans and are useful for static decode experiments, especially around exact-destination gaps such as `0x230111`, `0x230b1b`, `0x230e07`, and `0x3703d8`.
+
+`vm_trace_file_fill.py` applies the same file-backed fact to bounded positive prefix rows. It promotes only positive `prefix_32_of_N` rows with `N <= 0x400` to `file_span_of_N`, preserving the distinction from exact consumed instructions. On the long trace:
+
+- 71355 exact instruction rows verified against `eac.elf`.
+- 0 exact byte mismatches.
+- 466 prefix rows promoted to bounded file-backed spans.
+
+The resulting sampled/file-backed recovery has 300 segments and `0x44749` bytes, up from `0x42dbd` in sampled-only recovery. Gap deltas after bounded file-fill:
+
+| Gap Class | Rows | Events |
+| --- | ---: | ---: |
+| `uncovered_exact_destination` | 284 | 942 |
+| `prefix_long_jump` | 21 | 27 |
+| `backedge_sample` | 49 | 1157 |
+| `missing_exact_source` | 12 | 1398 |
+| `target_only_entry` | 3 | 0 |
+| `unobserved_entry` | 155 | 0 |
 
 `vm_gap_report.py` prioritizes the remaining coverage holes. Against exact-only segments it reports:
 
