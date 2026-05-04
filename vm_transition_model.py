@@ -131,7 +131,7 @@ def main():
     )
     parser.add_argument(
         "--state-static-validate",
-        default="dumps/vmtail-state-wide-w16/vm_state_static_validate.tsv",
+        default="dumps/vmtail-state-wide-w16/vm_state_static_validate_fast.tsv",
     )
     parser.add_argument(
         "--state-affine",
@@ -139,7 +139,7 @@ def main():
     )
     parser.add_argument(
         "--static-dispatch-validate",
-        default="dumps/vmtail-state-wide-w16/vm_static_dispatch_validate.tsv",
+        default="dumps/vmtail-state-wide-w16/vm_static_dispatch_validate_fast.tsv",
     )
     parser.add_argument(
         "--dispatch-model",

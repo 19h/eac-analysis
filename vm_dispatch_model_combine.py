@@ -92,7 +92,7 @@ def main():
         nargs="?",
         default="dumps/vmtail-state-wide-w16/vm_instruction_trace.tsv",
     )
-    parser.add_argument("--static-dispatch", default="dumps/vmtail-state-wide-w16/vm_static_dispatch_validate.tsv")
+    parser.add_argument("--static-dispatch", default="dumps/vmtail-state-wide-w16/vm_static_dispatch_validate_fast.tsv")
     parser.add_argument("--affine-cv", default="dumps/vmtail-state-wide-w16/vm_dispatch_affine_cv.tsv")
     args = parser.parse_args()
 
