@@ -33,7 +33,7 @@ def c_expr(expr):
     expr = U32_RE.sub(lambda match: f"U32(vm->ip + 0x{int(match.group(1)):x})", expr)
     expr = U16_RE.sub(lambda match: f"U16(vm->ip + 0x{int(match.group(1)):x})", expr)
     expr = U8_RE.sub(lambda match: f"U8(vm->ip + 0x{int(match.group(1)):x})", expr)
-    expr = expr.replace("table[", "dispatch_table[")
+    expr = re.sub(r"(?<!dispatch_)table\[", "dispatch_table[", expr)
     return expr
 
 
