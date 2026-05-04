@@ -101,7 +101,7 @@ def tracked_seed_value(reg, value, fields):
         return Tracked(Ptr("table", value - table), f"seed({reg})", frozenset(classes))
     if vm_ip is not None and vm_ip - 0x10000 <= value < vm_ip + 0x10000:
         classes.add("vm_ip_pointer")
-        return Tracked(Ptr("ip", value - vm_ip), f"seed({reg})", frozenset(classes))
+        return Tracked(Ptr("ip", value - vm_ip, 12, vm_ip & 0xfff), f"seed({reg})", frozenset(classes))
     if image_base is not None and image_base <= value < image_base + 0x650000:
         classes.add("image_offset")
         return Tracked(value - image_base, f"seed({reg})", frozenset(classes))
@@ -232,7 +232,14 @@ def read_mem_tracked(insn, op, regs, frame, frame_tracked, ip_bytes, table, fram
     size = op.size or 8
     if ptr.kind == "frame":
         if ptr.off == FRAME_IP_OFF and size == 8:
-            return Tracked(Ptr("ip", frame["ip_delta"]), frame_tracked["ip_ptr"].expr, frozenset({"vm_ip_pointer"}))
+            base = frame_tracked["ip_ptr"].value
+            low_bits = base.low_bits if isinstance(base, Ptr) and base.kind == "ip" else 0
+            low_base = base.low_base if isinstance(base, Ptr) and base.kind == "ip" else 0
+            return Tracked(
+                Ptr("ip", frame["ip_delta"], low_bits, low_base),
+                frame_tracked["ip_ptr"].expr,
+                frozenset({"vm_ip_pointer"}),
+            )
         if ptr.off == FRAME_TABLE_OFF and size == 8:
             return Tracked(Ptr("table", 0), "dispatch_table", frozenset({"dispatch_table_pointer"}))
         if ptr.off == FRAME_STATE_OFF:
@@ -429,12 +436,14 @@ def execute(
         "flags": parse_int(row.get("pre_flags", "0x0") or "0x0") & MASK32,
         "byte": parse_int(row.get("pre_byte", "0x0") or "0x0") & 0xff,
         "ip_delta": 0,
+        "ip_base_low12": (parse_int(row.get("start_vm_ip", "0x0") or "0x0") or 0) & 0xfff,
     }
+    ip_ptr = Ptr("ip", 0, 12, frame["ip_base_low12"])
     frame_tracked = {
         "state": Tracked(frame["state"], "state0", frozenset({"state"})),
         "flags": Tracked(frame["flags"], "flags0", frozenset({"flags"})),
         "byte": Tracked(frame["byte"], "vm_byte0", frozenset({"vm_byte"})),
-        "ip_ptr": Tracked(Ptr("ip", 0), "ip+0x0", frozenset({"vm_ip_pointer"})),
+        "ip_ptr": Tracked(ip_ptr, "ip+0x0", frozenset({"vm_ip_pointer"})),
     }
     regs = dict(initial_regs or {})
     frame_mem = dict(regs.pop("__frame_mem__", {}))

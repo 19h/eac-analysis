@@ -79,7 +79,7 @@ def normalize_seed_value(value, fields):
     if table is not None and table <= value < table + 360 * 8:
         return Ptr("table", value - table)
     if vm_ip is not None and vm_ip - 0x10000 <= value < vm_ip + 0x10000:
-        return Ptr("ip", value - vm_ip)
+        return Ptr("ip", value - vm_ip, 12, vm_ip & 0xfff)
     if image_base is not None and image_base <= value < image_base + 0x650000:
         return value - image_base
     return value
@@ -128,6 +128,7 @@ def execute(insns_by_addr, start, row, table, target_to_entry, max_steps, initia
         "flags": parse_int(row.get("pre_flags", "0x0") or "0x0") & MASK32,
         "byte": parse_int(row.get("pre_byte", "0x0") or "0x0") & 0xff,
         "ip_delta": 0,
+        "ip_base_low12": (parse_int(row.get("start_vm_ip", "0x0") or "0x0") or 0) & 0xfff,
     }
     regs = dict(initial_regs or {})
     frame_mem = dict(regs.pop("__frame_mem__", {}))

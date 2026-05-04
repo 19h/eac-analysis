@@ -348,6 +348,7 @@ def execute(insns_by_addr, start, row, table, target_to_entry, max_steps, max_ex
         "flags": parse_int(row.get("pre_flags", "0x0") or "0x0") & MASK32,
         "byte": parse_int(row.get("pre_byte", "0x0") or "0x0") & 0xff,
         "ip_delta": 0,
+        "ip_base_low12": (parse_int(row.get("start_vm_ip", "0x0") or "0x0") or 0) & 0xfff,
     }
     regs = dict(initial_regs or {})
     seed_frame_mem = dict(regs.pop("__frame_mem__", {}))

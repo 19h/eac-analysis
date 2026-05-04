@@ -33,6 +33,8 @@ typedef struct {
     PtrKind ptr_kind;
     int64_t off;
     unsigned bits;
+    unsigned ptr_low_bits;
+    uint64_t ptr_low_base;
 } Value;
 
 typedef struct {
@@ -40,6 +42,7 @@ typedef struct {
     uint32_t flags;
     uint8_t byte;
     int64_t ip_delta;
+    uint64_t ip_low12;
 } Frame;
 
 typedef struct {
@@ -179,6 +182,22 @@ static Value val_ptr(PtrKind kind, int64_t off) {
     return v;
 }
 
+static Value val_ptr_low(PtrKind kind, int64_t off, unsigned low_bits, uint64_t low_base) {
+    Value v = {
+        .kind = VK_PTR,
+        .ptr_kind = kind,
+        .off = off,
+        .ptr_low_bits = low_bits,
+        .ptr_low_base = low_base,
+    };
+    return v;
+}
+
+static Value ptr_add(Value ptr, int64_t delta) {
+    ptr.off += delta;
+    return ptr;
+}
+
 static Value val_lowbits(unsigned bits, uint64_t u) {
     Value v = {.kind = VK_LOWBITS, .bits = bits, .u = u & ((UINT64_C(1) << bits) - 1)};
     return v;
@@ -223,6 +242,11 @@ static bool known_low_bits(Value v, unsigned *bits, uint64_t *low) {
     if (v.kind == VK_PTR && v.ptr_kind == PK_FRAME) {
         *bits = 12;
         *low = (uint64_t)(FRAME_RUNTIME_LOW12 + v.off) & 0xfff;
+        return true;
+    }
+    if (v.kind == VK_PTR && v.ptr_low_bits) {
+        *bits = v.ptr_low_bits;
+        *low = (v.ptr_low_base + (uint64_t)v.off) & ((UINT64_C(1) << v.ptr_low_bits) - 1);
         return true;
     }
     return false;
