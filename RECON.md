@@ -88,7 +88,7 @@ SHA-256: `0b44ad59697129534189efdb75cde2b96245f831438e9f6a53cb7725f190d739`
 - `dumps/vmtail-wide-1m-w16/vm_sampled_operand_catalog.tsv`: byte-verified sampled operand variants for the remaining non-long sparse prefix/backedge rows.
 - `dumps/vmtail-wide-1m-w16/vm_sampled_operand_top.md`: Markdown summary of those sampled operand variants.
 - `dumps/vmtail-wide-1m-w16/vm_instruction_trace_filefill_hiddenfill.tsv`: bounded prefix file-fill trace plus synthetic adjacent hidden-span rows.
-- `dumps/vmtail-wide-1m-w16/vm_bytecode_segments_filefill_hiddenfill_sampled.tsv`: best current sampled/file-backed byte recovery, combining exact, sampled, bounded prefix file-fill, and adjacent hidden spans.
+- `dumps/vmtail-wide-1m-w16/vm_bytecode_segments_filefill_hiddenfill_sampled.tsv`: sampled/file-backed byte recovery combining exact, sampled, bounded prefix file-fill, and adjacent hidden spans.
 - `dumps/vmtail-wide-1m-w16/vm_bytecode_blocks_filefill_hiddenfill_sampled.tsv`: contiguous blocks for the combined file-fill/hidden-fill trace.
 - `dumps/vmtail-wide-1m-w16/vm_gap_report_filefill_hiddenfill.tsv`: gap report after combined file-fill and hidden-span coverage.
 - `dumps/vmtail-wide-1m-w16/vm_instruction_trace_filefill_hiddenfill_frontierfill.tsv`: combined file-fill/hidden-fill trace plus small exact-destination frontier spans.
@@ -518,7 +518,7 @@ python3 vm_bytecode_recover.py dumps/vmtail-wide-1m-w16/vm_instruction_trace_fil
 python3 vm_bytecode_blocks.py dumps/vmtail-wide-1m-w16/vm_instruction_trace_filefill.tsv \
   --include-sampled \
   >dumps/vmtail-wide-1m-w16/vm_bytecode_blocks_filefill_sampled.tsv
-make hidden-fill
+make frontier-fill
 mkdir -p dumps/vmtail-wide-1m-w16-filefill
 ln -sf ../vmtail-wide-1m-w16/vm_instruction_trace_filefill.tsv \
   dumps/vmtail-wide-1m-w16-filefill/vm_instruction_trace.tsv
@@ -1052,9 +1052,11 @@ The resulting sampled/file-backed recovery has 300 segments and `0x44749` bytes,
 
 `vm_hidden_transition_catalog.py` attacks the remaining exact-destination holes from the dynamic sequence itself. When row N targets handler X but row N+1 is the next hooked source Y in the same frame, the bytes from row N's end VM IP to row N+1's start VM IP are a file-backed adjacent hidden span. The catalog has 121 grouped rows, 1529 hidden-span events, and 272 unique hidden starts. The top row is target-only entry 50 to next hooked entry 171, `+0x11`, 320 events over starts `0x230111` and `0x230b1b`.
 
-`vm_trace_hidden_fill.py` inserts those spans as synthetic `hidden_span_of_N` rows. On the raw trace it adds 1529 rows / `0x6577` event-bytes and raises sampled recovery to 117 segments / `0x43a91` bytes with 0 conflicts. Composed after bounded prefix file-fill, it gives the best current byte coverage: 83 segments / `0x453ee` bytes with 0 conflicts. In `vm_gap_report_filefill_hiddenfill.tsv`, the `hidden_transition_destination` class disappears because those spans are now covered; remaining uncovered exact destinations are only 67 rows / 68 events.
+`vm_trace_hidden_fill.py` inserts those spans as synthetic `hidden_span_of_N` rows. On the raw trace it adds 1529 rows / `0x6577` event-bytes and raises sampled recovery to 117 segments / `0x43a91` bytes with 0 conflicts. Composed after bounded prefix file-fill, it gives 83 segments / `0x453ee` bytes with 0 conflicts. In `vm_gap_report_filefill_hiddenfill.tsv`, the `hidden_transition_destination` class disappears because those spans are now covered; remaining uncovered exact destinations are only 67 rows / 68 events.
 
 `vm_sampled_operand_catalog.py` covers the final non-long sampled rows. It matches 13 events across 12 source/target/delta variants with 0 operand byte mismatches. Entries 175, 195, and 299 use 6-byte static operand footprints, while entries 95, 278, and 311 use 10-byte footprints. With that sidecar loaded, the best gap report has no generic `backedge_sample`, `prefix_long_jump`, or `missing_exact_source` buckets; those rows become `sampled_operand_known` and the remaining source-level sparse rows become `sampled_operand_source`.
+
+`vm_trace_frontier_fill.py` then handles the exact-destination boundary frontiers conservatively. It only inserts a file-backed span when an exact positive instruction lands at the end of a recovered segment and the next recovered segment starts within `0x20` bytes. On the combined file-fill/hidden-fill trace this inserts 45 rows / `0x269` event-bytes (`frontier_span_of_10`: 4, `frontier_span_of_14`: 40, `frontier_span_of_17`: 1), raises sampled/file-backed byte recovery to 38 segments / `0x45657` bytes, and still has 0 byte conflicts. The remaining uncovered exact destinations drop to 22 rows / 23 events.
 
 `vm_gap_report.py` prioritizes the remaining coverage holes. Against exact-only segments it reports:
 
@@ -1070,7 +1072,7 @@ The resulting sampled/file-backed recovery has 300 segments and `0x44749` bytes,
 | `uncovered_source_start` | 158 | 1650 |
 | `unobserved_entry` | 155 | 0 |
 
-Against the combined file-fill/hidden-fill segments, `uncovered_source_start`, `hidden_transition_destination`, generic backedge/prefix samples, and generic missing exact sources disappear. The current best gap classes are:
+Against the combined file-fill/hidden-fill/frontier-fill segments, `uncovered_source_start`, `hidden_transition_destination`, generic backedge/prefix samples, and generic missing exact sources disappear. The current best gap classes are:
 
 | Gap Class | Rows | Events |
 | --- | ---: | ---: |
@@ -1079,7 +1081,7 @@ Against the combined file-fill/hidden-fill segments, `uncovered_source_start`, `
 | `sampled_operand_known` | 12 | 13 |
 | `sampled_operand_source` | 3 | 6 |
 | `target_only_entry` | 3 | 0 |
-| `uncovered_exact_destination` | 67 | 68 |
+| `uncovered_exact_destination` | 22 | 23 |
 | `unobserved_entry` | 155 | 0 |
 
 The highest-priority remaining dynamic gaps are:
