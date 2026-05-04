@@ -114,7 +114,29 @@ def read_ip(data, off, size):
     return int.from_bytes(data[off:off + size], "little")
 
 
-def read_mem(insn, op, regs, frame, ip_bytes):
+def read_frame_mem(frame_mem, off, size):
+    if not frame_mem:
+        return Unknown(f"frame_{off:x}")
+    exact = frame_mem.get((off, size))
+    if exact is not None:
+        return exact
+    for (base, stored_size), value in frame_mem.items():
+        if base != off or stored_size < size:
+            continue
+        if isinstance(value, int):
+            return value & mask_for_size(size)
+        if isinstance(value, Ptr) and size <= stored_size:
+            return value
+    return Unknown(f"frame_{off:x}")
+
+
+def write_frame_mem(frame_mem, off, size, value):
+    if frame_mem is None:
+        return
+    frame_mem[(off, size)] = value
+
+
+def read_mem(insn, op, regs, frame, ip_bytes, frame_mem=None):
     ptr = mem_ptr(insn, op, regs)
     if ptr is None:
         return Unknown("mem_ptr")
@@ -130,23 +152,23 @@ def read_mem(insn, op, regs, frame, ip_bytes):
             return frame["flags"] & mask_for_size(size)
         if ptr.off == FRAME_BYTE_OFF:
             return frame["byte"] & mask_for_size(size)
-        return Unknown(f"frame_{ptr.off:x}")
+        return read_frame_mem(frame_mem, ptr.off, size)
     if ptr.kind == "ip":
         return read_ip(ip_bytes, ptr.off, size)
     return Unknown(ptr.kind)
 
 
-def read_op(insn, op, regs, frame, ip_bytes):
+def read_op(insn, op, regs, frame, ip_bytes, frame_mem=None):
     if op.type == X86_OP_IMM:
         return op.imm & MASK64
     if op.type == X86_OP_REG:
         return regs.get(reg_of(insn, op), Unknown("reg"))
     if op.type == X86_OP_MEM:
-        return read_mem(insn, op, regs, frame, ip_bytes)
+        return read_mem(insn, op, regs, frame, ip_bytes, frame_mem)
     return Unknown("op")
 
 
-def write_op(insn, op, value, regs, frame):
+def write_op(insn, op, value, regs, frame, frame_mem=None):
     if op.type == X86_OP_REG:
         reg = reg_of(insn, op)
         if not reg:
@@ -170,6 +192,8 @@ def write_op(insn, op, value, regs, frame):
         if ptr == Ptr("frame", FRAME_BYTE_OFF):
             frame["byte"] = value & 0xff
             return True
+        if ptr.kind == "frame":
+            write_frame_mem(frame_mem, ptr.off, op.size or 8, value)
         return True
     return False
 
@@ -262,6 +286,7 @@ def execute(insns_by_addr, start, tail_site, row, max_steps):
         "byte": parse_int(row.get("pre_byte", "0x0") or "0x0") & 0xff,
     }
     regs = {"rbp": Ptr("frame", 0)}
+    frame_mem = {}
     pc = start
     zf = None
     steps = 0
@@ -295,8 +320,8 @@ def execute(insns_by_addr, start, tail_site, row, max_steps):
             continue
 
         if mnem in {"cmp", "test"} and len(ops) >= 2:
-            left = read_op(insn, ops[0], regs, frame, ip_bytes)
-            right = read_op(insn, ops[1], regs, frame, ip_bytes)
+            left = read_op(insn, ops[0], regs, frame, ip_bytes, frame_mem)
+            right = read_op(insn, ops[1], regs, frame, ip_bytes, frame_mem)
             zf = cmp_zf(mnem, left, right, ops[0].size or ops[1].size or 8)
             if zf is None:
                 unknown += 1
@@ -308,29 +333,29 @@ def execute(insns_by_addr, start, tail_site, row, max_steps):
             continue
 
         if mnem in {"mov", "movabs"} and len(ops) >= 2:
-            value = read_op(insn, ops[1], regs, frame, ip_bytes)
-            if not write_op(insn, ops[0], value, regs, frame):
+            value = read_op(insn, ops[1], regs, frame, ip_bytes, frame_mem)
+            if not write_op(insn, ops[0], value, regs, frame, frame_mem):
                 unknown += 1
             pc = next_pc
             continue
 
         if mnem == "movzx" and len(ops) >= 2:
-            value = read_op(insn, ops[1], regs, frame, ip_bytes)
-            if not write_op(insn, ops[0], value, regs, frame):
+            value = read_op(insn, ops[1], regs, frame, ip_bytes, frame_mem)
+            if not write_op(insn, ops[0], value, regs, frame, frame_mem):
                 unknown += 1
             pc = next_pc
             continue
 
         if mnem == "lea" and len(ops) >= 2:
             ptr = mem_ptr(insn, ops[1], regs)
-            if not write_op(insn, ops[0], ptr if ptr is not None else Unknown("lea"), regs, frame):
+            if not write_op(insn, ops[0], ptr if ptr is not None else Unknown("lea"), regs, frame, frame_mem):
                 unknown += 1
             pc = next_pc
             continue
 
         if mnem in {"add", "sub", "xor", "and", "or"} and len(ops) >= 2:
-            dst = read_op(insn, ops[0], regs, frame, ip_bytes)
-            src = read_op(insn, ops[1], regs, frame, ip_bytes)
+            dst = read_op(insn, ops[0], regs, frame, ip_bytes, frame_mem)
+            src = read_op(insn, ops[1], regs, frame, ip_bytes, frame_mem)
             if mnem == "xor" and ops[0].type == X86_OP_REG and ops[1].type == X86_OP_REG and ops[0].reg == ops[1].reg:
                 value = 0
             elif mnem == "sub" and ops[0].type == X86_OP_REG and ops[1].type == X86_OP_REG and ops[0].reg == ops[1].reg:
@@ -339,7 +364,7 @@ def execute(insns_by_addr, start, tail_site, row, max_steps):
                 value = eval_bin(mnem, dst, src, ops[0].size or 8)
             if is_unknown(value):
                 unknown += 1
-            if not write_op(insn, ops[0], value, regs, frame):
+            if not write_op(insn, ops[0], value, regs, frame, frame_mem):
                 unknown += 1
             if mnem in {"and", "or", "xor", "sub"}:
                 zf = (value & mask_for_size(ops[0].size or 8)) == 0 if isinstance(value, int) else None
