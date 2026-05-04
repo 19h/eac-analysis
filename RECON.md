@@ -984,6 +984,21 @@ Top state-preserving signatures are mostly loop/backedge or central-dispatch-adj
 
 This strongly suggests the VM dispatch state is not opaque per handler: for most concrete bytecode signatures, `frame+0x170` advances by a deterministic 32-bit addend, while target selection still depends on the rolling state and decoded bytes.
 
+`vm_state_affine.py` fits reusable source-handler formulas for the post-handler `frame+0x170` value. With only pre-state and instruction bytes, 92 of 179 state-trace source handlers fit exactly and 40 survive 5-fold held-out validation, covering 16163 state-trace events. Adding the traced `frame+0x23` flags and `frame+0x194` byte raises this to 105 exact-fit sources and 41 robust sources covering 18160 state-trace events. The one robust handler gained by the extra fields is entry 346, whose state update is affine over pre-state and flags.
+
+Representative robust state-affine fits from `vm_state_affine_fullfields.tsv`:
+
+| Entry | Events | Unique Post States | Terms | Notes |
+| ---: | ---: | ---: | --- | --- |
+| 43 | 5309 | 753 | 7 state + 9 byte + const | low post bits come from instruction bytes; bits 9-15 preserve state |
+| 333 | 3602 | 526 | 14 byte + const | post-state is a compact byte-derived value |
+| 161 | 2666 | 372 | 18 state + const | masks/sets fixed pre-state bits |
+| 346 | 1997 | 423 | 32 state + 42 flags + const | requires the traced flags field |
+| 171 | 1069 | 1 | 0 | clears state to zero |
+| 91 | 546 | 193 | 7 state + 9 byte | combines preserved state bits with instruction bytes |
+
+In the lifted long catalog, robust state-affine sources cover 5413 exact rows and 60256 events. The intersection of robust state-affine and robust dispatch-affine evidence covers 35 source handlers, 1019 exact rows, and 10319 long-run events; this is the current strongest subset for direct devirtualized handler semantics. The high-volume mixed handlers still fail affine state modeling, so they likely use arithmetic carry/borrow or untraced intermediate state rather than a pure GF(2) update.
+
 The register-role trace in `dumps/vmtail-regs-wide-w16` logs all GPRs for 250000 VMTAIL events. `vm_tail_registers.py` compares each register to the current dispatch target, `frame+0x10f` table base, `table + target_entry*8`, and `target_entry*8`.
 
 Per role-row totals:
@@ -1062,7 +1077,7 @@ Top consumed-slot recoveries:
 
 After central-dispatch integration and static consumed-slot recovery, only 17 long-run instruction events lack any register/static tail-slot evidence.
 
-`vm_instruction_lift.tsv` is the current highest-level recovered instruction catalog. It joins exact unique bytecode instructions, per-signature state effects from the state-aware trace, tail target registers, live/static slot provenance, and compact dispatch-formula tags.
+`vm_instruction_lift.tsv` is the current highest-level recovered instruction catalog. It joins exact unique bytecode instructions, per-signature state effects from the state-aware trace, compact state-affine tags, tail target registers, live/static slot provenance, and compact dispatch-formula tags.
 
 Coverage in the lift catalog:
 
@@ -1073,9 +1088,12 @@ Coverage in the lift catalog:
 | with tail target register/operand | 71345 | 767549 |
 | with live/static slot temp | 71345 | 767549 |
 | with byte/static index register | 65869 | 706851 |
+| from source with state-affine fit | 8074 | 86525 |
+| from source with robust state-affine CV | 5413 | 60256 |
 | with scalar dispatch formula tag | 71343 | 767546 |
 | from source with affine dispatch fit | 11753 | 126720 |
 | from source with robust affine CV | 9197 | 101596 |
+| from source with robust state and dispatch CV | 1019 | 10319 |
 
 State classes in the lifted exact catalog:
 
