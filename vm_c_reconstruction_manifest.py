@@ -15,6 +15,7 @@ LIVE_RESIDUAL_DIR = Path("dumps/vmtail-live-residual-targets")
 ARTIFACTS = [
     ("handlers_all", TRACE_DIR / "vm_handlers_pseudocode.c"),
     ("path_handlers_all", TRACE_DIR / "vm_path_handlers_pseudocode.c"),
+    ("path_handlers_frontier", TRACE_DIR / "vm_path_handlers_frontier_pseudocode.c"),
     ("direct_blocks_top", TRACE_DIR / "vm_pseudocode_top.c"),
     ("program_blocks_top", TRACE_DIR / "vm_program_pseudocode_top.c"),
     ("program_blocks_full", TRACE_DIR / "vm_program_pseudocode_full.c"),
@@ -222,6 +223,7 @@ def artifact_metrics(rows):
 def c_shape_metrics(rows):
     handlers = read_text(TRACE_DIR / "vm_handlers_pseudocode.c")
     path_handlers = read_text(TRACE_DIR / "vm_path_handlers_pseudocode.c")
+    path_handlers_frontier = read_text(TRACE_DIR / "vm_path_handlers_frontier_pseudocode.c")
     direct_top = read_text(TRACE_DIR / "vm_pseudocode_top.c")
     program_top = read_text(TRACE_DIR / "vm_program_pseudocode_top.c")
     program_full = read_text(TRACE_DIR / "vm_program_pseudocode_full.c")
@@ -1031,6 +1033,18 @@ def c_shape_metrics(rows):
     add(rows, "c_shape", "path_specialized_dispatcher_functions",
         count(r"^static VMOpResult vm_call_path_handler\(uint16_t entry, uint64_t path_key_value, VMState \*vm\) \{", path_handlers),
         "Dispatcher functions for calling validated concrete branch-path handlers by entry and path hash.")
+    add(rows, "coverage_frontier", "path_frontier_functions",
+        count(r"^static VMOpResult path_entry_\d{3}_[0-9a-f]+\(VMState \*vm\) \{", path_handlers_frontier),
+        "Unvalidated path-specialized C functions retained as explicit frontier evidence.")
+    add(rows, "coverage_frontier", "path_frontier_model_rows",
+        count(r"^    \{ \d+, 0x[0-9a-f]+ull, \d+u, ", path_handlers_frontier),
+        "Unvalidated path-specialized metadata rows retained in the frontier artifact.")
+    add(rows, "coverage_frontier", "path_frontier_dispatch_cases",
+        count(r"^        case 0x[0-9a-f]+ull: return path_entry_\d{3}_[0-9a-f]+\(vm\);", path_handlers_frontier),
+        "Unvalidated path-specialized dispatcher cases keyed by entry/path hash.")
+    add(rows, "coverage_frontier", "path_frontier_zero_validation_comments",
+        count(r"validation: target=0\.0%, ip=0\.0%", path_handlers_frontier),
+        "Frontier path functions explicitly marked with zero target/IP validation.")
     add(rows, "c_shape", "direct_top_block_defs", count(r"^static void bb_\d{4}\(VMState \*vm\) \{", direct_top),
         "Direct compact block functions.")
     add(rows, "c_shape", "direct_top_block_calls", count(r"^    bb_\d{4}\(vm\);$", direct_top),

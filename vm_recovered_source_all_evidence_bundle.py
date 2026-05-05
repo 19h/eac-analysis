@@ -26,6 +26,7 @@ DEFAULT_SIDECARS = [
     TRACE_DIR / "vm_config_coverage_frontier.c",
     TRACE_DIR / "vm_binary_data_sections.c",
     TRACE_DIR / "vm_path_handlers_pseudocode.c",
+    TRACE_DIR / "vm_path_handlers_frontier_pseudocode.c",
     TRACE_DIR / "vm_static_only_handler_queue.c",
     TRACE_DIR / "vm_static_only_tier0_handler_models.c",
     TRACE_DIR / "vm_static_only_tier1_handler_models.c",
