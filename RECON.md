@@ -39,6 +39,7 @@ SHA-256: `0b44ad59697129534189efdb75cde2b96245f831438e9f6a53cb7725f190d739`
 - `vm_transition_model.py`: joins handler skeletons, static state chains, validation coverage, combined dispatch-model evidence, transfer expressions, long-control and sampled-operand bytecode lifts, state-only and GPR+scratch-seeded branch-predicate provenance, and tail operand provenance into a one-row-per-dispatch-entry transition model.
 - `vm_microcode_catalog.py`: renders the joined handler reconstruction into a compact pseudo-IR catalog and a Markdown digest for high-volume handlers, now including source-level long-branch lifts, sampled-operand lifts, and state-only plus GPR+scratch-seeded branch-predicate summaries.
 - `vm_path_microcode_catalog.py`: joins full concrete branch-path profiles with sampled path-conditioned transfer expressions into path-specialized pseudo-IR rows, carrying source branch-predicate context into each path row.
+- `vm_path_pseudocode_dump.py`: renders validated path-specialized microcode rows into C-like concrete branch-path handler functions, using native GPR+scratch-seeded path rows by default.
 - `vm_bytecode_file_atlas.py`: verifies recovered exact VM bytes against `eac.elf` and builds conservative file-backed bytecode atlas regions from observed segments plus small inferred gaps.
 - `vm_trace_file_fill.py`: promotes bounded positive `prefix_32_of_N` rows to `file_span_of_N` rows by reading bytes from `eac.elf`, preserving them as sampled/file-backed coverage rather than exact consumed instructions.
 - `vm_long_branch_catalog.py`: decodes sampled/backedge long-control bytecode rows whose first u32 is the target dispatch-table entry and whose second u32 is a signed VM-IP delta, verifies byte prefixes and static operand footprints against `eac.elf`, and emits TSV/Markdown lift summaries.
@@ -142,6 +143,8 @@ SHA-256: `0b44ad59697129534189efdb75cde2b96245f831438e9f6a53cb7725f190d739`
 - `dumps/vmtail-wide-1m-w16/vm_path_microcode_gpr_seeded_top.md`: Markdown digest for the top GPR+scratch-seeded concrete branch paths.
 - `dumps/vmtail-wide-1m-w16/vm_path_microcode_catalog_gpr_seeded_fast.tsv`: compact pseudo-IR row per native GPR+scratch-seeded concrete source-handler branch path.
 - `dumps/vmtail-wide-1m-w16/vm_path_microcode_gpr_seeded_fast_top.md`: Markdown digest for the top native GPR+scratch-seeded concrete branch paths.
+- `dumps/vmtail-wide-1m-w16/vm_path_handlers_pseudocode.c`: C-like path-specialized handler functions for all 560 fully target/IP-validated native GPR+scratch-seeded concrete branch paths.
+- `dumps/vmtail-wide-1m-w16/vm_path_handlers_hot_pseudocode.c`: C-like path-specialized handler functions for the 80 hottest validated concrete branch paths.
 - `dumps/vmtail-wide-1m-w16/vm_bytecode_file_atlas.tsv`: file-backed VM bytecode atlas built from sampled bytecode segments with `--max-gap 0x20`.
 - `dumps/vmtail-wide-1m-w16/vm_dispatch_formula_validate.tsv`: validation of byte-only dispatch formulas against long exact unique instructions.
 - `dumps/vmtail-wide-1m-w16/vm_gap_report.tsv`: exact-segment coverage gap ranking.
@@ -530,6 +533,7 @@ python3 vm_path_microcode_catalog.py \
   --path-transfer-expr dumps/vmtail-state-wide-w16/vm_static_path_transfer_expr_gpr_seeded.tsv \
   --markdown --limit 30 \
   >dumps/vmtail-wide-1m-w16/vm_path_microcode_gpr_seeded_fast_top.md
+make path-pseudocode
 python3 vm_dispatch_formula_validate.py \
   >dumps/vmtail-wide-1m-w16/vm_dispatch_formula_validate.tsv
 python3 vm_bytecode_file_atlas.py --max-gap 0x20 \
@@ -1435,6 +1439,8 @@ The catalog currently has state/flag pseudo-IR for 335 entries covering 766060 l
 The native state-only path microcode variant is the better match for the refreshed low-bit path formulas: it has 403 concrete path rows, 392 fully target/IP-validated paths, sampled expression rows for 352 paths covering 246298 events, and sampled slot expressions for the same 352 paths. The top native path row is entry 307 path `594cbf6454cdfe82`, with 7050 state-trace events and slot expression `(u16_1 - 0x665a9b5) & 0xffff`, followed by entry 258 path `4be73f077fec7fc7` with 6275 events and its non-affine state-derived slot expression. The Markdown digests `vm_path_microcode_top.md` and `vm_path_microcode_fast_top.md` are useful for quickly inspecting these high-volume specialized blocks.
 
 The legacy GPR+scratch-seeded path microcode variant uses `vm_static_path_variants_gpr_seeded.tsv` and `vm_static_path_transfer_expr_gpr_seeded.tsv`. It has 737 concrete path rows; 724 paths covering 248363 state-trace events validate target and IP at 100%. The native seeded variant is the stronger concrete view after biased scratch-frame, stack-pointer, image-backed, low-bit, restore-trampoline, and `fs0x128` normalization: 570 paths, 560 validated paths, and sampled expression/slot rows for 462 paths covering 245646 events.
+
+`vm_path_pseudocode_dump.py` renders the native GPR+scratch-seeded path microcode into concrete C-like branch-path functions. `make path-pseudocode` writes `vm_path_handlers_pseudocode.c` and `vm_path_handlers_hot_pseudocode.c`. The full file currently has 560 validated `path_entry_NNN_hash(VMState *vm)` functions, 383 executable next-entry assignments (373 direct entry-index formulas and 10 table-offset formulas), 452 concrete VM-IP updates, and 69 long or clipped slot formulas preserved as comments instead of emitted as invalid C. This splits multi-variant handlers into separate concrete branch paths; it is still path evidence from the state/GPR trace set, not proof that every runtime config branch has been exercised.
 
 The register-role trace in `dumps/vmtail-regs-wide-w16` logs all GPRs for 250000 VMTAIL events. `vm_tail_registers.py` compares each register to the current dispatch target, `frame+0x10f` table base, `table + target_entry*8`, and `target_entry*8`.
 
