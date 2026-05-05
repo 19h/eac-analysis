@@ -34,7 +34,10 @@ from vm_static_transfer_expr import clip, path_hash
 
 
 TRACE_DIR = Path("dumps/vmtail-wide-1m-w16")
-STATE_TRACE = Path("dumps/vmtail-state-wide-w16/vm_instruction_trace.tsv")
+STATE_TRACES = [
+    Path("dumps/vmtail-state-wide-w16/vm_instruction_trace.tsv"),
+    Path("dumps/vmtail-state-residual-targets/vm_instruction_trace.tsv"),
+]
 
 
 FIELDS = [
@@ -100,15 +103,21 @@ def state_key(row):
     )
 
 
-def load_state_by_end(path):
+def load_state_by_end(paths):
     by_end = defaultdict(list)
-    if not path or not Path(path).exists():
+    if not paths:
         return by_end
-    for row in read_tsv(path):
-        end = row.get("end_vm_ip", "")
-        if not end or not row.get("post_state", ""):
+    if isinstance(paths, (str, Path)):
+        paths = [paths]
+    for path in paths:
+        path = Path(path)
+        if not path.exists():
             continue
-        by_end[end].append(row)
+        for row in read_tsv(path):
+            end = row.get("end_vm_ip", "")
+            if not end or not row.get("post_state", ""):
+                continue
+            by_end[end].append(row)
     for rows in by_end.values():
         rows.sort(key=lambda row: int(row.get("seq", "0") or 0))
     return by_end
@@ -442,7 +451,8 @@ def emit_markdown(rows):
 def main():
     parser = argparse.ArgumentParser(description="Replay residual synthetic gaps using concrete state-trace predecessor state.")
     parser.add_argument("--residual-audit", default=str(TRACE_DIR / "vm_synthetic_gap_residual_audit.tsv"))
-    parser.add_argument("--state-trace", default=str(STATE_TRACE))
+    parser.add_argument("--state-trace", action="append", dest="state_trace",
+        help="State-aware instruction trace to use; may be supplied multiple times. Defaults to the wide state trace plus the focused residual-target trace when present.")
     parser.add_argument("--skeletons", default=str(TRACE_DIR / "vm_handler_skeletons.tsv"))
     parser.add_argument("--eac", default="eac.elf")
     parser.add_argument("--window", type=lambda value: int(value, 0), default=0x1200)
@@ -451,6 +461,8 @@ def main():
     parser.add_argument("--max-path-len", type=int, default=220)
     parser.add_argument("--markdown", action="store_true")
     args = parser.parse_args()
+    if not args.state_trace:
+        args.state_trace = [str(path) for path in STATE_TRACES]
 
     rows = build_rows(args)
     if args.markdown:
