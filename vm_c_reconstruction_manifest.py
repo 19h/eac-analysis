@@ -447,6 +447,52 @@ def synthetic_gap_residual_audit_metrics(rows):
         "Synthetic starts that remain explicit unresolved-tail calls in the full C sketch.")
 
 
+def synthetic_gap_concrete_state_audit_metrics(rows):
+    audit_rows = read_tsv(TRACE_DIR / "vm_synthetic_gap_concrete_state_audit.tsv")
+    classes = Counter(row.get("classification", "") for row in audit_rows)
+    statuses = Counter()
+    reasons = Counter()
+    covered = [
+        row.get("synthetic_start_vm_ip", "")
+        for row in audit_rows
+        if int(row.get("state_trace_rows", "0") or 0) > 0
+    ]
+    missing = [
+        row.get("synthetic_start_vm_ip", "")
+        for row in audit_rows
+        if int(row.get("state_trace_rows", "0") or 0) == 0
+    ]
+    for row in audit_rows:
+        for item in (row.get("concrete_status_mix", "") or "").split(","):
+            if item and ":" in item:
+                key, value = item.rsplit(":", 1)
+                statuses[key] += int(value)
+        for item in (row.get("unknown_reason_mix", "") or "").split(","):
+            if item and ":" in item:
+                key, value = item.rsplit(":", 1)
+                reasons[key] += int(value)
+
+    add(rows, "gap_concrete_state", "synthetic_gap_concrete_state_audit_rows", len(audit_rows),
+        "Residual synthetic starts replayed with concrete state-aware predecessor state where available.")
+    add(rows, "gap_concrete_state", "synthetic_gap_concrete_state_class_mix",
+        ",".join(f"{key}:{value}" for key, value in classes.most_common()) or "-",
+        "Concrete-state replay classification mix.")
+    add(rows, "gap_concrete_state", "synthetic_gap_concrete_state_status_mix",
+        ",".join(f"{key}:{value}" for key, value in statuses.most_common()) or "-",
+        "Concrete replay terminal status mix across observed state variants.")
+    add(rows, "gap_concrete_state", "synthetic_gap_concrete_state_unknown_reason_mix",
+        ",".join(f"{key}:{value}" for key, value in reasons.most_common()) or "-",
+        "Unknown-target reason mix across concrete replay variants.")
+    add(rows, "gap_concrete_state", "synthetic_gap_concrete_state_rows_with_state", len(covered),
+        "Residual starts whose predecessor state appears in the state-aware trace.")
+    add(rows, "gap_concrete_state", "synthetic_gap_concrete_state_rows_missing_state", len(missing),
+        "Residual starts still missing state-aware predecessor state.")
+    add(rows, "gap_concrete_state", "synthetic_gap_concrete_state_covered_starts", ",".join(covered) or "-",
+        "Residual starts checked with concrete state-aware predecessor state.")
+    add(rows, "gap_concrete_state", "synthetic_gap_concrete_state_missing_starts", ",".join(missing) or "-",
+        "Residual starts needing state-aware trace coverage before concrete replay can classify them.")
+
+
 def synthetic_gap_live_in_role_metrics(rows):
     role_rows = read_tsv(TRACE_DIR / "vm_synthetic_gap_live_in_roles.tsv")
     resolutions = Counter(row.get("resolution", "") for row in role_rows)
@@ -738,6 +784,7 @@ def build_rows():
     synthetic_gap_symbolic_successor_metrics(rows)
     synthetic_gap_chain_probe_metrics(rows)
     synthetic_gap_residual_audit_metrics(rows)
+    synthetic_gap_concrete_state_audit_metrics(rows)
     synthetic_gap_live_in_role_metrics(rows)
     synthetic_gap_final_tail_site_metrics(rows)
     synthetic_gap_live_in_reentry_metrics(rows)
