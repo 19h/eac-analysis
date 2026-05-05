@@ -45,6 +45,8 @@ typedef struct {
     unsigned hits;
     Mix target_mix;
     Mix target_entry_mix;
+    Mix slot_entry_mix;
+    Mix slot_target_check_mix;
     Mix slot_mix;
     Mix idx_mix;
     Mix vm_ip_mix;
@@ -203,6 +205,15 @@ static const HandlerTarget *find_handler_by_target(uint64_t target) {
     return NULL;
 }
 
+static const HandlerTarget *find_handler_by_entry(uint64_t entry) {
+    for (size_t i = 0; i < g_handler_count; i++) {
+        if (g_handlers[i].entry == entry) {
+            return &g_handlers[i];
+        }
+    }
+    return NULL;
+}
+
 static void handler_label_for_target(uint64_t target, char *out, size_t out_size) {
     const HandlerTarget *handler = find_handler_by_target(target);
     if (handler) {
@@ -343,6 +354,7 @@ static void record_dispatch_line(DynamicSite *site, const char *run_label, const
     uint64_t vm_ip = 0;
     char key[128];
     char handler_key[160];
+    char slot_entry_key[160];
 
     if (!parse_token_u64(line, "target_off=", &target)) {
         return;
@@ -359,6 +371,22 @@ static void record_dispatch_line(DynamicSite *site, const char *run_label, const
     if (parse_token_u64(line, "idx=", &idx)) {
         hex64(key, sizeof(key), idx);
         mix_add(&site->idx_mix, key, 1);
+        if ((idx & 7ull) == 0) {
+            uint64_t entry = idx >> 3;
+            const HandlerTarget *handler = find_handler_by_entry(entry);
+            snprintf(slot_entry_key, sizeof(slot_entry_key), "%llu@0x%llx",
+                     (unsigned long long)entry, (unsigned long long)target);
+            mix_add(&site->slot_entry_mix, slot_entry_key, 1);
+            if (handler && handler->target == target) {
+                mix_add(&site->slot_target_check_mix, "slot_index_matches_handler_target", 1);
+            } else if (handler) {
+                mix_add(&site->slot_target_check_mix, "slot_index_target_mismatch", 1);
+            } else {
+                mix_add(&site->slot_target_check_mix, "slot_index_unknown_handler", 1);
+            }
+        } else {
+            mix_add(&site->slot_target_check_mix, "unaligned_slot_index", 1);
+        }
     }
     if (parse_token_u64(line, "vm_ip_off=", &vm_ip)) {
         hex64(key, sizeof(key), vm_ip);
@@ -432,10 +460,13 @@ static void print_c_string(const char *text) {
 
 static void site_mix_strings(const DynamicSite *site,
                              char *target_mix, char *target_entry_mix,
+                             char *slot_entry_mix, char *slot_target_check_mix,
                              char *slot_mix, char *idx_mix,
                              char *vm_ip_mix, char *run_mix) {
     mix_to_string(&site->target_mix, target_mix, MIX_TEXT);
     mix_to_string(&site->target_entry_mix, target_entry_mix, MIX_TEXT);
+    mix_to_string(&site->slot_entry_mix, slot_entry_mix, MIX_TEXT);
+    mix_to_string(&site->slot_target_check_mix, slot_target_check_mix, MIX_TEXT);
     mix_to_string(&site->slot_mix, slot_mix, MIX_TEXT);
     mix_to_string(&site->idx_mix, idx_mix, MIX_TEXT);
     mix_to_string(&site->vm_ip_mix, vm_ip_mix, MIX_TEXT);
@@ -443,19 +474,23 @@ static void site_mix_strings(const DynamicSite *site,
 }
 
 static void emit_tsv(void) {
-    printf("entry\tindirect_jmp_site\thit_count\tunique_targets\ttarget_mix\ttarget_entry_mix\tslot_mix\tidx_mix\tvm_ip_mix\trun_mix\tchain\tstatic_status\tstatic_next_action\tdynamic_status\tdynamic_next_action\tfirst_stage_entries\tsource_mix\tfirst_stage_windows\tnote\n");
+    printf("entry\tindirect_jmp_site\thit_count\tunique_targets\ttarget_mix\ttarget_entry_mix\tslot_entry_mix\tslot_target_check_mix\tslot_mix\tidx_mix\tvm_ip_mix\trun_mix\tchain\tstatic_status\tstatic_next_action\tdynamic_status\tdynamic_next_action\tfirst_stage_entries\tsource_mix\tfirst_stage_windows\tnote\n");
     for (size_t i = 0; i < sizeof(g_sites) / sizeof(g_sites[0]); i++) {
         const DynamicSite *site = &g_sites[i];
-        char target_mix[MIX_TEXT], target_entry_mix[MIX_TEXT], slot_mix[MIX_TEXT];
+        char target_mix[MIX_TEXT], target_entry_mix[MIX_TEXT], slot_entry_mix[MIX_TEXT];
+        char slot_target_check_mix[MIX_TEXT], slot_mix[MIX_TEXT];
         char idx_mix[MIX_TEXT], vm_ip_mix[MIX_TEXT], run_mix[MIX_TEXT];
-        site_mix_strings(site, target_mix, target_entry_mix, slot_mix, idx_mix, vm_ip_mix, run_mix);
-        printf("0x%llx\t0x%llx\t%u\t%zu\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n",
+        site_mix_strings(site, target_mix, target_entry_mix, slot_entry_mix, slot_target_check_mix,
+                         slot_mix, idx_mix, vm_ip_mix, run_mix);
+        printf("0x%llx\t0x%llx\t%u\t%zu\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n",
                (unsigned long long)site->entry,
                (unsigned long long)site->site,
                site->hits,
                site->target_mix.count,
                target_mix,
                target_entry_mix,
+               slot_entry_mix,
+               slot_target_check_mix,
                slot_mix,
                idx_mix,
                vm_ip_mix,
@@ -475,31 +510,37 @@ static void emit_tsv(void) {
 static void emit_markdown(void) {
     printf("# Native Obfuscated Second-Stage Dynamic Dispatch\n\n");
     printf("Indexes bounded driver traces for the five computed `jmp [rax]` sites emitted by `vm_native_obfuscated_second_stage.c`.\n\n");
-    printf("| entry | site | hits | observed targets | target handlers | slots | evidence runs | status |\n");
+    printf("| entry | site | hits | observed targets | slot entries | slot check | evidence runs | status |\n");
     printf("| --- | --- | ---: | --- | --- | --- | --- | --- |\n");
     for (size_t i = 0; i < sizeof(g_sites) / sizeof(g_sites[0]); i++) {
         const DynamicSite *site = &g_sites[i];
-        char target_mix[MIX_TEXT], target_entry_mix[MIX_TEXT], slot_mix[MIX_TEXT];
+        char target_mix[MIX_TEXT], target_entry_mix[MIX_TEXT], slot_entry_mix[MIX_TEXT];
+        char slot_target_check_mix[MIX_TEXT], slot_mix[MIX_TEXT];
         char idx_mix[MIX_TEXT], vm_ip_mix[MIX_TEXT], run_mix[MIX_TEXT];
-        site_mix_strings(site, target_mix, target_entry_mix, slot_mix, idx_mix, vm_ip_mix, run_mix);
+        site_mix_strings(site, target_mix, target_entry_mix, slot_entry_mix, slot_target_check_mix,
+                         slot_mix, idx_mix, vm_ip_mix, run_mix);
+        (void)target_entry_mix;
         (void)idx_mix;
         (void)vm_ip_mix;
+        (void)slot_mix;
         printf("| `0x%llx` | `0x%llx` | %u | `%s` | `%s` | `%s` | `%s` | `%s` |\n",
                (unsigned long long)site->entry,
                (unsigned long long)site->site,
                site->hits,
                target_mix,
-               target_entry_mix,
-               slot_mix,
+               slot_entry_mix,
+               slot_target_check_mix,
                run_mix,
                dynamic_status(site));
     }
 }
 
 static void emit_c_function(const DynamicSite *site) {
-    char target_mix[MIX_TEXT], target_entry_mix[MIX_TEXT], slot_mix[MIX_TEXT];
+    char target_mix[MIX_TEXT], target_entry_mix[MIX_TEXT], slot_entry_mix[MIX_TEXT];
+    char slot_target_check_mix[MIX_TEXT], slot_mix[MIX_TEXT];
     char idx_mix[MIX_TEXT], vm_ip_mix[MIX_TEXT], run_mix[MIX_TEXT];
-    site_mix_strings(site, target_mix, target_entry_mix, slot_mix, idx_mix, vm_ip_mix, run_mix);
+    site_mix_strings(site, target_mix, target_entry_mix, slot_entry_mix, slot_target_check_mix,
+                     slot_mix, idx_mix, vm_ip_mix, run_mix);
     printf("static void second_stage_dynamic_%llx(VMState *vm, const VMSecondStageDynamicDispatch *edge) {\n",
            (unsigned long long)site->site);
     printf("    /* entry=0x%llx; indirect_jmp_site=0x%llx; chain=",
@@ -518,6 +559,11 @@ static void emit_c_function(const DynamicSite *site) {
     print_comment_text(target_mix);
     printf("; target_entry_mix=");
     print_comment_text(target_entry_mix);
+    printf(" */\n");
+    printf("    /* slot_entry_mix=");
+    print_comment_text(slot_entry_mix);
+    printf("; slot_target_check_mix=");
+    print_comment_text(slot_target_check_mix);
     printf(" */\n");
     printf("    /* slot_mix=");
     print_comment_text(slot_mix);

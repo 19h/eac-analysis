@@ -46,6 +46,7 @@ static void second_stage_dynamic_cad88(VMState *vm, const VMSecondStageDynamicDi
     /* entry=0xc9849; indirect_jmp_site=0xcad88; chain=source299_chain_a */
     /* first_stage_entries=0x17bf1f; source_mix=entry_299:1; first_stage_windows=299@0x17452e:0x313eb-0x3146b:1 */
     /* dynamic_target_mix=0xbb6e6:1,0x9af18:1,0xb8556:2; target_entry_mix=323@0xbb6e6:1,169@0x9af18:1,310@0xb8556:2 */
+    /* slot_entry_mix=323@0xbb6e6:1,169@0x9af18:1,310@0xb8556:2; slot_target_check_mix=slot_index_matches_handler_target:4 */
     /* slot_mix=0xc4130:1,0xc3c60:1,0xc40c8:2; idx_mix=0xa18:1,0x548:1,0x9b0:2; vm_ip_mix=0x17687f:1,0x176aaf:1,0x176c91:1,0x176ea1:1; runs=focus_cad88:4 */
     vm_note_second_stage_dynamic(vm, edge, 0xc9849u, 0xcad88u, 4u, "0xbb6e6:1,0x9af18:1,0xb8556:2", "323@0xbb6e6:1,169@0x9af18:1,310@0xb8556:2", "dynamic_computed_targets_observed", "promote_observed_target_mix_then_symbolically_solve_uncovered_slots");
 }
@@ -54,6 +55,7 @@ static void second_stage_dynamic_cc3f5(VMState *vm, const VMSecondStageDynamicDi
     /* entry=0xcaf2a; indirect_jmp_site=0xcc3f5; chain=source195_chain_b */
     /* first_stage_entries=0x33f109; source_mix=entry_195:1; first_stage_windows=195@0x33d2d9:0x74f88-0x75008:1 */
     /* dynamic_target_mix=0x8a37f:1,0xb8556:1,0x9af18:2; target_entry_mix=86@0x8a37f:1,310@0xb8556:1,169@0x9af18:2 */
+    /* slot_entry_mix=86@0x8a37f:1,310@0xb8556:1,169@0x9af18:2; slot_target_check_mix=slot_index_matches_handler_target:4 */
     /* slot_mix=0xc39c8:1,0xc40c8:1,0xc3c60:2; idx_mix=0x2b0:1,0x9b0:1,0x548:2; vm_ip_mix=0x33db24:1,0x33de2c:1,0x33e037:1,0x33e2e4:1; runs=focus_cc3f5:4 */
     vm_note_second_stage_dynamic(vm, edge, 0xcaf2au, 0xcc3f5u, 4u, "0x8a37f:1,0xb8556:1,0x9af18:2", "86@0x8a37f:1,310@0xb8556:1,169@0x9af18:2", "dynamic_computed_targets_observed", "promote_observed_target_mix_then_symbolically_solve_uncovered_slots");
 }
@@ -62,6 +64,7 @@ static void second_stage_dynamic_c559d(VMState *vm, const VMSecondStageDynamicDi
     /* entry=0xc4258; indirect_jmp_site=0xc559d; chain=source299_chain_b */
     /* first_stage_entries=0x33b4b6; source_mix=entry_299:1; first_stage_windows=299@0x33710f:0x74b3d-0x74bbd:1 */
     /* dynamic_target_mix=0xbb6e6:1,0x9af18:6,0xb8556:1; target_entry_mix=323@0xbb6e6:1,169@0x9af18:6,310@0xb8556:1 */
+    /* slot_entry_mix=323@0xbb6e6:1,169@0x9af18:6,310@0xb8556:1; slot_target_check_mix=slot_index_matches_handler_target:8 */
     /* slot_mix=0xc4130:1,0xc3c60:6,0xc40c8:1; idx_mix=0xa18:1,0x548:6,0x9b0:1; vm_ip_mix=0x249464:1,0x249735:1,0x249960:1,0x249ba3:1,0x249de6:1,0x24a029:1,0x24a29c:1,0x24a4df:1; runs=focus_c559d:8 */
     vm_note_second_stage_dynamic(vm, edge, 0xc4258u, 0xc559du, 8u, "0xbb6e6:1,0x9af18:6,0xb8556:1", "323@0xbb6e6:1,169@0x9af18:6,310@0xb8556:1", "dynamic_computed_targets_observed", "promote_observed_target_mix_then_symbolically_solve_uncovered_slots");
 }
@@ -70,6 +73,7 @@ static void second_stage_dynamic_c6bce(VMState *vm, const VMSecondStageDynamicDi
     /* entry=0xc57b8; indirect_jmp_site=0xc6bce; chain=source195_chain_c */
     /* first_stage_entries=0x36afd2; source_mix=entry_195:1; first_stage_windows=195@0x3655e4:0x779bd-0x77a3d:1 */
     /* dynamic_target_mix=0x8a37f:1,0x9af18:2,0xb8556:1; target_entry_mix=86@0x8a37f:1,169@0x9af18:2,310@0xb8556:1 */
+    /* slot_entry_mix=86@0x8a37f:1,169@0x9af18:2,310@0xb8556:1; slot_target_check_mix=slot_index_matches_handler_target:4 */
     /* slot_mix=0xc39c8:1,0xc3c60:2,0xc40c8:1; idx_mix=0x2b0:1,0x548:2,0x9b0:1; vm_ip_mix=0x11ac5a:1,0x11aeea:1,0x11b12c:1,0x11b36e:1; runs=focus_c6bce:4 */
     vm_note_second_stage_dynamic(vm, edge, 0xc57b8u, 0xc6bceu, 4u, "0x8a37f:1,0x9af18:2,0xb8556:1", "86@0x8a37f:1,169@0x9af18:2,310@0xb8556:1", "dynamic_computed_targets_observed", "promote_observed_target_mix_then_symbolically_solve_uncovered_slots");
 }
@@ -78,6 +82,7 @@ static void second_stage_dynamic_c80b9(VMState *vm, const VMSecondStageDynamicDi
     /* entry=0xc6d58; indirect_jmp_site=0xc80b9; chain=source195_chain_d */
     /* first_stage_entries=0x337d35; source_mix=entry_195:1; first_stage_windows=195@0x333bc9:0x748d8-0x74958:1 */
     /* dynamic_target_mix=0x8a37f:1,0xb8556:3,0x9af18:4; target_entry_mix=86@0x8a37f:1,310@0xb8556:3,169@0x9af18:4 */
+    /* slot_entry_mix=86@0x8a37f:1,310@0xb8556:3,169@0x9af18:4; slot_target_check_mix=slot_index_matches_handler_target:8 */
     /* slot_mix=0xc39c8:1,0xc40c8:3,0xc3c60:4; idx_mix=0x2b0:1,0x9b0:3,0x548:4; vm_ip_mix=0x26cd71:1,0x26dc7b:1,0x26deee:1,0x26e161:1,0x26e3d4:1,0x26e647:1,0x26e8ba:1,0x26ebbd:1; runs=focus_c80b9:8 */
     vm_note_second_stage_dynamic(vm, edge, 0xc6d58u, 0xc80b9u, 8u, "0x8a37f:1,0xb8556:3,0x9af18:4", "86@0x8a37f:1,310@0xb8556:3,169@0x9af18:4", "dynamic_computed_targets_observed", "promote_observed_target_mix_then_symbolically_solve_uncovered_slots");
 }
