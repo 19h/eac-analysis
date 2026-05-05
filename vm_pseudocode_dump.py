@@ -976,11 +976,17 @@ def emit_source299_ret_patch_comments(target_vm_ip, source299_ret_patch_probes, 
     rows = source299_ret_patch_probes.get(start, [])
     if not rows:
         return
-    limit = getattr(args, "source299_ret_patch_probe_top_items", 4)
+    limit = getattr(
+        args,
+        "sampled_ret_patch_probe_top_items",
+        getattr(args, "source299_ret_patch_probe_top_items", 4),
+    )
     shown = rows if limit <= 0 else rows[:limit]
+    sources = Counter(f"entry_{row.get('source_entry', '?')}" for row in rows)
+    source_text = ",".join(f"{key}:{value}" for key, value in sources.most_common()) or "-"
     print(
-        f"    /* source299 ret-patch probe @ {start}: rows={len(rows)}; "
-        "entry_299 writes frame[0xbb]+u32_0 to *(uint64_t *)(rsp+u16_4) and returns, "
+        f"    /* sampled ret-patch probe @ {start}: rows={len(rows)}; sources={c_comment(source_text)}; "
+        "the native handler writes frame[0xbb]+u32_0 to *(uint64_t *)(rsp+u16_4) and returns, "
         "so this hidden control path is native return-patching rather than a dispatch-table slot. */"
     )
     for row in shown:
@@ -999,7 +1005,8 @@ def emit_source299_ret_patch_comments(target_vm_ip, source299_ret_patch_probes, 
                 f"->{normalize_vm_ip(row.get('dynamic_next_end_vm_ip', ''))}"
             )
         print(
-            f"    /* source299 ret-patch: run={c_comment(run_name)}, "
+            f"    /* sampled ret-patch: source=entry_{c_comment(row.get('source_entry', '') or '?')}, "
+            f"run={c_comment(run_name)}, "
             f"seed={c_comment(row.get('seed_quality', '') or '-')}, "
             f"operand_u32={c_comment(row.get('family_operand_u32_0', '') or '-')}, "
             f"stack_off={c_comment(row.get('stack_write_offset', '') or '-')}, "
@@ -1015,7 +1022,7 @@ def emit_source299_ret_patch_comments(target_vm_ip, source299_ret_patch_probes, 
         )
     omitted = len(rows) - len(shown)
     if omitted > 0:
-        print(f"    /* ... {omitted} additional source299 ret-patch rows omitted ... */")
+        print(f"    /* ... {omitted} additional sampled ret-patch rows omitted ... */")
 
 
 def emit_sampled_control_correlation_comments(target_vm_ip, sampled_control_correlations, args):
@@ -1780,7 +1787,8 @@ def main():
     parser.add_argument("--synthetic-gap-table-memory-probe", default="dumps/vmtail-wide-1m-w16/vm_synthetic_gap_table_memory_probe.tsv")
     parser.add_argument("--synthetic-gap-runtime-table-memory-probe", default="dumps/vmtail-wide-1m-w16/vm_synthetic_gap_runtime_table_memory_probe.tsv")
     parser.add_argument("--synthetic-gap-live-table-evidence", default="dumps/vmtail-wide-1m-w16/vm_synthetic_gap_live_table_evidence.tsv")
-    parser.add_argument("--synthetic-gap-source299-ret-patch-probe", default="dumps/vmtail-wide-1m-w16/vm_synthetic_gap_source299_ret_patch_probe.tsv")
+    parser.add_argument("--synthetic-gap-sampled-ret-patch-probe", dest="synthetic_gap_sampled_ret_patch_probe", default="dumps/vmtail-wide-1m-w16/vm_synthetic_gap_sampled_ret_patch_probe.tsv")
+    parser.add_argument("--synthetic-gap-source299-ret-patch-probe", dest="synthetic_gap_sampled_ret_patch_probe", default=argparse.SUPPRESS)
     parser.add_argument("--synthetic-gap-sampled-control-correlation", default="dumps/vmtail-wide-1m-w16/vm_synthetic_gap_sampled_control_correlation.tsv")
     parser.add_argument("--synthetic-gap-focused-direct-trace-audit", default="dumps/vmtail-wide-1m-w16/vm_synthetic_gap_focused_direct_trace_audit.tsv")
     parser.add_argument("--synthetic-gap-focused-sequence-audit", default="dumps/vmtail-wide-1m-w16/vm_synthetic_gap_focused_sequence_audit.tsv")
@@ -1810,7 +1818,8 @@ def main():
     parser.add_argument("--table-memory-probe-top-items", type=int, default=4)
     parser.add_argument("--runtime-table-memory-probe-top-items", type=int, default=4)
     parser.add_argument("--live-table-evidence-top-items", type=int, default=4)
-    parser.add_argument("--source299-ret-patch-probe-top-items", type=int, default=4)
+    parser.add_argument("--sampled-ret-patch-probe-top-items", dest="sampled_ret_patch_probe_top_items", type=int, default=4)
+    parser.add_argument("--source299-ret-patch-probe-top-items", dest="sampled_ret_patch_probe_top_items", type=int, default=argparse.SUPPRESS)
     parser.add_argument("--sampled-control-correlation-top-items", type=int, default=4)
     parser.add_argument("--sampled-control-correlation-max-expr", type=int, default=180)
     parser.add_argument("--focused-direct-trace-audit-top-items", type=int, default=4)
@@ -1845,7 +1854,7 @@ def main():
     table_memory_probes = load_table_memory_probes(args.synthetic_gap_table_memory_probe)
     runtime_table_memory_probes = load_runtime_table_memory_probes(args.synthetic_gap_runtime_table_memory_probe)
     live_table_evidences = load_live_table_evidences(args.synthetic_gap_live_table_evidence)
-    source299_ret_patch_probes = load_source299_ret_patch_probes(args.synthetic_gap_source299_ret_patch_probe)
+    source299_ret_patch_probes = load_source299_ret_patch_probes(args.synthetic_gap_sampled_ret_patch_probe)
     sampled_control_correlations = load_sampled_control_correlations(args.synthetic_gap_sampled_control_correlation)
     focused_direct_trace_audits = load_focused_direct_trace_audits(args.synthetic_gap_focused_direct_trace_audit)
     focused_sequence_audits = load_focused_sequence_audits(args.synthetic_gap_focused_sequence_audit)
