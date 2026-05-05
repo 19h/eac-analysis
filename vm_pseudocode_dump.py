@@ -1032,6 +1032,45 @@ def emit_source299_ret_patch_comments(target_vm_ip, source299_ret_patch_probes, 
         print(f"    /* ... {omitted} additional sampled ret-patch rows omitted ... */")
 
 
+def most_common_nonempty(rows, key, default=""):
+    counter = Counter(row.get(key, "") for row in rows if row.get(key, ""))
+    if not counter:
+        return default
+    return counter.most_common(1)[0][0]
+
+
+def emit_sampled_ret_patch_exit(target_vm_ip, sampled_ret_patch_probes):
+    start = normalize_vm_ip(target_vm_ip)
+    rows = sampled_ret_patch_probes.get(start, [])
+    if not rows:
+        return False
+    ret0 = most_common_nonempty(rows, "patched_ret_eac_off")
+    if not ret0:
+        return False
+    ret1 = most_common_nonempty(rows, "patched_ret2_eac_off", "0x0")
+    stack_off = most_common_nonempty(rows, "stack_write_offset", "0x0")
+    source = most_common_nonempty(rows, "source_entry", "?")
+    kind = most_common_nonempty(rows, "ret_patch_kind", "single_stack_return")
+    try:
+        start_value = parse_hex(start)
+        ret0_value = parse_hex(ret0)
+        ret1_value = parse_hex(ret1)
+        stack_value = parse_hex(stack_off)
+    except ValueError:
+        return False
+    flags = 2 if ret1_value else 1
+    print(
+        f"    /* native ret-patch exit: source=entry_{c_comment(source)}, kind={c_comment(kind)}, "
+        f"ret0=0x{ret0_value:x}, ret1=0x{ret1_value:x}, stack_off=0x{stack_value:x}; "
+        "decoded native .text target, not a VM dispatch edge. */"
+    )
+    print(
+        f"    vm_native_ret_patch_tail(vm, 0x{start_value:x}, "
+        f"0x{ret0_value:x}u, 0x{ret1_value:x}u, (uint16_t)0x{stack_value:x}u, {flags}u);"
+    )
+    return True
+
+
 def emit_sampled_control_correlation_comments(target_vm_ip, sampled_control_correlations, args):
     start = normalize_vm_ip(target_vm_ip)
     rows = sampled_control_correlations.get(start, [])
@@ -1556,6 +1595,7 @@ def emit_preamble():
     print("}")
     print("")
     print("extern uintptr_t dispatch_table[360];")
+    print("extern void vm_native_ret_patch_tail(VMState *vm, uint64_t vm_ip, uint32_t ret0, uint32_t ret1, uint16_t stack_off, uint32_t flags);")
     print("")
 
 
@@ -1583,6 +1623,8 @@ def emit_synthetic_edge(edge, synthetic_spans, dynamic_stitches, transfer_probes
         emit_live_in_role_comments(target_vm_ip, live_in_roles, final_tail_site_probes, args)
         emit_live_in_reentry_comments(target_vm_ip, live_in_reentries, args)
         emit_allstatic_reentry_comments(target_vm_ip, allstatic_reentries, args)
+        if emit_sampled_ret_patch_exit(target_vm_ip, source299_ret_patch_probes):
+            return
         if chain:
             print(f"    /* hidden chain resolves synthetic reentry at {normalize_vm_ip(chain.get('hidden_pred_end_vm_ip', ''))}. */")
             return
@@ -1646,6 +1688,8 @@ def emit_synthetic_edge(edge, synthetic_spans, dynamic_stitches, transfer_probes
     emit_observed_chain_bridge_comments(target_vm_ip, observed_chain_bridges, args)
     emit_live_in_role_comments(target_vm_ip, live_in_roles, final_tail_site_probes, args)
     emit_live_in_reentry_comments(target_vm_ip, live_in_reentries, args)
+    if emit_sampled_ret_patch_exit(target_vm_ip, source299_ret_patch_probes):
+        return
     if chain:
         try:
             offset = parse_delta(chain.get("hidden_source_delta_from_start", "0"))

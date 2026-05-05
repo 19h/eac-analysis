@@ -19,6 +19,7 @@ from vm_pseudocode_dump import (
     emit_table_memory_probe_comments,
     emit_runtime_table_memory_probe_comments,
     emit_live_table_evidence_comments,
+    emit_sampled_ret_patch_exit,
     emit_source299_ret_patch_comments,
     emit_sampled_control_correlation_comments,
     emit_focused_direct_trace_audit_comments,
@@ -86,6 +87,7 @@ def emit_preamble(used_entries):
     print("} VMOpResult;")
     print("")
     print("extern void vm_unresolved_synthetic_tail(VMState *vm, uint64_t vm_ip);")
+    print("extern void vm_native_ret_patch_tail(VMState *vm, uint64_t vm_ip, uint32_t ret0, uint32_t ret1, uint16_t stack_off, uint32_t flags);")
     print("#ifndef VM_ENABLE_OBSERVED_REENTRY_BRIDGES")
     print("#define VM_ENABLE_OBSERVED_REENTRY_BRIDGES 0")
     print("#endif")
@@ -288,6 +290,8 @@ def emit_synthetic_edge(edge, synthetic_spans, dynamic_stitches, transfer_probes
         emit_live_in_role_comments(target_vm_ip, live_in_roles, final_tail_site_probes, args)
         emit_live_in_reentry_comments(target_vm_ip, live_in_reentries, args)
         emit_allstatic_reentry_comments(target_vm_ip, allstatic_reentries, args)
+        if emit_sampled_ret_patch_exit(target_vm_ip, source299_ret_patch_probes):
+            return True
         focused_bridge = select_focused_direct_bridge(target_vm_ip, focused_direct_trace_audits, block_by_start)
         if focused_bridge:
             emit_focused_direct_bridge(focused_bridge)
@@ -357,6 +361,8 @@ def emit_synthetic_edge(edge, synthetic_spans, dynamic_stitches, transfer_probes
     emit_live_in_role_comments(target_vm_ip, live_in_roles, final_tail_site_probes, args)
     emit_live_in_reentry_comments(target_vm_ip, live_in_reentries, args)
     emit_allstatic_reentry_comments(target_vm_ip, allstatic_reentries, args)
+    if emit_sampled_ret_patch_exit(target_vm_ip, source299_ret_patch_probes):
+        return True
     focused_bridge = select_focused_direct_bridge(target_vm_ip, focused_direct_trace_audits, block_by_start)
     if focused_bridge:
         emit_focused_direct_bridge(focused_bridge)
