@@ -9,6 +9,7 @@ from vm_pseudocode_dump import parse_hex, read_tsv
 from vm_static_dispatch_validate import read_dispatch_table
 from vm_static_path_profile import REG_NAMES, parse_gpr_fields
 from vm_static_transfer_expr import clip, execute, path_hash
+from vm_synthetic_gap_table_read_diagnostic import execute_debug
 from vm_state_static_validate import Ptr, disassemble_region, make_disassembler, parse_int, read_skeletons
 
 
@@ -37,9 +38,18 @@ FIELDS = [
     "event_target",
     "seed_quality",
     "live_status",
+    "live_terminal_reason",
     "live_pred_entry",
     "live_pred_target",
     "live_pred_delta",
+    "live_table_status",
+    "live_table_site",
+    "live_table_operand",
+    "live_table_size",
+    "live_table_offset",
+    "live_table_entry",
+    "live_table_value_entry",
+    "live_table_diagnosis",
     "live_target_expr",
     "live_slot_expr",
     "live_ip_expr",
@@ -142,6 +152,12 @@ def seed_quality(fields):
     if fs_count:
         return "frame_scratch_snapshot"
     return "frame_only_snapshot"
+
+
+def split_seed(regs):
+    regs = dict(regs)
+    frame_mem = regs.pop("__frame_mem__", {})
+    return regs, frame_mem
 
 
 def read_family_rows(path):
@@ -279,6 +295,22 @@ def classify_interpretation(status, pred_entry, next_event, relation, branch_cla
     return "no_live_transfer"
 
 
+def classify_table_log(table_log):
+    if not table_log:
+        return {}, "no_table_access"
+    selected = next((item for item in reversed(table_log) if item["status"] != "ok"), table_log[-1])
+    statuses = {item.get("status", "") for item in table_log}
+    if "table_oob" in statuses:
+        diagnosis = "table_index_out_of_range"
+    elif "table_read" in statuses:
+        diagnosis = "misaligned_or_non_qword_table_read"
+    elif "ok" in statuses:
+        diagnosis = "dispatch_table_pointer_read"
+    else:
+        diagnosis = "unknown_table_access"
+    return selected, diagnosis
+
+
 def no_snapshot_row(family):
     return {
         "row_kind": "no_matching_live_event",
@@ -335,6 +367,33 @@ def live_row(args, family, event, decoded, table, target_to_entry):
         args.max_expr_len,
         initial_regs,
     )
+    debug_regs, debug_frame_mem = split_seed(initial_regs)
+    (
+        debug_pred_entry,
+        _debug_pred_target,
+        _debug_pred_delta,
+        debug_status,
+        debug_reason,
+        _debug_steps,
+        _debug_unknown,
+        _debug_branch_unknown,
+        _debug_path,
+        table_log,
+    ) = execute_debug(
+        by_addr,
+        target,
+        row,
+        table,
+        target_to_entry,
+        args.max_steps,
+        seed_regs=debug_regs,
+        seed_frame_mem=debug_frame_mem,
+    )
+    table_item, table_diagnosis = classify_table_log(table_log)
+    if debug_pred_entry is not None:
+        pred_entry = debug_pred_entry
+    if debug_status != status:
+        debug_reason = f"{debug_status}:{debug_reason}" if debug_reason else debug_status
     next_event = event.get("next_event")
     relation = next_relation(family, next_event)
     branch_class = branch_resolution(family, live_branch_unknown)
@@ -354,9 +413,18 @@ def live_row(args, family, event, decoded, table, target_to_entry):
         "event_target": h(event.get("target")),
         "seed_quality": seed_quality(fields),
         "live_status": status,
+        "live_terminal_reason": debug_reason,
         "live_pred_entry": "" if pred_entry is None or pred_entry < 0 else str(pred_entry),
         "live_pred_target": h(pred_target),
         "live_pred_delta": norm_delta(pred_delta),
+        "live_table_status": table_item.get("status", ""),
+        "live_table_site": table_item.get("site", ""),
+        "live_table_operand": table_item.get("operand", ""),
+        "live_table_size": table_item.get("size", ""),
+        "live_table_offset": table_item.get("offset", ""),
+        "live_table_entry": table_item.get("entry", ""),
+        "live_table_value_entry": table_item.get("value_entry", ""),
+        "live_table_diagnosis": table_diagnosis,
         "live_target_expr": clip(target_expr, args.max_expr_len),
         "live_slot_expr": clip(slot_expr, args.max_expr_len),
         "live_ip_expr": ip_expr,
@@ -477,15 +545,16 @@ def emit_markdown(rows):
     emit_counter("Seed Quality", Counter(row.get("seed_quality", "") for row in live_rows))
     emit_counter("Source Entry", Counter(row.get("source_entry", "") for row in rows))
     emit_counter("Live Status", Counter(row.get("live_status", "") for row in live_rows))
+    emit_counter("Live Table Diagnosis", Counter(row.get("live_table_diagnosis", "") for row in live_rows))
     emit_counter("Branch Resolution", Counter(row.get("branch_resolution", "") for row in rows))
     emit_counter("Next Relation", Counter(row.get("next_relation", "") for row in live_rows))
     emit_counter("Interpretation", Counter(row.get("interpretation", "") for row in rows))
 
     print("## Rows\n")
     print(
-        "| Start | Source | Family | Run | Seed | Status | Branches | Path | Next | Interpretation |"
+        "| Start | Source | Family | Run | Seed | Status | Table | Branches | Path | Next | Interpretation |"
     )
-    print("| --- | ---: | --- | --- | --- | --- | ---: | --- | --- | --- |")
+    print("| --- | ---: | --- | --- | --- | --- | --- | ---: | --- | --- | --- |")
     for row in rows:
         run_name = Path(row.get("run_dir", "")).name if row.get("run_dir") else "-"
         next_text = "-"
@@ -498,6 +567,7 @@ def emit_markdown(rows):
             f"| `{row.get('synthetic_start_vm_ip')}` | {row.get('source_entry') or '-'} | "
             f"`{row.get('family_id') or '-'}` | `{run_name}` | "
             f"`{row.get('seed_quality') or '-'}` | `{row.get('live_status') or '-'}` | "
+            f"`{row.get('live_table_diagnosis') or '-'}/{row.get('live_table_offset') or '-'}` | "
             f"`{row.get('live_branch_unknown') or '-'}` | `{row.get('live_path_hash') or '-'}` | "
             f"`{next_text}` | `{row.get('interpretation') or '-'}` |"
         )
