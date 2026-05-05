@@ -1293,12 +1293,33 @@ def c_shape_metrics(rows):
     add(rows, "c_shape", "all_evidence_bundle_prefixed_symbols",
         count(r"\beac_evidence_[A-Za-z0-9_]+__", all_evidence_bundle),
         "Prefixed symbols used to keep overlapping native sidecar C in one translation unit.")
+    all_evidence_binary_data_section_arrays = count(
+        r"^static const uint8_t eac_evidence_binary_data_sections__vm_eac_section_\d+_",
+        all_evidence_bundle,
+    )
+    all_evidence_binary_data_string_refs = count(
+        r"^    \{ \d+, 0x[0-9a-f]+ull, 0x[0-9a-f]+ull, \d+, eac_evidence_binary_data_sections__vm_eac_section_\d+_[A-Za-z0-9_]+ \+ 0x[0-9a-f]+ull, \"",
+        all_evidence_bundle,
+    )
     add(rows, "data_surface", "all_evidence_bundle_binary_data_section_arrays",
-        count(r"\beac_evidence_binary_data_sections__vm_eac_section_\d+_", all_evidence_bundle),
+        all_evidence_binary_data_section_arrays,
         "Exact binary data section arrays retained in the all-evidence single C file.")
+    add(rows, "data_surface", "all_evidence_bundle_binary_data_string_refs",
+        all_evidence_binary_data_string_refs,
+        "Full runtime string-reference rows retained in the all-evidence single C file.")
+    add(rows, "data_surface", "all_evidence_bundle_binary_data_string_row_static_asserts",
+        count(r"^_Static_assert\(sizeof\(eac_evidence_binary_data_sections__k_vm_binary_string_refs\)", all_evidence_bundle),
+        "C11 static assertion retained for all-evidence runtime string-reference count.")
     add(rows, "data_surface", "all_evidence_bundle_binary_data_dispatch_table",
         count(r"\beac_evidence_binary_data_sections__vm_eac_dispatch_table_raw_offsets\[360\]", all_evidence_bundle),
         "Raw VM dispatch-table offset array retained in the all-evidence single C file.")
+    add(rows, "data_surface", "all_evidence_bundle_binary_data_surface_match",
+        "yes" if (
+            all_evidence_binary_data_section_arrays == binary_data_section_array_c_rows and
+            all_evidence_binary_data_string_refs == binary_data_string_ref_c_rows and
+            count(r"\beac_evidence_binary_data_sections__vm_eac_dispatch_table_raw_offsets\[360\]", all_evidence_bundle) == 1
+        ) else "no",
+        "Whether the all-evidence C file carries the same section arrays, full strings, and raw dispatch table as the binary data carrier.")
     add(rows, "c_shape", "all_evidence_bundle_tier0_static_slot_recoveries",
         count(r"tier0 static slot recovered from the RetDec single-function model", all_evidence_bundle),
         "Executable tier0 static-only slot recoveries retained in the all-evidence single file.")

@@ -9,6 +9,7 @@ Native C-generated carrier for allocatable non-executable ELF data and the embed
 | emitted data bytes | 0xe63f7 |
 | bss/nobits sections tracked | 2 |
 | string refs indexed | 2917 |
+| indexed string bytes | 0x10b64 |
 | dispatch table entries | 360 |
 
 | section | vaddr | file offset | size | emitted | writable | executable | nobits |
