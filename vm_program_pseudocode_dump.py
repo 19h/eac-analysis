@@ -8,6 +8,7 @@ from vm_pseudocode_dump import (
     c_block_name,
     c_comment,
     emit_internal_tail_lift,
+    is_decoded_long_control,
     load_edges,
     load_rows,
     load_tail_lifts,
@@ -42,6 +43,10 @@ def emit_preamble(used_entries):
     print("")
     print("extern void vm_unresolved_synthetic_tail(VMState *vm, uint64_t vm_ip);")
     print("#define U16(p) (*(const uint16_t *)(p))")
+    print("#define U32(p) (*(const uint32_t *)(p))")
+    print("static int64_t signed_vm_delta_u32(uint32_t raw) {")
+    print("    return (raw & 0x80000000u) ? -(int64_t)(raw & 0x7fffffffu) : (int64_t)raw;")
+    print("}")
     for entry in sorted(used_entries):
         print(f"static VMOpResult op_entry_{entry:03d}(VMState *vm);")
     print("")
@@ -172,11 +177,28 @@ def emit_decoded_control(row):
     entry = row.get("source_entry", "")
     target = row.get("target_entry", "")
     semantic = row.get("semantic_ir", "")
+    bytes_hex = row.get("bytes", "")
+    operand_shape = row.get("operand_shape", "")
+    validation = row.get("validation", "")
     delta = parse_delta(row.get("delta", "0"))
-    print(f"    /* {start}: decoded {kind}, source entry={entry}; {c_comment(semantic)} */")
-    if target:
+    print(
+        f"    /* {start}: decoded {kind}, source entry={entry}, bytes={bytes_hex}, "
+        f"shape={c_comment(operand_shape or '-')}, validation={c_comment(validation or '-')}; "
+        f"{c_comment(semantic)} */"
+    )
+    if is_decoded_long_control(row):
+        print("    next_entry = (int)U32(vm->ip + 0x0);")
+        if target:
+            print(f"    /* observed decoded target: {target} */")
+        print("    vm_ip += signed_vm_delta_u32(U32(vm->ip + 0x4));")
+        print(f"    /* observed decoded delta: {fmt_delta(row.get('delta', '0'))} */")
+    elif target:
         print(f"    next_entry = {target};")
-    if delta > 0:
+        if delta > 0:
+            print(f"    vm_ip += 0x{delta:x};")
+        elif delta < 0:
+            print(f"    vm_ip -= 0x{-delta:x};")
+    elif delta > 0:
         print(f"    vm_ip += 0x{delta:x};")
     elif delta < 0:
         print(f"    vm_ip -= 0x{-delta:x};")

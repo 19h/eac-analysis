@@ -70,6 +70,14 @@ def fmt_ip_update(delta):
     return f"vm->ip -= 0x{-delta:x};"
 
 
+def is_decoded_long_control(row):
+    return (
+        (row.get("row_kind") or "").startswith("long_branch_")
+        and "target_u32@+0" in (row.get("operand_shape") or "")
+        and "delta_u32@+4" in (row.get("operand_shape") or "")
+    )
+
+
 def normalize_vm_ip(text):
     try:
         return f"0x{parse_hex(text):x}"
@@ -275,6 +283,7 @@ def row_to_c(row, max_expr_len):
     entry = row.get("source_entry", "")
     kind = row.get("row_kind", "")
     bytes_hex = row.get("bytes", "")
+    operand_shape = row.get("operand_shape", "")
     target = row.get("target_entry", "")
     delta = parse_delta(row.get("delta", "0"))
     state = row.get("state_effect_ir", "")
@@ -283,14 +292,26 @@ def row_to_c(row, max_expr_len):
     validation = row.get("validation", "")
 
     lines = []
-    lines.append(f"    /* {start}: entry_{entry}, {kind}, bytes={bytes_hex}, {c_comment(semantic)} */")
+    lines.append(
+        f"    /* {start}: entry_{entry}, {kind}, bytes={bytes_hex}, "
+        f"shape={c_comment(operand_shape or '-')}, {c_comment(semantic)} */"
+    )
     if state and state != "state0":
         lines.append(f"    vm->state = {expr_to_c(state, max_expr_len)};")
     elif state == "state0":
         lines.append("    /* state preserved */")
-    if target:
+    if is_decoded_long_control(row):
+        lines.append("    next_entry = (int)U32(vm->ip + 0x0);")
+        if target:
+            lines.append(f"    /* observed decoded target: {target} */")
+        lines.append("    vm->ip += signed_vm_delta_u32(U32(vm->ip + 0x4));")
+        lines.append(f"    /* observed decoded delta: {row.get('delta', '0')} */")
+        update = ""
+    elif target:
         lines.append(f"    next_entry = {target};")
-    update = fmt_ip_update(delta)
+        update = fmt_ip_update(delta)
+    else:
+        update = fmt_ip_update(delta)
     if update:
         lines.append(f"    {update}")
     if dispatch:
@@ -365,6 +386,10 @@ def emit_preamble():
     print("#define mask32(x) ((uint32_t)(x))")
     print("#define mask16(x) ((uint16_t)(x))")
     print("#define mask8(x)  ((uint8_t)(x))")
+    print("")
+    print("static int64_t signed_vm_delta_u32(uint32_t raw) {")
+    print("    return (raw & 0x80000000u) ? -(int64_t)(raw & 0x7fffffffu) : (int64_t)raw;")
+    print("}")
     print("")
     print("extern uintptr_t dispatch_table[360];")
     print("")
