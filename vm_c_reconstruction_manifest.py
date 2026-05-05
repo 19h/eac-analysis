@@ -115,6 +115,10 @@ def c_shape_metrics(rows):
         "Recovered self-loops intentionally not emitted as direct recursive calls.")
     add(rows, "c_shape", "program_full_synthetic_tail_target_loads", count(r"next_entry = \(int\)U16\(vm->ip", program_full),
         "Executable target-entry loads recovered from synthetic tail schemas.")
+    add(rows, "c_shape", "program_full_transfer_probe_evidence_sites", count(r"transfer probe evidence @", program_full),
+        "Synthetic gap sites annotated with static transfer-probe evidence.")
+    add(rows, "c_shape", "program_full_transfer_probe_comments", count(r"transfer probe: missing_successor=", program_full),
+        "Static transfer-probe row comments carried into the full program sketch.")
     add(rows, "c_shape", "program_full_dynamic_stitch_evidence_sites", count(r"dynamic stitch evidence @", program_full),
         "Synthetic gap sites annotated with next-hooked-source dynamic stitch evidence.")
     add(rows, "c_shape", "program_full_dynamic_stitch_event_comments", count(r"dynamic stitch: event=", program_full),
@@ -125,6 +129,10 @@ def c_shape_metrics(rows):
         "Concrete block-to-block calls inside the combined source bundle.")
     add(rows, "c_shape", "bundle_synthetic_gap_unresolved_calls", count(r"^    vm_unresolved_synthetic_tail\(vm, 0x[0-9a-f]+\);$", bundle),
         "Explicit unresolved-tail calls inside the combined source bundle for remaining synthetic successor gaps.")
+    add(rows, "c_shape", "bundle_transfer_probe_evidence_sites", count(r"transfer probe evidence @", bundle),
+        "Synthetic gap sites annotated with transfer-probe evidence inside the combined source bundle.")
+    add(rows, "c_shape", "bundle_transfer_probe_comments", count(r"transfer probe: missing_successor=", bundle),
+        "Static transfer-probe row comments carried into the combined source bundle.")
     add(rows, "c_shape", "bundle_dynamic_stitch_evidence_sites", count(r"dynamic stitch evidence @", bundle),
         "Synthetic gap sites annotated with dynamic stitch evidence inside the combined source bundle.")
     add(rows, "c_shape", "bundle_dynamic_stitch_event_comments", count(r"dynamic stitch: event=", bundle),
