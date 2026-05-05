@@ -39,7 +39,9 @@ struct __locale_struct;
 struct _TYPEDEF_glob_t;
 struct _TYPEDEF___mbstate_t;
 struct _IO_FILE;
+struct pollfd;
 struct sockaddr;
+struct stat64;
 struct timespec;
 struct timeval;
 struct utsname;
@@ -47,6 +49,7 @@ struct utsname;
 #define F_SETFL 4
 #define SO_DEBUG 1
 #define _SC_PAGESIZE 30
+#define SYS_getegid32 50
 extern int g1;
 extern int g2;
 extern int g3;
@@ -141,9 +144,14 @@ int pthread_mutex_unlock(void *mutex);
 int pthread_cond_wait(void *cond, void *mutex);
 int pthread_cond_timedwait(void *cond, void *mutex, const struct timespec *abstime);
 int fcntl(int fd, int cmd, ...);
+int ioctl(int fd, unsigned long request, ...);
+int poll(struct pollfd *fds, unsigned long nfds, int timeout);
 int gettimeofday(struct timeval *tv, void *tz);
 int64_t sysconf(int name);
+int64_t syscall(int64_t number, ...);
 int mprotect(void *addr, size_t len, int prot);
+int __fxstat64(int ver, int fd, struct stat64 *buf);
+int64_t lseek64(int fd, int64_t offset, int whence);
 int32_t *__errno_location(void);
 int connect(int sockfd, const struct sockaddr *addr, int32_t addrlen);
 int getsockopt(int sockfd, int level, int optname, void *optval, int32_t *optlen);
@@ -157,6 +165,7 @@ int64_t __wctype_l(const char *property, struct __locale_struct *locale);
 char *strdup(const char *s);
 int __sprintf_chk(char *str, int flag, size_t slen, const char *format, ...);
 struct _Unwind_Exception;
+int64_t _Unwind_GetRegionStart();
 void _Unwind_Resume(struct _Unwind_Exception *exception);
 
 int64_t function_1060ab();

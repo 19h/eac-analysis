@@ -1132,7 +1132,7 @@ def c_shape_metrics(rows):
         count(r"^ \*   0x[0-9a-f]+-0x[0-9a-f]+ rank=", native_gap_retdec_batch24),
         "Fixed top-ranked native gap queue ranges selected for RetDec batch 24.")
     add(rows, "c_shape", "native_gap_retdec_batch24_functions",
-        count(r"^int64_t function_[0-9a-f]+\(.*\) \{", native_gap_retdec_batch24),
+        count(r"^int64_t [A-Za-z_][A-Za-z0-9_]*\(.*\) \{", native_gap_retdec_batch24),
         "RetDec native C function bodies emitted for native gap batch 24.")
     add(rows, "c_shape", "native_gap_retdec_batch24_address_ranges",
         count(r"^// Address range: 0x[0-9a-f]+ - 0x[0-9a-f]+$", native_gap_retdec_batch24),
@@ -1929,7 +1929,7 @@ def c_shape_metrics(rows):
         count(r"\beac_evidence_native_gap_retdec_batch23__", all_evidence_bundle),
         "Prefixed native gap RetDec batch 23 symbols retained in the all-evidence single file.")
     add(rows, "c_shape", "all_evidence_bundle_native_gap_retdec_batch24_functions",
-        count(r"^int64_t eac_evidence_native_gap_retdec_batch24__function_[0-9a-f]+\(.*\) \{", all_evidence_bundle),
+        count(r"^int64_t eac_evidence_native_gap_retdec_batch24__[A-Za-z_][A-Za-z0-9_]*\(.*\) \{", all_evidence_bundle),
         "RetDec native C function bodies from native gap batch 24 retained in the all-evidence single file.")
     add(rows, "c_shape", "all_evidence_bundle_native_gap_retdec_batch24_symbols",
         count(r"\beac_evidence_native_gap_retdec_batch24__", all_evidence_bundle),
