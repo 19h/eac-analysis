@@ -20,10 +20,11 @@ WEAK_HANDLER_RETDEC_C := $(PRIMARY_DIR)/vm_weak_handlers_retdec.c
 VALIDATED_HANDLER_RETDEC_CS := $(PRIMARY_DIR)/vm_validated_handlers_retdec_batch00.c $(PRIMARY_DIR)/vm_validated_handlers_retdec_batch01.c $(PRIMARY_DIR)/vm_validated_handlers_retdec_batch02.c $(PRIMARY_DIR)/vm_validated_handlers_retdec_batch03.c $(PRIMARY_DIR)/vm_validated_handlers_retdec_batch04.c $(PRIMARY_DIR)/vm_validated_handlers_retdec_batch05.c $(PRIMARY_DIR)/vm_validated_handlers_retdec_batch06.c
 HANDLER_RETDEC_INDEX_TSV := $(PRIMARY_DIR)/vm_handler_retdec_index.tsv
 HANDLER_RETDEC_INDEX_MD := $(PRIMARY_DIR)/vm_handler_retdec_index.md
+UNRESOLVED_FAMILY_C := $(PRIMARY_DIR)/vm_unresolved_family_chains.c
 
-.PHONY: all clean fast-replay fast-state fast-gpr fast-predicates fast-state-predicates fast-gpr-predicates fast-transfer fast-state-transfer fast-gpr-transfer fast-validators fast-paths fast-gpr-paths instruction-trace instruction-trace-refresh instruction-unique instruction-unique-fast-check bytecode-segments-fast-check bytecode-blocks-fast-check instruction-lift sampled-recovery file-atlas file-fill long-branches hidden-transitions sampled-operands hidden-fill frontier-fill footprint-fill control-edges bytecode-ir bytecode-basic-blocks synthetic-spans synthetic-tails synthetic-tail-lift synthetic-successor-gaps synthetic-gap-transfer-probe synthetic-gap-dynamic-stitch synthetic-gap-chain-probe synthetic-gap-residual-audit synthetic-gap-concrete-state-audit synthetic-gap-state-trace-targets synthetic-gap-live-context-audit synthetic-gap-table-read-diagnostic synthetic-gap-table-memory-probe synthetic-gap-runtime-table-memory-probe synthetic-gap-sampled-control-correlation synthetic-gap-focused-direct-trace-audit synthetic-gap-focused-sequence-audit synthetic-gap-observed-chain-bridge synthetic-gap-observed-chain-replay synthetic-gap-chain-slot-reconciliation synthetic-gap-unresolved-family-audit synthetic-gap-source299-context-probe synthetic-gap-source299-ret-patch-probe synthetic-gap-sampled-ret-patch-probe synthetic-gap-ret-patch-native-target-atlas native-ret-patch-target-pseudocode native-ret-patch-epilogues-retdec native-ret-patch-source278-retdec target-only-handlers-retdec unobserved-handlers-retdec unobserved-handlers-retdec-batch0 weak-handlers-retdec validated-handlers-retdec handler-retdec-index synthetic-gap-live-snapshot-transfer-probe synthetic-gap-live-table-evidence synthetic-gap-symbolic-successors synthetic-gap-live-in-roles final-tail-site-probe synthetic-gap-live-in-reentry-probe synthetic-gap-allstatic-reentry-probe pseudocode pseudocode-full handler-pseudocode path-pseudocode source-bundle pseudocode-syntax-check pseudocode-object-check pseudocode-link-check coverage-matrix coverage-audit c-reconstruction-manifest
+.PHONY: all clean fast-replay fast-state fast-gpr fast-predicates fast-state-predicates fast-gpr-predicates fast-transfer fast-state-transfer fast-gpr-transfer fast-validators fast-paths fast-gpr-paths instruction-trace instruction-trace-refresh instruction-unique instruction-unique-fast-check bytecode-segments-fast-check bytecode-blocks-fast-check instruction-lift sampled-recovery file-atlas file-fill long-branches hidden-transitions sampled-operands hidden-fill frontier-fill footprint-fill control-edges bytecode-ir bytecode-basic-blocks synthetic-spans synthetic-tails synthetic-tail-lift synthetic-successor-gaps synthetic-gap-transfer-probe synthetic-gap-dynamic-stitch synthetic-gap-chain-probe synthetic-gap-residual-audit synthetic-gap-concrete-state-audit synthetic-gap-state-trace-targets synthetic-gap-live-context-audit synthetic-gap-table-read-diagnostic synthetic-gap-table-memory-probe synthetic-gap-runtime-table-memory-probe synthetic-gap-sampled-control-correlation synthetic-gap-focused-direct-trace-audit synthetic-gap-focused-sequence-audit synthetic-gap-observed-chain-bridge synthetic-gap-observed-chain-replay synthetic-gap-chain-slot-reconciliation synthetic-gap-unresolved-family-audit synthetic-gap-source299-context-probe synthetic-gap-source299-ret-patch-probe synthetic-gap-sampled-ret-patch-probe synthetic-gap-ret-patch-native-target-atlas native-ret-patch-target-pseudocode native-ret-patch-epilogues-retdec native-ret-patch-source278-retdec target-only-handlers-retdec unobserved-handlers-retdec unobserved-handlers-retdec-batch0 weak-handlers-retdec validated-handlers-retdec handler-retdec-index unresolved-family-chains synthetic-gap-live-snapshot-transfer-probe synthetic-gap-live-table-evidence synthetic-gap-symbolic-successors synthetic-gap-live-in-roles final-tail-site-probe synthetic-gap-live-in-reentry-probe synthetic-gap-allstatic-reentry-probe pseudocode pseudocode-full handler-pseudocode path-pseudocode source-bundle pseudocode-syntax-check pseudocode-object-check pseudocode-link-check coverage-matrix coverage-audit c-reconstruction-manifest
 
-all: driver trace_preload.so vm_fast_path_profile vm_instruction_unique_fast vm_bytecode_segments_fast vm_bytecode_blocks_fast vm_handler_retdec_index
+all: driver trace_preload.so vm_fast_path_profile vm_instruction_unique_fast vm_bytecode_segments_fast vm_bytecode_blocks_fast vm_handler_retdec_index vm_unresolved_family_chains_dump
 
 driver: driver.c
 	$(CC) $(CFLAGS) -o $@ $< -ldl
@@ -44,6 +45,9 @@ vm_bytecode_blocks_fast: vm_bytecode_blocks_fast.c
 	$(CC) $(CFLAGS) -O3 -o $@ $<
 
 vm_handler_retdec_index: vm_handler_retdec_index.c
+	$(CC) $(CFLAGS) -O2 -o $@ $<
+
+vm_unresolved_family_chains_dump: vm_unresolved_family_chains_dump.c
 	$(CC) $(CFLAGS) -O2 -o $@ $<
 
 fast-replay: fast-state fast-gpr
@@ -338,6 +342,11 @@ $(HANDLER_RETDEC_INDEX_MD): vm_handler_retdec_index $(TARGET_ONLY_HANDLER_RETDEC
 	./vm_handler_retdec_index --markdown > $@
 
 handler-retdec-index: $(HANDLER_RETDEC_INDEX_TSV) $(HANDLER_RETDEC_INDEX_MD)
+
+$(UNRESOLVED_FAMILY_C): vm_unresolved_family_chains_dump $(PRIMARY_DIR)/vm_synthetic_gap_unresolved_family_audit.tsv $(PRIMARY_DIR)/vm_synthetic_gap_chain_slot_reconciliation.tsv $(PRIMARY_DIR)/vm_synthetic_gap_ret_patch_native_target_atlas.tsv
+	./vm_unresolved_family_chains_dump > $@
+
+unresolved-family-chains: $(UNRESOLVED_FAMILY_C)
 
 synthetic-gap-live-snapshot-transfer-probe: synthetic-gap-unresolved-family-audit
 	python3 vm_synthetic_gap_live_snapshot_transfer_probe.py > dumps/vmtail-wide-1m-w16/vm_synthetic_gap_live_snapshot_transfer_probe.tsv

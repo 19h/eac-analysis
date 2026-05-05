@@ -488,7 +488,7 @@ static void print_family_function(const FamilyRow *family) {
         printf(" jump_targets=");
         print_comment_value(ret->jump_targets);
         printf(" */\n");
-        printf("    evidence_native_ret_patch(vm, %lluu, %lluu, \"%s\", %lluu);\n",
+        printf("    evidence_native_ret_patch(vm, %lluu, 0x%llxull, \"%s\", 0x%llxull);\n",
                (unsigned long long)parse_number(ret->source_entry),
                (unsigned long long)parse_number(ret->synthetic_start_vm_ip),
                ret->ret_slot,
@@ -513,7 +513,7 @@ static void print_family_function(const FamilyRow *family) {
         printf(" reconciliation=");
         print_comment_value(step->reconciliation_class);
         printf(" */\n");
-        printf("    evidence_chain_step(vm, %lluu, %lluu, %lluu, %lluu, %lluu, %lluu);\n",
+        printf("    evidence_chain_step(vm, 0x%llxull, %lluu, 0x%llxull, %lluu, %lluu, 0x%llxull);\n",
                (unsigned long long)parse_number(step->chain_start_vm_ip),
                (unsigned long long)parse_number(step->step_index),
                (unsigned long long)parse_number(step->step_vm_ip),
@@ -535,7 +535,7 @@ static void print_family_function(const FamilyRow *family) {
     printf(" following_residual=");
     print_comment_value(family->following_residual_start);
     printf(" */\n");
-    printf("    evidence_terminal(vm, %lluu, %lluu);\n",
+    printf("    evidence_terminal(vm, 0x%llxull, %lluu);\n",
            (unsigned long long)parse_number(family->terminal_dest_vm_ip),
            (unsigned long long)parse_number(family->terminal_dest_entry));
     printf("    /* ret_patch_records=%zu observed_chain_steps=%zu terminal_block=", ret_count, step_count);
@@ -550,7 +550,7 @@ static void print_dispatcher(void) {
     for (size_t i = 0; i < g_family_count; i++) {
         char suffix[MAX_TEXT];
         function_suffix(g_families[i].synthetic_start_vm_ip, suffix, sizeof(suffix));
-        printf("    case %lluu:\n", (unsigned long long)parse_number(g_families[i].synthetic_start_vm_ip));
+        printf("    case 0x%llxull:\n", (unsigned long long)parse_number(g_families[i].synthetic_start_vm_ip));
         printf("        residual_start_%s(vm);\n", suffix);
         printf("        return;\n");
     }
