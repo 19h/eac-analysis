@@ -38,6 +38,12 @@ def load_ret_patch_summaries(path):
     return by_entry
 
 
+def load_tier0_models(path):
+    if not path or not Path(path).exists():
+        return {}
+    return {row["entry"]: row for row in read_tsv(path) if row.get("entry")}
+
+
 def counter_text(counter, limit=6):
     return ",".join(f"{key}:{value}" for key, value in counter.most_common(limit)) or "-"
 
@@ -53,6 +59,23 @@ def c_expr(expr):
     expr = re.sub(r"(?<!dispatch_)table\[", "dispatch_table[", expr)
     expr = HEX_RE.sub(lambda match: f"{match.group(0)}u", expr)
     return expr
+
+
+def tier0_slot_c_expr(expr):
+    expr = (expr or "").strip()
+    if not expr or "g3_mask" in expr:
+        return ""
+    expr = re.sub(
+        r"\bs16\(ip\+([0-9]+)\)",
+        lambda match: f"((int32_t)S16(vm->ip + 0x{int(match.group(1)):x}u))",
+        expr,
+    )
+    expr = re.sub(
+        r"\bu16\(ip\+([0-9]+)\)",
+        lambda match: f"U16(vm->ip + 0x{int(match.group(1)):x}u)",
+        expr,
+    )
+    return c_expr(expr)
 
 
 def is_complete_expr(expr, max_len):
@@ -253,6 +276,7 @@ def emit_preamble():
     print("} VMOpResult;")
     print("")
     print("#define U8(p)  (*(const uint8_t *)(p))")
+    print("#define S16(p) (*(const int16_t *)(p))")
     print("#define U16(p) (*(const uint16_t *)(p))")
     print("#define U32(p) (*(const uint32_t *)(p))")
     print("#define mask32(x) ((uint32_t)(x))")
@@ -275,7 +299,7 @@ def emit_preamble():
     print("")
 
 
-def emit_handler(row, transition, tail_ip_advances, ret_patch_summaries, args):
+def emit_handler(row, transition, tail_ip_advances, ret_patch_summaries, tier0_models, args):
     entry = row["entry"]
     name = f"op_entry_{int(entry):03d}"
     klass = row.get("class", "")
@@ -303,6 +327,16 @@ def emit_handler(row, transition, tail_ip_advances, ret_patch_summaries, args):
         print(f"    /* operands: {c_comment(clip(row['operand_layout'], args.max_comment_len))} */")
     if row.get("ip_reads"):
         print(f"    /* native IP reads: {c_comment(clip(row['ip_reads'], args.max_comment_len))} */")
+    tier0_model = tier0_models.get(entry, {})
+    if tier0_model:
+        print(
+            f"    /* tier0 static model: rank={c_comment(tier0_model.get('rank', '-'))}, "
+            f"retdec={c_comment(tier0_model.get('function', '-'))}, "
+            f"slot_status={c_comment(tier0_model.get('slot_status', '-'))}, "
+            f"ip_advance={c_comment(tier0_model.get('ip_advance', '-'))} */"
+        )
+        if tier0_model.get("effects"):
+            print(f"    /* tier0 effects: {c_comment(clip(tier0_model['effects'], args.max_comment_len))} */")
     tr = transition.get(entry, {})
     if tr.get("decode_signature"):
         print(f"    /* decode signature: {c_comment(clip(tr['decode_signature'], args.max_comment_len))} */")
@@ -331,6 +365,17 @@ def emit_handler(row, transition, tail_ip_advances, ret_patch_summaries, args):
             print(f"    r.next_entry = {helper}(r.slot);")
         elif row.get("dispatch_slot_ir"):
             print(f"    /* slot variants: {c_comment(clip(c_expr(row['dispatch_slot_ir']), args.max_comment_len))} */")
+        elif tier0_model:
+            tier0_slot_expr = tier0_slot_c_expr(tier0_model.get("slot_expr", ""))
+            if tier0_slot_expr and is_complete_expr(tier0_slot_expr, args.max_expr_len):
+                print(f"    r.slot = (uint32_t)({tier0_slot_expr});")
+                print("    r.next_entry = vm_entry_from_table_offset(r.slot);")
+                print("    /* tier0 static slot recovered from the RetDec single-function model; dynamic source-row validation is still absent. */")
+            elif tier0_model.get("slot_expr"):
+                print(
+                    f"    /* tier0 slot expression not executable in VMState model: "
+                    f"{c_comment(clip(tier0_model['slot_expr'], args.max_comment_len))} */"
+                )
 
         ip_advance = constant_ip_advance(row.get("ip_advance_ir", ""))
         ip_source = "microcode"
@@ -401,6 +446,7 @@ def main():
     parser.add_argument("--max-expr-len", type=int, default=360)
     parser.add_argument("--max-comment-len", type=int, default=260)
     parser.add_argument("--ret-patch-comment-items", type=int, default=6)
+    parser.add_argument("--static-only-tier0-models", default="dumps/vmtail-wide-1m-w16/vm_static_only_tier0_handler_models.tsv")
     args = parser.parse_args()
 
     rows = list(read_tsv(args.microcode))
@@ -408,11 +454,12 @@ def main():
     transition = load_by(args.transition_model, "entry")
     tail_ip_advances = load_tail_ip_advances(args.handler_table, args.eac, args.tail_window)
     ret_patch_summaries = load_ret_patch_summaries(args.sampled_ret_patch_probe)
+    tier0_models = load_tier0_models(args.static_only_tier0_models)
     chosen = selected_handlers(rows, args)
 
     emit_preamble()
     for row in chosen:
-        emit_handler(row, transition, tail_ip_advances, ret_patch_summaries, args)
+        emit_handler(row, transition, tail_ip_advances, ret_patch_summaries, tier0_models, args)
     emit_dispatch_table(chosen)
 
     classes = Counter(row.get("class", "") for row in chosen)

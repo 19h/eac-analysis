@@ -641,10 +641,10 @@ $(PROGRAM_PSEUDOCODE_FULL_C): vm_program_pseudocode_dump.py vm_pseudocode_dump.p
 
 pseudocode-full: $(PROGRAM_PSEUDOCODE_FULL_C)
 
-$(HANDLERS_PSEUDOCODE_C): vm_handler_pseudocode_dump.py $(PRIMARY_DIR)/vm_handler_semantics.tsv $(PRIMARY_DIR)/vm_handler_table.tsv
+$(HANDLERS_PSEUDOCODE_C): vm_handler_pseudocode_dump.py $(PRIMARY_DIR)/vm_handler_semantics.tsv $(PRIMARY_DIR)/vm_handler_table.tsv $(STATIC_ONLY_TIER0_MODELS_TSV)
 	python3 vm_handler_pseudocode_dump.py --all > $@
 
-$(HANDLERS_HOT_PSEUDOCODE_C): vm_handler_pseudocode_dump.py $(PRIMARY_DIR)/vm_handler_semantics.tsv $(PRIMARY_DIR)/vm_handler_table.tsv
+$(HANDLERS_HOT_PSEUDOCODE_C): vm_handler_pseudocode_dump.py $(PRIMARY_DIR)/vm_handler_semantics.tsv $(PRIMARY_DIR)/vm_handler_table.tsv $(STATIC_ONLY_TIER0_MODELS_TSV)
 	python3 vm_handler_pseudocode_dump.py --limit 80 > $@
 
 handler-pseudocode: $(HANDLERS_PSEUDOCODE_C) $(HANDLERS_HOT_PSEUDOCODE_C)
