@@ -105,7 +105,8 @@ def rows_from_r2(eac, r2):
         offset = int(item.get("offset", 0) or 0)
         size = int(item.get("size", item.get("realsz", 0)) or 0)
         realsz = int(item.get("realsz", size) or 0)
-        end = offset + max(size, realsz, 0)
+        contiguous = realsz if realsz > 0 else size
+        end = offset + max(contiguous, 0)
         section = section_for(offset, sections)
         if section == "-":
             continue
