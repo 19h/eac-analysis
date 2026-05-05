@@ -129,6 +129,9 @@ static void emit_c(void) {
     puts("static uint32_t vm_tier0_mask_g3(VMTier0Frame *vm) { return vm->g3_mask ? (uint32_t)vm->g3_mask : 0xffffu; }");
     puts("static int64_t vm_tier0_predicate(VMTier0Frame *vm) { return *vm_tier0_qword_cell(vm, VM_TIER0_PREDICATE_OFF); }");
     puts("static intptr_t vm_tier0_step(VMTier0Frame *vm, int64_t predicate, intptr_t width) {");
+    puts("    return ((((uintptr_t)predicate) & vm->g2_mask) == 0u) ? width : -width;");
+    puts("}");
+    puts("static intptr_t vm_tier0_step_with_scratch(VMTier0Frame *vm, int64_t predicate, intptr_t width) {");
     puts("    return ((((uintptr_t)predicate | (uintptr_t)vm_tier0_predicate(vm)) & vm->g2_mask) == 0u) ? width : -width;");
     puts("}");
     puts("static VMTier0Result vm_tier0_done(VMTier0Frame *vm, uint16_t entry, uint32_t slot, uint8_t advance, const char *source_function, const char *status) {");
@@ -262,7 +265,7 @@ static void emit_c(void) {
     puts("    int64_t src_ptr = *vm_tier0_qword_cell(vm, vm_tier0_s16(ip + 7));");
     puts("    int64_t *dst_ptr_cell = vm_tier0_qword_cell(vm, vm_tier0_s16(ip + 3));");
     puts("    *(int64_t *)vm_tier0_ptr(*dst_ptr_cell) = *(int64_t *)vm_tier0_ptr(src_ptr);");
-    puts("    intptr_t step = vm_tier0_step(vm, *vm_tier0_qword_cell(vm, vm_tier0_s16(ip + 1)), 8);");
+    puts("    intptr_t step = vm_tier0_step_with_scratch(vm, *vm_tier0_qword_cell(vm, vm_tier0_s16(ip + 1)), 8);");
     puts("    *dst_ptr_cell += step;");
     puts("    *vm_tier0_qword_cell(vm, vm_tier0_s16(ip + 7)) += step;");
     puts("    uint32_t final_state = (uint32_t)(int32_t)vm_tier0_s16(ip + 5);");
