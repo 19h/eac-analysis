@@ -157,6 +157,8 @@ SHA-256: `0b44ad59697129534189efdb75cde2b96245f831438e9f6a53cb7725f190d739`
 - `dumps/vmtail-wide-1m-w16/vm_synthetic_gap_chain_probe.md`: Markdown digest of the hidden-chain/next-hook probe, distinguishing exact next-event matches, target-only hints, and dynamic next-hook validations that are not hard CFG promotions.
 - `dumps/vmtail-wide-1m-w16/vm_synthetic_gap_residual_audit.tsv`: central audit for the 20 residual synthetic successor starts that remain explicit unresolved-tail calls after hard hidden-chain promotions.
 - `dumps/vmtail-wide-1m-w16/vm_synthetic_gap_residual_audit.md`: Markdown digest of residual reasons, promotion states, chain status mix, next-hook blocks, and sampled-operand context.
+- `dumps/vmtail-wide-1m-w16/vm_synthetic_gap_concrete_state_audit.tsv`: concrete-state replay audit for the residual starts, seeded from the state-aware predecessor edge where available.
+- `dumps/vmtail-wide-1m-w16/vm_synthetic_gap_concrete_state_audit.md`: Markdown digest of concrete-state availability, table-oob/table-read/branch-unknown classifications, and starts still missing state trace coverage.
 - `dumps/vmtail-wide-1m-w16/vm_synthetic_gap_symbolic_successors.tsv`: audit of the source-246 symbolic-slot successor candidates.
 - `dumps/vmtail-wide-1m-w16/vm_synthetic_gap_symbolic_successors.md`: Markdown digest of the symbolic successor audit, including recovered/mid-block/uncovered status.
 - `dumps/vmtail-wide-1m-w16/vm_synthetic_gap_live_in_roles.tsv`: current header-only live-register role join; it will carry role columns if any future gap transfer remains live-in-dependent.
