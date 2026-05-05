@@ -57,6 +57,8 @@ ARTIFACTS = [
     ("synthetic_gap_unresolved_family_audit_md", TRACE_DIR / "vm_synthetic_gap_unresolved_family_audit.md"),
     ("synthetic_gap_source299_context_probe_tsv", TRACE_DIR / "vm_synthetic_gap_source299_context_probe.tsv"),
     ("synthetic_gap_source299_context_probe_md", TRACE_DIR / "vm_synthetic_gap_source299_context_probe.md"),
+    ("synthetic_gap_live_snapshot_transfer_probe_tsv", TRACE_DIR / "vm_synthetic_gap_live_snapshot_transfer_probe.tsv"),
+    ("synthetic_gap_live_snapshot_transfer_probe_md", TRACE_DIR / "vm_synthetic_gap_live_snapshot_transfer_probe.md"),
     ("synthetic_gap_symbolic_successors_tsv", TRACE_DIR / "vm_synthetic_gap_symbolic_successors.tsv"),
     ("synthetic_gap_symbolic_successors_md", TRACE_DIR / "vm_synthetic_gap_symbolic_successors.md"),
     ("synthetic_gap_live_in_roles_tsv", TRACE_DIR / "vm_synthetic_gap_live_in_roles.tsv"),
@@ -1228,6 +1230,71 @@ def synthetic_gap_source299_context_probe_metrics(rows):
         "Concrete source-299 slot offsets that still reject as dispatch-table pointers.")
 
 
+def synthetic_gap_live_snapshot_transfer_probe_metrics(rows):
+    probe_rows = read_tsv(TRACE_DIR / "vm_synthetic_gap_live_snapshot_transfer_probe.tsv")
+    live_rows = [row for row in probe_rows if row.get("row_kind", "") == "live_event"]
+    starts = Counter(row.get("synthetic_start_vm_ip", "") for row in probe_rows)
+    live_starts = Counter(row.get("synthetic_start_vm_ip", "") for row in live_rows)
+    source_mix = Counter(row.get("source_entry", "") for row in probe_rows)
+    seed_mix = Counter(row.get("seed_quality", "") for row in live_rows)
+    status_mix = Counter(row.get("live_status", "") for row in live_rows)
+    branch_mix = Counter(row.get("branch_resolution", "") for row in probe_rows)
+    next_relation_mix = Counter(row.get("next_relation", "") for row in live_rows)
+    interpretation_mix = Counter(row.get("interpretation", "") for row in probe_rows)
+    path_shift_rows = [
+        f"{row.get('synthetic_start_vm_ip')}:{row.get('family_transfer_path_hash')}->{row.get('live_path_hash')}"
+        for row in live_rows
+        if row.get("family_transfer_path_hash", "") and row.get("live_path_hash", "")
+        and row.get("family_transfer_path_hash", "") != row.get("live_path_hash", "")
+    ]
+    full_gpr_starts = sorted({
+        row.get("synthetic_start_vm_ip", "")
+        for row in live_rows
+        if row.get("seed_quality", "") == "full_gpr_snapshot"
+    }, key=lambda value: int(value or "0", 16))
+    frame_only_starts = sorted({
+        row.get("synthetic_start_vm_ip", "")
+        for row in live_rows
+        if row.get("seed_quality", "") == "frame_only_snapshot"
+    }, key=lambda value: int(value or "0", 16))
+
+    add(rows, "gap_live_snapshot_transfer", "synthetic_gap_live_snapshot_transfer_probe_rows", len(probe_rows),
+        "Unresolved synthetic-gap starts replayed from selected live VMTAIL snapshots, including alternate fakenet/config rows.")
+    add(rows, "gap_live_snapshot_transfer", "synthetic_gap_live_snapshot_transfer_probe_live_rows", len(live_rows),
+        "Rows with matching live VMTAIL events in the selected runs.")
+    add(rows, "gap_live_snapshot_transfer", "synthetic_gap_live_snapshot_transfer_probe_starts", len(starts),
+        "Distinct unresolved starts represented by the live snapshot transfer probe.")
+    add(rows, "gap_live_snapshot_transfer", "synthetic_gap_live_snapshot_transfer_probe_live_starts", len(live_starts),
+        "Distinct unresolved starts with at least one matching live event.")
+    add(rows, "gap_live_snapshot_transfer", "synthetic_gap_live_snapshot_transfer_probe_source_mix",
+        ",".join(f"{key}:{value}" for key, value in source_mix.most_common()) or "-",
+        "Source-handler distribution across live snapshot transfer rows.")
+    add(rows, "gap_live_snapshot_transfer", "synthetic_gap_live_snapshot_transfer_probe_seed_mix",
+        ",".join(f"{key}:{value}" for key, value in seed_mix.most_common()) or "-",
+        "Snapshot strength: full GPR/register snapshots versus frame-only alternate-config rows.")
+    add(rows, "gap_live_snapshot_transfer", "synthetic_gap_live_snapshot_transfer_probe_status_mix",
+        ",".join(f"{key}:{value}" for key, value in status_mix.most_common()) or "-",
+        "Transfer interpreter result after applying available live snapshot state.")
+    add(rows, "gap_live_snapshot_transfer", "synthetic_gap_live_snapshot_transfer_probe_branch_resolution_mix",
+        ",".join(f"{key}:{value}" for key, value in branch_mix.most_common()) or "-",
+        "Whether live snapshots remove formerly unknown native branch predicates.")
+    add(rows, "gap_live_snapshot_transfer", "synthetic_gap_live_snapshot_transfer_probe_next_relation_mix",
+        ",".join(f"{key}:{value}" for key, value in next_relation_mix.most_common()) or "-",
+        "Relation between the next raw event and the unresolved-family observed chain.")
+    add(rows, "gap_live_snapshot_transfer", "synthetic_gap_live_snapshot_transfer_probe_interpretation_mix",
+        ",".join(f"{key}:{value}" for key, value in interpretation_mix.most_common()) or "-",
+        "Whether live transfer evidence supports hard CFG or remains sequence-only/table-rejected.")
+    add(rows, "gap_live_snapshot_transfer", "synthetic_gap_live_snapshot_transfer_probe_full_gpr_starts",
+        ",".join(full_gpr_starts) or "-",
+        "Unresolved starts covered by at least one full GPR live snapshot.")
+    add(rows, "gap_live_snapshot_transfer", "synthetic_gap_live_snapshot_transfer_probe_frame_only_starts",
+        ",".join(frame_only_starts) or "-",
+        "Unresolved starts also observed in alternate/config rows without GPR snapshots.")
+    add(rows, "gap_live_snapshot_transfer", "synthetic_gap_live_snapshot_transfer_probe_path_shift_rows",
+        ",".join(path_shift_rows) or "-",
+        "Rows where the live branch path differs from the zero-seed unresolved-family transfer path.")
+
+
 def synthetic_gap_live_in_role_metrics(rows):
     role_rows = read_tsv(TRACE_DIR / "vm_synthetic_gap_live_in_roles.tsv")
     resolutions = Counter(row.get("resolution", "") for row in role_rows)
@@ -1584,6 +1651,7 @@ def build_rows():
     synthetic_gap_chain_slot_reconciliation_metrics(rows)
     synthetic_gap_unresolved_family_metrics(rows)
     synthetic_gap_source299_context_probe_metrics(rows)
+    synthetic_gap_live_snapshot_transfer_probe_metrics(rows)
     synthetic_gap_live_in_role_metrics(rows)
     synthetic_gap_final_tail_site_metrics(rows)
     synthetic_gap_live_in_reentry_metrics(rows)
