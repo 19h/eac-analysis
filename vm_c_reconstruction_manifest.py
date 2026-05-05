@@ -1245,6 +1245,9 @@ def c_shape_metrics(rows):
     add(rows, "c_shape", "all_evidence_bundle_program_blocks",
         count(r"^static void prog_bb_\d{4}\(VMState \*vm, uint64_t vm_ip\) \{", all_evidence_bundle),
         "Recovered VM bytecode block functions present in the all-evidence single file.")
+    add(rows, "c_shape", "all_evidence_bundle_path_specialized_functions",
+        count(r"^static EACEvidence_path_handlers_pseudocode__VMOpResult eac_evidence_path_handlers_pseudocode__path_entry_\d{3}_[0-9a-f]+\(EACEvidence_path_handlers_pseudocode__VMState \*vm\) \{", all_evidence_bundle),
+        "Validated path-specialized handler functions retained in the all-evidence single file.")
     add(rows, "c_shape", "all_evidence_bundle_sidecar_sections",
         count(r"^/\* --- sidecar: ", all_evidence_bundle),
         "Renamed native RetDec/control sidecar files appended to the all-evidence single file.")
