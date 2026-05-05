@@ -384,11 +384,11 @@ def build_rows(args):
         relation = next_relation(family, next_event)
         patch_relation = ret_patch_relation(family, patched_eac_off, text_class)
         if text_class == "inside_text":
-            interpretation = "source299_native_return_patch_controls_hidden_text_reentry"
+            interpretation = "sampled_native_return_patch_controls_hidden_text_reentry"
         elif patched_eac_off is not None:
-            interpretation = "source299_native_return_patch_targets_non_text"
+            interpretation = "sampled_native_return_patch_targets_non_text"
         else:
-            interpretation = "source299_native_return_patch_target_unresolved"
+            interpretation = "sampled_native_return_patch_target_unresolved"
 
         out.append({
             "family_id": family.get("family_id", ""),
