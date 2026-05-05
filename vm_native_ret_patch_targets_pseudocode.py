@@ -67,7 +67,10 @@ def disassemble(eac, start, window, max_insns):
         match = INSN_RE.match(line)
         if not match:
             continue
-        insns.append((int(match.group(1), 16), " ".join(match.group(2).split())))
+        text = " ".join(match.group(2).split())
+        insns.append((int(match.group(1), 16), text))
+        if DIRECT_JMP_RE.match(text):
+            break
         if len(insns) >= max_insns:
             break
     return insns
