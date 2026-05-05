@@ -25,8 +25,15 @@
  */
 #include <stdbool.h>
 #include <stdint.h>
+#include <stdlib.h>
+#include <string.h>
 
 typedef __int128 int128_t;
+typedef int32_t int3_t;
+typedef float float32_t;
+typedef double float64_t;
+typedef long double float80_t;
+struct __locale_struct;
 extern int g1;
 extern int g2;
 extern int g3;
@@ -53,8 +60,14 @@ extern int g23;
 extern int g24;
 extern int g25;
 extern int g26;
+extern int g27;
+extern int g28;
+extern int g29;
+extern int g30;
 extern int g31;
+extern int g32;
 extern int g33;
+extern int g34;
 extern int g35;
 extern int g36;
 extern int g37;
@@ -63,6 +76,27 @@ extern int g39;
 unsigned char llvm_ctpop_i8(unsigned char value);
 void __asm_out(uint16_t port, char value);
 uint8_t __readfsbyte(int64_t offset);
+uint64_t __readfsqword(int64_t offset);
+int64_t __asm_iretd(void);
+void __asm_rep_stosb_memset(char *dst, char value, int64_t count);
+void __stack_chk_fail(void);
+int __cxa_atexit(void (*func)(int64_t *), void *arg, void *dso);
+int128_t __asm_movsd(int64_t value);
+int128_t __asm_movapd(int128_t value);
+int128_t __asm_andpd(int128_t left, int128_t right);
+int128_t __asm_andnpd(int128_t left, int128_t right);
+int128_t __asm_pxor(int128_t left, int128_t right);
+int128_t __asm_cmpnlesd(int128_t left, int128_t right);
+int128_t __asm_cvtsi2sd(int64_t value);
+int128_t __asm_subsd(int128_t left, int128_t right);
+int64_t __asm_cvttsd2si(int128_t value);
+void __asm_ucomisd(int128_t left, int128_t right);
+void __asm_movups(int128_t dst, int128_t src);
+float80_t __frontend_reg_load_fpr(int32_t reg);
+void __frontend_reg_store_fpr(int32_t reg, float80_t value);
+char *__nl_langinfo_l(int32_t item, struct __locale_struct *locale);
+struct __locale_struct *__uselocale(struct __locale_struct *locale);
+char *dgettext(char *domain, char *msgid);
 
 int64_t function_1270cb();
 int64_t function_1ff50();
