@@ -6,22 +6,22 @@
  * coverage -> queue -> RetDec batch -> coverage.
  *
  * Ranges:
- *   0x71a15-0x71b9e rank=6 name=fcn.00071a15 kind=r2_discovered bytes=393 uncovered=393
- *   0x491e50-0x491fd9 rank=7 name=fcn.00491e50 kind=r2_discovered bytes=393 uncovered=393
- *   0x30c30-0x30db8 rank=8 name=fcn.00030c30 kind=r2_discovered bytes=392 uncovered=392
- *   0x2620b-0x26392 rank=9 name=fcn.0002620b kind=r2_discovered bytes=391 uncovered=391
- *   0x488d00-0x488e87 rank=10 name=fcn.00488d00 kind=r2_discovered bytes=391 uncovered=391
- *   0x5515b0-0x551735 rank=11 name=fcn.005515b0 kind=r2_discovered bytes=389 uncovered=389
- *   0x33be0-0x33d64 rank=12 name=fcn.00033be0 kind=r2_discovered bytes=388 uncovered=388
- *   0x564190-0x564314 rank=13 name=method.__cxxabiv1::__vmi_class_type_info.virtual_56 kind=native_discovered bytes=388 uncovered=388
- *   0x565720-0x5658a3 rank=14 name=sym.__cxa_free_dependent_exception kind=symbol_named bytes=387 uncovered=387
- *   0x4b1ac0-0x4b1c41 rank=15 name=fcn.004b1ac0 kind=r2_discovered bytes=385 uncovered=385
- *   0x27c71-0x27df1 rank=16 name=fcn.00027c71 kind=r2_discovered bytes=384 uncovered=384
- *   0x4b2e6-0x4b465 rank=17 name=fcn.0004b2e6 kind=r2_discovered bytes=383 uncovered=383
- *   0x5c136-0x5c2b5 rank=18 name=fcn.0005c136 kind=r2_discovered bytes=383 uncovered=383
- *   0x5c2b6-0x5c435 rank=19 name=fcn.0005c2b6 kind=r2_discovered bytes=383 uncovered=383
- *   0x5143e0-0x51455f rank=20 name=method.std::money_get_wchar_t__std::istreambuf_iterator_wchar_t__std::char_traits_wchar_t_____.virtual_24 kind=native_discovered bytes=383 uncovered=383
- *   0x61d90-0x61f0e rank=21 name=fcn.00061d90 kind=r2_discovered bytes=382 uncovered=382
+ *   0x71a15-0x71b9e rank=- name=- kind=- bytes=- uncovered=-
+ *   0x491e50-0x491fd9 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x30c30-0x30db8 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x2620b-0x26392 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x488d00-0x488e87 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x5515b0-0x551735 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x33be0-0x33d64 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x564190-0x564314 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x565720-0x5658a3 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x4b1ac0-0x4b1c41 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x27c71-0x27df1 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x4b2e6-0x4b465 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x5c136-0x5c2b5 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x5c2b6-0x5c435 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x5143e0-0x51455f rank=- name=- kind=- bytes=- uncovered=-
+ *   0x61d90-0x61f0e rank=- name=- kind=- bytes=- uncovered=-
  */
 #include <stdbool.h>
 #include <stdio.h>
@@ -52,8 +52,12 @@ extern int g11;
 extern int g12;
 unsigned char llvm_ctpop_i8(unsigned char value);
 void __asm_int(int32_t interrupt);
+int64_t __asm_int1(int32_t interrupt);
 int32_t __asm_in(uint16_t port);
+int32_t __asm_in_134(uint16_t port);
+char __asm_in_136(uint16_t port);
 void __asm_out(uint16_t port, char value);
+void __asm_out_135(uint16_t port, int32_t value);
 void __asm_outsb(uint16_t port, char value);
 uint8_t __readfsbyte(int64_t offset);
 uint64_t __readfsqword(int64_t offset);
@@ -70,6 +74,7 @@ int __cxa_atexit(void (*func)(int64_t *), void *arg, void *dso);
 int128_t __asm_movsd(int64_t value);
 int128_t __asm_movss(int32_t value);
 int64_t __asm_movss_133(int128_t value);
+int128_t __asm_movdqa(int128_t value);
 int128_t __asm_movdqu(int128_t value);
 int128_t __asm_movapd(int128_t value);
 int128_t __asm_andpd(int128_t left, int128_t right);
@@ -80,7 +85,8 @@ int128_t __asm_cvtsi2sd(int64_t value);
 int128_t __asm_subsd(int128_t left, int128_t right);
 int64_t __asm_cvttsd2si(int128_t value);
 void __asm_ucomisd(int128_t left, int128_t right);
-void __asm_movups(int128_t dst, int128_t src);
+int128_t __asm_movups();
+void __asm_movups_133();
 float80_t __frontend_reg_load_fpr(int32_t reg);
 void __frontend_reg_store_fpr(int32_t reg, float80_t value);
 char *__nl_langinfo_l(int32_t item, struct __locale_struct *locale);
