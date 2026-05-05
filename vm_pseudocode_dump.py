@@ -367,6 +367,19 @@ def load_sampled_control_correlations(path):
     return correlations
 
 
+def load_focused_direct_trace_audits(path):
+    audits = defaultdict(list)
+    if not path or not Path(path).exists():
+        return audits
+    for row in read_tsv(path):
+        start = normalize_vm_ip(row.get("synthetic_start_vm_ip", ""))
+        if start:
+            audits[start].append(row)
+    for rows in audits.values():
+        rows.sort(key=lambda row: (row.get("focused_direct_class", ""), row.get("example_end_vm_ip", "")))
+    return audits
+
+
 def resolved_hidden_chain(target_vm_ip, hidden_chains):
     start = normalize_vm_ip(target_vm_ip)
     for row in hidden_chains.get(start, []):
@@ -816,6 +829,48 @@ def emit_sampled_control_correlation_comments(target_vm_ip, sampled_control_corr
         print(f"    /* ... {omitted} additional sampled-control correlation rows omitted ... */")
 
 
+def emit_focused_direct_trace_audit_comments(target_vm_ip, focused_direct_trace_audits, args):
+    start = normalize_vm_ip(target_vm_ip)
+    rows = focused_direct_trace_audits.get(start, [])
+    if not rows:
+        return
+    limit = getattr(args, "focused_direct_trace_audit_top_items", 4)
+    shown = rows if limit <= 0 else rows[:limit]
+    max_expr = getattr(args, "focused_direct_trace_audit_max_expr", 180)
+    print(
+        f"    /* focused direct trace @ {start}: rows={len(rows)}; "
+        "focused live/state traces checked for direct execution from this residual start. */"
+    )
+    for row in shown:
+        transfer = "-"
+        if row.get("example_end_vm_ip", ""):
+            transfer = (
+                f"{normalize_vm_ip(row.get('example_start_vm_ip', ''))}->"
+                f"{normalize_vm_ip(row.get('example_end_vm_ip', ''))}"
+                f"/{row.get('example_delta', '-')}"
+            )
+        target = "-"
+        if row.get("example_target_entry", ""):
+            target = f"entry_{row.get('example_target_entry')}@{row.get('example_target', '-')}"
+        print(
+            f"    /* focused direct trace: source={row.get('source_entry', '?')}, "
+            f"trace_rows={row.get('focused_trace_rows', '0')}, "
+            f"unique={row.get('focused_unique_transfers', '0')}, "
+            f"transfer={c_comment(transfer)}, "
+            f"target={c_comment(target)}, "
+            f"dest_block={c_comment(row.get('example_dest_block', '') or '-')}, "
+            f"dest_ir={c_comment(row.get('focused_dest_ir_starts', '') or '-')}, "
+            f"bytes={c_comment(clip(row.get('example_bytes', '') or '-', max_expr))}, "
+            f"byte_status={c_comment(row.get('example_byte_status', '') or '-')}, "
+            f"candidate={c_comment(row.get('promotion_candidate', '') or '-')}, "
+            f"class={c_comment(row.get('focused_direct_class', '') or '-')}, "
+            f"blocker={c_comment(clip(row.get('promotion_blocker', '') or '-', max_expr))} */"
+        )
+    omitted = len(rows) - len(shown)
+    if omitted > 0:
+        print(f"    /* ... {omitted} additional focused direct trace rows omitted ... */")
+
+
 def matching_final_tail_probe(row, final_tail_site_probes):
     source = row.get("source_entry", "")
     final_site = normalize_vm_ip(row.get("final_tail_site", ""))
@@ -1167,7 +1222,7 @@ def emit_preamble():
     print("")
 
 
-def emit_synthetic_edge(edge, synthetic_spans, dynamic_stitches, transfer_probes, symbolic_successors, hidden_chains, residual_audits, concrete_state_audits, live_context_audits, table_read_diagnostics, table_memory_probes, sampled_control_correlations, live_in_roles, live_in_reentries, allstatic_reentries, final_tail_site_probes, args):
+def emit_synthetic_edge(edge, synthetic_spans, dynamic_stitches, transfer_probes, symbolic_successors, hidden_chains, residual_audits, concrete_state_audits, live_context_audits, table_read_diagnostics, table_memory_probes, sampled_control_correlations, focused_direct_trace_audits, live_in_roles, live_in_reentries, allstatic_reentries, final_tail_site_probes, args):
     target_vm_ip = normalize_vm_ip(edge.get("target_vm_ip", ""))
     chain = resolved_hidden_chain(target_vm_ip, hidden_chains)
     info = synthetic_spans.get(target_vm_ip)
@@ -1182,6 +1237,7 @@ def emit_synthetic_edge(edge, synthetic_spans, dynamic_stitches, transfer_probes
         emit_table_read_diagnostic_comments(target_vm_ip, table_read_diagnostics, args)
         emit_table_memory_probe_comments(target_vm_ip, table_memory_probes, args)
         emit_sampled_control_correlation_comments(target_vm_ip, sampled_control_correlations, args)
+        emit_focused_direct_trace_audit_comments(target_vm_ip, focused_direct_trace_audits, args)
         emit_live_in_role_comments(target_vm_ip, live_in_roles, final_tail_site_probes, args)
         emit_live_in_reentry_comments(target_vm_ip, live_in_reentries, args)
         emit_allstatic_reentry_comments(target_vm_ip, allstatic_reentries, args)
@@ -1240,6 +1296,7 @@ def emit_synthetic_edge(edge, synthetic_spans, dynamic_stitches, transfer_probes
     emit_table_read_diagnostic_comments(target_vm_ip, table_read_diagnostics, args)
     emit_table_memory_probe_comments(target_vm_ip, table_memory_probes, args)
     emit_sampled_control_correlation_comments(target_vm_ip, sampled_control_correlations, args)
+    emit_focused_direct_trace_audit_comments(target_vm_ip, focused_direct_trace_audits, args)
     emit_live_in_role_comments(target_vm_ip, live_in_roles, final_tail_site_probes, args)
     emit_live_in_reentry_comments(target_vm_ip, live_in_reentries, args)
     if chain:
@@ -1303,7 +1360,7 @@ def emit_block_prototypes(blocks):
     print("")
 
 
-def emit_block(block, rows, edge, synthetic_spans, dynamic_stitches, transfer_probes, symbolic_successors, hidden_chains, residual_audits, concrete_state_audits, live_context_audits, table_read_diagnostics, table_memory_probes, sampled_control_correlations, live_in_roles, live_in_reentries, allstatic_reentries, final_tail_site_probes, tail_lifts, args, known_blocks, block_by_start):
+def emit_block(block, rows, edge, synthetic_spans, dynamic_stitches, transfer_probes, symbolic_successors, hidden_chains, residual_audits, concrete_state_audits, live_context_audits, table_read_diagnostics, table_memory_probes, sampled_control_correlations, focused_direct_trace_audits, live_in_roles, live_in_reentries, allstatic_reentries, final_tail_site_probes, tail_lifts, args, known_blocks, block_by_start):
     name = c_block_name(block["block"])
     print(f"static void {name}(VMState *vm) {{")
     print("    int next_entry = -1;")
@@ -1340,7 +1397,7 @@ def emit_block(block, rows, edge, synthetic_spans, dynamic_stitches, transfer_pr
             else:
                 print("    /* target block is outside this selected sketch. */")
         elif edge_kind == "covered_synthetic_fallthrough":
-            emit_synthetic_edge(edge, synthetic_spans, dynamic_stitches, transfer_probes, symbolic_successors, hidden_chains, residual_audits, concrete_state_audits, live_context_audits, table_read_diagnostics, table_memory_probes, sampled_control_correlations, live_in_roles, live_in_reentries, allstatic_reentries, final_tail_site_probes, args)
+            emit_synthetic_edge(edge, synthetic_spans, dynamic_stitches, transfer_probes, symbolic_successors, hidden_chains, residual_audits, concrete_state_audits, live_context_audits, table_read_diagnostics, table_memory_probes, sampled_control_correlations, focused_direct_trace_audits, live_in_roles, live_in_reentries, allstatic_reentries, final_tail_site_probes, args)
             target_block, target_vm_ip = synthetic_successor(edge, synthetic_spans, hidden_chains, block_by_start)
             if target_block is not None:
                 print(f"    /* synthetic successor after lifted delta: {c_block_name(target_block)} @ 0x{target_vm_ip:x}; */")
@@ -1389,6 +1446,7 @@ def main():
     parser.add_argument("--synthetic-gap-table-read-diagnostic", default="dumps/vmtail-wide-1m-w16/vm_synthetic_gap_table_read_diagnostic.tsv")
     parser.add_argument("--synthetic-gap-table-memory-probe", default="dumps/vmtail-wide-1m-w16/vm_synthetic_gap_table_memory_probe.tsv")
     parser.add_argument("--synthetic-gap-sampled-control-correlation", default="dumps/vmtail-wide-1m-w16/vm_synthetic_gap_sampled_control_correlation.tsv")
+    parser.add_argument("--synthetic-gap-focused-direct-trace-audit", default="dumps/vmtail-wide-1m-w16/vm_synthetic_gap_focused_direct_trace_audit.tsv")
     parser.add_argument("--synthetic-gap-live-in-roles", default="dumps/vmtail-wide-1m-w16/vm_synthetic_gap_live_in_roles.tsv")
     parser.add_argument("--synthetic-gap-live-in-reentry-probe", default="dumps/vmtail-wide-1m-w16/vm_synthetic_gap_live_in_reentry_probe.tsv")
     parser.add_argument("--synthetic-gap-allstatic-reentry-probe", default="dumps/vmtail-wide-1m-w16/vm_synthetic_gap_allstatic_reentry_probe.tsv")
@@ -1414,6 +1472,8 @@ def main():
     parser.add_argument("--table-memory-probe-top-items", type=int, default=4)
     parser.add_argument("--sampled-control-correlation-top-items", type=int, default=4)
     parser.add_argument("--sampled-control-correlation-max-expr", type=int, default=180)
+    parser.add_argument("--focused-direct-trace-audit-top-items", type=int, default=4)
+    parser.add_argument("--focused-direct-trace-audit-max-expr", type=int, default=180)
     parser.add_argument("--live-in-role-top-items", type=int, default=4)
     parser.add_argument("--live-in-role-max-expr", type=int, default=220)
     parser.add_argument("--live-in-reentry-top-items", type=int, default=4)
@@ -1439,6 +1499,7 @@ def main():
     table_read_diagnostics = load_table_read_diagnostics(args.synthetic_gap_table_read_diagnostic)
     table_memory_probes = load_table_memory_probes(args.synthetic_gap_table_memory_probe)
     sampled_control_correlations = load_sampled_control_correlations(args.synthetic_gap_sampled_control_correlation)
+    focused_direct_trace_audits = load_focused_direct_trace_audits(args.synthetic_gap_focused_direct_trace_audit)
     live_in_roles = load_live_in_roles(args.synthetic_gap_live_in_roles)
     live_in_reentries = load_live_in_reentries(args.synthetic_gap_live_in_reentry_probe)
     allstatic_reentries = load_allstatic_reentries(args.synthetic_gap_allstatic_reentry_probe)
@@ -1467,6 +1528,7 @@ def main():
             table_read_diagnostics,
             table_memory_probes,
             sampled_control_correlations,
+            focused_direct_trace_audits,
             live_in_roles,
             live_in_reentries,
             allstatic_reentries,
