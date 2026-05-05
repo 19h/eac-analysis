@@ -1387,6 +1387,8 @@ def main():
     parser.add_argument("--synthetic-gap-concrete-state-audit", default="dumps/vmtail-wide-1m-w16/vm_synthetic_gap_concrete_state_audit.tsv")
     parser.add_argument("--synthetic-gap-live-context-audit", default="dumps/vmtail-wide-1m-w16/vm_synthetic_gap_live_context_audit.tsv")
     parser.add_argument("--synthetic-gap-table-read-diagnostic", default="dumps/vmtail-wide-1m-w16/vm_synthetic_gap_table_read_diagnostic.tsv")
+    parser.add_argument("--synthetic-gap-table-memory-probe", default="dumps/vmtail-wide-1m-w16/vm_synthetic_gap_table_memory_probe.tsv")
+    parser.add_argument("--synthetic-gap-sampled-control-correlation", default="dumps/vmtail-wide-1m-w16/vm_synthetic_gap_sampled_control_correlation.tsv")
     parser.add_argument("--synthetic-gap-live-in-roles", default="dumps/vmtail-wide-1m-w16/vm_synthetic_gap_live_in_roles.tsv")
     parser.add_argument("--synthetic-gap-live-in-reentry-probe", default="dumps/vmtail-wide-1m-w16/vm_synthetic_gap_live_in_reentry_probe.tsv")
     parser.add_argument("--synthetic-gap-allstatic-reentry-probe", default="dumps/vmtail-wide-1m-w16/vm_synthetic_gap_allstatic_reentry_probe.tsv")
@@ -1409,6 +1411,9 @@ def main():
     parser.add_argument("--live-context-audit-max-expr", type=int, default=180)
     parser.add_argument("--table-read-diagnostic-top-items", type=int, default=4)
     parser.add_argument("--table-read-diagnostic-max-expr", type=int, default=180)
+    parser.add_argument("--table-memory-probe-top-items", type=int, default=4)
+    parser.add_argument("--sampled-control-correlation-top-items", type=int, default=4)
+    parser.add_argument("--sampled-control-correlation-max-expr", type=int, default=180)
     parser.add_argument("--live-in-role-top-items", type=int, default=4)
     parser.add_argument("--live-in-role-max-expr", type=int, default=220)
     parser.add_argument("--live-in-reentry-top-items", type=int, default=4)
@@ -1432,6 +1437,8 @@ def main():
     concrete_state_audits = load_concrete_state_audits(args.synthetic_gap_concrete_state_audit)
     live_context_audits = load_live_context_audits(args.synthetic_gap_live_context_audit)
     table_read_diagnostics = load_table_read_diagnostics(args.synthetic_gap_table_read_diagnostic)
+    table_memory_probes = load_table_memory_probes(args.synthetic_gap_table_memory_probe)
+    sampled_control_correlations = load_sampled_control_correlations(args.synthetic_gap_sampled_control_correlation)
     live_in_roles = load_live_in_roles(args.synthetic_gap_live_in_roles)
     live_in_reentries = load_live_in_reentries(args.synthetic_gap_live_in_reentry_probe)
     allstatic_reentries = load_allstatic_reentries(args.synthetic_gap_allstatic_reentry_probe)
@@ -1458,6 +1465,8 @@ def main():
             concrete_state_audits,
             live_context_audits,
             table_read_diagnostics,
+            table_memory_probes,
+            sampled_control_correlations,
             live_in_roles,
             live_in_reentries,
             allstatic_reentries,
