@@ -85,6 +85,9 @@ def emit_preamble(used_entries):
     print("#ifndef VM_ENABLE_OBSERVED_REENTRY_BRIDGES")
     print("#define VM_ENABLE_OBSERVED_REENTRY_BRIDGES 0")
     print("#endif")
+    print("#ifndef VM_ENABLE_OBSERVED_CHAIN_BRIDGES")
+    print("#define VM_ENABLE_OBSERVED_CHAIN_BRIDGES 0")
+    print("#endif")
     print("#define U16(p) (*(const uint16_t *)(p))")
     print("#define U32(p) (*(const uint32_t *)(p))")
     print("static int64_t signed_vm_delta_u32(uint32_t raw) {")
@@ -563,6 +566,62 @@ def emit_observed_reentry_bridge(bridge):
     print("#endif")
 
 
+def select_observed_chain_terminal_bridge(start_vm_ip, observed_chain_bridges, block_by_start):
+    start = normalize_vm_ip(start_vm_ip)
+    for row in observed_chain_bridges.get(start, []):
+        if row.get("bridge_action", "") != "disabled_observed_chain_bridge":
+            continue
+        try:
+            dest_ip = parse_hex(row.get("terminal_dest_vm_ip", ""))
+            dest_entry = int(row.get("terminal_dest_entry", ""), 0)
+        except (TypeError, ValueError):
+            continue
+        dest_block = block_by_start.get(dest_ip)
+        if dest_block is None:
+            continue
+        return {
+            "start": start,
+            "source_entry": row.get("source_entry", "") or "?",
+            "missing": normalize_vm_ip(row.get("missing_successor_vm_ip", "")),
+            "first_hop_kind": row.get("first_hop_kind", "") or "-",
+            "first_hop_vm_ip": normalize_vm_ip(row.get("first_hop_vm_ip", "")),
+            "first_hop_delta": row.get("first_hop_delta", "") or "-",
+            "first_hop_target_entry": row.get("first_hop_target_entry", "") or "?",
+            "chain_path": row.get("chain_path", "") or "-",
+            "dest_ip": dest_ip,
+            "dest_entry": dest_entry,
+            "dest_block": dest_block,
+            "bridge_class": row.get("observed_chain_bridge_class", "") or "-",
+            "relation": row.get("primary_vs_focused_first_hop", "") or "-",
+            "blocker": row.get("promotion_blocker", "") or "-",
+        }
+    return None
+
+
+def emit_observed_chain_terminal_bridge(bridge):
+    first_hop = (
+        f"{bridge['first_hop_kind']}@{bridge['first_hop_vm_ip']}/"
+        f"{bridge['first_hop_delta']}->entry_{bridge['first_hop_target_entry']}"
+    )
+    print(
+        f"    /* observed-chain terminal bridge @ {bridge['start']}: "
+        f"missing_successor={bridge['missing']}, "
+        f"source=entry_{bridge['source_entry']}, "
+        f"first_hop={c_comment(first_hop)}, "
+        f"chain={c_comment(bridge['chain_path'])}, "
+        f"dest=prog_{c_block_name(bridge['dest_block'])}@0x{bridge['dest_ip']:x}/entry_{bridge['dest_entry']}, "
+        f"class={c_comment(bridge['bridge_class'])}, "
+        f"relation={c_comment(bridge['relation'])}; "
+        f"disabled by default because {c_comment(bridge['blocker'])}. */"
+    )
+    print("#if VM_ENABLE_OBSERVED_CHAIN_BRIDGES")
+    print(f"    vm_ip = 0x{bridge['dest_ip']:x};")
+    print(f"    next_entry = {bridge['dest_entry']};")
+    print(f"    prog_{c_block_name(bridge['dest_block'])}(vm, vm_ip);")
+    print("    return;")
+    print("#endif")
+
+
 def emit_focused_direct_bridge(bridge):
     print(
         f"    /* focused direct bridge @ {bridge['start']}: "
@@ -648,6 +707,13 @@ def emit_block(block, rows, edge, synthetic_spans, dynamic_stitches, transfer_pr
                     )
                     if bridge:
                         emit_observed_reentry_bridge(bridge)
+                    chain_bridge = select_observed_chain_terminal_bridge(
+                        edge.get("target_vm_ip", ""),
+                        observed_chain_bridges,
+                        block_by_start,
+                    )
+                    if chain_bridge:
+                        emit_observed_chain_terminal_bridge(chain_bridge)
                     print(f"    vm_unresolved_synthetic_tail(vm, 0x{target_vm_ip:x});")
     print("    (void)r;")
     print("    (void)next_entry;")

@@ -43,6 +43,9 @@ def main():
     print("#ifndef VM_ENABLE_OBSERVED_REENTRY_BRIDGES")
     print("#define VM_ENABLE_OBSERVED_REENTRY_BRIDGES 0")
     print("#endif")
+    print("#ifndef VM_ENABLE_OBSERVED_CHAIN_BRIDGES")
+    print("#define VM_ENABLE_OBSERVED_CHAIN_BRIDGES 0")
+    print("#endif")
     print("")
     for line in program_body(program):
         print(line)
