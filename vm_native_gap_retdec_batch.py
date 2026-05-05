@@ -55,7 +55,6 @@ BATCHES = {
         "0x4c6100-0x4c62d6",
         "0x56b60-0x56d34",
         "0x4bcd80-0x4bcf54",
-        "0x4bfaf0-0x4bfcc3",
         "0x4b8bc0-0x4b8d92",
         "0x572230-0x572400",
         "0x4b36d0-0x4b389f",
@@ -68,6 +67,7 @@ BATCHES = {
         "0x556610-0x5567da",
         "0x5100a0-0x510269",
         "0x55a0c0-0x55a289",
+        "0x530c90-0x530e56",
     ],
 }
 
@@ -178,6 +178,7 @@ def main():
     print("typedef double float64_t;")
     print("typedef long double float80_t;")
     print("struct __locale_struct;")
+    print("struct _IO_FILE;")
     for index in referenced_globals(functions):
         print(f"extern int g{index};")
     print("unsigned char llvm_ctpop_i8(unsigned char value);")
@@ -187,6 +188,8 @@ def main():
     print("int64_t __asm_iretd(void);")
     print("void __asm_rep_stosb_memset(char *dst, char value, int64_t count);")
     print("void __asm_rep_stosd_memset(char *dst, int32_t value, int64_t count);")
+    print("void __asm_rep_stosq_memset(char *dst, int64_t value, int64_t count);")
+    print("void __asm_mfence(void);")
     print("void __stack_chk_fail(void);")
     print("int __cxa_atexit(void (*func)(int64_t *), void *arg, void *dso);")
     print("int128_t __asm_movsd(int64_t value);")
@@ -205,6 +208,10 @@ def main():
     print("char *__nl_langinfo_l(int32_t item, struct __locale_struct *locale);")
     print("struct __locale_struct *__uselocale(struct __locale_struct *locale);")
     print("char *dgettext(char *domain, char *msgid);")
+    print("struct _IO_FILE *fopen(const char *path, const char *mode);")
+    print("size_t fread(void *ptr, size_t size, size_t nmemb, struct _IO_FILE *stream);")
+    print("int fclose(struct _IO_FILE *stream);")
+    print("int32_t *wmemset(int32_t *wcs, int32_t wc, size_t n);")
     print("int pthread_mutex_lock(int64_t *mutex);")
     print("int pthread_mutex_unlock(int64_t *mutex);")
     print("char *strdup(const char *s);")
