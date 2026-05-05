@@ -384,7 +384,7 @@ def matching_allstatic_reentry(start, row, allstatic_reentries):
     return None
 
 
-def select_observed_reentry_bridge(start_vm_ip, missing_successor_vm_ip, live_in_reentries, allstatic_reentries, block_by_start):
+def select_observed_reentry_bridge(start_vm_ip, missing_successor_vm_ip, dynamic_stitches, live_in_reentries, allstatic_reentries, block_by_start):
     start = normalize_vm_ip(start_vm_ip)
     missing = normalize_vm_ip(missing_successor_vm_ip)
     rows = live_in_reentries.get(start, [])
@@ -417,6 +417,40 @@ def select_observed_reentry_bridge(start_vm_ip, missing_successor_vm_ip, live_in
             "allstatic_status": (allstatic or {}).get("allstatic_status", "not_checked"),
             "allstatic_matches": (allstatic or {}).get("allstatic_exact_match_events", "0"),
             "allstatic_evidence": (allstatic or {}).get("allstatic_evidence_class", "dynamic_only"),
+            "bridge_source": "live_in_reentry",
+            "hidden_delta": row.get("inferred_hidden_delta", "") or "-",
+        }
+    for row in dynamic_stitches.get(start, []):
+        if row.get("resolution", "") != "dynamic_stitch_to_next_hooked_source":
+            continue
+        if missing and normalize_vm_ip(row.get("missing_successor_vm_ip", "")) != missing:
+            continue
+        try:
+            next_source_entry = int(row.get("inferred_next_source_entry", ""), 0)
+            next_tail_target_entry = int(row.get("next_tail_target_entry", ""), 0)
+            next_source_start = parse_hex(row.get("inferred_next_source_start_vm_ip", ""))
+            next_end = parse_hex(row.get("next_end_vm_ip", ""))
+        except (TypeError, ValueError):
+            continue
+        dest_block = block_by_start.get(next_end)
+        if dest_block is None:
+            continue
+        event_span = f"{row.get('start_event_count', '?')}->{row.get('next_event_count', '?')}"
+        return {
+            "start": start,
+            "missing": missing,
+            "next_source_entry": next_source_entry,
+            "next_tail_target_entry": next_tail_target_entry,
+            "next_source_start": next_source_start,
+            "next_end": next_end,
+            "dest_block": dest_block,
+            "dynamic_event_span": event_span,
+            "reentry_class": "dynamic_stitch_observed_next_hook",
+            "allstatic_status": "not_checked",
+            "allstatic_matches": "0",
+            "allstatic_evidence": row.get("inference_evidence", "") or "dynamic_stitch",
+            "bridge_source": "dynamic_stitch",
+            "hidden_delta": row.get("inferred_hidden_delta", "") or "-",
         }
     return None
 
@@ -431,8 +465,10 @@ def emit_observed_reentry_bridge(bridge):
         f"next_target=entry_{bridge['next_tail_target_entry']}, "
         f"dest=prog_{c_block_name(bridge['dest_block'])}, "
         f"class={c_comment(bridge['reentry_class'])}, "
+        f"hidden_delta={c_comment(bridge['hidden_delta'])}, "
+        f"source={c_comment(bridge['bridge_source'])}, "
         f"allstatic={c_comment(bridge['allstatic_status'])}/matches={bridge['allstatic_matches']}; "
-        "disabled by default because hidden live-in handlers are not statically replayed. */"
+        "disabled by default because the hidden handlers are sequence-observed, not statically replayed. */"
     )
     print("#if VM_ENABLE_OBSERVED_REENTRY_BRIDGES")
     print(f"    vm_ip = 0x{bridge['next_source_start']:x};")
@@ -500,6 +536,7 @@ def emit_block(block, rows, edge, synthetic_spans, dynamic_stitches, transfer_pr
                 bridge = select_observed_reentry_bridge(
                     edge.get("target_vm_ip", ""),
                     f"0x{target_vm_ip:x}",
+                    dynamic_stitches,
                     live_in_reentries,
                     allstatic_reentries,
                     block_by_start,
@@ -524,7 +561,7 @@ def emit_dispatch(blocks):
     print("}")
 
 
-def collect_used_entries(blocks, rows_by_block, rows_per_block, edges, synthetic_spans, hidden_chains, live_in_reentries, allstatic_reentries, block_by_start):
+def collect_used_entries(blocks, rows_by_block, rows_per_block, edges, synthetic_spans, dynamic_stitches, hidden_chains, live_in_reentries, allstatic_reentries, block_by_start):
     used = set()
     for block in blocks:
         rows = rows_by_block.get(block["block"], [])
@@ -555,6 +592,7 @@ def collect_used_entries(blocks, rows_by_block, rows_per_block, edges, synthetic
                 bridge = select_observed_reentry_bridge(
                     edge.get("target_vm_ip", ""),
                     f"0x{target_vm_ip:x}",
+                    dynamic_stitches,
                     live_in_reentries,
                     allstatic_reentries,
                     block_by_start,
@@ -625,6 +663,7 @@ def main():
         args.rows_per_block,
         edges,
         synthetic_spans,
+        dynamic_stitches,
         hidden_chains,
         live_in_reentries,
         allstatic_reentries,
