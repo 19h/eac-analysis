@@ -18,6 +18,7 @@ from vm_pseudocode_dump import (
     emit_table_read_diagnostic_comments,
     emit_table_memory_probe_comments,
     emit_sampled_control_correlation_comments,
+    emit_focused_direct_trace_audit_comments,
     emit_residual_audit_comments,
     emit_symbolic_successor_comments,
     emit_transfer_probe_comments,
@@ -36,6 +37,7 @@ from vm_pseudocode_dump import (
     load_table_read_diagnostics,
     load_table_memory_probes,
     load_sampled_control_correlations,
+    load_focused_direct_trace_audits,
     load_residual_audits,
     load_rows,
     load_symbolic_successors,
@@ -479,6 +481,40 @@ def select_observed_reentry_bridge(start_vm_ip, missing_successor_vm_ip, dynamic
     return None
 
 
+def select_focused_direct_bridge(start_vm_ip, focused_direct_trace_audits, block_by_start):
+    start = normalize_vm_ip(start_vm_ip)
+    for row in focused_direct_trace_audits.get(start, []):
+        if row.get("promotion_candidate", "") != "yes":
+            continue
+        try:
+            source_entry = int(row.get("example_source_entry", ""), 0)
+            target_entry = int(row.get("example_target_entry", ""), 0)
+            start_value = parse_hex(row.get("example_start_vm_ip", ""))
+            end_value = parse_hex(row.get("example_end_vm_ip", ""))
+            parse_delta(row.get("example_delta", "0"))
+        except (TypeError, ValueError):
+            continue
+        dest_block = block_by_start.get(end_value)
+        if dest_block is None:
+            continue
+        return {
+            "start": start,
+            "source_entry": source_entry,
+            "target_entry": target_entry,
+            "start_value": start_value,
+            "end_value": end_value,
+            "dest_block": dest_block,
+            "delta": row.get("example_delta", "") or "0",
+            "target": row.get("example_target", "") or "-",
+            "site": row.get("example_site", "") or "-",
+            "trace_file": row.get("example_trace_file", "") or "-",
+            "seq": row.get("example_seq", "") or "-",
+            "byte_status": row.get("example_byte_status", "") or "-",
+            "bytes": row.get("example_bytes", "") or "-",
+        }
+    return None
+
+
 def emit_observed_reentry_bridge(bridge):
     print(
         f"    /* observed reentry bridge @ {bridge['start']}: "
@@ -502,6 +538,27 @@ def emit_observed_reentry_bridge(bridge):
     print(f"    prog_{c_block_name(bridge['dest_block'])}(vm, vm_ip);")
     print("    return;")
     print("#endif")
+
+
+def emit_focused_direct_bridge(bridge):
+    print(
+        f"    /* focused direct bridge @ {bridge['start']}: "
+        f"focused trace row starts exactly at the residual VM IP, "
+        f"source=entry_{bridge['source_entry']:03d}, "
+        f"target=entry_{bridge['target_entry']}/{bridge['target']}, "
+        f"delta={c_comment(bridge['delta'])}, "
+        f"site={c_comment(bridge['site'])}, "
+        f"dest=prog_{c_block_name(bridge['dest_block'])}@0x{bridge['end_value']:x}, "
+        f"trace={c_comment(bridge['trace_file'])}:{c_comment(bridge['seq'])}, "
+        f"byte_status={c_comment(bridge['byte_status'])}; "
+        "promoted because the destination is a recovered block start. */"
+    )
+    print(f"    vm_ip = 0x{bridge['start_value']:x};")
+    print(f"    r = {op_name(bridge['source_entry'])}(vm);")
+    print(f"    next_entry = (r.next_entry >= 0) ? r.next_entry : {bridge['target_entry']};")
+    print(f"    vm_ip = 0x{bridge['end_value']:x};")
+    print(f"    prog_{c_block_name(bridge['dest_block'])}(vm, vm_ip);")
+    print("    return;")
 
 
 def emit_block_prototypes(blocks):
