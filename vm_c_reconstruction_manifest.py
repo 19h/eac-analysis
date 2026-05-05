@@ -8,6 +8,7 @@ from pathlib import Path
 
 
 TRACE_DIR = Path("dumps/vmtail-wide-1m-w16")
+RESIDUAL_STATE_DIR = Path("dumps/vmtail-state-residual-targets")
 
 
 ARTIFACTS = [
@@ -45,6 +46,8 @@ ARTIFACTS = [
     ("trace_coverage_matrix_md", TRACE_DIR / "vm_trace_coverage_matrix.md"),
     ("static_coverage_audit_tsv", TRACE_DIR / "vm_static_coverage_audit.tsv"),
     ("static_coverage_audit_md", TRACE_DIR / "vm_static_coverage_audit.md"),
+    ("residual_state_target_run_stderr", RESIDUAL_STATE_DIR / "run.stderr"),
+    ("residual_state_target_trace_tsv", RESIDUAL_STATE_DIR / "vm_instruction_trace.tsv"),
 ]
 
 
