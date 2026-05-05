@@ -403,6 +403,15 @@ def c_shape_metrics(rows):
     add(rows, "c_shape", "handler_tier4_static_slot_comment_only",
         count(r"tier4 slot expression kept comment-only", handlers),
         "Handler-layer tier4 static-only rows with candidate slots kept comment-only.")
+    add(rows, "c_shape", "handler_tier5_large_model_comments",
+        count(r"tier5 large model: rank=", handlers),
+        "Handler-layer tier5 large static-only RetDec model annotations.")
+    add(rows, "c_shape", "handler_tier5_static_slot_recoveries",
+        count(r"tier5 static slot recovered from a large RetDec primary tail", handlers),
+        "Handler-layer static-only tier5 entries with executable dispatch-table slot recovery in VMState form.")
+    add(rows, "c_shape", "handler_tier5_static_slot_comment_only",
+        count(r"tier5 slot expression kept comment-only", handlers),
+        "Handler-layer tier5 static-only rows with candidate slots kept comment-only.")
     add(rows, "c_shape", "native_ret_patch_target_functions",
         count(r"^static void native_retpatch_entry_", native_ret_patch_targets),
         "C-shaped native .text target helper functions emitted from sampled return-patch evidence.")
@@ -1266,6 +1275,9 @@ def c_shape_metrics(rows):
     add(rows, "c_shape", "all_evidence_bundle_tier4_static_slot_recoveries",
         count(r"tier4 static slot recovered from a call/ret RetDec primary tail", all_evidence_bundle),
         "Executable tier4 static-only slot recoveries retained in the all-evidence single file.")
+    add(rows, "c_shape", "all_evidence_bundle_tier5_large_model_comments",
+        count(r"tier5 large model: rank=", all_evidence_bundle),
+        "Tier5 large static-only model annotations retained in the all-evidence single file.")
     add(rows, "c_shape", "all_evidence_bundle_tier5_static_slot_recoveries",
         count(r"tier5 static slot recovered from a large RetDec primary tail", all_evidence_bundle),
         "Executable tier5 static-only slot recoveries retained in the all-evidence single file.")

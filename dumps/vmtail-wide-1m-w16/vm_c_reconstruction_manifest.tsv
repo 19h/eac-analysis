@@ -1,7 +1,7 @@
 section	item	value	note
 artifact	handlers_all_path	dumps/vmtail-wide-1m-w16/vm_handlers_pseudocode.c	Generated reconstruction artifact.
-artifact	handlers_all_lines	7778	Current line count.
-artifact	handlers_all_bytes	582555	Current file size in bytes.
+artifact	handlers_all_lines	7796	Current line count.
+artifact	handlers_all_bytes	586664	Current file size in bytes.
 artifact	path_handlers_all_path	dumps/vmtail-wide-1m-w16/vm_path_handlers_pseudocode.c	Generated reconstruction artifact.
 artifact	path_handlers_all_lines	10196	Current line count.
 artifact	path_handlers_all_bytes	635794	Current file size in bytes.
@@ -15,11 +15,11 @@ artifact	program_blocks_full_path	dumps/vmtail-wide-1m-w16/vm_program_pseudocode
 artifact	program_blocks_full_lines	296873	Current line count.
 artifact	program_blocks_full_bytes	19990155	Current file size in bytes.
 artifact	source_bundle_path	dumps/vmtail-wide-1m-w16/vm_recovered_source_bundle.c	Generated reconstruction artifact.
-artifact	source_bundle_lines	304430	Current line count.
-artifact	source_bundle_bytes	20563094	Current file size in bytes.
+artifact	source_bundle_lines	304448	Current line count.
+artifact	source_bundle_bytes	20567203	Current file size in bytes.
 artifact	source_all_evidence_bundle_path	dumps/vmtail-wide-1m-w16/vm_recovered_source_all_evidence_bundle.c	Generated reconstruction artifact.
-artifact	source_all_evidence_bundle_lines	418126	Current line count.
-artifact	source_all_evidence_bundle_bytes	28542837	Current file size in bytes.
+artifact	source_all_evidence_bundle_lines	418362	Current line count.
+artifact	source_all_evidence_bundle_bytes	28570585	Current file size in bytes.
 artifact	synthetic_successor_gaps_tsv_path	dumps/vmtail-wide-1m-w16/vm_synthetic_successor_gaps.tsv	Generated reconstruction artifact.
 artifact	synthetic_successor_gaps_tsv_lines	22	Current line count.
 artifact	synthetic_successor_gaps_tsv_bytes	5197	Current file size in bytes.
@@ -326,6 +326,15 @@ artifact	static_only_tier4_callret_tsv_bytes	21002	Current file size in bytes.
 artifact	static_only_tier4_callret_md_path	dumps/vmtail-wide-1m-w16/vm_static_only_tier4_callret_models.md	Generated reconstruction artifact.
 artifact	static_only_tier4_callret_md_lines	52	Current line count.
 artifact	static_only_tier4_callret_md_bytes	5356	Current file size in bytes.
+artifact	static_only_tier5_large_c_path	dumps/vmtail-wide-1m-w16/vm_static_only_tier5_large_models.c	Generated reconstruction artifact.
+artifact	static_only_tier5_large_c_lines	216	Current line count.
+artifact	static_only_tier5_large_c_bytes	16687	Current file size in bytes.
+artifact	static_only_tier5_large_tsv_path	dumps/vmtail-wide-1m-w16/vm_static_only_tier5_large_models.tsv	Generated reconstruction artifact.
+artifact	static_only_tier5_large_tsv_lines	10	Current line count.
+artifact	static_only_tier5_large_tsv_bytes	5039	Current file size in bytes.
+artifact	static_only_tier5_large_md_path	dumps/vmtail-wide-1m-w16/vm_static_only_tier5_large_models.md	Generated reconstruction artifact.
+artifact	static_only_tier5_large_md_lines	25	Current line count.
+artifact	static_only_tier5_large_md_bytes	2698	Current file size in bytes.
 artifact	target_only_handlers_retdec_path	dumps/vmtail-wide-1m-w16/vm_target_only_handlers_retdec.c	Generated reconstruction artifact.
 artifact	target_only_handlers_retdec_lines	317	Current line count.
 artifact	target_only_handlers_retdec_bytes	12635	Current file size in bytes.
@@ -469,6 +478,9 @@ c_shape	handler_tier3_static_slot_comment_only	3	Handler-layer tier3 static-only
 c_shape	handler_tier4_callret_model_comments	37	Handler-layer tier4 static-only call/ret side-effect RetDec model annotations.
 c_shape	handler_tier4_static_slot_recoveries	0	Handler-layer static-only tier4 entries with executable dispatch-table slot recovery in VMState form.
 c_shape	handler_tier4_static_slot_comment_only	3	Handler-layer tier4 static-only rows with candidate slots kept comment-only.
+c_shape	handler_tier5_large_model_comments	9	Handler-layer tier5 large static-only RetDec model annotations.
+c_shape	handler_tier5_static_slot_recoveries	0	Handler-layer static-only tier5 entries with executable dispatch-table slot recovery in VMState form.
+c_shape	handler_tier5_static_slot_comment_only	0	Handler-layer tier5 static-only rows with candidate slots kept comment-only.
 c_shape	native_ret_patch_target_functions	16	C-shaped native .text target helper functions emitted from sampled return-patch evidence.
 c_shape	native_ret_patch_target_dispatch_cases	16	Native return-patch target offsets handled by the generated dispatcher.
 c_shape	native_ret_patch_target_bounded_epilogue_models	13	Native return-patch target helpers classified as bounded native epilogues reaching ret.
@@ -613,6 +625,14 @@ coverage	static_only_tier4_callret_executable_slot_rows	0	Tier4 call/ret rows wh
 coverage	static_only_tier4_callret_call_rows	1	Tier4 call/ret rows whose native skeleton contains call side effects.
 coverage	static_only_tier4_callret_multi_ret_rows	3	Tier4 call/ret rows whose native skeleton contains multiple ret side-effect sites.
 coverage	static_only_tier4_callret_entries	116,309,265,233,227,58,288,110,126,303,342,353,15,53,163,252,98,149,226,7,139,205,143,202,270,29,1,133,113,21,219,11,132,194,318,93,32	Dispatch entries covered by the tier4 static-only call/ret model artifact.
+coverage	static_only_tier5_large_rows	9	Tier5 large static-only rows converted into conservative primary handler model evidence.
+c_shape	static_only_tier5_large_functions	9	Syntax-checkable C functions for tier5 large static-only models.
+c_shape	static_only_tier5_large_dispatch_cases	9	Dispatcher cases for the tier5 large static-only model artifact.
+coverage	static_only_tier5_large_candidate_slot_rows	0	Tier5 large rows with RetDec-derived candidate slot expressions.
+coverage	static_only_tier5_large_executable_slot_rows	0	Tier5 large rows whose primary RetDec tail exposes a clean dispatch-table slot.
+coverage	static_only_tier5_large_total_span_bytes	12514	Total selected native span bytes for tier5 large static-only model rows.
+coverage	static_only_tier5_large_total_insns	2704	Total selected native instructions for tier5 large static-only model rows.
+coverage	static_only_tier5_large_entries	76,293,238,306,355,23,325,236,156	Dispatch entries covered by the tier5 large static-only model artifact.
 c_shape	target_only_handler_retdec_selected_ranges	3	Target-only VM handler native ranges selected for targeted RetDec.
 c_shape	target_only_handler_retdec_functions	8	Targeted RetDec C functions emitted from target-only VM handler native ranges.
 c_shape	target_only_handler_retdec_ranges	8	Native address ranges emitted by RetDec for target-only handler coverage.
@@ -717,6 +737,8 @@ c_shape	bundle_tier3_shared_model_comments	40	Tier3 static-only shared model ann
 c_shape	bundle_tier3_static_slot_recoveries	2	Executable tier3 static-only slot recoveries inside the combined source bundle.
 c_shape	bundle_tier4_callret_model_comments	37	Tier4 static-only call/ret model annotations inside the combined source bundle.
 c_shape	bundle_tier4_static_slot_recoveries	0	Executable tier4 static-only slot recoveries inside the combined source bundle.
+c_shape	bundle_tier5_large_model_comments	9	Tier5 large static-only model annotations inside the combined source bundle.
+c_shape	bundle_tier5_static_slot_recoveries	0	Executable tier5 static-only slot recoveries inside the combined source bundle.
 c_shape	bundle_sampled_ret_patch_handler_evidence_comments	4	Handler-layer sampled ret-patch evidence summaries inside the combined source bundle.
 c_shape	bundle_block_calls	483	Concrete block-to-block calls inside the combined source bundle.
 c_shape	bundle_synthetic_gap_unresolved_calls	0	Explicit unresolved-tail calls inside the combined source bundle for remaining synthetic successor gaps.
@@ -770,9 +792,9 @@ c_shape	bundle_observed_chain_terminal_bridge_macros	0	Disabled focused-chain te
 c_shape	bundle_observed_chain_replay_steps	0	Observed focused-chain replay steps emitted inside disabled terminal bridge snippets in the combined source bundle.
 c_shape	all_evidence_bundle_handler_functions	360	All-entry handler/operator C functions present in the all-evidence single file.
 c_shape	all_evidence_bundle_program_blocks	499	Recovered VM bytecode block functions present in the all-evidence single file.
-c_shape	all_evidence_bundle_sidecar_sections	39	Renamed native RetDec/control sidecar files appended to the all-evidence single file.
+c_shape	all_evidence_bundle_sidecar_sections	40	Renamed native RetDec/control sidecar files appended to the all-evidence single file.
 c_shape	all_evidence_bundle_prefixed_retdec_functions	624	RetDec native C functions carried in the all-evidence single file with per-sidecar symbol prefixes.
-c_shape	all_evidence_bundle_prefixed_symbols	5022	Prefixed symbols used to keep overlapping native sidecar C in one translation unit.
+c_shape	all_evidence_bundle_prefixed_symbols	5136	Prefixed symbols used to keep overlapping native sidecar C in one translation unit.
 data_surface	all_evidence_bundle_binary_data_section_arrays	44	Exact binary data section arrays retained in the all-evidence single C file.
 data_surface	all_evidence_bundle_binary_data_dispatch_table	1	Raw VM dispatch-table offset array retained in the all-evidence single C file.
 c_shape	all_evidence_bundle_tier0_static_slot_recoveries	10	Executable tier0 static-only slot recoveries retained in the all-evidence single file.
@@ -780,6 +802,8 @@ c_shape	all_evidence_bundle_tier1_static_slot_recoveries	3	Executable tier1 stat
 c_shape	all_evidence_bundle_tier2_static_slot_recoveries	5	Executable tier2 static-only slot recoveries retained in the all-evidence single file.
 c_shape	all_evidence_bundle_tier3_static_slot_recoveries	2	Executable tier3 static-only slot recoveries retained in the all-evidence single file.
 c_shape	all_evidence_bundle_tier4_static_slot_recoveries	0	Executable tier4 static-only slot recoveries retained in the all-evidence single file.
+c_shape	all_evidence_bundle_tier5_large_model_comments	9	Tier5 large static-only model annotations retained in the all-evidence single file.
+c_shape	all_evidence_bundle_tier5_static_slot_recoveries	0	Executable tier5 static-only slot recoveries retained in the all-evidence single file.
 coverage	dynamic_primary_trace_source_handlers_seen	202	Handlers directly executed as VM source entries by this scenario.
 coverage	dynamic_primary_trace_target_handlers_seen	205	Handlers reached as dispatch targets by this scenario.
 coverage	dynamic_primary_trace_unique_vm_ip_starts	71522	Distinct VM bytecode starts observed in this scenario.
@@ -1138,6 +1162,9 @@ native_acceleration	static_only_tier3_shared_uses_native_generator	yes	Whether t
 native_acceleration	static_only_tier4_callret_dump_source_lines	524	Native static-only tier4 call/ret model generator source size.
 native_acceleration	static_only_tier4_callret_dump_binary_bytes	37736	Current compiled static-only tier4 call/ret model generator size.
 native_acceleration	static_only_tier4_callret_uses_native_generator	yes	Whether the tier4 static-only call/ret C/TSV/Markdown artifacts are generated by the native C tool.
+native_acceleration	static_only_tier5_large_dump_source_lines	510	Native static-only tier5 large-handler model generator source size.
+native_acceleration	static_only_tier5_large_dump_binary_bytes	70088	Current compiled static-only tier5 large-handler model generator size.
+native_acceleration	static_only_tier5_large_uses_native_generator	yes	Whether the tier5 large static-only C/TSV/Markdown artifacts are generated by the native C tool.
 gate	syntax_check	make pseudocode-syntax-check	Regenerates and warning-checks the generated C-like reconstruction artifacts with C11 -fsyntax-only.
 gate	object_check	make pseudocode-object-check	Codegen-compiles the combined source bundle to /tmp/eacsym-vm_recovered_source_bundle.o.
 gate	link_smoke_check	make pseudocode-link-check	Links the bundle with vm_recovered_source_harness.c and runs the smoke executable.
