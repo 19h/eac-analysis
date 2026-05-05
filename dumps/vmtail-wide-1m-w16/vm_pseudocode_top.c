@@ -25,6 +25,12 @@ static int64_t signed_vm_delta_u32(uint32_t raw) {
 
 extern uintptr_t dispatch_table[360];
 extern void vm_native_ret_patch_tail(VMState *vm, uint64_t vm_ip, uint32_t ret0, uint32_t ret1, uint16_t stack_off, uint32_t flags);
+#ifndef VM_ENABLE_NATIVE_RET_PATCH_HIDDEN_BRIDGE
+#define VM_ENABLE_NATIVE_RET_PATCH_HIDDEN_BRIDGE 0
+#endif
+#if VM_ENABLE_NATIVE_RET_PATCH_HIDDEN_BRIDGE
+extern void vm_native_ret_patch_hidden_bridge(VMState *vm, uint64_t vm_ip, uint32_t ret0, uint32_t ret1, uint16_t stack_off, uint32_t flags);
+#endif
 
 extern void vm_unresolved_synthetic_tail(VMState *vm, uint64_t vm_ip);
 

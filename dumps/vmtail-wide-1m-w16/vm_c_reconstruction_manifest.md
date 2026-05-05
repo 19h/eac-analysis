@@ -11,17 +11,17 @@ Reproducible inventory of the current C-shaped reconstruction artifacts and gate
 | `artifact` | `path_handlers_all_lines` | `10196` | Current line count. |
 | `artifact` | `path_handlers_all_bytes` | `635794` | Current file size in bytes. |
 | `artifact` | `direct_blocks_top_path` | `dumps/vmtail-wide-1m-w16/vm_pseudocode_top.c` | Generated reconstruction artifact. |
-| `artifact` | `direct_blocks_top_lines` | `12613` | Current line count. |
-| `artifact` | `direct_blocks_top_bytes` | `1429420` | Current file size in bytes. |
+| `artifact` | `direct_blocks_top_lines` | `12619` | Current line count. |
+| `artifact` | `direct_blocks_top_bytes` | `1429721` | Current file size in bytes. |
 | `artifact` | `program_blocks_top_path` | `dumps/vmtail-wide-1m-w16/vm_program_pseudocode_top.c` | Generated reconstruction artifact. |
-| `artifact` | `program_blocks_top_lines` | `26393` | Current line count. |
-| `artifact` | `program_blocks_top_bytes` | `1760473` | Current file size in bytes. |
+| `artifact` | `program_blocks_top_lines` | `26399` | Current line count. |
+| `artifact` | `program_blocks_top_bytes` | `1760774` | Current file size in bytes. |
 | `artifact` | `program_blocks_full_path` | `dumps/vmtail-wide-1m-w16/vm_program_pseudocode_full.c` | Generated reconstruction artifact. |
-| `artifact` | `program_blocks_full_lines` | `296822` | Current line count. |
-| `artifact` | `program_blocks_full_bytes` | `19987722` | Current file size in bytes. |
+| `artifact` | `program_blocks_full_lines` | `296873` | Current line count. |
+| `artifact` | `program_blocks_full_bytes` | `19990155` | Current file size in bytes. |
 | `artifact` | `source_bundle_path` | `dumps/vmtail-wide-1m-w16/vm_recovered_source_bundle.c` | Generated reconstruction artifact. |
-| `artifact` | `source_bundle_lines` | `303858` | Current line count. |
-| `artifact` | `source_bundle_bytes` | `20459589` | Current file size in bytes. |
+| `artifact` | `source_bundle_lines` | `303909` | Current line count. |
+| `artifact` | `source_bundle_bytes` | `20462022` | Current file size in bytes. |
 | `artifact` | `synthetic_successor_gaps_tsv_path` | `dumps/vmtail-wide-1m-w16/vm_synthetic_successor_gaps.tsv` | Generated reconstruction artifact. |
 | `artifact` | `synthetic_successor_gaps_tsv_lines` | `22` | Current line count. |
 | `artifact` | `synthetic_successor_gaps_tsv_bytes` | `5197` | Current file size in bytes. |
@@ -247,6 +247,15 @@ Reproducible inventory of the current C-shaped reconstruction artifacts and gate
 | `artifact` | `native_obfuscated_control_model_md_path` | `dumps/vmtail-wide-1m-w16/vm_native_obfuscated_control_model.md` | Generated reconstruction artifact. |
 | `artifact` | `native_obfuscated_control_model_md_lines` | `14` | Current line count. |
 | `artifact` | `native_obfuscated_control_model_md_bytes` | `1608` | Current file size in bytes. |
+| `artifact` | `native_ret_patch_hidden_bridge_c_path` | `dumps/vmtail-wide-1m-w16/vm_native_ret_patch_hidden_bridge.c` | Generated reconstruction artifact. |
+| `artifact` | `native_ret_patch_hidden_bridge_c_lines` | `224` | Current line count. |
+| `artifact` | `native_ret_patch_hidden_bridge_c_bytes` | `13096` | Current file size in bytes. |
+| `artifact` | `native_ret_patch_hidden_bridge_tsv_path` | `dumps/vmtail-wide-1m-w16/vm_native_ret_patch_hidden_bridge.tsv` | Generated reconstruction artifact. |
+| `artifact` | `native_ret_patch_hidden_bridge_tsv_lines` | `9` | Current line count. |
+| `artifact` | `native_ret_patch_hidden_bridge_tsv_bytes` | `4147` | Current file size in bytes. |
+| `artifact` | `native_ret_patch_hidden_bridge_md_path` | `dumps/vmtail-wide-1m-w16/vm_native_ret_patch_hidden_bridge.md` | Generated reconstruction artifact. |
+| `artifact` | `native_ret_patch_hidden_bridge_md_lines` | `14` | Current line count. |
+| `artifact` | `native_ret_patch_hidden_bridge_md_bytes` | `1817` | Current file size in bytes. |
 | `artifact` | `target_only_handlers_retdec_path` | `dumps/vmtail-wide-1m-w16/vm_target_only_handlers_retdec.c` | Generated reconstruction artifact. |
 | `artifact` | `target_only_handlers_retdec_lines` | `317` | Current line count. |
 | `artifact` | `target_only_handlers_retdec_bytes` | `12635` | Current file size in bytes. |
@@ -450,6 +459,14 @@ Reproducible inventory of the current C-shaped reconstruction artifacts and gate
 | `c_shape` | `native_obfuscated_control_model_source278_rows` | `3` | Hidden-control rows joined to source278 RetDec-covered native targets. |
 | `c_shape` | `native_obfuscated_control_model_dynamic_hits` | `28` | Focused dynamic hits carried through the joined hidden-control model. |
 | `c_shape` | `native_obfuscated_control_model_status_mix` | `end_to_end_second_stage_dispatch_model_joined:5,source278_retdec_target_joined:2,entry_helper_to_source278_retdec_target_joined:1` | Status mix for joined native obfuscated hidden-control rows. |
+| `c_shape` | `native_ret_patch_hidden_bridge_rows` | `8` | Ret-patch native target windows joined back to the hidden obfuscated-control C model. |
+| `c_shape` | `native_ret_patch_hidden_bridge_c_functions` | `8` | Syntax-checkable bridge helper functions mapping ret-patch exits to hidden-control entries. |
+| `c_shape` | `native_ret_patch_hidden_bridge_dispatch_cases` | `7` | Dispatcher cases in the ret-patch hidden-control bridge artifact. |
+| `c_shape` | `native_ret_patch_hidden_bridge_second_stage_rows` | `5` | Ret-patch bridge rows that flow into the static second-stage dispatch-table model. |
+| `c_shape` | `native_ret_patch_hidden_bridge_source278_rows` | `3` | Ret-patch bridge rows that flow into source278 RetDec-covered native targets. |
+| `c_shape` | `native_ret_patch_hidden_bridge_dynamic_hits` | `28` | Focused second-stage dynamic hits reachable through the ret-patch hidden bridge. |
+| `c_shape` | `native_ret_patch_hidden_bridge_edge_kind_mix` | `jump:7,call:1` | Call/jump edge mix for ret-patch follow-up targets that enter hidden control. |
+| `c_shape` | `native_ret_patch_hidden_bridge_status_mix` | `end_to_end_second_stage_dispatch_model_joined:5,source278_retdec_target_joined:2,entry_helper_to_source278_retdec_target_joined:1` | Status mix for ret-patch exits joined to hidden-control rows. |
 | `c_shape` | `target_only_handler_retdec_selected_ranges` | `3` | Target-only VM handler native ranges selected for targeted RetDec. |
 | `c_shape` | `target_only_handler_retdec_functions` | `8` | Targeted RetDec C functions emitted from target-only VM handler native ranges. |
 | `c_shape` | `target_only_handler_retdec_ranges` | `8` | Native address ranges emitted by RetDec for target-only handler coverage. |
@@ -519,6 +536,7 @@ Reproducible inventory of the current C-shaped reconstruction artifacts and gate
 | `c_shape` | `program_full_sampled_ret_patch_probe_sites` | `15` | Sampled native return-patch evidence sites carried into the full program sketch. |
 | `c_shape` | `program_full_sampled_ret_patch_probe_comments` | `31` | Per-run sampled native return-patch comments carried into the full program sketch. |
 | `c_shape` | `program_full_sampled_ret_patch_exit_calls` | `15` | Executable analysis-helper exits for sampled native return-patch synthetic tails in the full program sketch. |
+| `c_shape` | `program_full_native_ret_patch_hidden_bridge_hooks` | `15` | Optional full-program hooks from native return-patch exits into the hidden-control bridge artifact. |
 | `c_shape` | `program_full_sampled_control_correlation_sites` | `20` | Residual sampled-control correlation sites carried into the full program sketch. |
 | `c_shape` | `program_full_sampled_control_correlation_comments` | `20` | Per-start sampled-control correlation comments carried into the full program sketch. |
 | `c_shape` | `program_full_focused_direct_trace_audit_sites` | `20` | Residual focused direct-trace audit sites carried into the full program sketch. |
@@ -571,6 +589,7 @@ Reproducible inventory of the current C-shaped reconstruction artifacts and gate
 | `c_shape` | `bundle_sampled_ret_patch_probe_sites` | `15` | Sampled native return-patch evidence sites carried into the combined source bundle. |
 | `c_shape` | `bundle_sampled_ret_patch_probe_comments` | `31` | Per-run sampled native return-patch comments carried into the combined source bundle. |
 | `c_shape` | `bundle_sampled_ret_patch_exit_calls` | `15` | Executable analysis-helper exits for sampled native return-patch synthetic tails inside the combined source bundle. |
+| `c_shape` | `bundle_native_ret_patch_hidden_bridge_hooks` | `15` | Optional combined-bundle hooks from native return-patch exits into the hidden-control bridge artifact. |
 | `c_shape` | `bundle_sampled_control_correlation_sites` | `20` | Residual sampled-control correlation sites carried into the combined source bundle. |
 | `c_shape` | `bundle_sampled_control_correlation_comments` | `20` | Per-start sampled-control correlation comments carried into the combined source bundle. |
 | `c_shape` | `bundle_focused_direct_trace_audit_sites` | `20` | Residual focused direct-trace audit sites carried into the combined source bundle. |
@@ -920,6 +939,9 @@ Reproducible inventory of the current C-shaped reconstruction artifacts and gate
 | `native_acceleration` | `native_obfuscated_control_model_dump_source_lines` | `533` | Native joined hidden-control model generator source size. |
 | `native_acceleration` | `native_obfuscated_control_model_dump_binary_bytes` | `29464` | Current compiled native joined hidden-control model generator size. |
 | `native_acceleration` | `native_obfuscated_control_model_uses_native_generator` | `yes` | Whether the joined hidden-control C/TSV/Markdown artifacts are generated by the native C tool. |
+| `native_acceleration` | `native_ret_patch_hidden_bridge_dump_source_lines` | `618` | Native ret-patch hidden-control bridge generator source size. |
+| `native_acceleration` | `native_ret_patch_hidden_bridge_dump_binary_bytes` | `90384` | Current compiled native ret-patch hidden bridge generator size. |
+| `native_acceleration` | `native_ret_patch_hidden_bridge_uses_native_generator` | `yes` | Whether the ret-patch hidden bridge C/TSV/Markdown artifacts are generated by the native C tool. |
 | `gate` | `syntax_check` | `make pseudocode-syntax-check` | Regenerates and warning-checks the generated C-like reconstruction artifacts with C11 -fsyntax-only. |
 | `gate` | `object_check` | `make pseudocode-object-check` | Codegen-compiles the combined source bundle to /tmp/eacsym-vm_recovered_source_bundle.o. |
 | `gate` | `link_smoke_check` | `make pseudocode-link-check` | Links the bundle with vm_recovered_source_harness.c and runs the smoke executable. |
