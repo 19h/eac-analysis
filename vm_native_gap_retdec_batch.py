@@ -460,9 +460,26 @@ def extract_functions(text):
     functions = re.sub(r"return &g(\d+)", r"return (int64_t)&g\1", functions)
     functions = re.sub(r"return &v(\d+)", r"return (int64_t)&v\1", functions)
     functions = re.sub(r"return &([A-Za-z_]\w*)", r"return (int64_t)&\1", functions)
-    for pointer_local in sorted(set(re.findall(r"\bint64_t\s*\*\s*(v\d+)\s*;", functions))):
-        functions = re.sub(rf"(\b{pointer_local}\s*=\s*)\(int64_t\)&", r"\1&", functions)
-    return functions
+    return normalize_pointer_local_assignments(functions)
+
+
+def normalize_pointer_local_assignments(functions):
+    matches = list(FUNCTION_DEF_RE.finditer(functions))
+    if not matches:
+        return functions
+    chunks = []
+    cursor = 0
+    for index, match in enumerate(matches):
+        start = match.start()
+        end = matches[index + 1].start() if index + 1 < len(matches) else len(functions)
+        chunks.append(functions[cursor:start])
+        body = functions[start:end]
+        for pointer_local in sorted(set(re.findall(r"\bint64_t\s*\*\s*(v\d+)\s*;", body))):
+            body = re.sub(rf"(\b{pointer_local}\s*=\s*)\(int64_t\)&", r"\1&", body)
+        chunks.append(body)
+        cursor = end
+    chunks.append(functions[cursor:])
+    return "".join(chunks)
 
 
 def function_prototypes(functions):
