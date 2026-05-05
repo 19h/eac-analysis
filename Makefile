@@ -146,11 +146,13 @@ path-pseudocode:
 source-bundle: handler-pseudocode pseudocode-full
 	python3 vm_recovered_source_bundle.py > dumps/vmtail-wide-1m-w16/vm_recovered_source_bundle.c
 
-pseudocode-syntax-check: source-bundle path-pseudocode
+pseudocode-syntax-check: pseudocode source-bundle path-pseudocode
 	$(CC) -std=c11 -fsyntax-only -Wall -Wextra -Wno-unused-variable -Wno-unused-function -Wno-parentheses dumps/vmtail-wide-1m-w16/vm_handlers_pseudocode.c
 	$(CC) -std=c11 -fsyntax-only -Wall -Wextra -Wno-unused-variable -Wno-unused-function -Wno-parentheses dumps/vmtail-wide-1m-w16/vm_path_handlers_pseudocode.c
-	$(CC) -std=c11 -fsyntax-only -w dumps/vmtail-wide-1m-w16/vm_program_pseudocode_full.c
-	$(CC) -std=c11 -fsyntax-only -w dumps/vmtail-wide-1m-w16/vm_recovered_source_bundle.c
+	$(CC) -std=c11 -fsyntax-only -Wall -Wextra -Wno-unused-variable -Wno-unused-function -Wno-parentheses dumps/vmtail-wide-1m-w16/vm_pseudocode_top.c
+	$(CC) -std=c11 -fsyntax-only -Wall -Wextra -Wno-unused-variable -Wno-unused-function -Wno-parentheses dumps/vmtail-wide-1m-w16/vm_program_pseudocode_top.c
+	$(CC) -std=c11 -fsyntax-only -Wall -Wextra -Wno-unused-variable -Wno-unused-function -Wno-parentheses dumps/vmtail-wide-1m-w16/vm_program_pseudocode_full.c
+	$(CC) -std=c11 -fsyntax-only -Wall -Wextra -Wno-unused-variable -Wno-unused-function -Wno-parentheses dumps/vmtail-wide-1m-w16/vm_recovered_source_bundle.c
 
 coverage-matrix:
 	python3 vm_trace_coverage_matrix.py > dumps/vmtail-wide-1m-w16/vm_trace_coverage_matrix.tsv

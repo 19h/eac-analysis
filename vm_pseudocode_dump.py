@@ -10,6 +10,7 @@ from pathlib import Path
 U8_RE = re.compile(r"\bb([0-9]+)\b")
 U16_RE = re.compile(r"\bu16_([0-9]+)\b")
 U32_RE = re.compile(r"\bu32_([0-9]+)\b")
+HEX_RE = re.compile(r"(?<![A-Za-z0-9_])0x[0-9a-fA-F]+(?![A-Za-z0-9_])")
 COUNTED_HEX_RE = re.compile(r"^0x([0-9a-fA-F]+):([0-9]+)$")
 TARGET_OFFSET_RE = re.compile(r"^[0-9]+@\+0x([0-9a-fA-F]+):([0-9]+)$")
 
@@ -59,6 +60,7 @@ def expr_to_c(expr, max_len):
     expr = U16_RE.sub(lambda match: f"U16(vm->ip + 0x{int(match.group(1)):x})", expr)
     expr = U8_RE.sub(lambda match: f"U8(vm->ip + 0x{int(match.group(1)):x})", expr)
     expr = expr.replace("table[", "dispatch_table[")
+    expr = HEX_RE.sub(lambda match: f"{match.group(0)}u", expr)
     return expr
 
 
@@ -377,7 +379,7 @@ def selected_blocks(blocks, args):
 def emit_preamble():
     print("/*")
     print(" * Decompiled VM pseudocode sketch.")
-    print(" * This is not intended to compile as-is; it is a C-like rendering of recovered VM IR.")
+    print(" * This is syntax-checkable C, but still an analysis artifact rather than drop-in source.")
     print(" */")
     print("#include <stdint.h>")
     print("")
@@ -493,13 +495,10 @@ def emit_block(block, rows, edge, synthetic_spans, tail_lifts, args):
         )
         if target_block:
             print(f"    /* goto {c_block_name(target_block)}; */")
-            print("    return;")
         elif edge_kind == "covered_synthetic_fallthrough":
             emit_synthetic_edge(edge, synthetic_spans, args)
-        else:
-            print("    return;")
-    else:
-        print("    return;")
+    print("    (void)next_entry;")
+    print("    return;")
     print("}")
     print("")
 
