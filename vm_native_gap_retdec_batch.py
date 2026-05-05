@@ -123,6 +123,24 @@ BATCHES = {
         "0x4ae080-0x4ae218",
         "0x4cd900-0x4cda96",
     ],
+    6: [
+        "0x4d3af0-0x4d3c86",
+        "0x54d830-0x54d9c6",
+        "0x552760-0x5528f6",
+        "0x29a64-0x29bf9",
+        "0x4dfc2-0x4e155",
+        "0x497ff0-0x498183",
+        "0x4ab380-0x4ab513",
+        "0x4b53f0-0x4b5583",
+        "0x489630-0x4897c0",
+        "0x23344-0x234d2",
+        "0x4918e-0x4931c",
+        "0x4d4560-0x4d46ec",
+        "0x565450-0x5655dc",
+        "0x4985b0-0x49873b",
+        "0x5be1a-0x5bfa4",
+        "0x67ede-0x68067",
+    ],
 }
 
 
@@ -250,7 +268,9 @@ def main():
     print("void __asm_rep_stosb_memset(char *dst, char value, int64_t count);")
     print("void __asm_rep_stosd_memset(char *dst, int32_t value, int64_t count);")
     print("void __asm_rep_stosq_memset(char *dst, int64_t value, int64_t count);")
-    print("void __asm_mfence(void);")
+    print("void __asm_rep_movsq_memcpy(char *dst, char *src, int64_t count);")
+    print("int64_t __asm_hlt(void);")
+    print("int64_t __asm_mfence(void);")
     print("void __stack_chk_fail(void);")
     print("int __cxa_atexit(void (*func)(int64_t *), void *arg, void *dso);")
     print("int128_t __asm_movsd(int64_t value);")
@@ -280,8 +300,8 @@ def main():
     print("int32_t *wmemcpy(int32_t *dest, const int32_t *src, size_t n);")
     print("int32_t *wmemset(int32_t *wcs, int32_t wc, size_t n);")
     print("void *memset2(void *s, int c, size_t n);")
-    print("int pthread_mutex_lock(int64_t *mutex);")
-    print("int pthread_mutex_unlock(int64_t *mutex);")
+    print("int pthread_mutex_lock(void *mutex);")
+    print("int pthread_mutex_unlock(void *mutex);")
     print("char *strdup(const char *s);")
     print("struct _Unwind_Exception;")
     print("void _Unwind_Resume(struct _Unwind_Exception *exception);")
