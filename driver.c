@@ -558,6 +558,31 @@ static void dispatch_trace_write(size_t idx, uintptr_t site, uintptr_t slot,
     write(STDERR_FILENO, buf, (size_t)(p - buf));
 }
 
+static int tail_focus_match(uintptr_t vm_ip_off) {
+    if (g_tail_focus_ip_count == 0) return 1;
+    for (size_t i = 0; i < g_tail_focus_ip_count; ++i) {
+        if (g_tail_focus_ips[i] == vm_ip_off) return 1;
+    }
+    return 0;
+}
+
+static void tail_focus_maybe_stop(uintptr_t vm_ip_off) {
+    if (g_tail_focus_ip_count == 0 || g_tail_stop_after_matches == 0) return;
+    uint64_t hits = __atomic_add_fetch(&g_tail_focus_hits, 1, __ATOMIC_RELAXED);
+    if (hits < g_tail_stop_after_matches) return;
+
+    char buf[160];
+    char *p = buf;
+    char *end = buf + sizeof(buf) - 1;
+    p = append_lit(p, end, "[DRIVER] VMTAIL focus stop hits=");
+    p = append_dec(p, end, hits);
+    p = append_lit(p, end, " vm_ip_off=");
+    p = append_hex(p, end, vm_ip_off);
+    p = append_lit(p, end, "\n");
+    write(STDERR_FILENO, buf, (size_t)(p - buf));
+    _exit(0);
+}
+
 static void tail_trace_write(uintptr_t site, uintptr_t target, uintptr_t frame,
                              uint64_t vm_ip, uintptr_t table,
                              uint32_t vm_flags, uint32_t vm_state, uint8_t vm_byte,
@@ -565,6 +590,9 @@ static void tail_trace_write(uintptr_t site, uintptr_t target, uintptr_t frame,
                              const ucontext_t *uc,
 #endif
                              const uint16_t ip_words[EAC_IP_WORD_COUNT]) {
+    uintptr_t vm_ip_off = vm_ip - (uintptr_t)g_eac_base;
+    if (!tail_focus_match(vm_ip_off)) return;
+
     uint64_t count = __atomic_fetch_add(&g_tail_count, 1, __ATOMIC_RELAXED);
     if (count >= g_tail_limit) return;
 
@@ -582,7 +610,7 @@ static void tail_trace_write(uintptr_t site, uintptr_t target, uintptr_t frame,
     p = append_lit(p, end, " vm_ip=");
     p = append_hex(p, end, vm_ip);
     p = append_lit(p, end, " vm_ip_off=");
-    p = append_hex(p, end, vm_ip - (uintptr_t)g_eac_base);
+    p = append_hex(p, end, vm_ip_off);
     p = append_lit(p, end, " vm_flags=");
     p = append_hex(p, end, vm_flags);
     p = append_lit(p, end, " vm_state=");
@@ -611,6 +639,7 @@ static void tail_trace_write(uintptr_t site, uintptr_t target, uintptr_t frame,
     p = append_hex(p, end, target - (uintptr_t)g_eac_base);
     p = append_lit(p, end, "\n");
     write(STDERR_FILENO, buf, (size_t)(p - buf));
+    tail_focus_maybe_stop(vm_ip_off);
 }
 
 #if defined(__x86_64__)
@@ -724,6 +753,10 @@ static void install_dispatch_trace(void *sym) {
     g_tail_mem_reg_mask = parse_tail_reg_mask(getenv("EAC_VMTAIL_MEM_REGS"));
     g_tail_limit = parse_ul(getenv("EAC_VMTAIL_LIMIT"), 4096);
     if (g_tail_limit == 0) g_tail_limit = 1;
+    g_tail_focus_ip_count = 0;
+    g_tail_focus_hits = 0;
+    parse_focus_ips(getenv("EAC_VMTAIL_FOCUS_IPS"));
+    g_tail_stop_after_matches = parse_ul(getenv("EAC_VMTAIL_STOP_AFTER_MATCHES"), 0);
     g_tail_site_count = 0;
     g_scratch_offset_count = 0;
     if (g_tail_trace) {
@@ -768,10 +801,12 @@ static void install_dispatch_trace(void *sym) {
             "[DRIVER] dispatch trace enabled base=%p sites=+0x%x,+0x%x limit=%" PRIu64
             " detail=%d tail=%d tail_regs=%d tail_scratch=%d tail_mem=%d"
             " tail_limit=%" PRIu64
-            " tail_sites=%zu scratch_offsets=%zu read_ranges=%zu\n",
+            " tail_sites=%zu scratch_offsets=%zu read_ranges=%zu focus_ips=%zu"
+            " stop_after_matches=%" PRIu64 "\n",
             (void *)g_eac_base, EAC_DISPATCH_C80B9, EAC_DISPATCH_CDAC7, g_dispatch_limit,
             g_dispatch_detail, g_tail_trace, g_tail_regs, g_tail_scratch, g_tail_mem,
-            g_tail_limit, g_tail_site_count, g_scratch_offset_count, g_read_range_count);
+            g_tail_limit, g_tail_site_count, g_scratch_offset_count, g_read_range_count,
+            g_tail_focus_ip_count, g_tail_stop_after_matches);
     for (size_t i = 0; g_tail_trace && i < g_tail_site_count; ++i) {
         fprintf(stderr, "[DRIVER] tail site +0x%lx -> %s\n",
                 (unsigned long)g_tail_sites[i].off, tail_reg_name(g_tail_sites[i].reg));

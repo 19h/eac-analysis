@@ -201,7 +201,11 @@ def role_class(role_text):
 
 def make_rows(args):
     live_rows, wanted_ips = needed_live_in_rows(args.transfer_probe)
-    events = load_events(args.gpr_run, wanted_ips)
+    starts = {row["_start_int"] for row in live_rows}
+    missing_successors = {row["_missing_int"] for row in live_rows if row.get("_missing_int") is not None}
+    events = load_events(args.gpr_run, starts)
+    tail_mem_run = args.tail_mem_run or args.gpr_run
+    tail_events = load_events(tail_mem_run, missing_successors)
     skeleton_tail_sites = load_skeleton_tail_sites(args.skeletons)
     table = read_dispatch_table(args.eac)
     target_to_entry = {target: entry for entry, target in enumerate(table)}
@@ -212,7 +216,7 @@ def make_rows(args):
         tail_info = skeleton_tail_sites.get(row.get("source_entry", ""), {})
         tail_site = tail_info.get("tail_site")
         fields = select_event(events, start)
-        tail_fields = select_event(events, missing, tail_site) if missing is not None else None
+        tail_fields = select_event(tail_events, missing, tail_site) if missing is not None else None
         target_expr = row.get("target_expr", "")
         regs = sorted(set(REG_RE.findall(target_expr)))
         deref_regs = sorted(set(match.group("reg") for match in DEREF_RE.finditer(target_expr)))
@@ -347,6 +351,7 @@ def main():
     parser = argparse.ArgumentParser(description="Join live-in synthetic gap transfer probes with GPR trace register roles.")
     parser.add_argument("--transfer-probe", default=str(TRACE_DIR / "vm_synthetic_gap_transfer_probe.tsv"))
     parser.add_argument("--gpr-run", default="dumps/vmtail-scratch-wide-w16-fs337all-fs128/run.stderr")
+    parser.add_argument("--tail-mem-run", default="", help="optional memory-enabled VMTAIL run.stderr used for final-tail mem_<reg> dereferences")
     parser.add_argument("--skeletons", default=str(TRACE_DIR / "vm_handler_skeletons.tsv"))
     parser.add_argument("--eac", default="eac.elf")
     parser.add_argument("--markdown", action="store_true")

@@ -160,6 +160,8 @@ def parse_run_metadata(trace_dir):
         "driver_tail_regs": "0",
         "driver_tail_scratch": "0",
         "driver_tail_mem": "0",
+        "driver_tail_focus_ips": "",
+        "driver_tail_stop_after_matches": "",
         "driver_scratch_offsets": "",
         "driver_read_ranges": "",
         "driver_detail": "",
@@ -192,6 +194,8 @@ def parse_run_metadata(trace_dir):
                 meta["driver_tail_regs"] = fields.get("tail_regs", "0")
                 meta["driver_tail_scratch"] = fields.get("tail_scratch", "0")
                 meta["driver_tail_mem"] = fields.get("tail_mem", "0")
+                meta["driver_tail_focus_ips"] = fields.get("focus_ips", "")
+                meta["driver_tail_stop_after_matches"] = fields.get("stop_after_matches", "")
                 meta["driver_scratch_offsets"] = fields.get("scratch_offsets", "")
                 meta["driver_read_ranges"] = fields.get("read_ranges", "")
                 meta["driver_detail"] = fields.get("detail", "")
@@ -331,6 +335,8 @@ def make_rows(args):
             "driver_tail_regs": meta["driver_tail_regs"],
             "driver_tail_scratch": meta["driver_tail_scratch"],
             "driver_tail_mem": meta["driver_tail_mem"],
+            "driver_tail_focus_ips": meta["driver_tail_focus_ips"],
+            "driver_tail_stop_after_matches": meta["driver_tail_stop_after_matches"],
             "driver_tail_trace": meta["driver_tail_trace"],
             "driver_scratch_offsets": meta["driver_scratch_offsets"],
             "driver_read_ranges": meta["driver_read_ranges"],
@@ -376,6 +382,8 @@ def emit_tsv(rows):
         "driver_tail_regs",
         "driver_tail_scratch",
         "driver_tail_mem",
+        "driver_tail_focus_ips",
+        "driver_tail_stop_after_matches",
         "driver_tail_trace",
         "driver_scratch_offsets",
         "driver_read_ranges",
