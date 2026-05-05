@@ -18,6 +18,7 @@ typedef struct VMOpResult {
 } VMOpResult;
 
 #define U8(p)  (*(const uint8_t *)(p))
+#define S16(p) (*(const int16_t *)(p))
 #define U16(p) (*(const uint16_t *)(p))
 #define U32(p) (*(const uint32_t *)(p))
 #define mask32(x) ((uint32_t)(x))

@@ -328,6 +328,15 @@ def c_shape_metrics(rows):
     add(rows, "c_shape", "handler_sampled_ret_patch_evidence_comments",
         count(r"ret-patch evidence: rows=", handlers),
         "Handler-layer sampled ret-patch evidence summaries.")
+    add(rows, "c_shape", "handler_tier0_static_model_comments",
+        count(r"tier0 static model: rank=", handlers),
+        "Handler-layer tier0 static-only RetDec model annotations.")
+    add(rows, "c_shape", "handler_tier0_static_slot_recoveries",
+        count(r"tier0 static slot recovered from the RetDec single-function model", handlers),
+        "Handler-layer static-only tier0 entries with executable slot recovery in VMState form.")
+    add(rows, "c_shape", "handler_tier0_static_slot_comment_only",
+        count(r"tier0 slot expression not executable in VMState model", handlers),
+        "Handler-layer tier0 static-only rows kept comment-only because the slot expression needs frame state outside VMState.")
     add(rows, "c_shape", "native_ret_patch_target_functions",
         count(r"^static void native_retpatch_entry_", native_ret_patch_targets),
         "C-shaped native .text target helper functions emitted from sampled return-patch evidence.")
@@ -884,6 +893,12 @@ def c_shape_metrics(rows):
     add(rows, "c_shape", "bundle_sampled_ret_patch_handler_functions",
         count(r"native return-patch thunk", bundle),
         "Native return-patch handler/operator functions inside the combined source bundle.")
+    add(rows, "c_shape", "bundle_tier0_static_model_comments",
+        count(r"tier0 static model: rank=", bundle),
+        "Tier0 static-only RetDec model annotations inside the combined source bundle.")
+    add(rows, "c_shape", "bundle_tier0_static_slot_recoveries",
+        count(r"tier0 static slot recovered from the RetDec single-function model", bundle),
+        "Executable tier0 static-only slot recoveries inside the combined source bundle.")
     add(rows, "c_shape", "bundle_sampled_ret_patch_handler_evidence_comments",
         count(r"ret-patch evidence: rows=", bundle),
         "Handler-layer sampled ret-patch evidence summaries inside the combined source bundle.")
@@ -1002,6 +1017,9 @@ def c_shape_metrics(rows):
     add(rows, "c_shape", "all_evidence_bundle_prefixed_symbols",
         count(r"\beac_evidence_[A-Za-z0-9_]+__", all_evidence_bundle),
         "Prefixed symbols used to keep overlapping native sidecar C in one translation unit.")
+    add(rows, "c_shape", "all_evidence_bundle_tier0_static_slot_recoveries",
+        count(r"tier0 static slot recovered from the RetDec single-function model", all_evidence_bundle),
+        "Executable tier0 static-only slot recoveries retained in the all-evidence single file.")
 
 
 def coverage_metrics(rows):

@@ -25,6 +25,7 @@ typedef struct VMOpResult {
 } VMOpResult;
 
 #define U8(p)  (*(const uint8_t *)(p))
+#define S16(p) (*(const int16_t *)(p))
 #define U16(p) (*(const uint16_t *)(p))
 #define U32(p) (*(const uint32_t *)(p))
 #define mask32(x) ((uint32_t)(x))
@@ -757,10 +758,15 @@ static VMOpResult op_entry_038(VMState *vm) {
     uint8_t byte0 = vm->byte;
     /* entry=38, native=0x80d79, class=unobserved_static, events=0, shape=-, delta=- */
     /* native IP reads: 0x80d9d:u16_0,0x80deb:u16_6,0x80e11:u16_4,0x80e8e:u16_2 */
+    /* tier0 static model: rank=8, retdec=function_80d79, slot_status=decode_candidate_slot, ip_advance=8 */
+    /* tier0 effects: conditional flags rewrite; byte store through frame[s16(ip+0)]; pointer step by frame[s16(ip+4)] sign; state = slot_expr; ip += 8 */
     /* decode signature: IPADV+0x2;RIP+0x2/2:movzx;RF+0x170/4:sub;WF+0x170/4:add;TDYN;RTdyn/8:mov;WF+0xa/8:add */
     /* dispatch skeleton: RF+0x10f/8:mov;RF+0xa/8:mov;IPADV+0x2;RIP+0x2/2:movzx;RF+0x170/4:sub;WF+0x170/4:add;TDYN;RTdyn/8:mov;WF+0xa/8:add;JMP:r8 */
     vm->state = state0 + U16(vm->ip + 0x2u) - state0 - 0x23aef0b2u;
     vm->flags = flags0 & 0x55b62e53u ^ 0xd779badu;
+    r.slot = (uint32_t)((((int32_t)S16(vm->ip + 0x2u)) - 0x23aef0b2u) & 0xffffu);
+    r.next_entry = vm_entry_from_table_offset(r.slot);
+    /* tier0 static slot recovered from the RetDec single-function model; dynamic source-row validation is still absent. */
     vm->ip += 0x8;
     /* IP advance recovered from native tail site: tail_ip_add@0x80eec */
     /* dispatch: next = dispatch_table[slot] */
@@ -924,9 +930,14 @@ static VMOpResult op_entry_047(VMState *vm) {
     uint8_t byte0 = vm->byte;
     /* entry=47, native=0x822bc, class=unobserved_static, events=0, shape=-, delta=- */
     /* native IP reads: 0x822e8:u16_7,0x822fd:u16_3,0x82329:u16_1,0x8236f:u16_3,0x82380:u16_7,0x82416:u16_5 */
+    /* tier0 static model: rank=11, retdec=function_822bc, slot_status=final_state_candidate_slot, ip_advance=9 */
+    /* tier0 effects: qword copy through frame[s16(ip+3)] from frame[s16(ip+7)]; paired pointer step by frame[s16(ip+1)]/frame[0x199] sign; state = s16(ip+5); ip += 9 */
     /* decode signature: IPADV+0x5;RIP+0x5/2:movzx;RF+0x170/4:xor;WF+0x170/4:xor;TDYN;RTdyn/8:mov;WF+0xa/8:add */
     /* dispatch skeleton: RF+0x10f/8:mov;RF+0xa/8:mov;IPADV+0x5;RIP+0x5/2:movzx;RF+0x170/4:xor;WF+0x170/4:xor;TDYN;RTdyn/8:mov;WF+0xa/8:add;JMP:r11 */
     vm->state = state0 ^ U16(vm->ip + 0x5u) ^ state0;
+    r.slot = (uint32_t)(((int32_t)S16(vm->ip + 0x5u)) & 0xffffu);
+    r.next_entry = vm_entry_from_table_offset(r.slot);
+    /* tier0 static slot recovered from the RetDec single-function model; dynamic source-row validation is still absent. */
     vm->ip += 0x9;
     /* IP advance recovered from native tail site: tail_ip_add@0x8246d */
     /* dispatch: next = dispatch_table[slot] */
@@ -1112,9 +1123,14 @@ static VMOpResult op_entry_057(VMState *vm) {
     uint8_t byte0 = vm->byte;
     /* entry=57, native=0x841f9, class=unobserved_static, events=0, shape=-, delta=- */
     /* native IP reads: 0x8421b:u16_2,0x84243:u16_0 */
+    /* tier0 static model: rank=1, retdec=function_841f9, slot_status=retdec_state_slot, ip_advance=4 */
+    /* tier0 effects: frame[u16(ip+2)] = frame[0xa1]; state = slot_expr; ip += 4 */
     /* decode signature: IPADV+0x0;RIP+0x0/2:movzx;RF+0x170/4:xor;WF+0x170/4:sub;TDYN;RTdyn/8:mov;WF+0xa/8:add */
     /* dispatch skeleton: RF+0xa/8:mov;IPADV+0x0;RIP+0x0/2:movzx;RF+0x10f/8:mov;RF+0x170/4:xor;WF+0x170/4:sub;TDYN;RTdyn/8:mov;WF+0xa/8:add;JMP:r9 */
     vm->state = state0 - U16(vm->ip + 0x0u) ^ state0 - 0x9df7e26u;
+    r.slot = (uint32_t)((state0 + 0x09df7e26u - (state0 ^ ((int32_t)S16(vm->ip + 0x0u)))) & 0xffffu);
+    r.next_entry = vm_entry_from_table_offset(r.slot);
+    /* tier0 static slot recovered from the RetDec single-function model; dynamic source-row validation is still absent. */
     vm->ip += 0x4;
     /* IP advance recovered from native tail site: tail_ip_add@0x84281 */
     /* dispatch: next = dispatch_table[slot] */
@@ -1297,9 +1313,14 @@ static VMOpResult op_entry_067(VMState *vm) {
     uint8_t byte0 = vm->byte;
     /* entry=67, native=0x859fc, class=unobserved_static, events=0, shape=-, delta=- */
     /* native IP reads: 0x85a60:u16_4,0x85a75:u16_6,0x85aa1:u16_0,0x85b1c:u16_2,0x85b67:u16_2 + state0 | 0x26d4dee7 | flags0 - flags0 - 0x7138da2d & 0xffff */
+    /* tier0 static model: rank=9, retdec=function_859fc, slot_status=retdec_table_slot, ip_advance=8 */
+    /* tier0 effects: dword copy through frame[s16(ip+6)] to frame[s16(ip+4)]; pointer step by frame[s16(ip+0)] sign; state = v11 | v10; ip += 8 */
     /* decode signature: IPADV+0x2;RIP+0x2/2:movzx;RF+0x170/4:add;WF+0x170/4:or;TDYN;RTdyn/8:mov;WF+0xa/8:add */
     /* dispatch skeleton: RF+0xa/8:mov;RF+0x10f/8:mov;IPADV+0x2;RIP+0x2/2:movzx;RF+0x170/4:add;WF+0x170/4:or;TDYN;RTdyn/8:mov;WF+0xa/8:add;JMP:rax */
     vm->state = state0 | 0x26d4dee7u | flags0 - flags0 | U16(vm->ip + 0x2u) + state0 | 0x26d4dee7u | flags0 - flags0 - 0x7138da2du;
+    r.slot = (uint32_t)((((int32_t)S16(vm->ip + 0x2u)) - 0x7138da2du + ((state0 | 0x26d4dee7u | flags0) - flags0)) & 0xffffu);
+    r.next_entry = vm_entry_from_table_offset(r.slot);
+    /* tier0 static slot recovered from the RetDec single-function model; dynamic source-row validation is still absent. */
     vm->ip += 0x8;
     /* IP advance recovered from native tail site: tail_ip_add@0x85b80 */
     /* dispatch: next = dispatch_table[slot] */
@@ -1370,9 +1391,14 @@ static VMOpResult op_entry_071(VMState *vm) {
     uint8_t byte0 = vm->byte;
     /* entry=71, native=0x86766, class=unobserved_static, events=0, shape=-, delta=- */
     /* native IP reads: 0x867a4:u16_4,0x867af:u16_6,0x867d8:u16_0,0x86846:u16_2 */
+    /* tier0 static model: rank=4, retdec=function_86766, slot_status=decode_candidate_slot, ip_advance=8 */
+    /* tier0 effects: byte copy through frame[s16(ip+4)] to frame[u16(ip+6)]; pointer step by frame[s16(ip+0)] sign; ip += 8 */
     /* decode signature: IPADV+0x2;RIP+0x2/2:movzx;TDYN;RTdyn/8:mov;WF+0xa/8:add */
     /* dispatch skeleton: RF+0x10f/8:mov;RF+0xa/8:mov;IPADV+0x2;RIP+0x2/2:movzx;TDYN;RTdyn/8:mov;WF+0xa/8:add;JMP:rsi */
     vm->state = state0;
+    r.slot = (uint32_t)(U16(vm->ip + 0x2u));
+    r.next_entry = vm_entry_from_table_offset(r.slot);
+    /* tier0 static slot recovered from the RetDec single-function model; dynamic source-row validation is still absent. */
     vm->ip += 0x8;
     /* IP advance recovered from native tail site: tail_ip_add@0x868b4 */
     /* dispatch: next = dispatch_table[slot] */
@@ -1404,9 +1430,14 @@ static VMOpResult op_entry_073(VMState *vm) {
     uint8_t byte0 = vm->byte;
     /* entry=73, native=0x86be4, class=unobserved_static, events=0, shape=-, delta=- */
     /* native IP reads: 0x86c11:u16_4,0x86c2c:u16_6,0x86c4d:u16_0,0x86cd8:u16_2,0x86d04:u16_2 - state0 - 0x3f7f9f2 */
+    /* tier0 static model: rank=5, retdec=function_86be4, slot_status=final_state_candidate_slot, ip_advance=8 */
+    /* tier0 effects: state pre-subtract; word copy through frame[s16(ip+4)] to frame[s16(ip+6)]; pointer step by frame[s16(ip+0)] sign; state = s16(ip+2); ip += 8 */
     /* decode signature: IPADV+0x2;RIP+0x2/2:movzx;RF+0x170/4:sub;WF+0x170/4:add;TDYN;RTdyn/8:mov;WF+0xa/8:add */
     /* dispatch skeleton: RF+0x10f/8:mov;RF+0xa/8:mov;IPADV+0x2;RIP+0x2/2:movzx;RF+0x170/4:sub;WF+0x170/4:add;TDYN;RTdyn/8:mov;WF+0xa/8:add;JMP:r13 */
     vm->state = state0 - 0x3f7f9f2u + U16(vm->ip + 0x2u) - state0 - 0x3f7f9f2u;
+    r.slot = (uint32_t)(((int32_t)S16(vm->ip + 0x2u)) & 0xffffu);
+    r.next_entry = vm_entry_from_table_offset(r.slot);
+    /* tier0 static slot recovered from the RetDec single-function model; dynamic source-row validation is still absent. */
     vm->ip += 0x8;
     /* IP advance recovered from native tail site: tail_ip_add@0x86d39 */
     /* dispatch: next = dispatch_table[slot] */
@@ -1850,9 +1881,14 @@ static VMOpResult op_entry_096(VMState *vm) {
     uint8_t byte0 = vm->byte;
     /* entry=96, native=0x8c4cf, class=unobserved_static, events=0, shape=-, delta=- */
     /* native IP reads: 0x8c4f0:u16_6,0x8c4fe:u16_2,0x8c523:u16_0,0x8c576:u16_4 */
+    /* tier0 static model: rank=3, retdec=function_8c4cf, slot_status=decode_candidate_slot, ip_advance=8 */
+    /* tier0 effects: qword copy through frame[s16(ip+2)] to frame[u16(ip+6)]; pointer step by frame[s16(ip+0)] sign; state = slot_expr ^ state0; ip += 8 */
     /* decode signature: IPADV+0x4;RIP+0x4/2:movzx;WF+0x170/4:xor;TDYN;RTdyn/8:mov;WF+0xa/8:add */
     /* dispatch skeleton: RF+0xa/8:mov;IPADV+0x4;RF+0x10f/8:mov;RIP+0x4/2:movzx;WF+0x170/4:xor;TDYN;RTdyn/8:mov;WF+0xa/8:add;JMP:rdi */
     vm->state = state0 ^ U16(vm->ip + 0x4u) + 0x1f18e1aau;
+    r.slot = (uint32_t)((((int32_t)S16(vm->ip + 0x4u)) + 0x1f18e1aau) & 0xffffu);
+    r.next_entry = vm_entry_from_table_offset(r.slot);
+    /* tier0 static slot recovered from the RetDec single-function model; dynamic source-row validation is still absent. */
     vm->ip += 0x8;
     /* IP advance recovered from native tail site: tail_ip_add@0x8c5b0 */
     /* dispatch: next = dispatch_table[slot] */
@@ -2640,10 +2676,15 @@ static VMOpResult op_entry_138(VMState *vm) {
     uint8_t byte0 = vm->byte;
     /* entry=138, native=0x94c3a, class=unobserved_static, events=0, shape=-, delta=- */
     /* native IP reads: 0x94c66:u16_6,0x94c87:u16_4,0x94caa:u16_2,0x94d45:u16_0 */
+    /* tier0 static model: rank=10, retdec=function_94c3a, slot_status=decode_candidate_slot, ip_advance=8 */
+    /* tier0 effects: flags += state; dword store through frame[s16(ip+4)]; pointer step by frame[s16(ip+2)] sign; state = slot_expr; ip += 8 */
     /* decode signature: IPADV+0x0;RIP+0x0/2:movzx;RF+0x170/4:sub;WF+0x170/4:add;TDYN;RTdyn/8:mov;WF+0xa/8:add */
     /* dispatch skeleton: RF+0xa/8:mov;RF+0x10f/8:mov;IPADV+0x0;RIP+0x0/2:movzx;RF+0x170/4:sub;WF+0x170/4:add;TDYN;RTdyn/8:mov;WF+0xa/8:add;JMP:r15 */
     vm->state = state0 + U16(vm->ip + 0x0u) - state0 - 0x3010a5b9u;
     vm->flags = flags0 + state0;
+    r.slot = (uint32_t)((((int32_t)S16(vm->ip + 0x0u)) - 0x3010a5b9u) & 0xffffu);
+    r.next_entry = vm_entry_from_table_offset(r.slot);
+    /* tier0 static slot recovered from the RetDec single-function model; dynamic source-row validation is still absent. */
     vm->ip += 0x8;
     /* IP advance recovered from native tail site: tail_ip_add@0x94dd5 */
     /* dispatch: next = dispatch_table[slot] */
@@ -4876,9 +4917,12 @@ static VMOpResult op_entry_255(VMState *vm) {
     uint8_t byte0 = vm->byte;
     /* entry=255, native=0xad768, class=unobserved_static, events=0, shape=-, delta=- */
     /* native IP reads: 0xad789:u16_2,0xad794:u16_6,0xad7bb:u16_0,0xad80e:u16_4 */
+    /* tier0 static model: rank=2, retdec=function_ad768, slot_status=retdec_return_slot, ip_advance=8 */
+    /* tier0 effects: qword store through frame[s16(ip+6)]; pointer step by frame[s16(ip+0)] sign; ip += 8 */
     /* decode signature: IPADV+0x4;RIP+0x4/2:movzx;RF+0x170/4:sub;TDYN;RTdyn/8:mov;WF+0xa/8:add */
     /* dispatch skeleton: RF+0x10f/8:mov;RF+0xa/8:mov;IPADV+0x4;RIP+0x4/2:movzx;RF+0x170/4:sub;TDYN;RTdyn/8:mov;WF+0xa/8:add;JMP:rdi */
     vm->state = state0;
+    /* tier0 slot expression not executable in VMState model: (s16(ip+4) - state0) & g3_mask */
     vm->ip += 0x8;
     /* IP advance recovered from native tail site: tail_ip_add@0xad840 */
     /* dispatch: next = dispatch_table[slot] */
@@ -6214,9 +6258,14 @@ static VMOpResult op_entry_324(VMState *vm) {
     uint8_t byte0 = vm->byte;
     /* entry=324, native=0xbb8aa, class=unobserved_static, events=0, shape=-, delta=- */
     /* native IP reads: 0xbb909:u16_4,0xbb913:u16_6,0xbb937:u16_2,0xbb9aa:u16_0 */
+    /* tier0 static model: rank=7, retdec=function_bb8aa, slot_status=retdec_table_slot, ip_advance=8 */
+    /* tier0 effects: state += flags; word store through frame[s16(ip+6)]; pointer step by frame[s16(ip+2)] sign; final state &= slot source; ip += 8 */
     /* decode signature: IPADV+0x0;RIP+0x0/2:movzx;RF+0x170/4:sub;WF+0x170/4:and;TDYN;RTdyn/8:mov;WF+0xa/8:add */
     /* dispatch skeleton: RF+0xa/8:mov;IPADV+0x0;RIP+0x0/2:movzx;RF+0x10f/8:mov;RF+0x170/4:sub;WF+0x170/4:and;TDYN;RTdyn/8:mov;WF+0xa/8:add;JMP:r12;RF+0x60/8:mov */
     vm->state = state0 + flags0 & U16(vm->ip + 0x0u) - state0 + flags0 + 0x6e06065au;
+    r.slot = (uint32_t)((((int32_t)S16(vm->ip + 0x0u)) - (state0 + flags0) + 0x6e06065au) & 0xffffu);
+    r.next_entry = vm_entry_from_table_offset(r.slot);
+    /* tier0 static slot recovered from the RetDec single-function model; dynamic source-row validation is still absent. */
     vm->ip += 0x8;
     /* IP advance recovered from native tail site: tail_ip_add@0xbba05 */
     /* dispatch: next = dispatch_table[slot] */
@@ -6498,9 +6547,14 @@ static VMOpResult op_entry_339(VMState *vm) {
     uint8_t byte0 = vm->byte;
     /* entry=339, native=0xbf2d5, class=unobserved_static, events=0, shape=-, delta=- */
     /* native IP reads: 0xbf2ec:byte0,0xbf32e:u16_6,0xbf33c:u16_4,0xbf365:u16_2,0xbf3c6:u16_0,0xbf3cd:u16_0 */
+    /* tier0 static model: rank=6, retdec=function_bf2d5, slot_status=decode_candidate_slot, ip_advance=8 */
+    /* tier0 effects: state = state0 - flags0 + 0x2393cc37; dword copy through frame[s16(ip+4)] to frame[s16(ip+6)]; pointer step by frame[s16(ip+2)] sign; ip += 8 */
     /* decode signature: IPADV+0x0;RIP+0x0/2:movzx;TDYN;RTdyn/8:mov;WF+0xa/8:add */
     /* dispatch skeleton: RF+0xa/8:mov;IPADV+0x0;RIP+0x0/2:movzx;RF+0x10f/8:mov;TDYN;RTdyn/8:mov;WF+0xa/8:add;JMP:rdx */
     vm->state = state0 - flags0 + 0x2393cc37u;
+    r.slot = (uint32_t)(U16(vm->ip + 0x0u));
+    r.next_entry = vm_entry_from_table_offset(r.slot);
+    /* tier0 static slot recovered from the RetDec single-function model; dynamic source-row validation is still absent. */
     vm->ip += 0x8;
     /* IP advance recovered from native tail site: tail_ip_add@0xbf42c */
     /* dispatch: next = dispatch_table[slot] */
