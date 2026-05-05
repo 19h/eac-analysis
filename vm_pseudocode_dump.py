@@ -348,6 +348,35 @@ def load_live_in_reentries(path):
     return reentries
 
 
+def load_allstatic_reentries(path):
+    reentries = defaultdict(list)
+    if not path or not Path(path).exists():
+        return reentries
+    status_rank = {
+        "allstatic_next_matches_dynamic_reentry": 0,
+        "allstatic_next_matches_ambiguous_event": 1,
+        "allstatic_next_target_end_match_site_mismatch": 2,
+        "allstatic_next_mismatch": 3,
+        "allstatic_seen_without_next_event": 4,
+        "not_seen_in_allstatic": 5,
+    }
+    for row in read_tsv(path):
+        start = normalize_vm_ip(row.get("synthetic_start_vm_ip", ""))
+        if start:
+            reentries[start].append(row)
+
+    def sort_key(row):
+        return (
+            status_rank.get(row.get("allstatic_status", ""), 9),
+            -int(row.get("allstatic_exact_match_events", "0") or 0),
+            normalize_vm_ip(row.get("expected_next_end_vm_ip", "")),
+        )
+
+    for rows in reentries.values():
+        rows.sort(key=sort_key)
+    return reentries
+
+
 def load_final_tail_site_probes(path):
     probes = defaultdict(list)
     if not path or not Path(path).exists():
@@ -622,6 +651,56 @@ def emit_live_in_reentry_comments(target_vm_ip, live_in_reentries, args):
     omitted = len(rows) - len(shown)
     if omitted > 0:
         print(f"    /* ... {omitted} additional live-in reentry rows omitted ... */")
+
+
+def emit_allstatic_reentry_comments(target_vm_ip, allstatic_reentries, args):
+    start = normalize_vm_ip(target_vm_ip)
+    rows = allstatic_reentries.get(start, [])
+    if not rows:
+        return
+    limit = getattr(args, "allstatic_reentry_top_items", 4)
+    shown = rows if limit <= 0 else rows[:limit]
+    max_expr = getattr(args, "allstatic_reentry_max_expr", 220)
+    print(
+        f"    /* all-static reentry probe @ {start}: rows={len(rows)}; "
+        "immediate next-hook evidence from dumps/vmtail-allstatic remains comment-only. */"
+    )
+    for row in shown:
+        next_hook = "-"
+        if row.get("inferred_next_source_entry", ""):
+            next_hook = (
+                f"entry_{row.get('inferred_next_source_entry')}@"
+                f"{normalize_vm_ip(row.get('inferred_next_source_start_vm_ip', ''))}"
+            )
+        expected = (
+            f"{normalize_vm_ip(row.get('expected_next_site', ''))}->"
+            f"{normalize_vm_ip(row.get('expected_next_end_vm_ip', ''))}"
+            f"/entry_{row.get('expected_next_tail_target_entry', '-')}"
+        )
+        observed = (
+            f"starts={row.get('allstatic_start_counts', '-') or '-'},"
+            f"nexts={row.get('allstatic_next_counts', '-') or '-'},"
+            f"sites={row.get('allstatic_next_sites', '-') or '-'},"
+            f"ends={row.get('allstatic_next_end_vm_ips', '-') or '-'},"
+            f"targets={row.get('allstatic_next_tail_target_entries', '-') or '-'}"
+        )
+        print(
+            f"    /* all-static reentry: source={row.get('source_entry', '?')}, "
+            f"dynamic={c_comment(row.get('dynamic_resolution', '') or '-')}, "
+            f"event={row.get('dynamic_event_span', '-') or '-'}, "
+            f"expected={c_comment(expected)}, "
+            f"next_hook={c_comment(next_hook)}, "
+            f"observed={c_comment(clip(observed, max_expr))}, "
+            f"site_sources={c_comment(clip(row.get('allstatic_next_site_source_entries', '') or '-', max_expr))}, "
+            f"matches={row.get('allstatic_exact_match_events', '0')}, "
+            f"match_counts={c_comment(row.get('allstatic_exact_match_counts', '') or '-')}, "
+            f"status={c_comment(row.get('allstatic_status', '') or '-')}, "
+            f"action={c_comment(row.get('hard_cfg_action', '') or '-')}, "
+            f"blocker={c_comment(clip(row.get('promotion_blocker', '') or '-', max_expr))} */"
+        )
+    omitted = len(rows) - len(shown)
+    if omitted > 0:
+        print(f"    /* ... {omitted} additional all-static reentry rows omitted ... */")
 
 
 def load_tail_lifts(path):
