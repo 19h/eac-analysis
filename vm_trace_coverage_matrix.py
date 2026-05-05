@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import argparse
 import csv
+import re
 import sys
 from collections import Counter
 from pathlib import Path
@@ -15,6 +16,11 @@ DEFAULT_TRACE_DIRS = [
     "dumps/vmtail-mode2-w16",
     "dumps/vmtail-state-wide-w16",
 ]
+
+DISPATCH_RE = re.compile(r"^\[DRIVER\] dispatch trace enabled (?P<body>.*)$")
+CALL_RE = re.compile(r"^\[DRIVER\] call [^(]+\(.*\bmode=(?P<mode>[0-9]+),")
+EAC_ENV_RE = re.compile(r"\bgetenv name=(?P<name>EAC_[A-Z0-9_]+) -> set\b")
+KV_RE = re.compile(r"\b(?P<key>[a-z_]+)=(?P<value>[^ ]+)")
 
 
 def read_tsv(path):
@@ -55,14 +61,31 @@ def classify_dir(path):
     text = str(path)
     if "filefill" in text or "hiddenfill" in text or "frontierfill" in text or "footprintfill" in text:
         return "synthetic_filled_trace"
+    if "regs" in text or "scratch" in text:
+        return "register_context_trace"
     if "state" in text:
         return "state_trace"
     if "mode" in text:
         return "alternate_mode_trace"
+    if not (Path(path) / "vm_instruction_trace.tsv").exists():
+        return "run_without_instruction_trace"
     return "raw_dynamic_trace"
 
 
 def load_trace(path):
+    if not Path(path).exists():
+        return {
+            "rows": 0,
+            "source_entries": set(),
+            "target_entries": set(),
+            "start_ips": set(),
+            "intervals": [],
+            "exact_intervals": [],
+            "statuses": Counter(),
+            "kinds": Counter(),
+            "events_by_source": Counter(),
+            "events_by_target": Counter(),
+        }
     rows = 0
     source_entries = set()
     target_entries = set()
@@ -116,6 +139,74 @@ def load_trace(path):
     }
 
 
+def origin_run_dir(trace_dir):
+    trace_dir = Path(trace_dir)
+    text = str(trace_dir)
+    marker = "-filefill"
+    if marker in text:
+        return Path(text.split(marker, 1)[0])
+    return trace_dir
+
+
+def parse_run_metadata(trace_dir):
+    run_dir = origin_run_dir(trace_dir)
+    path = run_dir / "run.stderr"
+    meta = {
+        "origin_run_dir": str(run_dir),
+        "has_run_stderr": "0",
+        "run_mode": "",
+        "driver_tail_limit": "",
+        "driver_tail_sites": "",
+        "driver_tail_regs": "0",
+        "driver_tail_scratch": "0",
+        "driver_scratch_offsets": "",
+        "driver_detail": "",
+        "driver_tail_trace": "0",
+        "env_flags": "",
+        "runtime_config": "",
+    }
+    if not path.exists():
+        return meta
+
+    meta["has_run_stderr"] = "1"
+    env_flags = set()
+    dispatch_seen = False
+    call_seen = False
+    with path.open(errors="replace") as handle:
+        for idx, line in enumerate(handle):
+            env_match = EAC_ENV_RE.search(line)
+            if env_match:
+                env_flags.add(env_match.group("name"))
+            call_match = CALL_RE.match(line)
+            if call_match:
+                meta["run_mode"] = call_match.group("mode")
+                call_seen = True
+            dispatch_match = DISPATCH_RE.match(line)
+            if dispatch_match:
+                dispatch_seen = True
+                fields = {m.group("key"): m.group("value") for m in KV_RE.finditer(dispatch_match.group("body"))}
+                meta["driver_tail_limit"] = fields.get("tail_limit", "")
+                meta["driver_tail_sites"] = fields.get("tail_sites", "")
+                meta["driver_tail_regs"] = fields.get("tail_regs", "0")
+                meta["driver_tail_scratch"] = fields.get("tail_scratch", "0")
+                meta["driver_scratch_offsets"] = fields.get("scratch_offsets", "")
+                meta["driver_detail"] = fields.get("detail", "")
+                meta["driver_tail_trace"] = fields.get("tail", "0")
+            if dispatch_seen and call_seen and line.startswith("[VMTAIL]"):
+                break
+            if idx >= 20000:
+                break
+
+    meta["env_flags"] = ",".join(sorted(env_flags))
+    if meta["run_mode"]:
+        meta["runtime_config"] = f"x_mode_{meta['run_mode']}"
+    elif "local-blocked" in str(trace_dir):
+        meta["runtime_config"] = "local_blocked"
+    else:
+        meta["runtime_config"] = "unknown"
+    return meta
+
+
 def load_segments(path):
     if not Path(path).exists():
         return None
@@ -146,12 +237,28 @@ def segment_path_for(trace_dir):
     return None
 
 
+def discover_dirs(root):
+    root = Path(root)
+    dirs = set()
+    for name in ("vm_instruction_trace.tsv", "run.stderr"):
+        for path in root.glob(f"*/{name}"):
+            dirs.add(path.parent)
+    return sorted(dirs, key=lambda path: str(path))
+
+
+def default_dirs(root):
+    dirs = {Path(path) for path in DEFAULT_TRACE_DIRS}
+    dirs.update(discover_dirs(root))
+    return sorted(dirs, key=lambda path: str(path))
+
+
 def make_rows(args):
-    trace_dirs = [Path(path) for path in (args.trace_dir or DEFAULT_TRACE_DIRS)]
+    trace_dirs = [Path(path) for path in (args.trace_dir or default_dirs(args.dumps_root))]
     traces = []
     for trace_dir in trace_dirs:
         path = trace_dir / "vm_instruction_trace.tsv"
-        if not path.exists():
+        run_path = origin_run_dir(trace_dir) / "run.stderr"
+        if not path.exists() and not run_path.exists():
             continue
         traces.append((trace_dir, path, load_trace(path)))
 
@@ -193,9 +300,27 @@ def make_rows(args):
         missing_targets = primary["target_entries"] - data["target_entries"]
         extra_starts = data["start_ips"] - primary["start_ips"]
         missing_starts = primary["start_ips"] - data["start_ips"]
-        rows.append({
+        meta = parse_run_metadata(trace_dir)
+        tail_limit = meta.get("driver_tail_limit", "")
+        trace_cap_status = ""
+        if tail_limit and data["kinds"].get("tail"):
+            try:
+                limit_i = int(tail_limit, 0)
+                trace_cap_status = "near_or_at_limit" if data["kinds"]["tail"] >= max(0, limit_i - 1024) else "below_limit"
+            except ValueError:
+                trace_cap_status = ""
+        row = {
             "trace_dir": str(trace_dir),
             "trace_class": classify_dir(trace_dir),
+            "runtime_config": meta["runtime_config"],
+            "run_mode": meta["run_mode"],
+            "driver_tail_limit": meta["driver_tail_limit"],
+            "driver_tail_sites": meta["driver_tail_sites"],
+            "driver_tail_regs": meta["driver_tail_regs"],
+            "driver_tail_scratch": meta["driver_tail_scratch"],
+            "driver_tail_trace": meta["driver_tail_trace"],
+            "driver_scratch_offsets": meta["driver_scratch_offsets"],
+            "trace_cap_status": trace_cap_status,
             "trace_rows": str(data["rows"]),
             "source_entries": str(len(data["source_entries"])),
             "target_entries": str(len(data["target_entries"])),
@@ -216,8 +341,12 @@ def make_rows(args):
             "kinds": fmt_counter(data["kinds"], args.max_items),
             "top_sources": fmt_counter(data["events_by_source"], args.max_items),
             "top_targets": fmt_counter(data["events_by_target"], args.max_items),
-            "path": str(path),
-        })
+            "env_flags": meta["env_flags"],
+            "has_run_stderr": meta["has_run_stderr"],
+            "origin_run_dir": meta["origin_run_dir"],
+            "path": str(path) if path.exists() else "",
+        }
+        rows.append(row)
     rows.sort(key=lambda row: (row["trace_class"], row["trace_dir"]))
     return rows
 
@@ -226,6 +355,15 @@ def emit_tsv(rows):
     fields = [
         "trace_dir",
         "trace_class",
+        "runtime_config",
+        "run_mode",
+        "driver_tail_limit",
+        "driver_tail_sites",
+        "driver_tail_regs",
+        "driver_tail_scratch",
+        "driver_tail_trace",
+        "driver_scratch_offsets",
+        "trace_cap_status",
         "trace_rows",
         "source_entries",
         "target_entries",
@@ -246,6 +384,9 @@ def emit_tsv(rows):
         "kinds",
         "top_sources",
         "top_targets",
+        "env_flags",
+        "has_run_stderr",
+        "origin_run_dir",
         "path",
     ]
     writer = csv.DictWriter(sys.stdout, fieldnames=fields, delimiter="\t", lineterminator="\n")
@@ -257,13 +398,23 @@ def emit_tsv(rows):
 def emit_markdown(rows):
     print("# VM Trace Coverage Matrix\n")
     print("Dynamic VM bytecode coverage is scenario-specific; this matrix compares available run directories.\n")
-    print("| Trace | Class | Rows | Sources | Targets | Starts | Bytes | Segment Bytes | Vs Primary Sources | Vs Primary Starts |")
-    print("| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |")
+    print("| Trace | Class | Mode | Tail Limit | Flags | Rows | Sources | Targets | Starts | Bytes | Vs Primary Sources | Vs Primary Starts |")
+    print("| --- | --- | ---: | ---: | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |")
     for row in rows:
+        flags = []
+        if row["driver_tail_regs"] == "1":
+            flags.append("regs")
+        if row["driver_tail_scratch"] == "1":
+            flags.append("scratch")
+        if row["trace_class"] == "synthetic_filled_trace":
+            flags.append("synthetic")
+        if not flags and row.get("driver_tail_trace") == "1":
+            flags.append("tail")
         print(
-            f"| `{row['trace_dir']}` | `{row['trace_class']}` | {row['trace_rows']} | "
+            f"| `{row['trace_dir']}` | `{row['trace_class']}` | {row['run_mode'] or '-'} | "
+            f"{row['driver_tail_limit'] or '-'} | `{','.join(flags) or '-'}` | {row['trace_rows']} | "
             f"{row['source_entries']} | {row['target_entries']} | {row['start_vm_ips']} | "
-            f"`{row['covered_bytes']}` | `{row['segment_bytes'] or '-'}` | "
+            f"`{row['covered_bytes']}` | "
             f"`{row['source_entries_vs_primary']}` | `{row['start_vm_ips_vs_primary']}` |"
         )
     print("\nThe static handler inventory is broader than any one row here, but these dynamic rows do not prove full program coverage.")
@@ -273,6 +424,7 @@ def main():
     parser = argparse.ArgumentParser(description="Compare VM dynamic trace coverage across run scenarios.")
     parser.add_argument("--trace-dir", action="append", help="Trace directory containing vm_instruction_trace.tsv")
     parser.add_argument("--primary", default="dumps/vmtail-wide-1m-w16")
+    parser.add_argument("--dumps-root", default="dumps")
     parser.add_argument("--max-items", type=int, default=8)
     parser.add_argument("--markdown", action="store_true")
     args = parser.parse_args()
