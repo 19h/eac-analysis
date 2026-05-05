@@ -222,10 +222,15 @@ def c_shape_metrics(rows):
         row.get("dynamic_status", "") for row in native_obfuscated_second_stage_dynamic_index
     )
     second_stage_dynamic_targets = set()
+    second_stage_dynamic_slot_checks = Counter()
     for row in native_obfuscated_second_stage_dynamic_index:
         for item in row.get("target_mix", "").split(","):
             if item and item != "-":
                 second_stage_dynamic_targets.add(item.split(":", 1)[0])
+        for item in row.get("slot_target_check_mix", "").split(","):
+            if item and item != "-":
+                key, _, value = item.partition(":")
+                second_stage_dynamic_slot_checks[key] += int(value or "0")
 
     add(rows, "c_shape", "handler_functions", count(r"^static VMOpResult op_entry_\d{3}\(VMState \*vm\) \{", handlers),
         "All-entry handler/operator C functions.")
@@ -370,6 +375,9 @@ def c_shape_metrics(rows):
     add(rows, "c_shape", "native_obfuscated_second_stage_dynamic_status_mix",
         ",".join(f"{key}:{value}" for key, value in second_stage_dynamic_statuses.most_common()) or "-",
         "Status mix for bounded dynamic second-stage dispatch target evidence.")
+    add(rows, "c_shape", "native_obfuscated_second_stage_dynamic_slot_target_check_mix",
+        ",".join(f"{key}:{value}" for key, value in second_stage_dynamic_slot_checks.most_common()) or "-",
+        "Whether observed dispatch-table slot indices match the handler targets read by computed jmp [rax].")
     add(rows, "c_shape", "target_only_handler_retdec_selected_ranges",
         count(r"^ \*   0x[0-9a-f]+-0x[0-9a-f]+ entry=\d+ ", target_only_handlers_retdec),
         "Target-only VM handler native ranges selected for targeted RetDec.")
