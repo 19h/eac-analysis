@@ -10,7 +10,7 @@ SHA-256: `0b44ad59697129534189efdb75cde2b96245f831438e9f6a53cb7725f190d739`
 - `trace_preload.c`: libc/network/process tracer with EAC-relative caller offsets. Network and process spawning are denied by default unless `EAC_TRACE_ALLOW_NETWORK=1` or `EAC_TRACE_ALLOW_SPAWN=1`.
 - `recon_summary.py`: summarizes a dump directory, trace call sites, dispatcher edges, executable pointer fixups, memory-vs-file mutations, and context pointers.
 - `vm_tail_scan.py`: ranks observed dispatch-table targets and suggests extra `EAC_VMTAIL_SITES=0xsite:reg,...` hooks using Capstone.
-- `vm_trace_graph.py`: converts a traced run into VM edge TSV form; default output is site-based, and `--sequential` emits dynamic per-frame transitions from ordered trace events. It parses arbitrary `ip_wN` fields; legacy TSVs still print `w0..w5`, but exact byte reconstruction uses the full logged lookahead window.
+- `vm_trace_graph.py`: converts a traced run into VM edge TSV form; default output is site-based, and `--sequential` emits dynamic per-frame transitions from ordered trace events. It parses arbitrary `ip_wN` fields; legacy TSVs still print `w0..w5`, but exact byte reconstruction uses the full logged lookahead window. It also normalizes driver-prefixed log lines by trimming to embedded `[VMTAIL]`/`[DISPATCH]` markers before parsing, so output-buffer echo text no longer hides valid tail events.
 - `vm_handler_table.py`: merges dispatch-table metadata, dynamic trace profiles, and static Capstone handler features into one TSV.
 - `vm_bytecode_blocks.py`: reduces direct executed VM instruction rows into contiguous bytecode coverage blocks. Default mode uses exact consumed bytes; `--include-sampled` adds logged prefix/backedge byte windows as partial coverage only.
 - `vm_bytecode_recover.py`: reconstructs VM byte values from instruction rows, verifies byte consistency, and emits segment hashes plus a unique instruction table. Default mode is exact-only; `--include-sampled` also inserts logged prefix/backedge byte windows without claiming the full instruction length is known.
@@ -859,7 +859,7 @@ The wider `dumps/vmtail-wide` rerun used an all-table `0x1200` tail scan. It rem
 
 The current `dumps/vmtail-wide-w16` comparison run repeats that 250k trace with sixteen `ip_w*` lookahead words. The direct graph stayed the same size, but instruction recovery improved from 248299 to 248906 exact rows, prefix-only rows dropped from 697 to 90, and exact byte recovery grew from `0x24948` to `0x24c51` bytes with no conflicts.
 
-The current long `dumps/vmtail-wide-1m-w16` run used the same `0x1200` all-table scan with `EAC_VMTAIL_LIMIT=1000000`. It produced 767437 complete VMTAIL line records and 3385 central-dispatch records. After direct-edge filtering it skipped 1605 indirect-site candidates and kept 4795 transition rows over 769216 branch events: 4756 tail rows covering 765832 events, 39 central-dispatch rows covering 3384 events, 202 source entries, 205 target entries, and 4782 distinct source-target entry pairs.
+The current long `dumps/vmtail-wide-1m-w16` run used the same `0x1200` all-table scan with `EAC_VMTAIL_LIMIT=1000000`. The trace parser now accepts `[VMTAIL]`/`[DISPATCH]` records embedded after driver output bytes, recovering 9 additional exact tail rows that the older anchored parser skipped. The regenerated instruction trace has 769225 data rows (`769226` with header), still reports `skipped_indirect_sites=1605`, and covers 202 source entries / 205 target entries. The recovered embedded island starts at `0x2c0468` and is now represented as `prog_bb_0214` in the C-like program sketch.
 
 Top sequential VM transitions in the long run:
 
@@ -917,18 +917,18 @@ Weighted by source events in the long run, dominant VM IP deltas are:
 | 230 | `-0x40` |
 | 182 | `+0x2d` |
 
-The executed-instruction listing in `vm_instruction_trace.tsv` has 769216 direct rows from the current long W16 trace. Each row attributes a branch to the previous direct source handler and records the bytecode pointer before and after that handler. The `bytes` column is exact when the positive delta fits in the logged `ip_w*` window, otherwise it is marked as a prefix or backedge sample. The current driver logs 32 bytes of VM bytecode lookahead, so prefix statuses are now `prefix_32_of_N`.
+The executed-instruction listing in `vm_instruction_trace.tsv` has 769225 direct rows from the current long W16 trace. Each row attributes a branch to the previous direct source handler and records the bytecode pointer before and after that handler. The `bytes` column is exact when the positive delta fits in the logged `ip_w*` window, otherwise it is marked as a prefix or backedge sample. The current driver logs 32 bytes of VM bytecode lookahead, so prefix statuses are now `prefix_32_of_N`.
 
 Instruction-trace coverage:
 
 - 202 source handlers.
-- 71513 unique start VM IP offsets.
-- 64472 distinct `(source_entry, delta, bytes)` signatures.
-- 767566 rows have exact consumed bytes.
+- 71522 unique start VM IP offsets.
+- 64477 distinct `(source_entry, delta, bytes)` signatures.
+- 767575 rows have exact consumed bytes.
 - 1157 rows are backedge samples.
 - 493 rows are positive jumps longer than the logged byte window and keep only a 32-byte prefix sample.
 
-The exact bytecode block reducer in `vm_bytecode_blocks.tsv` merges exact positive instruction intervals. It produced 445 contiguous blocks covering `0x421d3` bytes of VM bytecode and 767566 exact instruction events. The largest event bands are:
+The exact bytecode block reducer in `vm_bytecode_blocks.tsv` merges exact positive instruction intervals. It produced 445 contiguous blocks covering `0x421f3` bytes of VM bytecode and 767575 exact instruction events. The largest event bands are:
 
 | Events | Band | Blocks | Exact Bytes |
 | ---: | --- | ---: | ---: |
@@ -945,21 +945,21 @@ The exact bytecode block reducer in `vm_bytecode_blocks.tsv` merges exact positi
 
 The bytecode recovery pass in `vm_bytecode_segments.tsv` inserts every exact byte slice into a sparse VM byte map and checks that repeated observations agree byte-for-byte. Current result:
 
-- 767566 exact rows inserted.
+- 767575 exact rows inserted.
 - 445 recovered byte segments.
-- `0x421d3` total exact bytes.
+- `0x421f3` total exact bytes.
 - 0 conflicting byte offsets.
 - 0 conflicting byte observations.
 
 The sampled recovery pass in `vm_bytecode_segments_sampled.tsv` additionally inserts the logged byte windows from prefix-only long jumps and backedge samples. These bytes are valid observed lookahead bytes, but the full VM instruction length remains unknown for sampled rows. Current sampled result:
 
-- 769216 trace rows inserted as exact or sampled byte windows.
+- 769225 trace rows inserted as exact or sampled byte windows.
 - 337 recovered byte segments after sampled windows merge nearby exact segments.
-- `0x42dbd` total observed bytes, adding `0xbea` bytes over exact-only recovery.
+- `0x42ddd` total observed bytes, adding `0xbea` bytes over exact-only recovery.
 - 0 conflicting byte offsets.
 - 0 conflicting byte observations.
 
-`vm_instruction_unique.tsv` collapses the exact trace to 71355 unique executed instruction signatures. The most repeated signatures are still the loop body beginning at `0x22ff44`, where many adjacent rows execute exactly 256 times. Example rows:
+`vm_instruction_unique.tsv` collapses the exact trace to 71364 unique executed instruction signatures. The most repeated signatures are still the loop body beginning at `0x22ff44`, where many adjacent rows execute exactly 256 times. Example rows:
 
 | Count | Start VM IP | Source Entry | Delta | Bytes | Target Entry |
 | ---: | --- | ---: | --- | --- | ---: |
