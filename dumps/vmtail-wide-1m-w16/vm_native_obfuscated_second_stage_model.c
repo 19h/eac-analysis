@@ -58,10 +58,10 @@ static void second_stage_model_cad88(VMState *vm, const VMSecondStageNativeStack
     uint64_t dispatch_index = handler_entry << 3;
     uint64_t target = vm_second_stage_dispatch_target(vm, handler_entry);
     /* entry=0xc9849; site=0xcad88; first_stage=0x17bf1f; chain=source299_chain_a */
-    /* formula=rax_final=rax_initial+(rbx<<3); handler_entry_mix=0x143:1,0xa9:1; target_entry_mix=323@0xbb6e6:1,169@0x9af18:1,310@0xb8556:2 */
-    /* slot_base_check=slot_minus_idx_matches_dispatch_table:4; slot_target_check=slot_index_matches_handler_target:4; model_status=observed_stack_handler_entry_dispatch_model */
+    /* formula=rax_final=rax_initial+(rbx<<3); stack_source=push=0xcaca3,load=0xcacb0,shift=0xcacf1; stack_source_status=static_stack_source_to_rbx_shift_proven; handler_entry_mix=0x143:1,0xa9:1; target_entry_mix=323@0xbb6e6:1,169@0x9af18:1,310@0xb8556:2 */
+    /* slot_base_check=slot_minus_idx_matches_dispatch_table:4; slot_target_check=slot_index_matches_handler_target:4; model_status=static_stack_handler_entry_dispatch_model_for_observed_hits */
     vm_note_second_stage_model(vm, stack, 0xc9849u, 0xcad88u, handler_entry,
-                               observed_vm_ip, dispatch_index, target, "323@0xbb6e6:1,169@0x9af18:1,310@0xb8556:2", "observed_stack_handler_entry_dispatch_model");
+                               observed_vm_ip, dispatch_index, target, "323@0xbb6e6:1,169@0x9af18:1,310@0xb8556:2", "static_stack_handler_entry_dispatch_model_for_observed_hits");
 }
 
 static void second_stage_model_cc3f5(VMState *vm, const VMSecondStageNativeStack *stack) {
@@ -70,10 +70,10 @@ static void second_stage_model_cc3f5(VMState *vm, const VMSecondStageNativeStack
     uint64_t dispatch_index = handler_entry << 3;
     uint64_t target = vm_second_stage_dispatch_target(vm, handler_entry);
     /* entry=0xcaf2a; site=0xcc3f5; first_stage=0x33f109; chain=source195_chain_b */
-    /* formula=rax_final=rax_initial+(rbx<<3); handler_entry_mix=0x56:1,0x136:1; target_entry_mix=86@0x8a37f:1,310@0xb8556:1,169@0x9af18:2 */
-    /* slot_base_check=slot_minus_idx_matches_dispatch_table:4; slot_target_check=slot_index_matches_handler_target:4; model_status=observed_stack_handler_entry_dispatch_model */
+    /* formula=rax_final=rax_initial+(rbx<<3); stack_source=push=0xcc31c,load=0xcc326,shift=0xcc36a; stack_source_status=static_stack_source_to_rbx_shift_proven; handler_entry_mix=0x56:1,0x136:1; target_entry_mix=86@0x8a37f:1,310@0xb8556:1,169@0x9af18:2 */
+    /* slot_base_check=slot_minus_idx_matches_dispatch_table:4; slot_target_check=slot_index_matches_handler_target:4; model_status=static_stack_handler_entry_dispatch_model_for_observed_hits */
     vm_note_second_stage_model(vm, stack, 0xcaf2au, 0xcc3f5u, handler_entry,
-                               observed_vm_ip, dispatch_index, target, "86@0x8a37f:1,310@0xb8556:1,169@0x9af18:2", "observed_stack_handler_entry_dispatch_model");
+                               observed_vm_ip, dispatch_index, target, "86@0x8a37f:1,310@0xb8556:1,169@0x9af18:2", "static_stack_handler_entry_dispatch_model_for_observed_hits");
 }
 
 static void second_stage_model_c559d(VMState *vm, const VMSecondStageNativeStack *stack) {
@@ -82,10 +82,10 @@ static void second_stage_model_c559d(VMState *vm, const VMSecondStageNativeStack
     uint64_t dispatch_index = handler_entry << 3;
     uint64_t target = vm_second_stage_dispatch_target(vm, handler_entry);
     /* entry=0xc4258; site=0xc559d; first_stage=0x33b4b6; chain=source299_chain_b */
-    /* formula=rax_final=rax_initial+(rbx<<3); handler_entry_mix=0x143:1,0xa9:1; target_entry_mix=323@0xbb6e6:1,169@0x9af18:6,310@0xb8556:1 */
-    /* slot_base_check=slot_minus_idx_matches_dispatch_table:8; slot_target_check=slot_index_matches_handler_target:8; model_status=observed_stack_handler_entry_dispatch_model */
+    /* formula=rax_final=rax_initial+(rbx<<3); stack_source=push=0xc54c6,load=0xc54d3,shift=0xc5512; stack_source_status=static_stack_source_to_rbx_shift_proven; handler_entry_mix=0x143:1,0xa9:1; target_entry_mix=323@0xbb6e6:1,169@0x9af18:6,310@0xb8556:1 */
+    /* slot_base_check=slot_minus_idx_matches_dispatch_table:8; slot_target_check=slot_index_matches_handler_target:8; model_status=static_stack_handler_entry_dispatch_model_for_observed_hits */
     vm_note_second_stage_model(vm, stack, 0xc4258u, 0xc559du, handler_entry,
-                               observed_vm_ip, dispatch_index, target, "323@0xbb6e6:1,169@0x9af18:6,310@0xb8556:1", "observed_stack_handler_entry_dispatch_model");
+                               observed_vm_ip, dispatch_index, target, "323@0xbb6e6:1,169@0x9af18:6,310@0xb8556:1", "static_stack_handler_entry_dispatch_model_for_observed_hits");
 }
 
 static void second_stage_model_c6bce(VMState *vm, const VMSecondStageNativeStack *stack) {
@@ -94,10 +94,10 @@ static void second_stage_model_c6bce(VMState *vm, const VMSecondStageNativeStack
     uint64_t dispatch_index = handler_entry << 3;
     uint64_t target = vm_second_stage_dispatch_target(vm, handler_entry);
     /* entry=0xc57b8; site=0xc6bce; first_stage=0x36afd2; chain=source195_chain_c */
-    /* formula=rax_final=rax_initial+(rbx<<3); handler_entry_mix=0x56:1,0xa9:1; target_entry_mix=86@0x8a37f:1,169@0x9af18:2,310@0xb8556:1 */
-    /* slot_base_check=slot_minus_idx_matches_dispatch_table:4; slot_target_check=slot_index_matches_handler_target:4; model_status=observed_stack_handler_entry_dispatch_model */
+    /* formula=rax_final=rax_initial+(rbx<<3); stack_source=push=0xc6afc,load=0xc6b09,shift=0xc6b43; stack_source_status=static_stack_source_to_rbx_shift_proven; handler_entry_mix=0x56:1,0xa9:1; target_entry_mix=86@0x8a37f:1,169@0x9af18:2,310@0xb8556:1 */
+    /* slot_base_check=slot_minus_idx_matches_dispatch_table:4; slot_target_check=slot_index_matches_handler_target:4; model_status=static_stack_handler_entry_dispatch_model_for_observed_hits */
     vm_note_second_stage_model(vm, stack, 0xc57b8u, 0xc6bceu, handler_entry,
-                               observed_vm_ip, dispatch_index, target, "86@0x8a37f:1,169@0x9af18:2,310@0xb8556:1", "observed_stack_handler_entry_dispatch_model");
+                               observed_vm_ip, dispatch_index, target, "86@0x8a37f:1,169@0x9af18:2,310@0xb8556:1", "static_stack_handler_entry_dispatch_model_for_observed_hits");
 }
 
 static void second_stage_model_c80b9(VMState *vm, const VMSecondStageNativeStack *stack) {
@@ -106,10 +106,10 @@ static void second_stage_model_c80b9(VMState *vm, const VMSecondStageNativeStack
     uint64_t dispatch_index = handler_entry << 3;
     uint64_t target = vm_second_stage_dispatch_target(vm, handler_entry);
     /* entry=0xc6d58; site=0xc80b9; first_stage=0x337d35; chain=source195_chain_d */
-    /* formula=rax_final=rax_initial+(rbx<<3); handler_entry_mix=0x56:1,0x136:1; target_entry_mix=86@0x8a37f:1,310@0xb8556:3,169@0x9af18:4 */
-    /* slot_base_check=slot_minus_idx_matches_dispatch_table:8; slot_target_check=slot_index_matches_handler_target:8; model_status=observed_stack_handler_entry_dispatch_model */
+    /* formula=rax_final=rax_initial+(rbx<<3); stack_source=push=0xc7fdc,load=0xc7fe6,shift=0xc802e; stack_source_status=static_stack_source_to_rbx_shift_proven; handler_entry_mix=0x56:1,0x136:1; target_entry_mix=86@0x8a37f:1,310@0xb8556:3,169@0x9af18:4 */
+    /* slot_base_check=slot_minus_idx_matches_dispatch_table:8; slot_target_check=slot_index_matches_handler_target:8; model_status=static_stack_handler_entry_dispatch_model_for_observed_hits */
     vm_note_second_stage_model(vm, stack, 0xc6d58u, 0xc80b9u, handler_entry,
-                               observed_vm_ip, dispatch_index, target, "86@0x8a37f:1,310@0xb8556:3,169@0x9af18:4", "observed_stack_handler_entry_dispatch_model");
+                               observed_vm_ip, dispatch_index, target, "86@0x8a37f:1,310@0xb8556:3,169@0x9af18:4", "static_stack_handler_entry_dispatch_model_for_observed_hits");
 }
 
 void vm_native_obfuscated_second_stage_model(VMState *vm, uint32_t indirect_jmp_site,

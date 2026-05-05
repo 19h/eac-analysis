@@ -8,6 +8,7 @@
 #define SECOND_STAGE_PATH "dumps/vmtail-wide-1m-w16/vm_native_obfuscated_second_stage.tsv"
 #define DYNAMIC_PATH "dumps/vmtail-wide-1m-w16/vm_native_obfuscated_second_stage_dynamic.tsv"
 #define SLOT_PROOF_PATH "dumps/vmtail-wide-1m-w16/vm_native_obfuscated_second_stage_slot_proof.tsv"
+#define STACK_SOURCE_PATH "dumps/vmtail-wide-1m-w16/vm_native_obfuscated_second_stage_stack_source.tsv"
 #define RBX_PROVENANCE_PATH "dumps/vmtail-wide-1m-w16/vm_native_obfuscated_second_stage_rbx_provenance.tsv"
 #define MAX_FIELDS 64
 #define TEXT 8192
@@ -27,6 +28,9 @@ typedef struct {
     char slot_target_check_mix[TEXT];
     char static_formula[128];
     char slot_proof_status[256];
+    char stack_source_status[256];
+    char stack_source_sites[256];
+    char stack_source_load_kind[64];
     char rbx_handler_entry_mix[TEXT];
     unsigned rbx_observed_rows;
     char rbx_status[256];
@@ -127,6 +131,9 @@ static void init_rows(void) {
         copy_field(g_rows[i].slot_target_check_mix, sizeof(g_rows[i].slot_target_check_mix), "-");
         copy_field(g_rows[i].static_formula, sizeof(g_rows[i].static_formula), "-");
         copy_field(g_rows[i].slot_proof_status, sizeof(g_rows[i].slot_proof_status), "-");
+        copy_field(g_rows[i].stack_source_status, sizeof(g_rows[i].stack_source_status), "-");
+        copy_field(g_rows[i].stack_source_sites, sizeof(g_rows[i].stack_source_sites), "-");
+        copy_field(g_rows[i].stack_source_load_kind, sizeof(g_rows[i].stack_source_load_kind), "-");
         copy_field(g_rows[i].rbx_handler_entry_mix, sizeof(g_rows[i].rbx_handler_entry_mix), "-");
         copy_field(g_rows[i].rbx_status, sizeof(g_rows[i].rbx_status), "-");
     }
@@ -304,11 +311,59 @@ static void load_rbx_provenance(void) {
     fclose(file);
 }
 
+static void load_stack_source(void) {
+    FILE *file = fopen(STACK_SOURCE_PATH, "r");
+    char *line = NULL;
+    size_t cap = 0;
+    char *header[MAX_FIELDS];
+    int header_count, c_site, c_push, c_load, c_shift, c_kind, c_status;
+    if (!file) {
+        perror(STACK_SOURCE_PATH);
+        exit(1);
+    }
+    if (getline(&line, &cap, file) < 0) {
+        fprintf(stderr, "%s: missing header\n", STACK_SOURCE_PATH);
+        exit(1);
+    }
+    chomp(line);
+    header_count = split_tsv(line, header, MAX_FIELDS);
+    c_site = required_col(header, header_count, "indirect_jmp_site", STACK_SOURCE_PATH);
+    c_push = required_col(header, header_count, "source_push_site", STACK_SOURCE_PATH);
+    c_load = required_col(header, header_count, "load_site", STACK_SOURCE_PATH);
+    c_shift = required_col(header, header_count, "shift_site", STACK_SOURCE_PATH);
+    c_kind = required_col(header, header_count, "load_kind", STACK_SOURCE_PATH);
+    c_status = required_col(header, header_count, "stack_source_status", STACK_SOURCE_PATH);
+    while (getline(&line, &cap, file) >= 0) {
+        char *fields[MAX_FIELDS];
+        int count;
+        ModelRow *row;
+        chomp(line);
+        if (!line[0]) {
+            continue;
+        }
+        count = split_tsv(line, fields, MAX_FIELDS);
+        row = row_by_site(parse_number(field_at(fields, count, c_site)));
+        if (!row) {
+            continue;
+        }
+        snprintf(row->stack_source_sites, sizeof(row->stack_source_sites),
+                 "push=%s,load=%s,shift=%s",
+                 field_at(fields, count, c_push),
+                 field_at(fields, count, c_load),
+                 field_at(fields, count, c_shift));
+        copy_field(row->stack_source_load_kind, sizeof(row->stack_source_load_kind), field_at(fields, count, c_kind));
+        copy_field(row->stack_source_status, sizeof(row->stack_source_status), field_at(fields, count, c_status));
+    }
+    free(line);
+    fclose(file);
+}
+
 static const char *model_status(const ModelRow *row) {
     if (strcmp(row->slot_proof_status, "static_dynamic_slot_formula_proven_for_observed_hits") == 0 &&
+        strcmp(row->stack_source_status, "static_stack_source_to_rbx_shift_proven") == 0 &&
         strcmp(row->rbx_status, "rbx_stack_entry_to_dispatch_index_proven_for_observed_hits") == 0 &&
         row->dynamic_hits > 0 && row->rbx_observed_rows > 0) {
-        return "observed_stack_handler_entry_dispatch_model";
+        return "static_stack_handler_entry_dispatch_model_for_observed_hits";
     }
     return "incomplete_second_stage_model";
 }
@@ -343,15 +398,18 @@ static void print_c_string(const char *text) {
 }
 
 static void emit_tsv(void) {
-    printf("entry\tindirect_jmp_site\tfirst_stage_entries\tchain\tstack_handler_entry_offset\tstack_vm_ip_offset\tstatic_formula\thandler_entry_mix\ttarget_entry_mix\ttarget_mix\tdynamic_hits\trbx_observed_rows\tslot_base_check_mix\tslot_target_check_mix\tslot_proof_status\trbx_status\tmodel_status\tnote\n");
+    printf("entry\tindirect_jmp_site\tfirst_stage_entries\tchain\tstack_handler_entry_offset\tstack_vm_ip_offset\tstatic_formula\tstack_source_sites\tstack_source_load_kind\tstack_source_status\thandler_entry_mix\ttarget_entry_mix\ttarget_mix\tdynamic_hits\trbx_observed_rows\tslot_base_check_mix\tslot_target_check_mix\tslot_proof_status\trbx_status\tmodel_status\tnote\n");
     for (size_t i = 0; i < sizeof(g_rows) / sizeof(g_rows[0]); i++) {
         const ModelRow *row = &g_rows[i];
-        printf("0x%llx\t0x%llx\t%s\t%s\t0x88\t0x90\t%s\t%s\t%s\t%s\t%u\t%u\t%s\t%s\t%s\t%s\t%s\t%s\n",
+        printf("0x%llx\t0x%llx\t%s\t%s\t0x88\t0x90\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%u\t%u\t%s\t%s\t%s\t%s\t%s\t%s\n",
                (unsigned long long)row->entry,
                (unsigned long long)row->site,
                row->first_stage_entries,
                row->chain,
                row->static_formula,
+               row->stack_source_sites,
+               row->stack_source_load_kind,
+               row->stack_source_status,
                row->rbx_handler_entry_mix,
                row->target_entry_mix,
                row->target_mix,
@@ -398,6 +456,10 @@ static void emit_c_function(const ModelRow *row) {
     printf(" */\n");
     printf("    /* formula=");
     print_comment_text(row->static_formula);
+    printf("; stack_source=");
+    print_comment_text(row->stack_source_sites);
+    printf("; stack_source_status=");
+    print_comment_text(row->stack_source_status);
     printf("; handler_entry_mix=");
     print_comment_text(row->rbx_handler_entry_mix);
     printf("; target_entry_mix=");
@@ -507,6 +569,7 @@ int main(int argc, char **argv) {
     load_second_stage();
     load_dynamic();
     load_slot_proof();
+    load_stack_source();
     load_rbx_provenance();
     if (mode == MODE_TSV) {
         emit_tsv();
