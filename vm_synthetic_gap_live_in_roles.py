@@ -9,6 +9,7 @@ from pathlib import Path
 
 
 TRACE_DIR = Path("dumps/vmtail-wide-1m-w16")
+DEFAULT_GPR_RUN = "dumps/vmtail-scratch-wide-w16-fs337all-fs128/run.stderr"
 REG_RE = re.compile(r"\b(?:r(?:1[0-5]|[0-9]|[abcd]x|[sd]i|[sb]p))\b")
 FIELD_RE = re.compile(r"\b([a-z][a-z0-9_]*)=0x([0-9a-f]+)")
 DEREF_RE = re.compile(r"qword ptr \[(?P<reg>r(?:1[0-5]|[0-9]|[abcd]x|[sd]i|[sb]p))\]")
@@ -54,18 +55,28 @@ def needed_live_in_rows(path):
     return rows, wanted_ips
 
 
-def load_events(run_path, wanted_ips):
+def iter_run_paths(run_paths):
+    if run_paths is None:
+        return []
+    if isinstance(run_paths, (str, Path)):
+        return [Path(run_paths)]
+    return [Path(path) for path in run_paths if path]
+
+
+def load_events(run_paths, wanted_ips):
     events = defaultdict(list)
-    if not Path(run_path).exists():
-        return events
-    with Path(run_path).open(errors="replace") as handle:
-        for line in handle:
-            if not line.startswith("[VMTAIL]"):
-                continue
-            fields = parse_fields(line)
-            vm_ip_off = fields.get("vm_ip_off")
-            if vm_ip_off in wanted_ips:
-                events[vm_ip_off].append(fields)
+    for run_path in iter_run_paths(run_paths):
+        if not run_path.exists():
+            continue
+        with run_path.open(errors="replace") as handle:
+            for line in handle:
+                if not line.startswith("[VMTAIL]"):
+                    continue
+                fields = parse_fields(line)
+                vm_ip_off = fields.get("vm_ip_off")
+                if vm_ip_off in wanted_ips:
+                    fields["_run_dir"] = str(run_path.parent)
+                    events[vm_ip_off].append(fields)
     return events
 
 
@@ -140,6 +151,10 @@ def select_event(events, vm_ip_off, site=None):
     return candidates[0] if candidates else None
 
 
+def event_run_dir(fields):
+    return fields.get("_run_dir", "") if fields else ""
+
+
 def event_target_entry(fields, target_to_entry):
     if not fields:
         return "", "", None
@@ -210,8 +225,8 @@ def make_rows(args):
     starts = {row["_start_int"] for row in live_rows}
     missing_successors = {row["_missing_int"] for row in live_rows if row.get("_missing_int") is not None}
     events = load_events(args.gpr_run, starts)
-    tail_mem_run = args.tail_mem_run or args.gpr_run
-    tail_events = load_events(tail_mem_run, starts | missing_successors)
+    tail_mem_runs = args.tail_mem_run or args.gpr_run
+    tail_events = load_events(tail_mem_runs, starts | missing_successors)
     skeleton_tail_sites = load_skeleton_tail_sites(args.skeletons)
     table = read_dispatch_table(args.eac)
     target_to_entry = {target: entry for entry, target in enumerate(table)}
@@ -249,12 +264,14 @@ def make_rows(args):
                 "expr_regs": ",".join(regs),
                 "deref_regs": ",".join(deref_regs),
                 "event_site": "",
+                "event_run_dir": "",
                 "event_target_entry": "",
                 "event_target_off": "",
                 "final_tail_site": tail_info.get("tail_site_text", ""),
                 "final_tail_target_reg": tail_info.get("tail_target_reg", ""),
                 "tail_event_site": f"0x{tail_fields.get('site', 0):x}" if tail_fields else "",
                 "tail_event_site_match": tail_site_match,
+                "tail_event_run_dir": event_run_dir(tail_fields),
                 "tail_event_target_entry": tail_entry,
                 "tail_event_target_off": tail_target_off_text,
                 "deref_reads": deref_reads,
@@ -295,12 +312,14 @@ def make_rows(args):
             "expr_regs": ",".join(regs),
             "deref_regs": ",".join(deref_regs),
             "event_site": f"0x{fields.get('site', 0):x}",
+            "event_run_dir": event_run_dir(fields),
             "event_target_entry": str(event_entry),
             "event_target_off": f"0x{target_off:x}" if target_off is not None else "",
             "final_tail_site": tail_info.get("tail_site_text", ""),
             "final_tail_target_reg": tail_info.get("tail_target_reg", ""),
             "tail_event_site": f"0x{tail_fields.get('site', 0):x}" if tail_fields else "",
             "tail_event_site_match": tail_site_match,
+            "tail_event_run_dir": event_run_dir(tail_fields),
             "tail_event_target_entry": tail_entry,
             "tail_event_target_off": tail_target_off_text,
             "deref_reads": deref_reads,
@@ -320,12 +339,14 @@ def emit_tsv(rows):
         "expr_regs",
         "deref_regs",
         "event_site",
+        "event_run_dir",
         "event_target_entry",
         "event_target_off",
         "final_tail_site",
         "final_tail_target_reg",
         "tail_event_site",
         "tail_event_site_match",
+        "tail_event_run_dir",
         "tail_event_target_entry",
         "tail_event_target_off",
         "deref_reads",
@@ -369,12 +390,14 @@ def emit_markdown(rows):
 def main():
     parser = argparse.ArgumentParser(description="Join live-in synthetic gap transfer probes with GPR trace register roles.")
     parser.add_argument("--transfer-probe", default=str(TRACE_DIR / "vm_synthetic_gap_transfer_probe.tsv"))
-    parser.add_argument("--gpr-run", default="dumps/vmtail-scratch-wide-w16-fs337all-fs128/run.stderr")
-    parser.add_argument("--tail-mem-run", default="", help="optional memory-enabled VMTAIL run.stderr used for final-tail mem_<reg> dereferences")
+    parser.add_argument("--gpr-run", action="append", default=[], help="VMTAIL run.stderr used for start-site GPR roles; may be repeated")
+    parser.add_argument("--tail-mem-run", action="append", default=[], help="memory-enabled VMTAIL run.stderr used for final-tail mem_<reg> dereferences; may be repeated")
     parser.add_argument("--skeletons", default=str(TRACE_DIR / "vm_handler_skeletons.tsv"))
     parser.add_argument("--eac", default="eac.elf")
     parser.add_argument("--markdown", action="store_true")
     args = parser.parse_args()
+    if not args.gpr_run:
+        args.gpr_run = [DEFAULT_GPR_RUN]
 
     rows = make_rows(args)
     if args.markdown:

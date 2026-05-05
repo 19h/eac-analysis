@@ -308,14 +308,14 @@ def synthetic_gap_live_in_role_metrics(rows):
                 role_classes[cls] += 1
 
     add(rows, "gap_live_in", "synthetic_gap_live_in_role_rows", len(role_rows),
-        "Live-in synthetic gap transfer-probe rows joined against the GPR/scratch VMTAIL trace.")
+        "Live-in synthetic gap transfer-probe rows joined against prioritized GPR/scratch and focused VMTAIL traces.")
     add(rows, "gap_live_in", "synthetic_gap_live_in_gpr_events_found",
         len(gpr_event_rows),
-        "Rows whose synthetic start VM IP was present in the GPR/scratch trace.")
+        "Rows whose synthetic start VM IP was present in a prioritized GPR/scratch or focused VMTAIL trace.")
     add(rows, "gap_live_in", "synthetic_gap_live_in_missing_gpr_events", resolutions.get("missing_gpr_event", 0),
         "Rows with no start GPR event and no memory observation strong enough to refine the row.")
     add(rows, "gap_live_in", "synthetic_gap_live_in_rows_without_start_gpr_event", len(missing_gpr_rows),
-        "Rows still missing the same-run start-site GPR/scratch event, even if a separate memory trace observed the IP.")
+        "Rows still missing a start-site GPR event after prioritized trace fallback.")
     add(rows, "gap_live_in", "synthetic_gap_live_in_mem_deref_unresolved",
         resolutions.get("live_regs_named_mem_deref_unresolved", 0),
         "Rows where live registers are named but the target expression still depends on an event-local qword dereference.")

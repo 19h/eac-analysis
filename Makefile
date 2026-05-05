@@ -5,7 +5,11 @@ LDFLAGS ?=
 STATE_DIR ?= dumps/vmtail-state-wide-w16
 TRACE ?= $(STATE_DIR)/vm_instruction_trace.tsv
 GPR_RUN ?= dumps/vmtail-scratch-wide-w16-fs337all-fs128/run.stderr
+FOCUS_GPR_RUN ?= dumps/vmtail-mem-focus-starts/run.stderr
 TAIL_MEM_RUN ?= dumps/vmtail-mem-focus-starts/run.stderr
+TAIL_MEM_EXACT_RUN ?= dumps/vmtail-mem-focus-start-final-sites/run.stderr
+GPR_RUN_ARGS ?= --gpr-run $(GPR_RUN) --gpr-run $(FOCUS_GPR_RUN)
+TAIL_MEM_RUN_ARGS ?= --tail-mem-run $(TAIL_MEM_EXACT_RUN) --tail-mem-run $(TAIL_MEM_RUN)
 PRED_ROWS ?= 128
 XFER_ROWS ?= 128
 
@@ -146,8 +150,8 @@ synthetic-gap-symbolic-successors: synthetic-gap-transfer-probe synthetic-gap-dy
 	python3 vm_synthetic_gap_symbolic_successors.py --markdown > dumps/vmtail-wide-1m-w16/vm_synthetic_gap_symbolic_successors.md
 
 synthetic-gap-live-in-roles: synthetic-gap-transfer-probe
-	python3 vm_synthetic_gap_live_in_roles.py --tail-mem-run $(TAIL_MEM_RUN) > dumps/vmtail-wide-1m-w16/vm_synthetic_gap_live_in_roles.tsv
-	python3 vm_synthetic_gap_live_in_roles.py --tail-mem-run $(TAIL_MEM_RUN) --markdown > dumps/vmtail-wide-1m-w16/vm_synthetic_gap_live_in_roles.md
+	python3 vm_synthetic_gap_live_in_roles.py $(GPR_RUN_ARGS) $(TAIL_MEM_RUN_ARGS) > dumps/vmtail-wide-1m-w16/vm_synthetic_gap_live_in_roles.tsv
+	python3 vm_synthetic_gap_live_in_roles.py $(GPR_RUN_ARGS) $(TAIL_MEM_RUN_ARGS) --markdown > dumps/vmtail-wide-1m-w16/vm_synthetic_gap_live_in_roles.md
 
 final-tail-site-probe: synthetic-gap-live-in-roles
 	python3 vm_live_in_final_tail_site_probe.py > dumps/vmtail-wide-1m-w16/vm_live_in_final_tail_site_probe.tsv
