@@ -372,7 +372,7 @@ pseudocode-syntax-check: pseudocode source-bundle path-pseudocode native-ret-pat
 	$(CC) -std=c11 -fsyntax-only -Wall -Wextra -Wno-unused-variable -Wno-unused-function -Wno-unused-parameter -Wno-uninitialized -Wno-parentheses dumps/vmtail-wide-1m-w16/vm_native_ret_patch_epilogues_retdec.c
 	$(CC) -std=c11 -fsyntax-only -Wall -Wextra -Wno-unused-variable -Wno-unused-function -Wno-unused-parameter -Wno-uninitialized -Wno-parentheses dumps/vmtail-wide-1m-w16/vm_native_ret_patch_source278_retdec.c
 	$(CC) -std=c11 -fsyntax-only -Wall -Wextra -Wno-unused-variable -Wno-unused-function -Wno-unused-parameter -Wno-uninitialized -Wno-parentheses dumps/vmtail-wide-1m-w16/vm_target_only_handlers_retdec.c
-	$(CC) -std=c11 -fsyntax-only -Wall -Wextra -Wno-unused-variable -Wno-unused-function -Wno-unused-parameter -Wno-unused-variable -Wno-uninitialized -Wno-parentheses -Wno-sign-compare -Wno-pointer-to-int-cast -Wno-tautological-constant-out-of-range-compare dumps/vmtail-wide-1m-w16/vm_unobserved_handlers_retdec_batch0*.c
+	$(CC) -std=c11 -fsyntax-only -Wall -Wextra -Wno-unused-variable -Wno-unused-function -Wno-unused-parameter -Wno-uninitialized -Wno-parentheses -Wno-sign-compare -Wno-pointer-to-int-cast -Wno-tautological-constant-out-of-range-compare dumps/vmtail-wide-1m-w16/vm_unobserved_handlers_retdec_batch0*.c
 
 pseudocode-object-check: source-bundle
 	$(CC) -std=c11 -O0 -g0 -fno-strict-aliasing -Wall -Wextra -Wno-unused-variable -Wno-unused-function -Wno-parentheses -c dumps/vmtail-wide-1m-w16/vm_recovered_source_bundle.c -o /tmp/eacsym-vm_recovered_source_bundle.o
