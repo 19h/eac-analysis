@@ -6,22 +6,22 @@
  * coverage -> queue -> RetDec batch -> coverage.
  *
  * Ranges:
- *   0x52b320-0x52b3ef rank=11 name=fcn.0052b320 kind=r2_discovered bytes=207 uncovered=207
- *   0x4bcaa-0x4bd78 rank=12 name=fcn.0004bcaa kind=r2_discovered bytes=206 uncovered=206
- *   0x61c46-0x61d14 rank=13 name=fcn.00061c46 kind=r2_discovered bytes=206 uncovered=206
- *   0x4c8790-0x4c885e rank=14 name=fcn.004c8790 kind=r2_discovered bytes=206 uncovered=206
- *   0x549da0-0x549e6e rank=15 name=fcn.00549da0 kind=r2_discovered bytes=206 uncovered=206
- *   0x4fc50-0x4fd1d rank=16 name=fcn.0004fc50 kind=r2_discovered bytes=205 uncovered=205
- *   0x6a8a4-0x6a971 rank=17 name=fcn.0006a8a4 kind=r2_discovered bytes=205 uncovered=205
- *   0x574600-0x5746cd rank=18 name=fcn.00574600 kind=r2_discovered bytes=205 uncovered=205
- *   0x4dd22-0x4ddee rank=19 name=fcn.0004dd22 kind=r2_discovered bytes=204 uncovered=204
- *   0x50ae2-0x50bae rank=20 name=fcn.00050ae2 kind=r2_discovered bytes=204 uncovered=204
- *   0x5104a-0x51116 rank=21 name=fcn.0005104a kind=r2_discovered bytes=204 uncovered=204
- *   0x688b2-0x6897e rank=22 name=fcn.000688b2 kind=r2_discovered bytes=204 uncovered=204
- *   0x4d1ea0-0x4d1f6c rank=23 name=fcn.004d1ea0 kind=r2_discovered bytes=204 uncovered=204
- *   0x5700a0-0x57016c rank=24 name=fcn.005700a0 kind=r2_discovered bytes=204 uncovered=204
- *   0x50d5a-0x50e24 rank=25 name=fcn.00050d5a kind=r2_discovered bytes=202 uncovered=202
- *   0x4b08f0-0x4b09ba rank=26 name=fcn.004b08f0 kind=r2_discovered bytes=202 uncovered=202
+ *   0x52b320-0x52b3ef rank=- name=- kind=- bytes=- uncovered=-
+ *   0x4bcaa-0x4bd78 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x61c46-0x61d14 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x4c8790-0x4c885e rank=- name=- kind=- bytes=- uncovered=-
+ *   0x549da0-0x549e6e rank=- name=- kind=- bytes=- uncovered=-
+ *   0x4fc50-0x4fd1d rank=- name=- kind=- bytes=- uncovered=-
+ *   0x6a8a4-0x6a971 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x574600-0x5746cd rank=- name=- kind=- bytes=- uncovered=-
+ *   0x4dd22-0x4ddee rank=- name=- kind=- bytes=- uncovered=-
+ *   0x50ae2-0x50bae rank=- name=- kind=- bytes=- uncovered=-
+ *   0x5104a-0x51116 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x688b2-0x6897e rank=- name=- kind=- bytes=- uncovered=-
+ *   0x4d1ea0-0x4d1f6c rank=- name=- kind=- bytes=- uncovered=-
+ *   0x5700a0-0x57016c rank=- name=- kind=- bytes=- uncovered=-
+ *   0x50d5a-0x50e24 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x4b08f0-0x4b09ba rank=- name=- kind=- bytes=- uncovered=-
  */
 #include <stdbool.h>
 #include <stdio.h>
@@ -48,6 +48,7 @@ struct timeval;
 struct utsname;
 struct iovec;
 struct epoll_event;
+struct eac_retdec_cpuid_regs { uint32_t e0; uint32_t e1; uint32_t e2; uint32_t e3; };
 #define F_GETFL 3
 #define F_SETFL 4
 #define SO_DEBUG 1
@@ -84,6 +85,10 @@ void __asm_rep_movsd_memcpy(char *dst, char *src, int64_t count);
 void __asm_rep_movsq_memcpy(char *dst, char *src, int64_t count);
 int64_t __asm_hlt(void);
 int64_t __asm_mfence();
+struct eac_retdec_cpuid_regs __asm_cpuid(uint32_t leaf);
+struct eac_retdec_cpuid_regs __asm_cpuid_133(uint32_t leaf);
+struct eac_retdec_cpuid_regs __asm_cpuid_134(uint32_t leaf);
+uint64_t __asm_xgetbv(uint64_t index);
 void __stack_chk_fail(void);
 int __cxa_atexit(void (*func)(int64_t *), void *arg, void *dso);
 int128_t __asm_movsd(int64_t value);
