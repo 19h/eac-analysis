@@ -1221,7 +1221,7 @@ int64_t function_48e480(int64_t a1, int64_t a2) {
             function_54b20(&v11, a1, function_36b3c(a1, 0, "basic_string::substr"), v6);
             v13 = (int64_t *)function_527fe(&v11, a2);
             v10 = *v13;
-            *v13 = &g6;
+            *v13 = (int64_t)&g6;
             function_48f5c8(&v8, &v10, &v9);
             function_36966(a1, &v8);
             function_29c3a(&v8);
@@ -1244,7 +1244,7 @@ int64_t function_48e480(int64_t a1, int64_t a2) {
                 function_54b20(&v11, a1, function_36b3c(a1, 0, "basic_string::substr"), v6);
                 v13 = (int64_t *)function_527fe(&v11, v16);
                 v10 = *v13;
-                *v13 = &g6;
+                *v13 = (int64_t)&g6;
                 function_48f5c8(&v8, &v10, &v9);
                 function_36966(a1, &v8);
                 function_29c3a(&v8);

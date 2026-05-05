@@ -245,7 +245,7 @@ int64_t function_264e5(int64_t a1, int64_t a2, int64_t a3) {
                 // 0x26541
                 v13 = (int64_t *)v2;
                 v3 = *v13;
-                *v13 = &g4;
+                *v13 = (int64_t)&g4;
                 v11 = v6 + -8 - a1;
                 if (v11 >= 8) {
                     // 0x2656f
@@ -282,7 +282,7 @@ int64_t function_264e5(int64_t a1, int64_t a2, int64_t a3) {
                     // 0x26541
                     v13 = (int64_t *)v14;
                     v3 = *v13;
-                    *v13 = &g4;
+                    *v13 = (int64_t)&g4;
                     v11 = v6 + -8 - a1;
                     if (v11 >= 8) {
                         // 0x2656f
