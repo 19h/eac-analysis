@@ -67,10 +67,13 @@ NATIVE_OBFUSCATED_CONTROL_MODEL_MD := $(PRIMARY_DIR)/vm_native_obfuscated_contro
 NATIVE_RET_PATCH_HIDDEN_BRIDGE_C := $(PRIMARY_DIR)/vm_native_ret_patch_hidden_bridge.c
 NATIVE_RET_PATCH_HIDDEN_BRIDGE_TSV := $(PRIMARY_DIR)/vm_native_ret_patch_hidden_bridge.tsv
 NATIVE_RET_PATCH_HIDDEN_BRIDGE_MD := $(PRIMARY_DIR)/vm_native_ret_patch_hidden_bridge.md
+NATIVE_HANDLER_ENVIRONMENT_COVERAGE_C := $(PRIMARY_DIR)/vm_native_handler_environment_coverage.c
+NATIVE_HANDLER_ENVIRONMENT_COVERAGE_TSV := $(PRIMARY_DIR)/vm_native_handler_environment_coverage.tsv
+NATIVE_HANDLER_ENVIRONMENT_COVERAGE_MD := $(PRIMARY_DIR)/vm_native_handler_environment_coverage.md
 
-.PHONY: all clean fast-replay fast-state fast-gpr fast-predicates fast-state-predicates fast-gpr-predicates fast-transfer fast-state-transfer fast-gpr-transfer fast-validators fast-paths fast-gpr-paths instruction-trace instruction-trace-refresh instruction-unique instruction-unique-fast-check bytecode-segments-fast-check bytecode-blocks-fast-check instruction-lift sampled-recovery file-atlas file-fill long-branches hidden-transitions sampled-operands hidden-fill frontier-fill footprint-fill control-edges bytecode-ir bytecode-basic-blocks synthetic-spans synthetic-tails synthetic-tail-lift synthetic-successor-gaps synthetic-gap-transfer-probe synthetic-gap-dynamic-stitch synthetic-gap-chain-probe synthetic-gap-residual-audit synthetic-gap-concrete-state-audit synthetic-gap-state-trace-targets synthetic-gap-live-context-audit synthetic-gap-table-read-diagnostic synthetic-gap-table-memory-probe synthetic-gap-runtime-table-memory-probe synthetic-gap-sampled-control-correlation synthetic-gap-focused-direct-trace-audit synthetic-gap-focused-sequence-audit synthetic-gap-observed-chain-bridge synthetic-gap-observed-chain-replay synthetic-gap-chain-slot-reconciliation synthetic-gap-unresolved-family-audit synthetic-gap-source299-context-probe synthetic-gap-source299-ret-patch-probe synthetic-gap-sampled-ret-patch-probe synthetic-gap-ret-patch-native-target-atlas native-ret-patch-target-pseudocode native-ret-patch-epilogues-retdec native-ret-patch-source278-retdec native-ret-patch-followups native-ret-patch-followup-retdec native-obfuscated-islands native-obfuscated-second-stage native-obfuscated-second-stage-dynamic native-obfuscated-second-stage-slot-proof native-obfuscated-second-stage-stack-source native-obfuscated-second-stage-rbx-provenance native-obfuscated-second-stage-model native-obfuscated-control-model native-ret-patch-hidden-bridge target-only-handlers-retdec unobserved-handlers-retdec unobserved-handlers-retdec-batch0 weak-handlers-retdec validated-handlers-retdec handler-retdec-index unresolved-family-chains synthetic-gap-live-snapshot-transfer-probe synthetic-gap-live-table-evidence synthetic-gap-symbolic-successors synthetic-gap-live-in-roles final-tail-site-probe synthetic-gap-live-in-reentry-probe synthetic-gap-allstatic-reentry-probe pseudocode pseudocode-full handler-pseudocode path-pseudocode source-bundle pseudocode-syntax-check pseudocode-object-check pseudocode-link-check coverage-matrix coverage-audit c-reconstruction-manifest
+.PHONY: all clean fast-replay fast-state fast-gpr fast-predicates fast-state-predicates fast-gpr-predicates fast-transfer fast-state-transfer fast-gpr-transfer fast-validators fast-paths fast-gpr-paths instruction-trace instruction-trace-refresh instruction-unique instruction-unique-fast-check bytecode-segments-fast-check bytecode-blocks-fast-check instruction-lift sampled-recovery file-atlas file-fill long-branches hidden-transitions sampled-operands hidden-fill frontier-fill footprint-fill control-edges bytecode-ir bytecode-basic-blocks synthetic-spans synthetic-tails synthetic-tail-lift synthetic-successor-gaps synthetic-gap-transfer-probe synthetic-gap-dynamic-stitch synthetic-gap-chain-probe synthetic-gap-residual-audit synthetic-gap-concrete-state-audit synthetic-gap-state-trace-targets synthetic-gap-live-context-audit synthetic-gap-table-read-diagnostic synthetic-gap-table-memory-probe synthetic-gap-runtime-table-memory-probe synthetic-gap-sampled-control-correlation synthetic-gap-focused-direct-trace-audit synthetic-gap-focused-sequence-audit synthetic-gap-observed-chain-bridge synthetic-gap-observed-chain-replay synthetic-gap-chain-slot-reconciliation synthetic-gap-unresolved-family-audit synthetic-gap-source299-context-probe synthetic-gap-source299-ret-patch-probe synthetic-gap-sampled-ret-patch-probe synthetic-gap-ret-patch-native-target-atlas native-ret-patch-target-pseudocode native-ret-patch-epilogues-retdec native-ret-patch-source278-retdec native-ret-patch-followups native-ret-patch-followup-retdec native-obfuscated-islands native-obfuscated-second-stage native-obfuscated-second-stage-dynamic native-obfuscated-second-stage-slot-proof native-obfuscated-second-stage-stack-source native-obfuscated-second-stage-rbx-provenance native-obfuscated-second-stage-model native-obfuscated-control-model native-ret-patch-hidden-bridge native-handler-environment-coverage target-only-handlers-retdec unobserved-handlers-retdec unobserved-handlers-retdec-batch0 weak-handlers-retdec validated-handlers-retdec handler-retdec-index unresolved-family-chains synthetic-gap-live-snapshot-transfer-probe synthetic-gap-live-table-evidence synthetic-gap-symbolic-successors synthetic-gap-live-in-roles final-tail-site-probe synthetic-gap-live-in-reentry-probe synthetic-gap-allstatic-reentry-probe pseudocode pseudocode-full handler-pseudocode path-pseudocode source-bundle pseudocode-syntax-check pseudocode-object-check pseudocode-link-check coverage-matrix coverage-audit c-reconstruction-manifest
 
-all: driver trace_preload.so vm_fast_path_profile vm_instruction_unique_fast vm_bytecode_segments_fast vm_bytecode_blocks_fast vm_handler_retdec_index vm_unresolved_family_chains_dump vm_native_ret_patch_followups_dump vm_native_ret_patch_followup_retdec_dump vm_native_obfuscated_islands_dump vm_native_obfuscated_second_stage_dump vm_native_obfuscated_second_stage_dynamic_dump vm_native_obfuscated_second_stage_slot_proof_dump vm_native_obfuscated_second_stage_stack_source_dump vm_native_obfuscated_second_stage_rbx_provenance_dump vm_native_obfuscated_second_stage_model_dump vm_native_obfuscated_control_model_dump vm_native_ret_patch_hidden_bridge_dump
+all: driver trace_preload.so vm_fast_path_profile vm_instruction_unique_fast vm_bytecode_segments_fast vm_bytecode_blocks_fast vm_handler_retdec_index vm_unresolved_family_chains_dump vm_native_ret_patch_followups_dump vm_native_ret_patch_followup_retdec_dump vm_native_obfuscated_islands_dump vm_native_obfuscated_second_stage_dump vm_native_obfuscated_second_stage_dynamic_dump vm_native_obfuscated_second_stage_slot_proof_dump vm_native_obfuscated_second_stage_stack_source_dump vm_native_obfuscated_second_stage_rbx_provenance_dump vm_native_obfuscated_second_stage_model_dump vm_native_obfuscated_control_model_dump vm_native_ret_patch_hidden_bridge_dump vm_native_handler_environment_coverage_dump
 
 driver: driver.c
 	$(CC) $(CFLAGS) -o $@ $< -ldl
@@ -127,6 +130,9 @@ vm_native_obfuscated_control_model_dump: vm_native_obfuscated_control_model_dump
 	$(CC) $(CFLAGS) -O2 -o $@ $<
 
 vm_native_ret_patch_hidden_bridge_dump: vm_native_ret_patch_hidden_bridge_dump.c
+	$(CC) $(CFLAGS) -O2 -o $@ $<
+
+vm_native_handler_environment_coverage_dump: vm_native_handler_environment_coverage_dump.c
 	$(CC) $(CFLAGS) -O2 -o $@ $<
 
 fast-replay: fast-state fast-gpr
@@ -513,6 +519,17 @@ $(NATIVE_RET_PATCH_HIDDEN_BRIDGE_MD): vm_native_ret_patch_hidden_bridge_dump $(P
 
 native-ret-patch-hidden-bridge: $(NATIVE_RET_PATCH_HIDDEN_BRIDGE_C) $(NATIVE_RET_PATCH_HIDDEN_BRIDGE_TSV) $(NATIVE_RET_PATCH_HIDDEN_BRIDGE_MD)
 
+$(NATIVE_HANDLER_ENVIRONMENT_COVERAGE_C): vm_native_handler_environment_coverage_dump $(PRIMARY_DIR)/vm_handler_table.tsv $(PRIMARY_DIR)/vm_trace_coverage_matrix.tsv
+	./vm_native_handler_environment_coverage_dump --c > $@
+
+$(NATIVE_HANDLER_ENVIRONMENT_COVERAGE_TSV): vm_native_handler_environment_coverage_dump $(PRIMARY_DIR)/vm_handler_table.tsv $(PRIMARY_DIR)/vm_trace_coverage_matrix.tsv
+	./vm_native_handler_environment_coverage_dump --tsv > $@
+
+$(NATIVE_HANDLER_ENVIRONMENT_COVERAGE_MD): vm_native_handler_environment_coverage_dump $(PRIMARY_DIR)/vm_handler_table.tsv $(PRIMARY_DIR)/vm_trace_coverage_matrix.tsv
+	./vm_native_handler_environment_coverage_dump --markdown > $@
+
+native-handler-environment-coverage: $(NATIVE_HANDLER_ENVIRONMENT_COVERAGE_C) $(NATIVE_HANDLER_ENVIRONMENT_COVERAGE_TSV) $(NATIVE_HANDLER_ENVIRONMENT_COVERAGE_MD)
+
 $(TARGET_ONLY_HANDLER_RETDEC_C): vm_target_only_handlers_retdec.py $(PRIMARY_DIR)/vm_handler_semantics.tsv $(PRIMARY_DIR)/vm_handler_table.tsv eac.elf
 	python3 vm_target_only_handlers_retdec.py > $@
 
@@ -610,7 +627,7 @@ $(SOURCE_BUNDLE_C): vm_recovered_source_bundle.py $(HANDLERS_PSEUDOCODE_C) $(PRO
 
 source-bundle: $(SOURCE_BUNDLE_C)
 
-pseudocode-syntax-check: $(PSEUDOCODE_TOP_C) $(PROGRAM_PSEUDOCODE_TOP_C) $(PROGRAM_PSEUDOCODE_FULL_C) $(HANDLERS_PSEUDOCODE_C) $(PATH_HANDLERS_PSEUDOCODE_C) $(SOURCE_BUNDLE_C) $(NATIVE_RET_PATCH_TARGETS_C) $(NATIVE_RET_PATCH_EPILOGUES_RETDEC_C) $(NATIVE_RET_PATCH_SOURCE278_RETDEC_C) $(RET_PATCH_FOLLOWUPS_C) $(RET_PATCH_FOLLOWUP_RETDEC_C) $(NATIVE_OBFUSCATED_ISLANDS_C) $(NATIVE_OBFUSCATED_SECOND_STAGE_C) $(NATIVE_OBFUSCATED_SECOND_STAGE_DYNAMIC_C) $(NATIVE_OBFUSCATED_SECOND_STAGE_SLOT_PROOF_C) $(NATIVE_OBFUSCATED_SECOND_STAGE_STACK_SOURCE_C) $(NATIVE_OBFUSCATED_SECOND_STAGE_RBX_PROVENANCE_C) $(NATIVE_OBFUSCATED_SECOND_STAGE_MODEL_C) $(NATIVE_OBFUSCATED_CONTROL_MODEL_C) $(NATIVE_RET_PATCH_HIDDEN_BRIDGE_C) $(TARGET_ONLY_HANDLER_RETDEC_C) $(UNOBSERVED_HANDLER_RETDEC_CS) $(WEAK_HANDLER_RETDEC_C) $(VALIDATED_HANDLER_RETDEC_CS) $(UNRESOLVED_FAMILY_C)
+pseudocode-syntax-check: $(PSEUDOCODE_TOP_C) $(PROGRAM_PSEUDOCODE_TOP_C) $(PROGRAM_PSEUDOCODE_FULL_C) $(HANDLERS_PSEUDOCODE_C) $(PATH_HANDLERS_PSEUDOCODE_C) $(SOURCE_BUNDLE_C) $(NATIVE_RET_PATCH_TARGETS_C) $(NATIVE_RET_PATCH_EPILOGUES_RETDEC_C) $(NATIVE_RET_PATCH_SOURCE278_RETDEC_C) $(RET_PATCH_FOLLOWUPS_C) $(RET_PATCH_FOLLOWUP_RETDEC_C) $(NATIVE_OBFUSCATED_ISLANDS_C) $(NATIVE_OBFUSCATED_SECOND_STAGE_C) $(NATIVE_OBFUSCATED_SECOND_STAGE_DYNAMIC_C) $(NATIVE_OBFUSCATED_SECOND_STAGE_SLOT_PROOF_C) $(NATIVE_OBFUSCATED_SECOND_STAGE_STACK_SOURCE_C) $(NATIVE_OBFUSCATED_SECOND_STAGE_RBX_PROVENANCE_C) $(NATIVE_OBFUSCATED_SECOND_STAGE_MODEL_C) $(NATIVE_OBFUSCATED_CONTROL_MODEL_C) $(NATIVE_RET_PATCH_HIDDEN_BRIDGE_C) $(NATIVE_HANDLER_ENVIRONMENT_COVERAGE_C) $(TARGET_ONLY_HANDLER_RETDEC_C) $(UNOBSERVED_HANDLER_RETDEC_CS) $(WEAK_HANDLER_RETDEC_C) $(VALIDATED_HANDLER_RETDEC_CS) $(UNRESOLVED_FAMILY_C)
 	$(CC) -std=c11 -fsyntax-only -Wall -Wextra -Wno-unused-variable -Wno-unused-function -Wno-parentheses dumps/vmtail-wide-1m-w16/vm_handlers_pseudocode.c
 	$(CC) -std=c11 -fsyntax-only -Wall -Wextra -Wno-unused-variable -Wno-unused-function -Wno-parentheses dumps/vmtail-wide-1m-w16/vm_path_handlers_pseudocode.c
 	$(CC) -std=c11 -fsyntax-only -Wall -Wextra -Wno-unused-variable -Wno-unused-function -Wno-parentheses dumps/vmtail-wide-1m-w16/vm_pseudocode_top.c
@@ -631,6 +648,7 @@ pseudocode-syntax-check: $(PSEUDOCODE_TOP_C) $(PROGRAM_PSEUDOCODE_TOP_C) $(PROGR
 	$(CC) -std=c11 -fsyntax-only -Wall -Wextra -Wno-unused-function dumps/vmtail-wide-1m-w16/vm_native_obfuscated_second_stage_model.c
 	$(CC) -std=c11 -fsyntax-only -Wall -Wextra -Wno-unused-function dumps/vmtail-wide-1m-w16/vm_native_obfuscated_control_model.c
 	$(CC) -std=c11 -fsyntax-only -Wall -Wextra -Wno-unused-function dumps/vmtail-wide-1m-w16/vm_native_ret_patch_hidden_bridge.c
+	$(CC) -std=c11 -fsyntax-only -Wall -Wextra -Wno-unused-function dumps/vmtail-wide-1m-w16/vm_native_handler_environment_coverage.c
 	$(CC) -std=c11 -fsyntax-only -Wall -Wextra -Wno-unused-variable -Wno-unused-function -Wno-unused-parameter -Wno-uninitialized -Wno-parentheses dumps/vmtail-wide-1m-w16/vm_target_only_handlers_retdec.c
 	$(CC) -std=c11 -fsyntax-only -Wall -Wextra -Wno-unused-variable -Wno-unused-function -Wno-unused-parameter -Wno-uninitialized -Wno-parentheses -Wno-sign-compare -Wno-pointer-to-int-cast -Wno-tautological-constant-out-of-range-compare dumps/vmtail-wide-1m-w16/vm_unobserved_handlers_retdec_batch0*.c
 	$(CC) -std=c11 -fsyntax-only -Wall -Wextra -Wno-unused-variable -Wno-unused-function -Wno-unused-parameter -Wno-uninitialized -Wno-parentheses -Wno-sign-compare -Wno-pointer-to-int-cast -Wno-tautological-constant-out-of-range-compare dumps/vmtail-wide-1m-w16/vm_weak_handlers_retdec.c
@@ -737,6 +755,9 @@ C_RECONSTRUCTION_MANIFEST_INPUTS := \
 	$(NATIVE_RET_PATCH_HIDDEN_BRIDGE_C) \
 	$(NATIVE_RET_PATCH_HIDDEN_BRIDGE_TSV) \
 	$(NATIVE_RET_PATCH_HIDDEN_BRIDGE_MD) \
+	$(NATIVE_HANDLER_ENVIRONMENT_COVERAGE_C) \
+	$(NATIVE_HANDLER_ENVIRONMENT_COVERAGE_TSV) \
+	$(NATIVE_HANDLER_ENVIRONMENT_COVERAGE_MD) \
 	$(TARGET_ONLY_HANDLER_RETDEC_C) \
 	$(UNOBSERVED_HANDLER_RETDEC_CS) \
 	$(WEAK_HANDLER_RETDEC_C) \
@@ -783,7 +804,8 @@ C_RECONSTRUCTION_NATIVE_ACCELERATION_INPUTS := \
 	vm_native_obfuscated_second_stage_rbx_provenance_dump.c vm_native_obfuscated_second_stage_rbx_provenance_dump \
 	vm_native_obfuscated_second_stage_model_dump.c vm_native_obfuscated_second_stage_model_dump \
 	vm_native_obfuscated_control_model_dump.c vm_native_obfuscated_control_model_dump \
-	vm_native_ret_patch_hidden_bridge_dump.c vm_native_ret_patch_hidden_bridge_dump
+	vm_native_ret_patch_hidden_bridge_dump.c vm_native_ret_patch_hidden_bridge_dump \
+	vm_native_handler_environment_coverage_dump.c vm_native_handler_environment_coverage_dump
 
 c-reconstruction-manifest: pseudocode-syntax-check pseudocode-object-check pseudocode-link-check $(C_RECONSTRUCTION_MANIFEST_INPUTS) $(C_RECONSTRUCTION_NATIVE_ACCELERATION_INPUTS)
 	python3 vm_c_reconstruction_manifest.py > dumps/vmtail-wide-1m-w16/vm_c_reconstruction_manifest.tsv
