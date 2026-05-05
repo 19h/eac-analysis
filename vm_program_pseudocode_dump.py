@@ -61,6 +61,9 @@ def emit_preamble(used_entries):
     print("} VMOpResult;")
     print("")
     print("extern void vm_unresolved_synthetic_tail(VMState *vm, uint64_t vm_ip);")
+    print("#ifndef VM_ENABLE_OBSERVED_REENTRY_BRIDGES")
+    print("#define VM_ENABLE_OBSERVED_REENTRY_BRIDGES 0")
+    print("#endif")
     print("#define U16(p) (*(const uint16_t *)(p))")
     print("#define U32(p) (*(const uint32_t *)(p))")
     print("static int64_t signed_vm_delta_u32(uint32_t raw) {")
@@ -365,6 +368,82 @@ def synthetic_successor(edge, synthetic_spans, hidden_chains, block_by_start):
     return block_by_start.get(dest), dest
 
 
+def matching_allstatic_reentry(start, row, allstatic_reentries):
+    dynamic_event = row.get("dynamic_event_span", "")
+    next_end = normalize_vm_ip(row.get("next_end_vm_ip", ""))
+    next_source = row.get("inferred_next_source_entry", "")
+    for candidate in allstatic_reentries.get(start, []):
+        if dynamic_event and candidate.get("dynamic_event_span", "") == dynamic_event:
+            return candidate
+        if (
+            next_end
+            and normalize_vm_ip(candidate.get("expected_next_end_vm_ip", "")) == next_end
+            and (not next_source or candidate.get("inferred_next_source_entry", "") == next_source)
+        ):
+            return candidate
+    return None
+
+
+def select_observed_reentry_bridge(start_vm_ip, missing_successor_vm_ip, live_in_reentries, allstatic_reentries, block_by_start):
+    start = normalize_vm_ip(start_vm_ip)
+    missing = normalize_vm_ip(missing_successor_vm_ip)
+    rows = live_in_reentries.get(start, [])
+    for row in rows:
+        if row.get("dynamic_resolution", "") != "dynamic_stitch_to_next_hooked_source":
+            continue
+        if missing and normalize_vm_ip(row.get("missing_successor_vm_ip", "")) != missing:
+            continue
+        try:
+            next_source_entry = int(row.get("inferred_next_source_entry", ""), 0)
+            next_tail_target_entry = int(row.get("next_tail_target_entry", ""), 0)
+            next_source_start = parse_hex(row.get("inferred_next_source_start_vm_ip", ""))
+            next_end = parse_hex(row.get("next_end_vm_ip", ""))
+        except (TypeError, ValueError):
+            continue
+        dest_block = block_by_start.get(next_end)
+        if dest_block is None:
+            continue
+        allstatic = matching_allstatic_reentry(start, row, allstatic_reentries)
+        return {
+            "start": start,
+            "missing": missing,
+            "next_source_entry": next_source_entry,
+            "next_tail_target_entry": next_tail_target_entry,
+            "next_source_start": next_source_start,
+            "next_end": next_end,
+            "dest_block": dest_block,
+            "dynamic_event_span": row.get("dynamic_event_span", "") or "-",
+            "reentry_class": row.get("reentry_class", "") or "-",
+            "allstatic_status": (allstatic or {}).get("allstatic_status", "not_checked"),
+            "allstatic_matches": (allstatic or {}).get("allstatic_exact_match_events", "0"),
+            "allstatic_evidence": (allstatic or {}).get("allstatic_evidence_class", "dynamic_only"),
+        }
+    return None
+
+
+def emit_observed_reentry_bridge(bridge):
+    print(
+        f"    /* observed reentry bridge @ {bridge['start']}: "
+        f"missing_successor={bridge['missing']}, "
+        f"dynamic_event={c_comment(bridge['dynamic_event_span'])}, "
+        f"next_hook=entry_{bridge['next_source_entry']:03d}@0x{bridge['next_source_start']:x}, "
+        f"next_end=0x{bridge['next_end']:x}, "
+        f"next_target=entry_{bridge['next_tail_target_entry']}, "
+        f"dest=prog_{c_block_name(bridge['dest_block'])}, "
+        f"class={c_comment(bridge['reentry_class'])}, "
+        f"allstatic={c_comment(bridge['allstatic_status'])}/matches={bridge['allstatic_matches']}; "
+        "disabled by default because hidden live-in handlers are not statically replayed. */"
+    )
+    print("#if VM_ENABLE_OBSERVED_REENTRY_BRIDGES")
+    print(f"    vm_ip = 0x{bridge['next_source_start']:x};")
+    print(f"    r = {op_name(bridge['next_source_entry'])}(vm);")
+    print(f"    next_entry = (r.next_entry >= 0) ? r.next_entry : {bridge['next_tail_target_entry']};")
+    print(f"    vm_ip = 0x{bridge['next_end']:x};")
+    print(f"    prog_{c_block_name(bridge['dest_block'])}(vm, vm_ip);")
+    print("    return;")
+    print("#endif")
+
+
 def emit_block_prototypes(blocks):
     for block in blocks:
         print(f"static void prog_{c_block_name(block['block'])}(VMState *vm, uint64_t vm_ip);")
@@ -418,6 +497,15 @@ def emit_block(block, rows, edge, synthetic_spans, dynamic_stitches, transfer_pr
                 print(f"    prog_{c_block_name(target_block)}(vm, vm_ip);")
             elif target_vm_ip is not None:
                 print(f"    /* synthetic successor 0x{target_vm_ip:x} is outside this selected sketch. */")
+                bridge = select_observed_reentry_bridge(
+                    edge.get("target_vm_ip", ""),
+                    f"0x{target_vm_ip:x}",
+                    live_in_reentries,
+                    allstatic_reentries,
+                    block_by_start,
+                )
+                if bridge:
+                    emit_observed_reentry_bridge(bridge)
                 print(f"    vm_unresolved_synthetic_tail(vm, 0x{target_vm_ip:x});")
     print("    (void)r;")
     print("    (void)next_entry;")
@@ -436,7 +524,7 @@ def emit_dispatch(blocks):
     print("}")
 
 
-def collect_used_entries(blocks, rows_by_block, rows_per_block, edges, synthetic_spans, hidden_chains):
+def collect_used_entries(blocks, rows_by_block, rows_per_block, edges, synthetic_spans, hidden_chains, live_in_reentries, allstatic_reentries, block_by_start):
     used = set()
     for block in blocks:
         rows = rows_by_block.get(block["block"], [])
@@ -462,6 +550,17 @@ def collect_used_entries(blocks, rows_by_block, rows_per_block, edges, synthetic
                     used.add(int(chain.get("hidden_source_entry", "")))
                 except ValueError:
                     pass
+            target_block, target_vm_ip = synthetic_successor(edge, synthetic_spans, hidden_chains, block_by_start)
+            if target_block is None and target_vm_ip is not None:
+                bridge = select_observed_reentry_bridge(
+                    edge.get("target_vm_ip", ""),
+                    f"0x{target_vm_ip:x}",
+                    live_in_reentries,
+                    allstatic_reentries,
+                    block_by_start,
+                )
+                if bridge:
+                    used.add(bridge["next_source_entry"])
     return used
 
 
@@ -518,10 +617,20 @@ def main():
     final_tail_site_probes = load_final_tail_site_probes(args.live_in_final_tail_site_probe)
     tail_lifts = load_tail_lifts(args.synthetic_tail_lift)
 
-    emit_preamble(collect_used_entries(chosen, rows_by_block, args.rows_per_block, edges, synthetic_spans, hidden_chains))
-    emit_block_prototypes(chosen)
     known_blocks = {block["block"] for block in chosen}
     block_by_start = {parse_hex(block["start_vm_ip"]): block["block"] for block in chosen}
+    emit_preamble(collect_used_entries(
+        chosen,
+        rows_by_block,
+        args.rows_per_block,
+        edges,
+        synthetic_spans,
+        hidden_chains,
+        live_in_reentries,
+        allstatic_reentries,
+        block_by_start,
+    ))
+    emit_block_prototypes(chosen)
     for block in chosen:
         emit_block(
             block,
