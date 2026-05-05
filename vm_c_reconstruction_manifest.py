@@ -27,6 +27,8 @@ ARTIFACTS = [
     ("synthetic_gap_symbolic_successors_md", TRACE_DIR / "vm_synthetic_gap_symbolic_successors.md"),
     ("synthetic_gap_live_in_roles_tsv", TRACE_DIR / "vm_synthetic_gap_live_in_roles.tsv"),
     ("synthetic_gap_live_in_roles_md", TRACE_DIR / "vm_synthetic_gap_live_in_roles.md"),
+    ("live_in_final_tail_site_probe_tsv", TRACE_DIR / "vm_live_in_final_tail_site_probe.tsv"),
+    ("live_in_final_tail_site_probe_md", TRACE_DIR / "vm_live_in_final_tail_site_probe.md"),
     ("trace_coverage_matrix_tsv", TRACE_DIR / "vm_trace_coverage_matrix.tsv"),
     ("trace_coverage_matrix_md", TRACE_DIR / "vm_trace_coverage_matrix.md"),
     ("static_coverage_audit_tsv", TRACE_DIR / "vm_static_coverage_audit.tsv"),
@@ -343,6 +345,59 @@ def synthetic_gap_live_in_role_metrics(rows):
         "Source entries represented among rows missing a GPR/scratch event at the synthetic start.")
 
 
+def parse_ratio(text):
+    if not text or "/" not in text:
+        return 0, 0
+    left, right = text.split("/", 1)
+    try:
+        return int(left, 0), int(right, 0)
+    except ValueError:
+        return 0, 0
+
+
+def synthetic_gap_final_tail_site_metrics(rows):
+    probe_rows = read_tsv(TRACE_DIR / "vm_live_in_final_tail_site_probe.tsv")
+    observed_rows = [row for row in probe_rows if int(row.get("events", "0") or 0) > 0]
+    exact_target_reg_rows = 0
+    exact_deref_rows = 0
+    total_events = 0
+    total_deref_matches = 0
+    summaries = []
+    for row in probe_rows:
+        events = int(row.get("events", "0") or 0)
+        total_events += events
+        target_num, target_den = parse_ratio(row.get("target_reg_equals_target", ""))
+        if events and target_num == target_den == events:
+            exact_target_reg_rows += 1
+        deref_ok = True if events else False
+        for part in (row.get("deref_mem_matches_target", "") or "").split(","):
+            if not part or ":" not in part:
+                continue
+            reg, ratio = part.split(":", 1)
+            num, den = parse_ratio(ratio)
+            total_deref_matches += num
+            if num != den or den != events:
+                deref_ok = False
+            summaries.append(f"{row.get('source_entry')}@{row.get('final_tail_site')}:{reg}={num}/{den}")
+        if deref_ok:
+            exact_deref_rows += 1
+
+    add(rows, "gap_live_in", "final_tail_site_probe_rows", len(probe_rows),
+        "Live-in final-tail source classes checked with memory-enabled exact native-site probes.")
+    add(rows, "gap_live_in", "final_tail_site_probe_observed_rows", len(observed_rows),
+        "Final-tail source classes with at least one exact-site VMTAIL event in the focused probes.")
+    add(rows, "gap_live_in", "final_tail_site_probe_events", total_events,
+        "Exact native final-tail VMTAIL events summarized by the final-tail probe artifact.")
+    add(rows, "gap_live_in", "final_tail_site_probe_target_reg_full_matches", exact_target_reg_rows,
+        "Rows whose final-tail jump register equaled the observed native target for every exact-site event.")
+    add(rows, "gap_live_in", "final_tail_site_probe_deref_full_matches", exact_deref_rows,
+        "Rows whose expected dereference mem_<reg> equaled the observed native target for every exact-site event.")
+    add(rows, "gap_live_in", "final_tail_site_probe_deref_match_events", total_deref_matches,
+        "Total exact-site events whose expected dereference mem_<reg> matched the observed native target.")
+    add(rows, "gap_live_in", "final_tail_site_probe_deref_match_summary", ",".join(summaries) or "-",
+        "Per-source exact-site dereference match counts.")
+
+
 def gate_metrics(rows):
     add(rows, "gate", "syntax_check", "make pseudocode-syntax-check",
         "Regenerates and warning-checks all six C-like source artifacts with C11 -fsyntax-only.")
@@ -365,6 +420,7 @@ def build_rows():
     synthetic_gap_dynamic_stitch_metrics(rows)
     synthetic_gap_symbolic_successor_metrics(rows)
     synthetic_gap_live_in_role_metrics(rows)
+    synthetic_gap_final_tail_site_metrics(rows)
     gate_metrics(rows)
     add(rows, "caveat", "completion_status", "not_complete",
         "This is a mechanically checked C reconstruction of recovered layers, not proof that every VM bytecode path has been found.")
