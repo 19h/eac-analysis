@@ -51,6 +51,7 @@ SHA-256: `0b44ad59697129534189efdb75cde2b96245f831438e9f6a53cb7725f190d739`
 - `vm_synthetic_gap_chain_probe.py`: attacks ambiguous dynamic stitches by replaying candidate next-source handlers at short offsets after the synthetic gap, promoting only candidates whose static transfer matches both the next hooked target entry and the next hooked VM IP.
 - `vm_synthetic_gap_symbolic_successors.py`: audits symbolic-slot synthetic gap candidates against recovered IR rows and the next hooked dynamic event, without promoting conflicting evidence into hard CFG edges.
 - `vm_synthetic_gap_table_read_diagnostic.py`: replays residual synthetic starts with concrete state plus live GPR/frame-scratch seeds and records the final dispatch-table access that still blocks hard target recovery.
+- `vm_synthetic_gap_table_memory_probe.py`: maps those residual table-relative offsets back to file bytes, ELF sections, and dispatch-table boundaries to distinguish real table slots from code-byte/non-pointer reads.
 - `vm_synthetic_gap_live_in_roles.py`: fallback join for synthetic gap target expressions that still depend on live-in GPRs. The current transfer probe leaves no live-in rows, so this artifact is header-only unless a future replay regresses or exposes a new live-in class.
 - `vm_live_in_final_tail_site_probe.py`: follow-up exact native-tail-site memory summary for live-in source classes; currently header-only because there are no active live-in synthetic gap rows.
 - `vm_synthetic_gap_live_in_reentry_probe.py`: follow-up join of live-in synthetic starts, dynamic next-hooked-source stitch rows, and exact final-tail source proof; currently header-only because there are no active live-in synthetic gap rows.
@@ -166,6 +167,8 @@ SHA-256: `0b44ad59697129534189efdb75cde2b96245f831438e9f6a53cb7725f190d739`
 - `dumps/vmtail-wide-1m-w16/vm_synthetic_gap_live_context_audit.md`: Markdown digest showing that live context removes branch uncertainty but still leaves final table reads or table-oob cases.
 - `dumps/vmtail-wide-1m-w16/vm_synthetic_gap_table_read_diagnostic.tsv`: final residual dispatch-table access diagnostic for the 20 still-unresolved synthetic starts.
 - `dumps/vmtail-wide-1m-w16/vm_synthetic_gap_table_read_diagnostic.md`: Markdown digest of residual table-read diagnoses, table offsets, entry indexes, and native tail sites.
+- `dumps/vmtail-wide-1m-w16/vm_synthetic_gap_table_memory_probe.tsv`: file-backed map from residual table-relative offsets to `.text`/dispatch-table regions and qword classifications.
+- `dumps/vmtail-wide-1m-w16/vm_synthetic_gap_table_memory_probe.md`: Markdown digest showing whether residual table offsets are normal slots, unaligned table bytes, or post-table code bytes.
 - `dumps/vmtail-wide-1m-w16/vm_synthetic_gap_symbolic_successors.tsv`: audit of the source-246 symbolic-slot successor candidates.
 - `dumps/vmtail-wide-1m-w16/vm_synthetic_gap_symbolic_successors.md`: Markdown digest of the symbolic successor audit, including recovered/mid-block/uncovered status.
 - `dumps/vmtail-wide-1m-w16/vm_synthetic_gap_live_in_roles.tsv`: current header-only live-register role join; it will carry role columns if any future gap transfer remains live-in-dependent.

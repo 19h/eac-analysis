@@ -37,6 +37,8 @@ ARTIFACTS = [
     ("synthetic_gap_live_context_audit_md", TRACE_DIR / "vm_synthetic_gap_live_context_audit.md"),
     ("synthetic_gap_table_read_diagnostic_tsv", TRACE_DIR / "vm_synthetic_gap_table_read_diagnostic.tsv"),
     ("synthetic_gap_table_read_diagnostic_md", TRACE_DIR / "vm_synthetic_gap_table_read_diagnostic.md"),
+    ("synthetic_gap_table_memory_probe_tsv", TRACE_DIR / "vm_synthetic_gap_table_memory_probe.tsv"),
+    ("synthetic_gap_table_memory_probe_md", TRACE_DIR / "vm_synthetic_gap_table_memory_probe.md"),
     ("synthetic_gap_symbolic_successors_tsv", TRACE_DIR / "vm_synthetic_gap_symbolic_successors.tsv"),
     ("synthetic_gap_symbolic_successors_md", TRACE_DIR / "vm_synthetic_gap_symbolic_successors.md"),
     ("synthetic_gap_live_in_roles_tsv", TRACE_DIR / "vm_synthetic_gap_live_in_roles.tsv"),
@@ -681,6 +683,53 @@ def synthetic_gap_table_read_diagnostic_metrics(rows):
         "Residual starts ending in a concrete 8-byte table read at a non-qword-aligned offset.")
 
 
+def synthetic_gap_table_memory_probe_metrics(rows):
+    probe_rows = read_tsv(TRACE_DIR / "vm_synthetic_gap_table_memory_probe.tsv")
+    regions = Counter()
+    qword_classes = Counter()
+    sections = Counter()
+    starts_after_table = []
+    starts_unaligned_table = []
+    starts_non_pointer = []
+    observations = 0
+    for row in probe_rows:
+        count_value = int(row.get("table_offset_count", "0") or 0)
+        observations += count_value
+        regions[row.get("region", "")] += count_value
+        qword_classes[row.get("file_qword_class", "")] += count_value
+        sections[row.get("section", "")] += count_value
+        start = row.get("synthetic_start_vm_ip", "")
+        if row.get("region", "") == "after_dispatch_table":
+            starts_after_table.append(start)
+        if row.get("region", "") == "inside_dispatch_table_unaligned":
+            starts_unaligned_table.append(start)
+        if row.get("file_qword_class", "") == "non_pointer_bytes":
+            starts_non_pointer.append(start)
+
+    add(rows, "gap_table_memory", "synthetic_gap_table_memory_probe_rows", len(probe_rows),
+        "Residual table-relative offsets mapped back to file bytes and sections.")
+    add(rows, "gap_table_memory", "synthetic_gap_table_memory_probe_observations", observations,
+        "Offset observations counted across replay variants.")
+    add(rows, "gap_table_memory", "synthetic_gap_table_memory_region_mix",
+        ",".join(f"{key}:{value}" for key, value in regions.most_common()) or "-",
+        "Whether residual table-relative offsets stay in the 360-entry table or point past it.")
+    add(rows, "gap_table_memory", "synthetic_gap_table_memory_qword_class_mix",
+        ",".join(f"{key}:{value}" for key, value in qword_classes.most_common()) or "-",
+        "File qword interpretation at dispatch-table-base plus residual offset.")
+    add(rows, "gap_table_memory", "synthetic_gap_table_memory_section_mix",
+        ",".join(f"{key}:{value}" for key, value in sections.most_common()) or "-",
+        "ELF section mix for residual table-relative offsets.")
+    add(rows, "gap_table_memory", "synthetic_gap_table_memory_after_table_starts",
+        ",".join(starts_after_table) or "-",
+        "Residual starts whose table-relative offset lands after the 360-entry dispatch table.")
+    add(rows, "gap_table_memory", "synthetic_gap_table_memory_unaligned_table_starts",
+        ",".join(starts_unaligned_table) or "-",
+        "Residual starts whose table-relative offset lands inside the table but at an unaligned byte offset.")
+    add(rows, "gap_table_memory", "synthetic_gap_table_memory_non_pointer_starts",
+        ",".join(starts_non_pointer) or "-",
+        "Residual starts whose file qword is classified as ordinary/non-pointer bytes.")
+
+
 def synthetic_gap_live_in_role_metrics(rows):
     role_rows = read_tsv(TRACE_DIR / "vm_synthetic_gap_live_in_roles.tsv")
     resolutions = Counter(row.get("resolution", "") for row in role_rows)
@@ -976,6 +1025,7 @@ def build_rows():
     synthetic_gap_state_trace_target_metrics(rows)
     synthetic_gap_live_context_audit_metrics(rows)
     synthetic_gap_table_read_diagnostic_metrics(rows)
+    synthetic_gap_table_memory_probe_metrics(rows)
     synthetic_gap_live_in_role_metrics(rows)
     synthetic_gap_final_tail_site_metrics(rows)
     synthetic_gap_live_in_reentry_metrics(rows)
