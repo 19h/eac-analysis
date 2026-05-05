@@ -6,22 +6,22 @@
  * coverage -> queue -> RetDec batch -> coverage.
  *
  * Ranges:
- *   0x4b188-0x4b2d2 rank=6 name=fcn.0004b188 kind=r2_discovered bytes=330 uncovered=330
- *   0x4c3810-0x4c395a rank=7 name=fcn.004c3810 kind=r2_discovered bytes=330 uncovered=330
- *   0x556cf0-0x556e3a rank=8 name=fcn.00556cf0 kind=r2_discovered bytes=330 uncovered=330
- *   0x4c0d4-0x4c21c rank=9 name=fcn.0004c0d4 kind=r2_discovered bytes=328 uncovered=328
- *   0x4c592-0x4c6da rank=10 name=fcn.0004c592 kind=r2_discovered bytes=328 uncovered=328
- *   0x633cc-0x63514 rank=11 name=fcn.000633cc kind=r2_discovered bytes=328 uncovered=328
- *   0x4ff460-0x4ff5a7 rank=12 name=fcn.004ff460 kind=r2_discovered bytes=327 uncovered=327
- *   0x5012d0-0x501417 rank=13 name=fcn.005012d0 kind=r2_discovered bytes=327 uncovered=327
- *   0x54f250-0x54f397 rank=14 name=fcn.0054f250 kind=r2_discovered bytes=327 uncovered=327
- *   0x552590-0x5526d7 rank=15 name=method.std::collate_char_.virtual_16 kind=native_discovered bytes=327 uncovered=327
- *   0x25712-0x25856 rank=16 name=fcn.00025712 kind=r2_discovered bytes=324 uncovered=324
- *   0x2588a-0x259ce rank=17 name=fcn.0002588a kind=r2_discovered bytes=324 uncovered=324
- *   0x27e7a-0x27fbe rank=18 name=fcn.00027e7a kind=r2_discovered bytes=324 uncovered=324
- *   0x45a3e-0x45b82 rank=19 name=fcn.00045a3e kind=r2_discovered bytes=324 uncovered=324
- *   0x713da-0x7151e rank=20 name=fcn.000713da kind=r2_discovered bytes=324 uncovered=324
- *   0x4d30d0-0x4d3213 rank=21 name=fcn.004d30d0 kind=r2_discovered bytes=323 uncovered=323
+ *   0x4b188-0x4b2d2 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x4c3810-0x4c395a rank=- name=- kind=- bytes=- uncovered=-
+ *   0x556cf0-0x556e3a rank=- name=- kind=- bytes=- uncovered=-
+ *   0x4c0d4-0x4c21c rank=- name=- kind=- bytes=- uncovered=-
+ *   0x4c592-0x4c6da rank=- name=- kind=- bytes=- uncovered=-
+ *   0x633cc-0x63514 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x4ff460-0x4ff5a7 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x5012d0-0x501417 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x54f250-0x54f397 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x552590-0x5526d7 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x25712-0x25856 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x2588a-0x259ce rank=- name=- kind=- bytes=- uncovered=-
+ *   0x27e7a-0x27fbe rank=- name=- kind=- bytes=- uncovered=-
+ *   0x45a3e-0x45b82 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x713da-0x7151e rank=- name=- kind=- bytes=- uncovered=-
+ *   0x4d30d0-0x4d3213 rank=- name=- kind=- bytes=- uncovered=-
  */
 #include <stdbool.h>
 #include <stdio.h>
@@ -92,6 +92,7 @@ int64_t __asm_cvttsd2si(int128_t value);
 void __asm_ucomisd(int128_t left, int128_t right);
 int128_t __asm_movups();
 void __asm_movups_133();
+int128_t __asm_movaps(int128_t value);
 float80_t __frontend_reg_load_fpr(int32_t reg);
 void __frontend_reg_store_fpr(int32_t reg, float80_t value);
 char *__nl_langinfo_l(int32_t item, struct __locale_struct *locale);

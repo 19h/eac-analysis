@@ -131,6 +131,7 @@ int64_t __asm_cvttsd2si(int128_t value);
 void __asm_ucomisd(int128_t left, int128_t right);
 int128_t __asm_movups();
 void __asm_movups_133();
+int128_t __asm_movaps(int128_t value);
 float80_t __frontend_reg_load_fpr(int32_t reg);
 void __frontend_reg_store_fpr(int32_t reg, float80_t value);
 char *__nl_langinfo_l(int32_t item, struct __locale_struct *locale);
