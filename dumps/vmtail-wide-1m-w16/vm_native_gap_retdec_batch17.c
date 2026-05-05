@@ -6,22 +6,22 @@
  * coverage -> queue -> RetDec batch -> coverage.
  *
  * Ranges:
- *   0x715a1-0x716c8 rank=8 name=fcn.000715a1 kind=r2_discovered bytes=295 uncovered=295
- *   0x4c5fc0-0x4c60e6 rank=9 name=fcn.004c5fc0 kind=r2_discovered bytes=294 uncovered=294
- *   0x621c2-0x622e7 rank=10 name=fcn.000621c2 kind=r2_discovered bytes=293 uncovered=293
- *   0x3ddb5d-0x3ddc80 rank=11 name=fcn.003ddb5d kind=r2_discovered bytes=291 uncovered=291
- *   0x4d2860-0x4d2983 rank=12 name=fcn.004d2860 kind=r2_discovered bytes=291 uncovered=291
- *   0x5efd2-0x5f0f4 rank=13 name=fcn.0005efd2 kind=r2_discovered bytes=290 uncovered=290
- *   0x5c4c0-0x5c5e1 rank=14 name=fcn.0005c4c0 kind=r2_discovered bytes=289 uncovered=289
- *   0x696e0-0x69801 rank=15 name=fcn.000696e0 kind=r2_discovered bytes=289 uncovered=289
- *   0x5115a0-0x5116c1 rank=16 name=method.std::time_get_wchar_t__std::istreambuf_iterator_wchar_t__std::char_traits_wchar_t_____.virtual_24 kind=native_discovered bytes=289 uncovered=289
- *   0x5116e0-0x511801 rank=17 name=method.std::time_get_wchar_t__std::istreambuf_iterator_wchar_t__std::char_traits_wchar_t_____.virtual_32 kind=native_discovered bytes=289 uncovered=289
- *   0x538c20-0x538d41 rank=18 name=method.std::__cxx11::time_get_wchar_t__std::istreambuf_iterator_wchar_t__std::char_traits_wchar_t_____.virtual_24 kind=native_discovered bytes=289 uncovered=289
- *   0x538d60-0x538e81 rank=19 name=method.std::__cxx11::time_get_wchar_t__std::istreambuf_iterator_wchar_t__std::char_traits_wchar_t_____.virtual_32 kind=native_discovered bytes=289 uncovered=289
- *   0x2a0c4-0x2a1e4 rank=20 name=fcn.0002a0c4 kind=r2_discovered bytes=288 uncovered=288
- *   0x4c28f0-0x4c2a10 rank=21 name=fcn.004c28f0 kind=r2_discovered bytes=288 uncovered=288
- *   0x4c8320-0x4c8440 rank=22 name=fcn.004c8320 kind=r2_discovered bytes=288 uncovered=288
- *   0x4cc7d0-0x4cc8f0 rank=23 name=fcn.004cc7d0 kind=r2_discovered bytes=288 uncovered=288
+ *   0x715a1-0x716c8 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x4c5fc0-0x4c60e6 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x621c2-0x622e7 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x3ddb5d-0x3ddc80 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x4d2860-0x4d2983 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x5efd2-0x5f0f4 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x5c4c0-0x5c5e1 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x696e0-0x69801 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x5115a0-0x5116c1 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x5116e0-0x511801 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x538c20-0x538d41 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x538d60-0x538e81 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x2a0c4-0x2a1e4 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x4c28f0-0x4c2a10 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x4c8320-0x4c8440 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x4cc7d0-0x4cc8f0 rank=- name=- kind=- bytes=- uncovered=-
  */
 #include <stdbool.h>
 #include <stdio.h>
