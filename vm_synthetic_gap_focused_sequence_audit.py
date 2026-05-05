@@ -20,6 +20,7 @@ TRACE_DIR = Path("dumps/vmtail-wide-1m-w16")
 DEFAULT_FOCUSED_RUNS = [
     Path("dumps/vmtail-live-residual-targets/run.stderr"),
     Path("dumps/vmtail-state-residual-targets/run.stderr"),
+    Path("dumps/vmtail-residual-122e3c-context/run.stderr"),
 ]
 
 
@@ -223,6 +224,9 @@ def select_example(rows):
     linked = [row for row in unique if row.get("following_residual_start")]
     if linked:
         return linked[0]
+    with_next = [row for row in unique if row.get("next_event_vm_ip")]
+    if with_next:
+        return with_next[0]
     return unique[0]
 
 
