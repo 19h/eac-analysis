@@ -16,6 +16,8 @@ ARTIFACTS = [
     ("program_blocks_top", TRACE_DIR / "vm_program_pseudocode_top.c"),
     ("program_blocks_full", TRACE_DIR / "vm_program_pseudocode_full.c"),
     ("source_bundle", TRACE_DIR / "vm_recovered_source_bundle.c"),
+    ("synthetic_successor_gaps_tsv", TRACE_DIR / "vm_synthetic_successor_gaps.tsv"),
+    ("synthetic_successor_gaps_md", TRACE_DIR / "vm_synthetic_successor_gaps.md"),
 ]
 
 
@@ -100,6 +102,10 @@ def c_shape_metrics(rows):
         "Synthetic terminal spans whose lifted delta lands on a recovered block start.")
     add(rows, "c_shape", "program_full_synthetic_successor_gaps", count(r"synthetic successor 0x[0-9a-f]+ is outside this selected sketch", program_full),
         "Synthetic terminal spans whose lifted successor still lacks a recovered block start.")
+    add(rows, "c_shape", "program_full_synthetic_gap_unresolved_calls", count(r"^    vm_unresolved_synthetic_tail\(vm, 0x[0-9a-f]+\);$", program_full),
+        "Explicit unresolved-tail calls emitted for the remaining synthetic successor gaps.")
+    add(rows, "c_shape", "program_full_default_unresolved_fallbacks", count(r"vm_unresolved_synthetic_tail\(vm, vm_ip\);", program_full),
+        "Default dispatch fallback for VM IPs outside the recovered block switch.")
     add(rows, "c_shape", "program_full_self_loop_comments", count(r"self-loop edge retained as a CFG comment", program_full),
         "Recovered self-loops intentionally not emitted as direct recursive calls.")
     add(rows, "c_shape", "program_full_synthetic_tail_target_loads", count(r"next_entry = \(int\)U16\(vm->ip", program_full),
@@ -108,6 +114,8 @@ def c_shape_metrics(rows):
         "Full program block functions inside the combined source bundle.")
     add(rows, "c_shape", "bundle_block_calls", count(r"^    prog_bb_\d{4}\(vm, vm_ip\);$", bundle),
         "Concrete block-to-block calls inside the combined source bundle.")
+    add(rows, "c_shape", "bundle_synthetic_gap_unresolved_calls", count(r"^    vm_unresolved_synthetic_tail\(vm, 0x[0-9a-f]+\);$", bundle),
+        "Explicit unresolved-tail calls inside the combined source bundle for remaining synthetic successor gaps.")
 
 
 def coverage_metrics(rows):
