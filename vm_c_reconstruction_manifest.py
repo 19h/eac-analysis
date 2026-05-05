@@ -271,6 +271,37 @@ def synthetic_gap_symbolic_successor_metrics(rows):
         "Concrete symbolic-slot destinations not yet present in recovered IR.")
 
 
+def synthetic_gap_live_in_role_metrics(rows):
+    role_rows = read_tsv(TRACE_DIR / "vm_synthetic_gap_live_in_roles.tsv")
+    resolutions = Counter(row.get("resolution", "") for row in role_rows)
+    role_classes = Counter()
+    missing_sources = sorted({
+        row.get("source_entry", "")
+        for row in role_rows
+        if row.get("resolution") == "missing_gpr_event" and row.get("source_entry", "")
+    }, key=lambda value: int(value, 0))
+    for row in role_rows:
+        for cls in row.get("role_classes", "").split(","):
+            if cls:
+                role_classes[cls] += 1
+
+    add(rows, "gap_live_in", "synthetic_gap_live_in_role_rows", len(role_rows),
+        "Live-in synthetic gap transfer-probe rows joined against the GPR/scratch VMTAIL trace.")
+    add(rows, "gap_live_in", "synthetic_gap_live_in_gpr_events_found",
+        len(role_rows) - resolutions.get("missing_gpr_event", 0),
+        "Rows whose synthetic start VM IP was present in the GPR/scratch trace.")
+    add(rows, "gap_live_in", "synthetic_gap_live_in_missing_gpr_events", resolutions.get("missing_gpr_event", 0),
+        "Rows still requiring a GPR/scratch trace at that synthetic start.")
+    add(rows, "gap_live_in", "synthetic_gap_live_in_mem_deref_unresolved",
+        resolutions.get("live_regs_named_mem_deref_unresolved", 0),
+        "Rows where live registers are named but the target expression still depends on an event-local qword dereference.")
+    add(rows, "gap_live_in", "synthetic_gap_live_in_role_class_mix",
+        ",".join(f"{key}:{value}" for key, value in role_classes.most_common()) or "-",
+        "Register value classes observed in the target expressions.")
+    add(rows, "gap_live_in", "synthetic_gap_live_in_missing_gpr_sources", ",".join(missing_sources) or "-",
+        "Source entries represented among rows missing a GPR/scratch event at the synthetic start.")
+
+
 def gate_metrics(rows):
     add(rows, "gate", "syntax_check", "make pseudocode-syntax-check",
         "Regenerates and warning-checks all six C-like source artifacts with C11 -fsyntax-only.")
@@ -292,6 +323,7 @@ def build_rows():
     synthetic_gap_probe_metrics(rows)
     synthetic_gap_dynamic_stitch_metrics(rows)
     synthetic_gap_symbolic_successor_metrics(rows)
+    synthetic_gap_live_in_role_metrics(rows)
     gate_metrics(rows)
     add(rows, "caveat", "completion_status", "not_complete",
         "This is a mechanically checked C reconstruction of recovered layers, not proof that every VM bytecode path has been found.")
