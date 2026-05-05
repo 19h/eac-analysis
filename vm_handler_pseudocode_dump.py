@@ -305,7 +305,7 @@ def emit_preamble():
     print("")
 
 
-def emit_handler(row, transition, tail_ip_advances, ret_patch_summaries, tier0_models, tier1_models, static_only_queue, args):
+def emit_handler(row, transition, tail_ip_advances, ret_patch_summaries, tier0_models, tier1_models, tier2_models, static_only_queue, args):
     entry = row["entry"]
     name = f"op_entry_{int(entry):03d}"
     klass = row.get("class", "")
@@ -363,6 +363,17 @@ def emit_handler(row, transition, tail_ip_advances, ret_patch_summaries, tier0_m
         )
         if tier1_model.get("effects"):
             print(f"    /* tier1 effects: {c_comment(clip(tier1_model['effects'], args.max_comment_len))} */")
+    tier2_model = tier2_models.get(entry, {})
+    if tier2_model:
+        print(
+            f"    /* tier2 split model: rank={c_comment(tier2_model.get('rank', '-'))}, "
+            f"retdec={c_comment(tier2_model.get('function', '-'))}, "
+            f"split={c_comment(tier2_model.get('split_status', '-'))}, "
+            f"slot_status={c_comment(tier2_model.get('slot_status', '-'))}, "
+            f"ip_advance={c_comment(tier2_model.get('ip_advance', '-'))} */"
+        )
+        if tier2_model.get("effects"):
+            print(f"    /* tier2 effects: {c_comment(clip(tier2_model['effects'], args.max_comment_len))} */")
     tr = transition.get(entry, {})
     if tr.get("decode_signature"):
         print(f"    /* decode signature: {c_comment(clip(tr['decode_signature'], args.max_comment_len))} */")
@@ -416,6 +427,21 @@ def emit_handler(row, transition, tail_ip_advances, ret_patch_summaries, tier0_m
                 print(
                     f"    /* tier1 slot expression kept comment-only: "
                     f"{c_comment(clip(tier1_model['slot_expr'], args.max_comment_len))} */"
+                )
+        elif tier2_model:
+            tier2_slot_expr = static_model_slot_c_expr(tier2_model.get("slot_expr", ""))
+            if (
+                tier2_model.get("slot_status") == "retdec_dispatch_table_slot"
+                and tier2_slot_expr
+                and is_complete_expr(tier2_slot_expr, args.max_expr_len)
+            ):
+                print(f"    r.slot = (uint32_t)({tier2_slot_expr});")
+                print("    r.next_entry = vm_entry_from_table_offset(r.slot);")
+                print("    /* tier2 static slot recovered from a split RetDec primary tail; dynamic source-row validation is still absent. */")
+            elif tier2_model.get("slot_expr"):
+                print(
+                    f"    /* tier2 slot expression kept comment-only: "
+                    f"{c_comment(clip(tier2_model['slot_expr'], args.max_comment_len))} */"
                 )
 
         ip_advance = constant_ip_advance(row.get("ip_advance_ir", ""))
@@ -489,6 +515,7 @@ def main():
     parser.add_argument("--ret-patch-comment-items", type=int, default=6)
     parser.add_argument("--static-only-tier0-models", default="dumps/vmtail-wide-1m-w16/vm_static_only_tier0_handler_models.tsv")
     parser.add_argument("--static-only-tier1-models", default="dumps/vmtail-wide-1m-w16/vm_static_only_tier1_handler_models.tsv")
+    parser.add_argument("--static-only-tier2-models", default="dumps/vmtail-wide-1m-w16/vm_static_only_tier2_split_models.tsv")
     parser.add_argument("--static-only-queue", default="dumps/vmtail-wide-1m-w16/vm_static_only_handler_queue.tsv")
     args = parser.parse_args()
 
@@ -499,12 +526,13 @@ def main():
     ret_patch_summaries = load_ret_patch_summaries(args.sampled_ret_patch_probe)
     tier0_models = load_static_models(args.static_only_tier0_models)
     tier1_models = load_static_models(args.static_only_tier1_models)
+    tier2_models = load_static_models(args.static_only_tier2_models)
     static_only_queue = load_static_only_queue(args.static_only_queue)
     chosen = selected_handlers(rows, args)
 
     emit_preamble()
     for row in chosen:
-        emit_handler(row, transition, tail_ip_advances, ret_patch_summaries, tier0_models, tier1_models, static_only_queue, args)
+        emit_handler(row, transition, tail_ip_advances, ret_patch_summaries, tier0_models, tier1_models, tier2_models, static_only_queue, args)
     emit_dispatch_table(chosen)
 
     classes = Counter(row.get("class", "") for row in chosen)
