@@ -15,6 +15,7 @@ from vm_pseudocode_dump import (
     emit_live_in_role_comments,
     emit_concrete_state_audit_comments,
     emit_live_context_audit_comments,
+    emit_table_read_diagnostic_comments,
     emit_residual_audit_comments,
     emit_symbolic_successor_comments,
     emit_transfer_probe_comments,
@@ -30,6 +31,7 @@ from vm_pseudocode_dump import (
     load_live_in_roles,
     load_concrete_state_audits,
     load_live_context_audits,
+    load_table_read_diagnostics,
     load_residual_audits,
     load_rows,
     load_symbolic_successors,
@@ -242,7 +244,7 @@ def emit_decoded_control(row, args):
         print(f"    vm_ip -= 0x{-delta:x};")
 
 
-def emit_synthetic_edge(edge, synthetic_spans, dynamic_stitches, transfer_probes, symbolic_successors, hidden_chains, residual_audits, concrete_state_audits, live_context_audits, live_in_roles, live_in_reentries, allstatic_reentries, final_tail_site_probes, args):
+def emit_synthetic_edge(edge, synthetic_spans, dynamic_stitches, transfer_probes, symbolic_successors, hidden_chains, residual_audits, concrete_state_audits, live_context_audits, table_read_diagnostics, live_in_roles, live_in_reentries, allstatic_reentries, final_tail_site_probes, args):
     target_vm_ip = normalize_vm_ip(edge.get("target_vm_ip", ""))
     chain = resolved_hidden_chain(target_vm_ip, hidden_chains)
     info = synthetic_spans.get(target_vm_ip)
@@ -254,6 +256,7 @@ def emit_synthetic_edge(edge, synthetic_spans, dynamic_stitches, transfer_probes
         emit_residual_audit_comments(target_vm_ip, residual_audits, args)
         emit_concrete_state_audit_comments(target_vm_ip, concrete_state_audits, args)
         emit_live_context_audit_comments(target_vm_ip, live_context_audits, args)
+        emit_table_read_diagnostic_comments(target_vm_ip, table_read_diagnostics, args)
         emit_live_in_role_comments(target_vm_ip, live_in_roles, final_tail_site_probes, args)
         emit_live_in_reentry_comments(target_vm_ip, live_in_reentries, args)
         emit_allstatic_reentry_comments(target_vm_ip, allstatic_reentries, args)
@@ -310,6 +313,7 @@ def emit_synthetic_edge(edge, synthetic_spans, dynamic_stitches, transfer_probes
     emit_residual_audit_comments(target_vm_ip, residual_audits, args)
     emit_concrete_state_audit_comments(target_vm_ip, concrete_state_audits, args)
     emit_live_context_audit_comments(target_vm_ip, live_context_audits, args)
+    emit_table_read_diagnostic_comments(target_vm_ip, table_read_diagnostics, args)
     emit_live_in_role_comments(target_vm_ip, live_in_roles, final_tail_site_probes, args)
     emit_live_in_reentry_comments(target_vm_ip, live_in_reentries, args)
     emit_allstatic_reentry_comments(target_vm_ip, allstatic_reentries, args)
@@ -498,7 +502,7 @@ def emit_block_prototypes(blocks):
     print("")
 
 
-def emit_block(block, rows, edge, synthetic_spans, dynamic_stitches, transfer_probes, symbolic_successors, hidden_chains, residual_audits, concrete_state_audits, live_context_audits, live_in_roles, live_in_reentries, allstatic_reentries, final_tail_site_probes, tail_lifts, args, known_blocks, block_by_start):
+def emit_block(block, rows, edge, synthetic_spans, dynamic_stitches, transfer_probes, symbolic_successors, hidden_chains, residual_audits, concrete_state_audits, live_context_audits, table_read_diagnostics, live_in_roles, live_in_reentries, allstatic_reentries, final_tail_site_probes, tail_lifts, args, known_blocks, block_by_start):
     name = c_block_name(block["block"])
     print(f"static void prog_{name}(VMState *vm, uint64_t vm_ip) {{")
     print("    VMOpResult r = { .next_entry = -1, .slot = 0xffffffffu };")
@@ -538,7 +542,7 @@ def emit_block(block, rows, edge, synthetic_spans, dynamic_stitches, transfer_pr
             else:
                 print("    /* target block is outside this selected sketch. */")
         elif edge_kind == "covered_synthetic_fallthrough":
-            emit_synthetic_edge(edge, synthetic_spans, dynamic_stitches, transfer_probes, symbolic_successors, hidden_chains, residual_audits, concrete_state_audits, live_context_audits, live_in_roles, live_in_reentries, allstatic_reentries, final_tail_site_probes, args)
+            emit_synthetic_edge(edge, synthetic_spans, dynamic_stitches, transfer_probes, symbolic_successors, hidden_chains, residual_audits, concrete_state_audits, live_context_audits, table_read_diagnostics, live_in_roles, live_in_reentries, allstatic_reentries, final_tail_site_probes, args)
             target_block, target_vm_ip = synthetic_successor(edge, synthetic_spans, hidden_chains, block_by_start)
             if target_block is not None:
                 print(f"    /* synthetic successor after lifted delta: prog_{c_block_name(target_block)} @ 0x{target_vm_ip:x}; */")
@@ -630,6 +634,7 @@ def main():
     parser.add_argument("--synthetic-gap-residual-audit", default="dumps/vmtail-wide-1m-w16/vm_synthetic_gap_residual_audit.tsv")
     parser.add_argument("--synthetic-gap-concrete-state-audit", default="dumps/vmtail-wide-1m-w16/vm_synthetic_gap_concrete_state_audit.tsv")
     parser.add_argument("--synthetic-gap-live-context-audit", default="dumps/vmtail-wide-1m-w16/vm_synthetic_gap_live_context_audit.tsv")
+    parser.add_argument("--synthetic-gap-table-read-diagnostic", default="dumps/vmtail-wide-1m-w16/vm_synthetic_gap_table_read_diagnostic.tsv")
     parser.add_argument("--synthetic-gap-live-in-roles", default="dumps/vmtail-wide-1m-w16/vm_synthetic_gap_live_in_roles.tsv")
     parser.add_argument("--synthetic-gap-live-in-reentry-probe", default="dumps/vmtail-wide-1m-w16/vm_synthetic_gap_live_in_reentry_probe.tsv")
     parser.add_argument("--synthetic-gap-allstatic-reentry-probe", default="dumps/vmtail-wide-1m-w16/vm_synthetic_gap_allstatic_reentry_probe.tsv")
@@ -650,6 +655,8 @@ def main():
     parser.add_argument("--concrete-state-audit-max-expr", type=int, default=180)
     parser.add_argument("--live-context-audit-top-items", type=int, default=4)
     parser.add_argument("--live-context-audit-max-expr", type=int, default=180)
+    parser.add_argument("--table-read-diagnostic-top-items", type=int, default=4)
+    parser.add_argument("--table-read-diagnostic-max-expr", type=int, default=180)
     parser.add_argument("--live-in-role-top-items", type=int, default=4)
     parser.add_argument("--live-in-role-max-expr", type=int, default=220)
     parser.add_argument("--live-in-reentry-top-items", type=int, default=4)
@@ -673,6 +680,7 @@ def main():
     residual_audits = load_residual_audits(args.synthetic_gap_residual_audit)
     concrete_state_audits = load_concrete_state_audits(args.synthetic_gap_concrete_state_audit)
     live_context_audits = load_live_context_audits(args.synthetic_gap_live_context_audit)
+    table_read_diagnostics = load_table_read_diagnostics(args.synthetic_gap_table_read_diagnostic)
     live_in_roles = load_live_in_roles(args.synthetic_gap_live_in_roles)
     live_in_reentries = load_live_in_reentries(args.synthetic_gap_live_in_reentry_probe)
     allstatic_reentries = load_allstatic_reentries(args.synthetic_gap_allstatic_reentry_probe)
@@ -707,6 +715,7 @@ def main():
             residual_audits,
             concrete_state_audits,
             live_context_audits,
+            table_read_diagnostics,
             live_in_roles,
             live_in_reentries,
             allstatic_reentries,
