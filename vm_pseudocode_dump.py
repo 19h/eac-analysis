@@ -367,6 +367,24 @@ def load_runtime_table_memory_probes(path):
     return probes
 
 
+def load_live_table_evidences(path):
+    evidences = defaultdict(list)
+    if not path or not Path(path).exists():
+        return evidences
+    for row in read_tsv(path):
+        start = normalize_vm_ip(row.get("synthetic_start_vm_ip", ""))
+        if start:
+            evidences[start].append(row)
+    for rows in evidences.values():
+        rows.sort(key=lambda row: (
+            0 if row.get("seed_quality", "") == "full_gpr_snapshot" else 1,
+            row.get("evidence_class", ""),
+            Path(row.get("run_dir", "")).name,
+            row.get("live_table_offset", ""),
+        ))
+    return evidences
+
+
 def load_sampled_control_correlations(path):
     correlations = defaultdict(list)
     if not path or not Path(path).exists():
@@ -877,6 +895,61 @@ def emit_runtime_table_memory_probe_comments(target_vm_ip, runtime_table_memory_
     omitted = len(rows) - len(shown)
     if omitted > 0:
         print(f"    /* ... {omitted} additional runtime table-memory probe rows omitted ... */")
+
+
+def emit_live_table_evidence_comments(target_vm_ip, live_table_evidences, args):
+    start = normalize_vm_ip(target_vm_ip)
+    rows = live_table_evidences.get(start, [])
+    if not rows:
+        return
+    limit = getattr(args, "live_table_evidence_top_items", 4)
+    shown = rows if limit <= 0 else rows[:limit]
+    print(
+        f"    /* live table evidence @ {start}: rows={len(rows)}; "
+        "per-live-row table offsets mapped to file/runtime bytes, preserving seed quality. */"
+    )
+    for row in shown:
+        run_name = Path(row.get("run_dir", "")).name if row.get("run_dir", "") else "-"
+        next_event = "-"
+        if row.get("next_event_vm_ip", ""):
+            next_event = (
+                f"entry_{row.get('next_event_target_entry', '-')}"
+                f"@{normalize_vm_ip(row.get('next_event_vm_ip', ''))}"
+            )
+        observed_first_hop = normalize_vm_ip(row.get("observed_first_hop_vm_ip", "")) or "-"
+        terminal_dest = normalize_vm_ip(row.get("terminal_dest_vm_ip", "")) or "-"
+        runtime_target = row.get("runtime_qword_eac_off", "") or "-"
+        if row.get("runtime_qword_dispatch_entry", ""):
+            runtime_target = f"entry_{row.get('runtime_qword_dispatch_entry')}@{runtime_target}"
+        file_target = row.get("file_qword_le", "") or "-"
+        if row.get("file_qword_dispatch_entry", ""):
+            file_target = f"entry_{row.get('file_qword_dispatch_entry')}@{file_target}"
+        print(
+            f"    /* live table evidence: source={row.get('source_entry', '?')}, "
+            f"run={c_comment(run_name)}, "
+            f"seed={c_comment(row.get('seed_quality', '') or '-')}, "
+            f"status={c_comment(row.get('live_table_status', '') or '-')}, "
+            f"diagnosis={c_comment(row.get('live_table_diagnosis', '') or '-')}, "
+            f"offset={c_comment(row.get('live_table_offset', '') or '-')}, "
+            f"entry={c_comment(row.get('live_table_entry', '') or '-')}, "
+            f"site={c_comment(row.get('live_table_site', '') or '-')}, "
+            f"operand={c_comment(row.get('live_table_operand', '') or '-')}, "
+            f"evidence={c_comment(row.get('evidence_class', '') or '-')}, "
+            f"region={c_comment(row.get('region', '') or '-')}, "
+            f"file_target={c_comment(file_target)}, "
+            f"file_class={c_comment(row.get('file_qword_class', '') or '-')}, "
+            f"runtime_qword={c_comment(row.get('runtime_qword_le', '') or '-')}, "
+            f"runtime_class={c_comment(row.get('runtime_qword_class', '') or '-')}, "
+            f"match_file={c_comment(row.get('runtime_matches_file', '') or '-')}, "
+            f"runtime_target={c_comment(runtime_target)}, "
+            f"next={c_comment(next_event)}, "
+            f"first_hop={c_comment(observed_first_hop)}, "
+            f"terminal={c_comment(terminal_dest)}, "
+            f"branch={c_comment(row.get('branch_resolution', '') or '-')} */"
+        )
+    omitted = len(rows) - len(shown)
+    if omitted > 0:
+        print(f"    /* ... {omitted} additional live table evidence rows omitted ... */")
 
 
 def emit_sampled_control_correlation_comments(target_vm_ip, sampled_control_correlations, args):
