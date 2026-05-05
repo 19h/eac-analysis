@@ -9,6 +9,7 @@ from pathlib import Path
 
 TRACE_DIR = Path("dumps/vmtail-wide-1m-w16")
 RESIDUAL_STATE_DIR = Path("dumps/vmtail-state-residual-targets")
+LIVE_RESIDUAL_DIR = Path("dumps/vmtail-live-residual-targets")
 
 
 ARTIFACTS = [
@@ -32,6 +33,8 @@ ARTIFACTS = [
     ("synthetic_gap_concrete_state_audit_md", TRACE_DIR / "vm_synthetic_gap_concrete_state_audit.md"),
     ("synthetic_gap_state_trace_targets_tsv", TRACE_DIR / "vm_synthetic_gap_state_trace_targets.tsv"),
     ("synthetic_gap_state_trace_targets_md", TRACE_DIR / "vm_synthetic_gap_state_trace_targets.md"),
+    ("synthetic_gap_live_context_audit_tsv", TRACE_DIR / "vm_synthetic_gap_live_context_audit.tsv"),
+    ("synthetic_gap_live_context_audit_md", TRACE_DIR / "vm_synthetic_gap_live_context_audit.md"),
     ("synthetic_gap_symbolic_successors_tsv", TRACE_DIR / "vm_synthetic_gap_symbolic_successors.tsv"),
     ("synthetic_gap_symbolic_successors_md", TRACE_DIR / "vm_synthetic_gap_symbolic_successors.md"),
     ("synthetic_gap_live_in_roles_tsv", TRACE_DIR / "vm_synthetic_gap_live_in_roles.tsv"),
@@ -48,6 +51,8 @@ ARTIFACTS = [
     ("static_coverage_audit_md", TRACE_DIR / "vm_static_coverage_audit.md"),
     ("residual_state_target_run_stderr", RESIDUAL_STATE_DIR / "run.stderr"),
     ("residual_state_target_trace_tsv", RESIDUAL_STATE_DIR / "vm_instruction_trace.tsv"),
+    ("live_residual_target_run_stderr", LIVE_RESIDUAL_DIR / "run.stderr"),
+    ("live_residual_target_trace_tsv", LIVE_RESIDUAL_DIR / "vm_instruction_trace.tsv"),
 ]
 
 
@@ -170,6 +175,10 @@ def c_shape_metrics(rows):
         "Residual concrete-state replay audit sites carried into the full program sketch.")
     add(rows, "c_shape", "program_full_concrete_state_audit_comments", count(r"concrete-state audit: source=", program_full),
         "Per-start concrete-state replay comments carried into the full program sketch.")
+    add(rows, "c_shape", "program_full_live_context_audit_sites", count(r"live-context audit @", program_full),
+        "Residual live-context replay audit sites carried into the full program sketch.")
+    add(rows, "c_shape", "program_full_live_context_audit_comments", count(r"live-context audit: source=", program_full),
+        "Per-start live GPR/scratch replay comments carried into the full program sketch.")
     add(rows, "c_shape", "program_full_hidden_chain_resolved_calls", count(r"hidden source entry_\d+ replayed from", program_full),
         "Hidden-chain matches emitted as concrete handler calls before reentering a recovered block.")
     add(rows, "c_shape", "program_full_live_in_role_evidence_sites", count(r"live-in role evidence @", program_full),
@@ -220,6 +229,10 @@ def c_shape_metrics(rows):
         "Residual concrete-state replay audit sites carried into the combined source bundle.")
     add(rows, "c_shape", "bundle_concrete_state_audit_comments", count(r"concrete-state audit: source=", bundle),
         "Per-start concrete-state replay comments carried into the combined source bundle.")
+    add(rows, "c_shape", "bundle_live_context_audit_sites", count(r"live-context audit @", bundle),
+        "Residual live-context replay audit sites carried into the combined source bundle.")
+    add(rows, "c_shape", "bundle_live_context_audit_comments", count(r"live-context audit: source=", bundle),
+        "Per-start live GPR/scratch replay comments carried into the combined source bundle.")
     add(rows, "c_shape", "bundle_hidden_chain_resolved_calls", count(r"hidden source entry_\d+ replayed from", bundle),
         "Hidden-chain matches emitted as concrete handler calls inside the combined source bundle.")
     add(rows, "c_shape", "bundle_live_in_role_evidence_sites", count(r"live-in role evidence @", bundle),
@@ -539,6 +552,57 @@ def synthetic_gap_state_trace_target_metrics(rows):
         "Per-start minimal focus IP/site pairs for a targeted VMTAIL state run.")
 
 
+def synthetic_gap_live_context_audit_metrics(rows):
+    live_rows = read_tsv(TRACE_DIR / "vm_synthetic_gap_live_context_audit.tsv")
+    resolutions = Counter(row.get("live_resolution", "") for row in live_rows)
+    statuses = Counter()
+    reasons = Counter()
+    resolved_branches = [
+        row.get("synthetic_start_vm_ip", "")
+        for row in live_rows
+        if row.get("state_only_classification", "") == "concrete_branch_unknown"
+        and row.get("live_resolution", "") != "live_branch_unknown"
+    ]
+    seedless = [
+        row.get("synthetic_start_vm_ip", "")
+        for row in live_rows
+        if int(row.get("live_seed_rows", "0") or 0) == 0
+    ]
+    for row in live_rows:
+        for item in (row.get("live_status_mix", "") or "").split(","):
+            if item and ":" in item:
+                key, value = item.rsplit(":", 1)
+                statuses[key] += int(value)
+        for item in (row.get("live_unknown_reason_mix", "") or "").split(","):
+            if item and ":" in item:
+                key, value = item.rsplit(":", 1)
+                reasons[key] += int(value)
+
+    add(rows, "gap_live_context", "synthetic_gap_live_context_audit_rows", len(live_rows),
+        "Residual starts replayed with concrete state plus live entry GPR/frame-scratch seeds.")
+    add(rows, "gap_live_context", "synthetic_gap_live_context_resolution_mix",
+        ",".join(f"{key}:{value}" for key, value in resolutions.most_common()) or "-",
+        "Live-context replay resolution mix.")
+    add(rows, "gap_live_context", "synthetic_gap_live_context_status_mix",
+        ",".join(f"{key}:{value}" for key, value in statuses.most_common()) or "-",
+        "Live-context terminal status mix across replay variants.")
+    add(rows, "gap_live_context", "synthetic_gap_live_context_unknown_reason_mix",
+        ",".join(f"{key}:{value}" for key, value in reasons.most_common()) or "-",
+        "Live-context unknown-target reason mix across replay variants.")
+    add(rows, "gap_live_context", "synthetic_gap_live_context_branch_unknown_remaining",
+        resolutions.get("live_branch_unknown", 0),
+        "Residual starts that still have branch-unknown classification after live GPR/scratch seeding.")
+    add(rows, "gap_live_context", "synthetic_gap_live_context_state_branch_unknown_resolved",
+        len(resolved_branches),
+        "State-only branch-unknown residual starts whose live-context replay reaches a final table read/oob instead.")
+    add(rows, "gap_live_context", "synthetic_gap_live_context_state_branch_unknown_resolved_starts",
+        ",".join(resolved_branches) or "-",
+        "Starts whose branch uncertainty is removed by live entry GPR/scratch context.")
+    add(rows, "gap_live_context", "synthetic_gap_live_context_seedless_starts",
+        ",".join(seedless) or "-",
+        "Starts still lacking live GPR/scratch seed rows.")
+
+
 def synthetic_gap_live_in_role_metrics(rows):
     role_rows = read_tsv(TRACE_DIR / "vm_synthetic_gap_live_in_roles.tsv")
     resolutions = Counter(row.get("resolution", "") for row in role_rows)
@@ -832,6 +896,7 @@ def build_rows():
     synthetic_gap_residual_audit_metrics(rows)
     synthetic_gap_concrete_state_audit_metrics(rows)
     synthetic_gap_state_trace_target_metrics(rows)
+    synthetic_gap_live_context_audit_metrics(rows)
     synthetic_gap_live_in_role_metrics(rows)
     synthetic_gap_final_tail_site_metrics(rows)
     synthetic_gap_live_in_reentry_metrics(rows)
