@@ -8,7 +8,7 @@ GPR_RUN ?= dumps/vmtail-scratch-wide-w16-fs337all-fs128/run.stderr
 PRED_ROWS ?= 128
 XFER_ROWS ?= 128
 
-.PHONY: all clean fast-replay fast-state fast-gpr fast-predicates fast-state-predicates fast-gpr-predicates fast-transfer fast-state-transfer fast-gpr-transfer fast-validators fast-paths fast-gpr-paths long-branches hidden-transitions sampled-operands hidden-fill frontier-fill footprint-fill control-edges bytecode-ir bytecode-basic-blocks synthetic-spans synthetic-tails synthetic-tail-lift pseudocode pseudocode-full handler-pseudocode path-pseudocode source-bundle coverage-matrix
+.PHONY: all clean fast-replay fast-state fast-gpr fast-predicates fast-state-predicates fast-gpr-predicates fast-transfer fast-state-transfer fast-gpr-transfer fast-validators fast-paths fast-gpr-paths long-branches hidden-transitions sampled-operands hidden-fill frontier-fill footprint-fill control-edges bytecode-ir bytecode-basic-blocks synthetic-spans synthetic-tails synthetic-tail-lift pseudocode pseudocode-full handler-pseudocode path-pseudocode source-bundle coverage-matrix coverage-audit
 
 all: driver trace_preload.so vm_fast_path_profile
 
@@ -149,6 +149,10 @@ source-bundle: handler-pseudocode pseudocode-full
 coverage-matrix:
 	python3 vm_trace_coverage_matrix.py > dumps/vmtail-wide-1m-w16/vm_trace_coverage_matrix.tsv
 	python3 vm_trace_coverage_matrix.py --markdown > dumps/vmtail-wide-1m-w16/vm_trace_coverage_matrix.md
+
+coverage-audit: coverage-matrix
+	python3 vm_static_coverage_audit.py > dumps/vmtail-wide-1m-w16/vm_static_coverage_audit.tsv
+	python3 vm_static_coverage_audit.py --markdown > dumps/vmtail-wide-1m-w16/vm_static_coverage_audit.md
 
 clean:
 	rm -f driver trace_preload.so vm_fast_path_profile
