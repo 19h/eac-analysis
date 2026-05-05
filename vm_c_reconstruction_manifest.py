@@ -1420,17 +1420,28 @@ def gate_metrics(rows):
 
 def native_acceleration_metrics(rows):
     makefile = read_text("Makefile")
-    fast_source = read_text("vm_instruction_unique_fast.c")
-    fast_binary = Path("vm_instruction_unique_fast")
-    add(rows, "native_acceleration", "instruction_unique_fast_source_lines", line_count(fast_source),
+    unique_source = read_text("vm_instruction_unique_fast.c")
+    unique_binary = Path("vm_instruction_unique_fast")
+    segment_source = read_text("vm_bytecode_segments_fast.c")
+    segment_binary = Path("vm_bytecode_segments_fast")
+    add(rows, "native_acceleration", "instruction_unique_fast_source_lines", line_count(unique_source),
         "Native exact-instruction reducer source size.")
-    add(rows, "native_acceleration", "instruction_unique_fast_binary_bytes", file_size(fast_binary),
+    add(rows, "native_acceleration", "instruction_unique_fast_binary_bytes", file_size(unique_binary),
         "Current compiled native exact-instruction reducer size.")
     add(rows, "native_acceleration", "instruction_unique_uses_native_reducer",
         "yes" if "./vm_instruction_unique_fast dumps/vmtail-wide-1m-w16/vm_instruction_trace.tsv" in makefile else "no",
         "Whether the instruction-unique Make target uses the native reducer.")
     add(rows, "native_acceleration", "instruction_unique_fast_check", "make instruction-unique-fast-check",
         "Byte-for-byte parity gate against vm_bytecode_recover.py --instructions.")
+    add(rows, "native_acceleration", "bytecode_segments_fast_source_lines", line_count(segment_source),
+        "Native bytecode segment reducer source size.")
+    add(rows, "native_acceleration", "bytecode_segments_fast_binary_bytes", file_size(segment_binary),
+        "Current compiled native bytecode segment reducer size.")
+    add(rows, "native_acceleration", "bytecode_segments_sampled_uses_native_reducer",
+        "yes" if "./vm_bytecode_segments_fast dumps/vmtail-wide-1m-w16/vm_instruction_trace.tsv --include-sampled" in makefile else "no",
+        "Whether sampled bytecode segment recovery uses the native reducer.")
+    add(rows, "native_acceleration", "bytecode_segments_fast_check", "make bytecode-segments-fast-check",
+        "Byte-for-byte parity gate against vm_bytecode_recover.py exact and sampled segment modes.")
 
 
 def build_rows():

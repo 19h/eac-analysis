@@ -36,6 +36,7 @@ SHA-256: `0b44ad59697129534189efdb75cde2b96245f831438e9f6a53cb7725f190d739`
 - `vm_static_path_profile.py`: profiles concrete branch/path variants through static handler slices over the state-aware trace; `--gpr-run` seeds handler-entry registers and, when present, hot `fs0x...` scratch-frame fields from the previous VMTAIL snapshot to resolve live-in branch predicates.
 - `vm_fast_path_profile.c`: native Capstone/OpenSSL reimplementation of the concrete replay core. It emits the same summary/by-path TSV schemas as `vm_static_path_profile.py`, native state/static-dispatch validation schemas, a `--branch-sites` full-trace branch-outcome TSV, SHA-256 path hashes, an `--emit-dir` batch mode that regenerates all `_fast.tsv` replay artifacts through `make fast-replay`, a `--branch-predicates` sampler, and a `--transfer-expr` sampler that replace the slow Python predicate/transfer replays for routine refreshes. The native model now preserves restore-trampoline `push`/`pop` register values, reads safe image-backed frame/IP values, normalizes frame/table/IP/stack pointers, and uses low-bit inequality proofs; `make fast-replay fast-predicates fast-transfer` refreshes replay, predicate, and transfer artifacts in `elapsed=0:31.69` on this host.
 - `vm_instruction_unique_fast.c`: native reducer for `vm_bytecode_recover.py --instructions`. It streams the existing 110 MiB instruction trace, groups exact instruction signatures with Python-compatible Counter tie ordering, and now backs the `make instruction-unique` target; `make instruction-unique-fast-check` byte-compares it against the Python output without forcing a raw trace rebuild. On the current trace it emitted the same 71365-line TSV in about 0.30s versus 4.04s for the Python reducer.
+- `vm_bytecode_segments_fast.c`: native reducer for `vm_bytecode_recover.py` segment mode. It reproduces exact and `--include-sampled` bytecode segment TSVs, including dominant-byte selection, conflict accounting, SHA-256 segment hashes, prefix/suffix hex, and Python-compatible top source/target/delta counters; `make bytecode-segments-fast-check` compares both modes against Python. On the current trace it emits exact/sampled segment TSVs in about 0.63-0.68s versus about 4.9s per Python pass.
 - `vm_branch_predicates.py`: catalogs each static-replay branch predicate, including observed outcomes, unresolved predicate classes, and top concrete/symbolic condition expressions; for normal refreshes it is now only needed to render Markdown from the native TSVs.
 - `vm_dispatch_model_combine.py`: combines the static dispatch validator with affine fallback formulas for static-dispatch misses.
 - `vm_tail_registers.py`: infers per-tail-site register roles from `EAC_VMTAIL_REGS=1` traces, including target value, dispatch-slot pointer, byte index, table pointer, and frame pointer. It can also join those roles back onto an instruction trace by source handler and tail site.
@@ -401,9 +402,9 @@ python3 vm_handler_table.py dumps/vmtail-wide-w16 --eac eac.elf --window 0x1200 
   >dumps/vmtail-wide-w16/vm_handler_table.tsv
 python3 vm_bytecode_blocks.py dumps/vmtail-wide-w16/vm_instruction_trace.tsv \
   >dumps/vmtail-wide-w16/vm_bytecode_blocks.tsv
-python3 vm_bytecode_recover.py dumps/vmtail-wide-w16/vm_instruction_trace.tsv \
+./vm_bytecode_segments_fast dumps/vmtail-wide-w16/vm_instruction_trace.tsv \
   >dumps/vmtail-wide-w16/vm_bytecode_segments.tsv
-python3 vm_bytecode_recover.py dumps/vmtail-wide-w16/vm_instruction_trace.tsv --instructions \
+./vm_instruction_unique_fast dumps/vmtail-wide-w16/vm_instruction_trace.tsv \
   >dumps/vmtail-wide-w16/vm_instruction_unique.tsv
 python3 vm_bytecode_cfg.py dumps/vmtail-wide-w16/vm_instruction_trace.tsv \
   --segments dumps/vmtail-wide-w16/vm_bytecode_segments.tsv \
@@ -446,7 +447,7 @@ python3 vm_handler_table.py dumps/vmtail-wide-1m-w16 --eac eac.elf --window 0x12
   >dumps/vmtail-wide-1m-w16/vm_handler_table.tsv
 python3 vm_bytecode_blocks.py dumps/vmtail-wide-1m-w16/vm_instruction_trace.tsv \
   >dumps/vmtail-wide-1m-w16/vm_bytecode_blocks.tsv
-python3 vm_bytecode_recover.py dumps/vmtail-wide-1m-w16/vm_instruction_trace.tsv \
+./vm_bytecode_segments_fast dumps/vmtail-wide-1m-w16/vm_instruction_trace.tsv \
   >dumps/vmtail-wide-1m-w16/vm_bytecode_segments.tsv
 ./vm_instruction_unique_fast dumps/vmtail-wide-1m-w16/vm_instruction_trace.tsv \
   >dumps/vmtail-wide-1m-w16/vm_instruction_unique.tsv
@@ -455,7 +456,7 @@ python3 vm_bytecode_cfg.py dumps/vmtail-wide-1m-w16/vm_instruction_trace.tsv \
   >dumps/vmtail-wide-1m-w16/vm_bytecode_block_edges.tsv
 python3 vm_bytecode_blocks.py dumps/vmtail-wide-1m-w16/vm_instruction_trace.tsv --include-sampled \
   >dumps/vmtail-wide-1m-w16/vm_bytecode_blocks_sampled.tsv
-python3 vm_bytecode_recover.py dumps/vmtail-wide-1m-w16/vm_instruction_trace.tsv --include-sampled \
+./vm_bytecode_segments_fast dumps/vmtail-wide-1m-w16/vm_instruction_trace.tsv --include-sampled \
   >dumps/vmtail-wide-1m-w16/vm_bytecode_segments_sampled.tsv
 make long-branches
 make hidden-transitions
@@ -635,7 +636,7 @@ python3 vm_state_static_slice.py \
   >dumps/vmtail-wide-1m-w16/vm_state_static_slice.tsv
 python3 vm_state_static_slice.py --entries 258 \
   >dumps/vmtail-wide-1m-w16/vm_state_static_slice_entry258.tsv
-python3 vm_bytecode_recover.py dumps/vmtail-wide-1m-w16/vm_instruction_trace_filefill.tsv \
+./vm_bytecode_segments_fast dumps/vmtail-wide-1m-w16/vm_instruction_trace_filefill.tsv \
   --include-sampled \
   >dumps/vmtail-wide-1m-w16/vm_bytecode_segments_filefill_sampled.tsv
 python3 vm_bytecode_blocks.py dumps/vmtail-wide-1m-w16/vm_instruction_trace_filefill.tsv \
@@ -683,11 +684,11 @@ for MODE in 0 2; do
     2>"$DIR/run.stderr"
   python3 vm_trace_graph.py "$DIR" --eac eac.elf --window 0x1200 --instruction-trace \
     >"$DIR/vm_instruction_trace.tsv"
-  python3 vm_bytecode_recover.py "$DIR/vm_instruction_trace.tsv" \
+  ./vm_bytecode_segments_fast "$DIR/vm_instruction_trace.tsv" \
     >"$DIR/vm_bytecode_segments.tsv"
   ./vm_instruction_unique_fast "$DIR/vm_instruction_trace.tsv" \
     >"$DIR/vm_instruction_unique.tsv"
-  python3 vm_bytecode_recover.py "$DIR/vm_instruction_trace.tsv" --include-sampled \
+  ./vm_bytecode_segments_fast "$DIR/vm_instruction_trace.tsv" --include-sampled \
     >"$DIR/vm_bytecode_segments_sampled.tsv"
 done
 python3 vm_instruction_compare.py \
