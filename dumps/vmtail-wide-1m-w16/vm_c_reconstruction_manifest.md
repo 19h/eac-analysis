@@ -23,8 +23,8 @@ Reproducible inventory of the current C-shaped reconstruction artifacts and gate
 | `artifact` | `source_bundle_lines` | `303909` | Current line count. |
 | `artifact` | `source_bundle_bytes` | `20462022` | Current file size in bytes. |
 | `artifact` | `source_all_evidence_bundle_path` | `dumps/vmtail-wide-1m-w16/vm_recovered_source_all_evidence_bundle.c` | Generated reconstruction artifact. |
-| `artifact` | `source_all_evidence_bundle_lines` | `332910` | Current line count. |
-| `artifact` | `source_all_evidence_bundle_bytes` | `21833798` | Current file size in bytes. |
+| `artifact` | `source_all_evidence_bundle_lines` | `333099` | Current line count. |
+| `artifact` | `source_all_evidence_bundle_bytes` | `21868504` | Current file size in bytes. |
 | `artifact` | `synthetic_successor_gaps_tsv_path` | `dumps/vmtail-wide-1m-w16/vm_synthetic_successor_gaps.tsv` | Generated reconstruction artifact. |
 | `artifact` | `synthetic_successor_gaps_tsv_lines` | `22` | Current line count. |
 | `artifact` | `synthetic_successor_gaps_tsv_bytes` | `5197` | Current file size in bytes. |
@@ -268,6 +268,15 @@ Reproducible inventory of the current C-shaped reconstruction artifacts and gate
 | `artifact` | `native_handler_environment_coverage_md_path` | `dumps/vmtail-wide-1m-w16/vm_native_handler_environment_coverage.md` | Generated reconstruction artifact. |
 | `artifact` | `native_handler_environment_coverage_md_lines` | `15` | Current line count. |
 | `artifact` | `native_handler_environment_coverage_md_bytes` | `618` | Current file size in bytes. |
+| `artifact` | `static_only_handler_queue_c_path` | `dumps/vmtail-wide-1m-w16/vm_static_only_handler_queue.c` | Generated reconstruction artifact. |
+| `artifact` | `static_only_handler_queue_c_lines` | `187` | Current line count. |
+| `artifact` | `static_only_handler_queue_c_bytes` | `34146` | Current file size in bytes. |
+| `artifact` | `static_only_handler_queue_tsv_path` | `dumps/vmtail-wide-1m-w16/vm_static_only_handler_queue.tsv` | Generated reconstruction artifact. |
+| `artifact` | `static_only_handler_queue_tsv_lines` | `156` | Current line count. |
+| `artifact` | `static_only_handler_queue_tsv_bytes` | `51159` | Current file size in bytes. |
+| `artifact` | `static_only_handler_queue_md_path` | `dumps/vmtail-wide-1m-w16/vm_static_only_handler_queue.md` | Generated reconstruction artifact. |
+| `artifact` | `static_only_handler_queue_md_lines` | `41` | Current line count. |
+| `artifact` | `static_only_handler_queue_md_bytes` | `4159` | Current file size in bytes. |
 | `artifact` | `target_only_handlers_retdec_path` | `dumps/vmtail-wide-1m-w16/vm_target_only_handlers_retdec.c` | Generated reconstruction artifact. |
 | `artifact` | `target_only_handlers_retdec_lines` | `317` | Current line count. |
 | `artifact` | `target_only_handlers_retdec_bytes` | `12635` | Current file size in bytes. |
@@ -491,6 +500,17 @@ Reproducible inventory of the current C-shaped reconstruction artifacts and gate
 | `coverage` | `native_handler_environment_coverage_synthetic_target_rows` | `205` | Dispatch entries seen as a target only through synthetic fill sidecars or mixed synthetic evidence. |
 | `coverage` | `native_handler_environment_coverage_static_only_rows` | `155` | Dispatch entries present in the static handler table but not observed in the trace matrix. |
 | `coverage` | `native_handler_environment_coverage_status_mix` | `concrete_source_and_target_seen:202,static_only_unobserved_in_trace_matrix:155,concrete_target_only:3` | Status mix for handler-level environment coverage. |
+| `coverage` | `static_only_handler_queue_rows` | `155` | Ranked static-only dispatch entries to convert from sidecar evidence into stronger handler C. |
+| `c_shape` | `static_only_handler_queue_c_entries` | `155` | Syntax-checkable C queue entries for static-only handler closure work. |
+| `coverage` | `static_only_handler_queue_tier0_small_single_function` | `11` | Small single-function static-only handlers ranked first for RetDec-to-handler inlining. |
+| `coverage` | `static_only_handler_queue_tier1_medium_single_function` | `43` | Medium single-function static-only handlers ranked after tier0. |
+| `coverage` | `static_only_handler_queue_tier2_small_shared_range` | `15` | Small shared RetDec ranges that need chunk splitting before handler inlining. |
+| `coverage` | `static_only_handler_queue_tier3_multi_function_shared_range` | `40` | Multi-function shared static-only ranges ranked behind single-function rows. |
+| `coverage` | `static_only_handler_queue_tier4_call_ret_side_effect` | `37` | Static-only rows with native call/ret side effects requiring audit before inlining. |
+| `coverage` | `static_only_handler_queue_tier5_large_static_replay` | `9` | Large static-only rows deferred until smaller handlers are closed. |
+| `coverage` | `static_only_handler_queue_single_function_rows` | `65` | Static-only queue rows with one overlapping RetDec function. |
+| `coverage` | `static_only_handler_queue_call_or_ret_rows` | `37` | Static-only queue rows whose native skeleton has calls or rets. |
+| `coverage` | `static_only_handler_queue_top10_entries` | `57,255,96,71,73,339,324,38,67,138` | Top-ranked dispatch entries for the next static RetDec-to-handler conversion pass. |
 | `c_shape` | `target_only_handler_retdec_selected_ranges` | `3` | Target-only VM handler native ranges selected for targeted RetDec. |
 | `c_shape` | `target_only_handler_retdec_functions` | `8` | Targeted RetDec C functions emitted from target-only VM handler native ranges. |
 | `c_shape` | `target_only_handler_retdec_ranges` | `8` | Native address ranges emitted by RetDec for target-only handler coverage. |
@@ -638,9 +658,9 @@ Reproducible inventory of the current C-shaped reconstruction artifacts and gate
 | `c_shape` | `bundle_observed_chain_replay_steps` | `0` | Observed focused-chain replay steps emitted inside disabled terminal bridge snippets in the combined source bundle. |
 | `c_shape` | `all_evidence_bundle_handler_functions` | `360` | All-entry handler/operator C functions present in the all-evidence single file. |
 | `c_shape` | `all_evidence_bundle_program_blocks` | `499` | Recovered VM bytecode block functions present in the all-evidence single file. |
-| `c_shape` | `all_evidence_bundle_sidecar_sections` | `32` | Renamed native RetDec/control sidecar files appended to the all-evidence single file. |
+| `c_shape` | `all_evidence_bundle_sidecar_sections` | `33` | Renamed native RetDec/control sidecar files appended to the all-evidence single file. |
 | `c_shape` | `all_evidence_bundle_prefixed_retdec_functions` | `624` | RetDec native C functions carried in the all-evidence single file with per-sidecar symbol prefixes. |
-| `c_shape` | `all_evidence_bundle_prefixed_symbols` | `3359` | Prefixed symbols used to keep overlapping native sidecar C in one translation unit. |
+| `c_shape` | `all_evidence_bundle_prefixed_symbols` | `3365` | Prefixed symbols used to keep overlapping native sidecar C in one translation unit. |
 | `coverage` | `dynamic_primary_trace_source_handlers_seen` | `202` | Handlers directly executed as VM source entries by this scenario. |
 | `coverage` | `dynamic_primary_trace_target_handlers_seen` | `205` | Handlers reached as dispatch targets by this scenario. |
 | `coverage` | `dynamic_primary_trace_unique_vm_ip_starts` | `71522` | Distinct VM bytecode starts observed in this scenario. |
@@ -978,6 +998,9 @@ Reproducible inventory of the current C-shaped reconstruction artifacts and gate
 | `native_acceleration` | `native_handler_environment_coverage_dump_source_lines` | `507` | Native handler environment coverage generator source size. |
 | `native_acceleration` | `native_handler_environment_coverage_dump_binary_bytes` | `64448` | Current compiled native handler environment coverage generator size. |
 | `native_acceleration` | `native_handler_environment_coverage_uses_native_generator` | `yes` | Whether the handler environment coverage C/TSV/Markdown artifacts are generated by the native C tool. |
+| `native_acceleration` | `static_only_handler_queue_dump_source_lines` | `557` | Native static-only handler closure queue generator source size. |
+| `native_acceleration` | `static_only_handler_queue_dump_binary_bytes` | `81368` | Current compiled static-only handler closure queue generator size. |
+| `native_acceleration` | `static_only_handler_queue_uses_native_generator` | `yes` | Whether the static-only handler closure queue C/TSV/Markdown artifacts are generated by the native C tool. |
 | `gate` | `syntax_check` | `make pseudocode-syntax-check` | Regenerates and warning-checks the generated C-like reconstruction artifacts with C11 -fsyntax-only. |
 | `gate` | `object_check` | `make pseudocode-object-check` | Codegen-compiles the combined source bundle to /tmp/eacsym-vm_recovered_source_bundle.o. |
 | `gate` | `link_smoke_check` | `make pseudocode-link-check` | Links the bundle with vm_recovered_source_harness.c and runs the smoke executable. |
