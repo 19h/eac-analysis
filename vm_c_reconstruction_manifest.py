@@ -107,6 +107,9 @@ ARTIFACTS = [
     ("static_only_tier0_models_c", TRACE_DIR / "vm_static_only_tier0_handler_models.c"),
     ("static_only_tier0_models_tsv", TRACE_DIR / "vm_static_only_tier0_handler_models.tsv"),
     ("static_only_tier0_models_md", TRACE_DIR / "vm_static_only_tier0_handler_models.md"),
+    ("static_only_tier1_models_c", TRACE_DIR / "vm_static_only_tier1_handler_models.c"),
+    ("static_only_tier1_models_tsv", TRACE_DIR / "vm_static_only_tier1_handler_models.tsv"),
+    ("static_only_tier1_models_md", TRACE_DIR / "vm_static_only_tier1_handler_models.md"),
     ("target_only_handlers_retdec", TRACE_DIR / "vm_target_only_handlers_retdec.c"),
     ("unobserved_handlers_retdec_batch00", TRACE_DIR / "vm_unobserved_handlers_retdec_batch00.c"),
     ("unobserved_handlers_retdec_batch01", TRACE_DIR / "vm_unobserved_handlers_retdec_batch01.c"),
@@ -236,6 +239,8 @@ def c_shape_metrics(rows):
     static_only_handler_queue_index = read_tsv(TRACE_DIR / "vm_static_only_handler_queue.tsv")
     static_only_tier0_models = read_text(TRACE_DIR / "vm_static_only_tier0_handler_models.c")
     static_only_tier0_model_index = read_tsv(TRACE_DIR / "vm_static_only_tier0_handler_models.tsv")
+    static_only_tier1_models = read_text(TRACE_DIR / "vm_static_only_tier1_handler_models.c")
+    static_only_tier1_model_index = read_tsv(TRACE_DIR / "vm_static_only_tier1_handler_models.tsv")
     target_only_handlers_retdec = read_text(TRACE_DIR / "vm_target_only_handlers_retdec.c")
     unobserved_handlers_retdec_batches = [
         read_text(TRACE_DIR / f"vm_unobserved_handlers_retdec_batch{index:02d}.c")
@@ -337,6 +342,15 @@ def c_shape_metrics(rows):
     add(rows, "c_shape", "handler_tier0_static_slot_comment_only",
         count(r"tier0 slot expression not executable in VMState model", handlers),
         "Handler-layer tier0 static-only rows kept comment-only because the slot expression needs frame state outside VMState.")
+    add(rows, "c_shape", "handler_tier1_static_model_comments",
+        count(r"tier1 static model: rank=", handlers),
+        "Handler-layer tier1 static-only RetDec model annotations.")
+    add(rows, "c_shape", "handler_tier1_static_slot_recoveries",
+        count(r"tier1 static slot recovered from a clean RetDec dispatch-table tail", handlers),
+        "Handler-layer static-only tier1 entries with executable dispatch-table slot recovery in VMState form.")
+    add(rows, "c_shape", "handler_tier1_static_slot_comment_only",
+        count(r"tier1 slot expression kept comment-only", handlers),
+        "Handler-layer tier1 static-only rows with candidate/masked slots kept comment-only.")
     add(rows, "c_shape", "native_ret_patch_target_functions",
         count(r"^static void native_retpatch_entry_", native_ret_patch_targets),
         "C-shaped native .text target helper functions emitted from sampled return-patch evidence.")

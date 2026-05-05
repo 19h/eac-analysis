@@ -38,7 +38,7 @@ def load_ret_patch_summaries(path):
     return by_entry
 
 
-def load_tier0_models(path):
+def load_static_models(path):
     if not path or not Path(path).exists():
         return {}
     return {row["entry"]: row for row in read_tsv(path) if row.get("entry")}
@@ -67,9 +67,9 @@ def c_expr(expr):
     return expr
 
 
-def tier0_slot_c_expr(expr):
+def static_model_slot_c_expr(expr):
     expr = (expr or "").strip()
-    if not expr or "g3_mask" in expr:
+    if not expr or "g3_mask" in expr or "g5_mask" in expr:
         return ""
     expr = re.sub(
         r"\bs16\(ip\+([0-9]+)\)",
@@ -305,7 +305,7 @@ def emit_preamble():
     print("")
 
 
-def emit_handler(row, transition, tail_ip_advances, ret_patch_summaries, tier0_models, static_only_queue, args):
+def emit_handler(row, transition, tail_ip_advances, ret_patch_summaries, tier0_models, tier1_models, static_only_queue, args):
     entry = row["entry"]
     name = f"op_entry_{int(entry):03d}"
     klass = row.get("class", "")
@@ -353,6 +353,16 @@ def emit_handler(row, transition, tail_ip_advances, ret_patch_summaries, tier0_m
         )
         if tier0_model.get("effects"):
             print(f"    /* tier0 effects: {c_comment(clip(tier0_model['effects'], args.max_comment_len))} */")
+    tier1_model = tier1_models.get(entry, {})
+    if tier1_model:
+        print(
+            f"    /* tier1 static model: rank={c_comment(tier1_model.get('rank', '-'))}, "
+            f"retdec={c_comment(tier1_model.get('function', '-'))}, "
+            f"slot_status={c_comment(tier1_model.get('slot_status', '-'))}, "
+            f"ip_advance={c_comment(tier1_model.get('ip_advance', '-'))} */"
+        )
+        if tier1_model.get("effects"):
+            print(f"    /* tier1 effects: {c_comment(clip(tier1_model['effects'], args.max_comment_len))} */")
     tr = transition.get(entry, {})
     if tr.get("decode_signature"):
         print(f"    /* decode signature: {c_comment(clip(tr['decode_signature'], args.max_comment_len))} */")
@@ -382,7 +392,7 @@ def emit_handler(row, transition, tail_ip_advances, ret_patch_summaries, tier0_m
         elif row.get("dispatch_slot_ir"):
             print(f"    /* slot variants: {c_comment(clip(c_expr(row['dispatch_slot_ir']), args.max_comment_len))} */")
         elif tier0_model:
-            tier0_slot_expr = tier0_slot_c_expr(tier0_model.get("slot_expr", ""))
+            tier0_slot_expr = static_model_slot_c_expr(tier0_model.get("slot_expr", ""))
             if tier0_slot_expr and is_complete_expr(tier0_slot_expr, args.max_expr_len):
                 print(f"    r.slot = (uint32_t)({tier0_slot_expr});")
                 print("    r.next_entry = vm_entry_from_table_offset(r.slot);")
@@ -391,6 +401,21 @@ def emit_handler(row, transition, tail_ip_advances, ret_patch_summaries, tier0_m
                 print(
                     f"    /* tier0 slot expression not executable in VMState model: "
                     f"{c_comment(clip(tier0_model['slot_expr'], args.max_comment_len))} */"
+                )
+        elif tier1_model:
+            tier1_slot_expr = static_model_slot_c_expr(tier1_model.get("slot_expr", ""))
+            if (
+                tier1_model.get("slot_status") == "retdec_dispatch_table_slot"
+                and tier1_slot_expr
+                and is_complete_expr(tier1_slot_expr, args.max_expr_len)
+            ):
+                print(f"    r.slot = (uint32_t)({tier1_slot_expr});")
+                print("    r.next_entry = vm_entry_from_table_offset(r.slot);")
+                print("    /* tier1 static slot recovered from a clean RetDec dispatch-table tail; dynamic source-row validation is still absent. */")
+            elif tier1_model.get("slot_expr"):
+                print(
+                    f"    /* tier1 slot expression kept comment-only: "
+                    f"{c_comment(clip(tier1_model['slot_expr'], args.max_comment_len))} */"
                 )
 
         ip_advance = constant_ip_advance(row.get("ip_advance_ir", ""))
@@ -463,6 +488,7 @@ def main():
     parser.add_argument("--max-comment-len", type=int, default=260)
     parser.add_argument("--ret-patch-comment-items", type=int, default=6)
     parser.add_argument("--static-only-tier0-models", default="dumps/vmtail-wide-1m-w16/vm_static_only_tier0_handler_models.tsv")
+    parser.add_argument("--static-only-tier1-models", default="dumps/vmtail-wide-1m-w16/vm_static_only_tier1_handler_models.tsv")
     parser.add_argument("--static-only-queue", default="dumps/vmtail-wide-1m-w16/vm_static_only_handler_queue.tsv")
     args = parser.parse_args()
 
@@ -471,13 +497,14 @@ def main():
     transition = load_by(args.transition_model, "entry")
     tail_ip_advances = load_tail_ip_advances(args.handler_table, args.eac, args.tail_window)
     ret_patch_summaries = load_ret_patch_summaries(args.sampled_ret_patch_probe)
-    tier0_models = load_tier0_models(args.static_only_tier0_models)
+    tier0_models = load_static_models(args.static_only_tier0_models)
+    tier1_models = load_static_models(args.static_only_tier1_models)
     static_only_queue = load_static_only_queue(args.static_only_queue)
     chosen = selected_handlers(rows, args)
 
     emit_preamble()
     for row in chosen:
-        emit_handler(row, transition, tail_ip_advances, ret_patch_summaries, tier0_models, static_only_queue, args)
+        emit_handler(row, transition, tail_ip_advances, ret_patch_summaries, tier0_models, tier1_models, static_only_queue, args)
     emit_dispatch_table(chosen)
 
     classes = Counter(row.get("class", "") for row in chosen)
