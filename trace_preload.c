@@ -413,8 +413,11 @@ int memfd_create(const char *name, unsigned int flags) {
 
 int socket(int domain, int type, int protocol) {
     int (*real_socket_fn)(int, int, int) = dlsym(RTLD_NEXT, "socket");
-    trace_log_from(__builtin_return_address(0), "socket domain=%d type=%d protocol=%d%s", domain, type, protocol,
-              block_network() ? " DENY" : "");
+    trace_log_from(__builtin_return_address(0), "socket domain=%d type=%d protocol=%d%s%s", domain, type, protocol,
+              fake_network() ? " FAKE" : "", block_network() ? " DENY" : "");
+    if (fake_network()) {
+        return fake_socket_create();
+    }
     if (block_network()) {
         errno = ENETDOWN;
         return -1;
@@ -443,7 +446,11 @@ int connect(int sockfd, const struct sockaddr *addr, socklen_t addrlen) {
         snprintf(desc, sizeof(desc), "family=%d", addr != NULL ? addr->sa_family : -1);
     }
 
-    trace_log_from(__builtin_return_address(0), "connect fd=%d addr=%s%s", sockfd, desc, block_network() ? " DENY" : "");
+    trace_log_from(__builtin_return_address(0), "connect fd=%d addr=%s%s%s", sockfd, desc,
+                   fake_fd_is_active(sockfd) ? " FAKE" : "", block_network() ? " DENY" : "");
+    if (fake_fd_is_active(sockfd)) {
+        return 0;
+    }
     if (block_network()) {
         errno = ENETDOWN;
         return -1;
@@ -459,8 +466,11 @@ ssize_t send(int sockfd, const void *buf, size_t len, int flags) {
     ssize_t (*real_send_fn)(int, const void *, size_t, int) = dlsym(RTLD_NEXT, "send");
     char prefix[112];
     hex_prefix(buf, len, prefix, sizeof(prefix));
-    trace_log_from(__builtin_return_address(0), "send fd=%d len=%zu flags=0x%x data=%s%s", sockfd, len, flags,
-                   prefix, block_network() ? " DENY" : "");
+    trace_log_from(__builtin_return_address(0), "send fd=%d len=%zu flags=0x%x data=%s%s%s", sockfd, len, flags,
+                   prefix, fake_fd_is_active(sockfd) ? " FAKE" : "", block_network() ? " DENY" : "");
+    if (fake_fd_is_active(sockfd)) {
+        return (ssize_t)len;
+    }
     if (block_network()) {
         errno = ENETDOWN;
         return -1;
@@ -474,6 +484,14 @@ ssize_t send(int sockfd, const void *buf, size_t len, int flags) {
 
 ssize_t recv(int sockfd, void *buf, size_t len, int flags) {
     ssize_t (*real_recv_fn)(int, void *, size_t, int) = dlsym(RTLD_NEXT, "recv");
+    ssize_t fake_ret = fake_fd_read(sockfd, buf, len);
+    if (fake_ret >= -1) {
+        char prefix[112];
+        hex_prefix(buf, fake_ret > 0 ? (size_t)fake_ret : 0, prefix, sizeof(prefix));
+        trace_log_from(__builtin_return_address(0), "recv fd=%d len=%zu flags=0x%x ret=%zd data=%s FAKE",
+                       sockfd, len, flags, fake_ret, prefix);
+        return fake_ret;
+    }
     if (block_network()) {
         trace_log_from(__builtin_return_address(0), "recv fd=%d len=%zu flags=0x%x DENY", sockfd, len, flags);
         errno = ENETDOWN;
@@ -495,14 +513,99 @@ int getaddrinfo(const char *node, const char *service,
                 const struct addrinfo *hints, struct addrinfo **res) {
     int (*real_getaddrinfo_fn)(const char *, const char *, const struct addrinfo *, struct addrinfo **) =
         dlsym(RTLD_NEXT, "getaddrinfo");
-    trace_log_from(__builtin_return_address(0), "getaddrinfo node=%s service=%s%s", safe_str(node),
-              safe_str(service), block_network() ? " DENY" : "");
+    trace_log_from(__builtin_return_address(0), "getaddrinfo node=%s service=%s%s%s", safe_str(node),
+              safe_str(service), fake_network() ? " FAKE" : "", block_network() ? " DENY" : "");
+    if (fake_network()) {
+        if (!res) return EAI_SYSTEM;
+        struct addrinfo *ai = (struct addrinfo *)calloc(1, sizeof(*ai));
+        struct sockaddr_in *addr = (struct sockaddr_in *)calloc(1, sizeof(*addr));
+        if (!ai || !addr) {
+            free(ai);
+            free(addr);
+            return EAI_MEMORY;
+        }
+        int socktype = hints && hints->ai_socktype ? hints->ai_socktype : SOCK_STREAM;
+        int proto = hints && hints->ai_protocol ? hints->ai_protocol : IPPROTO_TCP;
+        unsigned long port = service ? strtoul(service, NULL, 10) : 443ul;
+        if (port == 0 || port > 65535ul) port = 443ul;
+        addr->sin_family = AF_INET;
+        addr->sin_port = htons((uint16_t)port);
+        addr->sin_addr.s_addr = htonl(0x7f000001u);
+        ai->ai_family = AF_INET;
+        ai->ai_socktype = socktype;
+        ai->ai_protocol = proto;
+        ai->ai_addrlen = sizeof(*addr);
+        ai->ai_addr = (struct sockaddr *)addr;
+        *res = ai;
+        return 0;
+    }
     if (block_network()) {
         if (res) *res = NULL;
         return EAI_FAIL;
     }
     if (!real_getaddrinfo_fn) return EAI_SYSTEM;
     return real_getaddrinfo_fn(node, service, hints, res);
+}
+
+ssize_t read(int fd, void *buf, size_t count) {
+    ssize_t (*real_read_fn)(int, void *, size_t) = dlsym(RTLD_NEXT, "read");
+    if (!g_in_hook) {
+        ssize_t fake_ret = fake_fd_read(fd, buf, count);
+        if (fake_ret >= -1) {
+            char prefix[112];
+            hex_prefix(buf, fake_ret > 0 ? (size_t)fake_ret : 0, prefix, sizeof(prefix));
+            trace_log_from(__builtin_return_address(0), "read fd=%d len=%zu ret=%zd data=%s FAKE",
+                           fd, count, fake_ret, prefix);
+            return fake_ret;
+        }
+    }
+    if (!real_read_fn) {
+        errno = ENOSYS;
+        return -1;
+    }
+    return real_read_fn(fd, buf, count);
+}
+
+ssize_t write(int fd, const void *buf, size_t count) {
+    ssize_t (*real_write_fn)(int, const void *, size_t) = dlsym(RTLD_NEXT, "write");
+    if (!g_in_hook && fake_fd_is_active(fd)) {
+        char prefix[112];
+        hex_prefix(buf, count, prefix, sizeof(prefix));
+        trace_log_from(__builtin_return_address(0), "write fd=%d len=%zu data=%s FAKE", fd, count, prefix);
+        return (ssize_t)count;
+    }
+    if (!real_write_fn) {
+        errno = ENOSYS;
+        return -1;
+    }
+    return real_write_fn(fd, buf, count);
+}
+
+int shutdown(int sockfd, int how) {
+    int (*real_shutdown_fn)(int, int) = dlsym(RTLD_NEXT, "shutdown");
+    if (fake_fd_is_active(sockfd)) {
+        trace_log_from(__builtin_return_address(0), "shutdown fd=%d how=%d FAKE", sockfd, how);
+        return 0;
+    }
+    if (!real_shutdown_fn) {
+        errno = ENOSYS;
+        return -1;
+    }
+    return real_shutdown_fn(sockfd, how);
+}
+
+int close(int fd) {
+    int (*real_close_fn)(int) = dlsym(RTLD_NEXT, "close");
+    int peer = fake_fd_unmark(fd);
+    if (peer >= 0) {
+        trace_log_from(__builtin_return_address(0), "close fd=%d FAKE", fd);
+        if (real_close_fn) (void)real_close_fn(peer);
+    }
+    if (!real_close_fn) {
+        errno = ENOSYS;
+        return -1;
+    }
+    return real_close_fn(fd);
 }
 
 FILE *popen(const char *command, const char *type) {
