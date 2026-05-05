@@ -1,0 +1,34 @@
+[DRIVER] dlopen path=./eac.elf
+[TRACE] caller=driver+0x1608 dlopen file=./eac.elf flags=0x2
+[DRIVER] dlsym x=0x7416b28380dc
+[TRACE] caller=driver+0x2455 getenv name=EAC_DISPATCH_TRACE -> set
+[TRACE] caller=driver+0x1a7a getenv name=EAC_DISPATCH_LIMIT -> set
+[TRACE] caller=driver+0x2455 getenv name=EAC_DISPATCH_DETAIL -> set
+[TRACE] caller=driver+0x1ae2 getenv name=EAC_DISPATCH_STOP_AFTER_MATCHES -> set
+[TRACE] caller=driver+0x1b06 getenv name=EAC_DISPATCH_EXTRA_SITES -> null
+[TRACE] caller=driver+0x1b1c getenv name=EAC_DISPATCH_FOCUS_SITES -> set
+[TRACE] caller=driver+0x2455 getenv name=EAC_VMTAIL_TRACE -> null
+[TRACE] caller=driver+0x2455 getenv name=EAC_VMTAIL_REGS -> null
+[TRACE] caller=driver+0x2455 getenv name=EAC_VMTAIL_SCRATCH -> null
+[TRACE] caller=driver+0x2455 getenv name=EAC_VMTAIL_MEM -> null
+[TRACE] caller=driver+0x1b7d getenv name=EAC_VMTAIL_MEM_REGS -> null
+[TRACE] caller=driver+0x1b97 getenv name=EAC_VMTAIL_LIMIT -> null
+[TRACE] caller=driver+0x1bed getenv name=EAC_VMTAIL_FOCUS_IPS -> null
+[TRACE] caller=driver+0x1c01 getenv name=EAC_VMTAIL_FOCUS_SITES -> null
+[TRACE] caller=driver+0x1c15 getenv name=EAC_VMTAIL_STOP_AFTER_MATCHES -> null
+[TRACE] caller=driver+0x3099 fopen path=/proc/self/maps mode=r
+[TRACE] caller=driver+0x3632 mprotect addr=0x7416b28c8000 len=0x1000 prot=0x7
+[TRACE] caller=driver+0x3632 mprotect addr=0x7416b28cd000 len=0x1000 prot=0x7
+[DRIVER] dispatch trace enabled base=0x7416b2800000 dispatch_sites=2 limit=8 detail=1 tail=0 tail_regs=0 tail_scratch=0 tail_mem=0 tail_limit=4096 tail_sites=0 scratch_offsets=0 read_ranges=54 focus_ips=0 focus_sites=0 stop_after_matches=0 dispatch_focus_sites=1 dispatch_stop_after_matches=8
+[DRIVER] dispatch site +0xc80b9
+[DRIVER] dispatch site +0xcdac7
+[DRIVER] call x(buf=0x621a02406010,len=0x800,mode=1,out=0x621a02406820)
+[DISPATCH] site=0xc80b9 count=1 slot=0x7416b28c39c8 slot_off=0xc39c8 idx=0x2b0 frame=0x7416b287836d frame_off=0x7836d vm_ip=0x7416b2a6cd71 vm_ip_off=0x26cd71 vm_flags=0x0 vm_state=0x0 vm_byte=0x0 table=0x7416b28c3718 table_off=0xc3718 ip_w0=0x136 ip_w1=0x0 ip_w2=0x1e8 ip_w3=0xa5 ip_w4=0x42 ip_w5=0x9831 ip_w6=0x763a ip_w7=0x9919 ip_w8=0x4b00 ip_w9=0x9943 ip_w10=0x4400 ip_w11=0xe814 ip_w12=0x1401 ip_w13=0xab4a ip_w14=0x7f00 ip_w15=0xabdf target=0x7416b288a37f target_off=0x8a37f
+[DISPATCH] site=0xc80b9 count=2 slot=0x7416b28c40c8 slot_off=0xc40c8 idx=0x9b0 frame=0x7416b287836d frame_off=0x7836d vm_ip=0x7416b2a6dc7b vm_ip_off=0x26dc7b vm_flags=0x4000500 vm_state=0x984d244d vm_byte=0x3a table=0x7416b28c3718 table_off=0xc3718 ip_w0=0x1e8 ip_w1=0xa5 ip_w2=0x154 ip_w3=0x17d4 ip_w4=0x99 ip_w5=0xef7f ip_w6=0x99 ip_w7=0x8ad8 ip_w8=0xa42a ip_w9=0xe895 ip_w10=0x1001 ip_w11=0x2873 ip_w12=0xe731 ip_w13=0xe4f9 ip_w14=0x46d0 ip_w15=0x3a40 target=0x7416b28b8556 target_off=0xb8556
+[DISPATCH] site=0xc80b9 count=3 slot=0x7416b28c3c60 slot_off=0xc3c60 idx=0x548 frame=0x7416b287836d frame_off=0x7836d vm_ip=0x7416b2a6deee vm_ip_off=0x26deee vm_flags=0xe9cdb52a vm_state=0xe9cdbd2a vm_byte=0x3a table=0x7416b28c3718 table_off=0xc3718 ip_w0=0x162 ip_w1=0x1e8 ip_w2=0x1c ip_w3=0xaa0 ip_w4=0x810 ip_w5=0x991a ip_w6=0x5600 ip_w7=0xfa18 ip_w8=0x566c ip_w9=0xe82b ip_w10=0x4301 ip_w11=0xabe2 ip_w12=0x7800 ip_w13=0xab09 ip_w14=0xaa00 ip_w15=0x3a07 target=0x7416b289af18 target_off=0x9af18
+[DISPATCH] site=0xc80b9 count=4 slot=0x7416b28c40c8 slot_off=0xc40c8 idx=0x9b0 frame=0x7416b287836d frame_off=0x7836d vm_ip=0x7416b2a6e161 vm_ip_off=0x26e161 vm_flags=0x94baf385 vm_state=0xffc5af34 vm_byte=0x3a table=0x7416b28c3718 table_off=0xc3718 ip_w0=0x1e8 ip_w1=0x162 ip_w2=0x10c ip_w3=0x1c4a ip_w4=0x67ae ip_w5=0x15e ip_w6=0x7b3a ip_w7=0xb1d9 ip_w8=0xf6ca ip_w9=0xe829 ip_w10=0x8801 ip_w11=0x840a ip_w12=0x757c ip_w13=0xb40 ip_w14=0x137e ip_w15=0xdab target=0x7416b28b8556 target_off=0xb8556
+[DISPATCH] site=0xc80b9 count=5 slot=0x7416b28c3c60 slot_off=0xc3c60 idx=0x548 frame=0x7416b287836d frame_off=0x7836d vm_ip=0x7416b2a6e3d4 vm_ip_off=0x26e3d4 vm_flags=0x12833a00 vm_state=0x3ffda2b6 vm_byte=0x3a table=0x7416b28c3718 table_off=0xc3718 ip_w0=0xab ip_w1=0x1e8 ip_w2=0x129 ip_w3=0xe31 ip_w4=0xc2eb ip_w5=0x6129 ip_w6=0x403a ip_w7=0xaea4 ip_w8=0xde6c ip_w9=0xe893 ip_w10=0xb101 ip_w11=0x10e ip_w12=0xab2f ip_w13=0x3af8 ip_w14=0xe158 ip_w15=0x600 target=0x7416b289af18 target_off=0x9af18
+[DISPATCH] site=0xc80b9 count=6 slot=0x7416b28c40c8 slot_off=0xc40c8 idx=0x9b0 frame=0x7416b287836d frame_off=0x7836d vm_ip=0x7416b2a6e647 vm_ip_off=0x26e647 vm_flags=0xe19e5301 vm_state=0xbffd4e77 vm_byte=0x3a table=0x7416b28c3718 table_off=0xc3718 ip_w0=0x1e8 ip_w1=0xa5 ip_w2=0x12 ip_w3=0x158 ip_w4=0x4d3a ip_w5=0x3180 ip_w6=0xb4fe ip_w7=0x990d ip_w8=0xe800 ip_w9=0xe601 ip_w10=0x5872 ip_w11=0x3626 ip_w12=0x9017 ip_w13=0x9797 ip_w14=0x2808 ip_w15=0xf0a5 target=0x7416b28b8556 target_off=0xb8556
+[DISPATCH] site=0xc80b9 count=7 slot=0x7416b28c3c60 slot_off=0xc3c60 idx=0x548 frame=0x7416b287836d frame_off=0x7836d vm_ip=0x7416b2a6e8ba vm_ip_off=0x26e8ba vm_flags=0x2711ed9e vm_state=0xe76c8b67 vm_byte=0x3a table=0x7416b28c3718 table_off=0xc3718 ip_w0=0xa5 ip_w1=0x1e8 ip_w2=0x1c ip_w3=0xa68 ip_w4=0x7310 ip_w5=0x99e9 ip_w6=0xe700 ip_w7=0x2609 ip_w8=0x5a17 ip_w9=0xe8bd ip_w10=0x8801 ip_w11=0xcc50 ip_w12=0x57a0 ip_w13=0xc333 ip_w14=0xf849 ip_w15=0xc808 target=0x7416b289af18 target_off=0x9af18
+[DISPATCH] site=0xc80b9 count=8 slot=0x7416b28c3c60 slot_off=0xc3c60 idx=0x548 frame=0x7416b287836d frame_off=0x7836d vm_ip=0x7416b2a6ebbd vm_ip_off=0x26ebbd vm_flags=0x88bf1241 vm_state=0xceebcfb8 vm_byte=0x3a table=0x7416b28c3718 table_off=0xc3718 ip_w0=0xab ip_w1=0x1e8 ip_w2=0x151 ip_w3=0x93e8 ip_w4=0x99 ip_w5=0xcf63 ip_w6=0x99 ip_w7=0xb0d0 ip_w8=0x3622 ip_w9=0xe800 ip_w10=0xc801 ip_w11=0x3e22 ip_w12=0x9494 ip_w13=0xf2f3 ip_w14=0x90ff ip_w15=0x9687 target=0x7416b289af18 target_off=0x9af18
+[DRIVER] DISPATCH focus stop hits=8 site=0xc80b9
