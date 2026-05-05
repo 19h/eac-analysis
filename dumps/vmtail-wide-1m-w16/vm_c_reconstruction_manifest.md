@@ -194,14 +194,23 @@ Reproducible inventory of the current C-shaped reconstruction artifacts and gate
 | `artifact` | `native_obfuscated_second_stage_md_lines` | `11` | Current line count. |
 | `artifact` | `native_obfuscated_second_stage_md_bytes` | `1284` | Current file size in bytes. |
 | `artifact` | `native_obfuscated_second_stage_dynamic_c_path` | `dumps/vmtail-wide-1m-w16/vm_native_obfuscated_second_stage_dynamic.c` | Generated reconstruction artifact. |
-| `artifact` | `native_obfuscated_second_stage_dynamic_c_lines` | `114` | Current line count. |
-| `artifact` | `native_obfuscated_second_stage_dynamic_c_bytes` | `7230` | Current file size in bytes. |
+| `artifact` | `native_obfuscated_second_stage_dynamic_c_lines` | `119` | Current line count. |
+| `artifact` | `native_obfuscated_second_stage_dynamic_c_bytes` | `7710` | Current file size in bytes. |
 | `artifact` | `native_obfuscated_second_stage_dynamic_tsv_path` | `dumps/vmtail-wide-1m-w16/vm_native_obfuscated_second_stage_dynamic.tsv` | Generated reconstruction artifact. |
 | `artifact` | `native_obfuscated_second_stage_dynamic_tsv_lines` | `6` | Current line count. |
-| `artifact` | `native_obfuscated_second_stage_dynamic_tsv_bytes` | `3581` | Current file size in bytes. |
+| `artifact` | `native_obfuscated_second_stage_dynamic_tsv_bytes` | `3866` | Current file size in bytes. |
 | `artifact` | `native_obfuscated_second_stage_dynamic_md_path` | `dumps/vmtail-wide-1m-w16/vm_native_obfuscated_second_stage_dynamic.md` | Generated reconstruction artifact. |
 | `artifact` | `native_obfuscated_second_stage_dynamic_md_lines` | `11` | Current line count. |
-| `artifact` | `native_obfuscated_second_stage_dynamic_md_bytes` | `1346` | Current file size in bytes. |
+| `artifact` | `native_obfuscated_second_stage_dynamic_md_bytes` | `1473` | Current file size in bytes. |
+| `artifact` | `native_obfuscated_second_stage_slot_proof_c_path` | `dumps/vmtail-wide-1m-w16/vm_native_obfuscated_second_stage_slot_proof.c` | Generated reconstruction artifact. |
+| `artifact` | `native_obfuscated_second_stage_slot_proof_c_lines` | `107` | Current line count. |
+| `artifact` | `native_obfuscated_second_stage_slot_proof_c_bytes` | `6434` | Current file size in bytes. |
+| `artifact` | `native_obfuscated_second_stage_slot_proof_tsv_path` | `dumps/vmtail-wide-1m-w16/vm_native_obfuscated_second_stage_slot_proof.tsv` | Generated reconstruction artifact. |
+| `artifact` | `native_obfuscated_second_stage_slot_proof_tsv_lines` | `6` | Current line count. |
+| `artifact` | `native_obfuscated_second_stage_slot_proof_tsv_bytes` | `2660` | Current file size in bytes. |
+| `artifact` | `native_obfuscated_second_stage_slot_proof_md_path` | `dumps/vmtail-wide-1m-w16/vm_native_obfuscated_second_stage_slot_proof.md` | Generated reconstruction artifact. |
+| `artifact` | `native_obfuscated_second_stage_slot_proof_md_lines` | `11` | Current line count. |
+| `artifact` | `native_obfuscated_second_stage_slot_proof_md_bytes` | `1395` | Current file size in bytes. |
 | `artifact` | `target_only_handlers_retdec_path` | `dumps/vmtail-wide-1m-w16/vm_target_only_handlers_retdec.c` | Generated reconstruction artifact. |
 | `artifact` | `target_only_handlers_retdec_lines` | `317` | Current line count. |
 | `artifact` | `target_only_handlers_retdec_bytes` | `12635` | Current file size in bytes. |
@@ -373,6 +382,14 @@ Reproducible inventory of the current C-shaped reconstruction artifacts and gate
 | `c_shape` | `native_obfuscated_second_stage_dynamic_unique_targets` | `4` | Unique native handler target offsets observed from the second-stage computed dispatch sites. |
 | `c_shape` | `native_obfuscated_second_stage_dynamic_status_mix` | `dynamic_computed_targets_observed:5` | Status mix for bounded dynamic second-stage dispatch target evidence. |
 | `c_shape` | `native_obfuscated_second_stage_dynamic_slot_target_check_mix` | `slot_index_matches_handler_target:28` | Whether observed dispatch-table slot indices match the handler targets read by computed jmp [rax]. |
+| `c_shape` | `native_obfuscated_second_stage_dynamic_slot_base_check_mix` | `slot_minus_idx_matches_dispatch_table:28` | Whether observed slot offsets minus slot indices equal the dispatch-table base. |
+| `c_shape` | `native_obfuscated_second_stage_slot_proof_rows` | `5` | Static slot-formula proof rows for second-stage computed jmp [rax] sites. |
+| `c_shape` | `native_obfuscated_second_stage_slot_proof_c_functions` | `5` | Syntax-checkable C helper functions for static second-stage slot formula proof. |
+| `c_shape` | `native_obfuscated_second_stage_slot_proof_dispatch_cases` | `5` | Dispatcher cases in the second-stage slot proof C artifact. |
+| `c_shape` | `native_obfuscated_second_stage_slot_proof_net_zero_rows` | `5` | Second-stage computed-jump static windows whose immediate add/sub ladder has net zero effect on rax. |
+| `c_shape` | `native_obfuscated_second_stage_slot_proof_dynamic_hits` | `28` | Focused dynamic hits covered by the static slot-formula proof artifact. |
+| `c_shape` | `native_obfuscated_second_stage_slot_proof_static_status_mix` | `static_slot_formula_net_zero:5` | Static status mix for second-stage slot formula proof rows. |
+| `c_shape` | `native_obfuscated_second_stage_slot_proof_status_mix` | `static_dynamic_slot_formula_proven_for_observed_hits:5` | Proof status mix after joining static slot formula proof with dynamic slot/base checks. |
 | `c_shape` | `target_only_handler_retdec_selected_ranges` | `3` | Target-only VM handler native ranges selected for targeted RetDec. |
 | `c_shape` | `target_only_handler_retdec_functions` | `8` | Targeted RetDec C functions emitted from target-only VM handler native ranges. |
 | `c_shape` | `target_only_handler_retdec_ranges` | `8` | Native address ranges emitted by RetDec for target-only handler coverage. |
@@ -825,9 +842,12 @@ Reproducible inventory of the current C-shaped reconstruction artifacts and gate
 | `native_acceleration` | `native_obfuscated_second_stage_dump_source_lines` | `398` | Native second-stage obfuscated-thunk classifier/generator source size. |
 | `native_acceleration` | `native_obfuscated_second_stage_dump_binary_bytes` | `25392` | Current compiled native second-stage obfuscated-thunk classifier/generator size. |
 | `native_acceleration` | `native_obfuscated_second_stage_uses_native_generator` | `yes` | Whether the second-stage obfuscated-thunk C/TSV/Markdown artifacts are generated by the native C tool. |
-| `native_acceleration` | `native_obfuscated_second_stage_dynamic_dump_source_lines` | `680` | Native dynamic dispatch trace-index generator source size for second-stage computed thunks. |
-| `native_acceleration` | `native_obfuscated_second_stage_dynamic_dump_binary_bytes` | `1392848` | Current compiled native dynamic dispatch trace-index generator size. |
+| `native_acceleration` | `native_obfuscated_second_stage_dynamic_dump_source_lines` | `712` | Native dynamic dispatch trace-index generator source size for second-stage computed thunks. |
+| `native_acceleration` | `native_obfuscated_second_stage_dynamic_dump_binary_bytes` | `1730848` | Current compiled native dynamic dispatch trace-index generator size. |
 | `native_acceleration` | `native_obfuscated_second_stage_dynamic_uses_native_generator` | `yes` | Whether the second-stage dynamic dispatch C/TSV/Markdown artifacts are generated by the native C tool. |
+| `native_acceleration` | `native_obfuscated_second_stage_slot_proof_dump_source_lines` | `613` | Native Capstone-backed slot-formula proof generator source size for second-stage computed thunks. |
+| `native_acceleration` | `native_obfuscated_second_stage_slot_proof_dump_binary_bytes` | `26016` | Current compiled native slot-formula proof generator size. |
+| `native_acceleration` | `native_obfuscated_second_stage_slot_proof_uses_native_generator` | `yes` | Whether the second-stage slot proof C/TSV/Markdown artifacts are generated by the native C tool. |
 | `gate` | `syntax_check` | `make pseudocode-syntax-check` | Regenerates and warning-checks the generated C-like reconstruction artifacts with C11 -fsyntax-only. |
 | `gate` | `object_check` | `make pseudocode-object-check` | Codegen-compiles the combined source bundle to /tmp/eacsym-vm_recovered_source_bundle.o. |
 | `gate` | `link_smoke_check` | `make pseudocode-link-check` | Links the bundle with vm_recovered_source_harness.c and runs the smoke executable. |

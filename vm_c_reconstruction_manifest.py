@@ -79,6 +79,9 @@ ARTIFACTS = [
     ("native_obfuscated_second_stage_dynamic_c", TRACE_DIR / "vm_native_obfuscated_second_stage_dynamic.c"),
     ("native_obfuscated_second_stage_dynamic_tsv", TRACE_DIR / "vm_native_obfuscated_second_stage_dynamic.tsv"),
     ("native_obfuscated_second_stage_dynamic_md", TRACE_DIR / "vm_native_obfuscated_second_stage_dynamic.md"),
+    ("native_obfuscated_second_stage_slot_proof_c", TRACE_DIR / "vm_native_obfuscated_second_stage_slot_proof.c"),
+    ("native_obfuscated_second_stage_slot_proof_tsv", TRACE_DIR / "vm_native_obfuscated_second_stage_slot_proof.tsv"),
+    ("native_obfuscated_second_stage_slot_proof_md", TRACE_DIR / "vm_native_obfuscated_second_stage_slot_proof.md"),
     ("target_only_handlers_retdec", TRACE_DIR / "vm_target_only_handlers_retdec.c"),
     ("unobserved_handlers_retdec_batch00", TRACE_DIR / "vm_unobserved_handlers_retdec_batch00.c"),
     ("unobserved_handlers_retdec_batch01", TRACE_DIR / "vm_unobserved_handlers_retdec_batch01.c"),
@@ -189,6 +192,8 @@ def c_shape_metrics(rows):
     native_obfuscated_second_stage_index = read_tsv(TRACE_DIR / "vm_native_obfuscated_second_stage.tsv")
     native_obfuscated_second_stage_dynamic = read_text(TRACE_DIR / "vm_native_obfuscated_second_stage_dynamic.c")
     native_obfuscated_second_stage_dynamic_index = read_tsv(TRACE_DIR / "vm_native_obfuscated_second_stage_dynamic.tsv")
+    native_obfuscated_second_stage_slot_proof = read_text(TRACE_DIR / "vm_native_obfuscated_second_stage_slot_proof.c")
+    native_obfuscated_second_stage_slot_proof_index = read_tsv(TRACE_DIR / "vm_native_obfuscated_second_stage_slot_proof.tsv")
     target_only_handlers_retdec = read_text(TRACE_DIR / "vm_target_only_handlers_retdec.c")
     unobserved_handlers_retdec_batches = [
         read_text(TRACE_DIR / f"vm_unobserved_handlers_retdec_batch{index:02d}.c")
@@ -223,6 +228,7 @@ def c_shape_metrics(rows):
     )
     second_stage_dynamic_targets = set()
     second_stage_dynamic_slot_checks = Counter()
+    second_stage_dynamic_base_checks = Counter()
     for row in native_obfuscated_second_stage_dynamic_index:
         for item in row.get("target_mix", "").split(","):
             if item and item != "-":
@@ -231,6 +237,16 @@ def c_shape_metrics(rows):
             if item and item != "-":
                 key, _, value = item.partition(":")
                 second_stage_dynamic_slot_checks[key] += int(value or "0")
+        for item in row.get("slot_base_check_mix", "").split(","):
+            if item and item != "-":
+                key, _, value = item.partition(":")
+                second_stage_dynamic_base_checks[key] += int(value or "0")
+    second_stage_slot_proof_static_statuses = Counter(
+        row.get("static_status", "") for row in native_obfuscated_second_stage_slot_proof_index
+    )
+    second_stage_slot_proof_statuses = Counter(
+        row.get("proof_status", "") for row in native_obfuscated_second_stage_slot_proof_index
+    )
 
     add(rows, "c_shape", "handler_functions", count(r"^static VMOpResult op_entry_\d{3}\(VMState \*vm\) \{", handlers),
         "All-entry handler/operator C functions.")
@@ -378,6 +394,30 @@ def c_shape_metrics(rows):
     add(rows, "c_shape", "native_obfuscated_second_stage_dynamic_slot_target_check_mix",
         ",".join(f"{key}:{value}" for key, value in second_stage_dynamic_slot_checks.most_common()) or "-",
         "Whether observed dispatch-table slot indices match the handler targets read by computed jmp [rax].")
+    add(rows, "c_shape", "native_obfuscated_second_stage_dynamic_slot_base_check_mix",
+        ",".join(f"{key}:{value}" for key, value in second_stage_dynamic_base_checks.most_common()) or "-",
+        "Whether observed slot offsets minus slot indices equal the dispatch-table base.")
+    add(rows, "c_shape", "native_obfuscated_second_stage_slot_proof_rows",
+        len(native_obfuscated_second_stage_slot_proof_index),
+        "Static slot-formula proof rows for second-stage computed jmp [rax] sites.")
+    add(rows, "c_shape", "native_obfuscated_second_stage_slot_proof_c_functions",
+        count(r"^static void second_stage_slot_formula_[0-9a-f]+\(VMState \*vm,", native_obfuscated_second_stage_slot_proof),
+        "Syntax-checkable C helper functions for static second-stage slot formula proof.")
+    add(rows, "c_shape", "native_obfuscated_second_stage_slot_proof_dispatch_cases",
+        count(r"^    case 0x[0-9a-f]+u:$", native_obfuscated_second_stage_slot_proof),
+        "Dispatcher cases in the second-stage slot proof C artifact.")
+    add(rows, "c_shape", "native_obfuscated_second_stage_slot_proof_net_zero_rows",
+        sum(1 for row in native_obfuscated_second_stage_slot_proof_index if row.get("net_rax_delta", "") == "0x0"),
+        "Second-stage computed-jump static windows whose immediate add/sub ladder has net zero effect on rax.")
+    add(rows, "c_shape", "native_obfuscated_second_stage_slot_proof_dynamic_hits",
+        sum(int(row.get("dynamic_hits", "0") or "0") for row in native_obfuscated_second_stage_slot_proof_index),
+        "Focused dynamic hits covered by the static slot-formula proof artifact.")
+    add(rows, "c_shape", "native_obfuscated_second_stage_slot_proof_static_status_mix",
+        ",".join(f"{key}:{value}" for key, value in second_stage_slot_proof_static_statuses.most_common()) or "-",
+        "Static status mix for second-stage slot formula proof rows.")
+    add(rows, "c_shape", "native_obfuscated_second_stage_slot_proof_status_mix",
+        ",".join(f"{key}:{value}" for key, value in second_stage_slot_proof_statuses.most_common()) or "-",
+        "Proof status mix after joining static slot formula proof with dynamic slot/base checks.")
     add(rows, "c_shape", "target_only_handler_retdec_selected_ranges",
         count(r"^ \*   0x[0-9a-f]+-0x[0-9a-f]+ entry=\d+ ", target_only_handlers_retdec),
         "Target-only VM handler native ranges selected for targeted RetDec.")
@@ -2163,6 +2203,8 @@ def native_acceleration_metrics(rows):
     obfuscated_second_stage_binary = Path("vm_native_obfuscated_second_stage_dump")
     obfuscated_second_stage_dynamic_source = read_text("vm_native_obfuscated_second_stage_dynamic_dump.c")
     obfuscated_second_stage_dynamic_binary = Path("vm_native_obfuscated_second_stage_dynamic_dump")
+    obfuscated_second_stage_slot_proof_source = read_text("vm_native_obfuscated_second_stage_slot_proof_dump.c")
+    obfuscated_second_stage_slot_proof_binary = Path("vm_native_obfuscated_second_stage_slot_proof_dump")
     add(rows, "native_acceleration", "instruction_unique_fast_source_lines", line_count(unique_source),
         "Native exact-instruction reducer source size.")
     add(rows, "native_acceleration", "instruction_unique_fast_binary_bytes", file_size(unique_binary),
@@ -2239,6 +2281,13 @@ def native_acceleration_metrics(rows):
     add(rows, "native_acceleration", "native_obfuscated_second_stage_dynamic_uses_native_generator",
         "yes" if "./vm_native_obfuscated_second_stage_dynamic_dump --c" in makefile else "no",
         "Whether the second-stage dynamic dispatch C/TSV/Markdown artifacts are generated by the native C tool.")
+    add(rows, "native_acceleration", "native_obfuscated_second_stage_slot_proof_dump_source_lines", line_count(obfuscated_second_stage_slot_proof_source),
+        "Native Capstone-backed slot-formula proof generator source size for second-stage computed thunks.")
+    add(rows, "native_acceleration", "native_obfuscated_second_stage_slot_proof_dump_binary_bytes", file_size(obfuscated_second_stage_slot_proof_binary),
+        "Current compiled native slot-formula proof generator size.")
+    add(rows, "native_acceleration", "native_obfuscated_second_stage_slot_proof_uses_native_generator",
+        "yes" if "./vm_native_obfuscated_second_stage_slot_proof_dump --c" in makefile else "no",
+        "Whether the second-stage slot proof C/TSV/Markdown artifacts are generated by the native C tool.")
 
 
 def build_rows():
