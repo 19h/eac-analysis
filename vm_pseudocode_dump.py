@@ -316,6 +316,38 @@ def load_live_in_roles(path):
     return roles
 
 
+def load_live_in_reentries(path):
+    reentries = defaultdict(list)
+    if not path or not Path(path).exists():
+        return reentries
+    class_rank = {
+        "exact_tail_dynamic_reentry_not_promoted": 0,
+        "observed_site_mem_match_dynamic_reentry_not_promoted": 1,
+        "source_tail_mechanism_dynamic_reentry_not_promoted": 2,
+        "dynamic_reentry_live_deref_unproven": 3,
+        "ambiguous_dynamic_reentry": 4,
+    }
+    for row in read_tsv(path):
+        start = normalize_vm_ip(row.get("synthetic_start_vm_ip", ""))
+        if start:
+            reentries[start].append(row)
+
+    def sort_key(row):
+        try:
+            event = int((row.get("dynamic_event_span", "") or "0").split("->", 1)[0] or "0", 0)
+        except ValueError:
+            event = 0
+        return (
+            class_rank.get(row.get("reentry_class", ""), 9),
+            event,
+            normalize_vm_ip(row.get("next_end_vm_ip", "")),
+        )
+
+    for rows in reentries.values():
+        rows.sort(key=sort_key)
+    return reentries
+
+
 def load_final_tail_site_probes(path):
     probes = defaultdict(list)
     if not path or not Path(path).exists():
@@ -542,6 +574,56 @@ def emit_live_in_role_comments(target_vm_ip, live_in_roles, final_tail_site_prob
         print(f"    /* ... {omitted} additional live-in role rows omitted ... */")
 
 
+def emit_live_in_reentry_comments(target_vm_ip, live_in_reentries, args):
+    start = normalize_vm_ip(target_vm_ip)
+    rows = live_in_reentries.get(start, [])
+    if not rows:
+        return
+    limit = getattr(args, "live_in_reentry_top_items", 4)
+    shown = rows if limit <= 0 else rows[:limit]
+    max_expr = getattr(args, "live_in_reentry_max_expr", 220)
+    print(
+        f"    /* live-in reentry probe @ {start}: rows={len(rows)}; "
+        "dynamic next-hook evidence is comment-only unless a hidden chain is statically replayed. */"
+    )
+    for row in shown:
+        next_hook = "-"
+        if row.get("inferred_next_source_entry", ""):
+            next_hook = (
+                f"entry_{row.get('inferred_next_source_entry')}@"
+                f"{normalize_vm_ip(row.get('inferred_next_source_start_vm_ip', ''))}"
+            )
+        source_tail = "-"
+        if row.get("source_final_tail_proof_events", ""):
+            source_tail = (
+                f"events={row.get('source_final_tail_proof_events')},"
+                f"target_reg={row.get('source_final_tail_target_reg_match', '-')},"
+                f"deref={row.get('source_final_tail_deref_match', '-')},"
+                f"full={row.get('source_final_tail_proof_full', '0')}"
+            )
+        print(
+            f"    /* live-in reentry: source={row.get('source_entry', '?')}, "
+            f"event={row.get('dynamic_event_span', '-') or '-'}, "
+            f"missing_successor={normalize_vm_ip(row.get('missing_successor_vm_ip', ''))}, "
+            f"live={c_comment(row.get('live_mem_match_class', '') or '-')}, "
+            f"tail={normalize_vm_ip(row.get('final_tail_site', ''))}:{row.get('final_tail_target_reg', '-')}, "
+            f"exact_tail={row.get('tail_event_site_match', '0') or '0'}, "
+            f"dynamic={c_comment(row.get('dynamic_resolution', '') or '-')}, "
+            f"next_hook={c_comment(next_hook)}, "
+            f"next_end={normalize_vm_ip(row.get('next_end_vm_ip', ''))}, "
+            f"next_target=entry_{row.get('next_tail_target_entry', '-')}, "
+            f"hidden_delta={row.get('inferred_hidden_delta', '-') or '-'}, "
+            f"bytes={c_comment(row.get('inferred_next_source_bytes', '') or '-')}, "
+            f"source_tail={c_comment(clip(source_tail, max_expr))}, "
+            f"class={c_comment(row.get('reentry_class', '') or '-')}, "
+            f"action={c_comment(row.get('hard_cfg_action', '') or '-')}, "
+            f"blocker={c_comment(clip(row.get('promotion_blocker', '') or '-', max_expr))} */"
+        )
+    omitted = len(rows) - len(shown)
+    if omitted > 0:
+        print(f"    /* ... {omitted} additional live-in reentry rows omitted ... */")
+
+
 def load_tail_lifts(path):
     lifts = {}
     if not path or not Path(path).exists():
@@ -727,7 +809,7 @@ def emit_preamble():
     print("")
 
 
-def emit_synthetic_edge(edge, synthetic_spans, dynamic_stitches, transfer_probes, symbolic_successors, hidden_chains, live_in_roles, final_tail_site_probes, args):
+def emit_synthetic_edge(edge, synthetic_spans, dynamic_stitches, transfer_probes, symbolic_successors, hidden_chains, live_in_roles, live_in_reentries, final_tail_site_probes, args):
     target_vm_ip = normalize_vm_ip(edge.get("target_vm_ip", ""))
     chain = resolved_hidden_chain(target_vm_ip, hidden_chains)
     info = synthetic_spans.get(target_vm_ip)
@@ -737,6 +819,7 @@ def emit_synthetic_edge(edge, synthetic_spans, dynamic_stitches, transfer_probes
         emit_symbolic_successor_comments(target_vm_ip, symbolic_successors, args)
         emit_hidden_chain_comments(target_vm_ip, hidden_chains, args)
         emit_live_in_role_comments(target_vm_ip, live_in_roles, final_tail_site_probes, args)
+        emit_live_in_reentry_comments(target_vm_ip, live_in_reentries, args)
         if chain:
             print(f"    /* hidden chain resolves synthetic reentry at {normalize_vm_ip(chain.get('hidden_pred_end_vm_ip', ''))}. */")
             return
@@ -787,6 +870,7 @@ def emit_synthetic_edge(edge, synthetic_spans, dynamic_stitches, transfer_probes
     emit_symbolic_successor_comments(target_vm_ip, symbolic_successors, args)
     emit_hidden_chain_comments(target_vm_ip, hidden_chains, args)
     emit_live_in_role_comments(target_vm_ip, live_in_roles, final_tail_site_probes, args)
+    emit_live_in_reentry_comments(target_vm_ip, live_in_reentries, args)
     if chain:
         try:
             offset = parse_delta(chain.get("hidden_source_delta_from_start", "0"))
@@ -848,7 +932,7 @@ def emit_block_prototypes(blocks):
     print("")
 
 
-def emit_block(block, rows, edge, synthetic_spans, dynamic_stitches, transfer_probes, symbolic_successors, hidden_chains, live_in_roles, final_tail_site_probes, tail_lifts, args, known_blocks, block_by_start):
+def emit_block(block, rows, edge, synthetic_spans, dynamic_stitches, transfer_probes, symbolic_successors, hidden_chains, live_in_roles, live_in_reentries, final_tail_site_probes, tail_lifts, args, known_blocks, block_by_start):
     name = c_block_name(block["block"])
     print(f"static void {name}(VMState *vm) {{")
     print("    int next_entry = -1;")
@@ -885,7 +969,7 @@ def emit_block(block, rows, edge, synthetic_spans, dynamic_stitches, transfer_pr
             else:
                 print("    /* target block is outside this selected sketch. */")
         elif edge_kind == "covered_synthetic_fallthrough":
-            emit_synthetic_edge(edge, synthetic_spans, dynamic_stitches, transfer_probes, symbolic_successors, hidden_chains, live_in_roles, final_tail_site_probes, args)
+            emit_synthetic_edge(edge, synthetic_spans, dynamic_stitches, transfer_probes, symbolic_successors, hidden_chains, live_in_roles, live_in_reentries, final_tail_site_probes, args)
             target_block, target_vm_ip = synthetic_successor(edge, synthetic_spans, hidden_chains, block_by_start)
             if target_block is not None:
                 print(f"    /* synthetic successor after lifted delta: {c_block_name(target_block)} @ 0x{target_vm_ip:x}; */")
@@ -929,6 +1013,7 @@ def main():
     parser.add_argument("--synthetic-gap-symbolic-successors", default="dumps/vmtail-wide-1m-w16/vm_synthetic_gap_symbolic_successors.tsv")
     parser.add_argument("--synthetic-gap-chain-probe", default="dumps/vmtail-wide-1m-w16/vm_synthetic_gap_chain_probe.tsv")
     parser.add_argument("--synthetic-gap-live-in-roles", default="dumps/vmtail-wide-1m-w16/vm_synthetic_gap_live_in_roles.tsv")
+    parser.add_argument("--synthetic-gap-live-in-reentry-probe", default="dumps/vmtail-wide-1m-w16/vm_synthetic_gap_live_in_reentry_probe.tsv")
     parser.add_argument("--live-in-final-tail-site-probe", default="dumps/vmtail-wide-1m-w16/vm_live_in_final_tail_site_probe.tsv")
     parser.add_argument("--synthetic-top-items", type=int, default=4)
     parser.add_argument("--synthetic-max-bytes", type=int, default=48)
@@ -942,6 +1027,8 @@ def main():
     parser.add_argument("--hidden-chain-max-expr", type=int, default=180)
     parser.add_argument("--live-in-role-top-items", type=int, default=4)
     parser.add_argument("--live-in-role-max-expr", type=int, default=220)
+    parser.add_argument("--live-in-reentry-top-items", type=int, default=4)
+    parser.add_argument("--live-in-reentry-max-expr", type=int, default=220)
     parser.add_argument("--start", action="append", default=[])
     parser.add_argument("--keep-order", action="store_true")
     args = parser.parse_args()
@@ -956,6 +1043,7 @@ def main():
     symbolic_successors = load_symbolic_successors(args.synthetic_gap_symbolic_successors)
     hidden_chains = load_hidden_chains(args.synthetic_gap_chain_probe)
     live_in_roles = load_live_in_roles(args.synthetic_gap_live_in_roles)
+    live_in_reentries = load_live_in_reentries(args.synthetic_gap_live_in_reentry_probe)
     final_tail_site_probes = load_final_tail_site_probes(args.live_in_final_tail_site_probe)
     tail_lifts = load_tail_lifts(args.synthetic_tail_lift)
 
@@ -976,6 +1064,7 @@ def main():
             symbolic_successors,
             hidden_chains,
             live_in_roles,
+            live_in_reentries,
             final_tail_site_probes,
             tail_lifts,
             args,

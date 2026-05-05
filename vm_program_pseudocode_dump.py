@@ -10,6 +10,7 @@ from vm_pseudocode_dump import (
     emit_dynamic_stitch_comments,
     emit_internal_tail_lift,
     emit_hidden_chain_comments,
+    emit_live_in_reentry_comments,
     emit_live_in_role_comments,
     emit_symbolic_successor_comments,
     emit_transfer_probe_comments,
@@ -20,6 +21,7 @@ from vm_pseudocode_dump import (
     load_edges,
     load_final_tail_site_probes,
     load_hidden_chains,
+    load_live_in_reentries,
     load_live_in_roles,
     load_rows,
     load_symbolic_successors,
@@ -229,7 +231,7 @@ def emit_decoded_control(row, args):
         print(f"    vm_ip -= 0x{-delta:x};")
 
 
-def emit_synthetic_edge(edge, synthetic_spans, dynamic_stitches, transfer_probes, symbolic_successors, hidden_chains, live_in_roles, final_tail_site_probes, args):
+def emit_synthetic_edge(edge, synthetic_spans, dynamic_stitches, transfer_probes, symbolic_successors, hidden_chains, live_in_roles, live_in_reentries, final_tail_site_probes, args):
     target_vm_ip = normalize_vm_ip(edge.get("target_vm_ip", ""))
     chain = resolved_hidden_chain(target_vm_ip, hidden_chains)
     info = synthetic_spans.get(target_vm_ip)
@@ -239,6 +241,7 @@ def emit_synthetic_edge(edge, synthetic_spans, dynamic_stitches, transfer_probes
         emit_symbolic_successor_comments(target_vm_ip, symbolic_successors, args)
         emit_hidden_chain_comments(target_vm_ip, hidden_chains, args)
         emit_live_in_role_comments(target_vm_ip, live_in_roles, final_tail_site_probes, args)
+        emit_live_in_reentry_comments(target_vm_ip, live_in_reentries, args)
         if chain:
             print(f"    /* hidden chain resolves synthetic reentry at {normalize_vm_ip(chain.get('hidden_pred_end_vm_ip', ''))}. */")
             return
@@ -290,6 +293,7 @@ def emit_synthetic_edge(edge, synthetic_spans, dynamic_stitches, transfer_probes
     emit_symbolic_successor_comments(target_vm_ip, symbolic_successors, args)
     emit_hidden_chain_comments(target_vm_ip, hidden_chains, args)
     emit_live_in_role_comments(target_vm_ip, live_in_roles, final_tail_site_probes, args)
+    emit_live_in_reentry_comments(target_vm_ip, live_in_reentries, args)
     if source is not None:
         print(f"    r = {op_name(source)}(vm);")
     if chain:
@@ -363,7 +367,7 @@ def emit_block_prototypes(blocks):
     print("")
 
 
-def emit_block(block, rows, edge, synthetic_spans, dynamic_stitches, transfer_probes, symbolic_successors, hidden_chains, live_in_roles, final_tail_site_probes, tail_lifts, args, known_blocks, block_by_start):
+def emit_block(block, rows, edge, synthetic_spans, dynamic_stitches, transfer_probes, symbolic_successors, hidden_chains, live_in_roles, live_in_reentries, final_tail_site_probes, tail_lifts, args, known_blocks, block_by_start):
     name = c_block_name(block["block"])
     print(f"static void prog_{name}(VMState *vm, uint64_t vm_ip) {{")
     print("    VMOpResult r = { .next_entry = -1, .slot = 0xffffffffu };")
@@ -403,7 +407,7 @@ def emit_block(block, rows, edge, synthetic_spans, dynamic_stitches, transfer_pr
             else:
                 print("    /* target block is outside this selected sketch. */")
         elif edge_kind == "covered_synthetic_fallthrough":
-            emit_synthetic_edge(edge, synthetic_spans, dynamic_stitches, transfer_probes, symbolic_successors, hidden_chains, live_in_roles, final_tail_site_probes, args)
+            emit_synthetic_edge(edge, synthetic_spans, dynamic_stitches, transfer_probes, symbolic_successors, hidden_chains, live_in_roles, live_in_reentries, final_tail_site_probes, args)
             target_block, target_vm_ip = synthetic_successor(edge, synthetic_spans, hidden_chains, block_by_start)
             if target_block is not None:
                 print(f"    /* synthetic successor after lifted delta: prog_{c_block_name(target_block)} @ 0x{target_vm_ip:x}; */")
