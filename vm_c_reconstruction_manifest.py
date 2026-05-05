@@ -113,6 +113,9 @@ ARTIFACTS = [
     ("static_only_tier2_split_c", TRACE_DIR / "vm_static_only_tier2_split_models.c"),
     ("static_only_tier2_split_tsv", TRACE_DIR / "vm_static_only_tier2_split_models.tsv"),
     ("static_only_tier2_split_md", TRACE_DIR / "vm_static_only_tier2_split_models.md"),
+    ("static_only_tier3_shared_c", TRACE_DIR / "vm_static_only_tier3_shared_models.c"),
+    ("static_only_tier3_shared_tsv", TRACE_DIR / "vm_static_only_tier3_shared_models.tsv"),
+    ("static_only_tier3_shared_md", TRACE_DIR / "vm_static_only_tier3_shared_models.md"),
     ("target_only_handlers_retdec", TRACE_DIR / "vm_target_only_handlers_retdec.c"),
     ("unobserved_handlers_retdec_batch00", TRACE_DIR / "vm_unobserved_handlers_retdec_batch00.c"),
     ("unobserved_handlers_retdec_batch01", TRACE_DIR / "vm_unobserved_handlers_retdec_batch01.c"),
@@ -246,6 +249,8 @@ def c_shape_metrics(rows):
     static_only_tier1_model_index = read_tsv(TRACE_DIR / "vm_static_only_tier1_handler_models.tsv")
     static_only_tier2_split = read_text(TRACE_DIR / "vm_static_only_tier2_split_models.c")
     static_only_tier2_split_index = read_tsv(TRACE_DIR / "vm_static_only_tier2_split_models.tsv")
+    static_only_tier3_shared = read_text(TRACE_DIR / "vm_static_only_tier3_shared_models.c")
+    static_only_tier3_shared_index = read_tsv(TRACE_DIR / "vm_static_only_tier3_shared_models.tsv")
     target_only_handlers_retdec = read_text(TRACE_DIR / "vm_target_only_handlers_retdec.c")
     unobserved_handlers_retdec_batches = [
         read_text(TRACE_DIR / f"vm_unobserved_handlers_retdec_batch{index:02d}.c")
@@ -365,6 +370,15 @@ def c_shape_metrics(rows):
     add(rows, "c_shape", "handler_tier2_static_slot_comment_only",
         count(r"tier2 slot expression kept comment-only", handlers),
         "Handler-layer tier2 static-only rows with candidate slots kept comment-only.")
+    add(rows, "c_shape", "handler_tier3_shared_model_comments",
+        count(r"tier3 shared model: rank=", handlers),
+        "Handler-layer tier3 static-only shared-range RetDec model annotations.")
+    add(rows, "c_shape", "handler_tier3_static_slot_recoveries",
+        count(r"tier3 static slot recovered from a shared RetDec primary tail", handlers),
+        "Handler-layer static-only tier3 entries with executable dispatch-table slot recovery in VMState form.")
+    add(rows, "c_shape", "handler_tier3_static_slot_comment_only",
+        count(r"tier3 slot expression kept comment-only", handlers),
+        "Handler-layer tier3 static-only rows with candidate slots kept comment-only.")
     add(rows, "c_shape", "native_ret_patch_target_functions",
         count(r"^static void native_retpatch_entry_", native_ret_patch_targets),
         "C-shaped native .text target helper functions emitted from sampled return-patch evidence.")
@@ -741,6 +755,25 @@ def c_shape_metrics(rows):
     add(rows, "coverage", "static_only_tier2_split_entries",
         ",".join(row.get("entry", "") for row in static_only_tier2_split_index) or "-",
         "Dispatch entries covered by the tier2 static-only split model artifact.")
+    add(rows, "coverage", "static_only_tier3_shared_rows",
+        len(static_only_tier3_shared_index),
+        "Tier3 static-only multi-function shared-range rows converted into primary handler model evidence.")
+    add(rows, "c_shape", "static_only_tier3_shared_functions",
+        count(r"^static VMTier3Result vm_tier3_entry_\d{3}\(VMTier3Frame \*vm\) \{", static_only_tier3_shared),
+        "Syntax-checkable C functions for tier3 static-only shared-range models.")
+    add(rows, "c_shape", "static_only_tier3_shared_dispatch_cases",
+        count(r"^    case \d+: return vm_tier3_entry_\d{3}\(vm\);", static_only_tier3_shared),
+        "Dispatcher cases for the tier3 static-only shared model artifact.")
+    add(rows, "coverage", "static_only_tier3_shared_candidate_slot_rows",
+        sum(1 for row in static_only_tier3_shared_index if row.get("slot_expr", "")),
+        "Tier3 shared rows with RetDec-derived known or candidate slot expressions.")
+    add(rows, "coverage", "static_only_tier3_shared_executable_slot_rows",
+        sum(1 for row in static_only_tier3_shared_index
+            if row.get("slot_status", "") == "retdec_dispatch_table_slot"),
+        "Tier3 shared rows whose primary RetDec tail exposes a clean dispatch-table slot.")
+    add(rows, "coverage", "static_only_tier3_shared_entries",
+        ",".join(row.get("entry", "") for row in static_only_tier3_shared_index) or "-",
+        "Dispatch entries covered by the tier3 static-only shared model artifact.")
     add(rows, "c_shape", "target_only_handler_retdec_selected_ranges",
         count(r"^ \*   0x[0-9a-f]+-0x[0-9a-f]+ entry=\d+ ", target_only_handlers_retdec),
         "Target-only VM handler native ranges selected for targeted RetDec.")

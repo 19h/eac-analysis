@@ -305,7 +305,7 @@ def emit_preamble():
     print("")
 
 
-def emit_handler(row, transition, tail_ip_advances, ret_patch_summaries, tier0_models, tier1_models, tier2_models, static_only_queue, args):
+def emit_handler(row, transition, tail_ip_advances, ret_patch_summaries, tier0_models, tier1_models, tier2_models, tier3_models, static_only_queue, args):
     entry = row["entry"]
     name = f"op_entry_{int(entry):03d}"
     klass = row.get("class", "")
@@ -374,6 +374,17 @@ def emit_handler(row, transition, tail_ip_advances, ret_patch_summaries, tier0_m
         )
         if tier2_model.get("effects"):
             print(f"    /* tier2 effects: {c_comment(clip(tier2_model['effects'], args.max_comment_len))} */")
+    tier3_model = tier3_models.get(entry, {})
+    if tier3_model:
+        print(
+            f"    /* tier3 shared model: rank={c_comment(tier3_model.get('rank', '-'))}, "
+            f"retdec={c_comment(tier3_model.get('function', '-'))}, "
+            f"share={c_comment(tier3_model.get('share_status', '-'))}, "
+            f"slot_status={c_comment(tier3_model.get('slot_status', '-'))}, "
+            f"ip_advance={c_comment(tier3_model.get('ip_advance', '-'))} */"
+        )
+        if tier3_model.get("effects"):
+            print(f"    /* tier3 effects: {c_comment(clip(tier3_model['effects'], args.max_comment_len))} */")
     tr = transition.get(entry, {})
     if tr.get("decode_signature"):
         print(f"    /* decode signature: {c_comment(clip(tr['decode_signature'], args.max_comment_len))} */")
@@ -442,6 +453,21 @@ def emit_handler(row, transition, tail_ip_advances, ret_patch_summaries, tier0_m
                 print(
                     f"    /* tier2 slot expression kept comment-only: "
                     f"{c_comment(clip(tier2_model['slot_expr'], args.max_comment_len))} */"
+                )
+        elif tier3_model:
+            tier3_slot_expr = static_model_slot_c_expr(tier3_model.get("slot_expr", ""))
+            if (
+                tier3_model.get("slot_status") == "retdec_dispatch_table_slot"
+                and tier3_slot_expr
+                and is_complete_expr(tier3_slot_expr, args.max_expr_len)
+            ):
+                print(f"    r.slot = (uint32_t)({tier3_slot_expr});")
+                print("    r.next_entry = vm_entry_from_table_offset(r.slot);")
+                print("    /* tier3 static slot recovered from a shared RetDec primary tail; dynamic source-row validation is still absent. */")
+            elif tier3_model.get("slot_expr"):
+                print(
+                    f"    /* tier3 slot expression kept comment-only: "
+                    f"{c_comment(clip(tier3_model['slot_expr'], args.max_comment_len))} */"
                 )
 
         ip_advance = constant_ip_advance(row.get("ip_advance_ir", ""))
@@ -516,6 +542,7 @@ def main():
     parser.add_argument("--static-only-tier0-models", default="dumps/vmtail-wide-1m-w16/vm_static_only_tier0_handler_models.tsv")
     parser.add_argument("--static-only-tier1-models", default="dumps/vmtail-wide-1m-w16/vm_static_only_tier1_handler_models.tsv")
     parser.add_argument("--static-only-tier2-models", default="dumps/vmtail-wide-1m-w16/vm_static_only_tier2_split_models.tsv")
+    parser.add_argument("--static-only-tier3-models", default="dumps/vmtail-wide-1m-w16/vm_static_only_tier3_shared_models.tsv")
     parser.add_argument("--static-only-queue", default="dumps/vmtail-wide-1m-w16/vm_static_only_handler_queue.tsv")
     args = parser.parse_args()
 
@@ -527,12 +554,13 @@ def main():
     tier0_models = load_static_models(args.static_only_tier0_models)
     tier1_models = load_static_models(args.static_only_tier1_models)
     tier2_models = load_static_models(args.static_only_tier2_models)
+    tier3_models = load_static_models(args.static_only_tier3_models)
     static_only_queue = load_static_only_queue(args.static_only_queue)
     chosen = selected_handlers(rows, args)
 
     emit_preamble()
     for row in chosen:
-        emit_handler(row, transition, tail_ip_advances, ret_patch_summaries, tier0_models, tier1_models, tier2_models, static_only_queue, args)
+        emit_handler(row, transition, tail_ip_advances, ret_patch_summaries, tier0_models, tier1_models, tier2_models, tier3_models, static_only_queue, args)
     emit_dispatch_table(chosen)
 
     classes = Counter(row.get("class", "") for row in chosen)
