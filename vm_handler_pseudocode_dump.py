@@ -140,6 +140,10 @@ def is_long_control_handler(row):
     return "target_u32@+0" in operands and "delta_u32@+4" in operands
 
 
+def is_sampled_operand_only_handler(row):
+    return row.get("class", "") == "sampled_operand_lifted" and bool(row.get("sampled_operand_ir", ""))
+
+
 def emit_preamble():
     print("/*")
     print(" * VM handler pseudocode.")
@@ -222,6 +226,9 @@ def emit_handler(row, transition, tail_ip_advances, args):
         print("    r.next_entry = vm_entry_from_slot_index(r.slot);")
         print("    vm->ip += signed_vm_delta_u32(U32(vm->ip + 0x4));")
         print("    /* long-control operands: target_u32@+0, signed delta_u32@+4 */")
+    elif is_sampled_operand_only_handler(row):
+        print("    /* sampled-operand target/delta sidecar has no generic handler formula yet. */")
+        print("    /* concrete observed sampled-operand rows are rendered in the bytecode program layer. */")
     else:
         slot_expr = single_expr(row.get("dispatch_slot_ir", ""))
         if slot_expr and is_complete_expr(slot_expr, args.max_expr_len):
