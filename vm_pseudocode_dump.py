@@ -986,7 +986,7 @@ def emit_source299_ret_patch_comments(target_vm_ip, source299_ret_patch_probes, 
     source_text = ",".join(f"{key}:{value}" for key, value in sources.most_common()) or "-"
     print(
         f"    /* sampled ret-patch probe @ {start}: rows={len(rows)}; sources={c_comment(source_text)}; "
-        "the native handler writes frame[0xbb]+u32_0 to *(uint64_t *)(rsp+u16_4) and returns, "
+        "the native handler writes one or more frame[0xbb]+operand return addresses to rsp-relative slots and returns, "
         "so this hidden control path is native return-patching rather than a dispatch-table slot. */"
     )
     for row in shown:
@@ -1008,15 +1008,22 @@ def emit_source299_ret_patch_comments(target_vm_ip, source299_ret_patch_probes, 
             f"    /* sampled ret-patch: source=entry_{c_comment(row.get('source_entry', '') or '?')}, "
             f"run={c_comment(run_name)}, "
             f"seed={c_comment(row.get('seed_quality', '') or '-')}, "
+            f"kind={c_comment(row.get('ret_patch_kind', '') or 'single_stack_return')}, "
             f"operand_u32={c_comment(row.get('family_operand_u32_0', '') or '-')}, "
+            f"operand_u32_6={c_comment(row.get('family_operand_u32_6', '') or '-')}, "
             f"stack_off={c_comment(row.get('stack_write_offset', '') or '-')}, "
             f"stack_addr={c_comment(row.get('stack_write_addr', '') or '-')}, "
+            f"stack_addr2={c_comment(row.get('stack_write_addr2', '') or '-')}, "
             f"base={c_comment(row.get('ret_patch_base', '') or '-')}, "
             f"base_source={c_comment(row.get('ret_patch_base_source', '') or '-')}, "
             f"patched_ret={c_comment(row.get('patched_ret_eac_off', '') or '-')}, "
             f"section={c_comment(row.get('patched_ret_section', '') or '-')}, "
             f"bytes={c_comment(row.get('patched_ret_file_bytes16', '') or '-')}, "
+            f"patched_ret2={c_comment(row.get('patched_ret2_eac_off', '') or '-')}, "
+            f"section2={c_comment(row.get('patched_ret2_section', '') or '-')}, "
+            f"bytes2={c_comment(row.get('patched_ret2_file_bytes16', '') or '-')}, "
             f"relation={c_comment(row.get('ret_patch_relation', '') or '-')}, "
+            f"relation2={c_comment(row.get('ret_patch2_relation', '') or '-')}, "
             f"next={c_comment(next_event)}, "
             f"dynamic_next={c_comment(dynamic_next)} */"
         )

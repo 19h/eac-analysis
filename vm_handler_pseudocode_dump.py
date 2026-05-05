@@ -174,12 +174,17 @@ def ret_patch_base_class(row):
 def emit_ret_patch_handler_body(row, ret_patch_rows, args):
     starts = Counter(item.get("synthetic_start_vm_ip", "") for item in ret_patch_rows)
     patched = Counter(item.get("patched_ret_eac_off", "") for item in ret_patch_rows)
+    patched2 = Counter(item.get("patched_ret2_eac_off", "") for item in ret_patch_rows if item.get("patched_ret2_eac_off", ""))
     seeds = Counter(item.get("seed_quality", "") for item in ret_patch_rows)
     base_sources = Counter(ret_patch_base_class(item) for item in ret_patch_rows)
     relations = Counter(item.get("ret_patch_relation", "") for item in ret_patch_rows)
+    relations2 = Counter(item.get("ret_patch2_relation", "") for item in ret_patch_rows if item.get("ret_patch2_relation", ""))
     sections = Counter(item.get("patched_ret_section", "") for item in ret_patch_rows)
+    sections2 = Counter(item.get("patched_ret2_section", "") for item in ret_patch_rows if item.get("patched_ret2_section", ""))
     formulas = Counter(item.get("ret_patch_formula", "") for item in ret_patch_rows)
     stack_offsets = Counter(item.get("stack_write_offset", "") for item in ret_patch_rows)
+    kinds = Counter(item.get("ret_patch_kind", "") or "single_stack_return" for item in ret_patch_rows)
+    double_stack = kinds.most_common(1)[0][0] == "double_stack_return"
 
     print(
         f"    /* native return-patch thunk: the observed entry_{row.get('entry', '?')} body ends in a native ret; "
@@ -187,23 +192,39 @@ def emit_ret_patch_handler_body(row, ret_patch_rows, args):
     )
     print(
         f"    /* ret-patch evidence: rows={len(ret_patch_rows)}, "
+        f"kind={c_comment(counter_text(kinds, args.ret_patch_comment_items))}, "
         f"starts={c_comment(counter_text(starts, args.ret_patch_comment_items))}, "
         f"patched_text={c_comment(counter_text(patched, args.ret_patch_comment_items))}, "
+        f"patched_text2={c_comment(counter_text(patched2, args.ret_patch_comment_items))}, "
         f"stack_offsets={c_comment(counter_text(stack_offsets, args.ret_patch_comment_items))}, "
         f"sections={c_comment(counter_text(sections, args.ret_patch_comment_items))}, "
+        f"sections2={c_comment(counter_text(sections2, args.ret_patch_comment_items))}, "
         f"seed={c_comment(counter_text(seeds, args.ret_patch_comment_items))}, "
         f"base={c_comment(counter_text(base_sources, args.ret_patch_comment_items))}, "
-        f"relation={c_comment(counter_text(relations, args.ret_patch_comment_items))} */"
+        f"relation={c_comment(counter_text(relations, args.ret_patch_comment_items))}, "
+        f"relation2={c_comment(counter_text(relations2, args.ret_patch_comment_items))} */"
     )
     if formulas:
         print(f"    /* ret-patch formula: {c_comment(clip(formulas.most_common(1)[0][0], args.max_comment_len))} */")
-    print("    uint32_t native_ret_off = U32(vm->ip + 0x0);")
-    print("    uint16_t native_stack_off = U16(vm->ip + 0x4);")
-    print("    r.slot = native_ret_off;")
-    print("    r.next_entry = -1;")
-    print("    /* r.slot carries the native text/file offset for this analysis artifact, not a dispatch-table slot. */")
-    print("    /* native effect: *(uint64_t *)(rsp + native_stack_off) = frame_qword_0xbb + native_ret_off; ret */")
-    print("    (void)native_stack_off;")
+    if double_stack:
+        print("    uint32_t native_ret_off0 = U32(vm->ip + 0x6);")
+        print("    uint32_t native_ret_off1 = U32(vm->ip + 0x0);")
+        print("    uint16_t native_stack_off = U16(vm->ip + 0x4);")
+        print("    r.slot = native_ret_off0;")
+        print("    r.next_entry = -1;")
+        print("    /* r.slot carries the first native text/file offset for this analysis artifact, not a dispatch-table slot. */")
+        print("    /* native effect: *(uint64_t *)(rsp + native_stack_off) = frame_qword_0xbb + native_ret_off0; */")
+        print("    /* native effect: *(uint64_t *)(rsp + native_stack_off + 8) = frame_qword_0xbb + native_ret_off1; ret */")
+        print("    (void)native_ret_off1;")
+        print("    (void)native_stack_off;")
+    else:
+        print("    uint32_t native_ret_off = U32(vm->ip + 0x0);")
+        print("    uint16_t native_stack_off = U16(vm->ip + 0x4);")
+        print("    r.slot = native_ret_off;")
+        print("    r.next_entry = -1;")
+        print("    /* r.slot carries the native text/file offset for this analysis artifact, not a dispatch-table slot. */")
+        print("    /* native effect: *(uint64_t *)(rsp + native_stack_off) = frame_qword_0xbb + native_ret_off; ret */")
+        print("    (void)native_stack_off;")
     if row.get("sampled_operand_ir"):
         print(f"    /* sampled sidecars remain bytecode-layer evidence: {c_comment(clip(row['sampled_operand_ir'], args.max_comment_len))} */")
     if row.get("validation"):
