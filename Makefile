@@ -15,7 +15,7 @@ XFER_ROWS ?= 128
 
 .PHONY: all clean fast-replay fast-state fast-gpr fast-predicates fast-state-predicates fast-gpr-predicates fast-transfer fast-state-transfer fast-gpr-transfer fast-validators fast-paths fast-gpr-paths instruction-trace instruction-unique instruction-lift sampled-recovery file-atlas file-fill long-branches hidden-transitions sampled-operands hidden-fill frontier-fill footprint-fill control-edges bytecode-ir bytecode-basic-blocks synthetic-spans synthetic-tails synthetic-tail-lift synthetic-successor-gaps synthetic-gap-transfer-probe synthetic-gap-dynamic-stitch synthetic-gap-chain-probe synthetic-gap-residual-audit synthetic-gap-concrete-state-audit synthetic-gap-state-trace-targets synthetic-gap-live-context-audit synthetic-gap-table-read-diagnostic synthetic-gap-table-memory-probe synthetic-gap-runtime-table-memory-probe synthetic-gap-sampled-control-correlation synthetic-gap-focused-direct-trace-audit synthetic-gap-focused-sequence-audit synthetic-gap-observed-chain-bridge synthetic-gap-observed-chain-replay synthetic-gap-chain-slot-reconciliation synthetic-gap-symbolic-successors synthetic-gap-live-in-roles final-tail-site-probe synthetic-gap-live-in-reentry-probe synthetic-gap-allstatic-reentry-probe pseudocode pseudocode-full handler-pseudocode path-pseudocode source-bundle pseudocode-syntax-check pseudocode-object-check pseudocode-link-check coverage-matrix coverage-audit c-reconstruction-manifest
 
-all: driver trace_preload.so vm_fast_path_profile
+all: driver trace_preload.so vm_fast_path_profile vm_instruction_unique_fast
 
 driver: driver.c
 	$(CC) $(CFLAGS) -o $@ $< -ldl
@@ -25,6 +25,9 @@ trace_preload.so: trace_preload.c
 
 vm_fast_path_profile: vm_fast_path_profile.c
 	$(CC) $(CFLAGS) -O3 -o $@ $< -lcapstone -lcrypto
+
+vm_instruction_unique_fast: vm_instruction_unique_fast.c
+	$(CC) $(CFLAGS) -O3 -o $@ $<
 
 fast-replay: fast-state fast-gpr
 
@@ -61,8 +64,8 @@ fast-gpr-paths: fast-gpr
 instruction-trace:
 	python3 vm_trace_graph.py dumps/vmtail-wide-1m-w16 --eac eac.elf --window 0x1200 --instruction-trace > dumps/vmtail-wide-1m-w16/vm_instruction_trace.tsv
 
-instruction-unique: instruction-trace
-	python3 vm_bytecode_recover.py dumps/vmtail-wide-1m-w16/vm_instruction_trace.tsv --instructions > dumps/vmtail-wide-1m-w16/vm_instruction_unique.tsv
+instruction-unique: instruction-trace vm_instruction_unique_fast
+	./vm_instruction_unique_fast dumps/vmtail-wide-1m-w16/vm_instruction_trace.tsv > dumps/vmtail-wide-1m-w16/vm_instruction_unique.tsv
 
 instruction-lift: instruction-unique
 	python3 vm_instruction_lift.py > dumps/vmtail-wide-1m-w16/vm_instruction_lift.tsv
