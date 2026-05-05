@@ -226,6 +226,7 @@ def main():
     print("void *memmove(void *dest, const void *src, size_t n);")
     print("void *memset(void *s, int c, size_t n);")
     print("char *strchr(const char *s, int c);")
+    print("int strcmp(const char *s1, const char *s2);")
     print("char *strstr(const char *haystack, const char *needle);")
     print("size_t strlen(const char *s);")
     print("")
