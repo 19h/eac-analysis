@@ -5,7 +5,7 @@ Radare2 function-boundary inventory rendered as C skeleton metadata. These rows 
 - functions: 3309
 - text functions: 3063
 - summed function sizes: 861844
-- merged .text function coverage bytes: 9907630
+- merged .text function coverage bytes: 5646407
 - kind mix: entrypoint:1, import_plt:244, native_discovered:591, r2_discovered:2412, symbol_named:61
 
 | offset | end | size | kind | blocks | insns | name |
