@@ -4,26 +4,27 @@ Compares executable ELF sections against native ranges already represented by re
 
 - executable sections: 5
 - executable bytes: 5651040
-- recovered executable bytes: 443604
-- uncovered executable bytes: 5207436
-- recovered range rows: 2714
-- uncovered gaps: 315
+- recovered executable bytes: 448244
+- uncovered executable bytes: 5202796
+- recovered range rows: 2747
+- uncovered gaps: 331
 
 | section | range | bytes | covered | uncovered | coverage | ranges |
 | --- | --- | ---: | ---: | ---: | ---: | ---: |
 | `.init` | `0x1fbd0-0x1fbe7` | 23 | 0 | 23 | 0.00% | 0 |
 | `.plt` | `0x1fbf0-0x20bd0` | 4064 | 0 | 4064 | 0.00% | 0 |
 | `.plt.got` | `0x20bd0-0x20be0` | 16 | 0 | 16 | 0.00% | 0 |
-| `.text` | `0x20c00-0x583650` | 5646928 | 443604 | 5203324 | 7.85% | 2714 |
+| `.text` | `0x20c00-0x583650` | 5646928 | 448244 | 5198684 | 7.93% | 2747 |
 | `.fini` | `0x583650-0x583659` | 9 | 0 | 9 | 0.00% | 0 |
 
 ## Largest Uncovered Gaps
 
 | section | range | bytes |
 | --- | --- | ---: |
-| `.text` | `0x36b11b-0x4885ae` | 1168531 |
+| `.text` | `0x3ddc80-0x4885ae` | 698670 |
 | `.text` | `0x2316b6-0x2d2cf4` | 661054 |
 | `.text` | `0x17c085-0x212399` | 615188 |
+| `.text` | `0x36b11b-0x3ddb5d` | 469570 |
 | `.text` | `0x2d2e69-0x337d35` | 413388 |
 | `.text` | `0xfefee-0x15b5b2` | 378308 |
 | `.text` | `0x33f273-0x36afd2` | 179551 |
@@ -49,7 +50,6 @@ Compares executable ELF sections against native ranges already represented by re
 | `.text` | `0x5149d8-0x519120` | 18248 |
 | `.text` | `0x4d46ec-0x4d8cc0` | 17876 |
 | `.text` | `0x5736b5-0x577a20` | 17259 |
-| `.text` | `0x510269-0x5143e0` | 16759 |
 | `.text` | `0x40c3e-0x44d7b` | 16701 |
 | `.text` | `0x49aac2-0x49e770` | 15534 |
 | `.text` | `0x33b642-0x33f109` | 15047 |
@@ -58,6 +58,6 @@ Compares executable ELF sections against native ranges already represented by re
 | `.text` | `0x4bcf54-0x4c0830` | 14556 |
 | `.text` | `0x5226f9-0x525bd0` | 13527 |
 | `.text` | `0x53907d-0x53c4b0` | 13363 |
-| `.text` | `0x535ad8-0x538ea0` | 13256 |
 | `.text` | `0x337e7b-0x33b1f2` | 13175 |
+| `.text` | `0x535ad8-0x538c20` | 12616 |
 | `.text` | `0x549fe6-0x54d0a0` | 12474 |

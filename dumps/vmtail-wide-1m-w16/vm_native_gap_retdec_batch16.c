@@ -6,22 +6,22 @@
  * coverage -> queue -> RetDec batch -> coverage.
  *
  * Ranges:
- *   0x60dea-0x60f19 rank=7 name=fcn.00060dea kind=r2_discovered bytes=303 uncovered=303
- *   0x4cc900-0x4cca2f rank=8 name=fcn.004cc900 kind=r2_discovered bytes=303 uncovered=303
- *   0x525f0-0x5271d rank=9 name=fcn.000525f0 kind=r2_discovered bytes=301 uncovered=301
- *   0x4fa50-0x4fb7c rank=10 name=fcn.0004fa50 kind=r2_discovered bytes=300 uncovered=300
- *   0x60c84-0x60db0 rank=11 name=fcn.00060c84 kind=r2_discovered bytes=300 uncovered=300
- *   0x49e770-0x49e89c rank=12 name=fcn.0049e770 kind=r2_discovered bytes=300 uncovered=300
- *   0x4ce440-0x4ce56b rank=13 name=fcn.004ce440 kind=r2_discovered bytes=299 uncovered=299
- *   0x58947-0x58a71 rank=14 name=fcn.00058947 kind=r2_discovered bytes=298 uncovered=298
- *   0x4c8450-0x4c857a rank=15 name=fcn.004c8450 kind=r2_discovered bytes=298 uncovered=298
- *   0x25da6-0x25ecf rank=17 name=fcn.00025da6 kind=r2_discovered bytes=297 uncovered=297
- *   0x35c96-0x35dbf rank=18 name=fcn.00035c96 kind=r2_discovered bytes=297 uncovered=297
- *   0x519120-0x519249 rank=19 name=method.std::__cxx11::collate_char_.virtual_16 kind=native_discovered bytes=297 uncovered=297
- *   0x573430-0x573559 rank=20 name=fcn.00573430 kind=r2_discovered bytes=297 uncovered=297
- *   0x29dd0-0x29ef7 rank=21 name=fcn.00029dd0 kind=r2_discovered bytes=295 uncovered=295
- *   0x57650-0x57777 rank=22 name=fcn.00057650 kind=r2_discovered bytes=295 uncovered=295
- *   0x6a3ea-0x6a511 rank=23 name=fcn.0006a3ea kind=r2_discovered bytes=295 uncovered=295
+ *   0x60dea-0x60f19 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x4cc900-0x4cca2f rank=- name=- kind=- bytes=- uncovered=-
+ *   0x525f0-0x5271d rank=- name=- kind=- bytes=- uncovered=-
+ *   0x4fa50-0x4fb7c rank=- name=- kind=- bytes=- uncovered=-
+ *   0x60c84-0x60db0 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x49e770-0x49e89c rank=- name=- kind=- bytes=- uncovered=-
+ *   0x4ce440-0x4ce56b rank=- name=- kind=- bytes=- uncovered=-
+ *   0x58947-0x58a71 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x4c8450-0x4c857a rank=- name=- kind=- bytes=- uncovered=-
+ *   0x25da6-0x25ecf rank=- name=- kind=- bytes=- uncovered=-
+ *   0x35c96-0x35dbf rank=- name=- kind=- bytes=- uncovered=-
+ *   0x519120-0x519249 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x573430-0x573559 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x29dd0-0x29ef7 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x57650-0x57777 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x6a3ea-0x6a511 rank=- name=- kind=- bytes=- uncovered=-
  */
 #include <stdbool.h>
 #include <stdio.h>
