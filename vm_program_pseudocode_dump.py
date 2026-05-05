@@ -498,7 +498,7 @@ def emit_block_prototypes(blocks):
     print("")
 
 
-def emit_block(block, rows, edge, synthetic_spans, dynamic_stitches, transfer_probes, symbolic_successors, hidden_chains, residual_audits, concrete_state_audits, live_in_roles, live_in_reentries, allstatic_reentries, final_tail_site_probes, tail_lifts, args, known_blocks, block_by_start):
+def emit_block(block, rows, edge, synthetic_spans, dynamic_stitches, transfer_probes, symbolic_successors, hidden_chains, residual_audits, concrete_state_audits, live_context_audits, live_in_roles, live_in_reentries, allstatic_reentries, final_tail_site_probes, tail_lifts, args, known_blocks, block_by_start):
     name = c_block_name(block["block"])
     print(f"static void prog_{name}(VMState *vm, uint64_t vm_ip) {{")
     print("    VMOpResult r = { .next_entry = -1, .slot = 0xffffffffu };")
@@ -538,7 +538,7 @@ def emit_block(block, rows, edge, synthetic_spans, dynamic_stitches, transfer_pr
             else:
                 print("    /* target block is outside this selected sketch. */")
         elif edge_kind == "covered_synthetic_fallthrough":
-            emit_synthetic_edge(edge, synthetic_spans, dynamic_stitches, transfer_probes, symbolic_successors, hidden_chains, residual_audits, concrete_state_audits, live_in_roles, live_in_reentries, allstatic_reentries, final_tail_site_probes, args)
+            emit_synthetic_edge(edge, synthetic_spans, dynamic_stitches, transfer_probes, symbolic_successors, hidden_chains, residual_audits, concrete_state_audits, live_context_audits, live_in_roles, live_in_reentries, allstatic_reentries, final_tail_site_probes, args)
             target_block, target_vm_ip = synthetic_successor(edge, synthetic_spans, hidden_chains, block_by_start)
             if target_block is not None:
                 print(f"    /* synthetic successor after lifted delta: prog_{c_block_name(target_block)} @ 0x{target_vm_ip:x}; */")
@@ -629,6 +629,7 @@ def main():
     parser.add_argument("--synthetic-gap-chain-probe", default="dumps/vmtail-wide-1m-w16/vm_synthetic_gap_chain_probe.tsv")
     parser.add_argument("--synthetic-gap-residual-audit", default="dumps/vmtail-wide-1m-w16/vm_synthetic_gap_residual_audit.tsv")
     parser.add_argument("--synthetic-gap-concrete-state-audit", default="dumps/vmtail-wide-1m-w16/vm_synthetic_gap_concrete_state_audit.tsv")
+    parser.add_argument("--synthetic-gap-live-context-audit", default="dumps/vmtail-wide-1m-w16/vm_synthetic_gap_live_context_audit.tsv")
     parser.add_argument("--synthetic-gap-live-in-roles", default="dumps/vmtail-wide-1m-w16/vm_synthetic_gap_live_in_roles.tsv")
     parser.add_argument("--synthetic-gap-live-in-reentry-probe", default="dumps/vmtail-wide-1m-w16/vm_synthetic_gap_live_in_reentry_probe.tsv")
     parser.add_argument("--synthetic-gap-allstatic-reentry-probe", default="dumps/vmtail-wide-1m-w16/vm_synthetic_gap_allstatic_reentry_probe.tsv")
@@ -647,6 +648,8 @@ def main():
     parser.add_argument("--residual-audit-max-expr", type=int, default=180)
     parser.add_argument("--concrete-state-audit-top-items", type=int, default=4)
     parser.add_argument("--concrete-state-audit-max-expr", type=int, default=180)
+    parser.add_argument("--live-context-audit-top-items", type=int, default=4)
+    parser.add_argument("--live-context-audit-max-expr", type=int, default=180)
     parser.add_argument("--live-in-role-top-items", type=int, default=4)
     parser.add_argument("--live-in-role-max-expr", type=int, default=220)
     parser.add_argument("--live-in-reentry-top-items", type=int, default=4)
@@ -669,6 +672,7 @@ def main():
     hidden_chains = load_hidden_chains(args.synthetic_gap_chain_probe)
     residual_audits = load_residual_audits(args.synthetic_gap_residual_audit)
     concrete_state_audits = load_concrete_state_audits(args.synthetic_gap_concrete_state_audit)
+    live_context_audits = load_live_context_audits(args.synthetic_gap_live_context_audit)
     live_in_roles = load_live_in_roles(args.synthetic_gap_live_in_roles)
     live_in_reentries = load_live_in_reentries(args.synthetic_gap_live_in_reentry_probe)
     allstatic_reentries = load_allstatic_reentries(args.synthetic_gap_allstatic_reentry_probe)
@@ -702,6 +706,7 @@ def main():
             hidden_chains,
             residual_audits,
             concrete_state_audits,
+            live_context_audits,
             live_in_roles,
             live_in_reentries,
             allstatic_reentries,
