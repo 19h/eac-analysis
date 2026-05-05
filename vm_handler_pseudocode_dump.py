@@ -120,8 +120,7 @@ def fmt_ip_update(delta):
 
 
 def slot_is_table_offset(expr):
-    compact = (expr or "").replace(" ", "")
-    return "<<0x3" in compact or "<<3" in compact or "*8" in compact or "0x8*" in compact
+    return bool(expr)
 
 
 def likely_dispatch_comment(row):
