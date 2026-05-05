@@ -82,6 +82,9 @@ bytecode-segments-fast-check: vm_bytecode_segments_fast
 	python3 vm_bytecode_recover.py dumps/vmtail-wide-1m-w16/vm_instruction_trace.tsv --include-sampled > /tmp/eacsym-vm_bytecode_segments_sampled_python.tsv
 	./vm_bytecode_segments_fast dumps/vmtail-wide-1m-w16/vm_instruction_trace.tsv --include-sampled > /tmp/eacsym-vm_bytecode_segments_sampled_fast.tsv
 	cmp /tmp/eacsym-vm_bytecode_segments_sampled_python.tsv /tmp/eacsym-vm_bytecode_segments_sampled_fast.tsv
+	python3 vm_bytecode_recover.py dumps/vmtail-wide-1m-w16/vm_instruction_trace_filefill_hiddenfill_frontierfill_footprintfill.tsv --include-sampled > /tmp/eacsym-vm_bytecode_segments_final_python.tsv
+	./vm_bytecode_segments_fast dumps/vmtail-wide-1m-w16/vm_instruction_trace_filefill_hiddenfill_frontierfill_footprintfill.tsv --include-sampled > /tmp/eacsym-vm_bytecode_segments_final_fast.tsv
+	cmp /tmp/eacsym-vm_bytecode_segments_final_python.tsv /tmp/eacsym-vm_bytecode_segments_final_fast.tsv
 
 instruction-lift: instruction-unique
 	python3 vm_instruction_lift.py > dumps/vmtail-wide-1m-w16/vm_instruction_lift.tsv
