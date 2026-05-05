@@ -385,6 +385,25 @@ def load_live_table_evidences(path):
     return evidences
 
 
+def load_source299_ret_patch_probes(path):
+    probes = defaultdict(list)
+    if not path or not Path(path).exists():
+        return probes
+    for row in read_tsv(path):
+        start = normalize_vm_ip(row.get("synthetic_start_vm_ip", ""))
+        if start:
+            probes[start].append(row)
+    for rows in probes.values():
+        rows.sort(key=lambda row: (
+            0 if row.get("ret_patch_base_source", "").startswith("postcall_map_") else 1,
+            0 if row.get("seed_quality", "") == "full_gpr_snapshot" else 1,
+            row.get("ret_patch_relation", ""),
+            Path(row.get("run_dir", "")).name,
+            row.get("patched_ret_eac_off", ""),
+        ))
+    return probes
+
+
 def load_sampled_control_correlations(path):
     correlations = defaultdict(list)
     if not path or not Path(path).exists():
@@ -952,6 +971,53 @@ def emit_live_table_evidence_comments(target_vm_ip, live_table_evidences, args):
         print(f"    /* ... {omitted} additional live table evidence rows omitted ... */")
 
 
+def emit_source299_ret_patch_comments(target_vm_ip, source299_ret_patch_probes, args):
+    start = normalize_vm_ip(target_vm_ip)
+    rows = source299_ret_patch_probes.get(start, [])
+    if not rows:
+        return
+    limit = getattr(args, "source299_ret_patch_probe_top_items", 4)
+    shown = rows if limit <= 0 else rows[:limit]
+    print(
+        f"    /* source299 ret-patch probe @ {start}: rows={len(rows)}; "
+        "entry_299 writes frame[0xbb]+u32_0 to *(uint64_t *)(rsp+u16_4) and returns, "
+        "so this hidden control path is native return-patching rather than a dispatch-table slot. */"
+    )
+    for row in shown:
+        run_name = Path(row.get("run_dir", "")).name if row.get("run_dir", "") else "-"
+        next_event = "-"
+        if row.get("next_event_vm_ip", ""):
+            next_event = (
+                f"entry_{row.get('next_event_target_entry', '-')}"
+                f"@{normalize_vm_ip(row.get('next_event_vm_ip', ''))}"
+            )
+        dynamic_next = "-"
+        if row.get("dynamic_next_source_entry", ""):
+            dynamic_next = (
+                f"entry_{row.get('dynamic_next_source_entry')}"
+                f"@{normalize_vm_ip(row.get('dynamic_next_source_start_vm_ip', ''))}"
+                f"->{normalize_vm_ip(row.get('dynamic_next_end_vm_ip', ''))}"
+            )
+        print(
+            f"    /* source299 ret-patch: run={c_comment(run_name)}, "
+            f"seed={c_comment(row.get('seed_quality', '') or '-')}, "
+            f"operand_u32={c_comment(row.get('family_operand_u32_0', '') or '-')}, "
+            f"stack_off={c_comment(row.get('stack_write_offset', '') or '-')}, "
+            f"stack_addr={c_comment(row.get('stack_write_addr', '') or '-')}, "
+            f"base={c_comment(row.get('ret_patch_base', '') or '-')}, "
+            f"base_source={c_comment(row.get('ret_patch_base_source', '') or '-')}, "
+            f"patched_ret={c_comment(row.get('patched_ret_eac_off', '') or '-')}, "
+            f"section={c_comment(row.get('patched_ret_section', '') or '-')}, "
+            f"bytes={c_comment(row.get('patched_ret_file_bytes16', '') or '-')}, "
+            f"relation={c_comment(row.get('ret_patch_relation', '') or '-')}, "
+            f"next={c_comment(next_event)}, "
+            f"dynamic_next={c_comment(dynamic_next)} */"
+        )
+    omitted = len(rows) - len(shown)
+    if omitted > 0:
+        print(f"    /* ... {omitted} additional source299 ret-patch rows omitted ... */")
+
+
 def emit_sampled_control_correlation_comments(target_vm_ip, sampled_control_correlations, args):
     start = normalize_vm_ip(target_vm_ip)
     rows = sampled_control_correlations.get(start, [])
@@ -1479,7 +1545,7 @@ def emit_preamble():
     print("")
 
 
-def emit_synthetic_edge(edge, synthetic_spans, dynamic_stitches, transfer_probes, symbolic_successors, hidden_chains, residual_audits, concrete_state_audits, live_context_audits, table_read_diagnostics, table_memory_probes, runtime_table_memory_probes, live_table_evidences, sampled_control_correlations, focused_direct_trace_audits, focused_sequence_audits, observed_chain_bridges, live_in_roles, live_in_reentries, allstatic_reentries, final_tail_site_probes, args):
+def emit_synthetic_edge(edge, synthetic_spans, dynamic_stitches, transfer_probes, symbolic_successors, hidden_chains, residual_audits, concrete_state_audits, live_context_audits, table_read_diagnostics, table_memory_probes, runtime_table_memory_probes, live_table_evidences, source299_ret_patch_probes, sampled_control_correlations, focused_direct_trace_audits, focused_sequence_audits, observed_chain_bridges, live_in_roles, live_in_reentries, allstatic_reentries, final_tail_site_probes, args):
     target_vm_ip = normalize_vm_ip(edge.get("target_vm_ip", ""))
     chain = resolved_hidden_chain(target_vm_ip, hidden_chains)
     info = synthetic_spans.get(target_vm_ip)
@@ -1495,6 +1561,7 @@ def emit_synthetic_edge(edge, synthetic_spans, dynamic_stitches, transfer_probes
         emit_table_memory_probe_comments(target_vm_ip, table_memory_probes, args)
         emit_runtime_table_memory_probe_comments(target_vm_ip, runtime_table_memory_probes, args)
         emit_live_table_evidence_comments(target_vm_ip, live_table_evidences, args)
+        emit_source299_ret_patch_comments(target_vm_ip, source299_ret_patch_probes, args)
         emit_sampled_control_correlation_comments(target_vm_ip, sampled_control_correlations, args)
         emit_focused_direct_trace_audit_comments(target_vm_ip, focused_direct_trace_audits, args)
         emit_focused_sequence_audit_comments(target_vm_ip, focused_sequence_audits, args)
@@ -1558,6 +1625,7 @@ def emit_synthetic_edge(edge, synthetic_spans, dynamic_stitches, transfer_probes
     emit_table_memory_probe_comments(target_vm_ip, table_memory_probes, args)
     emit_runtime_table_memory_probe_comments(target_vm_ip, runtime_table_memory_probes, args)
     emit_live_table_evidence_comments(target_vm_ip, live_table_evidences, args)
+    emit_source299_ret_patch_comments(target_vm_ip, source299_ret_patch_probes, args)
     emit_sampled_control_correlation_comments(target_vm_ip, sampled_control_correlations, args)
     emit_focused_direct_trace_audit_comments(target_vm_ip, focused_direct_trace_audits, args)
     emit_focused_sequence_audit_comments(target_vm_ip, focused_sequence_audits, args)
@@ -1625,7 +1693,7 @@ def emit_block_prototypes(blocks):
     print("")
 
 
-def emit_block(block, rows, edge, synthetic_spans, dynamic_stitches, transfer_probes, symbolic_successors, hidden_chains, residual_audits, concrete_state_audits, live_context_audits, table_read_diagnostics, table_memory_probes, runtime_table_memory_probes, live_table_evidences, sampled_control_correlations, focused_direct_trace_audits, focused_sequence_audits, observed_chain_bridges, live_in_roles, live_in_reentries, allstatic_reentries, final_tail_site_probes, tail_lifts, args, known_blocks, block_by_start):
+def emit_block(block, rows, edge, synthetic_spans, dynamic_stitches, transfer_probes, symbolic_successors, hidden_chains, residual_audits, concrete_state_audits, live_context_audits, table_read_diagnostics, table_memory_probes, runtime_table_memory_probes, live_table_evidences, source299_ret_patch_probes, sampled_control_correlations, focused_direct_trace_audits, focused_sequence_audits, observed_chain_bridges, live_in_roles, live_in_reentries, allstatic_reentries, final_tail_site_probes, tail_lifts, args, known_blocks, block_by_start):
     name = c_block_name(block["block"])
     print(f"static void {name}(VMState *vm) {{")
     print("    int next_entry = -1;")
@@ -1662,7 +1730,7 @@ def emit_block(block, rows, edge, synthetic_spans, dynamic_stitches, transfer_pr
             else:
                 print("    /* target block is outside this selected sketch. */")
         elif edge_kind == "covered_synthetic_fallthrough":
-            emit_synthetic_edge(edge, synthetic_spans, dynamic_stitches, transfer_probes, symbolic_successors, hidden_chains, residual_audits, concrete_state_audits, live_context_audits, table_read_diagnostics, table_memory_probes, runtime_table_memory_probes, live_table_evidences, sampled_control_correlations, focused_direct_trace_audits, focused_sequence_audits, observed_chain_bridges, live_in_roles, live_in_reentries, allstatic_reentries, final_tail_site_probes, args)
+            emit_synthetic_edge(edge, synthetic_spans, dynamic_stitches, transfer_probes, symbolic_successors, hidden_chains, residual_audits, concrete_state_audits, live_context_audits, table_read_diagnostics, table_memory_probes, runtime_table_memory_probes, live_table_evidences, source299_ret_patch_probes, sampled_control_correlations, focused_direct_trace_audits, focused_sequence_audits, observed_chain_bridges, live_in_roles, live_in_reentries, allstatic_reentries, final_tail_site_probes, args)
             target_block, target_vm_ip = synthetic_successor(edge, synthetic_spans, hidden_chains, block_by_start)
             if target_block is not None:
                 print(f"    /* synthetic successor after lifted delta: {c_block_name(target_block)} @ 0x{target_vm_ip:x}; */")
