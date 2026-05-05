@@ -39,6 +39,8 @@ ARTIFACTS = [
     ("synthetic_gap_table_read_diagnostic_md", TRACE_DIR / "vm_synthetic_gap_table_read_diagnostic.md"),
     ("synthetic_gap_table_memory_probe_tsv", TRACE_DIR / "vm_synthetic_gap_table_memory_probe.tsv"),
     ("synthetic_gap_table_memory_probe_md", TRACE_DIR / "vm_synthetic_gap_table_memory_probe.md"),
+    ("synthetic_gap_runtime_table_memory_probe_tsv", TRACE_DIR / "vm_synthetic_gap_runtime_table_memory_probe.tsv"),
+    ("synthetic_gap_runtime_table_memory_probe_md", TRACE_DIR / "vm_synthetic_gap_runtime_table_memory_probe.md"),
     ("synthetic_gap_sampled_control_correlation_tsv", TRACE_DIR / "vm_synthetic_gap_sampled_control_correlation.tsv"),
     ("synthetic_gap_sampled_control_correlation_md", TRACE_DIR / "vm_synthetic_gap_sampled_control_correlation.md"),
     ("synthetic_gap_focused_direct_trace_audit_tsv", TRACE_DIR / "vm_synthetic_gap_focused_direct_trace_audit.tsv"),
@@ -781,6 +783,42 @@ def synthetic_gap_table_memory_probe_metrics(rows):
         "Residual starts whose file qword is classified as ordinary/non-pointer bytes.")
 
 
+def synthetic_gap_runtime_table_memory_probe_metrics(rows):
+    probe_rows = read_tsv(TRACE_DIR / "vm_synthetic_gap_runtime_table_memory_probe.tsv")
+    match_mix = Counter()
+    runtime_qword_classes = Counter()
+    mismatched_starts = []
+    dispatch_target_starts = []
+    observations = 0
+    for row in probe_rows:
+        count_value = int(row.get("table_offset_count", "0") or 0)
+        observations += count_value
+        match_mix[row.get("runtime_matches_file", "")] += count_value
+        runtime_qword_classes[row.get("runtime_qword_class", "")] += count_value
+        start = row.get("synthetic_start_vm_ip", "")
+        if row.get("runtime_matches_file", "") != "yes":
+            mismatched_starts.append(start)
+        if row.get("runtime_qword_dispatch_entry", ""):
+            dispatch_target_starts.append(start)
+
+    add(rows, "gap_runtime_table_memory", "synthetic_gap_runtime_table_memory_probe_rows", len(probe_rows),
+        "Residual table-relative offsets compared against postcall mapped EAC memory.")
+    add(rows, "gap_runtime_table_memory", "synthetic_gap_runtime_table_memory_probe_observations", observations,
+        "Offset observations counted across replay variants in the runtime memory probe.")
+    add(rows, "gap_runtime_table_memory", "synthetic_gap_runtime_table_memory_match_mix",
+        ",".join(f"{key}:{value}" for key, value in match_mix.most_common()) or "-",
+        "Whether postcall mapped bytes match the original eac.elf bytes at residual offsets.")
+    add(rows, "gap_runtime_table_memory", "synthetic_gap_runtime_table_memory_qword_class_mix",
+        ",".join(f"{key}:{value}" for key, value in runtime_qword_classes.most_common()) or "-",
+        "Runtime qword interpretation after loader relocation/patching.")
+    add(rows, "gap_runtime_table_memory", "synthetic_gap_runtime_table_memory_mismatched_starts",
+        ",".join(mismatched_starts) or "-",
+        "Residual starts whose runtime bytes differ from file bytes.")
+    add(rows, "gap_runtime_table_memory", "synthetic_gap_runtime_table_memory_dispatch_target_starts",
+        ",".join(dispatch_target_starts) or "-",
+        "Residual starts whose runtime qword resolves to a dispatch-table target.")
+
+
 def synthetic_gap_sampled_control_correlation_metrics(rows):
     corr_rows = read_tsv(TRACE_DIR / "vm_synthetic_gap_sampled_control_correlation.tsv")
     classes = Counter(row.get("sampled_correlation_class", "") for row in corr_rows)
@@ -1216,6 +1254,7 @@ def build_rows():
     synthetic_gap_live_context_audit_metrics(rows)
     synthetic_gap_table_read_diagnostic_metrics(rows)
     synthetic_gap_table_memory_probe_metrics(rows)
+    synthetic_gap_runtime_table_memory_probe_metrics(rows)
     synthetic_gap_sampled_control_correlation_metrics(rows)
     synthetic_gap_focused_direct_trace_audit_metrics(rows)
     synthetic_gap_focused_sequence_audit_metrics(rows)
