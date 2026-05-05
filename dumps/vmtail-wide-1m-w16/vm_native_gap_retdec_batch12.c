@@ -35,6 +35,7 @@ typedef int32_t int3_t;
 typedef float float32_t;
 typedef double float64_t;
 typedef long double float80_t;
+static inline int128_t eac_retdec_i128(uint64_t hi, uint64_t lo) { return (int128_t)(((uint128_t)hi << 64) | (uint128_t)lo); }
 struct __locale_struct;
 struct _TYPEDEF_glob_t;
 struct _TYPEDEF___mbstate_t;
@@ -89,6 +90,7 @@ char __asm_in_136(uint16_t port);
 void __asm_out(uint16_t port, char value);
 void __asm_out_135(uint16_t port, int32_t value);
 void __asm_outsb(uint16_t port, char value);
+void __asm_outsd(uint16_t port, int32_t value);
 uint8_t __readfsbyte(int64_t offset);
 uint64_t __readfsqword(int64_t offset);
 int64_t __asm_iretd(void);
