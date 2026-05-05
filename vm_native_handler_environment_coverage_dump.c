@@ -266,19 +266,26 @@ static void scan_trace(const TraceRow *trace) {
     while (getline(&line, &cap, file) >= 0) {
         char *fields[MAX_FIELDS];
         int count;
-        unsigned source, target;
+        const char *source_text;
+        const char *target_text;
         chomp(line);
         if (!line[0]) {
             continue;
         }
         count = split_tsv(line, fields, MAX_FIELDS);
-        source = (unsigned)parse_number(field_at(fields, count, c_source));
-        target = (unsigned)parse_number(field_at(fields, count, c_target));
-        if (source < MAX_HANDLERS) {
-            source_seen[source] = true;
+        source_text = field_at(fields, count, c_source);
+        target_text = field_at(fields, count, c_target);
+        if (source_text[0] && strcmp(source_text, "-") != 0) {
+            unsigned source = (unsigned)parse_number(source_text);
+            if (source < MAX_HANDLERS) {
+                source_seen[source] = true;
+            }
         }
-        if (target < MAX_HANDLERS) {
-            target_seen[target] = true;
+        if (target_text[0] && strcmp(target_text, "-") != 0) {
+            unsigned target = (unsigned)parse_number(target_text);
+            if (target < MAX_HANDLERS) {
+                target_seen[target] = true;
+            }
         }
     }
     free(line);
@@ -463,10 +470,12 @@ static void emit_c(void) {
     }
     printf("};\n\n");
     printf("const VMHandlerEnvironmentCoverage *vm_handler_environment_coverage(uint16_t entry) {\n");
-    printf("    if (entry >= (uint16_t)(sizeof(g_handler_environment_coverage) / sizeof(g_handler_environment_coverage[0]))) {\n");
-    printf("        return 0;\n");
+    printf("    for (unsigned i = 0; i < (unsigned)(sizeof(g_handler_environment_coverage) / sizeof(g_handler_environment_coverage[0])); i++) {\n");
+    printf("        if (g_handler_environment_coverage[i].entry == entry) {\n");
+    printf("            return &g_handler_environment_coverage[i];\n");
+    printf("        }\n");
     printf("    }\n");
-    printf("    return &g_handler_environment_coverage[entry];\n");
+    printf("    return 0;\n");
     printf("}\n");
 }
 
