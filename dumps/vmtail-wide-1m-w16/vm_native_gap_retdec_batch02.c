@@ -6,22 +6,22 @@
  * coverage -> queue -> RetDec batch -> coverage.
  *
  * Ranges:
- *   0x4c6100-0x4c62d6 rank=3 name=fcn.004c6100 kind=r2_discovered bytes=470 uncovered=470
- *   0x56b60-0x56d34 rank=4 name=fcn.00056b60 kind=r2_discovered bytes=468 uncovered=468
- *   0x4bcd80-0x4bcf54 rank=5 name=fcn.004bcd80 kind=r2_discovered bytes=468 uncovered=468
- *   0x4b8bc0-0x4b8d92 rank=7 name=fcn.004b8bc0 kind=r2_discovered bytes=466 uncovered=466
- *   0x572230-0x572400 rank=8 name=fcn.00572230 kind=r2_discovered bytes=464 uncovered=464
- *   0x4b36d0-0x4b389f rank=9 name=fcn.004b36d0 kind=r2_discovered bytes=463 uncovered=463
- *   0x5586e0-0x5588ad rank=10 name=method.std::num_put_char__std::ostreambuf_iterator_char__std::char_traits_char_____.virtual_16 kind=native_discovered bytes=461 uncovered=461
- *   0x4f20e-0x4f3da rank=11 name=fcn.0004f20e kind=r2_discovered bytes=460 uncovered=460
- *   0x50e4c0-0x50e68c rank=12 name=method.std::num_put_wchar_t__std::ostreambuf_iterator_wchar_t__std::char_traits_wchar_t_____.virtual_16 kind=native_discovered bytes=460 uncovered=460
- *   0x619f2-0x61bbd rank=13 name=fcn.000619f2 kind=r2_discovered bytes=459 uncovered=459
- *   0x502fa0-0x50316a rank=14 name=fcn.00502fa0 kind=r2_discovered bytes=458 uncovered=458
- *   0x505870-0x505a3a rank=15 name=fcn.00505870 kind=r2_discovered bytes=458 uncovered=458
- *   0x556610-0x5567da rank=16 name=fcn.00556610 kind=r2_discovered bytes=458 uncovered=458
- *   0x5100a0-0x510269 rank=17 name=method.std::time_get_wchar_t__std::istreambuf_iterator_wchar_t__std::char_traits_wchar_t_____.virtual_40 kind=native_discovered bytes=457 uncovered=457
- *   0x55a0c0-0x55a289 rank=18 name=method.std::time_get_char__std::istreambuf_iterator_char__std::char_traits_char_____.virtual_40 kind=native_discovered bytes=457 uncovered=457
- *   0x530c90-0x530e56 rank=19 name=method.std::__cxx11::money_put_wchar_t__std::ostreambuf_iterator_wchar_t__std::char_traits_wchar_t_____.virtual_16 kind=native_discovered bytes=454 uncovered=454
+ *   0x4c6100-0x4c62d6 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x56b60-0x56d34 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x4bcd80-0x4bcf54 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x4b8bc0-0x4b8d92 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x572230-0x572400 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x4b36d0-0x4b389f rank=- name=- kind=- bytes=- uncovered=-
+ *   0x5586e0-0x5588ad rank=- name=- kind=- bytes=- uncovered=-
+ *   0x4f20e-0x4f3da rank=- name=- kind=- bytes=- uncovered=-
+ *   0x50e4c0-0x50e68c rank=- name=- kind=- bytes=- uncovered=-
+ *   0x619f2-0x61bbd rank=- name=- kind=- bytes=- uncovered=-
+ *   0x502fa0-0x50316a rank=- name=- kind=- bytes=- uncovered=-
+ *   0x505870-0x505a3a rank=- name=- kind=- bytes=- uncovered=-
+ *   0x556610-0x5567da rank=- name=- kind=- bytes=- uncovered=-
+ *   0x5100a0-0x510269 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x55a0c0-0x55a289 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x530c90-0x530e56 rank=- name=- kind=- bytes=- uncovered=-
  */
 #include <stdbool.h>
 #include <stdio.h>
@@ -49,7 +49,10 @@ extern int g10;
 extern int g11;
 extern int g12;
 unsigned char llvm_ctpop_i8(unsigned char value);
+void __asm_int(int32_t interrupt);
+int32_t __asm_in(uint16_t port);
 void __asm_out(uint16_t port, char value);
+void __asm_outsb(uint16_t port, char value);
 uint8_t __readfsbyte(int64_t offset);
 uint64_t __readfsqword(int64_t offset);
 int64_t __asm_iretd(void);
@@ -110,7 +113,9 @@ int64_t function_4b1220();
 int64_t function_4b1590();
 int64_t function_4b1680();
 int64_t function_4b1820();
+int64_t function_4b36d0();
 int64_t function_4b8b30();
+int64_t function_4b8bc0();
 int64_t function_4ba580();
 int64_t function_4ba5b0();
 int64_t function_4ba6b0();
@@ -118,6 +123,9 @@ int64_t function_4ba6e0();
 int64_t function_4ba830();
 int64_t function_4bbff0();
 int64_t function_4bcbb0();
+int64_t function_4bcd80();
+int64_t function_4bcda0();
+int64_t function_4bce10();
 int64_t function_4bf0f0();
 int64_t function_4c3b10();
 int64_t function_4c3b30();
@@ -128,6 +136,7 @@ int64_t function_4c4360();
 int64_t function_4c52c0();
 int64_t function_4c5330();
 int64_t function_4c53c0();
+int64_t function_4c6100();
 int64_t function_4c8e60();
 int64_t function_4ccc30();
 int64_t function_4cccc0();
@@ -138,20 +147,26 @@ int64_t function_4e8b2();
 int64_t function_4eeb50();
 int64_t function_4eec00();
 int64_t function_4efd30();
+int64_t function_4f20e();
 int64_t function_502870();
+int64_t function_502fa0();
 int64_t function_505130();
+int64_t function_505870();
 int64_t function_5088b0();
 int64_t function_50ab00();
 int64_t function_50c440();
 int64_t function_50e0e0();
 int64_t function_50e1e0();
+int64_t function_50e4c0();
 int64_t function_50f6f0();
 int64_t function_50fc20();
+int64_t function_5100a0();
 int64_t function_524600();
 int64_t function_52af50();
 int64_t function_52cbf0();
 int64_t function_52fb30();
 int64_t function_5303e0();
+int64_t function_530c90();
 int64_t function_5403d0();
 int64_t function_540b20();
 int64_t function_5423f0();
@@ -162,17 +177,24 @@ int64_t function_549b10();
 int64_t function_54b780();
 int64_t function_54d560();
 int64_t function_554b00();
+int64_t function_556610();
+int64_t function_556660();
 int64_t function_558300();
 int64_t function_558400();
+int64_t function_5586e0();
 int64_t function_559cd0();
+int64_t function_55a0c0();
 int64_t function_5659d0();
 int64_t function_565f30();
 int64_t function_566180();
 int64_t function_566390();
+int64_t function_56b60();
 int64_t function_56d3b0();
+int64_t function_572230();
 int64_t function_5826b();
 int64_t function_61428();
 int64_t function_6190c();
+int64_t function_619f2();
 int64_t function_61bbe();
 int64_t function_729c2();
 int64_t function_729ce();
