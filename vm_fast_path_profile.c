@@ -460,6 +460,23 @@ static bool concrete_full_value(Value v, int size, uint64_t *out) {
     return false;
 }
 
+static bool concrete_table_offset(Value v, int64_t *out) {
+    if (v.kind == VK_INT) {
+        if (v.u < TABLE_ENTRIES * 8u && (v.u & 7u) == 0u) {
+            *out = (int64_t)v.u;
+            return true;
+        }
+        return false;
+    }
+    unsigned bits = 0;
+    uint64_t low = 0;
+    if (known_low_bits(v, &bits, &low) && bits >= 12 && low < TABLE_ENTRIES * 8u && (low & 7u) == 0u) {
+        *out = (int64_t)low;
+        return true;
+    }
+    return false;
+}
+
 static uint64_t parse_u64(const char *s) {
     if (!s || !*s || !strcmp(s, "-")) {
         return 0;
@@ -851,10 +868,18 @@ static bool mem_ptr(cs_insn *insn, cs_x86_op *op, Value *regs, Value *out) {
     int64_t index_value = 0;
     if (mem.index) {
         int idx = reg_index((x86_reg)mem.index);
-        if (idx < 0 || regs[idx].kind != VK_INT) {
+        if (idx < 0) {
             return false;
         }
-        index_value = (int64_t)regs[idx].u * mem.scale;
+        if (regs[idx].kind == VK_INT) {
+            index_value = (int64_t)regs[idx].u * mem.scale;
+        } else if (base.kind == VK_PTR && base.ptr_kind == PK_TABLE && mem.scale == 1) {
+            if (!concrete_table_offset(regs[idx], &index_value)) {
+                return false;
+            }
+        } else {
+            return false;
+        }
     }
     if (base.kind != VK_PTR) {
         return false;
@@ -1038,6 +1063,12 @@ static Value eval_bin(const char *mnemonic, Value left, Value right, int size) {
             if (!strcmp(mnemonic, "sub")) delta = -delta;
             return ptr_add(left, delta);
         }
+        if (left.ptr_kind == PK_TABLE && !strcmp(mnemonic, "add")) {
+            int64_t table_off = 0;
+            if (concrete_table_offset(right, &table_off)) {
+                return ptr_add(left, table_off);
+            }
+        }
         if (right.kind == VK_PTR && !strcmp(mnemonic, "sub") && left.ptr_kind == right.ptr_kind) {
             return val_int((uint64_t)(left.off - right.off) & mask);
         }
@@ -1045,6 +1076,12 @@ static Value eval_bin(const char *mnemonic, Value left, Value right, int size) {
     if (right.kind == VK_PTR) {
         if (left.kind == VK_INT && !strcmp(mnemonic, "add")) {
             return ptr_add(right, sign_extend_u(left.u, bits));
+        }
+        if (right.ptr_kind == PK_TABLE && !strcmp(mnemonic, "add")) {
+            int64_t table_off = 0;
+            if (concrete_table_offset(left, &table_off)) {
+                return ptr_add(right, table_off);
+            }
         }
     }
     unsigned lb = 0, rb = 0;
