@@ -6,22 +6,22 @@
  * coverage -> queue -> RetDec batch -> coverage.
  *
  * Ranges:
- *   0x56fab0-0x56fbea rank=7 name=fcn.0056fab0 kind=r2_discovered bytes=314 uncovered=314
- *   0x48e347-0x48e480 rank=8 name=fcn.0048e347 kind=r2_discovered bytes=313 uncovered=313
- *   0x27a86-0x27bbe rank=9 name=fcn.00027a86 kind=r2_discovered bytes=312 uncovered=312
- *   0x59078-0x591b0 rank=10 name=fcn.00059078 kind=r2_discovered bytes=312 uncovered=312
- *   0x514590-0x5146c8 rank=11 name=method.std::num_get_wchar_t__std::istreambuf_iterator_wchar_t__std::char_traits_wchar_t_____.virtual_80 kind=native_discovered bytes=312 uncovered=312
- *   0x5148a0-0x5149d8 rank=12 name=method.std::num_get_wchar_t__std::istreambuf_iterator_wchar_t__std::char_traits_wchar_t_____.virtual_72 kind=native_discovered bytes=312 uncovered=312
- *   0x51970f-0x519847 rank=13 name=fcn.0051970f kind=r2_discovered bytes=312 uncovered=312
- *   0x6b56e-0x6b6a5 rank=14 name=fcn.0006b56e kind=r2_discovered bytes=311 uncovered=311
- *   0x4bb8d0-0x4bba05 rank=15 name=fcn.004bb8d0 kind=r2_discovered bytes=309 uncovered=309
- *   0x573580-0x5736b5 rank=16 name=fcn.00573580 kind=r2_discovered bytes=309 uncovered=309
- *   0x692e6-0x69419 rank=17 name=fcn.000692e6 kind=r2_discovered bytes=307 uncovered=307
- *   0x38fcf-0x39101 rank=18 name=fcn.00038fcf kind=r2_discovered bytes=306 uncovered=306
- *   0xfeebc-0xfefee rank=19 name=fcn.000feebc kind=r2_discovered bytes=306 uncovered=306
- *   0x6a512-0x6a643 rank=20 name=fcn.0006a512 kind=r2_discovered bytes=305 uncovered=305
- *   0x4b8660-0x4b8791 rank=21 name=fcn.004b8660 kind=r2_discovered bytes=305 uncovered=305
- *   0x4fdd8-0x4ff08 rank=22 name=fcn.0004fdd8 kind=r2_discovered bytes=304 uncovered=304
+ *   0x56fab0-0x56fbea rank=- name=- kind=- bytes=- uncovered=-
+ *   0x48e347-0x48e480 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x27a86-0x27bbe rank=- name=- kind=- bytes=- uncovered=-
+ *   0x59078-0x591b0 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x514590-0x5146c8 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x5148a0-0x5149d8 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x51970f-0x519847 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x6b56e-0x6b6a5 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x4bb8d0-0x4bba05 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x573580-0x5736b5 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x692e6-0x69419 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x38fcf-0x39101 rank=- name=- kind=- bytes=- uncovered=-
+ *   0xfeebc-0xfefee rank=- name=- kind=- bytes=- uncovered=-
+ *   0x6a512-0x6a643 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x4b8660-0x4b8791 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x4fdd8-0x4ff08 rank=- name=- kind=- bytes=- uncovered=-
  */
 #include <stdbool.h>
 #include <stdio.h>
@@ -36,6 +36,7 @@ typedef float float32_t;
 typedef double float64_t;
 typedef long double float80_t;
 struct __locale_struct;
+struct _TYPEDEF_glob_t;
 struct _TYPEDEF___mbstate_t;
 struct _IO_FILE;
 struct sockaddr;
@@ -138,6 +139,10 @@ int connect(int sockfd, const struct sockaddr *addr, int32_t addrlen);
 int getsockopt(int sockfd, int level, int optname, void *optval, int32_t *optlen);
 int64_t readlink(const char *path, char *buf, size_t bufsiz);
 char *realpath(const char *path, char *resolved_path);
+int glob(const char *pattern, int flags, void *errfunc, struct _TYPEDEF_glob_t *pglob);
+void globfree(struct _TYPEDEF_glob_t *pglob);
+char *__xpg_basename(char *path);
+int32_t eac_retdec_vsnprintf(char *str, int32_t size, char *format, int64_t ap);
 int64_t __wctype_l(const char *property, struct __locale_struct *locale);
 char *strdup(const char *s);
 struct _Unwind_Exception;
