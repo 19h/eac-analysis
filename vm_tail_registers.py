@@ -6,6 +6,8 @@ import struct
 from collections import Counter, defaultdict
 from pathlib import Path
 
+from vm_trace_log import strip_to_trace_marker
+
 
 FIELD_RE = re.compile(r"\b([a-z][a-z0-9_]*)=0x([0-9a-f]+)")
 TRACE_RE = re.compile(r"^\[(VMTAIL|DISPATCH)\]")
@@ -132,6 +134,7 @@ def main():
             if site_match:
                 preferred_target_regs[int(site_match.group(1), 16)] = site_match.group(2)
                 continue
+            line = strip_to_trace_marker(line)
             match = TRACE_RE.search(line)
             if not match:
                 continue

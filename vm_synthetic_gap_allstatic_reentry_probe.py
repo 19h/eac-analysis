@@ -6,6 +6,8 @@ import sys
 from collections import Counter, defaultdict
 from pathlib import Path
 
+from vm_trace_log import strip_to_trace_marker
+
 
 TRACE_DIR = Path("dumps/vmtail-wide-1m-w16")
 ALLSTATIC_DIR = Path("dumps/vmtail-allstatic")
@@ -87,6 +89,7 @@ def parse_allstatic_events(path, target_to_entry, site_to_entries):
     events = []
     with Path(path).open(errors="replace") as handle:
         for line in handle:
+            line = strip_to_trace_marker(line, ("[VMTAIL]",))
             match = VMTAIL_RE.match(line)
             if not match:
                 continue

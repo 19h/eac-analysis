@@ -6,6 +6,8 @@ import sys
 from collections import Counter
 from pathlib import Path
 
+from vm_trace_log import strip_to_trace_marker
+
 
 DEFAULT_TRACE_DIRS = [
     "dumps/vmtail-wide",
@@ -204,7 +206,8 @@ def parse_run_metadata(trace_dir):
                 meta["driver_read_ranges"] = fields.get("read_ranges", "")
                 meta["driver_detail"] = fields.get("detail", "")
                 meta["driver_tail_trace"] = fields.get("tail", "0")
-            if dispatch_seen and call_seen and line.startswith("[VMTAIL]"):
+            trace_line = strip_to_trace_marker(line, ("[VMTAIL]",))
+            if dispatch_seen and call_seen and trace_line.startswith("[VMTAIL]"):
                 break
             if idx >= 20000:
                 break

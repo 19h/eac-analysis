@@ -7,6 +7,8 @@ import sys
 from collections import Counter, defaultdict
 from pathlib import Path
 
+from vm_trace_log import strip_to_trace_marker
+
 
 TRACE_DIR = Path("dumps/vmtail-wide-1m-w16")
 DEFAULT_RUNS = [
@@ -62,6 +64,7 @@ def load_events(paths, sites):
             continue
         with path.open(errors="replace") as handle:
             for line in handle:
+                line = strip_to_trace_marker(line, ("[VMTAIL]",))
                 if not line.startswith("[VMTAIL]"):
                     continue
                 fields = parse_fields(line)
