@@ -87,6 +87,24 @@ BATCHES = {
         "0x5580e0-0x558297",
         "0x59faa-0x5a160",
     ],
+    4: [
+        "0x50ab00-0x50acb6",
+        "0x56bf40-0x56c0f5",
+        "0x4baf6-0x4bca9",
+        "0x50cd40-0x50cef3",
+        "0x49a910-0x49aac2",
+        "0x4c5100-0x4c52b2",
+        "0x55ec80-0x55ee32",
+        "0x499e90-0x49a041",
+        "0x4eb84-0x4ed34",
+        "0x4ac9e0-0x4acb8f",
+        "0x212399-0x212547",
+        "0x4ac0d0-0x4ac27e",
+        "0x2293e-0x22aea",
+        "0x2ccd6-0x2ce81",
+        "0x529840-0x5299eb",
+        "0x50aff0-0x50b198",
+    ],
 }
 
 
@@ -111,6 +129,7 @@ def extract_functions(text):
         raise SystemExit("retdec output did not contain the expected functions section")
     functions = text[start + len(start_marker):end].strip()
     functions = functions.replace(" = &v", " = (int64_t)&v")
+    functions = re.sub(r"(int64_t\s+v\d+\s*=\s*)&([A-Za-z_]\w*)", r"\1(int64_t)&\2", functions)
     functions = re.sub(r" = &g(\d+)", r" = (int64_t)&g\1", functions)
     functions = re.sub(r"return &g(\d+)", r"return (int64_t)&g\1", functions)
     functions = re.sub(r"return &v(\d+)", r"return (int64_t)&v\1", functions)
@@ -190,7 +209,6 @@ def main():
     print("#include <stdint.h>")
     print("#include <stdlib.h>")
     print("#include <string.h>")
-    print("#include <wchar.h>")
     print("")
     print("typedef __int128 int128_t;")
     print("typedef unsigned __int128 uint128_t;")
@@ -199,6 +217,7 @@ def main():
     print("typedef double float64_t;")
     print("typedef long double float80_t;")
     print("struct __locale_struct;")
+    print("struct _TYPEDEF___mbstate_t;")
     print("struct _IO_FILE;")
     for index in referenced_globals(functions):
         print(f"extern int g{index};")
@@ -235,6 +254,8 @@ def main():
     print("struct _IO_FILE *fopen(const char *path, const char *mode);")
     print("size_t fread(void *ptr, size_t size, size_t nmemb, struct _IO_FILE *stream);")
     print("int fclose(struct _IO_FILE *stream);")
+    print("int32_t mbrtowc(int32_t *pwc, const char *s, size_t n, struct _TYPEDEF___mbstate_t *ps);")
+    print("int32_t mbsnrtowcs(int32_t *dst, char **src, size_t nms, size_t len, struct _TYPEDEF___mbstate_t *ps);")
     print("int32_t *wmemset(int32_t *wcs, int32_t wc, size_t n);")
     print("int pthread_mutex_lock(int64_t *mutex);")
     print("int pthread_mutex_unlock(int64_t *mutex);")
