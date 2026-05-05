@@ -49,6 +49,8 @@ ARTIFACTS = [
     ("synthetic_gap_focused_sequence_audit_md", TRACE_DIR / "vm_synthetic_gap_focused_sequence_audit.md"),
     ("synthetic_gap_observed_chain_bridge_tsv", TRACE_DIR / "vm_synthetic_gap_observed_chain_bridge.tsv"),
     ("synthetic_gap_observed_chain_bridge_md", TRACE_DIR / "vm_synthetic_gap_observed_chain_bridge.md"),
+    ("synthetic_gap_observed_chain_replay_tsv", TRACE_DIR / "vm_synthetic_gap_observed_chain_replay.tsv"),
+    ("synthetic_gap_observed_chain_replay_md", TRACE_DIR / "vm_synthetic_gap_observed_chain_replay.md"),
     ("synthetic_gap_symbolic_successors_tsv", TRACE_DIR / "vm_synthetic_gap_symbolic_successors.tsv"),
     ("synthetic_gap_symbolic_successors_md", TRACE_DIR / "vm_synthetic_gap_symbolic_successors.md"),
     ("synthetic_gap_live_in_roles_tsv", TRACE_DIR / "vm_synthetic_gap_live_in_roles.tsv"),
@@ -1039,6 +1041,59 @@ def synthetic_gap_observed_chain_bridge_metrics(rows):
         "Residual starts whose focused chain terminates in a focused direct bridge.")
 
 
+def synthetic_gap_observed_chain_replay_metrics(rows):
+    replay_rows = read_tsv(TRACE_DIR / "vm_synthetic_gap_observed_chain_replay.tsv")
+    chains = []
+    seen = set()
+    for row in replay_rows:
+        start = row.get("chain_start_vm_ip", "")
+        if start and start not in seen:
+            seen.add(start)
+            chains.append(start)
+    unique_steps = sorted({
+        row.get("step_vm_ip", "")
+        for row in replay_rows
+        if row.get("step_vm_ip", "")
+    }, key=lambda value: int(value, 16))
+    roles = Counter(row.get("step_role", "") for row in replay_rows)
+    actions = Counter(row.get("step_bridge_action", "") for row in replay_rows)
+    chain_classes = Counter(
+        row.get("chain_bridge_class", "")
+        for row in replay_rows
+        if row.get("step_index", "") == "0"
+    )
+    terminals = Counter(
+        f"prog_bb_{int(row.get('terminal_dest_block', '0') or 0):04d}@{row.get('terminal_dest_vm_ip', '')}"
+        for row in replay_rows
+        if row.get("step_index", "") == "0" and row.get("terminal_dest_block", "")
+    )
+
+    add(rows, "gap_observed_chain_replay", "synthetic_gap_observed_chain_replay_rows", len(replay_rows),
+        "Expanded disabled observed-chain bridge replay steps.")
+    add(rows, "gap_observed_chain_replay", "synthetic_gap_observed_chain_replay_chains", len(chains),
+        "Disabled observed-chain bridge snippets represented by replay rows.")
+    add(rows, "gap_observed_chain_replay", "synthetic_gap_observed_chain_replay_unique_step_starts", len(unique_steps),
+        "Unique residual/focused-direct VM starts represented in the replay rows.")
+    add(rows, "gap_observed_chain_replay", "synthetic_gap_observed_chain_replay_step_role_mix",
+        ",".join(f"{key}:{value}" for key, value in roles.most_common()) or "-",
+        "Role of each emitted replay step within the disabled chain snippets.")
+    add(rows, "gap_observed_chain_replay", "synthetic_gap_observed_chain_replay_step_action_mix",
+        ",".join(f"{key}:{value}" for key, value in actions.most_common()) or "-",
+        "Hard/direct versus disabled/comment-only classification of the per-step source rows.")
+    add(rows, "gap_observed_chain_replay", "synthetic_gap_observed_chain_replay_chain_class_mix",
+        ",".join(f"{key}:{value}" for key, value in chain_classes.most_common()) or "-",
+        "Terminal class of each disabled observed-chain replay snippet.")
+    add(rows, "gap_observed_chain_replay", "synthetic_gap_observed_chain_replay_terminal_mix",
+        ",".join(f"{key}:{value}" for key, value in terminals.most_common()) or "-",
+        "Recovered terminal blocks reached by disabled observed-chain replay snippets.")
+    add(rows, "gap_observed_chain_replay", "synthetic_gap_observed_chain_replay_chain_starts",
+        ",".join(chains) or "-",
+        "Disabled observed-chain replay snippet starts.")
+    add(rows, "gap_observed_chain_replay", "synthetic_gap_observed_chain_replay_unique_step_start_list",
+        ",".join(unique_steps) or "-",
+        "Unique VM starts that appear as replay steps.")
+
+
 def synthetic_gap_live_in_role_metrics(rows):
     role_rows = read_tsv(TRACE_DIR / "vm_synthetic_gap_live_in_roles.tsv")
     resolutions = Counter(row.get("resolution", "") for row in role_rows)
@@ -1340,6 +1395,7 @@ def build_rows():
     synthetic_gap_focused_direct_trace_audit_metrics(rows)
     synthetic_gap_focused_sequence_audit_metrics(rows)
     synthetic_gap_observed_chain_bridge_metrics(rows)
+    synthetic_gap_observed_chain_replay_metrics(rows)
     synthetic_gap_live_in_role_metrics(rows)
     synthetic_gap_final_tail_site_metrics(rows)
     synthetic_gap_live_in_reentry_metrics(rows)
