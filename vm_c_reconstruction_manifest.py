@@ -70,6 +70,9 @@ ARTIFACTS = [
     ("native_ret_patch_followups_tsv", TRACE_DIR / "vm_native_ret_patch_followups.tsv"),
     ("native_ret_patch_followups_md", TRACE_DIR / "vm_native_ret_patch_followups.md"),
     ("native_ret_patch_followup_retdec", TRACE_DIR / "vm_native_ret_patch_followup_retdec.c"),
+    ("native_obfuscated_islands_c", TRACE_DIR / "vm_native_obfuscated_islands.c"),
+    ("native_obfuscated_islands_tsv", TRACE_DIR / "vm_native_obfuscated_islands.tsv"),
+    ("native_obfuscated_islands_md", TRACE_DIR / "vm_native_obfuscated_islands.md"),
     ("target_only_handlers_retdec", TRACE_DIR / "vm_target_only_handlers_retdec.c"),
     ("unobserved_handlers_retdec_batch00", TRACE_DIR / "vm_unobserved_handlers_retdec_batch00.c"),
     ("unobserved_handlers_retdec_batch01", TRACE_DIR / "vm_unobserved_handlers_retdec_batch01.c"),
@@ -174,6 +177,8 @@ def c_shape_metrics(rows):
     native_ret_patch_followups = read_text(TRACE_DIR / "vm_native_ret_patch_followups.c")
     native_ret_patch_followup_index = read_tsv(TRACE_DIR / "vm_native_ret_patch_followups.tsv")
     native_ret_patch_followup_retdec = read_text(TRACE_DIR / "vm_native_ret_patch_followup_retdec.c")
+    native_obfuscated_islands = read_text(TRACE_DIR / "vm_native_obfuscated_islands.c")
+    native_obfuscated_island_index = read_tsv(TRACE_DIR / "vm_native_obfuscated_islands.tsv")
     target_only_handlers_retdec = read_text(TRACE_DIR / "vm_target_only_handlers_retdec.c")
     unobserved_handlers_retdec_batches = [
         read_text(TRACE_DIR / f"vm_unobserved_handlers_retdec_batch{index:02d}.c")
@@ -197,6 +202,10 @@ def c_shape_metrics(rows):
     unresolved_family_chains = read_text(TRACE_DIR / "vm_unresolved_family_chains.c")
     followup_classes = Counter(row.get("classification", "") for row in native_ret_patch_followup_index)
     followup_priorities = Counter(row.get("priority", "") for row in native_ret_patch_followup_index)
+    obfuscated_downstream_statuses = Counter(
+        row.get("downstream_status", "") for row in native_obfuscated_island_index
+    )
+    obfuscated_next_actions = Counter(row.get("next_action", "") for row in native_obfuscated_island_index)
 
     add(rows, "c_shape", "handler_functions", count(r"^static VMOpResult op_entry_\d{3}\(VMState \*vm\) \{", handlers),
         "All-entry handler/operator C functions.")
@@ -272,6 +281,30 @@ def c_shape_metrics(rows):
     add(rows, "c_shape", "native_ret_patch_followup_retdec_tail_calls",
         count(r"\breturn function_[0-9a-f]+\(", native_ret_patch_followup_retdec),
         "Recovered C-shaped tail calls/chains in the native return-patch follow-up helper artifact.")
+    add(rows, "c_shape", "native_obfuscated_island_rows",
+        len(native_obfuscated_island_index),
+        "First-stage native obfuscated helper/island rows reached from return-patch follow-up control.")
+    add(rows, "c_shape", "native_obfuscated_island_c_functions",
+        count(r"^static void obfuscated_island_[0-9a-f]+\(VMState \*vm,", native_obfuscated_islands),
+        "Syntax-checkable C helper functions for native obfuscated island collapse evidence.")
+    add(rows, "c_shape", "native_obfuscated_island_dispatch_cases",
+        count(r"^    case 0x[0-9a-f]+u:$", native_obfuscated_islands),
+        "Dispatcher cases in the native obfuscated island C artifact.")
+    add(rows, "c_shape", "native_obfuscated_island_downstream_status_mix",
+        ",".join(f"{key}:{value}" for key, value in obfuscated_downstream_statuses.most_common()) or "-",
+        "Status mix for collapsed downstream targets from native obfuscated islands.")
+    add(rows, "c_shape", "native_obfuscated_island_next_action_mix",
+        ",".join(f"{key}:{value}" for key, value in obfuscated_next_actions.most_common()) or "-",
+        "Next-action mix for native obfuscated island downstreams.")
+    add(rows, "c_shape", "native_obfuscated_island_source278_covered_downstreams",
+        obfuscated_downstream_statuses.get("source278_retdec_covered", 0),
+        "Collapsed downstream targets already represented by the source278 targeted RetDec sidecar.")
+    add(rows, "c_shape", "native_obfuscated_island_second_stage_targets",
+        obfuscated_downstream_statuses.get("second_stage_obfuscated_thunk", 0),
+        "Collapsed downstream targets that remain second-stage stack/call obfuscation thunks.")
+    add(rows, "c_shape", "native_obfuscated_island_entry_helpers",
+        sum(1 for row in native_obfuscated_island_index if row.get("kind", "") == "entry_helper"),
+        "Normal-prologue helper rows that enter the first native obfuscation island.")
     add(rows, "c_shape", "target_only_handler_retdec_selected_ranges",
         count(r"^ \*   0x[0-9a-f]+-0x[0-9a-f]+ entry=\d+ ", target_only_handlers_retdec),
         "Target-only VM handler native ranges selected for targeted RetDec.")
@@ -2051,6 +2084,8 @@ def native_acceleration_metrics(rows):
     followups_binary = Path("vm_native_ret_patch_followups_dump")
     followup_retdec_source = read_text("vm_native_ret_patch_followup_retdec_dump.c")
     followup_retdec_binary = Path("vm_native_ret_patch_followup_retdec_dump")
+    obfuscated_islands_source = read_text("vm_native_obfuscated_islands_dump.c")
+    obfuscated_islands_binary = Path("vm_native_obfuscated_islands_dump")
     add(rows, "native_acceleration", "instruction_unique_fast_source_lines", line_count(unique_source),
         "Native exact-instruction reducer source size.")
     add(rows, "native_acceleration", "instruction_unique_fast_binary_bytes", file_size(unique_binary),
@@ -2106,6 +2141,13 @@ def native_acceleration_metrics(rows):
     add(rows, "native_acceleration", "native_ret_patch_followup_retdec_uses_native_wrapper",
         "yes" if "./vm_native_ret_patch_followup_retdec_dump >" in makefile else "no",
         "Whether the follow-up RetDec sidecar is generated through a native wrapper/postprocessor.")
+    add(rows, "native_acceleration", "native_obfuscated_islands_dump_source_lines", line_count(obfuscated_islands_source),
+        "Native obfuscated-island collapse classifier/generator source size.")
+    add(rows, "native_acceleration", "native_obfuscated_islands_dump_binary_bytes", file_size(obfuscated_islands_binary),
+        "Current compiled native obfuscated-island classifier/generator size.")
+    add(rows, "native_acceleration", "native_obfuscated_islands_uses_native_generator",
+        "yes" if "./vm_native_obfuscated_islands_dump --c" in makefile else "no",
+        "Whether the native obfuscated-island C/TSV/Markdown artifacts are generated by the native C tool.")
 
 
 def build_rows():
