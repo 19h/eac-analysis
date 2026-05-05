@@ -286,7 +286,6 @@ BATCHES = {
         "0x56788-0x568c3",
     ],
     15: [
-        "0x4b16c0-0x4b17fb",
         "0x56fab0-0x56fbea",
         "0x48e347-0x48e480",
         "0x27a86-0x27bbe",
@@ -302,6 +301,7 @@ BATCHES = {
         "0xfeebc-0xfefee",
         "0x6a512-0x6a643",
         "0x4b8660-0x4b8791",
+        "0x4fdd8-0x4ff08",
     ],
 }
 
@@ -417,7 +417,11 @@ def main():
     print("struct __locale_struct;")
     print("struct _TYPEDEF___mbstate_t;")
     print("struct _IO_FILE;")
+    print("struct sockaddr;")
     print("struct utsname;")
+    print("#define F_GETFL 3")
+    print("#define F_SETFL 4")
+    print("#define SO_DEBUG 1")
     for index in referenced_globals(functions):
         print(f"extern int g{index};")
     print("unsigned char llvm_ctpop_i8(unsigned char value);")
@@ -478,6 +482,9 @@ def main():
     print("char *dgettext(char *domain, char *msgid);")
     print("char *gettext(char *msgid);")
     print("char *bind_textdomain_codeset(char *domainname, char *codeset);")
+    print("void *iconv_open(const char *tocode, const char *fromcode);")
+    print("int32_t iconv(void *cd, char **inbuf, int32_t *inbytesleft, char **outbuf, int32_t *outbytesleft);")
+    print("int iconv_close(void *cd);")
     print("struct _IO_FILE *fopen(const char *path, const char *mode);")
     print("size_t fread(void *ptr, size_t size, size_t nmemb, struct _IO_FILE *stream);")
     print("int fclose(struct _IO_FILE *stream);")
@@ -491,8 +498,13 @@ def main():
     print("int64_t memset2(void *s, int c, size_t n);")
     print("int pthread_mutex_lock(void *mutex);")
     print("int pthread_mutex_unlock(void *mutex);")
+    print("int fcntl(int fd, int cmd, ...);")
+    print("int32_t *__errno_location(void);")
+    print("int connect(int sockfd, const struct sockaddr *addr, int32_t addrlen);")
+    print("int getsockopt(int sockfd, int level, int optname, void *optval, int32_t *optlen);")
     print("int64_t readlink(const char *path, char *buf, size_t bufsiz);")
     print("char *realpath(const char *path, char *resolved_path);")
+    print("int64_t __wctype_l(const char *property, struct __locale_struct *locale);")
     print("char *strdup(const char *s);")
     print("struct _Unwind_Exception;")
     print("void _Unwind_Resume(struct _Unwind_Exception *exception);")
