@@ -135,6 +135,11 @@ def likely_dispatch_comment(row):
     return "next = dispatch_table[slot]"
 
 
+def is_long_control_handler(row):
+    operands = row.get("long_branch_operands", "")
+    return "target_u32@+0" in operands and "delta_u32@+4" in operands
+
+
 def emit_preamble():
     print("/*")
     print(" * VM handler pseudocode.")
@@ -170,6 +175,10 @@ def emit_preamble():
     print("")
     print("static int vm_entry_from_table_offset(uint32_t slot) {")
     print("    return ((slot & 7u) == 0u && (slot >> 3) < 360u) ? (int)(slot >> 3) : -1;")
+    print("}")
+    print("")
+    print("static int64_t signed_vm_delta_u32(uint32_t raw) {")
+    print("    return (raw & 0x80000000u) ? -(int64_t)(raw & 0x7fffffffu) : (int64_t)raw;")
     print("}")
     print("")
 
@@ -208,31 +217,37 @@ def emit_handler(row, transition, tail_ip_advances, args):
     flag_expr = final_expr_from_chain(row.get("flag_ir", ""))
     emit_expr_assignment("vm->flags", flag_expr, args.max_expr_len)
 
-    slot_expr = single_expr(row.get("dispatch_slot_ir", ""))
-    if slot_expr and is_complete_expr(slot_expr, args.max_expr_len):
-        print(f"    r.slot = (uint32_t)({c_expr(slot_expr)});")
-        helper = "vm_entry_from_table_offset" if slot_is_table_offset(slot_expr) else "vm_entry_from_slot_index"
-        print(f"    r.next_entry = {helper}(r.slot);")
-    elif row.get("dispatch_slot_ir"):
-        print(f"    /* slot variants: {c_comment(clip(c_expr(row['dispatch_slot_ir']), args.max_comment_len))} */")
+    if is_long_control_handler(row):
+        print("    r.slot = U32(vm->ip + 0x0);")
+        print("    r.next_entry = vm_entry_from_slot_index(r.slot);")
+        print("    vm->ip += signed_vm_delta_u32(U32(vm->ip + 0x4));")
+        print("    /* long-control operands: target_u32@+0, signed delta_u32@+4 */")
+    else:
+        slot_expr = single_expr(row.get("dispatch_slot_ir", ""))
+        if slot_expr and is_complete_expr(slot_expr, args.max_expr_len):
+            print(f"    r.slot = (uint32_t)({c_expr(slot_expr)});")
+            helper = "vm_entry_from_table_offset" if slot_is_table_offset(slot_expr) else "vm_entry_from_slot_index"
+            print(f"    r.next_entry = {helper}(r.slot);")
+        elif row.get("dispatch_slot_ir"):
+            print(f"    /* slot variants: {c_comment(clip(c_expr(row['dispatch_slot_ir']), args.max_comment_len))} */")
 
-    ip_advance = constant_ip_advance(row.get("ip_advance_ir", ""))
-    ip_source = "microcode"
-    if ip_advance is None:
-        ip_advance = parse_delta(delta)
-        ip_source = "observed_delta"
-    if ip_advance is None and entry in tail_ip_advances:
-        ip_advance = int(tail_ip_advances[entry]["advance"])
-        ip_source = tail_ip_advances[entry]["site"]
-    update = fmt_ip_update(ip_advance)
-    if update:
-        print(f"    {update}")
-        if ip_source not in {"microcode", "observed_delta"}:
-            print(f"    /* IP advance recovered from native tail site: {c_comment(ip_source)} */")
-    elif row.get("ip_advance_ir"):
-        print(f"    /* ip advance variants: {c_comment(row['ip_advance_ir'])} */")
-    elif entry in tail_ip_advances:
-        print(f"    /* native tail IP advance candidate: {tail_ip_advances[entry]['advance']} at {tail_ip_advances[entry]['site']} */")
+        ip_advance = constant_ip_advance(row.get("ip_advance_ir", ""))
+        ip_source = "microcode"
+        if ip_advance is None:
+            ip_advance = parse_delta(delta)
+            ip_source = "observed_delta"
+        if ip_advance is None and entry in tail_ip_advances:
+            ip_advance = int(tail_ip_advances[entry]["advance"])
+            ip_source = tail_ip_advances[entry]["site"]
+        update = fmt_ip_update(ip_advance)
+        if update:
+            print(f"    {update}")
+            if ip_source not in {"microcode", "observed_delta"}:
+                print(f"    /* IP advance recovered from native tail site: {c_comment(ip_source)} */")
+        elif row.get("ip_advance_ir"):
+            print(f"    /* ip advance variants: {c_comment(row['ip_advance_ir'])} */")
+        elif entry in tail_ip_advances:
+            print(f"    /* native tail IP advance candidate: {tail_ip_advances[entry]['advance']} at {tail_ip_advances[entry]['site']} */")
 
     dispatch_note = likely_dispatch_comment(row)
     if dispatch_note:

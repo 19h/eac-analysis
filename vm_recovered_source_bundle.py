@@ -35,9 +35,10 @@ def main():
     print("")
     print("/* Recovered full VM bytecode program. */")
     print("extern void vm_unresolved_synthetic_tail(VMState *vm, uint64_t vm_ip);")
-    print("static int64_t signed_vm_delta_u32(uint32_t raw) {")
-    print("    return (raw & 0x80000000u) ? -(int64_t)(raw & 0x7fffffffu) : (int64_t)raw;")
-    print("}")
+    if not any("signed_vm_delta_u32" in line for line in handlers):
+        print("static int64_t signed_vm_delta_u32(uint32_t raw) {")
+        print("    return (raw & 0x80000000u) ? -(int64_t)(raw & 0x7fffffffu) : (int64_t)raw;")
+        print("}")
     print("")
     for line in program_body(program):
         print(line)
