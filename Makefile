@@ -537,6 +537,17 @@ $(NATIVE_HANDLER_ENVIRONMENT_COVERAGE_MD): vm_native_handler_environment_coverag
 
 native-handler-environment-coverage: $(NATIVE_HANDLER_ENVIRONMENT_COVERAGE_C) $(NATIVE_HANDLER_ENVIRONMENT_COVERAGE_TSV) $(NATIVE_HANDLER_ENVIRONMENT_COVERAGE_MD)
 
+$(STATIC_ONLY_HANDLER_QUEUE_C): vm_static_only_handler_queue_dump $(NATIVE_HANDLER_ENVIRONMENT_COVERAGE_TSV) $(HANDLER_RETDEC_INDEX_TSV) $(PRIMARY_DIR)/vm_handler_semantics.tsv
+	./vm_static_only_handler_queue_dump --c > $@
+
+$(STATIC_ONLY_HANDLER_QUEUE_TSV): vm_static_only_handler_queue_dump $(NATIVE_HANDLER_ENVIRONMENT_COVERAGE_TSV) $(HANDLER_RETDEC_INDEX_TSV) $(PRIMARY_DIR)/vm_handler_semantics.tsv
+	./vm_static_only_handler_queue_dump --tsv > $@
+
+$(STATIC_ONLY_HANDLER_QUEUE_MD): vm_static_only_handler_queue_dump $(NATIVE_HANDLER_ENVIRONMENT_COVERAGE_TSV) $(HANDLER_RETDEC_INDEX_TSV) $(PRIMARY_DIR)/vm_handler_semantics.tsv
+	./vm_static_only_handler_queue_dump --markdown > $@
+
+static-only-handler-queue: $(STATIC_ONLY_HANDLER_QUEUE_C) $(STATIC_ONLY_HANDLER_QUEUE_TSV) $(STATIC_ONLY_HANDLER_QUEUE_MD)
+
 $(TARGET_ONLY_HANDLER_RETDEC_C): vm_target_only_handlers_retdec.py $(PRIMARY_DIR)/vm_handler_semantics.tsv $(PRIMARY_DIR)/vm_handler_table.tsv eac.elf
 	python3 vm_target_only_handlers_retdec.py > $@
 
@@ -634,12 +645,12 @@ $(SOURCE_BUNDLE_C): vm_recovered_source_bundle.py $(HANDLERS_PSEUDOCODE_C) $(PRO
 
 source-bundle: $(SOURCE_BUNDLE_C)
 
-$(ALL_EVIDENCE_BUNDLE_C): vm_recovered_source_all_evidence_bundle.py $(SOURCE_BUNDLE_C) $(NATIVE_RET_PATCH_TARGETS_C) $(NATIVE_RET_PATCH_EPILOGUES_RETDEC_C) $(NATIVE_RET_PATCH_SOURCE278_RETDEC_C) $(RET_PATCH_FOLLOWUPS_C) $(RET_PATCH_FOLLOWUP_RETDEC_C) $(NATIVE_OBFUSCATED_ISLANDS_C) $(NATIVE_OBFUSCATED_SECOND_STAGE_C) $(NATIVE_OBFUSCATED_SECOND_STAGE_DYNAMIC_C) $(NATIVE_OBFUSCATED_SECOND_STAGE_SLOT_PROOF_C) $(NATIVE_OBFUSCATED_SECOND_STAGE_STACK_SOURCE_C) $(NATIVE_OBFUSCATED_SECOND_STAGE_RBX_PROVENANCE_C) $(NATIVE_OBFUSCATED_SECOND_STAGE_MODEL_C) $(NATIVE_OBFUSCATED_CONTROL_MODEL_C) $(NATIVE_RET_PATCH_HIDDEN_BRIDGE_C) $(NATIVE_HANDLER_ENVIRONMENT_COVERAGE_C) $(TARGET_ONLY_HANDLER_RETDEC_C) $(UNOBSERVED_HANDLER_RETDEC_CS) $(WEAK_HANDLER_RETDEC_C) $(VALIDATED_HANDLER_RETDEC_CS) $(UNRESOLVED_FAMILY_C)
+$(ALL_EVIDENCE_BUNDLE_C): vm_recovered_source_all_evidence_bundle.py $(SOURCE_BUNDLE_C) $(NATIVE_RET_PATCH_TARGETS_C) $(NATIVE_RET_PATCH_EPILOGUES_RETDEC_C) $(NATIVE_RET_PATCH_SOURCE278_RETDEC_C) $(RET_PATCH_FOLLOWUPS_C) $(RET_PATCH_FOLLOWUP_RETDEC_C) $(NATIVE_OBFUSCATED_ISLANDS_C) $(NATIVE_OBFUSCATED_SECOND_STAGE_C) $(NATIVE_OBFUSCATED_SECOND_STAGE_DYNAMIC_C) $(NATIVE_OBFUSCATED_SECOND_STAGE_SLOT_PROOF_C) $(NATIVE_OBFUSCATED_SECOND_STAGE_STACK_SOURCE_C) $(NATIVE_OBFUSCATED_SECOND_STAGE_RBX_PROVENANCE_C) $(NATIVE_OBFUSCATED_SECOND_STAGE_MODEL_C) $(NATIVE_OBFUSCATED_CONTROL_MODEL_C) $(NATIVE_RET_PATCH_HIDDEN_BRIDGE_C) $(NATIVE_HANDLER_ENVIRONMENT_COVERAGE_C) $(STATIC_ONLY_HANDLER_QUEUE_C) $(TARGET_ONLY_HANDLER_RETDEC_C) $(UNOBSERVED_HANDLER_RETDEC_CS) $(WEAK_HANDLER_RETDEC_C) $(VALIDATED_HANDLER_RETDEC_CS) $(UNRESOLVED_FAMILY_C)
 	python3 vm_recovered_source_all_evidence_bundle.py > $@
 
 all-evidence-bundle: $(ALL_EVIDENCE_BUNDLE_C)
 
-pseudocode-syntax-check: $(PSEUDOCODE_TOP_C) $(PROGRAM_PSEUDOCODE_TOP_C) $(PROGRAM_PSEUDOCODE_FULL_C) $(HANDLERS_PSEUDOCODE_C) $(PATH_HANDLERS_PSEUDOCODE_C) $(SOURCE_BUNDLE_C) $(ALL_EVIDENCE_BUNDLE_C) $(NATIVE_RET_PATCH_TARGETS_C) $(NATIVE_RET_PATCH_EPILOGUES_RETDEC_C) $(NATIVE_RET_PATCH_SOURCE278_RETDEC_C) $(RET_PATCH_FOLLOWUPS_C) $(RET_PATCH_FOLLOWUP_RETDEC_C) $(NATIVE_OBFUSCATED_ISLANDS_C) $(NATIVE_OBFUSCATED_SECOND_STAGE_C) $(NATIVE_OBFUSCATED_SECOND_STAGE_DYNAMIC_C) $(NATIVE_OBFUSCATED_SECOND_STAGE_SLOT_PROOF_C) $(NATIVE_OBFUSCATED_SECOND_STAGE_STACK_SOURCE_C) $(NATIVE_OBFUSCATED_SECOND_STAGE_RBX_PROVENANCE_C) $(NATIVE_OBFUSCATED_SECOND_STAGE_MODEL_C) $(NATIVE_OBFUSCATED_CONTROL_MODEL_C) $(NATIVE_RET_PATCH_HIDDEN_BRIDGE_C) $(NATIVE_HANDLER_ENVIRONMENT_COVERAGE_C) $(TARGET_ONLY_HANDLER_RETDEC_C) $(UNOBSERVED_HANDLER_RETDEC_CS) $(WEAK_HANDLER_RETDEC_C) $(VALIDATED_HANDLER_RETDEC_CS) $(UNRESOLVED_FAMILY_C)
+pseudocode-syntax-check: $(PSEUDOCODE_TOP_C) $(PROGRAM_PSEUDOCODE_TOP_C) $(PROGRAM_PSEUDOCODE_FULL_C) $(HANDLERS_PSEUDOCODE_C) $(PATH_HANDLERS_PSEUDOCODE_C) $(SOURCE_BUNDLE_C) $(ALL_EVIDENCE_BUNDLE_C) $(NATIVE_RET_PATCH_TARGETS_C) $(NATIVE_RET_PATCH_EPILOGUES_RETDEC_C) $(NATIVE_RET_PATCH_SOURCE278_RETDEC_C) $(RET_PATCH_FOLLOWUPS_C) $(RET_PATCH_FOLLOWUP_RETDEC_C) $(NATIVE_OBFUSCATED_ISLANDS_C) $(NATIVE_OBFUSCATED_SECOND_STAGE_C) $(NATIVE_OBFUSCATED_SECOND_STAGE_DYNAMIC_C) $(NATIVE_OBFUSCATED_SECOND_STAGE_SLOT_PROOF_C) $(NATIVE_OBFUSCATED_SECOND_STAGE_STACK_SOURCE_C) $(NATIVE_OBFUSCATED_SECOND_STAGE_RBX_PROVENANCE_C) $(NATIVE_OBFUSCATED_SECOND_STAGE_MODEL_C) $(NATIVE_OBFUSCATED_CONTROL_MODEL_C) $(NATIVE_RET_PATCH_HIDDEN_BRIDGE_C) $(NATIVE_HANDLER_ENVIRONMENT_COVERAGE_C) $(STATIC_ONLY_HANDLER_QUEUE_C) $(TARGET_ONLY_HANDLER_RETDEC_C) $(UNOBSERVED_HANDLER_RETDEC_CS) $(WEAK_HANDLER_RETDEC_C) $(VALIDATED_HANDLER_RETDEC_CS) $(UNRESOLVED_FAMILY_C)
 	$(CC) -std=c11 -fsyntax-only -Wall -Wextra -Wno-unused-variable -Wno-unused-function -Wno-parentheses dumps/vmtail-wide-1m-w16/vm_handlers_pseudocode.c
 	$(CC) -std=c11 -fsyntax-only -Wall -Wextra -Wno-unused-variable -Wno-unused-function -Wno-parentheses dumps/vmtail-wide-1m-w16/vm_path_handlers_pseudocode.c
 	$(CC) -std=c11 -fsyntax-only -Wall -Wextra -Wno-unused-variable -Wno-unused-function -Wno-parentheses dumps/vmtail-wide-1m-w16/vm_pseudocode_top.c
@@ -662,6 +673,7 @@ pseudocode-syntax-check: $(PSEUDOCODE_TOP_C) $(PROGRAM_PSEUDOCODE_TOP_C) $(PROGR
 	$(CC) -std=c11 -fsyntax-only -Wall -Wextra -Wno-unused-function dumps/vmtail-wide-1m-w16/vm_native_obfuscated_control_model.c
 	$(CC) -std=c11 -fsyntax-only -Wall -Wextra -Wno-unused-function dumps/vmtail-wide-1m-w16/vm_native_ret_patch_hidden_bridge.c
 	$(CC) -std=c11 -fsyntax-only -Wall -Wextra -Wno-unused-function dumps/vmtail-wide-1m-w16/vm_native_handler_environment_coverage.c
+	$(CC) -std=c11 -fsyntax-only -Wall -Wextra -Wno-unused-function dumps/vmtail-wide-1m-w16/vm_static_only_handler_queue.c
 	$(CC) -std=c11 -fsyntax-only -Wall -Wextra -Wno-unused-variable -Wno-unused-function -Wno-unused-parameter -Wno-uninitialized -Wno-parentheses dumps/vmtail-wide-1m-w16/vm_target_only_handlers_retdec.c
 	$(CC) -std=c11 -fsyntax-only -Wall -Wextra -Wno-unused-variable -Wno-unused-function -Wno-unused-parameter -Wno-uninitialized -Wno-parentheses -Wno-sign-compare -Wno-pointer-to-int-cast -Wno-tautological-constant-out-of-range-compare dumps/vmtail-wide-1m-w16/vm_unobserved_handlers_retdec_batch0*.c
 	$(CC) -std=c11 -fsyntax-only -Wall -Wextra -Wno-unused-variable -Wno-unused-function -Wno-unused-parameter -Wno-uninitialized -Wno-parentheses -Wno-sign-compare -Wno-pointer-to-int-cast -Wno-tautological-constant-out-of-range-compare dumps/vmtail-wide-1m-w16/vm_weak_handlers_retdec.c
@@ -772,6 +784,9 @@ C_RECONSTRUCTION_MANIFEST_INPUTS := \
 	$(NATIVE_HANDLER_ENVIRONMENT_COVERAGE_C) \
 	$(NATIVE_HANDLER_ENVIRONMENT_COVERAGE_TSV) \
 	$(NATIVE_HANDLER_ENVIRONMENT_COVERAGE_MD) \
+	$(STATIC_ONLY_HANDLER_QUEUE_C) \
+	$(STATIC_ONLY_HANDLER_QUEUE_TSV) \
+	$(STATIC_ONLY_HANDLER_QUEUE_MD) \
 	$(TARGET_ONLY_HANDLER_RETDEC_C) \
 	$(UNOBSERVED_HANDLER_RETDEC_CS) \
 	$(WEAK_HANDLER_RETDEC_C) \
@@ -819,7 +834,8 @@ C_RECONSTRUCTION_NATIVE_ACCELERATION_INPUTS := \
 	vm_native_obfuscated_second_stage_model_dump.c vm_native_obfuscated_second_stage_model_dump \
 	vm_native_obfuscated_control_model_dump.c vm_native_obfuscated_control_model_dump \
 	vm_native_ret_patch_hidden_bridge_dump.c vm_native_ret_patch_hidden_bridge_dump \
-	vm_native_handler_environment_coverage_dump.c vm_native_handler_environment_coverage_dump
+	vm_native_handler_environment_coverage_dump.c vm_native_handler_environment_coverage_dump \
+	vm_static_only_handler_queue_dump.c vm_static_only_handler_queue_dump
 
 c-reconstruction-manifest: pseudocode-syntax-check pseudocode-object-check pseudocode-link-check $(C_RECONSTRUCTION_MANIFEST_INPUTS) $(C_RECONSTRUCTION_NATIVE_ACCELERATION_INPUTS)
 	python3 vm_c_reconstruction_manifest.py > dumps/vmtail-wide-1m-w16/vm_c_reconstruction_manifest.tsv
