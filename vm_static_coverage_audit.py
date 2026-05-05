@@ -21,6 +21,33 @@ def parse_hex(text):
     return int(text, 16)
 
 
+def parse_int(text):
+    if text in (None, ""):
+        return 0
+    try:
+        return int(text, 0)
+    except ValueError:
+        return 0
+
+
+def union_denominator(text):
+    if not text or "/" not in text:
+        return 0
+    return parse_int(text.split("/", 1)[1])
+
+
+def plus_count(text):
+    if not text or not text.startswith("+"):
+        return 0
+    return parse_int(text[1:].split("/", 1)[0])
+
+
+def minus_count(text):
+    if not text or "/-" not in text:
+        return 0
+    return parse_int(text.split("/-", 1)[1])
+
+
 def merge_intervals(intervals):
     if not intervals:
         return []
@@ -84,6 +111,46 @@ def dynamic_metrics(rows, trace_dir):
     add(rows, "dynamic_primary_trace", "covered_bytes", f"0x{interval_bytes(intervals):x}",
         "Scenario-specific byte coverage; not a full-program proof.")
     return sources, targets, starts
+
+
+def cross_trace_metrics(rows, trace_dir):
+    matrix = read_tsv(trace_dir / "vm_trace_coverage_matrix.tsv")
+    trace_rows = [row for row in matrix if parse_int(row.get("trace_rows")) > 0]
+    concrete_rows = [row for row in trace_rows if row.get("trace_class") != "synthetic_filled_trace"]
+    run_only_rows = [row for row in matrix if parse_int(row.get("trace_rows")) == 0 and row.get("has_run_stderr") == "1"]
+    classes = Counter(row.get("trace_class", "") for row in matrix)
+    concrete_modes = sorted({row.get("run_mode", "") for row in concrete_rows if row.get("run_mode", "")})
+    union_sources = max((union_denominator(row.get("source_entries_vs_union", "")) for row in trace_rows), default=0)
+    union_targets = max((union_denominator(row.get("target_entries_vs_union", "")) for row in trace_rows), default=0)
+    union_starts = max((union_denominator(row.get("start_vm_ips_vs_union", "")) for row in trace_rows), default=0)
+    extra_source_rows = [row for row in concrete_rows if plus_count(row.get("source_entries_vs_primary", "")) > 0]
+    missing_source_rows = [row for row in concrete_rows if minus_count(row.get("source_entries_vs_primary", "")) > 0]
+    synthetic_rows = [row for row in trace_rows if row.get("trace_class") == "synthetic_filled_trace"]
+
+    add(rows, "dynamic_cross_trace", "coverage_matrix_rows", len(matrix),
+        "Run directories inventoried by the coverage matrix, including run-only register/scratch traces.")
+    add(rows, "dynamic_cross_trace", "instruction_trace_scenarios", len(trace_rows),
+        "Directories with vm_instruction_trace.tsv rows contributing bytecode path coverage.")
+    add(rows, "dynamic_cross_trace", "concrete_instruction_trace_scenarios", len(concrete_rows),
+        "Instruction-trace scenarios before synthetic file/hidden/frontier/footprint fill sidecars.")
+    add(rows, "dynamic_cross_trace", "run_dirs_without_instruction_trace", len(run_only_rows),
+        "Run directories with driver logs but no vm_instruction_trace.tsv; useful for context/register evidence, not bytecode path coverage.")
+    add(rows, "dynamic_cross_trace", "trace_class_mix", compact_counter(classes),
+        "Trace inventory classes; synthetic rows are derived coverage, not independent runtime configs.")
+    add(rows, "dynamic_cross_trace", "concrete_runtime_modes_seen", ",".join(concrete_modes) or "-",
+        "x() mode values among concrete instruction traces.")
+    add(rows, "dynamic_cross_trace", "union_source_handlers_seen", union_sources,
+        "Union of source handlers seen across instruction traces in the matrix.")
+    add(rows, "dynamic_cross_trace", "union_target_handlers_seen", union_targets,
+        "Union of target handlers seen across instruction traces in the matrix.")
+    add(rows, "dynamic_cross_trace", "union_vm_ip_starts_seen", union_starts,
+        "Union of VM-IP starts seen across instruction traces in the matrix.")
+    add(rows, "dynamic_cross_trace", "concrete_traces_adding_sources_vs_primary", len(extra_source_rows),
+        "Concrete instruction traces that add source handlers beyond the primary long trace.")
+    add(rows, "dynamic_cross_trace", "concrete_traces_missing_primary_sources", len(missing_source_rows),
+        "Concrete instruction traces that miss one or more primary long-trace source handlers.")
+    add(rows, "dynamic_cross_trace", "synthetic_fill_trace_rows", len(synthetic_rows),
+        "Derived trace rows used to widen bytecode coverage without claiming a new runtime config.")
 
 
 def static_metrics(rows, trace_dir, sources):
@@ -191,6 +258,7 @@ def build_rows(args):
     trace_dir = Path(args.trace_dir)
     rows = []
     sources, _targets, _starts = dynamic_metrics(rows, trace_dir)
+    cross_trace_metrics(rows, trace_dir)
     static_metrics(rows, trace_dir, sources)
     program_metrics(rows, trace_dir)
     validation_metrics(rows, trace_dir)
