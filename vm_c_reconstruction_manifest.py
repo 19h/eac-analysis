@@ -1424,6 +1424,8 @@ def native_acceleration_metrics(rows):
     unique_binary = Path("vm_instruction_unique_fast")
     segment_source = read_text("vm_bytecode_segments_fast.c")
     segment_binary = Path("vm_bytecode_segments_fast")
+    block_source = read_text("vm_bytecode_blocks_fast.c")
+    block_binary = Path("vm_bytecode_blocks_fast")
     add(rows, "native_acceleration", "instruction_unique_fast_source_lines", line_count(unique_source),
         "Native exact-instruction reducer source size.")
     add(rows, "native_acceleration", "instruction_unique_fast_binary_bytes", file_size(unique_binary),
@@ -1442,6 +1444,15 @@ def native_acceleration_metrics(rows):
         "Whether sampled bytecode segment recovery uses the native reducer.")
     add(rows, "native_acceleration", "bytecode_segments_fast_check", "make bytecode-segments-fast-check",
         "Byte-for-byte parity gate against vm_bytecode_recover.py raw exact, raw sampled, and final augmented sampled segment modes.")
+    add(rows, "native_acceleration", "bytecode_blocks_fast_source_lines", line_count(block_source),
+        "Native bytecode block reducer source size.")
+    add(rows, "native_acceleration", "bytecode_blocks_fast_binary_bytes", file_size(block_binary),
+        "Current compiled native bytecode block reducer size.")
+    add(rows, "native_acceleration", "bytecode_blocks_sampled_uses_native_reducer",
+        "yes" if "./vm_bytecode_blocks_fast dumps/vmtail-wide-1m-w16/vm_instruction_trace.tsv --include-sampled" in makefile else "no",
+        "Whether sampled bytecode block recovery uses the native reducer.")
+    add(rows, "native_acceleration", "bytecode_blocks_fast_check", "make bytecode-blocks-fast-check",
+        "Byte-for-byte parity gate against vm_bytecode_blocks.py raw exact, raw sampled, and final augmented sampled block modes.")
 
 
 def build_rows():
