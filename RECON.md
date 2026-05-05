@@ -448,7 +448,7 @@ python3 vm_bytecode_blocks.py dumps/vmtail-wide-1m-w16/vm_instruction_trace.tsv 
   >dumps/vmtail-wide-1m-w16/vm_bytecode_blocks.tsv
 python3 vm_bytecode_recover.py dumps/vmtail-wide-1m-w16/vm_instruction_trace.tsv \
   >dumps/vmtail-wide-1m-w16/vm_bytecode_segments.tsv
-python3 vm_bytecode_recover.py dumps/vmtail-wide-1m-w16/vm_instruction_trace.tsv --instructions \
+./vm_instruction_unique_fast dumps/vmtail-wide-1m-w16/vm_instruction_trace.tsv \
   >dumps/vmtail-wide-1m-w16/vm_instruction_unique.tsv
 python3 vm_bytecode_cfg.py dumps/vmtail-wide-1m-w16/vm_instruction_trace.tsv \
   --segments dumps/vmtail-wide-1m-w16/vm_bytecode_segments.tsv \
@@ -685,7 +685,7 @@ for MODE in 0 2; do
     >"$DIR/vm_instruction_trace.tsv"
   python3 vm_bytecode_recover.py "$DIR/vm_instruction_trace.tsv" \
     >"$DIR/vm_bytecode_segments.tsv"
-  python3 vm_bytecode_recover.py "$DIR/vm_instruction_trace.tsv" --instructions \
+  ./vm_instruction_unique_fast "$DIR/vm_instruction_trace.tsv" \
     >"$DIR/vm_instruction_unique.tsv"
   python3 vm_bytecode_recover.py "$DIR/vm_instruction_trace.tsv" --include-sampled \
     >"$DIR/vm_bytecode_segments_sampled.tsv"
@@ -1004,7 +1004,7 @@ The sampled recovery pass in `vm_bytecode_segments_sampled.tsv` additionally ins
 - 0 conflicting byte offsets.
 - 0 conflicting byte observations.
 
-`vm_instruction_unique.tsv` collapses the exact trace to 71364 unique executed instruction signatures. The most repeated signatures are still the loop body beginning at `0x22ff44`, where many adjacent rows execute exactly 256 times. Example rows:
+`vm_instruction_unique.tsv` collapses the exact trace to 71364 unique executed instruction signatures. The current `make instruction-unique` path uses `vm_instruction_unique_fast`, whose `instruction-unique-fast-check` gate byte-compares against `vm_bytecode_recover.py --instructions`; the latest local timing was about 0.30s for the native reducer versus 4.04s for Python on the same 110 MiB trace. The most repeated signatures are still the loop body beginning at `0x22ff44`, where many adjacent rows execute exactly 256 times. Example rows:
 
 | Count | Start VM IP | Source Entry | Delta | Bytes | Target Entry |
 | ---: | --- | ---: | --- | --- | ---: |
@@ -1467,6 +1467,8 @@ The seeded `--by-path` transfer-expression view observes 462 GPR+scratch-seeded 
 The most path-diverse source is entry 330 with 12 observed paths over 169 state-trace events. Other high-diversity handlers include entries 208 with 11 paths, 237 and 48 with 8 paths each, and entries 108, 257, 319, 292, and 105 with 7 paths each. The high-volume handlers are usually much simpler: entry 258 has two concrete paths, entry 28 has three, and entries 337, 340, 189, 347, 307, 64, and 66 have one or two dominant paths. These path counts are now joined into `vm_transition_model.tsv` and summarized in `vm_microcode_catalog.tsv`.
 
 `vm_fast_path_profile` is the native version of this concrete replay loop. It uses Capstone C for handler decoding, OpenSSL SHA-256 for path hashes, and direct TSV streaming for trace rows. On the full GPR+scratch-seeded 248906-row trace it preserves the static target/IP coverage at 248368 validated events while eliminating all branch-unknown events. The `--emit-dir` batch mode regenerates all `_fast.tsv` replay artifacts in two passes, and `make fast-replay fast-predicates fast-transfer` refreshes replay, predicate, and transfer artifacts in `elapsed=0:31.69`. Its image-backed frame/IP reads, restore-trampoline `push`/`pop` preservation, biased frame and stack pointer normalization, low-bit pointer arithmetic, and `fs0x128` scratch seeding produce 570 native seeded source-path rows, 560 fully target/IP-validated paths, 0 branch-unknown events, and 58252 unknown ops. The matched `_fast.tsv` path microcode catalogs now use those native path rows for the concrete devirtualized view.
+
+`vm_instruction_unique_fast` is the native version of the exact instruction-signature reducer. It preserves the TSV schema and ordering of `vm_bytecode_recover.py --instructions`, including Counter tie order for `top_end_ips`, `top_targets`, and `top_sites`, but avoids Python CSV and object churn over the 110 MiB full trace. The current parity check is byte-for-byte clean, and the latest local timings are 0.30s native versus 4.04s Python. `make instruction-unique` now uses the native reducer, while `make instruction-unique-fast-check` keeps the Python parity gate available.
 
 The native `--branch-sites` mode gives full-trace branch outcome counts without the slow Python provenance pass. It emits 855 branch-site rows and accounts for 1007971 dynamic branch evaluations. State-only replay leaves 207821 branch events unresolved, while GPR+scratch seeding now resolves every branch outcome:
 
