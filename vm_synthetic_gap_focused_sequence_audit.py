@@ -344,6 +344,7 @@ def emit_tsv(rows):
 def emit_markdown(rows):
     classes = Counter()
     terminals = Counter(row.get("chain_terminal", "") for row in rows)
+    with_next = [row for row in rows if row.get("example_next_event_vm_ip", "")]
     linked = [row for row in rows if row.get("example_following_residual_start", "")]
     for row in rows:
         for item in (row.get("raw_sequence_class_mix", "") or "").split(","):
@@ -354,7 +355,7 @@ def emit_markdown(rows):
     print("Raw focused VMTAIL sequence around residual starts, including indirect tail-site hops that are not hard CFG evidence.\n")
     print(f"Rows: `{len(rows)}`\n")
     print(f"- starts with raw focused start events: `{sum(1 for row in rows if int(row.get('raw_start_event_rows', '0') or 0) > 0)}`")
-    print(f"- starts with a following raw event: `{sum(1 for row in rows if int(row.get('raw_sequence_rows', '0') or 0) > 0)}`")
+    print(f"- starts with a following raw event: `{len(with_next)}`")
     print(f"- starts whose next raw event is followed by another residual start: `{len(linked)}`\n")
     print("## Raw Class Mix\n")
     print("| Class | Rows |")
