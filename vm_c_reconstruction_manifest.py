@@ -1241,12 +1241,12 @@ def synthetic_gap_live_snapshot_transfer_probe_metrics(rows):
     branch_mix = Counter(row.get("branch_resolution", "") for row in probe_rows)
     next_relation_mix = Counter(row.get("next_relation", "") for row in live_rows)
     interpretation_mix = Counter(row.get("interpretation", "") for row in probe_rows)
-    path_shift_rows = [
+    path_shift_rows = sorted({
         f"{row.get('synthetic_start_vm_ip')}:{row.get('family_transfer_path_hash')}->{row.get('live_path_hash')}"
         for row in live_rows
         if row.get("family_transfer_path_hash", "") and row.get("live_path_hash", "")
         and row.get("family_transfer_path_hash", "") != row.get("live_path_hash", "")
-    ]
+    }, key=lambda value: int(value.split(":", 1)[0] or "0", 16))
     full_gpr_starts = sorted({
         row.get("synthetic_start_vm_ip", "")
         for row in live_rows
