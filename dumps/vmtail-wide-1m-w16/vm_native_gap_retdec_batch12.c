@@ -6,22 +6,22 @@
  * coverage -> queue -> RetDec batch -> coverage.
  *
  * Ranges:
- *   0x4096a-0x40abf rank=6 name=fcn.0004096a kind=r2_discovered bytes=341 uncovered=341
- *   0x4bd90-0x4bee5 rank=7 name=fcn.0004bd90 kind=r2_discovered bytes=341 uncovered=341
- *   0x578220-0x578375 rank=8 name=fcn.00578220 kind=r2_discovered bytes=341 uncovered=341
- *   0x498440-0x498594 rank=9 name=fcn.00498440 kind=r2_discovered bytes=340 uncovered=340
- *   0x4a9620-0x4a9774 rank=10 name=fcn.004a9620 kind=r2_discovered bytes=340 uncovered=340
- *   0x508490-0x5085e1 rank=11 name=method.std::collate_wchar_t_.virtual_16 kind=native_discovered bytes=337 uncovered=337
- *   0x281fa-0x2834a rank=12 name=fcn.000281fa kind=r2_discovered bytes=336 uncovered=336
- *   0x4d70e-0x4d85d rank=13 name=fcn.0004d70e kind=r2_discovered bytes=335 uncovered=335
- *   0x4b66c0-0x4b680e rank=14 name=fcn.004b66c0 kind=r2_discovered bytes=334 uncovered=334
- *   0x20f9a-0x210e7 rank=15 name=entry.init9 kind=native_discovered bytes=333 uncovered=333
- *   0x578380-0x5784cd rank=16 name=fcn.00578380 kind=r2_discovered bytes=333 uncovered=333
- *   0x47660-0x477ac rank=17 name=fcn.00047660 kind=r2_discovered bytes=332 uncovered=332
- *   0x53b22-0x53c6e rank=18 name=fcn.00053b22 kind=r2_discovered bytes=332 uncovered=332
- *   0x54eda-0x55026 rank=19 name=fcn.00054eda kind=r2_discovered bytes=332 uncovered=332
- *   0x609f0-0x60b3b rank=20 name=fcn.000609f0 kind=r2_discovered bytes=331 uncovered=331
- *   0x49044-0x4918e rank=21 name=fcn.00049044 kind=r2_discovered bytes=330 uncovered=330
+ *   0x4096a-0x40abf rank=- name=- kind=- bytes=- uncovered=-
+ *   0x4bd90-0x4bee5 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x578220-0x578375 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x498440-0x498594 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x4a9620-0x4a9774 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x508490-0x5085e1 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x281fa-0x2834a rank=- name=- kind=- bytes=- uncovered=-
+ *   0x4d70e-0x4d85d rank=- name=- kind=- bytes=- uncovered=-
+ *   0x4b66c0-0x4b680e rank=- name=- kind=- bytes=- uncovered=-
+ *   0x20f9a-0x210e7 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x578380-0x5784cd rank=- name=- kind=- bytes=- uncovered=-
+ *   0x47660-0x477ac rank=- name=- kind=- bytes=- uncovered=-
+ *   0x53b22-0x53c6e rank=- name=- kind=- bytes=- uncovered=-
+ *   0x54eda-0x55026 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x609f0-0x60b3b rank=- name=- kind=- bytes=- uncovered=-
+ *   0x49044-0x4918e rank=- name=- kind=- bytes=- uncovered=-
  */
 #include <stdbool.h>
 #include <stdio.h>
@@ -66,6 +66,7 @@ extern int g25;
 extern int g26;
 extern int g27;
 unsigned char llvm_ctpop_i8(unsigned char value);
+uint16_t llvm_bswap_i16(uint16_t value);
 void __asm_int(int32_t interrupt);
 int64_t __asm_int1(int32_t interrupt);
 int64_t __asm_int3(void);

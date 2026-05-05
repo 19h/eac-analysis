@@ -77,6 +77,7 @@ extern int g35;
 extern int g36;
 extern int g37;
 unsigned char llvm_ctpop_i8(unsigned char value);
+uint16_t llvm_bswap_i16(uint16_t value);
 void __asm_int(int32_t interrupt);
 int64_t __asm_int1(int32_t interrupt);
 int64_t __asm_int3(void);
