@@ -338,7 +338,7 @@ static unsigned score_row(const RetdecRow *retdec, const SemanticsRow *semantics
     }
     if (funcs > 1) {
         copy_text(priority_class, class_size, "tier3_multi_function_shared_range");
-        copy_text(next_action, action_size, "recover_shared_chunks_or split_by_entry");
+        copy_text(next_action, action_size, "recover_shared_chunks_or_split_by_entry");
         return score + 1500u;
     }
     copy_text(priority_class, class_size, "tier5_large_static_replay");
