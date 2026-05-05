@@ -7,14 +7,17 @@ from pathlib import Path
 from vm_pseudocode_dump import (
     c_block_name,
     c_comment,
+    emit_internal_tail_lift,
     load_edges,
     load_rows,
+    load_tail_lifts,
     map_rows_to_blocks,
     parse_delta,
     parse_hex,
     read_tsv,
     selected_blocks,
     tail_target_load,
+    tail_lifts_for_block,
 )
 
 
@@ -236,7 +239,7 @@ def emit_synthetic_edge(edge, synthetic_spans, args):
         print(f"    vm_ip -= 0x{-delta:x};")
 
 
-def emit_block(block, rows, edge, synthetic_spans, args):
+def emit_block(block, rows, edge, synthetic_spans, tail_lifts, args):
     name = c_block_name(block["block"])
     print(f"static void prog_{name}(VMState *vm, uint64_t vm_ip) {{")
     print("    VMOpResult r;")
@@ -255,6 +258,8 @@ def emit_block(block, rows, edge, synthetic_spans, args):
     omitted = len(rows) - len(shown)
     if omitted > 0:
         print(f"    /* ... {omitted} bytecode operations omitted from this compact sketch ... */")
+    for lift in tail_lifts_for_block(block, tail_lifts):
+        emit_internal_tail_lift(lift)
     if edge:
         edge_kind = edge.get("edge_kind", "")
         target_block = edge.get("target_block", "")
@@ -326,10 +331,11 @@ def main():
     rows_by_block = map_rows_to_blocks(load_rows(args.ir), blocks)
     edges = load_edges(args.edges)
     synthetic_spans = load_synthetic_spans(args.synthetic_trace, args.synthetic_tail_lift)
+    tail_lifts = load_tail_lifts(args.synthetic_tail_lift)
 
     emit_preamble(collect_used_entries(chosen, rows_by_block, args.rows_per_block, edges, synthetic_spans))
     for block in chosen:
-        emit_block(block, rows_by_block.get(block["block"], []), edges.get(block["block"]), synthetic_spans, args)
+        emit_block(block, rows_by_block.get(block["block"], []), edges.get(block["block"]), synthetic_spans, tail_lifts, args)
     emit_dispatch(chosen)
     print(
         f"program_pseudocode_blocks={len(chosen)} rows_per_block={args.rows_per_block}",
