@@ -21,6 +21,8 @@ ARTIFACTS = [
     ("synthetic_successor_gaps_md", TRACE_DIR / "vm_synthetic_successor_gaps.md"),
     ("synthetic_gap_transfer_probe_tsv", TRACE_DIR / "vm_synthetic_gap_transfer_probe.tsv"),
     ("synthetic_gap_transfer_probe_md", TRACE_DIR / "vm_synthetic_gap_transfer_probe.md"),
+    ("synthetic_gap_dynamic_stitch_tsv", TRACE_DIR / "vm_synthetic_gap_dynamic_stitch.tsv"),
+    ("synthetic_gap_dynamic_stitch_md", TRACE_DIR / "vm_synthetic_gap_dynamic_stitch.md"),
 ]
 
 
@@ -163,6 +165,33 @@ def synthetic_gap_probe_metrics(rows):
         "Source entries represented by the live-in central-dispatch register cases.")
 
 
+def synthetic_gap_dynamic_stitch_metrics(rows):
+    stitch_rows = read_tsv(TRACE_DIR / "vm_synthetic_gap_dynamic_stitch.tsv")
+    resolutions = Counter(row.get("resolution", "") for row in stitch_rows)
+    stitched_starts = {
+        row.get("synthetic_start_vm_ip", "")
+        for row in stitch_rows
+        if row.get("resolution", "") == "dynamic_stitch_to_next_hooked_source" and row.get("synthetic_start_vm_ip", "")
+    }
+    ambiguous_starts = {
+        row.get("synthetic_start_vm_ip", "")
+        for row in stitch_rows
+        if row.get("resolution", "") == "ambiguous_next_source" and row.get("synthetic_start_vm_ip", "")
+    }
+    add(rows, "gap_stitch", "synthetic_gap_dynamic_stitch_rows", len(stitch_rows),
+        "Event-instance rows stitched from raw VMTAIL order for the remaining synthetic successor gaps.")
+    add(rows, "gap_stitch", "synthetic_gap_dynamic_stitch_to_next_hooked_source",
+        resolutions.get("dynamic_stitch_to_next_hooked_source", 0),
+        "Rows whose next hooked source start is inferred from tail-site, fixed-delta, and byte-match evidence.")
+    add(rows, "gap_stitch", "synthetic_gap_dynamic_stitch_ambiguous_next_source",
+        resolutions.get("ambiguous_next_source", 0),
+        "Rows whose next hooked source could not be inferred with the byte-match gate.")
+    add(rows, "gap_stitch", "synthetic_gap_dynamic_stitched_unique_starts", len(stitched_starts),
+        "Unique synthetic starts with at least one dynamically stitched next-hooked-source row.")
+    add(rows, "gap_stitch", "synthetic_gap_dynamic_ambiguous_unique_starts", len(ambiguous_starts),
+        "Unique synthetic starts that still have an ambiguous dynamic stitch row.")
+
+
 def gate_metrics(rows):
     add(rows, "gate", "syntax_check", "make pseudocode-syntax-check",
         "Regenerates and warning-checks all six C-like source artifacts with C11 -fsyntax-only.")
@@ -182,6 +211,7 @@ def build_rows():
     c_shape_metrics(rows)
     coverage_metrics(rows)
     synthetic_gap_probe_metrics(rows)
+    synthetic_gap_dynamic_stitch_metrics(rows)
     gate_metrics(rows)
     add(rows, "caveat", "completion_status", "not_complete",
         "This is a mechanically checked C reconstruction of recovered layers, not proof that every VM bytecode path has been found.")

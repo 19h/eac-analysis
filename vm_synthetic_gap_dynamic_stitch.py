@@ -241,7 +241,7 @@ def build_rows(args):
             if choice and choice["start"] is not None and choice["score"] >= args.min_score:
                 hidden_delta = choice["start"] - synthetic_start
                 row.update({
-                    "resolution": "dynamic_stitch_to_source_start",
+                    "resolution": "dynamic_stitch_to_next_hooked_source",
                     "inferred_next_source_entry": str(choice["entry"]),
                     "inferred_next_source_delta": fmt_delta(choice["delta"]),
                     "inferred_next_source_start_vm_ip": fmt_hex(choice["start"]),
@@ -294,7 +294,8 @@ def emit_markdown(rows):
     resolutions = Counter(row.get("resolution", "") for row in rows)
     print("# Synthetic Gap Dynamic Stitch\n")
     print("Sequence-based stitching for synthetic-successor gaps using the raw VMTAIL event stream.")
-    print("A `dynamic_stitch_to_source_start` row means the next hooked VMTAIL event's source handler was inferred from its tail site, fixed delta, and byte match at `next_end - delta`.\n")
+    print("A `dynamic_stitch_to_next_hooked_source` row means the next hooked VMTAIL event's source handler was inferred from its tail site, fixed delta, and byte match at `next_end - delta`.")
+    print("This is dynamic sequence evidence for where execution reappears; it does not prove there were no unhooked handlers in between.\n")
     print(f"Rows: {len(rows)}.")
     print(f"Resolution mix: {', '.join(f'{k}:{v}' for k, v in resolutions.most_common()) or '-'}.\n")
     print("| Synthetic Start | Source | Gap Bytes | Resolution | Next Source | Hidden Delta | Next Source Start | Evidence |")

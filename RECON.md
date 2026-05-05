@@ -46,6 +46,7 @@ SHA-256: `0b44ad59697129534189efdb75cde2b96245f831438e9f6a53cb7725f190d739`
 - `vm_c_reconstruction_manifest.py`: emits a reproducible manifest of C-shaped reconstruction artifacts, function/block/call counts, coverage highlights, and mechanical gate commands.
 - `vm_synthetic_successor_gap_report.py`: reports synthetic terminal successors that still do not land on recovered block starts, with source entries, footprint bytes, atlas context, and sampled-operand variant context.
 - `vm_synthetic_gap_transfer_probe.py`: replays the remaining synthetic-successor gap bytes through the static transfer executor, classifying which gaps reduce to symbolic dispatch slots and which still require live central-dispatch registers.
+- `vm_synthetic_gap_dynamic_stitch.py`: stitches remaining synthetic-successor gaps against the raw VMTAIL event order, inferring the next hooked source start when the next tail site has a fixed byte-matching handler shape.
 - `vm_bytecode_file_atlas.py`: verifies recovered exact VM bytes against `eac.elf` and builds conservative file-backed bytecode atlas regions from observed segments plus small inferred gaps.
 - `vm_trace_file_fill.py`: promotes bounded positive `prefix_32_of_N` rows to `file_span_of_N` rows by reading bytes from `eac.elf`, preserving them as sampled/file-backed coverage rather than exact consumed instructions.
 - `vm_long_branch_catalog.py`: decodes sampled/backedge long-control bytecode rows whose first u32 is the target dispatch-table entry and whose second u32 is a signed VM-IP delta, verifies byte prefixes and static operand footprints against `eac.elf`, and emits TSV/Markdown lift summaries.
@@ -143,6 +144,8 @@ SHA-256: `0b44ad59697129534189efdb75cde2b96245f831438e9f6a53cb7725f190d739`
 - `dumps/vmtail-wide-1m-w16/vm_synthetic_successor_gaps.md`: Markdown digest of the remaining synthetic-successor gaps.
 - `dumps/vmtail-wide-1m-w16/vm_synthetic_gap_transfer_probe.tsv`: static transfer probe over the remaining synthetic-successor gap bytes.
 - `dumps/vmtail-wide-1m-w16/vm_synthetic_gap_transfer_probe.md`: Markdown digest of the synthetic gap transfer probe, including live-in-register versus symbolic-slot classifications.
+- `dumps/vmtail-wide-1m-w16/vm_synthetic_gap_dynamic_stitch.tsv`: raw-VMTAIL sequence stitch for the remaining synthetic-successor gaps.
+- `dumps/vmtail-wide-1m-w16/vm_synthetic_gap_dynamic_stitch.md`: Markdown digest of the dynamic stitch, including next-hooked-source and ambiguous rows.
 - `dumps/vmtail-wide-1m-w16/vm_state_static_slice.tsv`: static symbolic state/flag update chains for all dispatch entries.
 - `dumps/vmtail-wide-1m-w16/vm_state_static_slice_entry258.tsv`: focused static state slice for the high-volume nonlinear entry 258.
 - `dumps/vmtail-wide-1m-w16/vm_handler_tail_roles.tsv`: long-run source-handler/tail-site rows joined with register roles inferred from the 50k GPR smoke trace.
