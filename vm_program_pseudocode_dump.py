@@ -360,6 +360,7 @@ def main():
     parser.add_argument("--synthetic-tail-lift", default="dumps/vmtail-wide-1m-w16/vm_synthetic_tail_lift.tsv")
     parser.add_argument("--synthetic-top-items", type=int, default=4)
     parser.add_argument("--synthetic-max-bytes", type=int, default=48)
+    parser.add_argument("--max-expr-len", type=int, default=220)
     parser.add_argument("--start", action="append", default=[])
     parser.add_argument("--keep-order", action="store_true")
     args = parser.parse_args()
