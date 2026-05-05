@@ -33,6 +33,24 @@ BATCHES = {
         "0x5534e-0x55536",
         "0x568500-0x5686e7",
     ],
+    1: [
+        "0x56b2c0-0x56b4a7",
+        "0x4cd00-0x4cee6",
+        "0x268c9-0x26aae",
+        "0x4a6e6-0x4a8c5",
+        "0x57160-0x5733f",
+        "0x55c790-0x55c96f",
+        "0x55c9b0-0x55cb8f",
+        "0x5725b0-0x57278f",
+        "0x5727c0-0x57299f",
+        "0x4b8430-0x4b860e",
+        "0x538ea0-0x53907d",
+        "0x5cb26-0x5cd02",
+        "0x2cafa-0x2ccd5",
+        "0x4aa650-0x4aa829",
+        "0x567f20-0x5680f7",
+        "0x492898-0x492a6e",
+    ],
 }
 
 
@@ -136,6 +154,7 @@ def main():
     print("#include <string.h>")
     print("")
     print("typedef __int128 int128_t;")
+    print("typedef unsigned __int128 uint128_t;")
     print("typedef int32_t int3_t;")
     print("typedef float float32_t;")
     print("typedef double float64_t;")
@@ -149,6 +168,7 @@ def main():
     print("uint64_t __readfsqword(int64_t offset);")
     print("int64_t __asm_iretd(void);")
     print("void __asm_rep_stosb_memset(char *dst, char value, int64_t count);")
+    print("void __asm_rep_stosd_memset(char *dst, int32_t value, int64_t count);")
     print("void __stack_chk_fail(void);")
     print("int __cxa_atexit(void (*func)(int64_t *), void *arg, void *dso);")
     print("int128_t __asm_movsd(int64_t value);")
