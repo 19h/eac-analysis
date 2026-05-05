@@ -50,7 +50,7 @@ def parse_insns(row):
 
 
 STACK_LOAD_RE = re.compile(r"\bmov\s+([^,]*\(%rsp\)),%([re]?[abcd]x|[er]si|[er]di|r1[0-5]|r[89])\b")
-STACK_ZERO_RE = re.compile(r"\bmovl\s+\$0x0,([^,]*\(%rsp\))\b")
+STACK_ZERO_RE = re.compile(r"\bmovl\s+\$0x0,([^,]*\(%rsp\))")
 RETVAL_PATTERNS = [
     (re.compile(r"\bxor\s+%eax,%eax\b"), "return_eax_zero"),
     (re.compile(r"\bmov\s+\$0x1,%al\b"), "return_al_one"),
