@@ -99,7 +99,20 @@ def short_bytes(counter, limit, max_hex):
     return ",".join(parts)
 
 
-def load_synthetic_spans(path):
+def synthetic_bucket():
+    return {
+        "events": 0,
+        "sources": Counter(),
+        "targets": Counter(),
+        "deltas": Counter(),
+        "statuses": Counter(),
+        "sites": Counter(),
+        "bytes": Counter(),
+        "tail_lift": {},
+    }
+
+
+def load_synthetic_spans(path, tail_lift_path=None):
     spans = {}
     if not path:
         return spans
@@ -114,15 +127,7 @@ def load_synthetic_spans(path):
         start = normalize_vm_ip(row.get("start_vm_ip", ""))
         if not start:
             continue
-        bucket = spans.setdefault(start, {
-            "events": 0,
-            "sources": Counter(),
-            "targets": Counter(),
-            "deltas": Counter(),
-            "statuses": Counter(),
-            "sites": Counter(),
-            "bytes": Counter(),
-        })
+        bucket = spans.setdefault(start, synthetic_bucket())
         bucket["events"] += 1
         for field, name in (
             ("source_entry", "sources"),
@@ -135,6 +140,12 @@ def load_synthetic_spans(path):
             value = row.get(field, "")
             if value:
                 bucket[name][value] += 1
+    if tail_lift_path and Path(tail_lift_path).exists():
+        for row in read_tsv(tail_lift_path):
+            start = normalize_vm_ip(row.get("start_vm_ip", ""))
+            if not start:
+                continue
+            spans.setdefault(start, synthetic_bucket())["tail_lift"] = row
     return spans
 
 
@@ -259,6 +270,15 @@ def emit_synthetic_edge(edge, synthetic_spans, args):
     )
     if sites or byte_variants:
         print(f"    /* synthetic sites={c_comment(sites)}; bytes={c_comment(byte_variants)} */")
+    tail_lift = info.get("tail_lift") or {}
+    if tail_lift:
+        print(
+            f"    /* synthetic tail lift: encoded={tail_lift.get('target_encoded_events', '0')}/"
+            f"{tail_lift.get('events', '0')}, schemas={c_comment(tail_lift.get('tail_schemas', '') or '-')}, "
+            f"offsets={c_comment(tail_lift.get('target_match_offsets', '') or '-')}, "
+            f"classes={c_comment(tail_lift.get('lift_classes', '') or '-')}, "
+            f"tails={c_comment(tail_lift.get('top_tail_hexes', '') or '-')} */"
+        )
     if target is not None:
         print(f"    next_entry = {target};")
     try:
@@ -333,6 +353,7 @@ def main():
     parser.add_argument("--rows-per-block", type=int, default=24)
     parser.add_argument("--max-expr-len", type=int, default=220)
     parser.add_argument("--synthetic-trace", default="dumps/vmtail-wide-1m-w16/vm_instruction_trace_filefill_hiddenfill_frontierfill_footprintfill.tsv")
+    parser.add_argument("--synthetic-tail-lift", default="dumps/vmtail-wide-1m-w16/vm_synthetic_tail_lift.tsv")
     parser.add_argument("--synthetic-top-items", type=int, default=4)
     parser.add_argument("--synthetic-max-bytes", type=int, default=48)
     parser.add_argument("--start", action="append", default=[])
@@ -343,7 +364,7 @@ def main():
     chosen = selected_blocks(blocks, args)
     rows_by_block = map_rows_to_blocks(load_rows(args.ir), blocks)
     edges = load_edges(args.edges)
-    synthetic_spans = load_synthetic_spans(args.synthetic_trace)
+    synthetic_spans = load_synthetic_spans(args.synthetic_trace, args.synthetic_tail_lift)
 
     emit_preamble()
     print("extern void vm_unresolved_synthetic_tail(VMState *vm, uint64_t vm_ip);")
