@@ -406,6 +406,29 @@ def load_focused_sequence_audits(path):
     return audits
 
 
+def load_observed_chain_bridges(path):
+    bridges = defaultdict(list)
+    if not path or not Path(path).exists():
+        return bridges
+    for row in read_tsv(path):
+        start = normalize_vm_ip(row.get("synthetic_start_vm_ip", ""))
+        if start:
+            bridges[start].append(row)
+    action_rank = {
+        "hard_cfg": 0,
+        "disabled_observed_chain_bridge": 1,
+    }
+    for rows in bridges.values():
+        rows.sort(
+            key=lambda row: (
+                action_rank.get(row.get("bridge_action", ""), 9),
+                row.get("observed_chain_bridge_class", ""),
+                normalize_vm_ip(row.get("terminal_dest_vm_ip", "")),
+            )
+        )
+    return bridges
+
+
 def resolved_hidden_chain(target_vm_ip, hidden_chains):
     start = normalize_vm_ip(target_vm_ip)
     for row in hidden_chains.get(start, []):
@@ -975,6 +998,62 @@ def emit_focused_sequence_audit_comments(target_vm_ip, focused_sequence_audits, 
         print(f"    /* ... {omitted} additional focused sequence rows omitted ... */")
 
 
+def emit_observed_chain_bridge_comments(target_vm_ip, observed_chain_bridges, args):
+    start = normalize_vm_ip(target_vm_ip)
+    rows = observed_chain_bridges.get(start, [])
+    if not rows:
+        return
+    limit = getattr(args, "observed_chain_bridge_top_items", 4)
+    shown = rows if limit <= 0 else rows[:limit]
+    max_expr = getattr(args, "observed_chain_bridge_max_expr", 220)
+    print(
+        f"    /* observed-chain bridge audit @ {start}: rows={len(rows)}; "
+        "focused residual chain evidence; chain rows are comment-only until indirect tail hops are statically replayed. */"
+    )
+    for row in shown:
+        first_hop = "-"
+        if row.get("first_hop_vm_ip", ""):
+            target = row.get("first_hop_target_entry", "") or "?"
+            first_hop = (
+                f"{row.get('first_hop_kind', '-')}"
+                f"@{normalize_vm_ip(row.get('first_hop_vm_ip', ''))}"
+                f"/{row.get('first_hop_delta', '-')}"
+                f"->entry_{target}"
+            )
+        terminal = "-"
+        if row.get("terminal_dest_vm_ip", ""):
+            terminal = (
+                f"{row.get('terminal_dest_block', '-')}"
+                f"@{normalize_vm_ip(row.get('terminal_dest_vm_ip', ''))}"
+                f"/entry_{row.get('terminal_dest_entry', '-')}"
+            )
+        primary = "-"
+        if row.get("primary_dynamic_next_end_vm_ip", ""):
+            primary = (
+                f"entry_{row.get('primary_dynamic_next_source_entry', '-')}"
+                f"@{normalize_vm_ip(row.get('primary_dynamic_next_source_start_vm_ip', ''))}"
+                f"->{normalize_vm_ip(row.get('primary_dynamic_next_end_vm_ip', ''))}"
+                f"/{row.get('primary_dynamic_dest_block', '-')}"
+            )
+        following = row.get("following_residual_start", "") or "-"
+        print(
+            f"    /* observed-chain bridge: source={row.get('source_entry', '?')}, "
+            f"missing_successor={normalize_vm_ip(row.get('missing_successor_vm_ip', ''))}, "
+            f"first_hop={c_comment(first_hop)}, "
+            f"following_residual={c_comment(following)}, "
+            f"chain={c_comment(clip(row.get('chain_path', '') or '-', max_expr))}, "
+            f"terminal={c_comment(terminal)}, "
+            f"class={c_comment(row.get('observed_chain_bridge_class', '') or '-')}, "
+            f"action={c_comment(row.get('bridge_action', '') or '-')}, "
+            f"primary={c_comment(primary)}, "
+            f"relation={c_comment(row.get('primary_vs_focused_first_hop', '') or '-')}, "
+            f"blocker={c_comment(clip(row.get('promotion_blocker', '') or '-', max_expr))} */"
+        )
+    omitted = len(rows) - len(shown)
+    if omitted > 0:
+        print(f"    /* ... {omitted} additional observed-chain bridge rows omitted ... */")
+
+
 def matching_final_tail_probe(row, final_tail_site_probes):
     source = row.get("source_entry", "")
     final_site = normalize_vm_ip(row.get("final_tail_site", ""))
@@ -1327,7 +1406,7 @@ def emit_preamble():
     print("")
 
 
-def emit_synthetic_edge(edge, synthetic_spans, dynamic_stitches, transfer_probes, symbolic_successors, hidden_chains, residual_audits, concrete_state_audits, live_context_audits, table_read_diagnostics, table_memory_probes, runtime_table_memory_probes, sampled_control_correlations, focused_direct_trace_audits, focused_sequence_audits, live_in_roles, live_in_reentries, allstatic_reentries, final_tail_site_probes, args):
+def emit_synthetic_edge(edge, synthetic_spans, dynamic_stitches, transfer_probes, symbolic_successors, hidden_chains, residual_audits, concrete_state_audits, live_context_audits, table_read_diagnostics, table_memory_probes, runtime_table_memory_probes, sampled_control_correlations, focused_direct_trace_audits, focused_sequence_audits, observed_chain_bridges, live_in_roles, live_in_reentries, allstatic_reentries, final_tail_site_probes, args):
     target_vm_ip = normalize_vm_ip(edge.get("target_vm_ip", ""))
     chain = resolved_hidden_chain(target_vm_ip, hidden_chains)
     info = synthetic_spans.get(target_vm_ip)
@@ -1345,6 +1424,7 @@ def emit_synthetic_edge(edge, synthetic_spans, dynamic_stitches, transfer_probes
         emit_sampled_control_correlation_comments(target_vm_ip, sampled_control_correlations, args)
         emit_focused_direct_trace_audit_comments(target_vm_ip, focused_direct_trace_audits, args)
         emit_focused_sequence_audit_comments(target_vm_ip, focused_sequence_audits, args)
+        emit_observed_chain_bridge_comments(target_vm_ip, observed_chain_bridges, args)
         emit_live_in_role_comments(target_vm_ip, live_in_roles, final_tail_site_probes, args)
         emit_live_in_reentry_comments(target_vm_ip, live_in_reentries, args)
         emit_allstatic_reentry_comments(target_vm_ip, allstatic_reentries, args)
@@ -1406,6 +1486,7 @@ def emit_synthetic_edge(edge, synthetic_spans, dynamic_stitches, transfer_probes
     emit_sampled_control_correlation_comments(target_vm_ip, sampled_control_correlations, args)
     emit_focused_direct_trace_audit_comments(target_vm_ip, focused_direct_trace_audits, args)
     emit_focused_sequence_audit_comments(target_vm_ip, focused_sequence_audits, args)
+    emit_observed_chain_bridge_comments(target_vm_ip, observed_chain_bridges, args)
     emit_live_in_role_comments(target_vm_ip, live_in_roles, final_tail_site_probes, args)
     emit_live_in_reentry_comments(target_vm_ip, live_in_reentries, args)
     if chain:
@@ -1469,7 +1550,7 @@ def emit_block_prototypes(blocks):
     print("")
 
 
-def emit_block(block, rows, edge, synthetic_spans, dynamic_stitches, transfer_probes, symbolic_successors, hidden_chains, residual_audits, concrete_state_audits, live_context_audits, table_read_diagnostics, table_memory_probes, runtime_table_memory_probes, sampled_control_correlations, focused_direct_trace_audits, focused_sequence_audits, live_in_roles, live_in_reentries, allstatic_reentries, final_tail_site_probes, tail_lifts, args, known_blocks, block_by_start):
+def emit_block(block, rows, edge, synthetic_spans, dynamic_stitches, transfer_probes, symbolic_successors, hidden_chains, residual_audits, concrete_state_audits, live_context_audits, table_read_diagnostics, table_memory_probes, runtime_table_memory_probes, sampled_control_correlations, focused_direct_trace_audits, focused_sequence_audits, observed_chain_bridges, live_in_roles, live_in_reentries, allstatic_reentries, final_tail_site_probes, tail_lifts, args, known_blocks, block_by_start):
     name = c_block_name(block["block"])
     print(f"static void {name}(VMState *vm) {{")
     print("    int next_entry = -1;")
@@ -1506,7 +1587,7 @@ def emit_block(block, rows, edge, synthetic_spans, dynamic_stitches, transfer_pr
             else:
                 print("    /* target block is outside this selected sketch. */")
         elif edge_kind == "covered_synthetic_fallthrough":
-            emit_synthetic_edge(edge, synthetic_spans, dynamic_stitches, transfer_probes, symbolic_successors, hidden_chains, residual_audits, concrete_state_audits, live_context_audits, table_read_diagnostics, table_memory_probes, runtime_table_memory_probes, sampled_control_correlations, focused_direct_trace_audits, focused_sequence_audits, live_in_roles, live_in_reentries, allstatic_reentries, final_tail_site_probes, args)
+            emit_synthetic_edge(edge, synthetic_spans, dynamic_stitches, transfer_probes, symbolic_successors, hidden_chains, residual_audits, concrete_state_audits, live_context_audits, table_read_diagnostics, table_memory_probes, runtime_table_memory_probes, sampled_control_correlations, focused_direct_trace_audits, focused_sequence_audits, observed_chain_bridges, live_in_roles, live_in_reentries, allstatic_reentries, final_tail_site_probes, args)
             target_block, target_vm_ip = synthetic_successor(edge, synthetic_spans, hidden_chains, block_by_start)
             if target_block is not None:
                 print(f"    /* synthetic successor after lifted delta: {c_block_name(target_block)} @ 0x{target_vm_ip:x}; */")
@@ -1558,6 +1639,7 @@ def main():
     parser.add_argument("--synthetic-gap-sampled-control-correlation", default="dumps/vmtail-wide-1m-w16/vm_synthetic_gap_sampled_control_correlation.tsv")
     parser.add_argument("--synthetic-gap-focused-direct-trace-audit", default="dumps/vmtail-wide-1m-w16/vm_synthetic_gap_focused_direct_trace_audit.tsv")
     parser.add_argument("--synthetic-gap-focused-sequence-audit", default="dumps/vmtail-wide-1m-w16/vm_synthetic_gap_focused_sequence_audit.tsv")
+    parser.add_argument("--synthetic-gap-observed-chain-bridge", default="dumps/vmtail-wide-1m-w16/vm_synthetic_gap_observed_chain_bridge.tsv")
     parser.add_argument("--synthetic-gap-live-in-roles", default="dumps/vmtail-wide-1m-w16/vm_synthetic_gap_live_in_roles.tsv")
     parser.add_argument("--synthetic-gap-live-in-reentry-probe", default="dumps/vmtail-wide-1m-w16/vm_synthetic_gap_live_in_reentry_probe.tsv")
     parser.add_argument("--synthetic-gap-allstatic-reentry-probe", default="dumps/vmtail-wide-1m-w16/vm_synthetic_gap_allstatic_reentry_probe.tsv")
@@ -1588,6 +1670,8 @@ def main():
     parser.add_argument("--focused-direct-trace-audit-max-expr", type=int, default=180)
     parser.add_argument("--focused-sequence-audit-top-items", type=int, default=4)
     parser.add_argument("--focused-sequence-audit-max-expr", type=int, default=180)
+    parser.add_argument("--observed-chain-bridge-top-items", type=int, default=4)
+    parser.add_argument("--observed-chain-bridge-max-expr", type=int, default=220)
     parser.add_argument("--live-in-role-top-items", type=int, default=4)
     parser.add_argument("--live-in-role-max-expr", type=int, default=220)
     parser.add_argument("--live-in-reentry-top-items", type=int, default=4)
@@ -1616,6 +1700,7 @@ def main():
     sampled_control_correlations = load_sampled_control_correlations(args.synthetic_gap_sampled_control_correlation)
     focused_direct_trace_audits = load_focused_direct_trace_audits(args.synthetic_gap_focused_direct_trace_audit)
     focused_sequence_audits = load_focused_sequence_audits(args.synthetic_gap_focused_sequence_audit)
+    observed_chain_bridges = load_observed_chain_bridges(args.synthetic_gap_observed_chain_bridge)
     live_in_roles = load_live_in_roles(args.synthetic_gap_live_in_roles)
     live_in_reentries = load_live_in_reentries(args.synthetic_gap_live_in_reentry_probe)
     allstatic_reentries = load_allstatic_reentries(args.synthetic_gap_allstatic_reentry_probe)
@@ -1647,6 +1732,7 @@ def main():
             sampled_control_correlations,
             focused_direct_trace_audits,
             focused_sequence_audits,
+            observed_chain_bridges,
             live_in_roles,
             live_in_reentries,
             allstatic_reentries,
