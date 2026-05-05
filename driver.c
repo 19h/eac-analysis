@@ -25,7 +25,8 @@ enum {
     EAC_MAX_SCRATCH_OFFSETS = 64,
     EAC_MAX_READ_RANGES = 512,
     EAC_MAX_FOCUS_IPS = 128,
-    EAC_MAX_FOCUS_SITES = 128
+    EAC_MAX_FOCUS_SITES = 128,
+    EAC_MAX_PROBE_SITES = 128
 };
 
 enum tail_reg {
@@ -58,6 +59,12 @@ struct read_range {
     uintptr_t end;
 };
 
+struct probe_site {
+    uintptr_t off;
+    uint8_t original_byte;
+    uint64_t count;
+};
+
 static uint8_t *g_eac_base;
 static uint64_t g_dispatch_counts[EAC_MAX_DISPATCH_SITES];
 static uint64_t g_dispatch_limit = 4096;
@@ -87,6 +94,13 @@ static uint16_t g_scratch_offsets[EAC_MAX_SCRATCH_OFFSETS];
 static size_t g_scratch_offset_count;
 static struct read_range g_read_ranges[EAC_MAX_READ_RANGES];
 static size_t g_read_range_count;
+static int g_probe_trace;
+static uint64_t g_probe_limit = 4096;
+static uint64_t g_probe_hits;
+static uint64_t g_probe_stop_after_matches;
+static struct probe_site g_probe_sites[EAC_MAX_PROBE_SITES];
+static size_t g_probe_site_count;
+static int g_probe_stepping = -1;
 
 static const struct tail_site g_default_tail_sites[] = {
     {0x8173b, TAIL_REG_RAX},
@@ -251,6 +265,42 @@ static void parse_dispatch_sites(const char *spec, int focus_only) {
             }
         } else if (add_dispatch_site((uintptr_t)off) != 0) {
             fprintf(stderr, "[DRIVER] ignoring dispatch site 0x%lx\n", off);
+        }
+        p = end;
+        while (*p != '\0' && *p != ',') ++p;
+    }
+}
+
+static int add_probe_site(uintptr_t off) {
+    if (off == 0) return -1;
+    for (size_t i = 0; i < g_probe_site_count; ++i) {
+        if (g_probe_sites[i].off == off) return 0;
+    }
+    if (g_probe_site_count >= EAC_MAX_PROBE_SITES) return -1;
+    g_probe_sites[g_probe_site_count].off = off;
+    g_probe_sites[g_probe_site_count].original_byte = 0;
+    g_probe_sites[g_probe_site_count].count = 0;
+    g_probe_site_count++;
+    return 0;
+}
+
+static void parse_probe_sites(const char *spec) {
+    if (spec == NULL || *spec == '\0') return;
+    const char *p = spec;
+    while (*p != '\0') {
+        while (*p == ' ' || *p == '\t' || *p == ',') ++p;
+        if (*p == '\0') break;
+
+        errno = 0;
+        char *end = NULL;
+        unsigned long off = strtoul(p, &end, 0);
+        if (errno != 0 || end == p) {
+            fprintf(stderr, "[DRIVER] ignoring malformed probe site near '%s'\n", p);
+            while (*p != '\0' && *p != ',') ++p;
+            continue;
+        }
+        if (add_probe_site((uintptr_t)off) != 0) {
+            fprintf(stderr, "[DRIVER] ignoring probe site 0x%lx\n", off);
         }
         p = end;
         while (*p != '\0' && *p != ',') ++p;
@@ -624,6 +674,60 @@ static char *append_gpr_mems(char *p, char *end, const ucontext_t *uc) {
 }
 #endif
 
+static char *append_probe_stack(char *p, char *end, uintptr_t rsp) {
+    static const uintptr_t offsets[] = {
+        0x00, 0x08, 0x10, 0x18, 0x20, 0x28, 0x80, 0x88, 0x90
+    };
+    for (size_t i = 0; i < sizeof(offsets) / sizeof(offsets[0]); ++i) {
+        uint64_t value = 0;
+        p = append_lit(p, end, " sp");
+        p = append_hex(p, end, offsets[i]);
+        p = append_lit(p, end, "=");
+        if (read_mapped_u64(rsp + offsets[i], &value)) {
+            p = append_hex(p, end, value);
+        } else {
+            p = append_lit(p, end, "?");
+        }
+    }
+    return p;
+}
+
+#if defined(__x86_64__)
+static void probe_trace_write(size_t idx, uintptr_t site, const ucontext_t *uc) {
+    uint64_t count = __atomic_fetch_add(&g_probe_sites[idx].count, 1, __ATOMIC_RELAXED);
+    if (count >= g_probe_limit) return;
+
+    char buf[8192];
+    char *p = buf;
+    char *end = buf + sizeof(buf) - 1;
+    uintptr_t rsp = (uintptr_t)uc->uc_mcontext.gregs[REG_RSP];
+    p = append_lit(p, end, "[PROBE] site=");
+    p = append_hex(p, end, site);
+    p = append_lit(p, end, " count=");
+    p = append_dec(p, end, count + 1);
+    p = append_gprs(p, end, uc);
+    p = append_probe_stack(p, end, rsp);
+    p = append_lit(p, end, "\n");
+    write(STDERR_FILENO, buf, (size_t)(p - buf));
+
+    if (g_probe_stop_after_matches != 0) {
+        uint64_t hits = __atomic_add_fetch(&g_probe_hits, 1, __ATOMIC_RELAXED);
+        if (hits >= g_probe_stop_after_matches) {
+            char stop_buf[160];
+            char *q = stop_buf;
+            char *stop_end = stop_buf + sizeof(stop_buf) - 1;
+            q = append_lit(q, stop_end, "[DRIVER] PROBE stop hits=");
+            q = append_dec(q, stop_end, hits);
+            q = append_lit(q, stop_end, " site=");
+            q = append_hex(q, stop_end, site);
+            q = append_lit(q, stop_end, "\n");
+            write(STDERR_FILENO, stop_buf, (size_t)(q - stop_buf));
+            _exit(0);
+        }
+    }
+}
+#endif
+
 static void dispatch_trace_write(size_t idx, uintptr_t site, uintptr_t slot,
                                  uintptr_t index, uintptr_t target,
                                  uintptr_t frame, uint64_t vm_ip,
@@ -906,17 +1010,21 @@ static void dispatch_sigtrap(int sig, siginfo_t *info, void *opaque) {
 #endif
 }
 
-static int patch_dispatch_byte(uint8_t *addr) {
+static int write_code_byte(uint8_t *addr, uint8_t value, const char *label) {
     long page_size = sysconf(_SC_PAGESIZE);
     if (page_size <= 0) page_size = 4096;
     uintptr_t page = (uintptr_t)addr & ~((uintptr_t)page_size - 1u);
     if (mprotect((void *)page, (size_t)page_size, PROT_READ | PROT_WRITE | PROT_EXEC) != 0) {
-        fprintf(stderr, "[DRIVER] dispatch mprotect %p failed: %s\n", (void *)addr, strerror(errno));
+        fprintf(stderr, "[DRIVER] %s mprotect %p failed: %s\n", label, (void *)addr, strerror(errno));
         return -1;
     }
-    *addr = 0xcc;
+    *addr = value;
     __builtin___clear_cache((char *)addr, (char *)addr + 1);
     return 0;
+}
+
+static int patch_dispatch_byte(uint8_t *addr) {
+    return write_code_byte(addr, 0xcc, "dispatch");
 }
 
 static void install_dispatch_trace(void *sym) {
