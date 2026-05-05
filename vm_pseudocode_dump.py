@@ -279,7 +279,7 @@ def emit_block(block, rows, edge, synthetic_spans, args):
         f"rows={block['row_count']}, events={block['events']}, terminal={block['terminal_kind']} */"
     )
     print(f"    /* hot source entries: {c_comment(block.get('source_entries', ''))} */")
-    shown = rows[:args.rows_per_block]
+    shown = rows if args.rows_per_block <= 0 else rows[:args.rows_per_block]
     for row in shown:
         for line in row_to_c(row, args.max_expr_len):
             print(line)

@@ -202,7 +202,7 @@ def emit_block(block, rows, edge, synthetic_spans, args):
         f"rows={block['row_count']}, events={block['events']}, terminal={block['terminal_kind']} */"
     )
     print(f"    /* hot source entries: {c_comment(block.get('source_entries', ''))} */")
-    shown = rows[:args.rows_per_block]
+    shown = rows if args.rows_per_block <= 0 else rows[:args.rows_per_block]
     for row in shown:
         if row.get("row_kind") == "exact_instruction":
             emit_exact_call(row)
@@ -242,7 +242,9 @@ def emit_dispatch(blocks):
 def collect_used_entries(blocks, rows_by_block, rows_per_block, edges, synthetic_spans):
     used = set()
     for block in blocks:
-        for row in rows_by_block.get(block["block"], [])[:rows_per_block]:
+        rows = rows_by_block.get(block["block"], [])
+        shown = rows if rows_per_block <= 0 else rows[:rows_per_block]
+        for row in shown:
             entry = row.get("source_entry", "")
             try:
                 used.add(int(entry))
