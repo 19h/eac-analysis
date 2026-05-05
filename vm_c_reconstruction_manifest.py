@@ -1334,7 +1334,11 @@ def synthetic_gap_sampled_ret_patch_probe_metrics(rows):
         for row in probe_rows
     )
     patched_targets = sorted({
-        f"entry_{row.get('source_entry')}:{row.get('synthetic_start_vm_ip')}:{row.get('patched_ret_eac_off')}"
+        (
+            f"entry_{row.get('source_entry')}:{row.get('synthetic_start_vm_ip')}:"
+            f"{row.get('patched_ret_eac_off')}"
+            f"{'->' + row.get('patched_ret2_eac_off') if row.get('patched_ret2_eac_off', '') else ''}"
+        )
         for row in probe_rows
         if row.get("patched_ret_eac_off", "")
     }, key=lambda value: (
