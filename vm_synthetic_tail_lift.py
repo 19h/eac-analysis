@@ -68,10 +68,45 @@ def target_offset_key(data, target_entry):
     return f"{target_entry}@{','.join(offsets)}"
 
 
+def load_long_control_overlaps(path):
+    overlaps = {}
+    if not path:
+        return overlaps
+    try:
+        rows = read_tsv(path)
+    except FileNotFoundError:
+        return overlaps
+    for row in rows:
+        source = row.get("source_entry", "")
+        target = row.get("target_entry", "")
+        delta = row.get("delta", "")
+        lifted = row.get("lifted_ir", "")
+        byte_statuses = row.get("byte_statuses", "")
+        if not source or not target or not delta:
+            continue
+        label = f"{source}->{target}/{delta}"
+        if lifted:
+            label += f" ({lifted})"
+        if byte_statuses:
+            label += f" [{byte_statuses}]"
+        for start in (row.get("start_ips", "") or "").split(","):
+            start = normalize_vm_ip(start.strip())
+            if start:
+                overlaps.setdefault(start, []).append({
+                    "source": source,
+                    "target": target,
+                    "delta": delta,
+                    "lifted": lifted,
+                    "label": label,
+                })
+    return overlaps
+
+
 def make_rows(args):
     transition = load_by(args.transition_model, "entry")
     microcode = load_by(args.microcode, "entry")
     tail_ip_advances = load_tail_ip_advances(args.handler_table, args.eac, args.tail_window)
+    long_control_overlaps = load_long_control_overlaps(args.long_branches)
     lifts = {}
 
     for row in read_tsv(args.trace):
@@ -100,10 +135,12 @@ def make_rows(args):
             continue
 
         start = normalize_vm_ip(row.get("start_vm_ip", ""))
+        overlap_rows = long_control_overlaps.get(start, [])
         bucket = lifts.setdefault(start, {
             "events": 0,
             "target_encoded_events": 0,
             "schema_events": 0,
+            "long_control_overlap_events": 0,
             "sources": Counter(),
             "targets": Counter(),
             "statuses": Counter(),
@@ -116,6 +153,9 @@ def make_rows(args):
             "motifs": Counter(),
             "tails": Counter(),
             "lift_classes": Counter(),
+            "long_control_overlaps": Counter(),
+            "long_control_targets": Counter(),
+            "long_control_deltas": Counter(),
         })
         bucket["events"] += 1
         if source_entry:
@@ -141,6 +181,13 @@ def make_rows(args):
             bucket["target_offsets"][offsets] += 1
             bucket["target_encoded_events"] += 1
             bucket["lift_classes"]["target_encoded_tail"] += 1
+        elif overlap_rows:
+            bucket["long_control_overlap_events"] += 1
+            bucket["lift_classes"]["long_control_overlap"] += 1
+            for overlap in overlap_rows:
+                bucket["long_control_overlaps"][overlap["label"]] += 1
+                bucket["long_control_targets"][overlap["target"]] += 1
+                bucket["long_control_deltas"][overlap["delta"]] += 1
         elif schema:
             bucket["lift_classes"]["schema_without_target_match"] += 1
         elif target_entry:
@@ -157,6 +204,7 @@ def make_rows(args):
             "events": str(bucket["events"]),
             "target_encoded_events": str(bucket["target_encoded_events"]),
             "schema_events": str(bucket["schema_events"]),
+            "long_control_overlap_events": str(bucket["long_control_overlap_events"]),
             "source_entries": str(len(bucket["sources"])),
             "target_entries": str(len(bucket["targets"])),
             "top_sources": fmt_counter(bucket["sources"], args.max_items),
@@ -170,6 +218,9 @@ def make_rows(args):
             "target_match_offsets": fmt_counter(bucket["target_offsets"], args.max_items),
             "tail_motifs": fmt_counter(bucket["motifs"], args.max_items),
             "lift_classes": fmt_counter(bucket["lift_classes"], args.max_items),
+            "long_control_overlaps": fmt_counter(bucket["long_control_overlaps"], args.max_items),
+            "long_control_targets": fmt_counter(bucket["long_control_targets"], args.max_items),
+            "long_control_deltas": fmt_counter(bucket["long_control_deltas"], args.max_items),
             "top_tail_hexes": short_hex(bucket["tails"], args.max_items, args.max_tail_hex),
         })
 
@@ -183,6 +234,7 @@ def emit_tsv(rows):
         "events",
         "target_encoded_events",
         "schema_events",
+        "long_control_overlap_events",
         "source_entries",
         "target_entries",
         "top_sources",
@@ -196,6 +248,9 @@ def emit_tsv(rows):
         "target_match_offsets",
         "tail_motifs",
         "lift_classes",
+        "long_control_overlaps",
+        "long_control_targets",
+        "long_control_deltas",
         "top_tail_hexes",
     ]
     writer = csv.DictWriter(sys.stdout, fieldnames=fields, delimiter="\t", lineterminator="\n")
@@ -207,12 +262,13 @@ def emit_tsv(rows):
 def emit_markdown(rows, args):
     print("# VM Synthetic Tail Lift\n")
     print(f"Top {min(args.limit, len(rows))} synthetic VM IPs with unresolved suffix bytes.\n")
-    print("| Events | VM IP | Encoded | Schemas | Targets | Offsets | Classes | Tails |")
-    print("| ---: | ---: | ---: | --- | --- | --- | --- | --- |")
+    print("| Events | VM IP | Encoded | LongCtl | Schemas | Targets | Offsets | Classes | Tails |")
+    print("| ---: | ---: | ---: | ---: | --- | --- | --- | --- | --- |")
     for row in rows[:args.limit]:
         print(
             f"| {row['events']} | `{row['start_vm_ip']}` | "
             f"{row['target_encoded_events']}/{row['events']} | "
+            f"{row['long_control_overlap_events']}/{row['events']} | "
             f"`{row['tail_schemas'] or '-'}` | `{row['top_targets'] or '-'}` | "
             f"`{row['target_match_offsets'] or '-'}` | `{row['lift_classes']}` | "
             f"`{row['top_tail_hexes']}` |"
@@ -230,6 +286,7 @@ def main():
     parser.add_argument("--transition-model", default="dumps/vmtail-wide-1m-w16/vm_transition_model.tsv")
     parser.add_argument("--microcode", default="dumps/vmtail-wide-1m-w16/vm_microcode_catalog.tsv")
     parser.add_argument("--handler-table", default="dumps/vmtail-wide-1m-w16/vm_handler_table.tsv")
+    parser.add_argument("--long-branches", default="dumps/vmtail-wide-1m-w16/vm_long_branch_catalog.tsv")
     parser.add_argument("--eac", default="eac.elf")
     parser.add_argument("--tail-window", type=lambda value: int(value, 0), default=0x80)
     parser.add_argument("--max-items", type=int, default=6)
@@ -247,9 +304,11 @@ def main():
     events = sum(int(row["events"]) for row in rows)
     encoded = sum(int(row["target_encoded_events"]) for row in rows)
     schemas = sum(int(row["schema_events"]) for row in rows)
+    overlaps = sum(int(row["long_control_overlap_events"]) for row in rows)
     print(
         f"synthetic_tail_lift_ips={len(rows)} events={events} "
-        f"target_encoded_events={encoded} schema_events={schemas}",
+        f"target_encoded_events={encoded} schema_events={schemas} "
+        f"long_control_overlap_events={overlaps}",
         file=sys.stderr,
     )
 

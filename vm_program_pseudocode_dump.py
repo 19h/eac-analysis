@@ -210,6 +210,13 @@ def emit_synthetic_edge(edge, synthetic_spans, args):
             f"classes={c_comment(tail_lift.get('lift_classes', '') or '-')}, "
             f"tails={c_comment(tail_lift.get('top_tail_hexes', '') or '-')} */"
         )
+        if tail_lift.get("long_control_overlaps"):
+            print(
+                f"    /* overlapping long-control span: "
+                f"{c_comment(tail_lift.get('long_control_overlaps', ''))}; "
+                f"targets={c_comment(tail_lift.get('long_control_targets', '') or '-')}; "
+                f"deltas={c_comment(tail_lift.get('long_control_deltas', '') or '-')} */"
+            )
     if source is not None:
         print(f"    r = {op_name(source)}(vm);")
     tail_expr = tail_target_load(tail_lift, after_prefix=source is not None)
