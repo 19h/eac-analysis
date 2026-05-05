@@ -57,6 +57,8 @@ ARTIFACTS = [
     ("synthetic_gap_unresolved_family_audit_md", TRACE_DIR / "vm_synthetic_gap_unresolved_family_audit.md"),
     ("synthetic_gap_source299_context_probe_tsv", TRACE_DIR / "vm_synthetic_gap_source299_context_probe.tsv"),
     ("synthetic_gap_source299_context_probe_md", TRACE_DIR / "vm_synthetic_gap_source299_context_probe.md"),
+    ("synthetic_gap_source299_ret_patch_probe_tsv", TRACE_DIR / "vm_synthetic_gap_source299_ret_patch_probe.tsv"),
+    ("synthetic_gap_source299_ret_patch_probe_md", TRACE_DIR / "vm_synthetic_gap_source299_ret_patch_probe.md"),
     ("synthetic_gap_live_snapshot_transfer_probe_tsv", TRACE_DIR / "vm_synthetic_gap_live_snapshot_transfer_probe.tsv"),
     ("synthetic_gap_live_snapshot_transfer_probe_md", TRACE_DIR / "vm_synthetic_gap_live_snapshot_transfer_probe.md"),
     ("synthetic_gap_live_table_evidence_tsv", TRACE_DIR / "vm_synthetic_gap_live_table_evidence.tsv"),
@@ -221,6 +223,10 @@ def c_shape_metrics(rows):
         "Per-live-row table-offset file/runtime evidence sites carried into the full program sketch.")
     add(rows, "c_shape", "program_full_live_table_evidence_comments", count(r"live table evidence: source=", program_full),
         "Per-live-row table-offset evidence comments carried into the full program sketch.")
+    add(rows, "c_shape", "program_full_source299_ret_patch_probe_sites", count(r"source299 ret-patch probe @", program_full),
+        "Source-299 native return-patch evidence sites carried into the full program sketch.")
+    add(rows, "c_shape", "program_full_source299_ret_patch_probe_comments", count(r"source299 ret-patch: run=", program_full),
+        "Per-run source-299 native return-patch comments carried into the full program sketch.")
     add(rows, "c_shape", "program_full_sampled_control_correlation_sites", count(r"sampled-control correlation @", program_full),
         "Residual sampled-control correlation sites carried into the full program sketch.")
     add(rows, "c_shape", "program_full_sampled_control_correlation_comments", count(r"sampled-control correlation: source=", program_full),
@@ -315,6 +321,10 @@ def c_shape_metrics(rows):
         "Per-live-row table-offset file/runtime evidence sites carried into the combined source bundle.")
     add(rows, "c_shape", "bundle_live_table_evidence_comments", count(r"live table evidence: source=", bundle),
         "Per-live-row table-offset evidence comments carried into the combined source bundle.")
+    add(rows, "c_shape", "bundle_source299_ret_patch_probe_sites", count(r"source299 ret-patch probe @", bundle),
+        "Source-299 native return-patch evidence sites carried into the combined source bundle.")
+    add(rows, "c_shape", "bundle_source299_ret_patch_probe_comments", count(r"source299 ret-patch: run=", bundle),
+        "Per-run source-299 native return-patch comments carried into the combined source bundle.")
     add(rows, "c_shape", "bundle_sampled_control_correlation_sites", count(r"sampled-control correlation @", bundle),
         "Residual sampled-control correlation sites carried into the combined source bundle.")
     add(rows, "c_shape", "bundle_sampled_control_correlation_comments", count(r"sampled-control correlation: source=", bundle),
@@ -1240,6 +1250,59 @@ def synthetic_gap_source299_context_probe_metrics(rows):
         "Concrete source-299 slot offsets that still reject as dispatch-table pointers.")
 
 
+def synthetic_gap_source299_ret_patch_probe_metrics(rows):
+    probe_rows = read_tsv(TRACE_DIR / "vm_synthetic_gap_source299_ret_patch_probe.tsv")
+    starts = Counter(row.get("synthetic_start_vm_ip", "") for row in probe_rows)
+    families = Counter(row.get("family_id", "") for row in probe_rows)
+    seed_mix = Counter(row.get("seed_quality", "") for row in probe_rows)
+    relation_mix = Counter(row.get("ret_patch_relation", "") for row in probe_rows)
+    interpretation_mix = Counter(row.get("interpretation", "") for row in probe_rows)
+    section_mix = Counter(row.get("patched_ret_section", "") for row in probe_rows)
+    base_source_mix = Counter(
+        "mapped_frame_qword" if row.get("ret_patch_base_source", "").startswith("postcall_map_") else "inferred_image_base"
+        for row in probe_rows
+    )
+    patched_targets = sorted({
+        f"{row.get('synthetic_start_vm_ip')}:{row.get('patched_ret_eac_off')}"
+        for row in probe_rows
+        if row.get("patched_ret_eac_off", "")
+    }, key=lambda value: (int(value.split(":", 1)[0] or "0", 16), value))
+    direct_base_rows = [
+        row.get("synthetic_start_vm_ip", "")
+        for row in probe_rows
+        if row.get("ret_patch_base_source", "").startswith("postcall_map_")
+    ]
+
+    add(rows, "gap_source299_ret_patch", "synthetic_gap_source299_ret_patch_probe_rows", len(probe_rows),
+        "Live source-299 residual events decoded as native return-patch control transfers.")
+    add(rows, "gap_source299_ret_patch", "synthetic_gap_source299_ret_patch_probe_starts", len(starts),
+        "Distinct source-299 residual VM starts represented by the return-patch probe.")
+    add(rows, "gap_source299_ret_patch", "synthetic_gap_source299_ret_patch_probe_family_mix",
+        ",".join(f"{key}:{value}" for key, value in families.most_common()) or "-",
+        "Unresolved-family coverage in the source-299 return-patch probe.")
+    add(rows, "gap_source299_ret_patch", "synthetic_gap_source299_ret_patch_probe_seed_mix",
+        ",".join(f"{key}:{value}" for key, value in seed_mix.most_common()) or "-",
+        "Snapshot strength for source-299 return-patch rows.")
+    add(rows, "gap_source299_ret_patch", "synthetic_gap_source299_ret_patch_probe_base_source_mix",
+        ",".join(f"{key}:{value}" for key, value in base_source_mix.most_common()) or "-",
+        "Whether the ret-patch base is directly read from a postcall map or inferred from event image-base crosschecks.")
+    add(rows, "gap_source299_ret_patch", "synthetic_gap_source299_ret_patch_probe_section_mix",
+        ",".join(f"{key}:{value}" for key, value in section_mix.most_common()) or "-",
+        "ELF sections reached by decoded native return-patch targets.")
+    add(rows, "gap_source299_ret_patch", "synthetic_gap_source299_ret_patch_probe_relation_mix",
+        ",".join(f"{key}:{value}" for key, value in relation_mix.most_common()) or "-",
+        "Relation between decoded native return-patch targets and VM-IP chain targets.")
+    add(rows, "gap_source299_ret_patch", "synthetic_gap_source299_ret_patch_probe_interpretation_mix",
+        ",".join(f"{key}:{value}" for key, value in interpretation_mix.most_common()) or "-",
+        "Interpretation of source-299 as hidden native return-patch control rather than normal table dispatch.")
+    add(rows, "gap_source299_ret_patch", "synthetic_gap_source299_ret_patch_probe_patched_targets",
+        ",".join(patched_targets) or "-",
+        "Unique source-299 residual starts and decoded native return-patch file offsets.")
+    add(rows, "gap_source299_ret_patch", "synthetic_gap_source299_ret_patch_probe_direct_base_starts",
+        ",".join(direct_base_rows) or "-",
+        "Rows where frame+0xbb was directly read from the postcall mapped image.")
+
+
 def synthetic_gap_live_snapshot_transfer_probe_metrics(rows):
     probe_rows = read_tsv(TRACE_DIR / "vm_synthetic_gap_live_snapshot_transfer_probe.tsv")
     live_rows = [row for row in probe_rows if row.get("row_kind", "") == "live_event"]
@@ -1719,6 +1782,7 @@ def build_rows():
     synthetic_gap_chain_slot_reconciliation_metrics(rows)
     synthetic_gap_unresolved_family_metrics(rows)
     synthetic_gap_source299_context_probe_metrics(rows)
+    synthetic_gap_source299_ret_patch_probe_metrics(rows)
     synthetic_gap_live_snapshot_transfer_probe_metrics(rows)
     synthetic_gap_live_table_evidence_metrics(rows)
     synthetic_gap_live_in_role_metrics(rows)
