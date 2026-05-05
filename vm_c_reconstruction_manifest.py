@@ -19,6 +19,9 @@ ARTIFACTS = [
     ("path_frontier_slot_audit_c", TRACE_DIR / "vm_path_frontier_slot_audit.c"),
     ("path_frontier_slot_audit_tsv", TRACE_DIR / "vm_path_frontier_slot_audit.tsv"),
     ("path_frontier_slot_audit_md", TRACE_DIR / "vm_path_frontier_slot_audit.md"),
+    ("native_executable_coverage_audit_c", TRACE_DIR / "vm_native_executable_coverage_audit.c"),
+    ("native_executable_coverage_audit_tsv", TRACE_DIR / "vm_native_executable_coverage_audit.tsv"),
+    ("native_executable_coverage_audit_md", TRACE_DIR / "vm_native_executable_coverage_audit.md"),
     ("direct_blocks_top", TRACE_DIR / "vm_pseudocode_top.c"),
     ("program_blocks_top", TRACE_DIR / "vm_program_pseudocode_top.c"),
     ("program_blocks_full", TRACE_DIR / "vm_program_pseudocode_full.c"),
@@ -265,6 +268,11 @@ def c_shape_metrics(rows):
     config_coverage_metric_rows = [row for row in config_coverage_frontier_index if row.get("row_type", "") == "metric"]
     config_coverage_frontier_rows = [row for row in config_coverage_frontier_index if row.get("row_type", "") == "frontier"]
     config_coverage_frontier_kinds = Counter(row.get("frontier_kind", "") for row in config_coverage_frontier_rows)
+    native_executable_coverage_audit = read_text(TRACE_DIR / "vm_native_executable_coverage_audit.c")
+    native_executable_coverage_audit_index = read_tsv(TRACE_DIR / "vm_native_executable_coverage_audit.tsv")
+    native_executable_section_rows = [row for row in native_executable_coverage_audit_index if row.get("row_type", "") == "section"]
+    native_executable_range_rows = [row for row in native_executable_coverage_audit_index if row.get("row_type", "") == "range"]
+    native_executable_gap_rows = [row for row in native_executable_coverage_audit_index if row.get("row_type", "") == "gap"]
     binary_data_sections = read_text(TRACE_DIR / "vm_binary_data_sections.c")
     binary_data_sections_index = read_tsv(TRACE_DIR / "vm_binary_data_sections.tsv")
     binary_data_string_rows = [row for row in binary_data_sections_index if row.get("kind", "") == "string"]
