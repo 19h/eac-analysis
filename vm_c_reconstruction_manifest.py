@@ -61,6 +61,8 @@ ARTIFACTS = [
     ("synthetic_gap_source299_ret_patch_probe_md", TRACE_DIR / "vm_synthetic_gap_source299_ret_patch_probe.md"),
     ("synthetic_gap_sampled_ret_patch_probe_tsv", TRACE_DIR / "vm_synthetic_gap_sampled_ret_patch_probe.tsv"),
     ("synthetic_gap_sampled_ret_patch_probe_md", TRACE_DIR / "vm_synthetic_gap_sampled_ret_patch_probe.md"),
+    ("synthetic_gap_ret_patch_native_target_atlas_tsv", TRACE_DIR / "vm_synthetic_gap_ret_patch_native_target_atlas.tsv"),
+    ("synthetic_gap_ret_patch_native_target_atlas_md", TRACE_DIR / "vm_synthetic_gap_ret_patch_native_target_atlas.md"),
     ("synthetic_gap_live_snapshot_transfer_probe_tsv", TRACE_DIR / "vm_synthetic_gap_live_snapshot_transfer_probe.tsv"),
     ("synthetic_gap_live_snapshot_transfer_probe_md", TRACE_DIR / "vm_synthetic_gap_live_snapshot_transfer_probe.md"),
     ("synthetic_gap_live_table_evidence_tsv", TRACE_DIR / "vm_synthetic_gap_live_table_evidence.tsv"),
@@ -1396,6 +1398,39 @@ def synthetic_gap_sampled_ret_patch_probe_metrics(rows):
         "Rows where frame+0xbb was directly read from the postcall mapped image.")
 
 
+def synthetic_gap_ret_patch_native_target_atlas_metrics(rows):
+    atlas_rows = read_tsv(TRACE_DIR / "vm_synthetic_gap_ret_patch_native_target_atlas.tsv")
+    sources = Counter(row.get("source_entry", "") for row in atlas_rows)
+    slots = Counter(row.get("ret_slot", "") for row in atlas_rows)
+    ret_seen = Counter(row.get("ret_seen", "") for row in atlas_rows)
+    section_mix = Counter(row.get("patched_ret_section", "") for row in atlas_rows)
+    kind_mix = Counter(row.get("ret_patch_kind", "") for row in atlas_rows)
+    jump_rows = [row for row in atlas_rows if row.get("jump_targets", "") not in ("", "-")]
+    call_rows = [row for row in atlas_rows if row.get("call_targets", "") not in ("", "-")]
+
+    add(rows, "gap_ret_patch_native_atlas", "synthetic_gap_ret_patch_native_target_atlas_rows", len(atlas_rows),
+        "Unique native .text return-patch targets with disassembly windows.")
+    add(rows, "gap_ret_patch_native_atlas", "synthetic_gap_ret_patch_native_target_atlas_source_mix",
+        ",".join(f"entry_{key}:{value}" for key, value in sources.most_common()) or "-",
+        "Source-handler mix for native return-patch target windows.")
+    add(rows, "gap_ret_patch_native_atlas", "synthetic_gap_ret_patch_native_target_atlas_slot_mix",
+        ",".join(f"{key}:{value}" for key, value in slots.most_common()) or "-",
+        "First versus second stacked return-patch target windows.")
+    add(rows, "gap_ret_patch_native_atlas", "synthetic_gap_ret_patch_native_target_atlas_kind_mix",
+        ",".join(f"{key}:{value}" for key, value in kind_mix.most_common()) or "-",
+        "Single-stack versus double-stack native return-patch target windows.")
+    add(rows, "gap_ret_patch_native_atlas", "synthetic_gap_ret_patch_native_target_atlas_section_mix",
+        ",".join(f"{key}:{value}" for key, value in section_mix.most_common()) or "-",
+        "ELF sections reached by native return-patch target windows.")
+    add(rows, "gap_ret_patch_native_atlas", "synthetic_gap_ret_patch_native_target_atlas_ret_seen_mix",
+        ",".join(f"{key}:{value}" for key, value in ret_seen.most_common()) or "-",
+        "Whether the bounded native target disassembly window reaches a native ret instruction.")
+    add(rows, "gap_ret_patch_native_atlas", "synthetic_gap_ret_patch_native_target_atlas_rows_with_calls", len(call_rows),
+        "Native return-patch target windows containing a direct call in the bounded window.")
+    add(rows, "gap_ret_patch_native_atlas", "synthetic_gap_ret_patch_native_target_atlas_rows_with_jumps", len(jump_rows),
+        "Native return-patch target windows containing a direct jump/conditional branch in the bounded window.")
+
+
 def synthetic_gap_live_snapshot_transfer_probe_metrics(rows):
     probe_rows = read_tsv(TRACE_DIR / "vm_synthetic_gap_live_snapshot_transfer_probe.tsv")
     live_rows = [row for row in probe_rows if row.get("row_kind", "") == "live_event"]
@@ -1877,6 +1912,7 @@ def build_rows():
     synthetic_gap_source299_context_probe_metrics(rows)
     synthetic_gap_source299_ret_patch_probe_metrics(rows)
     synthetic_gap_sampled_ret_patch_probe_metrics(rows)
+    synthetic_gap_ret_patch_native_target_atlas_metrics(rows)
     synthetic_gap_live_snapshot_transfer_probe_metrics(rows)
     synthetic_gap_live_table_evidence_metrics(rows)
     synthetic_gap_live_in_role_metrics(rows)
