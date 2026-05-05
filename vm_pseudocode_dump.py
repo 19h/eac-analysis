@@ -62,6 +62,10 @@ def expr_to_c(expr, max_len):
     return expr
 
 
+def is_clipped_expr(expr):
+    return "..." in (expr or "")
+
+
 def fmt_ip_update(delta):
     if delta == 0:
         return ""
@@ -297,7 +301,11 @@ def row_to_c(row, max_expr_len):
         f"shape={c_comment(operand_shape or '-')}, {c_comment(semantic)} */"
     )
     if state and state != "state0":
-        lines.append(f"    vm->state = {expr_to_c(state, max_expr_len)};")
+        state_expr = expr_to_c(state, max_expr_len)
+        if is_clipped_expr(state_expr):
+            lines.append(f"    /* state effect clipped: {c_comment(state_expr)} */")
+        else:
+            lines.append(f"    vm->state = {state_expr};")
     elif state == "state0":
         lines.append("    /* state preserved */")
     if is_decoded_long_control(row):

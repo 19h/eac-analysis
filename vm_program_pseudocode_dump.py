@@ -10,6 +10,7 @@ from vm_pseudocode_dump import (
     emit_internal_tail_lift,
     expr_to_c,
     is_decoded_long_control,
+    is_clipped_expr,
     load_edges,
     load_rows,
     load_tail_lifts,
@@ -189,8 +190,12 @@ def emit_decoded_control(row, args):
         f"{c_comment(semantic)} */"
     )
     if state and state != "state0":
-        print(f"    vm->state = {expr_to_c(state, args.max_expr_len)};")
-        print("    /* source state effect joined from transition model */")
+        state_expr = expr_to_c(state, args.max_expr_len)
+        if is_clipped_expr(state_expr):
+            print(f"    /* source state effect clipped: {c_comment(state_expr)} */")
+        else:
+            print(f"    vm->state = {state_expr};")
+            print("    /* source state effect joined from transition model */")
     elif state == "state0":
         print("    /* source state preserved */")
     if is_decoded_long_control(row):
