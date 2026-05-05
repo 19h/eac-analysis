@@ -93,7 +93,7 @@ def count(pattern, text):
 def artifact_metrics(rows):
     for name, path in ARTIFACTS:
         text = read_text(path)
-        add(rows, "artifact", f"{name}_path", path, "Generated C-like reconstruction artifact.")
+        add(rows, "artifact", f"{name}_path", path, "Generated reconstruction artifact.")
         add(rows, "artifact", f"{name}_lines", line_count(text), "Current line count.")
         add(rows, "artifact", f"{name}_bytes", file_size(path), "Current file size in bytes.")
 
