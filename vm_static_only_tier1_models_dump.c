@@ -312,6 +312,7 @@ static void emit_slot_body(unsigned entry) {
         puts("    vm_tier1_advance_ip(vm, 8);");
         puts("    return vm_tier1_done(vm, 12, vm_tier1_slot16(slot_source), 8, \"function_7acd8\", \"retdec_dispatch_table_slot\");");
     } else if (entry == 100) {
+        puts("    (void)flags0;");
         puts("    uint32_t slot_source = (uint32_t)((int32_t)vm_tier1_s16(ip + 9) - 0x4b931360 + (int32_t)state0);");
         puts("    *vm_tier1_state_cell(vm) = slot_source ^ state0;");
         puts("    vm_tier1_advance_ip(vm, 11);");
