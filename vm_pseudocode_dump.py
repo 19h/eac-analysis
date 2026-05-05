@@ -10,6 +10,8 @@ from pathlib import Path
 U8_RE = re.compile(r"\bb([0-9]+)\b")
 U16_RE = re.compile(r"\bu16_([0-9]+)\b")
 U32_RE = re.compile(r"\bu32_([0-9]+)\b")
+COUNTED_HEX_RE = re.compile(r"^0x([0-9a-fA-F]+):([0-9]+)$")
+TARGET_OFFSET_RE = re.compile(r"^[0-9]+@\+0x([0-9a-fA-F]+):([0-9]+)$")
 
 
 def read_tsv(path):
@@ -97,6 +99,44 @@ def short_bytes(counter, limit, max_hex):
         suffix = "..." if len(value) > max_hex else ""
         parts.append(f"{count}:{value[:max_hex]}{suffix}")
     return ",".join(parts)
+
+
+def single_counted_hex(text):
+    if not text or "," in text:
+        return None, 0
+    match = COUNTED_HEX_RE.match(text)
+    if not match:
+        return None, 0
+    return int(match.group(1), 16), int(match.group(2))
+
+
+def single_target_offset(text):
+    if not text or "," in text:
+        return None, 0
+    match = TARGET_OFFSET_RE.match(text)
+    if not match:
+        return None, 0
+    return int(match.group(1), 16), int(match.group(2))
+
+
+def tail_target_load(tail_lift, after_prefix=False):
+    if not tail_lift:
+        return ""
+    try:
+        events = int(tail_lift.get("events", "0") or 0)
+        encoded_events = int(tail_lift.get("target_encoded_events", "0") or 0)
+    except ValueError:
+        return ""
+    if not events or encoded_events != events:
+        return ""
+    prefix_len, prefix_count = single_counted_hex(tail_lift.get("prefix_lens", ""))
+    target_off, target_count = single_target_offset(tail_lift.get("target_match_offsets", ""))
+    if prefix_len is None or target_off is None:
+        return ""
+    if prefix_count != events or target_count != events:
+        return ""
+    offset = target_off if after_prefix else prefix_len + target_off
+    return f"(int)U16(vm->ip + 0x{offset:x})"
 
 
 def synthetic_bucket():
@@ -279,7 +319,10 @@ def emit_synthetic_edge(edge, synthetic_spans, args):
             f"classes={c_comment(tail_lift.get('lift_classes', '') or '-')}, "
             f"tails={c_comment(tail_lift.get('top_tail_hexes', '') or '-')} */"
         )
-    if target is not None:
+    tail_expr = tail_target_load(tail_lift)
+    if tail_expr:
+        print(f"    next_entry = {tail_expr};")
+    elif target is not None:
         print(f"    next_entry = {target};")
     try:
         delta = parse_delta(delta_text)

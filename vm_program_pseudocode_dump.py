@@ -14,6 +14,7 @@ from vm_pseudocode_dump import (
     parse_hex,
     read_tsv,
     selected_blocks,
+    tail_target_load,
 )
 
 
@@ -37,6 +38,7 @@ def emit_preamble(used_entries):
     print("} VMOpResult;")
     print("")
     print("extern void vm_unresolved_synthetic_tail(VMState *vm, uint64_t vm_ip);")
+    print("#define U16(p) (*(const uint16_t *)(p))")
     for entry in sorted(used_entries):
         print(f"static VMOpResult op_entry_{entry:03d}(VMState *vm);")
     print("")
@@ -210,7 +212,12 @@ def emit_synthetic_edge(edge, synthetic_spans, args):
         )
     if source is not None:
         print(f"    r = {op_name(source)}(vm);")
-    if target is not None:
+    tail_expr = tail_target_load(tail_lift, after_prefix=source is not None)
+    if tail_expr:
+        print(f"    next_entry = {tail_expr};")
+        if target is not None:
+            print(f"    /* observed synthetic target: {target} */")
+    elif target is not None:
         print(f"    next_entry = {target};")
     try:
         delta = parse_delta(delta_text)
