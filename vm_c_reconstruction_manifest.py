@@ -237,6 +237,8 @@ def c_shape_metrics(rows):
         "Sampled native return-patch evidence sites carried into the full program sketch.")
     add(rows, "c_shape", "program_full_sampled_ret_patch_probe_comments", count(r"sampled ret-patch: source=", program_full),
         "Per-run sampled native return-patch comments carried into the full program sketch.")
+    add(rows, "c_shape", "program_full_sampled_ret_patch_exit_calls", count(r"vm_native_ret_patch_tail\(vm, 0x", program_full),
+        "Executable analysis-helper exits for sampled native return-patch synthetic tails in the full program sketch.")
     add(rows, "c_shape", "program_full_sampled_control_correlation_sites", count(r"sampled-control correlation @", program_full),
         "Residual sampled-control correlation sites carried into the full program sketch.")
     add(rows, "c_shape", "program_full_sampled_control_correlation_comments", count(r"sampled-control correlation: source=", program_full),
@@ -341,6 +343,8 @@ def c_shape_metrics(rows):
         "Sampled native return-patch evidence sites carried into the combined source bundle.")
     add(rows, "c_shape", "bundle_sampled_ret_patch_probe_comments", count(r"sampled ret-patch: source=", bundle),
         "Per-run sampled native return-patch comments carried into the combined source bundle.")
+    add(rows, "c_shape", "bundle_sampled_ret_patch_exit_calls", count(r"vm_native_ret_patch_tail\(vm, 0x", bundle),
+        "Executable analysis-helper exits for sampled native return-patch synthetic tails inside the combined source bundle.")
     add(rows, "c_shape", "bundle_sampled_control_correlation_sites", count(r"sampled-control correlation @", bundle),
         "Residual sampled-control correlation sites carried into the combined source bundle.")
     add(rows, "c_shape", "bundle_sampled_control_correlation_comments", count(r"sampled-control correlation: source=", bundle),
