@@ -579,6 +579,27 @@ def select_observed_chain_terminal_bridge(start_vm_ip, observed_chain_bridges, b
         dest_block = block_by_start.get(dest_ip)
         if dest_block is None:
             continue
+        steps = []
+        for item in row.get("chain_path", "").split(" -> "):
+            item = normalize_vm_ip(item.strip())
+            if not item:
+                continue
+            step_row = (observed_chain_bridges.get(item) or [{}])[0]
+            try:
+                step_source = int(step_row.get("source_entry", ""), 0)
+            except (TypeError, ValueError):
+                step_source = None
+            steps.append({
+                "start": item,
+                "source_entry": step_source,
+                "first_hop_kind": step_row.get("first_hop_kind", "") or "-",
+                "first_hop_vm_ip": normalize_vm_ip(step_row.get("first_hop_vm_ip", "")),
+                "first_hop_delta": step_row.get("first_hop_delta", "") or "-",
+                "first_hop_target_entry": step_row.get("first_hop_target_entry", "") or "",
+                "following_residual_start": normalize_vm_ip(step_row.get("following_residual_start", "")),
+                "action": step_row.get("bridge_action", "") or "-",
+                "bridge_class": step_row.get("observed_chain_bridge_class", "") or "-",
+            })
         return {
             "start": start,
             "source_entry": row.get("source_entry", "") or "?",
@@ -594,6 +615,7 @@ def select_observed_chain_terminal_bridge(start_vm_ip, observed_chain_bridges, b
             "bridge_class": row.get("observed_chain_bridge_class", "") or "-",
             "relation": row.get("primary_vs_focused_first_hop", "") or "-",
             "blocker": row.get("promotion_blocker", "") or "-",
+            "steps": steps,
         }
     return None
 
@@ -615,6 +637,28 @@ def emit_observed_chain_terminal_bridge(bridge):
         f"disabled by default because {c_comment(bridge['blocker'])}. */"
     )
     print("#if VM_ENABLE_OBSERVED_CHAIN_BRIDGES")
+    for step in bridge["steps"]:
+        hop = (
+            f"{step['first_hop_kind']}@{step['first_hop_vm_ip']}/"
+            f"{step['first_hop_delta']}->entry_{step['first_hop_target_entry'] or '?'}"
+        )
+        print(
+            f"    /* observed-chain replay step: start={step['start']}, "
+            f"source=entry_{step['source_entry'] if step['source_entry'] is not None else '?'}, "
+            f"first_hop={c_comment(hop)}, "
+            f"following={c_comment(step['following_residual_start'] or '-')}, "
+            f"class={c_comment(step['bridge_class'])}, "
+            f"action={c_comment(step['action'])} */"
+        )
+        if step["source_entry"] is not None:
+            print(f"    vm_ip = {step['start']};")
+            print(f"    r = {op_name(step['source_entry'])}(vm);")
+        if step["first_hop_target_entry"]:
+            print(f"    next_entry = {step['first_hop_target_entry']};")
+        if step["first_hop_vm_ip"]:
+            print(f"    vm_ip = {step['first_hop_vm_ip']};")
+        if step["following_residual_start"]:
+            print(f"    vm_ip = {step['following_residual_start']};")
     print(f"    vm_ip = 0x{bridge['dest_ip']:x};")
     print(f"    next_entry = {bridge['dest_entry']};")
     print(f"    prog_{c_block_name(bridge['dest_block'])}(vm, vm_ip);")
@@ -732,7 +776,7 @@ def emit_dispatch(blocks):
     print("}")
 
 
-def collect_used_entries(blocks, rows_by_block, rows_per_block, edges, synthetic_spans, dynamic_stitches, hidden_chains, focused_direct_trace_audits, live_in_reentries, allstatic_reentries, block_by_start):
+def collect_used_entries(blocks, rows_by_block, rows_per_block, edges, synthetic_spans, dynamic_stitches, hidden_chains, focused_direct_trace_audits, observed_chain_bridges, live_in_reentries, allstatic_reentries, block_by_start):
     used = set()
     for block in blocks:
         rows = rows_by_block.get(block["block"], [])
@@ -773,6 +817,15 @@ def collect_used_entries(blocks, rows_by_block, rows_per_block, edges, synthetic
                 )
                 if bridge:
                     used.add(bridge["next_source_entry"])
+                chain_bridge = select_observed_chain_terminal_bridge(
+                    edge.get("target_vm_ip", ""),
+                    observed_chain_bridges,
+                    block_by_start,
+                )
+                if chain_bridge:
+                    for step in chain_bridge["steps"]:
+                        if step["source_entry"] is not None:
+                            used.add(step["source_entry"])
     return used
 
 
@@ -878,6 +931,7 @@ def main():
         dynamic_stitches,
         hidden_chains,
         focused_direct_trace_audits,
+        observed_chain_bridges,
         live_in_reentries,
         allstatic_reentries,
         block_by_start,

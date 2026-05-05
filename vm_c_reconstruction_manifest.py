@@ -247,6 +247,8 @@ def c_shape_metrics(rows):
         "Disabled-by-default observed focused-chain terminal bridge snippets emitted beside unresolved synthetic successors.")
     add(rows, "c_shape", "program_full_observed_chain_terminal_bridge_macros", count(r"^#if VM_ENABLE_OBSERVED_CHAIN_BRIDGES$", program_full),
         "Disabled focused-chain terminal bridge bodies guarded by VM_ENABLE_OBSERVED_CHAIN_BRIDGES in the full program sketch.")
+    add(rows, "c_shape", "program_full_observed_chain_replay_steps", count(r"observed-chain replay step:", program_full),
+        "Observed focused-chain replay steps emitted inside disabled terminal bridge snippets in the full program sketch.")
     add(rows, "c_shape", "bundle_block_defs", count(r"^static void prog_bb_\d{4}\(VMState \*vm, uint64_t vm_ip\) \{", bundle),
         "Full program block functions inside the combined source bundle.")
     add(rows, "c_shape", "bundle_block_calls", count(r"^    prog_bb_\d{4}\(vm, vm_ip\);$", bundle),
@@ -335,6 +337,8 @@ def c_shape_metrics(rows):
         "Disabled-by-default observed focused-chain terminal bridge snippets emitted beside unresolved synthetic successors inside the combined source bundle.")
     add(rows, "c_shape", "bundle_observed_chain_terminal_bridge_macros", count(r"^#if VM_ENABLE_OBSERVED_CHAIN_BRIDGES$", bundle),
         "Disabled focused-chain terminal bridge bodies guarded by VM_ENABLE_OBSERVED_CHAIN_BRIDGES inside the combined source bundle.")
+    add(rows, "c_shape", "bundle_observed_chain_replay_steps", count(r"observed-chain replay step:", bundle),
+        "Observed focused-chain replay steps emitted inside disabled terminal bridge snippets in the combined source bundle.")
 
 
 def coverage_metrics(rows):
