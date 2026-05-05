@@ -350,21 +350,34 @@ def synthetic_gap_chain_probe_metrics(rows):
         for row in chain_rows
         if row.get("status", "") == "hidden_chain_matches_next_event"
     ]
+    dynamic_next_hooks = [
+        f"{row.get('synthetic_start_vm_ip')}->{row.get('hidden_source_entry')}@{row.get('hidden_source_start_vm_ip')}->{row.get('hidden_pred_end_vm_ip')}"
+        for row in chain_rows
+        if row.get("status", "") == "dynamic_next_hook_matches_static_transfer"
+    ]
     target_only = [
         row.get("synthetic_start_vm_ip", "")
         for row in chain_rows
         if row.get("status", "") == "hidden_chain_target_only"
     ]
     add(rows, "gap_chain", "synthetic_gap_chain_probe_rows", len(chain_rows),
-        "Ambiguous dynamic stitch rows replayed through candidate hidden-source handlers.")
+        "Dynamic stitch rows replayed through candidate hidden-source handlers or inferred next-hook handlers.")
+    add(rows, "gap_chain", "synthetic_gap_chain_status_mix",
+        ",".join(f"{key}:{value}" for key, value in statuses.most_common()) or "-",
+        "Status mix from the hidden-chain/next-hook replay probe.")
     add(rows, "gap_chain", "synthetic_gap_chain_full_matches",
         statuses.get("hidden_chain_matches_next_event", 0),
         "Hidden-chain probes whose predicted target entry and end VM IP both match the next hooked event.")
+    add(rows, "gap_chain", "synthetic_gap_chain_dynamic_next_hook_matches",
+        statuses.get("dynamic_next_hook_matches_static_transfer", 0),
+        "Dynamically stitched next-hook handlers whose static transfer predicts the observed next target and end VM IP.")
     add(rows, "gap_chain", "synthetic_gap_chain_target_only",
         statuses.get("hidden_chain_target_only", 0),
         "Hidden-chain probes whose predicted target entry matches but the end VM IP still diverges.")
     add(rows, "gap_chain", "synthetic_gap_chain_full_match_paths", ",".join(full_matches) or "-",
         "Synthetic starts resolved through a hidden source and exact dynamic reentry match.")
+    add(rows, "gap_chain", "synthetic_gap_chain_dynamic_next_hook_paths", ",".join(dynamic_next_hooks) or "-",
+        "Dynamic stitch next-hook paths independently validated by static transfer replay.")
     add(rows, "gap_chain", "synthetic_gap_chain_target_only_starts", ",".join(target_only) or "-",
         "Synthetic starts with only target-level hidden-chain evidence.")
 

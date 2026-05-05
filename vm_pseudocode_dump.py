@@ -515,7 +515,7 @@ def emit_hidden_chain_comments(target_vm_ip, hidden_chains, args):
     max_expr = getattr(args, "hidden_chain_max_expr", 180)
     print(
         f"    /* hidden chain probe @ {start}: rows={len(rows)}; "
-        "candidate next-source handlers replayed at short offsets after the gap. */"
+        "candidate next-source handlers replayed at short offsets or dynamic-stitch inferred next-hook starts. */"
     )
     for row in shown:
         print(
