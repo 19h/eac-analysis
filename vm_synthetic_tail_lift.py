@@ -13,7 +13,7 @@ from vm_synthetic_span_catalog import (
     semantic_gap_class,
     status_kind,
 )
-from vm_synthetic_tail_catalog import motifs, tail_schema, target_offsets
+from vm_synthetic_tail_catalog import motifs, tail_schema
 
 
 def normalize_vm_ip(text):
@@ -50,6 +50,22 @@ def single_target_counter(target_entry):
     if target_entry:
         counter[target_entry] += 1
     return counter
+
+
+def target_offset_key(data, target_entry):
+    if not target_entry:
+        return ""
+    try:
+        value = int(target_entry)
+    except ValueError:
+        return ""
+    offsets = []
+    for off in range(0, max(0, len(data) - 1)):
+        if int.from_bytes(data[off:off + 2], "little") == value:
+            offsets.append(f"+0x{off:x}")
+    if not offsets:
+        return ""
+    return f"{target_entry}@{','.join(offsets)}"
 
 
 def make_rows(args):
@@ -116,7 +132,7 @@ def make_rows(args):
 
         target_counter = single_target_counter(target_entry)
         schema = tail_schema(tail, target_counter)
-        offsets = target_offsets(tail, target_counter)
+        offsets = target_offset_key(tail, target_entry)
         motif_text = motifs(tail)
         if schema:
             bucket["tail_schemas"][schema] += 1
