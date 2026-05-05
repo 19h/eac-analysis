@@ -249,6 +249,24 @@ BATCHES = {
         "0x609f0-0x60b3b",
         "0x49044-0x4918e",
     ],
+    13: [
+        "0x4b188-0x4b2d2",
+        "0x4c3810-0x4c395a",
+        "0x556cf0-0x556e3a",
+        "0x4c0d4-0x4c21c",
+        "0x4c592-0x4c6da",
+        "0x633cc-0x63514",
+        "0x4ff460-0x4ff5a7",
+        "0x5012d0-0x501417",
+        "0x54f250-0x54f397",
+        "0x552590-0x5526d7",
+        "0x25712-0x25856",
+        "0x2588a-0x259ce",
+        "0x27e7a-0x27fbe",
+        "0x45a3e-0x45b82",
+        "0x713da-0x7151e",
+        "0x4d30d0-0x4d3213",
+    ],
 }
 
 
@@ -367,6 +385,7 @@ def main():
     for index in referenced_globals(functions):
         print(f"extern int g{index};")
     print("unsigned char llvm_ctpop_i8(unsigned char value);")
+    print("uint16_t llvm_bswap_i16(uint16_t value);")
     print("void __asm_int(int32_t interrupt);")
     print("int64_t __asm_int1(int32_t interrupt);")
     print("int64_t __asm_int3(void);")
