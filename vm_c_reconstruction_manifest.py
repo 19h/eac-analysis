@@ -199,6 +199,10 @@ def c_shape_metrics(rows):
         "Residual table-offset file mapping sites carried into the full program sketch.")
     add(rows, "c_shape", "program_full_table_memory_probe_comments", count(r"table-memory probe: source=", program_full),
         "Per-start residual table-offset file mapping comments carried into the full program sketch.")
+    add(rows, "c_shape", "program_full_runtime_table_memory_probe_sites", count(r"runtime table-memory probe @", program_full),
+        "Residual table-offset runtime mapped-memory comparison sites carried into the full program sketch.")
+    add(rows, "c_shape", "program_full_runtime_table_memory_probe_comments", count(r"runtime table-memory probe: source=", program_full),
+        "Per-start residual runtime mapped-memory comparison comments carried into the full program sketch.")
     add(rows, "c_shape", "program_full_sampled_control_correlation_sites", count(r"sampled-control correlation @", program_full),
         "Residual sampled-control correlation sites carried into the full program sketch.")
     add(rows, "c_shape", "program_full_sampled_control_correlation_comments", count(r"sampled-control correlation: source=", program_full),
@@ -275,6 +279,10 @@ def c_shape_metrics(rows):
         "Residual table-offset file mapping sites carried into the combined source bundle.")
     add(rows, "c_shape", "bundle_table_memory_probe_comments", count(r"table-memory probe: source=", bundle),
         "Per-start residual table-offset file mapping comments carried into the combined source bundle.")
+    add(rows, "c_shape", "bundle_runtime_table_memory_probe_sites", count(r"runtime table-memory probe @", bundle),
+        "Residual table-offset runtime mapped-memory comparison sites carried into the combined source bundle.")
+    add(rows, "c_shape", "bundle_runtime_table_memory_probe_comments", count(r"runtime table-memory probe: source=", bundle),
+        "Per-start residual runtime mapped-memory comparison comments carried into the combined source bundle.")
     add(rows, "c_shape", "bundle_sampled_control_correlation_sites", count(r"sampled-control correlation @", bundle),
         "Residual sampled-control correlation sites carried into the combined source bundle.")
     add(rows, "c_shape", "bundle_sampled_control_correlation_comments", count(r"sampled-control correlation: source=", bundle),
