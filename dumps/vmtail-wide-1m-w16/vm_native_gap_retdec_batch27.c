@@ -6,22 +6,22 @@
  * coverage -> queue -> RetDec batch -> coverage.
  *
  * Ranges:
- *   0x4ad100-0x4ad1e4 rank=11 name=fcn.004ad100 kind=r2_discovered bytes=228 uncovered=228
- *   0x557390-0x557474 rank=12 name=fcn.00557390 kind=r2_discovered bytes=228 uncovered=228
- *   0x557a40-0x557b24 rank=13 name=fcn.00557a40 kind=r2_discovered bytes=228 uncovered=228
- *   0x497d70-0x497e53 rank=14 name=fcn.00497d70 kind=r2_discovered bytes=227 uncovered=227
- *   0x498a40-0x498b23 rank=15 name=fcn.00498a40 kind=r2_discovered bytes=227 uncovered=227
- *   0x4d08f0-0x4d09d3 rank=16 name=fcn.004d08f0 kind=r2_discovered bytes=227 uncovered=227
- *   0x56ff90-0x570073 rank=17 name=method.std::ctype_wchar_t_.virtual_104 kind=native_discovered bytes=227 uncovered=227
- *   0x5b204-0x5b2e6 rank=18 name=fcn.0005b204 kind=r2_discovered bytes=226 uncovered=226
- *   0x4d2d40-0x4d2e22 rank=19 name=fcn.004d2d40 kind=r2_discovered bytes=226 uncovered=226
- *   0x564090-0x564172 rank=20 name=method.__cxxabiv1::__vmi_class_type_info.virtual_64 kind=native_discovered bytes=226 uncovered=226
- *   0x36a32-0x36b13 rank=21 name=fcn.00036a32 kind=r2_discovered bytes=225 uncovered=225
- *   0x4bf880-0x4bf961 rank=22 name=fcn.004bf880 kind=r2_discovered bytes=225 uncovered=225
- *   0x582a30-0x582b11 rank=23 name=fcn.00582a30 kind=r2_discovered bytes=225 uncovered=225
- *   0x4bba20-0x4bbb00 rank=24 name=fcn.004bba20 kind=r2_discovered bytes=224 uncovered=224
- *   0x4c4530-0x4c4610 rank=25 name=fcn.004c4530 kind=r2_discovered bytes=224 uncovered=224
- *   0x450d0-0x451af rank=26 name=fcn.000450d0 kind=r2_discovered bytes=223 uncovered=223
+ *   0x4ad100-0x4ad1e4 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x557390-0x557474 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x557a40-0x557b24 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x497d70-0x497e53 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x498a40-0x498b23 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x4d08f0-0x4d09d3 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x56ff90-0x570073 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x5b204-0x5b2e6 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x4d2d40-0x4d2e22 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x564090-0x564172 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x36a32-0x36b13 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x4bf880-0x4bf961 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x582a30-0x582b11 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x4bba20-0x4bbb00 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x4c4530-0x4c4610 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x450d0-0x451af rank=- name=- kind=- bytes=- uncovered=-
  */
 #include <stdbool.h>
 #include <stdio.h>
@@ -45,6 +45,7 @@ struct stat64;
 struct timespec;
 struct timeval;
 struct utsname;
+struct iovec;
 #define F_GETFL 3
 #define F_SETFL 4
 #define SO_DEBUG 1
@@ -130,6 +131,7 @@ int32_t mbrtowc(int32_t *pwc, const char *s, size_t n, struct _TYPEDEF___mbstate
 int32_t mbsnrtowcs(int32_t *dst, char **src, size_t nms, size_t len, struct _TYPEDEF___mbstate_t *ps);
 size_t wcslen(const int32_t *s);
 int wctob(int32_t wc);
+int32_t towlower(int32_t wc);
 int32_t *wmemcpy(int32_t *dest, const int32_t *src, size_t n);
 int32_t *wmemmove(int32_t *dest, const int32_t *src, size_t n);
 int32_t *wmemset(int32_t *wcs, int32_t wc, size_t n);
@@ -139,6 +141,7 @@ int pthread_mutex_unlock(void *mutex);
 int pthread_cond_wait(void *cond, void *mutex);
 int pthread_cond_timedwait(void *cond, void *mutex, const struct timespec *abstime);
 int fcntl(int fd, int cmd, ...);
+int writev(int fd, const struct iovec *iov, int iovcnt);
 int ioctl(int fd, unsigned long request, ...);
 int poll(struct pollfd *fds, unsigned long nfds, int timeout);
 int gettimeofday(struct timeval *tv, void *tz);
