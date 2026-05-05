@@ -29,6 +29,8 @@ ARTIFACTS = [
     ("synthetic_gap_residual_audit_md", TRACE_DIR / "vm_synthetic_gap_residual_audit.md"),
     ("synthetic_gap_concrete_state_audit_tsv", TRACE_DIR / "vm_synthetic_gap_concrete_state_audit.tsv"),
     ("synthetic_gap_concrete_state_audit_md", TRACE_DIR / "vm_synthetic_gap_concrete_state_audit.md"),
+    ("synthetic_gap_state_trace_targets_tsv", TRACE_DIR / "vm_synthetic_gap_state_trace_targets.tsv"),
+    ("synthetic_gap_state_trace_targets_md", TRACE_DIR / "vm_synthetic_gap_state_trace_targets.md"),
     ("synthetic_gap_symbolic_successors_tsv", TRACE_DIR / "vm_synthetic_gap_symbolic_successors.tsv"),
     ("synthetic_gap_symbolic_successors_md", TRACE_DIR / "vm_synthetic_gap_symbolic_successors.md"),
     ("synthetic_gap_live_in_roles_tsv", TRACE_DIR / "vm_synthetic_gap_live_in_roles.tsv"),
@@ -493,6 +495,43 @@ def synthetic_gap_concrete_state_audit_metrics(rows):
         "Residual starts needing state-aware trace coverage before concrete replay can classify them.")
 
 
+def synthetic_gap_state_trace_target_metrics(rows):
+    target_rows = read_tsv(TRACE_DIR / "vm_synthetic_gap_state_trace_targets.tsv")
+    source_mix = Counter(row.get("source_entry", "") for row in target_rows)
+    start_site_mix = Counter(row.get("synthetic_start_event_site", "") for row in target_rows)
+    next_site_mix = Counter(row.get("dynamic_next_site", "") for row in target_rows)
+    starts = [row.get("synthetic_start_vm_ip", "") for row in target_rows if row.get("synthetic_start_vm_ip", "")]
+    focus_pairs = [
+        f"{row.get('synthetic_start_vm_ip')}={row.get('minimal_focus_ips')}@{row.get('minimal_focus_sites')}"
+        for row in target_rows
+        if row.get("synthetic_start_vm_ip", "")
+    ]
+    seqs = [
+        int(row.get("primary_predecessor_seq", "0") or 0)
+        for row in target_rows
+        if row.get("primary_predecessor_seq", "")
+    ]
+
+    add(rows, "gap_state_targets", "synthetic_gap_state_trace_target_rows", len(target_rows),
+        "Residual starts still missing concrete predecessor state and now mapped to focused VMTAIL capture pairs.")
+    add(rows, "gap_state_targets", "synthetic_gap_state_trace_target_source_mix",
+        ",".join(f"{key}:{value}" for key, value in source_mix.most_common()) or "-",
+        "Source-entry mix among missing state-trace targets.")
+    add(rows, "gap_state_targets", "synthetic_gap_state_trace_target_start_site_mix",
+        ",".join(f"{key}:{value}" for key, value in start_site_mix.most_common()) or "-",
+        "Synthetic-start tail sites that need focused state capture.")
+    add(rows, "gap_state_targets", "synthetic_gap_state_trace_target_next_site_mix",
+        ",".join(f"{key}:{value}" for key, value in next_site_mix.most_common()) or "-",
+        "Next-hook tail sites retained by the optional context capture.")
+    add(rows, "gap_state_targets", "synthetic_gap_state_trace_target_primary_seq_range",
+        f"{min(seqs)}..{max(seqs)}" if seqs else "-",
+        "Primary trace sequence span containing the missing predecessor-state pairs.")
+    add(rows, "gap_state_targets", "synthetic_gap_state_trace_target_starts", ",".join(starts) or "-",
+        "Synthetic starts whose state-aware predecessor row should be captured next.")
+    add(rows, "gap_state_targets", "synthetic_gap_state_trace_target_focus_pairs", ";".join(focus_pairs) or "-",
+        "Per-start minimal focus IP/site pairs for a targeted VMTAIL state run.")
+
+
 def synthetic_gap_live_in_role_metrics(rows):
     role_rows = read_tsv(TRACE_DIR / "vm_synthetic_gap_live_in_roles.tsv")
     resolutions = Counter(row.get("resolution", "") for row in role_rows)
@@ -785,6 +824,7 @@ def build_rows():
     synthetic_gap_chain_probe_metrics(rows)
     synthetic_gap_residual_audit_metrics(rows)
     synthetic_gap_concrete_state_audit_metrics(rows)
+    synthetic_gap_state_trace_target_metrics(rows)
     synthetic_gap_live_in_role_metrics(rows)
     synthetic_gap_final_tail_site_metrics(rows)
     synthetic_gap_live_in_reentry_metrics(rows)
