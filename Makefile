@@ -8,7 +8,7 @@ GPR_RUN ?= dumps/vmtail-scratch-wide-w16-fs337all-fs128/run.stderr
 PRED_ROWS ?= 128
 XFER_ROWS ?= 128
 
-.PHONY: all clean fast-replay fast-state fast-gpr fast-predicates fast-state-predicates fast-gpr-predicates fast-transfer fast-state-transfer fast-gpr-transfer fast-validators fast-paths fast-gpr-paths long-branches hidden-transitions sampled-operands hidden-fill frontier-fill footprint-fill control-edges bytecode-ir bytecode-basic-blocks synthetic-spans synthetic-tails synthetic-tail-lift pseudocode pseudocode-full handler-pseudocode path-pseudocode source-bundle pseudocode-syntax-check coverage-matrix coverage-audit
+.PHONY: all clean fast-replay fast-state fast-gpr fast-predicates fast-state-predicates fast-gpr-predicates fast-transfer fast-state-transfer fast-gpr-transfer fast-validators fast-paths fast-gpr-paths long-branches hidden-transitions sampled-operands hidden-fill frontier-fill footprint-fill control-edges bytecode-ir bytecode-basic-blocks synthetic-spans synthetic-tails synthetic-tail-lift pseudocode pseudocode-full handler-pseudocode path-pseudocode source-bundle pseudocode-syntax-check pseudocode-object-check coverage-matrix coverage-audit
 
 all: driver trace_preload.so vm_fast_path_profile
 
@@ -153,6 +153,9 @@ pseudocode-syntax-check: pseudocode source-bundle path-pseudocode
 	$(CC) -std=c11 -fsyntax-only -Wall -Wextra -Wno-unused-variable -Wno-unused-function -Wno-parentheses dumps/vmtail-wide-1m-w16/vm_program_pseudocode_top.c
 	$(CC) -std=c11 -fsyntax-only -Wall -Wextra -Wno-unused-variable -Wno-unused-function -Wno-parentheses dumps/vmtail-wide-1m-w16/vm_program_pseudocode_full.c
 	$(CC) -std=c11 -fsyntax-only -Wall -Wextra -Wno-unused-variable -Wno-unused-function -Wno-parentheses dumps/vmtail-wide-1m-w16/vm_recovered_source_bundle.c
+
+pseudocode-object-check: source-bundle
+	$(CC) -std=c11 -O0 -g0 -fno-strict-aliasing -Wall -Wextra -Wno-unused-variable -Wno-unused-function -Wno-parentheses -c dumps/vmtail-wide-1m-w16/vm_recovered_source_bundle.c -o /tmp/eacsym-vm_recovered_source_bundle.o
 
 coverage-matrix:
 	python3 vm_trace_coverage_matrix.py > dumps/vmtail-wide-1m-w16/vm_trace_coverage_matrix.tsv
