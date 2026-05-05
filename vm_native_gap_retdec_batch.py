@@ -616,7 +616,7 @@ BATCHES = {
         "0x52e10-0x52ed4",
         "0x53270-0x53334",
         "0x4b94d0-0x4b9594",
-        "0x53fce0-0x53fda4",
+        "0x5dc68-0x5dd29",
         "0x56b660-0x56b724",
         "0x4ad78-0x4ae3b",
         "0x4c6740-0x4c6803",
@@ -878,6 +878,7 @@ def main():
     print("int wctob(int32_t wc);")
     print("int32_t btowc(int c);")
     print("int32_t towlower(int32_t wc);")
+    print("int vswprintf(int32_t *wcs, size_t maxlen, const int32_t *format, int64_t ap);")
     print("int32_t *wmemcpy(int32_t *dest, const int32_t *src, size_t n);")
     print("int32_t *wmemmove(int32_t *dest, const int32_t *src, size_t n);")
     print("int32_t *wmemset(int32_t *wcs, int32_t wc, size_t n);")
