@@ -45,6 +45,7 @@ struct stat64;
 struct timespec;
 struct timeval;
 struct utsname;
+struct iovec;
 #define F_GETFL 3
 #define F_SETFL 4
 #define SO_DEBUG 1
@@ -179,6 +180,7 @@ int32_t mbrtowc(int32_t *pwc, const char *s, size_t n, struct _TYPEDEF___mbstate
 int32_t mbsnrtowcs(int32_t *dst, char **src, size_t nms, size_t len, struct _TYPEDEF___mbstate_t *ps);
 size_t wcslen(const int32_t *s);
 int wctob(int32_t wc);
+int32_t towlower(int32_t wc);
 int32_t *wmemcpy(int32_t *dest, const int32_t *src, size_t n);
 int32_t *wmemmove(int32_t *dest, const int32_t *src, size_t n);
 int32_t *wmemset(int32_t *wcs, int32_t wc, size_t n);
@@ -188,6 +190,7 @@ int pthread_mutex_unlock(void *mutex);
 int pthread_cond_wait(void *cond, void *mutex);
 int pthread_cond_timedwait(void *cond, void *mutex, const struct timespec *abstime);
 int fcntl(int fd, int cmd, ...);
+int writev(int fd, const struct iovec *iov, int iovcnt);
 int ioctl(int fd, unsigned long request, ...);
 int poll(struct pollfd *fds, unsigned long nfds, int timeout);
 int gettimeofday(struct timeval *tv, void *tz);
