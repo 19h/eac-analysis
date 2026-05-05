@@ -838,25 +838,40 @@ static void dispatch_sigtrap(int sig, siginfo_t *info, void *opaque) {
     ucontext_t *uc = (ucontext_t *)opaque;
     uintptr_t rip = (uintptr_t)uc->uc_mcontext.gregs[REG_RIP];
     uintptr_t trap_site = rip - 1u;
-    uintptr_t site0 = (uintptr_t)g_eac_base + EAC_DISPATCH_C80B9;
-    uintptr_t site1 = (uintptr_t)g_eac_base + EAC_DISPATCH_CDAC7;
 
-    if (trap_site == site0 || trap_site == site1) {
+    for (size_t idx = 0; idx < g_dispatch_site_count; ++idx) {
+        uintptr_t site = (uintptr_t)g_eac_base + g_dispatch_sites[idx];
+        uint64_t target_value = 0;
+        uint64_t vm_ip_value = 0;
+        if (trap_site != site) continue;
+
         uintptr_t slot = (uintptr_t)uc->uc_mcontext.gregs[REG_RAX];
         uintptr_t index = (uintptr_t)uc->uc_mcontext.gregs[REG_RBX];
         uintptr_t frame = (uintptr_t)uc->uc_mcontext.gregs[REG_RBP];
-        uintptr_t target = *(const uintptr_t *)slot;
-        uint64_t vm_ip = *(const uint64_t *)(frame + 0x0a);
-        uint32_t vm_flags = *(const uint32_t *)(frame + 0x23);
-        uint32_t vm_state = *(const uint32_t *)(frame + 0x170);
-        uint8_t vm_byte = *(const uint8_t *)(frame + 0x194);
-        uintptr_t table = *(const uintptr_t *)(frame + 0x10f);
+        uintptr_t target;
+        uint64_t table_value = 0;
+        uint32_t vm_flags = 0;
+        uint32_t vm_state = 0;
+        uint8_t vm_byte = 0;
         uint16_t ip_words[EAC_IP_WORD_COUNT];
-        read_ip_words(vm_ip, ip_words);
-        size_t idx = trap_site == site0 ? 0u : 1u;
-        dispatch_trace_write(idx, trap_site - (uintptr_t)g_eac_base, slot, index, target,
-                             frame, vm_ip, vm_flags, vm_state, vm_byte, table,
-                             ip_words);
+        if (!read_mapped_u64(slot, &target_value)) {
+            signal(SIGTRAP, SIG_DFL);
+            uc->uc_mcontext.gregs[REG_RIP] = (greg_t)trap_site;
+            return;
+        }
+        target = (uintptr_t)target_value;
+        (void)read_mapped_u64(frame + 0x0a, &vm_ip_value);
+        (void)read_mapped_u32(frame + 0x23, &vm_flags);
+        (void)read_mapped_u32(frame + 0x170, &vm_state);
+        (void)read_mapped_u8(frame + 0x194, &vm_byte);
+        (void)read_mapped_u64(frame + 0x10f, &table_value);
+        read_ip_words_mapped(vm_ip_value, ip_words);
+        if (dispatch_focus_match(g_dispatch_sites[idx])) {
+            dispatch_trace_write(idx, trap_site - (uintptr_t)g_eac_base, slot, index, target,
+                                 frame, vm_ip_value, vm_flags, vm_state, vm_byte,
+                                 (uintptr_t)table_value, ip_words);
+            dispatch_focus_maybe_stop(g_dispatch_sites[idx]);
+        }
         uc->uc_mcontext.gregs[REG_RIP] = (greg_t)target;
         return;
     }
@@ -910,6 +925,13 @@ static void install_dispatch_trace(void *sym) {
     g_dispatch_limit = parse_ul(getenv("EAC_DISPATCH_LIMIT"), 4096);
     if (g_dispatch_limit == 0) g_dispatch_limit = 1;
     g_dispatch_detail = env_is_one_driver("EAC_DISPATCH_DETAIL");
+    g_dispatch_site_count = 0;
+    g_dispatch_focus_site_count = 0;
+    g_dispatch_focus_hits = 0;
+    g_dispatch_stop_after_matches = parse_ul(getenv("EAC_DISPATCH_STOP_AFTER_MATCHES"), 0);
+    add_default_dispatch_sites();
+    parse_dispatch_sites(getenv("EAC_DISPATCH_EXTRA_SITES"), 0);
+    parse_dispatch_sites(getenv("EAC_DISPATCH_FOCUS_SITES"), 1);
     g_tail_trace = env_is_one_driver("EAC_VMTAIL_TRACE");
     g_tail_regs = env_is_one_driver("EAC_VMTAIL_REGS");
     g_tail_scratch = env_is_one_driver("EAC_VMTAIL_SCRATCH");
@@ -933,9 +955,7 @@ static void install_dispatch_trace(void *sym) {
         add_default_scratch_offsets();
         parse_scratch_offsets(getenv("EAC_VMTAIL_SCRATCH_OFFSETS"));
     }
-    if (g_tail_mem) {
-        load_read_ranges();
-    }
+    load_read_ranges();
 
     Dl_info info;
     memset(&info, 0, sizeof(info));
@@ -955,8 +975,9 @@ static void install_dispatch_trace(void *sym) {
         return;
     }
 
-    if (patch_dispatch_byte(g_eac_base + EAC_DISPATCH_C80B9) != 0) return;
-    if (patch_dispatch_byte(g_eac_base + EAC_DISPATCH_CDAC7) != 0) return;
+    for (size_t i = 0; i < g_dispatch_site_count; ++i) {
+        if (patch_dispatch_byte(g_eac_base + g_dispatch_sites[i]) != 0) return;
+    }
     if (g_tail_trace) {
         for (size_t i = 0; i < g_tail_site_count; ++i) {
             if (patch_dispatch_byte(g_eac_base + g_tail_sites[i].off) != 0) return;
@@ -964,15 +985,21 @@ static void install_dispatch_trace(void *sym) {
     }
 
     fprintf(stderr,
-            "[DRIVER] dispatch trace enabled base=%p sites=+0x%x,+0x%x limit=%" PRIu64
+            "[DRIVER] dispatch trace enabled base=%p dispatch_sites=%zu limit=%" PRIu64
             " detail=%d tail=%d tail_regs=%d tail_scratch=%d tail_mem=%d"
             " tail_limit=%" PRIu64
             " tail_sites=%zu scratch_offsets=%zu read_ranges=%zu focus_ips=%zu"
-            " focus_sites=%zu stop_after_matches=%" PRIu64 "\n",
-            (void *)g_eac_base, EAC_DISPATCH_C80B9, EAC_DISPATCH_CDAC7, g_dispatch_limit,
+            " focus_sites=%zu stop_after_matches=%" PRIu64
+            " dispatch_focus_sites=%zu dispatch_stop_after_matches=%" PRIu64 "\n",
+            (void *)g_eac_base, g_dispatch_site_count, g_dispatch_limit,
             g_dispatch_detail, g_tail_trace, g_tail_regs, g_tail_scratch, g_tail_mem,
             g_tail_limit, g_tail_site_count, g_scratch_offset_count, g_read_range_count,
-            g_tail_focus_ip_count, g_tail_focus_site_count, g_tail_stop_after_matches);
+            g_tail_focus_ip_count, g_tail_focus_site_count, g_tail_stop_after_matches,
+            g_dispatch_focus_site_count, g_dispatch_stop_after_matches);
+    for (size_t i = 0; i < g_dispatch_site_count; ++i) {
+        fprintf(stderr, "[DRIVER] dispatch site +0x%lx\n",
+                (unsigned long)g_dispatch_sites[i]);
+    }
     for (size_t i = 0; g_tail_trace && i < g_tail_site_count; ++i) {
         fprintf(stderr, "[DRIVER] tail site +0x%lx -> %s\n",
                 (unsigned long)g_tail_sites[i].off, tail_reg_name(g_tail_sites[i].reg));
