@@ -49,7 +49,7 @@ def semantic_ranges(path):
 
 
 def overlap_bytes(start, stop, ranges):
-    total = 0
+    intervals = []
     sources = set()
     for r_start, r_stop, source in ranges:
         if r_stop <= start:
@@ -59,9 +59,16 @@ def overlap_bytes(start, stop, ranges):
         left = max(start, r_start)
         right = min(stop, r_stop)
         if right > left:
-            total += right - left
+            intervals.append((left, right))
             sources.add(source)
-    return min(total, stop - start), sources
+    intervals.sort()
+    merged = []
+    for left, right in intervals:
+        if not merged or left > merged[-1][1]:
+            merged.append([left, right])
+        else:
+            merged[-1][1] = max(merged[-1][1], right)
+    return sum(right - left for left, right in merged), sources
 
 
 def classify(row, uncovered):
