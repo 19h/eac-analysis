@@ -159,7 +159,9 @@ def parse_run_metadata(trace_dir):
         "driver_tail_sites": "",
         "driver_tail_regs": "0",
         "driver_tail_scratch": "0",
+        "driver_tail_mem": "0",
         "driver_scratch_offsets": "",
+        "driver_read_ranges": "",
         "driver_detail": "",
         "driver_tail_trace": "0",
         "env_flags": "",
@@ -189,7 +191,9 @@ def parse_run_metadata(trace_dir):
                 meta["driver_tail_sites"] = fields.get("tail_sites", "")
                 meta["driver_tail_regs"] = fields.get("tail_regs", "0")
                 meta["driver_tail_scratch"] = fields.get("tail_scratch", "0")
+                meta["driver_tail_mem"] = fields.get("tail_mem", "0")
                 meta["driver_scratch_offsets"] = fields.get("scratch_offsets", "")
+                meta["driver_read_ranges"] = fields.get("read_ranges", "")
                 meta["driver_detail"] = fields.get("detail", "")
                 meta["driver_tail_trace"] = fields.get("tail", "0")
             if dispatch_seen and call_seen and line.startswith("[VMTAIL]"):
@@ -204,6 +208,8 @@ def parse_run_metadata(trace_dir):
         meta["driver_tail_regs"] = "1"
     if "EAC_VMTAIL_SCRATCH" in env_flags:
         meta["driver_tail_scratch"] = "1"
+    if "EAC_VMTAIL_MEM" in env_flags:
+        meta["driver_tail_mem"] = "1"
     if meta["run_mode"]:
         meta["runtime_config"] = f"x_mode_{meta['run_mode']}"
     elif "local-blocked" in str(trace_dir):
@@ -324,8 +330,10 @@ def make_rows(args):
             "driver_tail_sites": meta["driver_tail_sites"],
             "driver_tail_regs": meta["driver_tail_regs"],
             "driver_tail_scratch": meta["driver_tail_scratch"],
+            "driver_tail_mem": meta["driver_tail_mem"],
             "driver_tail_trace": meta["driver_tail_trace"],
             "driver_scratch_offsets": meta["driver_scratch_offsets"],
+            "driver_read_ranges": meta["driver_read_ranges"],
             "trace_cap_status": trace_cap_status,
             "trace_rows": str(data["rows"]),
             "source_entries": str(len(data["source_entries"])),
@@ -367,8 +375,10 @@ def emit_tsv(rows):
         "driver_tail_sites",
         "driver_tail_regs",
         "driver_tail_scratch",
+        "driver_tail_mem",
         "driver_tail_trace",
         "driver_scratch_offsets",
+        "driver_read_ranges",
         "trace_cap_status",
         "trace_rows",
         "source_entries",
@@ -412,6 +422,8 @@ def emit_markdown(rows):
             flags.append("regs")
         if row["driver_tail_scratch"] == "1":
             flags.append("scratch")
+        if row["driver_tail_mem"] == "1":
+            flags.append("mem")
         if row["trace_class"] == "synthetic_filled_trace":
             flags.append("synthetic")
         if not flags and row.get("driver_tail_trace") == "1":

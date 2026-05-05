@@ -120,6 +120,7 @@ def cross_trace_metrics(rows, trace_dir):
     run_only_rows = [row for row in matrix if parse_int(row.get("trace_rows")) == 0 and row.get("has_run_stderr") == "1"]
     classes = Counter(row.get("trace_class", "") for row in matrix)
     concrete_modes = sorted({row.get("run_mode", "") for row in concrete_rows if row.get("run_mode", "")})
+    tail_mem_rows = [row for row in matrix if row.get("driver_tail_mem") == "1"]
     union_sources = max((union_denominator(row.get("source_entries_vs_union", "")) for row in trace_rows), default=0)
     union_targets = max((union_denominator(row.get("target_entries_vs_union", "")) for row in trace_rows), default=0)
     union_starts = max((union_denominator(row.get("start_vm_ips_vs_union", "")) for row in trace_rows), default=0)
@@ -138,6 +139,8 @@ def cross_trace_metrics(rows, trace_dir):
         "Instruction-trace scenarios before synthetic file/hidden/frontier/footprint fill sidecars.")
     add(rows, "dynamic_cross_trace", "run_dirs_without_instruction_trace", len(run_only_rows),
         "Run directories with driver logs but no vm_instruction_trace.tsv; useful for context/register evidence, not bytecode path coverage.")
+    add(rows, "dynamic_cross_trace", "run_dirs_with_tail_mem", len(tail_mem_rows),
+        "Run directories whose driver logs include event-local qword reads from live GPR pointers.")
     add(rows, "dynamic_cross_trace", "trace_class_mix", compact_counter(classes),
         "Trace inventory classes; synthetic rows are derived coverage, not independent runtime configs.")
     add(rows, "dynamic_cross_trace", "concrete_runtime_modes_seen", ",".join(concrete_modes) or "-",
