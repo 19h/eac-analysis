@@ -101,6 +101,9 @@ ARTIFACTS = [
     ("native_handler_environment_coverage_c", TRACE_DIR / "vm_native_handler_environment_coverage.c"),
     ("native_handler_environment_coverage_tsv", TRACE_DIR / "vm_native_handler_environment_coverage.tsv"),
     ("native_handler_environment_coverage_md", TRACE_DIR / "vm_native_handler_environment_coverage.md"),
+    ("binary_data_sections_c", TRACE_DIR / "vm_binary_data_sections.c"),
+    ("binary_data_sections_tsv", TRACE_DIR / "vm_binary_data_sections.tsv"),
+    ("binary_data_sections_md", TRACE_DIR / "vm_binary_data_sections.md"),
     ("static_only_handler_queue_c", TRACE_DIR / "vm_static_only_handler_queue.c"),
     ("static_only_handler_queue_tsv", TRACE_DIR / "vm_static_only_handler_queue.tsv"),
     ("static_only_handler_queue_md", TRACE_DIR / "vm_static_only_handler_queue.md"),
@@ -244,6 +247,8 @@ def c_shape_metrics(rows):
     native_ret_patch_hidden_bridge_index = read_tsv(TRACE_DIR / "vm_native_ret_patch_hidden_bridge.tsv")
     native_handler_environment_coverage = read_text(TRACE_DIR / "vm_native_handler_environment_coverage.c")
     native_handler_environment_coverage_index = read_tsv(TRACE_DIR / "vm_native_handler_environment_coverage.tsv")
+    binary_data_sections = read_text(TRACE_DIR / "vm_binary_data_sections.c")
+    binary_data_sections_index = read_tsv(TRACE_DIR / "vm_binary_data_sections.tsv")
     static_only_handler_queue = read_text(TRACE_DIR / "vm_static_only_handler_queue.c")
     static_only_handler_queue_index = read_tsv(TRACE_DIR / "vm_static_only_handler_queue.tsv")
     static_only_tier0_models = read_text(TRACE_DIR / "vm_static_only_tier0_handler_models.c")
@@ -681,6 +686,29 @@ def c_shape_metrics(rows):
     add(rows, "coverage", "native_handler_environment_coverage_status_mix",
         ",".join(f"{key}:{value}" for key, value in handler_environment_statuses.most_common()) or "-",
         "Status mix for handler-level environment coverage.")
+    add(rows, "data_surface", "binary_data_section_rows",
+        sum(1 for row in binary_data_sections_index if row.get("kind", "") == "section"),
+        "Allocatable ELF sections tracked by the binary data carrier.")
+    add(rows, "data_surface", "binary_data_emitted_section_rows",
+        sum(1 for row in binary_data_sections_index
+            if row.get("kind", "") == "section" and row.get("emitted_data", "") == "yes"),
+        "Allocatable non-executable ELF sections emitted as exact C byte arrays.")
+    add(rows, "data_surface", "binary_data_emitted_bytes",
+        hex(sum(int(row.get("size", "0") or "0", 0) for row in binary_data_sections_index
+                if row.get("kind", "") == "section" and row.get("emitted_data", "") == "yes")),
+        "Exact bytes carried for allocatable non-executable ELF data sections.")
+    add(rows, "data_surface", "binary_data_string_refs",
+        sum(1 for row in binary_data_sections_index if row.get("kind", "") == "string"),
+        "Printable string references indexed from emitted runtime data sections.")
+    add(rows, "data_surface", "binary_data_dispatch_table_rows",
+        sum(1 for row in binary_data_sections_index if row.get("kind", "") == "dispatch_table"),
+        "Embedded .text VM dispatch-table byte carriers.")
+    add(rows, "c_shape", "binary_data_section_arrays",
+        count(r"^static const uint8_t vm_eac_section_\d+_", binary_data_sections),
+        "C byte arrays emitted for exact runtime data sections.")
+    add(rows, "c_shape", "binary_data_dispatch_table_offsets",
+        count(r"^static const uint64_t vm_eac_dispatch_table_raw_offsets\[360\]", binary_data_sections),
+        "Raw 360-entry VM dispatch-table offset array carried in C.")
     add(rows, "coverage", "static_only_handler_queue_rows",
         len(static_only_handler_queue_index),
         "Ranked static-only dispatch entries to convert from sidecar evidence into stronger handler C.")

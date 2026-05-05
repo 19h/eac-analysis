@@ -23,6 +23,7 @@ DEFAULT_SIDECARS = [
     TRACE_DIR / "vm_native_obfuscated_control_model.c",
     TRACE_DIR / "vm_native_ret_patch_hidden_bridge.c",
     TRACE_DIR / "vm_native_handler_environment_coverage.c",
+    TRACE_DIR / "vm_binary_data_sections.c",
     TRACE_DIR / "vm_static_only_handler_queue.c",
     TRACE_DIR / "vm_static_only_tier0_handler_models.c",
     TRACE_DIR / "vm_static_only_tier1_handler_models.c",
