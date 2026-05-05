@@ -84,6 +84,7 @@ ARTIFACTS = [
     ("validated_handlers_retdec_batch06", TRACE_DIR / "vm_validated_handlers_retdec_batch06.c"),
     ("handler_retdec_index_tsv", TRACE_DIR / "vm_handler_retdec_index.tsv"),
     ("handler_retdec_index_md", TRACE_DIR / "vm_handler_retdec_index.md"),
+    ("unresolved_family_chains_c", TRACE_DIR / "vm_unresolved_family_chains.c"),
     ("synthetic_gap_live_snapshot_transfer_probe_tsv", TRACE_DIR / "vm_synthetic_gap_live_snapshot_transfer_probe.tsv"),
     ("synthetic_gap_live_snapshot_transfer_probe_md", TRACE_DIR / "vm_synthetic_gap_live_snapshot_transfer_probe.md"),
     ("synthetic_gap_live_table_evidence_tsv", TRACE_DIR / "vm_synthetic_gap_live_table_evidence.tsv"),
@@ -186,6 +187,7 @@ def c_shape_metrics(rows):
     ]
     handler_retdec_sidecars_all = "\n".join(handler_retdec_sidecars)
     handler_retdec_index = read_tsv(TRACE_DIR / "vm_handler_retdec_index.tsv")
+    unresolved_family_chains = read_text(TRACE_DIR / "vm_unresolved_family_chains.c")
 
     add(rows, "c_shape", "handler_functions", count(r"^static VMOpResult op_entry_\d{3}\(VMState \*vm\) \{", handlers),
         "All-entry handler/operator C functions.")
@@ -304,6 +306,18 @@ def c_shape_metrics(rows):
     add(rows, "c_shape", "handler_retdec_index_rows_with_functions",
         sum(1 for row in handler_retdec_index if int(row.get("function_count") or "0") > 0),
         "Handler RetDec index rows with at least one overlapping native C function.")
+    add(rows, "c_shape", "unresolved_family_chain_functions",
+        count(r"^static void residual_start_[0-9a-f]+\(VMState \*vm\) \{", unresolved_family_chains),
+        "C-shaped evidence functions for residual native-ret-patch / observed-chain synthetic successor families.")
+    add(rows, "c_shape", "unresolved_family_chain_native_ret_patch_records",
+        count(r"evidence_native_ret_patch\(vm,", unresolved_family_chains),
+        "Native return-patch target records referenced by residual family C evidence functions.")
+    add(rows, "c_shape", "unresolved_family_chain_observed_steps",
+        count(r"evidence_chain_step\(vm,", unresolved_family_chains),
+        "Observed-chain reconciliation steps rendered into residual family C evidence functions.")
+    add(rows, "c_shape", "unresolved_family_chain_dispatch_cases",
+        count(r"^    case 0x[0-9a-f]+ull:$", unresolved_family_chains),
+        "Dispatcher cases for residual synthetic successor family starts.")
     add(rows, "c_shape", "path_specialized_functions", count(r"^static VMOpResult path_entry_\d{3}_[0-9a-f]+\(VMState \*vm\) \{", path_handlers),
         "Validated concrete branch-path C functions.")
     add(rows, "c_shape", "direct_top_block_defs", count(r"^static void bb_\d{4}\(VMState \*vm\) \{", direct_top),
