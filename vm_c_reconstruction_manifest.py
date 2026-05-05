@@ -219,6 +219,10 @@ def c_shape_metrics(rows):
         "Residual focused raw-sequence audit sites carried into the full program sketch.")
     add(rows, "c_shape", "program_full_focused_sequence_audit_comments", count(r"focused sequence: source=", program_full),
         "Per-start focused raw-sequence comments carried into the full program sketch.")
+    add(rows, "c_shape", "program_full_observed_chain_bridge_audit_sites", count(r"observed-chain bridge audit @", program_full),
+        "Residual focused chain bridge audit sites carried into the full program sketch.")
+    add(rows, "c_shape", "program_full_observed_chain_bridge_comments", count(r"observed-chain bridge: source=", program_full),
+        "Per-start observed-chain bridge comments carried into the full program sketch.")
     add(rows, "c_shape", "program_full_hidden_chain_resolved_calls", count(r"hidden source entry_\d+ replayed from", program_full),
         "Hidden-chain matches emitted as concrete handler calls before reentering a recovered block.")
     add(rows, "c_shape", "program_full_live_in_role_evidence_sites", count(r"live-in role evidence @", program_full),
@@ -299,6 +303,10 @@ def c_shape_metrics(rows):
         "Residual focused raw-sequence audit sites carried into the combined source bundle.")
     add(rows, "c_shape", "bundle_focused_sequence_audit_comments", count(r"focused sequence: source=", bundle),
         "Per-start focused raw-sequence comments carried into the combined source bundle.")
+    add(rows, "c_shape", "bundle_observed_chain_bridge_audit_sites", count(r"observed-chain bridge audit @", bundle),
+        "Residual focused chain bridge audit sites carried into the combined source bundle.")
+    add(rows, "c_shape", "bundle_observed_chain_bridge_comments", count(r"observed-chain bridge: source=", bundle),
+        "Per-start observed-chain bridge comments carried into the combined source bundle.")
     add(rows, "c_shape", "bundle_hidden_chain_resolved_calls", count(r"hidden source entry_\d+ replayed from", bundle),
         "Hidden-chain matches emitted as concrete handler calls inside the combined source bundle.")
     add(rows, "c_shape", "bundle_live_in_role_evidence_sites", count(r"live-in role evidence @", bundle),
