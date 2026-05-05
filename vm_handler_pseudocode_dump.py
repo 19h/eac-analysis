@@ -117,6 +117,11 @@ def fmt_ip_update(delta):
     return f"vm->ip -= 0x{-delta:x};"
 
 
+def slot_is_table_offset(expr):
+    compact = (expr or "").replace(" ", "")
+    return "<<0x3" in compact or "<<3" in compact or "*8" in compact or "0x8*" in compact
+
+
 def likely_dispatch_comment(row):
     long_ir = row.get("long_branch_ir", "")
     sampled_ir = row.get("sampled_operand_ir", "")
@@ -159,6 +164,14 @@ def emit_preamble():
     print("")
     print("extern uintptr_t dispatch_table[360];")
     print("")
+    print("static int vm_entry_from_slot_index(uint32_t slot) {")
+    print("    return slot < 360u ? (int)slot : -1;")
+    print("}")
+    print("")
+    print("static int vm_entry_from_table_offset(uint32_t slot) {")
+    print("    return ((slot & 7u) == 0u && (slot >> 3) < 360u) ? (int)(slot >> 3) : -1;")
+    print("}")
+    print("")
 
 
 def emit_handler(row, transition, tail_ip_advances, args):
@@ -198,6 +211,8 @@ def emit_handler(row, transition, tail_ip_advances, args):
     slot_expr = single_expr(row.get("dispatch_slot_ir", ""))
     if slot_expr and is_complete_expr(slot_expr, args.max_expr_len):
         print(f"    r.slot = (uint32_t)({c_expr(slot_expr)});")
+        helper = "vm_entry_from_table_offset" if slot_is_table_offset(slot_expr) else "vm_entry_from_slot_index"
+        print(f"    r.next_entry = {helper}(r.slot);")
     elif row.get("dispatch_slot_ir"):
         print(f"    /* slot variants: {c_comment(clip(c_expr(row['dispatch_slot_ir']), args.max_comment_len))} */")
 
