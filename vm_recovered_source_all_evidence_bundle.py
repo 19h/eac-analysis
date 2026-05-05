@@ -224,6 +224,7 @@ def main():
     print("void *calloc(size_t nmemb, size_t size);")
     print("char *fgets();")
     print("int feof();")
+    print("size_t fwrite(const void *ptr, size_t size, size_t nmemb, void *stream);")
     print("void free(void *ptr);")
     print("void *memchr(const void *s, int c, size_t n);")
     print("void *memcpy(void *dest, const void *src, size_t n);")
