@@ -205,7 +205,7 @@ def make_rows(args):
     missing_successors = {row["_missing_int"] for row in live_rows if row.get("_missing_int") is not None}
     events = load_events(args.gpr_run, starts)
     tail_mem_run = args.tail_mem_run or args.gpr_run
-    tail_events = load_events(tail_mem_run, missing_successors)
+    tail_events = load_events(tail_mem_run, starts | missing_successors)
     skeleton_tail_sites = load_skeleton_tail_sites(args.skeletons)
     table = read_dispatch_table(args.eac)
     target_to_entry = {target: entry for entry, target in enumerate(table)}
@@ -216,7 +216,9 @@ def make_rows(args):
         tail_info = skeleton_tail_sites.get(row.get("source_entry", ""), {})
         tail_site = tail_info.get("tail_site")
         fields = select_event(events, start)
-        tail_fields = select_event(tail_events, missing, tail_site) if missing is not None else None
+        tail_fields = select_event(tail_events, start, tail_site)
+        if tail_fields is None and missing is not None:
+            tail_fields = select_event(tail_events, missing, tail_site)
         target_expr = row.get("target_expr", "")
         regs = sorted(set(REG_RE.findall(target_expr)))
         deref_regs = sorted(set(match.group("reg") for match in DEREF_RE.finditer(target_expr)))
