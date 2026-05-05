@@ -31,6 +31,8 @@ ARTIFACTS = [
     ("synthetic_gap_live_in_roles_md", TRACE_DIR / "vm_synthetic_gap_live_in_roles.md"),
     ("live_in_final_tail_site_probe_tsv", TRACE_DIR / "vm_live_in_final_tail_site_probe.tsv"),
     ("live_in_final_tail_site_probe_md", TRACE_DIR / "vm_live_in_final_tail_site_probe.md"),
+    ("synthetic_gap_live_in_reentry_probe_tsv", TRACE_DIR / "vm_synthetic_gap_live_in_reentry_probe.tsv"),
+    ("synthetic_gap_live_in_reentry_probe_md", TRACE_DIR / "vm_synthetic_gap_live_in_reentry_probe.md"),
     ("trace_coverage_matrix_tsv", TRACE_DIR / "vm_trace_coverage_matrix.tsv"),
     ("trace_coverage_matrix_md", TRACE_DIR / "vm_trace_coverage_matrix.md"),
     ("static_coverage_audit_tsv", TRACE_DIR / "vm_static_coverage_audit.tsv"),
@@ -151,6 +153,10 @@ def c_shape_metrics(rows):
         "Live-in role row comments carried into the full program sketch.")
     add(rows, "c_shape", "program_full_final_tail_site_proof_comments", count(r"final-tail site proof:", program_full),
         "Exact native final-tail site proof comments carried into the full program sketch.")
+    add(rows, "c_shape", "program_full_live_in_reentry_probe_sites", count(r"live-in reentry probe @", program_full),
+        "Synthetic gap sites annotated with joined live-in/dynamic-reentry evidence.")
+    add(rows, "c_shape", "program_full_live_in_reentry_comments", count(r"live-in reentry: source=", program_full),
+        "Live-in reentry rows carried into the full program sketch.")
     add(rows, "c_shape", "bundle_block_defs", count(r"^static void prog_bb_\d{4}\(VMState \*vm, uint64_t vm_ip\) \{", bundle),
         "Full program block functions inside the combined source bundle.")
     add(rows, "c_shape", "bundle_block_calls", count(r"^    prog_bb_\d{4}\(vm, vm_ip\);$", bundle),
@@ -181,6 +187,10 @@ def c_shape_metrics(rows):
         "Live-in role row comments carried into the combined source bundle.")
     add(rows, "c_shape", "bundle_final_tail_site_proof_comments", count(r"final-tail site proof:", bundle),
         "Exact native final-tail site proof comments carried into the combined source bundle.")
+    add(rows, "c_shape", "bundle_live_in_reentry_probe_sites", count(r"live-in reentry probe @", bundle),
+        "Synthetic gap sites annotated with joined live-in/dynamic-reentry evidence inside the combined source bundle.")
+    add(rows, "c_shape", "bundle_live_in_reentry_comments", count(r"live-in reentry: source=", bundle),
+        "Live-in reentry rows carried into the combined source bundle.")
 
 
 def coverage_metrics(rows):
