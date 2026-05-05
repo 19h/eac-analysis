@@ -30,7 +30,7 @@ def emit_preamble():
     print("/*")
     print(" * Path-specialized VM handler pseudocode.")
     print(" * Each function is one concrete static-replay branch path with sampled transfer expressions.")
-    print(" * This is a C-like analysis artifact, not drop-in buildable source.")
+    print(" * This is syntax-checkable C, but still an analysis artifact rather than drop-in source.")
     print(" */")
     print("#include <stdint.h>")
     print("")
