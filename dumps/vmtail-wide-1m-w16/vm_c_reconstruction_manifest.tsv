@@ -206,6 +206,15 @@ artifact	native_obfuscated_second_stage_slot_proof_tsv_bytes	2660	Current file s
 artifact	native_obfuscated_second_stage_slot_proof_md_path	dumps/vmtail-wide-1m-w16/vm_native_obfuscated_second_stage_slot_proof.md	Generated reconstruction artifact.
 artifact	native_obfuscated_second_stage_slot_proof_md_lines	11	Current line count.
 artifact	native_obfuscated_second_stage_slot_proof_md_bytes	1395	Current file size in bytes.
+artifact	native_obfuscated_second_stage_stack_source_c_path	dumps/vmtail-wide-1m-w16/vm_native_obfuscated_second_stage_stack_source.c	Generated reconstruction artifact.
+artifact	native_obfuscated_second_stage_stack_source_c_lines	106	Current line count.
+artifact	native_obfuscated_second_stage_stack_source_c_bytes	5197	Current file size in bytes.
+artifact	native_obfuscated_second_stage_stack_source_tsv_path	dumps/vmtail-wide-1m-w16/vm_native_obfuscated_second_stage_stack_source.tsv	Generated reconstruction artifact.
+artifact	native_obfuscated_second_stage_stack_source_tsv_lines	6	Current line count.
+artifact	native_obfuscated_second_stage_stack_source_tsv_bytes	1309	Current file size in bytes.
+artifact	native_obfuscated_second_stage_stack_source_md_path	dumps/vmtail-wide-1m-w16/vm_native_obfuscated_second_stage_stack_source.md	Generated reconstruction artifact.
+artifact	native_obfuscated_second_stage_stack_source_md_lines	11	Current line count.
+artifact	native_obfuscated_second_stage_stack_source_md_bytes	1080	Current file size in bytes.
 artifact	native_obfuscated_second_stage_rbx_provenance_c_path	dumps/vmtail-wide-1m-w16/vm_native_obfuscated_second_stage_rbx_provenance.c	Generated reconstruction artifact.
 artifact	native_obfuscated_second_stage_rbx_provenance_c_lines	93	Current line count.
 artifact	native_obfuscated_second_stage_rbx_provenance_c_bytes	4691	Current file size in bytes.
@@ -217,13 +226,13 @@ artifact	native_obfuscated_second_stage_rbx_provenance_md_lines	11	Current line 
 artifact	native_obfuscated_second_stage_rbx_provenance_md_bytes	1149	Current file size in bytes.
 artifact	native_obfuscated_second_stage_model_c_path	dumps/vmtail-wide-1m-w16/vm_native_obfuscated_second_stage_model.c	Generated reconstruction artifact.
 artifact	native_obfuscated_second_stage_model_c_lines	138	Current line count.
-artifact	native_obfuscated_second_stage_model_c_bytes	7629	Current file size in bytes.
+artifact	native_obfuscated_second_stage_model_c_bytes	8364	Current file size in bytes.
 artifact	native_obfuscated_second_stage_model_tsv_path	dumps/vmtail-wide-1m-w16/vm_native_obfuscated_second_stage_model.tsv	Generated reconstruction artifact.
 artifact	native_obfuscated_second_stage_model_tsv_lines	6	Current line count.
-artifact	native_obfuscated_second_stage_model_tsv_bytes	2868	Current file size in bytes.
+artifact	native_obfuscated_second_stage_model_tsv_bytes	3490	Current file size in bytes.
 artifact	native_obfuscated_second_stage_model_md_path	dumps/vmtail-wide-1m-w16/vm_native_obfuscated_second_stage_model.md	Generated reconstruction artifact.
 artifact	native_obfuscated_second_stage_model_md_lines	11	Current line count.
-artifact	native_obfuscated_second_stage_model_md_bytes	1231	Current file size in bytes.
+artifact	native_obfuscated_second_stage_model_md_bytes	1311	Current file size in bytes.
 artifact	target_only_handlers_retdec_path	dumps/vmtail-wide-1m-w16/vm_target_only_handlers_retdec.c	Generated reconstruction artifact.
 artifact	target_only_handlers_retdec_lines	317	Current line count.
 artifact	target_only_handlers_retdec_bytes	12635	Current file size in bytes.
@@ -403,6 +412,11 @@ c_shape	native_obfuscated_second_stage_slot_proof_net_zero_rows	5	Second-stage c
 c_shape	native_obfuscated_second_stage_slot_proof_dynamic_hits	28	Focused dynamic hits covered by the static slot-formula proof artifact.
 c_shape	native_obfuscated_second_stage_slot_proof_static_status_mix	static_slot_formula_net_zero:5	Static status mix for second-stage slot formula proof rows.
 c_shape	native_obfuscated_second_stage_slot_proof_status_mix	static_dynamic_slot_formula_proven_for_observed_hits:5	Proof status mix after joining static slot formula proof with dynamic slot/base checks.
+c_shape	native_obfuscated_second_stage_stack_source_rows	5	Static stack-source proof rows for second-stage handler-entry loads.
+c_shape	native_obfuscated_second_stage_stack_source_c_functions	5	Syntax-checkable C helper functions for second-stage stack-source evidence.
+c_shape	native_obfuscated_second_stage_stack_source_dispatch_cases	5	Dispatcher cases in the second-stage stack-source C artifact.
+c_shape	native_obfuscated_second_stage_stack_source_proven_rows	5	Rows where Capstone proves qword [rsp+0x88] reaches rbx before the shift.
+c_shape	native_obfuscated_second_stage_stack_source_status_mix	static_stack_source_to_rbx_shift_proven:5	Status mix for static stack-source proof rows.
 c_shape	native_obfuscated_second_stage_rbx_provenance_rows	5	RBX handler-entry provenance rows for second-stage computed dispatch sites.
 c_shape	native_obfuscated_second_stage_rbx_provenance_c_functions	5	Syntax-checkable C helper functions for second-stage RBX provenance evidence.
 c_shape	native_obfuscated_second_stage_rbx_provenance_dispatch_cases	5	Dispatcher cases in the second-stage RBX provenance C artifact.
@@ -414,7 +428,7 @@ c_shape	native_obfuscated_second_stage_model_c_functions	5	Syntax-checkable C he
 c_shape	native_obfuscated_second_stage_model_dispatch_cases	5	Dispatcher cases in the combined second-stage model artifact.
 c_shape	native_obfuscated_second_stage_model_dynamic_hits	28	Focused dynamic hits joined into the combined second-stage model artifact.
 c_shape	native_obfuscated_second_stage_model_rbx_observed_rows	10	Single-step RBX provenance rows joined into the combined second-stage model artifact.
-c_shape	native_obfuscated_second_stage_model_status_mix	observed_stack_handler_entry_dispatch_model:5	Status mix for the combined second-stage C model.
+c_shape	native_obfuscated_second_stage_model_status_mix	static_stack_handler_entry_dispatch_model_for_observed_hits:5	Status mix for the combined second-stage C model.
 c_shape	target_only_handler_retdec_selected_ranges	3	Target-only VM handler native ranges selected for targeted RetDec.
 c_shape	target_only_handler_retdec_functions	8	Targeted RetDec C functions emitted from target-only VM handler native ranges.
 c_shape	target_only_handler_retdec_ranges	8	Native address ranges emitted by RetDec for target-only handler coverage.
@@ -873,11 +887,14 @@ native_acceleration	native_obfuscated_second_stage_dynamic_uses_native_generator
 native_acceleration	native_obfuscated_second_stage_slot_proof_dump_source_lines	613	Native Capstone-backed slot-formula proof generator source size for second-stage computed thunks.
 native_acceleration	native_obfuscated_second_stage_slot_proof_dump_binary_bytes	26016	Current compiled native slot-formula proof generator size.
 native_acceleration	native_obfuscated_second_stage_slot_proof_uses_native_generator	yes	Whether the second-stage slot proof C/TSV/Markdown artifacts are generated by the native C tool.
+native_acceleration	native_obfuscated_second_stage_stack_source_dump_source_lines	451	Native Capstone-backed stack-source proof generator source size for second-stage computed thunks.
+native_acceleration	native_obfuscated_second_stage_stack_source_dump_binary_bytes	25496	Current compiled native stack-source proof generator size.
+native_acceleration	native_obfuscated_second_stage_stack_source_uses_native_generator	yes	Whether the second-stage stack-source proof C/TSV/Markdown artifacts are generated by the native C tool.
 native_acceleration	native_obfuscated_second_stage_rbx_provenance_dump_source_lines	415	Native RBX provenance trace-index generator source size for second-stage computed thunks.
 native_acceleration	native_obfuscated_second_stage_rbx_provenance_dump_binary_bytes	25144	Current compiled native RBX provenance generator size.
 native_acceleration	native_obfuscated_second_stage_rbx_provenance_uses_native_generator	yes	Whether the second-stage RBX provenance C/TSV/Markdown artifacts are generated by the native C tool.
-native_acceleration	native_obfuscated_second_stage_model_dump_source_lines	519	Native combined C model generator source size for second-stage computed thunks.
-native_acceleration	native_obfuscated_second_stage_model_dump_binary_bytes	246944	Current compiled native combined second-stage model generator size.
+native_acceleration	native_obfuscated_second_stage_model_dump_source_lines	582	Native combined C model generator source size for second-stage computed thunks.
+native_acceleration	native_obfuscated_second_stage_model_dump_binary_bytes	253920	Current compiled native combined second-stage model generator size.
 native_acceleration	native_obfuscated_second_stage_model_uses_native_generator	yes	Whether the combined second-stage model C/TSV/Markdown artifacts are generated by the native C tool.
 gate	syntax_check	make pseudocode-syntax-check	Regenerates and warning-checks the generated C-like reconstruction artifacts with C11 -fsyntax-only.
 gate	object_check	make pseudocode-object-check	Codegen-compiles the combined source bundle to /tmp/eacsym-vm_recovered_source_bundle.o.
