@@ -56,6 +56,7 @@ SHA-256: `0b44ad59697129534189efdb75cde2b96245f831438e9f6a53cb7725f190d739`
 - `vm_synthetic_gap_sampled_control_correlation.py`: joins the residual starts with sampled-operand target/delta sidecars, table-memory rejection, and the next hooked source to separate sampled-target support from sequence-only evidence.
 - `vm_synthetic_gap_focused_direct_trace_audit.py`: joins the residual starts against focused live/state residual traces, verifies direct rows whose start VM IP equals the residual start, and marks recovered-block bridge candidates.
 - `vm_synthetic_gap_focused_sequence_audit.py`: reads raw focused live/state VMTAIL order around residual starts, records indirect tail-site hops, and groups residual-to-residual chains that are sequence evidence but not hard CFG.
+- `vm_synthetic_gap_observed_chain_bridge.py`: joins focused raw residual chains to terminal focused direct bridges or the `0x122e3c -> 0x2c0468` context reentry, separating hard focused-direct promotions from disabled observed-chain bridge evidence.
 - `vm_synthetic_gap_live_in_roles.py`: fallback join for synthetic gap target expressions that still depend on live-in GPRs. The current transfer probe leaves no live-in rows, so this artifact is header-only unless a future replay regresses or exposes a new live-in class.
 - `vm_live_in_final_tail_site_probe.py`: follow-up exact native-tail-site memory summary for live-in source classes; currently header-only because there are no active live-in synthetic gap rows.
 - `vm_synthetic_gap_live_in_reentry_probe.py`: follow-up join of live-in synthetic starts, dynamic next-hooked-source stitch rows, and exact final-tail source proof; currently header-only because there are no active live-in synthetic gap rows.
@@ -182,6 +183,8 @@ SHA-256: `0b44ad59697129534189efdb75cde2b96245f831438e9f6a53cb7725f190d739`
 - `dumps/vmtail-wide-1m-w16/vm_synthetic_gap_focused_direct_trace_audit.md`: Markdown digest of focused direct-trace classes and hard bridge candidates.
 - `dumps/vmtail-wide-1m-w16/vm_synthetic_gap_focused_sequence_audit.tsv`: per-residual raw focused VMTAIL sequence audit, including indirect tail-site hops and residual-to-residual chain paths.
 - `dumps/vmtail-wide-1m-w16/vm_synthetic_gap_focused_sequence_audit.md`: Markdown digest of focused sequence classes, residual links, and chain terminals.
+- `dumps/vmtail-wide-1m-w16/vm_synthetic_gap_observed_chain_bridge.tsv`: per-residual join of focused raw chain paths, terminal recovered destinations, primary dynamic next-hook evidence, and bridge action.
+- `dumps/vmtail-wide-1m-w16/vm_synthetic_gap_observed_chain_bridge.md`: Markdown digest showing 5 hard focused-direct bridges, 7 disabled chains to focused direct bridges, and 8 disabled chains to the recovered `0x122e3c -> 0x2c0468` context reentry.
 - `dumps/vmtail-wide-1m-w16/vm_synthetic_gap_symbolic_successors.tsv`: audit of the source-246 symbolic-slot successor candidates.
 - `dumps/vmtail-wide-1m-w16/vm_synthetic_gap_symbolic_successors.md`: Markdown digest of the symbolic successor audit, including recovered/mid-block/uncovered status.
 - `dumps/vmtail-wide-1m-w16/vm_synthetic_gap_live_in_roles.tsv`: current header-only live-register role join; it will carry role columns if any future gap transfer remains live-in-dependent.

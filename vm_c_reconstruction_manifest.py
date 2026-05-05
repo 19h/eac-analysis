@@ -47,6 +47,8 @@ ARTIFACTS = [
     ("synthetic_gap_focused_direct_trace_audit_md", TRACE_DIR / "vm_synthetic_gap_focused_direct_trace_audit.md"),
     ("synthetic_gap_focused_sequence_audit_tsv", TRACE_DIR / "vm_synthetic_gap_focused_sequence_audit.tsv"),
     ("synthetic_gap_focused_sequence_audit_md", TRACE_DIR / "vm_synthetic_gap_focused_sequence_audit.md"),
+    ("synthetic_gap_observed_chain_bridge_tsv", TRACE_DIR / "vm_synthetic_gap_observed_chain_bridge.tsv"),
+    ("synthetic_gap_observed_chain_bridge_md", TRACE_DIR / "vm_synthetic_gap_observed_chain_bridge.md"),
     ("synthetic_gap_symbolic_successors_tsv", TRACE_DIR / "vm_synthetic_gap_symbolic_successors.tsv"),
     ("synthetic_gap_symbolic_successors_md", TRACE_DIR / "vm_synthetic_gap_symbolic_successors.md"),
     ("synthetic_gap_live_in_roles_tsv", TRACE_DIR / "vm_synthetic_gap_live_in_roles.tsv"),
@@ -966,6 +968,57 @@ def synthetic_gap_focused_sequence_audit_metrics(rows):
         "Residual starts whose chain does not reach a focused direct bridge in the current focused traces.")
 
 
+def synthetic_gap_observed_chain_bridge_metrics(rows):
+    bridge_rows = read_tsv(TRACE_DIR / "vm_synthetic_gap_observed_chain_bridge.tsv")
+    classes = Counter(row.get("observed_chain_bridge_class", "") for row in bridge_rows)
+    actions = Counter(row.get("bridge_action", "") for row in bridge_rows)
+    relations = Counter(row.get("primary_vs_focused_first_hop", "") for row in bridge_rows)
+    disabled = [
+        row.get("synthetic_start_vm_ip", "")
+        for row in bridge_rows
+        if row.get("bridge_action", "") == "disabled_observed_chain_bridge"
+    ]
+    hard = [
+        row.get("synthetic_start_vm_ip", "")
+        for row in bridge_rows
+        if row.get("bridge_action", "") == "hard_cfg"
+    ]
+    context = [
+        row.get("synthetic_start_vm_ip", "")
+        for row in bridge_rows
+        if row.get("observed_chain_bridge_class", "") == "sequence_chain_to_recovered_context_reentry"
+    ]
+    direct_terminal = [
+        row.get("synthetic_start_vm_ip", "")
+        for row in bridge_rows
+        if row.get("observed_chain_bridge_class", "") == "sequence_chain_to_focused_direct_bridge"
+    ]
+
+    add(rows, "gap_observed_chain", "synthetic_gap_observed_chain_bridge_rows", len(bridge_rows),
+        "Focused raw-sequence residual chains joined to terminal focused direct bridges or recovered context reentries.")
+    add(rows, "gap_observed_chain", "synthetic_gap_observed_chain_bridge_class_mix",
+        ",".join(f"{key}:{value}" for key, value in classes.most_common()) or "-",
+        "Observed focused residual chain bridge classes.")
+    add(rows, "gap_observed_chain", "synthetic_gap_observed_chain_bridge_action_mix",
+        ",".join(f"{key}:{value}" for key, value in actions.most_common()) or "-",
+        "Whether observed chain evidence is hard CFG or disabled/comment-only bridge evidence.")
+    add(rows, "gap_observed_chain", "synthetic_gap_observed_chain_primary_relation_mix",
+        ",".join(f"{key}:{value}" for key, value in relations.most_common()) or "-",
+        "Whether the focused first hop matches or diverges from the primary dynamic next-hook bridge.")
+    add(rows, "gap_observed_chain", "synthetic_gap_observed_chain_disabled_bridge_starts",
+        ",".join(disabled) or "-",
+        "Residual starts with focused sequence evidence strong enough for disabled observed-chain bridge snippets, not hard CFG.")
+    add(rows, "gap_observed_chain", "synthetic_gap_observed_chain_hard_cfg_starts",
+        ",".join(hard) or "-",
+        "Residual starts already promoted by focused direct rows starting exactly at the residual VM IP.")
+    add(rows, "gap_observed_chain", "synthetic_gap_observed_chain_context_reentry_starts",
+        ",".join(context) or "-",
+        "Residual starts whose focused chain terminates at the recovered 0x122e3c context reentry.")
+    add(rows, "gap_observed_chain", "synthetic_gap_observed_chain_focused_direct_terminal_starts",
+        ",".join(direct_terminal) or "-",
+        "Residual starts whose focused chain terminates in a focused direct bridge.")
+
+
 def synthetic_gap_live_in_role_metrics(rows):
     role_rows = read_tsv(TRACE_DIR / "vm_synthetic_gap_live_in_roles.tsv")
     resolutions = Counter(row.get("resolution", "") for row in role_rows)
@@ -1266,6 +1319,7 @@ def build_rows():
     synthetic_gap_sampled_control_correlation_metrics(rows)
     synthetic_gap_focused_direct_trace_audit_metrics(rows)
     synthetic_gap_focused_sequence_audit_metrics(rows)
+    synthetic_gap_observed_chain_bridge_metrics(rows)
     synthetic_gap_live_in_role_metrics(rows)
     synthetic_gap_final_tail_site_metrics(rows)
     synthetic_gap_live_in_reentry_metrics(rows)
