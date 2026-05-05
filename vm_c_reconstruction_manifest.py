@@ -799,6 +799,39 @@ def c_shape_metrics(rows):
     add(rows, "c_shape", "native_executable_coverage_c_gap_rows",
         count(r'^    \{ "\.[A-Za-z0-9_.]+", 0x[0-9a-f]+ull, 0x[0-9a-f]+ull, \d+ull \},', native_executable_coverage_audit),
         "Uncovered native executable gap rows retained in C form.")
+    native_function_text_intervals = []
+    for row in native_function_inventory_index:
+        if row.get("section", "") != ".text":
+            continue
+        start = int(row.get("offset", "0") or "0", 0)
+        stop = int(row.get("end", "0") or "0", 0)
+        if stop > start:
+            native_function_text_intervals.append((start, stop))
+    native_function_text_intervals.sort()
+    native_function_text_merged = []
+    for start, stop in native_function_text_intervals:
+        if not native_function_text_merged or start > native_function_text_merged[-1][1]:
+            native_function_text_merged.append([start, stop])
+        else:
+            native_function_text_merged[-1][1] = max(native_function_text_merged[-1][1], stop)
+    add(rows, "coverage_frontier", "native_function_inventory_rows",
+        len(native_function_inventory_index),
+        "Radare2 native function-boundary rows rendered as weak C skeleton metadata.")
+    add(rows, "coverage_frontier", "native_function_inventory_text_rows",
+        sum(1 for row in native_function_inventory_index if row.get("section", "") == ".text"),
+        "Radare2 function-boundary rows inside the ELF .text section.")
+    add(rows, "coverage_frontier", "native_function_inventory_kind_mix",
+        ",".join(f"{key}:{value}" for key, value in sorted(native_function_kind_mix.items())) or "-",
+        "Kind mix for radare2 native function-boundary inventory rows.")
+    add(rows, "coverage_frontier", "native_function_inventory_text_merged_bytes",
+        sum(stop - start for start, stop in native_function_text_merged),
+        "Merged .text bytes covered by radare2 native function-boundary inventory rows.")
+    add(rows, "c_shape", "native_function_inventory_c_stub_functions",
+        count(r"^static uint64_t native_stub_[A-Za-z0-9_]+\(void\) \{ return 0x[0-9a-f]+ull; \}$", native_function_inventory),
+        "Weak native function skeleton stubs retained in C form.")
+    add(rows, "c_shape", "native_function_inventory_c_metadata_rows",
+        count(r'^    \{ "\.[A-Za-z0-9_.]+", 0x[0-9a-f]+ull, 0x[0-9a-f]+ull, \d+u, \d+u, ', native_function_inventory),
+        "Weak native function inventory metadata rows retained in C form.")
     add(rows, "data_surface", "binary_data_section_rows",
         sum(1 for row in binary_data_sections_index if row.get("kind", "") == "section"),
         "Allocatable ELF sections tracked by the binary data carrier.")
@@ -1431,6 +1464,15 @@ def c_shape_metrics(rows):
     add(rows, "coverage_frontier", "all_evidence_bundle_native_executable_coverage_symbols",
         count(r"\beac_evidence_native_executable_coverage_audit__", all_evidence_bundle),
         "Prefixed native executable coverage audit symbols retained in the all-evidence single file.")
+    add(rows, "coverage_frontier", "all_evidence_bundle_native_function_inventory_stub_functions",
+        count(r"^static uint64_t eac_evidence_native_function_inventory__native_stub_[A-Za-z0-9_]+\(void\) \{ return 0x[0-9a-f]+ull; \}$", all_evidence_bundle),
+        "Weak native function skeleton stubs retained in the all-evidence single file.")
+    add(rows, "coverage_frontier", "all_evidence_bundle_native_function_inventory_metadata_rows",
+        count(r'^    \{ "\.[A-Za-z0-9_.]+", 0x[0-9a-f]+ull, 0x[0-9a-f]+ull, \d+u, \d+u, ', all_evidence_bundle),
+        "Weak native function inventory metadata rows retained in the all-evidence single file.")
+    add(rows, "coverage_frontier", "all_evidence_bundle_native_function_inventory_symbols",
+        count(r"\beac_evidence_native_function_inventory__", all_evidence_bundle),
+        "Prefixed native function inventory symbols retained in the all-evidence single file.")
     add(rows, "c_shape", "all_evidence_bundle_sidecar_sections",
         count(r"^/\* --- sidecar: ", all_evidence_bundle),
         "Renamed native RetDec/control sidecar files appended to the all-evidence single file.")
