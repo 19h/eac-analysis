@@ -21,6 +21,17 @@ VALIDATED_HANDLER_RETDEC_CS := $(PRIMARY_DIR)/vm_validated_handlers_retdec_batch
 HANDLER_RETDEC_INDEX_TSV := $(PRIMARY_DIR)/vm_handler_retdec_index.tsv
 HANDLER_RETDEC_INDEX_MD := $(PRIMARY_DIR)/vm_handler_retdec_index.md
 UNRESOLVED_FAMILY_C := $(PRIMARY_DIR)/vm_unresolved_family_chains.c
+PSEUDOCODE_TOP_C := $(PRIMARY_DIR)/vm_pseudocode_top.c
+PROGRAM_PSEUDOCODE_TOP_C := $(PRIMARY_DIR)/vm_program_pseudocode_top.c
+PROGRAM_PSEUDOCODE_FULL_C := $(PRIMARY_DIR)/vm_program_pseudocode_full.c
+HANDLERS_PSEUDOCODE_C := $(PRIMARY_DIR)/vm_handlers_pseudocode.c
+HANDLERS_HOT_PSEUDOCODE_C := $(PRIMARY_DIR)/vm_handlers_hot_pseudocode.c
+PATH_HANDLERS_PSEUDOCODE_C := $(PRIMARY_DIR)/vm_path_handlers_pseudocode.c
+PATH_HANDLERS_HOT_PSEUDOCODE_C := $(PRIMARY_DIR)/vm_path_handlers_hot_pseudocode.c
+SOURCE_BUNDLE_C := $(PRIMARY_DIR)/vm_recovered_source_bundle.c
+NATIVE_RET_PATCH_TARGETS_C := $(PRIMARY_DIR)/vm_native_ret_patch_targets.c
+NATIVE_RET_PATCH_EPILOGUES_RETDEC_C := $(PRIMARY_DIR)/vm_native_ret_patch_epilogues_retdec.c
+NATIVE_RET_PATCH_SOURCE278_RETDEC_C := $(PRIMARY_DIR)/vm_native_ret_patch_source278_retdec.c
 RET_PATCH_FOLLOWUPS_C := $(PRIMARY_DIR)/vm_native_ret_patch_followups.c
 RET_PATCH_FOLLOWUPS_TSV := $(PRIMARY_DIR)/vm_native_ret_patch_followups.tsv
 RET_PATCH_FOLLOWUPS_MD := $(PRIMARY_DIR)/vm_native_ret_patch_followups.md
@@ -370,14 +381,20 @@ synthetic-gap-ret-patch-native-target-atlas: synthetic-gap-sampled-ret-patch-pro
 	python3 vm_synthetic_gap_ret_patch_native_target_atlas.py > dumps/vmtail-wide-1m-w16/vm_synthetic_gap_ret_patch_native_target_atlas.tsv
 	python3 vm_synthetic_gap_ret_patch_native_target_atlas.py --markdown > dumps/vmtail-wide-1m-w16/vm_synthetic_gap_ret_patch_native_target_atlas.md
 
-native-ret-patch-target-pseudocode:
-	python3 vm_native_ret_patch_targets_pseudocode.py > dumps/vmtail-wide-1m-w16/vm_native_ret_patch_targets.c
+$(NATIVE_RET_PATCH_TARGETS_C): vm_native_ret_patch_targets_pseudocode.py $(PRIMARY_DIR)/vm_synthetic_gap_ret_patch_native_target_atlas.tsv eac.elf
+	python3 vm_native_ret_patch_targets_pseudocode.py > $@
 
-native-ret-patch-epilogues-retdec:
-	python3 vm_native_ret_patch_epilogues_retdec.py > dumps/vmtail-wide-1m-w16/vm_native_ret_patch_epilogues_retdec.c
+native-ret-patch-target-pseudocode: $(NATIVE_RET_PATCH_TARGETS_C)
 
-native-ret-patch-source278-retdec:
-	python3 vm_native_ret_patch_source278_retdec.py > dumps/vmtail-wide-1m-w16/vm_native_ret_patch_source278_retdec.c
+$(NATIVE_RET_PATCH_EPILOGUES_RETDEC_C): vm_native_ret_patch_epilogues_retdec.py $(PRIMARY_DIR)/vm_synthetic_gap_ret_patch_native_target_atlas.tsv eac.elf
+	python3 vm_native_ret_patch_epilogues_retdec.py > $@
+
+native-ret-patch-epilogues-retdec: $(NATIVE_RET_PATCH_EPILOGUES_RETDEC_C)
+
+$(NATIVE_RET_PATCH_SOURCE278_RETDEC_C): vm_native_ret_patch_source278_retdec.py $(PRIMARY_DIR)/vm_synthetic_gap_ret_patch_native_target_atlas.tsv eac.elf
+	python3 vm_native_ret_patch_source278_retdec.py > $@
+
+native-ret-patch-source278-retdec: $(NATIVE_RET_PATCH_SOURCE278_RETDEC_C)
 
 $(RET_PATCH_FOLLOWUPS_C): vm_native_ret_patch_followups_dump $(PRIMARY_DIR)/vm_synthetic_gap_ret_patch_native_target_atlas.tsv
 	./vm_native_ret_patch_followups_dump --c > $@
@@ -557,23 +574,39 @@ synthetic-gap-allstatic-reentry-probe: synthetic-gap-live-in-reentry-probe
 	python3 vm_synthetic_gap_allstatic_reentry_probe.py > dumps/vmtail-wide-1m-w16/vm_synthetic_gap_allstatic_reentry_probe.tsv
 	python3 vm_synthetic_gap_allstatic_reentry_probe.py --markdown > dumps/vmtail-wide-1m-w16/vm_synthetic_gap_allstatic_reentry_probe.md
 
-pseudocode: bytecode-basic-blocks synthetic-tail-lift synthetic-gap-transfer-probe synthetic-gap-dynamic-stitch synthetic-gap-chain-probe synthetic-gap-residual-audit synthetic-gap-concrete-state-audit synthetic-gap-live-context-audit synthetic-gap-table-read-diagnostic synthetic-gap-table-memory-probe synthetic-gap-runtime-table-memory-probe synthetic-gap-live-table-evidence synthetic-gap-sampled-ret-patch-probe synthetic-gap-sampled-control-correlation synthetic-gap-focused-direct-trace-audit synthetic-gap-focused-sequence-audit synthetic-gap-observed-chain-bridge synthetic-gap-symbolic-successors synthetic-gap-live-in-roles final-tail-site-probe synthetic-gap-live-in-reentry-probe synthetic-gap-allstatic-reentry-probe
-	python3 vm_pseudocode_dump.py --limit-blocks 60 --rows-per-block 32 > dumps/vmtail-wide-1m-w16/vm_pseudocode_top.c
-	python3 vm_program_pseudocode_dump.py --limit-blocks 80 --rows-per-block 80 > dumps/vmtail-wide-1m-w16/vm_program_pseudocode_top.c
+$(PSEUDOCODE_TOP_C): vm_pseudocode_dump.py
+	python3 vm_pseudocode_dump.py --limit-blocks 60 --rows-per-block 32 > $@
 
-pseudocode-full: bytecode-basic-blocks synthetic-tail-lift synthetic-gap-transfer-probe synthetic-gap-dynamic-stitch synthetic-gap-chain-probe synthetic-gap-residual-audit synthetic-gap-concrete-state-audit synthetic-gap-live-context-audit synthetic-gap-table-read-diagnostic synthetic-gap-table-memory-probe synthetic-gap-runtime-table-memory-probe synthetic-gap-live-table-evidence synthetic-gap-sampled-ret-patch-probe synthetic-gap-sampled-control-correlation synthetic-gap-focused-direct-trace-audit synthetic-gap-focused-sequence-audit synthetic-gap-observed-chain-bridge synthetic-gap-symbolic-successors synthetic-gap-live-in-roles final-tail-site-probe synthetic-gap-live-in-reentry-probe synthetic-gap-allstatic-reentry-probe
-	python3 vm_program_pseudocode_dump.py --limit-blocks 0 --rows-per-block 0 > dumps/vmtail-wide-1m-w16/vm_program_pseudocode_full.c
+$(PROGRAM_PSEUDOCODE_TOP_C): vm_program_pseudocode_dump.py vm_pseudocode_dump.py
+	python3 vm_program_pseudocode_dump.py --limit-blocks 80 --rows-per-block 80 > $@
 
-handler-pseudocode: synthetic-gap-sampled-ret-patch-probe
-	python3 vm_handler_pseudocode_dump.py --all > dumps/vmtail-wide-1m-w16/vm_handlers_pseudocode.c
-	python3 vm_handler_pseudocode_dump.py --limit 80 > dumps/vmtail-wide-1m-w16/vm_handlers_hot_pseudocode.c
+pseudocode: $(PSEUDOCODE_TOP_C) $(PROGRAM_PSEUDOCODE_TOP_C)
 
-path-pseudocode:
-	python3 vm_path_pseudocode_dump.py --validated-only > dumps/vmtail-wide-1m-w16/vm_path_handlers_pseudocode.c
-	python3 vm_path_pseudocode_dump.py --validated-only --limit 80 > dumps/vmtail-wide-1m-w16/vm_path_handlers_hot_pseudocode.c
+$(PROGRAM_PSEUDOCODE_FULL_C): vm_program_pseudocode_dump.py vm_pseudocode_dump.py
+	python3 vm_program_pseudocode_dump.py --limit-blocks 0 --rows-per-block 0 > $@
 
-source-bundle: handler-pseudocode pseudocode-full
-	python3 vm_recovered_source_bundle.py > dumps/vmtail-wide-1m-w16/vm_recovered_source_bundle.c
+pseudocode-full: $(PROGRAM_PSEUDOCODE_FULL_C)
+
+$(HANDLERS_PSEUDOCODE_C): vm_handler_pseudocode_dump.py $(PRIMARY_DIR)/vm_handler_semantics.tsv $(PRIMARY_DIR)/vm_handler_table.tsv
+	python3 vm_handler_pseudocode_dump.py --all > $@
+
+$(HANDLERS_HOT_PSEUDOCODE_C): vm_handler_pseudocode_dump.py $(PRIMARY_DIR)/vm_handler_semantics.tsv $(PRIMARY_DIR)/vm_handler_table.tsv
+	python3 vm_handler_pseudocode_dump.py --limit 80 > $@
+
+handler-pseudocode: $(HANDLERS_PSEUDOCODE_C) $(HANDLERS_HOT_PSEUDOCODE_C)
+
+$(PATH_HANDLERS_PSEUDOCODE_C): vm_path_pseudocode_dump.py $(PRIMARY_DIR)/vm_handler_semantics.tsv $(PRIMARY_DIR)/vm_handler_table.tsv
+	python3 vm_path_pseudocode_dump.py --validated-only > $@
+
+$(PATH_HANDLERS_HOT_PSEUDOCODE_C): vm_path_pseudocode_dump.py $(PRIMARY_DIR)/vm_handler_semantics.tsv $(PRIMARY_DIR)/vm_handler_table.tsv
+	python3 vm_path_pseudocode_dump.py --validated-only --limit 80 > $@
+
+path-pseudocode: $(PATH_HANDLERS_PSEUDOCODE_C) $(PATH_HANDLERS_HOT_PSEUDOCODE_C)
+
+$(SOURCE_BUNDLE_C): vm_recovered_source_bundle.py $(HANDLERS_PSEUDOCODE_C) $(PROGRAM_PSEUDOCODE_FULL_C)
+	python3 vm_recovered_source_bundle.py > $@
+
+source-bundle: $(SOURCE_BUNDLE_C)
 
 pseudocode-syntax-check: pseudocode source-bundle path-pseudocode native-ret-patch-target-pseudocode native-ret-patch-epilogues-retdec native-ret-patch-source278-retdec native-ret-patch-followups native-ret-patch-followup-retdec native-obfuscated-islands native-obfuscated-second-stage native-obfuscated-second-stage-dynamic native-obfuscated-second-stage-slot-proof native-obfuscated-second-stage-stack-source native-obfuscated-second-stage-rbx-provenance native-obfuscated-second-stage-model native-obfuscated-control-model native-ret-patch-hidden-bridge target-only-handlers-retdec unobserved-handlers-retdec weak-handlers-retdec validated-handlers-retdec unresolved-family-chains
 	$(CC) -std=c11 -fsyntax-only -Wall -Wextra -Wno-unused-variable -Wno-unused-function -Wno-parentheses dumps/vmtail-wide-1m-w16/vm_handlers_pseudocode.c
