@@ -24,9 +24,11 @@
  *   0x568500-0x5686e7 rank=- name=- kind=- bytes=- uncovered=-
  */
 #include <stdbool.h>
+#include <stdio.h>
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
+#include <wchar.h>
 
 typedef __int128 int128_t;
 typedef unsigned __int128 uint128_t;
@@ -35,6 +37,7 @@ typedef float float32_t;
 typedef double float64_t;
 typedef long double float80_t;
 struct __locale_struct;
+struct _IO_FILE;
 extern int g1;
 extern int g2;
 extern int g3;
@@ -81,6 +84,8 @@ uint64_t __readfsqword(int64_t offset);
 int64_t __asm_iretd(void);
 void __asm_rep_stosb_memset(char *dst, char value, int64_t count);
 void __asm_rep_stosd_memset(char *dst, int32_t value, int64_t count);
+void __asm_rep_stosq_memset(char *dst, int64_t value, int64_t count);
+void __asm_mfence(void);
 void __stack_chk_fail(void);
 int __cxa_atexit(void (*func)(int64_t *), void *arg, void *dso);
 int128_t __asm_movsd(int64_t value);
@@ -99,6 +104,10 @@ void __frontend_reg_store_fpr(int32_t reg, float80_t value);
 char *__nl_langinfo_l(int32_t item, struct __locale_struct *locale);
 struct __locale_struct *__uselocale(struct __locale_struct *locale);
 char *dgettext(char *domain, char *msgid);
+struct _IO_FILE *fopen(const char *path, const char *mode);
+size_t fread(void *ptr, size_t size, size_t nmemb, struct _IO_FILE *stream);
+int fclose(struct _IO_FILE *stream);
+int32_t *wmemset(int32_t *wcs, int32_t wc, size_t n);
 int pthread_mutex_lock(int64_t *mutex);
 int pthread_mutex_unlock(int64_t *mutex);
 char *strdup(const char *s);

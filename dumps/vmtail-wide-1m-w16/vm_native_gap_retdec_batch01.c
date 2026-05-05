@@ -6,27 +6,29 @@
  * coverage -> queue -> RetDec batch -> coverage.
  *
  * Ranges:
- *   0x56b2c0-0x56b4a7 rank=1 name=fcn.0056b2c0 kind=r2_discovered bytes=487 uncovered=487
- *   0x4cd00-0x4cee6 rank=2 name=fcn.0004cd00 kind=r2_discovered bytes=486 uncovered=486
- *   0x268c9-0x26aae rank=3 name=fcn.000268c9 kind=r2_discovered bytes=485 uncovered=485
- *   0x4a6e6-0x4a8c5 rank=4 name=fcn.0004a6e6 kind=r2_discovered bytes=479 uncovered=479
- *   0x57160-0x5733f rank=5 name=fcn.00057160 kind=r2_discovered bytes=479 uncovered=479
- *   0x55c790-0x55c96f rank=6 name=method.std::num_get_char__std::istreambuf_iterator_char__std::char_traits_char_____.virtual_72 kind=native_discovered bytes=479 uncovered=479
- *   0x55c9b0-0x55cb8f rank=7 name=method.std::num_get_char__std::istreambuf_iterator_char__std::char_traits_char_____.virtual_88 kind=native_discovered bytes=479 uncovered=479
- *   0x5725b0-0x57278f rank=8 name=fcn.005725b0 kind=r2_discovered bytes=479 uncovered=479
- *   0x5727c0-0x57299f rank=9 name=fcn.005727c0 kind=r2_discovered bytes=479 uncovered=479
- *   0x4b8430-0x4b860e rank=10 name=fcn.004b8430 kind=r2_discovered bytes=478 uncovered=478
- *   0x538ea0-0x53907d rank=11 name=method.std::__cxx11::time_get_wchar_t__std::istreambuf_iterator_wchar_t__std::char_traits_wchar_t_____.virtual_64 kind=native_discovered bytes=477 uncovered=477
- *   0x5cb26-0x5cd02 rank=12 name=fcn.0005cb26 kind=r2_discovered bytes=476 uncovered=476
- *   0x2cafa-0x2ccd5 rank=13 name=fcn.0002cafa kind=r2_discovered bytes=475 uncovered=475
- *   0x4aa650-0x4aa829 rank=15 name=fcn.004aa650 kind=r2_discovered bytes=473 uncovered=473
- *   0x567f20-0x5680f7 rank=17 name=fcn.00567f20 kind=r2_discovered bytes=471 uncovered=471
- *   0x492898-0x492a6e rank=18 name=fcn.00492898 kind=r2_discovered bytes=470 uncovered=470
+ *   0x56b2c0-0x56b4a7 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x4cd00-0x4cee6 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x268c9-0x26aae rank=- name=- kind=- bytes=- uncovered=-
+ *   0x4a6e6-0x4a8c5 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x57160-0x5733f rank=- name=- kind=- bytes=- uncovered=-
+ *   0x55c790-0x55c96f rank=- name=- kind=- bytes=- uncovered=-
+ *   0x55c9b0-0x55cb8f rank=- name=- kind=- bytes=- uncovered=-
+ *   0x5725b0-0x57278f rank=- name=- kind=- bytes=- uncovered=-
+ *   0x5727c0-0x57299f rank=- name=- kind=- bytes=- uncovered=-
+ *   0x4b8430-0x4b860e rank=- name=- kind=- bytes=- uncovered=-
+ *   0x538ea0-0x53907d rank=- name=- kind=- bytes=- uncovered=-
+ *   0x5cb26-0x5cd02 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x2cafa-0x2ccd5 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x4aa650-0x4aa829 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x567f20-0x5680f7 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x492898-0x492a6e rank=- name=- kind=- bytes=- uncovered=-
  */
 #include <stdbool.h>
+#include <stdio.h>
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
+#include <wchar.h>
 
 typedef __int128 int128_t;
 typedef unsigned __int128 uint128_t;
@@ -35,6 +37,7 @@ typedef float float32_t;
 typedef double float64_t;
 typedef long double float80_t;
 struct __locale_struct;
+struct _IO_FILE;
 extern int g1;
 extern int g2;
 extern int g3;
@@ -101,6 +104,8 @@ uint64_t __readfsqword(int64_t offset);
 int64_t __asm_iretd(void);
 void __asm_rep_stosb_memset(char *dst, char value, int64_t count);
 void __asm_rep_stosd_memset(char *dst, int32_t value, int64_t count);
+void __asm_rep_stosq_memset(char *dst, int64_t value, int64_t count);
+void __asm_mfence(void);
 void __stack_chk_fail(void);
 int __cxa_atexit(void (*func)(int64_t *), void *arg, void *dso);
 int128_t __asm_movsd(int64_t value);
@@ -119,6 +124,10 @@ void __frontend_reg_store_fpr(int32_t reg, float80_t value);
 char *__nl_langinfo_l(int32_t item, struct __locale_struct *locale);
 struct __locale_struct *__uselocale(struct __locale_struct *locale);
 char *dgettext(char *domain, char *msgid);
+struct _IO_FILE *fopen(const char *path, const char *mode);
+size_t fread(void *ptr, size_t size, size_t nmemb, struct _IO_FILE *stream);
+int fclose(struct _IO_FILE *stream);
+int32_t *wmemset(int32_t *wcs, int32_t wc, size_t n);
 int pthread_mutex_lock(int64_t *mutex);
 int pthread_mutex_unlock(int64_t *mutex);
 char *strdup(const char *s);
