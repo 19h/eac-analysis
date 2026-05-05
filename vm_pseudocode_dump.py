@@ -189,6 +189,61 @@ def load_synthetic_spans(path, tail_lift_path=None):
     return spans
 
 
+def load_tail_lifts(path):
+    lifts = {}
+    if not path or not Path(path).exists():
+        return lifts
+    for row in read_tsv(path):
+        start = normalize_vm_ip(row.get("start_vm_ip", ""))
+        if start:
+            lifts[start] = row
+    return lifts
+
+
+def tail_lifts_for_block(block, tail_lifts):
+    try:
+        start = parse_hex(block.get("start_vm_ip", ""))
+        end = parse_hex(block.get("byte_end_min", ""))
+    except (TypeError, ValueError):
+        return []
+    if end <= start:
+        return []
+    rows = []
+    for vm_ip, row in tail_lifts.items():
+        try:
+            value = parse_hex(vm_ip)
+        except (TypeError, ValueError):
+            continue
+        if start <= value < end:
+            rows.append(row)
+    rows.sort(key=lambda row: parse_hex(row.get("start_vm_ip", "0x0")))
+    return rows
+
+
+def emit_internal_tail_lift(row):
+    print(
+        f"    /* internal synthetic tail lift @ {row.get('start_vm_ip', '')}: "
+        f"events={row.get('events', '0')}, encoded={row.get('target_encoded_events', '0')}/"
+        f"{row.get('events', '0')}, longctl={row.get('long_control_overlap_events', '0')}/"
+        f"{row.get('events', '0')}, source={c_comment(row.get('top_sources', '') or '-')}, "
+        f"target={c_comment(row.get('top_targets', '') or '-')}, "
+        f"classes={c_comment(row.get('lift_classes', '') or '-')} */"
+    )
+    if row.get("long_control_overlaps"):
+        print(
+            f"    /* internal overlapping long-control span: "
+            f"{c_comment(row.get('long_control_overlaps', ''))}; "
+            f"targets={c_comment(row.get('long_control_targets', '') or '-')}; "
+            f"deltas={c_comment(row.get('long_control_deltas', '') or '-')} */"
+        )
+    elif row.get("tail_schemas") or row.get("top_tail_hexes"):
+        print(
+            f"    /* internal tail schema: schemas={c_comment(row.get('tail_schemas', '') or '-')}, "
+            f"offsets={c_comment(row.get('target_match_offsets', '') or '-')}, "
+            f"tails={c_comment(row.get('top_tail_hexes', '') or '-')} */"
+        )
+
+
 def row_to_c(row, max_expr_len):
     start = row.get("start_vm_ip", "")
     entry = row.get("source_entry", "")
@@ -340,7 +395,7 @@ def emit_synthetic_edge(edge, synthetic_spans, args):
         print(f"    {update}")
 
 
-def emit_block(block, rows, edge, synthetic_spans, args):
+def emit_block(block, rows, edge, synthetic_spans, tail_lifts, args):
     name = c_block_name(block["block"])
     print(f"static void {name}(VMState *vm) {{")
     print("    int next_entry = -1;")
@@ -356,6 +411,8 @@ def emit_block(block, rows, edge, synthetic_spans, args):
     omitted = len(rows) - len(shown)
     if omitted > 0:
         print(f"    /* ... {omitted} recovered IR rows omitted from this block sketch ... */")
+    for lift in tail_lifts_for_block(block, tail_lifts):
+        emit_internal_tail_lift(lift)
     if edge:
         edge_kind = edge.get("edge_kind", "")
         target_block = edge.get("target_block", "")
@@ -415,12 +472,13 @@ def main():
     rows_by_block = map_rows_to_blocks(load_rows(args.ir), blocks)
     edges = load_edges(args.edges)
     synthetic_spans = load_synthetic_spans(args.synthetic_trace, args.synthetic_tail_lift)
+    tail_lifts = load_tail_lifts(args.synthetic_tail_lift)
 
     emit_preamble()
     print("extern void vm_unresolved_synthetic_tail(VMState *vm, uint64_t vm_ip);")
     print("")
     for block in chosen:
-        emit_block(block, rows_by_block.get(block["block"], []), edges.get(block["block"]), synthetic_spans, args)
+        emit_block(block, rows_by_block.get(block["block"], []), edges.get(block["block"]), synthetic_spans, tail_lifts, args)
     emit_dispatch(chosen)
 
     print(
