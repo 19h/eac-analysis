@@ -320,6 +320,7 @@ def emit_block(block, rows, edge, synthetic_spans, tail_lifts, args):
             emit_synthetic_edge(edge, synthetic_spans, args)
     print("    (void)r;")
     print("    (void)next_entry;")
+    print("    (void)vm_ip;")
     print("}")
     print("")
 
