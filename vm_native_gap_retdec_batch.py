@@ -141,6 +141,24 @@ BATCHES = {
         "0x5be1a-0x5bfa4",
         "0x67ede-0x68067",
     ],
+    7: [
+        "0x71a15-0x71b9e",
+        "0x491e50-0x491fd9",
+        "0x30c30-0x30db8",
+        "0x2620b-0x26392",
+        "0x488d00-0x488e87",
+        "0x5515b0-0x551735",
+        "0x33be0-0x33d64",
+        "0x564190-0x564314",
+        "0x565720-0x5658a3",
+        "0x4b1ac0-0x4b1c41",
+        "0x27c71-0x27df1",
+        "0x4b2e6-0x4b465",
+        "0x5c136-0x5c2b5",
+        "0x5c2b6-0x5c435",
+        "0x5143e0-0x51455f",
+        "0x61d90-0x61f0e",
+    ],
 }
 
 
@@ -255,6 +273,7 @@ def main():
     print("struct __locale_struct;")
     print("struct _TYPEDEF___mbstate_t;")
     print("struct _IO_FILE;")
+    print("struct utsname;")
     for index in referenced_globals(functions):
         print(f"extern int g{index};")
     print("unsigned char llvm_ctpop_i8(unsigned char value);")
@@ -268,12 +287,15 @@ def main():
     print("void __asm_rep_stosb_memset(char *dst, char value, int64_t count);")
     print("void __asm_rep_stosd_memset(char *dst, int32_t value, int64_t count);")
     print("void __asm_rep_stosq_memset(char *dst, int64_t value, int64_t count);")
+    print("void __asm_rep_movsd_memcpy(char *dst, char *src, int64_t count);")
     print("void __asm_rep_movsq_memcpy(char *dst, char *src, int64_t count);")
     print("int64_t __asm_hlt(void);")
     print("int64_t __asm_mfence(void);")
     print("void __stack_chk_fail(void);")
     print("int __cxa_atexit(void (*func)(int64_t *), void *arg, void *dso);")
     print("int128_t __asm_movsd(int64_t value);")
+    print("int128_t __asm_movss(int32_t value);")
+    print("int64_t __asm_movss_133(int128_t value);")
     print("int128_t __asm_movdqu(int128_t value);")
     print("int128_t __asm_movapd(int128_t value);")
     print("int128_t __asm_andpd(int128_t left, int128_t right);")
@@ -295,6 +317,8 @@ def main():
     print("struct _IO_FILE *fopen(const char *path, const char *mode);")
     print("size_t fread(void *ptr, size_t size, size_t nmemb, struct _IO_FILE *stream);")
     print("int fclose(struct _IO_FILE *stream);")
+    print("int uname(struct utsname *buf);")
+    print("int64_t __tls_get_addr(void *arg);")
     print("int32_t mbrtowc(int32_t *pwc, const char *s, size_t n, struct _TYPEDEF___mbstate_t *ps);")
     print("int32_t mbsnrtowcs(int32_t *dst, char **src, size_t nms, size_t len, struct _TYPEDEF___mbstate_t *ps);")
     print("int32_t *wmemcpy(int32_t *dest, const int32_t *src, size_t n);")
