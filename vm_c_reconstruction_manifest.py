@@ -16,6 +16,9 @@ ARTIFACTS = [
     ("handlers_all", TRACE_DIR / "vm_handlers_pseudocode.c"),
     ("path_handlers_all", TRACE_DIR / "vm_path_handlers_pseudocode.c"),
     ("path_handlers_frontier", TRACE_DIR / "vm_path_handlers_frontier_pseudocode.c"),
+    ("path_frontier_slot_audit_c", TRACE_DIR / "vm_path_frontier_slot_audit.c"),
+    ("path_frontier_slot_audit_tsv", TRACE_DIR / "vm_path_frontier_slot_audit.tsv"),
+    ("path_frontier_slot_audit_md", TRACE_DIR / "vm_path_frontier_slot_audit.md"),
     ("direct_blocks_top", TRACE_DIR / "vm_pseudocode_top.c"),
     ("program_blocks_top", TRACE_DIR / "vm_program_pseudocode_top.c"),
     ("program_blocks_full", TRACE_DIR / "vm_program_pseudocode_full.c"),
@@ -224,6 +227,8 @@ def c_shape_metrics(rows):
     handlers = read_text(TRACE_DIR / "vm_handlers_pseudocode.c")
     path_handlers = read_text(TRACE_DIR / "vm_path_handlers_pseudocode.c")
     path_handlers_frontier = read_text(TRACE_DIR / "vm_path_handlers_frontier_pseudocode.c")
+    path_frontier_slot_audit = read_text(TRACE_DIR / "vm_path_frontier_slot_audit.c")
+    path_frontier_slot_audit_index = read_tsv(TRACE_DIR / "vm_path_frontier_slot_audit.tsv")
     direct_top = read_text(TRACE_DIR / "vm_pseudocode_top.c")
     program_top = read_text(TRACE_DIR / "vm_program_pseudocode_top.c")
     program_full = read_text(TRACE_DIR / "vm_program_pseudocode_full.c")
@@ -1045,6 +1050,21 @@ def c_shape_metrics(rows):
     add(rows, "coverage_frontier", "path_frontier_zero_validation_comments",
         count(r"validation: target=0\.0%, ip=0\.0%", path_handlers_frontier),
         "Frontier path functions explicitly marked with zero target/IP validation.")
+    add(rows, "coverage_frontier", "path_frontier_slot_audit_rows",
+        len(path_frontier_slot_audit_index),
+        "Weak frontier path slot-expression audit rows.")
+    add(rows, "coverage_frontier", "path_frontier_slot_audit_c_rows",
+        count(r'^    \{ \d+u, 0x[0-9a-f]+ull, .*"not_promotable" \},$', path_frontier_slot_audit),
+        "Weak frontier path slot-expression audit rows retained in C form.")
+    add(rows, "coverage_frontier", "path_frontier_slot_audit_not_promotable_rows",
+        sum(1 for row in path_frontier_slot_audit_index if row.get("verdict", "") == "not_promotable"),
+        "Weak frontier path rows whose sampled slot expressions still cannot be promoted to hard CFG.")
+    add(rows, "coverage_frontier", "path_frontier_slot_audit_direct_table_validated_rows",
+        sum(int(row.get("direct_table_matches", "0") or "0") for row in path_frontier_slot_audit_index),
+        "Total direct dispatch-table matches found while auditing weak frontier slot expressions.")
+    add(rows, "coverage_frontier", "path_frontier_slot_audit_any_table_match_rows",
+        sum(1 for row in path_frontier_slot_audit_index if int(row.get("direct_table_matches", "0") or "0") > 0),
+        "Weak frontier path rows with at least one direct dispatch-table match.")
     add(rows, "c_shape", "direct_top_block_defs", count(r"^static void bb_\d{4}\(VMState \*vm\) \{", direct_top),
         "Direct compact block functions.")
     add(rows, "c_shape", "direct_top_block_calls", count(r"^    bb_\d{4}\(vm\);$", direct_top),
@@ -1342,6 +1362,12 @@ def c_shape_metrics(rows):
     add(rows, "coverage_frontier", "all_evidence_bundle_path_frontier_dispatch_cases",
         count(r"^        case 0x[0-9a-f]+ull: return eac_evidence_path_handlers_frontier_pseudocode__path_entry_\d{3}_[0-9a-f]+\(vm\);", all_evidence_bundle),
         "Unvalidated path-specialized frontier dispatcher cases retained in the all-evidence single file.")
+    add(rows, "coverage_frontier", "all_evidence_bundle_path_frontier_slot_audit_rows",
+        count(r'^    \{ \d+u, 0x[0-9a-f]+ull, .*"not_promotable" \},$', all_evidence_bundle),
+        "Weak frontier slot-expression audit rows retained in the all-evidence single file.")
+    add(rows, "coverage_frontier", "all_evidence_bundle_path_frontier_slot_audit_symbols",
+        count(r"\beac_evidence_path_frontier_slot_audit__", all_evidence_bundle),
+        "Prefixed path frontier slot-audit symbols retained in the all-evidence single file.")
     add(rows, "c_shape", "all_evidence_bundle_sidecar_sections",
         count(r"^/\* --- sidecar: ", all_evidence_bundle),
         "Renamed native RetDec/control sidecar files appended to the all-evidence single file.")
