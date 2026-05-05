@@ -2,12 +2,15 @@
 import argparse
 import csv
 import re
+import subprocess
 import sys
 from collections import defaultdict
 from pathlib import Path
 
 
 TRACE_DIR = Path("dumps/vmtail-wide-1m-w16")
+INSN_RE = re.compile(r"^\s*([0-9a-f]+):\s+(.*)$")
+DIRECT_JMP_RE = re.compile(r"^jmp\s+([0-9a-f]+)\b")
 
 
 def parse_hex(value, default=0):
@@ -49,6 +52,27 @@ def parse_insns(row):
     return insns
 
 
+def disassemble(eac, start, window, max_insns):
+    cmd = [
+        "objdump",
+        "-d",
+        "--no-show-raw-insn",
+        f"--start-address=0x{start:x}",
+        f"--stop-address=0x{start + window:x}",
+        eac,
+    ]
+    proc = subprocess.run(cmd, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+    insns = []
+    for line in proc.stdout.splitlines():
+        match = INSN_RE.match(line)
+        if not match:
+            continue
+        insns.append((int(match.group(1), 16), " ".join(match.group(2).split())))
+        if len(insns) >= max_insns:
+            break
+    return insns
+
+
 STACK_LOAD_RE = re.compile(r"\bmov\s+([^,]*\(%rsp\)),%([re]?[abcd]x|[er]si|[er]di|r1[0-5]|r[89])\b")
 STACK_ZERO_RE = re.compile(r"\bmovl\s+\$0x0,([^,]*\(%rsp\))")
 RETVAL_PATTERNS = [
@@ -61,6 +85,11 @@ RETVAL_PATTERNS = [
 def classify(row, insns):
     texts = [text for _, text in insns]
     ret_addrs = [addr for addr, text in insns if text.split(None, 1)[0].startswith("ret")]
+    terminal_jumps = []
+    for addr, text in insns:
+        match = DIRECT_JMP_RE.match(text)
+        if match:
+            terminal_jumps.append((addr, int(match.group(1), 16)))
     has_cookie = any("%fs:0x28" in text or "__stack_chk_fail" in text for text in texts)
     has_prologue = bool(texts[:4]) and texts[0].startswith("push") and any("sub $" in text and "%rsp" in text for text in texts[:6])
     has_epilogue = bool(ret_addrs) and any(text.startswith("add $") and "%rsp" in text for text in texts)
@@ -74,6 +103,8 @@ def classify(row, insns):
         shape = "bounded_epilogue_ret"
     elif row.get("ret_seen") == "yes":
         shape = "bounded_ret"
+    elif terminal_jumps:
+        shape = f"native_trampoline_to_0x{terminal_jumps[0][1]:x}"
     elif has_prologue:
         shape = "native_function_or_trampoline_entry"
     else:
@@ -104,6 +135,8 @@ def classify(row, insns):
     return {
         "shape": shape,
         "ret_addr": f"0x{ret_addrs[0]:x}" if ret_addrs else "0x0",
+        "terminal_jmp_addr": f"0x{terminal_jumps[0][0]:x}" if terminal_jumps else "0x0",
+        "terminal_jmp_target": f"0x{terminal_jumps[0][1]:x}" if terminal_jumps else "0x0",
         "has_cookie": "yes" if has_cookie else "no",
         "has_initial_padding": "yes" if has_initial_padding else "no",
         "retval": retval,
@@ -155,15 +188,19 @@ def emit_preamble():
     print("")
 
 
-def emit_target_function(row):
-    insns = parse_insns(row)
-    cls = classify(row, insns)
+def emit_target_function(row, args):
     target = parse_hex(row.get("patched_ret_eac_off"))
+    if row.get("ret_seen") == "yes":
+        insns = parse_insns(row)
+    else:
+        insns = disassemble(args.eac, target, args.extended_window, args.max_extended_insns)
+    cls = classify(row, insns)
     name = ident(row)
     print(f"static void {name}(VMState *vm, const VMNativeRetPatchEvent *event) {{")
     print(f"    /* source=entry_{c_comment(row.get('source_entry', '?'))}; vm_ip={c_comment(row.get('synthetic_start_vm_ip', '?'))}; slot={c_comment(row.get('ret_slot', '?'))}; target=0x{target:x} */")
     print(f"    /* evidence: rows={c_comment(row.get('rows', '?'))}; kind={c_comment(row.get('ret_patch_kind', '?'))}; seeds={c_comment(row.get('seed_mix', '-'))}; relation={c_comment(row.get('relation_mix', '-'))} */")
     print(f"    /* coarse native shape: {cls['shape']}; first_ret={cls['ret_addr']}; cookie_check={cls['has_cookie']}; padding={cls['has_initial_padding']}; retval={c_comment(cls['retval'])} */")
+    print(f"    /* terminal direct jump: at={cls['terminal_jmp_addr']}; target={cls['terminal_jmp_target']} */")
     print(f"    /* stack loads: {c_comment(cls['stack_loads'])}; stack zeroes: {c_comment(cls['stack_zeros'])} */")
     print("    /* native window:")
     for addr, text in insns:
@@ -220,6 +257,9 @@ def emit_dispatch(rows):
 def main():
     parser = argparse.ArgumentParser(description="Emit C-shaped native ret-patch target helpers from the ret-patch atlas.")
     parser.add_argument("--atlas", default=str(TRACE_DIR / "vm_synthetic_gap_ret_patch_native_target_atlas.tsv"))
+    parser.add_argument("--eac", default="eac.elf")
+    parser.add_argument("--extended-window", type=lambda value: int(value, 0), default=0x200)
+    parser.add_argument("--max-extended-insns", type=int, default=96)
     args = parser.parse_args()
 
     rows = list(read_tsv(args.atlas))
@@ -232,7 +272,7 @@ def main():
 
     emit_preamble()
     for row in rows:
-        emit_target_function(row)
+        emit_target_function(row, args)
     emit_dispatch(rows)
     print(f"native_ret_patch_target_functions={len(rows)}", file=sys.stderr)
 
