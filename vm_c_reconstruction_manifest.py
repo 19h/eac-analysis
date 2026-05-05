@@ -189,6 +189,14 @@ def c_shape_metrics(rows):
         "Residual final table-read diagnostic sites carried into the full program sketch.")
     add(rows, "c_shape", "program_full_table_read_diagnostic_comments", count(r"table-read diagnostic: source=", program_full),
         "Per-start final table-read comments carried into the full program sketch.")
+    add(rows, "c_shape", "program_full_table_memory_probe_sites", count(r"table-memory probe @", program_full),
+        "Residual table-offset file mapping sites carried into the full program sketch.")
+    add(rows, "c_shape", "program_full_table_memory_probe_comments", count(r"table-memory probe: source=", program_full),
+        "Per-start residual table-offset file mapping comments carried into the full program sketch.")
+    add(rows, "c_shape", "program_full_sampled_control_correlation_sites", count(r"sampled-control correlation @", program_full),
+        "Residual sampled-control correlation sites carried into the full program sketch.")
+    add(rows, "c_shape", "program_full_sampled_control_correlation_comments", count(r"sampled-control correlation: source=", program_full),
+        "Per-start sampled-control correlation comments carried into the full program sketch.")
     add(rows, "c_shape", "program_full_hidden_chain_resolved_calls", count(r"hidden source entry_\d+ replayed from", program_full),
         "Hidden-chain matches emitted as concrete handler calls before reentering a recovered block.")
     add(rows, "c_shape", "program_full_live_in_role_evidence_sites", count(r"live-in role evidence @", program_full),
@@ -247,6 +255,14 @@ def c_shape_metrics(rows):
         "Residual final table-read diagnostic sites carried into the combined source bundle.")
     add(rows, "c_shape", "bundle_table_read_diagnostic_comments", count(r"table-read diagnostic: source=", bundle),
         "Per-start final table-read comments carried into the combined source bundle.")
+    add(rows, "c_shape", "bundle_table_memory_probe_sites", count(r"table-memory probe @", bundle),
+        "Residual table-offset file mapping sites carried into the combined source bundle.")
+    add(rows, "c_shape", "bundle_table_memory_probe_comments", count(r"table-memory probe: source=", bundle),
+        "Per-start residual table-offset file mapping comments carried into the combined source bundle.")
+    add(rows, "c_shape", "bundle_sampled_control_correlation_sites", count(r"sampled-control correlation @", bundle),
+        "Residual sampled-control correlation sites carried into the combined source bundle.")
+    add(rows, "c_shape", "bundle_sampled_control_correlation_comments", count(r"sampled-control correlation: source=", bundle),
+        "Per-start sampled-control correlation comments carried into the combined source bundle.")
     add(rows, "c_shape", "bundle_hidden_chain_resolved_calls", count(r"hidden source entry_\d+ replayed from", bundle),
         "Hidden-chain matches emitted as concrete handler calls inside the combined source bundle.")
     add(rows, "c_shape", "bundle_live_in_role_evidence_sites", count(r"live-in role evidence @", bundle),
