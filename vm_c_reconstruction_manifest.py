@@ -969,6 +969,15 @@ def c_shape_metrics(rows):
         "Dispatcher cases for residual synthetic successor family starts.")
     add(rows, "c_shape", "path_specialized_functions", count(r"^static VMOpResult path_entry_\d{3}_[0-9a-f]+\(VMState \*vm\) \{", path_handlers),
         "Validated concrete branch-path C functions.")
+    add(rows, "c_shape", "path_specialized_model_rows",
+        count(r"^    \{ \d+, 0x[0-9a-f]+ull, \d+u, ", path_handlers),
+        "Validated concrete branch-path metadata rows.")
+    add(rows, "c_shape", "path_specialized_dispatch_cases",
+        count(r"^        case 0x[0-9a-f]+ull: return path_entry_\d{3}_[0-9a-f]+\(vm\);", path_handlers),
+        "Validated concrete branch-path dispatcher cases keyed by path hash.")
+    add(rows, "c_shape", "path_specialized_dispatcher_functions",
+        count(r"^static VMOpResult vm_call_path_handler\(uint16_t entry, uint64_t path_key_value, VMState \*vm\) \{", path_handlers),
+        "Dispatcher functions for calling validated concrete branch-path handlers by entry and path hash.")
     add(rows, "c_shape", "direct_top_block_defs", count(r"^static void bb_\d{4}\(VMState \*vm\) \{", direct_top),
         "Direct compact block functions.")
     add(rows, "c_shape", "direct_top_block_calls", count(r"^    bb_\d{4}\(vm\);$", direct_top),
@@ -1248,6 +1257,15 @@ def c_shape_metrics(rows):
     add(rows, "c_shape", "all_evidence_bundle_path_specialized_functions",
         count(r"^static EACEvidence_path_handlers_pseudocode__VMOpResult eac_evidence_path_handlers_pseudocode__path_entry_\d{3}_[0-9a-f]+\(EACEvidence_path_handlers_pseudocode__VMState \*vm\) \{", all_evidence_bundle),
         "Validated path-specialized handler functions retained in the all-evidence single file.")
+    add(rows, "c_shape", "all_evidence_bundle_path_specialized_model_rows",
+        count(r"^    \{ \d+, 0x[0-9a-f]+ull, \d+u, .*eac_evidence_path_handlers_pseudocode__path_entry_\d{3}_[0-9a-f]+ \},", all_evidence_bundle),
+        "Validated path-specialized handler metadata rows retained in the all-evidence single file.")
+    add(rows, "c_shape", "all_evidence_bundle_path_specialized_dispatch_cases",
+        count(r"^        case 0x[0-9a-f]+ull: return eac_evidence_path_handlers_pseudocode__path_entry_\d{3}_[0-9a-f]+\(vm\);", all_evidence_bundle),
+        "Validated path-specialized handler dispatcher cases retained in the all-evidence single file.")
+    add(rows, "c_shape", "all_evidence_bundle_path_specialized_dispatchers",
+        count(r"^static EACEvidence_path_handlers_pseudocode__VMOpResult eac_evidence_path_handlers_pseudocode__vm_call_path_handler\(uint16_t entry, uint64_t path_key_value, EACEvidence_path_handlers_pseudocode__VMState \*vm\) \{", all_evidence_bundle),
+        "Validated path-specialized handler dispatcher functions retained in the all-evidence single file.")
     add(rows, "c_shape", "all_evidence_bundle_sidecar_sections",
         count(r"^/\* --- sidecar: ", all_evidence_bundle),
         "Renamed native RetDec/control sidecar files appended to the all-evidence single file.")
