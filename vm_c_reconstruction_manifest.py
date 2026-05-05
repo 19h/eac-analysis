@@ -64,6 +64,7 @@ ARTIFACTS = [
     ("synthetic_gap_ret_patch_native_target_atlas_tsv", TRACE_DIR / "vm_synthetic_gap_ret_patch_native_target_atlas.tsv"),
     ("synthetic_gap_ret_patch_native_target_atlas_md", TRACE_DIR / "vm_synthetic_gap_ret_patch_native_target_atlas.md"),
     ("native_ret_patch_targets", TRACE_DIR / "vm_native_ret_patch_targets.c"),
+    ("native_ret_patch_epilogues_retdec", TRACE_DIR / "vm_native_ret_patch_epilogues_retdec.c"),
     ("native_ret_patch_source278_retdec", TRACE_DIR / "vm_native_ret_patch_source278_retdec.c"),
     ("synthetic_gap_live_snapshot_transfer_probe_tsv", TRACE_DIR / "vm_synthetic_gap_live_snapshot_transfer_probe.tsv"),
     ("synthetic_gap_live_snapshot_transfer_probe_md", TRACE_DIR / "vm_synthetic_gap_live_snapshot_transfer_probe.md"),
@@ -145,6 +146,7 @@ def c_shape_metrics(rows):
     program_full = read_text(TRACE_DIR / "vm_program_pseudocode_full.c")
     bundle = read_text(TRACE_DIR / "vm_recovered_source_bundle.c")
     native_ret_patch_targets = read_text(TRACE_DIR / "vm_native_ret_patch_targets.c")
+    native_ret_patch_epilogues_retdec = read_text(TRACE_DIR / "vm_native_ret_patch_epilogues_retdec.c")
     native_ret_patch_source278_retdec = read_text(TRACE_DIR / "vm_native_ret_patch_source278_retdec.c")
 
     add(rows, "c_shape", "handler_functions", count(r"^static VMOpResult op_entry_\d{3}\(VMState \*vm\) \{", handlers),
@@ -173,6 +175,15 @@ def c_shape_metrics(rows):
     add(rows, "c_shape", "native_ret_patch_target_tail_dispatchers",
         count(r"^void vm_native_ret_patch_tail\(VMState \*vm,", native_ret_patch_targets),
         "Syntax-checkable vm_native_ret_patch_tail implementation for the native target helper artifact.")
+    add(rows, "c_shape", "native_ret_patch_epilogues_retdec_functions",
+        count(r"^int64_t function_[0-9a-f]+\(.*\) \{", native_ret_patch_epilogues_retdec),
+        "Targeted RetDec C functions for single-stack native return-patch epilogue targets.")
+    add(rows, "c_shape", "native_ret_patch_epilogues_retdec_ranges",
+        count(r"^// Address range: 0x[0-9a-f]+ - 0x[0-9a-f]+$", native_ret_patch_epilogues_retdec),
+        "Tight single-stack native return-patch epilogue ranges selected for RetDec.")
+    add(rows, "c_shape", "native_ret_patch_epilogues_retdec_stack_chk_guards",
+        count(r"__stack_chk_fail\(\);", native_ret_patch_epilogues_retdec),
+        "Stack-check failure paths preserved in the targeted native epilogue RetDec artifact.")
     add(rows, "c_shape", "native_ret_patch_source278_retdec_functions",
         count(r"^int64_t function_[0-9a-f]+\(.*\) \{", native_ret_patch_source278_retdec),
         "Targeted RetDec C functions for source278's double native return-patch trampoline chain.")
