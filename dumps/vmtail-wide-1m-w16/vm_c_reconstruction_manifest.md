@@ -24,7 +24,7 @@ Reproducible inventory of the current C-shaped reconstruction artifacts and gate
 | `artifact` | `source_bundle_bytes` | `20567203` | Current file size in bytes. |
 | `artifact` | `source_all_evidence_bundle_path` | `dumps/vmtail-wide-1m-w16/vm_recovered_source_all_evidence_bundle.c` | Generated reconstruction artifact. |
 | `artifact` | `source_all_evidence_bundle_lines` | `430583` | Current line count. |
-| `artifact` | `source_all_evidence_bundle_bytes` | `29595113` | Current file size in bytes. |
+| `artifact` | `source_all_evidence_bundle_bytes` | `29699098` | Current file size in bytes. |
 | `artifact` | `synthetic_successor_gaps_tsv_path` | `dumps/vmtail-wide-1m-w16/vm_synthetic_successor_gaps.tsv` | Generated reconstruction artifact. |
 | `artifact` | `synthetic_successor_gaps_tsv_lines` | `22` | Current line count. |
 | `artifact` | `synthetic_successor_gaps_tsv_bytes` | `5197` | Current file size in bytes. |
@@ -584,13 +584,13 @@ Reproducible inventory of the current C-shaped reconstruction artifacts and gate
 | `data_surface` | `binary_data_section_rows` | `29` | Allocatable ELF sections tracked by the binary data carrier. |
 | `data_surface` | `binary_data_emitted_section_rows` | `22` | Allocatable non-executable ELF sections emitted as exact C byte arrays. |
 | `data_surface` | `binary_data_emitted_bytes` | `0xe63f7` | Exact bytes carried for allocatable non-executable ELF data sections. |
-| `data_surface` | `binary_data_string_refs` | `2905` | Printable string references indexed from emitted runtime data sections. |
-| `data_surface` | `binary_data_string_bytes` | `0x10b2d` | Exact printable bytes covered by the indexed runtime string rows. |
+| `data_surface` | `binary_data_string_refs` | `2917` | Printable string references indexed from emitted runtime data sections. |
+| `data_surface` | `binary_data_string_bytes` | `0x10b64` | Exact printable bytes covered by the indexed runtime string rows. |
 | `data_surface` | `binary_data_dispatch_table_rows` | `1` | Embedded .text VM dispatch-table byte carriers. |
 | `c_shape` | `binary_data_section_arrays` | `22` | C byte arrays emitted for exact runtime data sections. |
 | `c_shape` | `binary_data_full_string_rows` | `2917` | C string-reference rows with full text and pointers into exact backing byte arrays. |
 | `c_shape` | `binary_data_string_row_static_asserts` | `1` | C11 static assertion proving the emitted string-reference array count. |
-| `data_surface` | `binary_data_string_rows_match_index` | `no` | Whether every TSV-indexed runtime string has a full C row in the data carrier. |
+| `data_surface` | `binary_data_string_rows_match_index` | `yes` | Whether every TSV-indexed runtime string has a full C row in the data carrier. |
 | `c_shape` | `binary_data_dispatch_table_offsets` | `1` | Raw 360-entry VM dispatch-table offset array carried in C. |
 | `coverage` | `static_only_handler_queue_rows` | `155` | Ranked static-only dispatch entries to convert from sidecar evidence into stronger handler C. |
 | `c_shape` | `static_only_handler_queue_c_entries` | `155` | Syntax-checkable C queue entries for static-only handler closure work. |
@@ -810,12 +810,12 @@ Reproducible inventory of the current C-shaped reconstruction artifacts and gate
 | `c_shape` | `all_evidence_bundle_path_specialized_dispatchers` | `1` | Validated path-specialized handler dispatcher functions retained in the all-evidence single file. |
 | `c_shape` | `all_evidence_bundle_sidecar_sections` | `41` | Renamed native RetDec/control sidecar files appended to the all-evidence single file. |
 | `c_shape` | `all_evidence_bundle_prefixed_retdec_functions` | `624` | RetDec native C functions carried in the all-evidence single file with per-sidecar symbol prefixes. |
-| `c_shape` | `all_evidence_bundle_prefixed_symbols` | `8284` | Prefixed symbols used to keep overlapping native sidecar C in one translation unit. |
-| `data_surface` | `all_evidence_bundle_binary_data_section_arrays` | `0` | Exact binary data section arrays retained in the all-evidence single C file. |
-| `data_surface` | `all_evidence_bundle_binary_data_string_refs` | `0` | Full runtime string-reference rows retained in the all-evidence single C file. |
-| `data_surface` | `all_evidence_bundle_binary_data_string_row_static_asserts` | `0` | C11 static assertion retained for all-evidence runtime string-reference count. |
-| `data_surface` | `all_evidence_bundle_binary_data_dispatch_table` | `0` | Raw VM dispatch-table offset array retained in the all-evidence single C file. |
-| `data_surface` | `all_evidence_bundle_binary_data_surface_match` | `no` | Whether the all-evidence C file carries the same section arrays, full strings, and raw dispatch table as the binary data carrier. |
+| `c_shape` | `all_evidence_bundle_prefixed_symbols` | `11255` | Prefixed symbols used to keep overlapping native sidecar C in one translation unit. |
+| `data_surface` | `all_evidence_bundle_binary_data_section_arrays` | `22` | Exact binary data section arrays retained in the all-evidence single C file. |
+| `data_surface` | `all_evidence_bundle_binary_data_string_refs` | `2917` | Full runtime string-reference rows retained in the all-evidence single C file. |
+| `data_surface` | `all_evidence_bundle_binary_data_string_row_static_asserts` | `1` | C11 static assertion retained for all-evidence runtime string-reference count. |
+| `data_surface` | `all_evidence_bundle_binary_data_dispatch_table` | `1` | Raw VM dispatch-table offset array retained in the all-evidence single C file. |
+| `data_surface` | `all_evidence_bundle_binary_data_surface_match` | `yes` | Whether the all-evidence C file carries the same section arrays, full strings, and raw dispatch table as the binary data carrier. |
 | `c_shape` | `all_evidence_bundle_tier0_static_slot_recoveries` | `10` | Executable tier0 static-only slot recoveries retained in the all-evidence single file. |
 | `c_shape` | `all_evidence_bundle_tier1_static_slot_recoveries` | `3` | Executable tier1 static-only slot recoveries retained in the all-evidence single file. |
 | `c_shape` | `all_evidence_bundle_tier2_static_slot_recoveries` | `5` | Executable tier2 static-only slot recoveries retained in the all-evidence single file. |
