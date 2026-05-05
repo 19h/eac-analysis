@@ -14,10 +14,16 @@ GPR_RUN_ARGS ?= --gpr-run $(GPR_RUN) --gpr-run $(FOCUS_GPR_RUN)
 TAIL_MEM_RUN_ARGS ?= --tail-mem-run $(TAIL_MEM_EXACT_RUN) --tail-mem-run $(TAIL_MEM_RUN)
 PRED_ROWS ?= 128
 XFER_ROWS ?= 128
+TARGET_ONLY_HANDLER_RETDEC_C := $(PRIMARY_DIR)/vm_target_only_handlers_retdec.c
+UNOBSERVED_HANDLER_RETDEC_CS := $(PRIMARY_DIR)/vm_unobserved_handlers_retdec_batch00.c $(PRIMARY_DIR)/vm_unobserved_handlers_retdec_batch01.c $(PRIMARY_DIR)/vm_unobserved_handlers_retdec_batch02.c $(PRIMARY_DIR)/vm_unobserved_handlers_retdec_batch03.c $(PRIMARY_DIR)/vm_unobserved_handlers_retdec_batch04.c $(PRIMARY_DIR)/vm_unobserved_handlers_retdec_batch05.c $(PRIMARY_DIR)/vm_unobserved_handlers_retdec_batch06.c
+WEAK_HANDLER_RETDEC_C := $(PRIMARY_DIR)/vm_weak_handlers_retdec.c
+VALIDATED_HANDLER_RETDEC_CS := $(PRIMARY_DIR)/vm_validated_handlers_retdec_batch00.c $(PRIMARY_DIR)/vm_validated_handlers_retdec_batch01.c $(PRIMARY_DIR)/vm_validated_handlers_retdec_batch02.c $(PRIMARY_DIR)/vm_validated_handlers_retdec_batch03.c $(PRIMARY_DIR)/vm_validated_handlers_retdec_batch04.c $(PRIMARY_DIR)/vm_validated_handlers_retdec_batch05.c $(PRIMARY_DIR)/vm_validated_handlers_retdec_batch06.c
+HANDLER_RETDEC_INDEX_TSV := $(PRIMARY_DIR)/vm_handler_retdec_index.tsv
+HANDLER_RETDEC_INDEX_MD := $(PRIMARY_DIR)/vm_handler_retdec_index.md
 
-.PHONY: all clean fast-replay fast-state fast-gpr fast-predicates fast-state-predicates fast-gpr-predicates fast-transfer fast-state-transfer fast-gpr-transfer fast-validators fast-paths fast-gpr-paths instruction-trace instruction-trace-refresh instruction-unique instruction-unique-fast-check bytecode-segments-fast-check bytecode-blocks-fast-check instruction-lift sampled-recovery file-atlas file-fill long-branches hidden-transitions sampled-operands hidden-fill frontier-fill footprint-fill control-edges bytecode-ir bytecode-basic-blocks synthetic-spans synthetic-tails synthetic-tail-lift synthetic-successor-gaps synthetic-gap-transfer-probe synthetic-gap-dynamic-stitch synthetic-gap-chain-probe synthetic-gap-residual-audit synthetic-gap-concrete-state-audit synthetic-gap-state-trace-targets synthetic-gap-live-context-audit synthetic-gap-table-read-diagnostic synthetic-gap-table-memory-probe synthetic-gap-runtime-table-memory-probe synthetic-gap-sampled-control-correlation synthetic-gap-focused-direct-trace-audit synthetic-gap-focused-sequence-audit synthetic-gap-observed-chain-bridge synthetic-gap-observed-chain-replay synthetic-gap-chain-slot-reconciliation synthetic-gap-unresolved-family-audit synthetic-gap-source299-context-probe synthetic-gap-source299-ret-patch-probe synthetic-gap-sampled-ret-patch-probe synthetic-gap-ret-patch-native-target-atlas native-ret-patch-target-pseudocode native-ret-patch-epilogues-retdec native-ret-patch-source278-retdec target-only-handlers-retdec unobserved-handlers-retdec unobserved-handlers-retdec-batch0 weak-handlers-retdec validated-handlers-retdec synthetic-gap-live-snapshot-transfer-probe synthetic-gap-live-table-evidence synthetic-gap-symbolic-successors synthetic-gap-live-in-roles final-tail-site-probe synthetic-gap-live-in-reentry-probe synthetic-gap-allstatic-reentry-probe pseudocode pseudocode-full handler-pseudocode path-pseudocode source-bundle pseudocode-syntax-check pseudocode-object-check pseudocode-link-check coverage-matrix coverage-audit c-reconstruction-manifest
+.PHONY: all clean fast-replay fast-state fast-gpr fast-predicates fast-state-predicates fast-gpr-predicates fast-transfer fast-state-transfer fast-gpr-transfer fast-validators fast-paths fast-gpr-paths instruction-trace instruction-trace-refresh instruction-unique instruction-unique-fast-check bytecode-segments-fast-check bytecode-blocks-fast-check instruction-lift sampled-recovery file-atlas file-fill long-branches hidden-transitions sampled-operands hidden-fill frontier-fill footprint-fill control-edges bytecode-ir bytecode-basic-blocks synthetic-spans synthetic-tails synthetic-tail-lift synthetic-successor-gaps synthetic-gap-transfer-probe synthetic-gap-dynamic-stitch synthetic-gap-chain-probe synthetic-gap-residual-audit synthetic-gap-concrete-state-audit synthetic-gap-state-trace-targets synthetic-gap-live-context-audit synthetic-gap-table-read-diagnostic synthetic-gap-table-memory-probe synthetic-gap-runtime-table-memory-probe synthetic-gap-sampled-control-correlation synthetic-gap-focused-direct-trace-audit synthetic-gap-focused-sequence-audit synthetic-gap-observed-chain-bridge synthetic-gap-observed-chain-replay synthetic-gap-chain-slot-reconciliation synthetic-gap-unresolved-family-audit synthetic-gap-source299-context-probe synthetic-gap-source299-ret-patch-probe synthetic-gap-sampled-ret-patch-probe synthetic-gap-ret-patch-native-target-atlas native-ret-patch-target-pseudocode native-ret-patch-epilogues-retdec native-ret-patch-source278-retdec target-only-handlers-retdec unobserved-handlers-retdec unobserved-handlers-retdec-batch0 weak-handlers-retdec validated-handlers-retdec handler-retdec-index synthetic-gap-live-snapshot-transfer-probe synthetic-gap-live-table-evidence synthetic-gap-symbolic-successors synthetic-gap-live-in-roles final-tail-site-probe synthetic-gap-live-in-reentry-probe synthetic-gap-allstatic-reentry-probe pseudocode pseudocode-full handler-pseudocode path-pseudocode source-bundle pseudocode-syntax-check pseudocode-object-check pseudocode-link-check coverage-matrix coverage-audit c-reconstruction-manifest
 
-all: driver trace_preload.so vm_fast_path_profile vm_instruction_unique_fast vm_bytecode_segments_fast vm_bytecode_blocks_fast
+all: driver trace_preload.so vm_fast_path_profile vm_instruction_unique_fast vm_bytecode_segments_fast vm_bytecode_blocks_fast vm_handler_retdec_index
 
 driver: driver.c
 	$(CC) $(CFLAGS) -o $@ $< -ldl
@@ -36,6 +42,9 @@ vm_bytecode_segments_fast: vm_bytecode_segments_fast.c
 
 vm_bytecode_blocks_fast: vm_bytecode_blocks_fast.c
 	$(CC) $(CFLAGS) -O3 -o $@ $<
+
+vm_handler_retdec_index: vm_handler_retdec_index.c
+	$(CC) $(CFLAGS) -O2 -o $@ $<
 
 fast-replay: fast-state fast-gpr
 
@@ -300,32 +309,35 @@ native-ret-patch-epilogues-retdec:
 native-ret-patch-source278-retdec:
 	python3 vm_native_ret_patch_source278_retdec.py > dumps/vmtail-wide-1m-w16/vm_native_ret_patch_source278_retdec.c
 
-target-only-handlers-retdec:
-	python3 vm_target_only_handlers_retdec.py > dumps/vmtail-wide-1m-w16/vm_target_only_handlers_retdec.c
+$(TARGET_ONLY_HANDLER_RETDEC_C): vm_target_only_handlers_retdec.py $(PRIMARY_DIR)/vm_handler_semantics.tsv $(PRIMARY_DIR)/vm_handler_table.tsv eac.elf
+	python3 vm_target_only_handlers_retdec.py > $@
 
-unobserved-handlers-retdec-batch0:
-	python3 vm_unobserved_handlers_retdec_batch.py --batch-index 0 --batch-size 24 > dumps/vmtail-wide-1m-w16/vm_unobserved_handlers_retdec_batch00.c
+target-only-handlers-retdec: $(TARGET_ONLY_HANDLER_RETDEC_C)
 
-unobserved-handlers-retdec:
-	python3 vm_unobserved_handlers_retdec_batch.py --batch-index 0 --batch-size 24 > dumps/vmtail-wide-1m-w16/vm_unobserved_handlers_retdec_batch00.c
-	python3 vm_unobserved_handlers_retdec_batch.py --batch-index 1 --batch-size 24 > dumps/vmtail-wide-1m-w16/vm_unobserved_handlers_retdec_batch01.c
-	python3 vm_unobserved_handlers_retdec_batch.py --batch-index 2 --batch-size 24 > dumps/vmtail-wide-1m-w16/vm_unobserved_handlers_retdec_batch02.c
-	python3 vm_unobserved_handlers_retdec_batch.py --batch-index 3 --batch-size 24 > dumps/vmtail-wide-1m-w16/vm_unobserved_handlers_retdec_batch03.c
-	python3 vm_unobserved_handlers_retdec_batch.py --batch-index 4 --batch-size 24 > dumps/vmtail-wide-1m-w16/vm_unobserved_handlers_retdec_batch04.c
-	python3 vm_unobserved_handlers_retdec_batch.py --batch-index 5 --batch-size 24 > dumps/vmtail-wide-1m-w16/vm_unobserved_handlers_retdec_batch05.c
-	python3 vm_unobserved_handlers_retdec_batch.py --batch-index 6 --batch-size 24 > dumps/vmtail-wide-1m-w16/vm_unobserved_handlers_retdec_batch06.c
+$(PRIMARY_DIR)/vm_unobserved_handlers_retdec_batch%.c: vm_unobserved_handlers_retdec_batch.py $(PRIMARY_DIR)/vm_handler_semantics.tsv $(PRIMARY_DIR)/vm_handler_table.tsv eac.elf
+	python3 vm_unobserved_handlers_retdec_batch.py --batch-index $* --batch-size 24 > $@
 
-weak-handlers-retdec:
-	python3 vm_weak_handlers_retdec.py > dumps/vmtail-wide-1m-w16/vm_weak_handlers_retdec.c
+unobserved-handlers-retdec-batch0: $(PRIMARY_DIR)/vm_unobserved_handlers_retdec_batch00.c
 
-validated-handlers-retdec:
-	python3 vm_validated_handlers_retdec_batch.py --batch-index 0 --batch-size 24 > dumps/vmtail-wide-1m-w16/vm_validated_handlers_retdec_batch00.c
-	python3 vm_validated_handlers_retdec_batch.py --batch-index 1 --batch-size 24 > dumps/vmtail-wide-1m-w16/vm_validated_handlers_retdec_batch01.c
-	python3 vm_validated_handlers_retdec_batch.py --batch-index 2 --batch-size 24 > dumps/vmtail-wide-1m-w16/vm_validated_handlers_retdec_batch02.c
-	python3 vm_validated_handlers_retdec_batch.py --batch-index 3 --batch-size 24 > dumps/vmtail-wide-1m-w16/vm_validated_handlers_retdec_batch03.c
-	python3 vm_validated_handlers_retdec_batch.py --batch-index 4 --batch-size 24 > dumps/vmtail-wide-1m-w16/vm_validated_handlers_retdec_batch04.c
-	python3 vm_validated_handlers_retdec_batch.py --batch-index 5 --batch-size 24 > dumps/vmtail-wide-1m-w16/vm_validated_handlers_retdec_batch05.c
-	python3 vm_validated_handlers_retdec_batch.py --batch-index 6 --batch-size 24 > dumps/vmtail-wide-1m-w16/vm_validated_handlers_retdec_batch06.c
+unobserved-handlers-retdec: $(UNOBSERVED_HANDLER_RETDEC_CS)
+
+$(WEAK_HANDLER_RETDEC_C): vm_weak_handlers_retdec.py $(PRIMARY_DIR)/vm_microcode_catalog.tsv $(PRIMARY_DIR)/vm_handler_table.tsv eac.elf
+	python3 vm_weak_handlers_retdec.py > $@
+
+weak-handlers-retdec: $(WEAK_HANDLER_RETDEC_C)
+
+$(PRIMARY_DIR)/vm_validated_handlers_retdec_batch%.c: vm_validated_handlers_retdec_batch.py $(PRIMARY_DIR)/vm_microcode_catalog.tsv $(PRIMARY_DIR)/vm_handler_table.tsv eac.elf
+	python3 vm_validated_handlers_retdec_batch.py --batch-index $* --batch-size 24 > $@
+
+validated-handlers-retdec: $(VALIDATED_HANDLER_RETDEC_CS)
+
+$(HANDLER_RETDEC_INDEX_TSV): vm_handler_retdec_index target-only-handlers-retdec unobserved-handlers-retdec weak-handlers-retdec validated-handlers-retdec
+	./vm_handler_retdec_index > $@
+
+$(HANDLER_RETDEC_INDEX_MD): vm_handler_retdec_index target-only-handlers-retdec unobserved-handlers-retdec weak-handlers-retdec validated-handlers-retdec
+	./vm_handler_retdec_index --markdown > $@
+
+handler-retdec-index: $(HANDLER_RETDEC_INDEX_TSV) $(HANDLER_RETDEC_INDEX_MD)
 
 synthetic-gap-live-snapshot-transfer-probe: synthetic-gap-unresolved-family-audit
 	python3 vm_synthetic_gap_live_snapshot_transfer_probe.py > dumps/vmtail-wide-1m-w16/vm_synthetic_gap_live_snapshot_transfer_probe.tsv
