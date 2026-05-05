@@ -65,6 +65,15 @@ def build_tail_maps(eac: bytes, table, window: int):
 
 
 def parse_event(line: str, target_to_entry):
+    tail_pos = line.find("[VMTAIL]")
+    dispatch_pos = line.find("[DISPATCH]")
+    if tail_pos < 0 and dispatch_pos < 0:
+        return None
+    if tail_pos >= 0 and (dispatch_pos < 0 or tail_pos < dispatch_pos):
+        line = line[tail_pos:]
+    else:
+        line = line[dispatch_pos:]
+
     words = parse_ip_words(line)
     hex_fields = parse_hex_fields(line)
     vm_flags = hex_fields.get("vm_flags")
