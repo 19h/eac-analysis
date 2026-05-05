@@ -70,7 +70,7 @@ static const Tier1Augment k_augments[] = {
     { 68, 5, "state_effect_only_no_dispatch_return", "", "state = ((state0 ^ selected_operand) + 0x72639e4e) ^ state0; flag/operand rewrite body precedes tail" },
     { 247, 5, "state_effect_only_no_dispatch_return", "", "state = (s16(ip+0) + 0x4c044f6f + state0) ^ state0; predicate scratch side effects present" },
     { 44, 5, "masked_table_load_requires_g5", "(s16(ip+1) - state0) & g5_mask", "state = (s16(ip+1) - state0) | state0; dispatch-table load uses g5-masked slot source" },
-    { 164, 5, "retdec_raw_mod_slot", "((((state0 - flags0 - 0x05d1cfd6) | 0x7c3f7914) ^ s16(ip+0)) - 0x51b094c3) & 0xffff", "RetDec return is raw v46 %% 0x10000, not a dispatch-base load" },
+    { 164, 5, "retdec_raw_mod_slot", "((((state0 - flags0 - 0x05d1cfd6) | 0x7c3f7914) ^ s16(ip+0)) - 0x51b094c3) & 0xffff", "RetDec return is raw v46 % 0x10000, not a dispatch-base load" },
     { 150, 5, "state_effect_only_no_dispatch_return", "", "state adjusted by operand/constant chain; return expression subtracts dispatch base residue" },
     { 170, 11, "state_effect_only_no_dispatch_return", "", "state = 2*state0 + s16(ip+7); byte compare/pointer step" },
 };
@@ -382,7 +382,7 @@ static void emit_c(const QueueRow *rows, size_t count) {
     puts("    return (VMTier1Result){ entry, slot, advance, slot == VM_TIER1_UNKNOWN_SLOT ? 0u : vm_tier1_dispatch_base(vm) + slot, source_function, status };");
     puts("}");
     puts("");
-    puts("static const VMTier1ModelInfo k_vmtier1_models[] = {");
+    puts("const VMTier1ModelInfo k_vmtier1_models[] = {");
     for (size_t i = 0; i < count; i++) {
         const QueueRow *row = &rows[i];
         const Tier1Augment *aug = augment_for(row->entry);

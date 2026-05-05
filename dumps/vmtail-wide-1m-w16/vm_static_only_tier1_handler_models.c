@@ -53,7 +53,7 @@ static VMTier1Result vm_tier1_done(VMTier1Frame *vm, uint16_t entry, uint32_t sl
     return (VMTier1Result){ entry, slot, advance, slot == VM_TIER1_UNKNOWN_SLOT ? 0u : vm_tier1_dispatch_base(vm) + slot, source_function, status };
 }
 
-static const VMTier1ModelInfo k_vmtier1_models[] = {
+const VMTier1ModelInfo k_vmtier1_models[] = {
     { 159, 9, "0x992cd", "function_992cd", "state_effect_only_no_dispatch_return", "", "ip += 9; retdec_tail=state = 2*state0 + s16(ip+4); paired qword pointer copy/step; ip_reads=+0x2/2,+0x0/2,+0x6/2,+0x4/2; frame_reads=0xa,0x23,0x199,0x194,0x10f,0x170,0x81; frame_writes=0x23,0x170,0xa" },
     { 244, 9, "0xaaf3e", "function_aaf3e", "state_pointer_return_no_dispatch_slot", "", "ip += 9; retdec_tail=word copy through paired pointer step; flags optionally adjusted; ip_reads=+0x7/2,+0x0/2,+0x5/2,+0x2/2; frame_reads=0xa,0x170,0x0,0x199,0x23,0x10f; frame_writes=0x23,0xa" },
     { 12, 8, "0x7acd8", "function_7acd8", "retdec_dispatch_table_slot", "(s16(ip+0) - (state0 | flags0) + 0x61ec39cd) & 0xffff", "ip += 8; retdec_tail=state = slot_source | (state0 | flags0); byte store through pointer step; ip_reads=+0x4/2,+0x6/2,+0x2/2,+0x0/2; frame_reads=0xa,0x23,0x10f,0x170; frame_writes=0x170,0xa" },
@@ -94,7 +94,7 @@ static const VMTier1ModelInfo k_vmtier1_models[] = {
     { 68, 5, "0x85b89", "function_85b89", "state_effect_only_no_dispatch_return", "", "ip += 5; retdec_tail=state = ((state0 ^ selected_operand) + 0x72639e4e) ^ state0; flag/operand rewrite body precedes tail; ip_reads=+0x3/2,+0x2/1,+0x0/2; frame_reads=0xa,0x60,0x0,0x23,0x194,0x71,0x10f,0x170; frame_writes=0x71,0x23,0x60,0x0,0x170,0xa" },
     { 247, 5, "0xabd6f", "function_abd6f", "state_effect_only_no_dispatch_return", "", "ip += 5; retdec_tail=state = (s16(ip+0) + 0x4c044f6f + state0) ^ state0; predicate scratch side effects present; ip_reads=+0x3/2,+0x2/1,+0x0/2; frame_reads=0xa,0x10f,0x170,0x81; frame_writes=0x199,0x170,0xa" },
     { 44, 5, "0x81b7f", "function_81b7f", "masked_table_load_requires_g5", "(s16(ip+1) - state0) & g5_mask", "ip += 5; retdec_tail=state = (s16(ip+1) - state0) | state0; dispatch-table load uses g5-masked slot source; ip_reads=+0x3/2,+0x0/1,+0x1/2; frame_reads=0xa,0x10f,0x170; frame_writes=0x199,0x170,0xa" },
-    { 164, 5, "0x99e99", "function_99e99", "retdec_raw_mod_slot", "((((state0 - flags0 - 0x05d1cfd6) | 0x7c3f7914) ^ s16(ip+0)) - 0x51b094c3) & 0xffff", "ip += 5; retdec_tail=RetDec return is raw v46 %% 0x10000, not a dispatch-base load; ip_reads=+0x2/2,+0x4/1,+0x0/2; frame_reads=0xa,0x0,0x60,0x194,0x71,0x23,0x10f,0x170; frame_writes=0x170,0x71,0x0,0x60,0xa" },
+    { 164, 5, "0x99e99", "function_99e99", "retdec_raw_mod_slot", "((((state0 - flags0 - 0x05d1cfd6) | 0x7c3f7914) ^ s16(ip+0)) - 0x51b094c3) & 0xffff", "ip += 5; retdec_tail=RetDec return is raw v46 % 0x10000, not a dispatch-base load; ip_reads=+0x2/2,+0x4/1,+0x0/2; frame_reads=0xa,0x0,0x60,0x194,0x71,0x23,0x10f,0x170; frame_writes=0x170,0x71,0x0,0x60,0xa" },
     { 150, 5, "0x96f2a", "function_96f2a", "state_effect_only_no_dispatch_return", "", "ip += 5; retdec_tail=state adjusted by operand/constant chain; return expression subtracts dispatch base residue; ip_reads=+0x0/2,+0x4/1,+0x2/2; frame_reads=0xa,0x0,0x60,0x194,0x71,0x23,0x10f; frame_writes=0x71,0x170,0x60,0x0,0xa" },
     { 170, 11, "0x9b0c8", "function_9b0c8", "state_effect_only_no_dispatch_return", "", "ip += 11; retdec_tail=state = 2*state0 + s16(ip+7); byte compare/pointer step; ip_reads=+0x9/2,+0x3/2,+0x5/2,+0x0/1,+0x1/2,+0x7/2; frame_reads=0xa,0x194,0x199,0x81,0x23,0x10f,0x170; frame_writes=0x23,0x170,0xa" },
 };
@@ -621,7 +621,7 @@ static VMTier1Result vm_tier1_entry_044(VMTier1Frame *vm) {
 
 static VMTier1Result vm_tier1_entry_164(VMTier1Frame *vm) {
     /* rank=52 target=0x99e99 retdec=function_99e99 sidecar=vm_unobserved_handlers_retdec_batch04.c */
-    /* ip += 5; retdec_tail=RetDec return is raw v46 %% 0x10000, not a dispatch-base load; ip_reads=+0x2/2,+0x4/1,+0x0/2; frame_reads=0xa,0x0,0x60,0x194,0x71,0x23,0x10f,0x170; frame_writes=0x170,0x71,0x0,0x60,0xa */
+    /* ip += 5; retdec_tail=RetDec return is raw v46 % 0x10000, not a dispatch-base load; ip_reads=+0x2/2,+0x4/1,+0x0/2; frame_reads=0xa,0x0,0x60,0x194,0x71,0x23,0x10f,0x170; frame_writes=0x170,0x71,0x0,0x60,0xa */
     uint8_t *ip = vm_tier1_ip(vm);
     uint32_t state0 = *vm_tier1_state_cell(vm);
     uint32_t flags0 = *vm_tier1_flags_cell(vm);
