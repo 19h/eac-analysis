@@ -6,22 +6,22 @@
  * coverage -> queue -> RetDec batch -> coverage.
  *
  * Ranges:
- *   0x4d8cc0-0x4d8e02 rank=6 name=sym.blake3_hasher_init_derive_key_raw kind=symbol_named bytes=322 uncovered=322
- *   0x4885ae-0x4886ef rank=7 name=fcn.004885ae kind=r2_discovered bytes=321 uncovered=321
- *   0x57b2f0-0x57b431 rank=8 name=fcn.0057b2f0 kind=r2_discovered bytes=321 uncovered=321
- *   0x59b19-0x59c57 rank=9 name=fcn.00059b19 kind=r2_discovered bytes=318 uncovered=318
- *   0x4ea000-0x4ea13d rank=10 name=fcn.004ea000 kind=r2_discovered bytes=317 uncovered=317
- *   0x579bc0-0x579cfd rank=11 name=fcn.00579bc0 kind=r2_discovered bytes=317 uncovered=317
- *   0x6bb54-0x6bc90 rank=12 name=fcn.0006bb54 kind=r2_discovered bytes=316 uncovered=316
- *   0x525bd0-0x525d0c rank=13 name=method.std::__cxx11::time_get_char__std::istreambuf_iterator_char__std::char_traits_char_____.virtual_24 kind=native_discovered bytes=316 uncovered=316
- *   0x525d20-0x525e5c rank=14 name=method.std::__cxx11::time_get_char__std::istreambuf_iterator_char__std::char_traits_char_____.virtual_32 kind=native_discovered bytes=316 uncovered=316
- *   0x54ed60-0x54ee9c rank=15 name=method.std::__codecvt_utf8_utf16_base_char32_t_.virtual_32 kind=native_discovered bytes=316 uncovered=316
- *   0x54eec0-0x54effc rank=16 name=method.std::__codecvt_utf8_utf16_base_wchar_t_.virtual_32 kind=native_discovered bytes=316 uncovered=316
- *   0x55b740-0x55b87c rank=17 name=method.std::time_get_char__std::istreambuf_iterator_char__std::char_traits_char_____.virtual_24 kind=native_discovered bytes=316 uncovered=316
- *   0x55b890-0x55b9cc rank=18 name=method.std::time_get_char__std::istreambuf_iterator_char__std::char_traits_char_____.virtual_32 kind=native_discovered bytes=316 uncovered=316
- *   0x577a20-0x577b5c rank=19 name=fcn.00577a20 kind=r2_discovered bytes=316 uncovered=316
- *   0x577bc0-0x577cfc rank=20 name=fcn.00577bc0 kind=r2_discovered bytes=316 uncovered=316
- *   0x56788-0x568c3 rank=21 name=fcn.00056788 kind=r2_discovered bytes=315 uncovered=315
+ *   0x4d8cc0-0x4d8e02 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x4885ae-0x4886ef rank=- name=- kind=- bytes=- uncovered=-
+ *   0x57b2f0-0x57b431 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x59b19-0x59c57 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x4ea000-0x4ea13d rank=- name=- kind=- bytes=- uncovered=-
+ *   0x579bc0-0x579cfd rank=- name=- kind=- bytes=- uncovered=-
+ *   0x6bb54-0x6bc90 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x525bd0-0x525d0c rank=- name=- kind=- bytes=- uncovered=-
+ *   0x525d20-0x525e5c rank=- name=- kind=- bytes=- uncovered=-
+ *   0x54ed60-0x54ee9c rank=- name=- kind=- bytes=- uncovered=-
+ *   0x54eec0-0x54effc rank=- name=- kind=- bytes=- uncovered=-
+ *   0x55b740-0x55b87c rank=- name=- kind=- bytes=- uncovered=-
+ *   0x55b890-0x55b9cc rank=- name=- kind=- bytes=- uncovered=-
+ *   0x577a20-0x577b5c rank=- name=- kind=- bytes=- uncovered=-
+ *   0x577bc0-0x577cfc rank=- name=- kind=- bytes=- uncovered=-
+ *   0x56788-0x568c3 rank=- name=- kind=- bytes=- uncovered=-
  */
 #include <stdbool.h>
 #include <stdio.h>
@@ -38,7 +38,11 @@ typedef long double float80_t;
 struct __locale_struct;
 struct _TYPEDEF___mbstate_t;
 struct _IO_FILE;
+struct sockaddr;
 struct utsname;
+#define F_GETFL 3
+#define F_SETFL 4
+#define SO_DEBUG 1
 extern int g1;
 extern int g2;
 extern int g3;
@@ -113,6 +117,9 @@ struct __locale_struct *__uselocale(struct __locale_struct *locale);
 char *dgettext(char *domain, char *msgid);
 char *gettext(char *msgid);
 char *bind_textdomain_codeset(char *domainname, char *codeset);
+void *iconv_open(const char *tocode, const char *fromcode);
+int32_t iconv(void *cd, char **inbuf, int32_t *inbytesleft, char **outbuf, int32_t *outbytesleft);
+int iconv_close(void *cd);
 struct _IO_FILE *fopen(const char *path, const char *mode);
 size_t fread(void *ptr, size_t size, size_t nmemb, struct _IO_FILE *stream);
 int fclose(struct _IO_FILE *stream);
@@ -126,8 +133,13 @@ int32_t *wmemset(int32_t *wcs, int32_t wc, size_t n);
 int64_t memset2(void *s, int c, size_t n);
 int pthread_mutex_lock(void *mutex);
 int pthread_mutex_unlock(void *mutex);
+int fcntl(int fd, int cmd, ...);
+int32_t *__errno_location(void);
+int connect(int sockfd, const struct sockaddr *addr, int32_t addrlen);
+int getsockopt(int sockfd, int level, int optname, void *optval, int32_t *optlen);
 int64_t readlink(const char *path, char *buf, size_t bufsiz);
 char *realpath(const char *path, char *resolved_path);
+int64_t __wctype_l(const char *property, struct __locale_struct *locale);
 char *strdup(const char *s);
 struct _Unwind_Exception;
 void _Unwind_Resume(struct _Unwind_Exception *exception);
