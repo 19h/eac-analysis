@@ -141,9 +141,11 @@ def cross_trace_metrics(rows, trace_dir):
     spawn_policies = Counter(row.get("spawn_policy") or "unknown" for row in matrix)
     concrete_network_requested = [row for row in concrete_rows if parse_int(row.get("network_events")) > 0]
     concrete_network_denied = [row for row in concrete_rows if parse_int(row.get("network_denied_events")) > 0]
+    concrete_network_fake = [row for row in concrete_rows if parse_int(row.get("network_fake_events")) > 0]
     concrete_network_allowed = [
         row for row in concrete_rows
         if parse_int(row.get("network_events")) > 0 and parse_int(row.get("network_denied_events")) == 0
+        and parse_int(row.get("network_fake_events")) == 0
     ]
     concrete_no_network_events = [
         row for row in concrete_rows
@@ -186,8 +188,10 @@ def cross_trace_metrics(rows, trace_dir):
         "Concrete instruction traces where the log reached network calls.")
     add(rows, "dynamic_cross_trace", "concrete_instruction_traces_with_network_denied", len(concrete_network_denied),
         "Concrete instruction traces whose network calls were denied by trace_preload.")
+    add(rows, "dynamic_cross_trace", "concrete_instruction_traces_with_network_fake", len(concrete_network_fake),
+        "Concrete instruction traces whose network calls were satisfied by trace_preload's local fake-network mode.")
     add(rows, "dynamic_cross_trace", "concrete_instruction_traces_with_network_allowed", len(concrete_network_allowed),
-        "Concrete instruction traces with network calls that were not denied in the preload log.")
+        "Concrete instruction traces with real/non-fake network calls that were not denied in the preload log.")
     add(rows, "dynamic_cross_trace", "concrete_instruction_traces_without_network_events", len(concrete_no_network_events),
         "Concrete instruction traces that did not reach preload-logged network calls.")
     add(rows, "dynamic_cross_trace", "concrete_network_host_mix", compact_counter(network_hosts) or "-",

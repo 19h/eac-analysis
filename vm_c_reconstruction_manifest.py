@@ -330,6 +330,7 @@ def coverage_metrics(rows):
         ("dynamic_cross_trace", "concrete_runtime_modes_seen"),
         ("dynamic_cross_trace", "concrete_instruction_traces_with_network_events"),
         ("dynamic_cross_trace", "concrete_instruction_traces_with_network_denied"),
+        ("dynamic_cross_trace", "concrete_instruction_traces_with_network_fake"),
         ("dynamic_cross_trace", "concrete_instruction_traces_with_network_allowed"),
         ("dynamic_cross_trace", "concrete_instruction_traces_without_network_events"),
         ("dynamic_cross_trace", "concrete_network_host_mix"),

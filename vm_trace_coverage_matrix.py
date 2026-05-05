@@ -83,6 +83,8 @@ def classify_dir(path):
     text = str(path)
     if "filefill" in text or "hiddenfill" in text or "frontierfill" in text or "footprintfill" in text:
         return "synthetic_filled_trace"
+    if "fakenet" in text or "fake-network" in text:
+        return "fake_network_trace"
     if "mem" in text:
         return "memory_context_trace"
     if "regs" in text or "scratch" in text:
@@ -207,6 +209,7 @@ def parse_run_metadata(trace_dir):
         "network_policy": "not_observed",
         "network_events": "0",
         "network_denied_events": "0",
+        "network_fake_events": "0",
         "network_hosts": "",
         "network_callers": "",
         "spawn_policy": "not_observed",
@@ -222,6 +225,7 @@ def parse_run_metadata(trace_dir):
     env_flags = set()
     network_events = 0
     network_denied_events = 0
+    network_fake_events = 0
     network_hosts = Counter()
     network_callers = Counter()
     spawn_events = 0
@@ -273,6 +277,8 @@ def parse_run_metadata(trace_dir):
                 network_events += 1
                 if " DENY" in line:
                     network_denied_events += 1
+                if " FAKE" in line:
+                    network_fake_events += 1
                 getaddr_match = GETADDR_RE.search(line)
                 if getaddr_match:
                     host = getaddr_match.group("node")
@@ -319,10 +325,15 @@ def parse_run_metadata(trace_dir):
         meta["runtime_config"] = "unknown"
     meta["network_events"] = str(network_events)
     meta["network_denied_events"] = str(network_denied_events)
+    meta["network_fake_events"] = str(network_fake_events)
     meta["network_hosts"] = fmt_counter(network_hosts, 8)
     meta["network_callers"] = fmt_counter(network_callers, 8)
     if network_events == 0:
         meta["network_policy"] = "not_observed"
+    elif network_fake_events == network_events:
+        meta["network_policy"] = "fake_observed"
+    elif network_fake_events:
+        meta["network_policy"] = "mixed_fake_observed"
     elif network_denied_events == network_events:
         meta["network_policy"] = "blocked_observed"
     elif network_denied_events:
@@ -487,6 +498,7 @@ def make_rows(args):
             "network_policy": meta["network_policy"],
             "network_events": meta["network_events"],
             "network_denied_events": meta["network_denied_events"],
+            "network_fake_events": meta["network_fake_events"],
             "network_hosts": meta["network_hosts"],
             "network_callers": meta["network_callers"],
             "spawn_policy": meta["spawn_policy"],
@@ -544,6 +556,7 @@ def emit_tsv(rows):
         "network_policy",
         "network_events",
         "network_denied_events",
+        "network_fake_events",
         "network_hosts",
         "network_callers",
         "spawn_policy",
@@ -585,6 +598,7 @@ def emit_markdown(rows):
             f"`{row['source_entries_vs_primary']}` | `{row['start_vm_ips_vs_primary']}` |"
         )
     print("\n`blocked_observed` means trace_preload saw network calls and denied them, so that row is not network-enabled coverage.")
+    print("`fake_observed` means trace_preload satisfied network calls with local fake DNS/socket/TLS-error bytes, so that row is not real outbound coverage.")
     print("The static handler inventory is broader than any one row here, but these dynamic rows do not prove full program coverage.")
 
 
