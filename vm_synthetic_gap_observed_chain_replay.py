@@ -90,7 +90,10 @@ def replay_shape(step_row, step_following, chain_row):
     first = step_row.get("first_hop_vm_ip", "") or "-"
     follow = step_following or step_row.get("following_residual_start", "") or "-"
     dest = chain_row.get("terminal_dest_vm_ip", "") or "-"
-    block = chain_row.get("terminal_dest_block", "") or "-"
+    try:
+        block = f"{int(chain_row.get('terminal_dest_block', '') or 0):04d}"
+    except ValueError:
+        block = chain_row.get("terminal_dest_block", "") or "-"
     return (
         f"op_entry_{source}(vm); next_entry={target}; "
         f"first_hop={first}; vm_ip={follow}; terminal=prog_bb_{block}@{dest}"
