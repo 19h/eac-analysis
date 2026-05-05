@@ -267,11 +267,11 @@ pseudocode-link-check: source-bundle
 
 coverage-matrix:
 	python3 vm_trace_coverage_matrix.py > dumps/vmtail-wide-1m-w16/vm_trace_coverage_matrix.tsv
-	python3 vm_trace_coverage_matrix.py --markdown > dumps/vmtail-wide-1m-w16/vm_trace_coverage_matrix.md
+	python3 vm_trace_coverage_matrix.py --from-tsv dumps/vmtail-wide-1m-w16/vm_trace_coverage_matrix.tsv --markdown > dumps/vmtail-wide-1m-w16/vm_trace_coverage_matrix.md
 
 coverage-audit: coverage-matrix
 	python3 vm_static_coverage_audit.py > dumps/vmtail-wide-1m-w16/vm_static_coverage_audit.tsv
-	python3 vm_static_coverage_audit.py --markdown > dumps/vmtail-wide-1m-w16/vm_static_coverage_audit.md
+	python3 vm_static_coverage_audit.py --from-tsv dumps/vmtail-wide-1m-w16/vm_static_coverage_audit.tsv --markdown > dumps/vmtail-wide-1m-w16/vm_static_coverage_audit.md
 
 c-reconstruction-manifest: pseudocode-syntax-check pseudocode-object-check pseudocode-link-check coverage-audit synthetic-gap-transfer-probe synthetic-gap-dynamic-stitch synthetic-gap-chain-probe synthetic-gap-residual-audit synthetic-gap-concrete-state-audit synthetic-gap-state-trace-targets synthetic-gap-live-context-audit synthetic-gap-table-read-diagnostic synthetic-gap-table-memory-probe synthetic-gap-sampled-control-correlation synthetic-gap-focused-direct-trace-audit synthetic-gap-focused-sequence-audit synthetic-gap-symbolic-successors synthetic-gap-live-in-roles final-tail-site-probe synthetic-gap-live-in-reentry-probe synthetic-gap-allstatic-reentry-probe
 	python3 vm_c_reconstruction_manifest.py > dumps/vmtail-wide-1m-w16/vm_c_reconstruction_manifest.tsv

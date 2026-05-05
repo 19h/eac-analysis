@@ -346,10 +346,11 @@ def emit_markdown(rows):
 def main():
     parser = argparse.ArgumentParser(description="Audit static/global versus dynamic/path VM reconstruction coverage.")
     parser.add_argument("--trace-dir", default="dumps/vmtail-wide-1m-w16")
+    parser.add_argument("--from-tsv", help="Render rows from a precomputed audit TSV instead of rebuilding it")
     parser.add_argument("--markdown", action="store_true")
     args = parser.parse_args()
 
-    rows = build_rows(args)
+    rows = read_tsv(args.from_tsv) if args.from_tsv else build_rows(args)
     if args.markdown:
         emit_markdown(rows)
     else:
