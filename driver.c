@@ -934,6 +934,8 @@ static uintptr_t tail_reg_value(const ucontext_t *uc, enum tail_reg reg) {
 }
 #endif
 
+static int write_code_byte(uint8_t *addr, uint8_t value, const char *label);
+
 static void dispatch_sigtrap(int sig, siginfo_t *info, void *opaque) {
     (void)sig;
     (void)info;
@@ -942,6 +944,32 @@ static void dispatch_sigtrap(int sig, siginfo_t *info, void *opaque) {
     ucontext_t *uc = (ucontext_t *)opaque;
     uintptr_t rip = (uintptr_t)uc->uc_mcontext.gregs[REG_RIP];
     uintptr_t trap_site = rip - 1u;
+
+    if (g_probe_trace && g_probe_stepping >= 0) {
+        size_t probe_idx = (size_t)g_probe_stepping;
+        if (probe_idx < g_probe_site_count) {
+            (void)write_code_byte(g_eac_base + g_probe_sites[probe_idx].off, 0xcc, "probe");
+        }
+        uc->uc_mcontext.gregs[REG_EFL] &= ~(greg_t)0x100;
+        g_probe_stepping = -1;
+        return;
+    }
+
+    for (size_t idx = 0; g_probe_trace && idx < g_probe_site_count; ++idx) {
+        uintptr_t site = (uintptr_t)g_eac_base + g_probe_sites[idx].off;
+        if (trap_site != site) continue;
+
+        probe_trace_write(idx, trap_site - (uintptr_t)g_eac_base, uc);
+        if (write_code_byte((uint8_t *)site, g_probe_sites[idx].original_byte, "probe") != 0) {
+            signal(SIGTRAP, SIG_DFL);
+            uc->uc_mcontext.gregs[REG_RIP] = (greg_t)trap_site;
+            return;
+        }
+        uc->uc_mcontext.gregs[REG_RIP] = (greg_t)trap_site;
+        uc->uc_mcontext.gregs[REG_EFL] |= (greg_t)0x100;
+        g_probe_stepping = (int)idx;
+        return;
+    }
 
     for (size_t idx = 0; idx < g_dispatch_site_count; ++idx) {
         uintptr_t site = (uintptr_t)g_eac_base + g_dispatch_sites[idx];
@@ -1028,7 +1056,9 @@ static int patch_dispatch_byte(uint8_t *addr) {
 }
 
 static void install_dispatch_trace(void *sym) {
-    if (!env_is_one_driver("EAC_DISPATCH_TRACE")) return;
+    int dispatch_trace = env_is_one_driver("EAC_DISPATCH_TRACE");
+    g_probe_trace = env_is_one_driver("EAC_PROBE_TRACE");
+    if (!dispatch_trace && !g_probe_trace) return;
 
     g_dispatch_limit = parse_ul(getenv("EAC_DISPATCH_LIMIT"), 4096);
     if (g_dispatch_limit == 0) g_dispatch_limit = 1;
@@ -1037,9 +1067,18 @@ static void install_dispatch_trace(void *sym) {
     g_dispatch_focus_site_count = 0;
     g_dispatch_focus_hits = 0;
     g_dispatch_stop_after_matches = parse_ul(getenv("EAC_DISPATCH_STOP_AFTER_MATCHES"), 0);
-    add_default_dispatch_sites();
-    parse_dispatch_sites(getenv("EAC_DISPATCH_EXTRA_SITES"), 0);
-    parse_dispatch_sites(getenv("EAC_DISPATCH_FOCUS_SITES"), 1);
+    if (dispatch_trace) {
+        add_default_dispatch_sites();
+        parse_dispatch_sites(getenv("EAC_DISPATCH_EXTRA_SITES"), 0);
+        parse_dispatch_sites(getenv("EAC_DISPATCH_FOCUS_SITES"), 1);
+    }
+    g_probe_site_count = 0;
+    g_probe_hits = 0;
+    g_probe_stepping = -1;
+    g_probe_limit = parse_ul(getenv("EAC_PROBE_LIMIT"), 4096);
+    if (g_probe_limit == 0) g_probe_limit = 1;
+    g_probe_stop_after_matches = parse_ul(getenv("EAC_PROBE_STOP_AFTER_MATCHES"), 0);
+    parse_probe_sites(getenv("EAC_PROBE_SITES"));
     g_tail_trace = env_is_one_driver("EAC_VMTAIL_TRACE");
     g_tail_regs = env_is_one_driver("EAC_VMTAIL_REGS");
     g_tail_scratch = env_is_one_driver("EAC_VMTAIL_SCRATCH");
@@ -1086,6 +1125,10 @@ static void install_dispatch_trace(void *sym) {
     for (size_t i = 0; i < g_dispatch_site_count; ++i) {
         if (patch_dispatch_byte(g_eac_base + g_dispatch_sites[i]) != 0) return;
     }
+    for (size_t i = 0; g_probe_trace && i < g_probe_site_count; ++i) {
+        g_probe_sites[i].original_byte = *(g_eac_base + g_probe_sites[i].off);
+        if (patch_dispatch_byte(g_eac_base + g_probe_sites[i].off) != 0) return;
+    }
     if (g_tail_trace) {
         for (size_t i = 0; i < g_tail_site_count; ++i) {
             if (patch_dispatch_byte(g_eac_base + g_tail_sites[i].off) != 0) return;
@@ -1098,12 +1141,15 @@ static void install_dispatch_trace(void *sym) {
             " tail_limit=%" PRIu64
             " tail_sites=%zu scratch_offsets=%zu read_ranges=%zu focus_ips=%zu"
             " focus_sites=%zu stop_after_matches=%" PRIu64
-            " dispatch_focus_sites=%zu dispatch_stop_after_matches=%" PRIu64 "\n",
+            " dispatch_focus_sites=%zu dispatch_stop_after_matches=%" PRIu64
+            " probe=%d probe_sites=%zu probe_limit=%" PRIu64
+            " probe_stop_after_matches=%" PRIu64 "\n",
             (void *)g_eac_base, g_dispatch_site_count, g_dispatch_limit,
             g_dispatch_detail, g_tail_trace, g_tail_regs, g_tail_scratch, g_tail_mem,
             g_tail_limit, g_tail_site_count, g_scratch_offset_count, g_read_range_count,
             g_tail_focus_ip_count, g_tail_focus_site_count, g_tail_stop_after_matches,
-            g_dispatch_focus_site_count, g_dispatch_stop_after_matches);
+            g_dispatch_focus_site_count, g_dispatch_stop_after_matches,
+            g_probe_trace, g_probe_site_count, g_probe_limit, g_probe_stop_after_matches);
     for (size_t i = 0; i < g_dispatch_site_count; ++i) {
         fprintf(stderr, "[DRIVER] dispatch site +0x%lx\n",
                 (unsigned long)g_dispatch_sites[i]);
@@ -1111,6 +1157,10 @@ static void install_dispatch_trace(void *sym) {
     for (size_t i = 0; g_tail_trace && i < g_tail_site_count; ++i) {
         fprintf(stderr, "[DRIVER] tail site +0x%lx -> %s\n",
                 (unsigned long)g_tail_sites[i].off, tail_reg_name(g_tail_sites[i].reg));
+    }
+    for (size_t i = 0; g_probe_trace && i < g_probe_site_count; ++i) {
+        fprintf(stderr, "[DRIVER] probe site +0x%lx original=0x%02x\n",
+                (unsigned long)g_probe_sites[i].off, g_probe_sites[i].original_byte);
     }
 }
 
