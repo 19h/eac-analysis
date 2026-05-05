@@ -13,7 +13,7 @@ TAIL_MEM_RUN_ARGS ?= --tail-mem-run $(TAIL_MEM_EXACT_RUN) --tail-mem-run $(TAIL_
 PRED_ROWS ?= 128
 XFER_ROWS ?= 128
 
-.PHONY: all clean fast-replay fast-state fast-gpr fast-predicates fast-state-predicates fast-gpr-predicates fast-transfer fast-state-transfer fast-gpr-transfer fast-validators fast-paths fast-gpr-paths instruction-trace instruction-unique instruction-lift file-fill long-branches hidden-transitions sampled-operands hidden-fill frontier-fill footprint-fill control-edges bytecode-ir bytecode-basic-blocks synthetic-spans synthetic-tails synthetic-tail-lift synthetic-successor-gaps synthetic-gap-transfer-probe synthetic-gap-dynamic-stitch synthetic-gap-chain-probe synthetic-gap-symbolic-successors synthetic-gap-live-in-roles final-tail-site-probe synthetic-gap-live-in-reentry-probe synthetic-gap-allstatic-reentry-probe pseudocode pseudocode-full handler-pseudocode path-pseudocode source-bundle pseudocode-syntax-check pseudocode-object-check pseudocode-link-check coverage-matrix coverage-audit c-reconstruction-manifest
+.PHONY: all clean fast-replay fast-state fast-gpr fast-predicates fast-state-predicates fast-gpr-predicates fast-transfer fast-state-transfer fast-gpr-transfer fast-validators fast-paths fast-gpr-paths instruction-trace instruction-unique instruction-lift sampled-recovery file-atlas file-fill long-branches hidden-transitions sampled-operands hidden-fill frontier-fill footprint-fill control-edges bytecode-ir bytecode-basic-blocks synthetic-spans synthetic-tails synthetic-tail-lift synthetic-successor-gaps synthetic-gap-transfer-probe synthetic-gap-dynamic-stitch synthetic-gap-chain-probe synthetic-gap-symbolic-successors synthetic-gap-live-in-roles final-tail-site-probe synthetic-gap-live-in-reentry-probe synthetic-gap-allstatic-reentry-probe pseudocode pseudocode-full handler-pseudocode path-pseudocode source-bundle pseudocode-syntax-check pseudocode-object-check pseudocode-link-check coverage-matrix coverage-audit c-reconstruction-manifest
 
 all: driver trace_preload.so vm_fast_path_profile
 
@@ -67,6 +67,13 @@ instruction-unique: instruction-trace
 instruction-lift: instruction-unique
 	python3 vm_instruction_lift.py > dumps/vmtail-wide-1m-w16/vm_instruction_lift.tsv
 
+sampled-recovery: instruction-trace
+	python3 vm_bytecode_recover.py dumps/vmtail-wide-1m-w16/vm_instruction_trace.tsv --include-sampled > dumps/vmtail-wide-1m-w16/vm_bytecode_segments_sampled.tsv
+	python3 vm_bytecode_blocks.py dumps/vmtail-wide-1m-w16/vm_instruction_trace.tsv --include-sampled > dumps/vmtail-wide-1m-w16/vm_bytecode_blocks_sampled.tsv
+
+file-atlas: sampled-recovery
+	python3 vm_bytecode_file_atlas.py --max-gap 0x20 > dumps/vmtail-wide-1m-w16/vm_bytecode_file_atlas.tsv
+
 long-branches: instruction-trace
 	python3 vm_long_branch_catalog.py dumps/vmtail-wide-1m-w16/vm_instruction_trace.tsv > dumps/vmtail-wide-1m-w16/vm_long_branch_catalog.tsv
 	python3 vm_long_branch_catalog.py dumps/vmtail-wide-1m-w16/vm_instruction_trace.tsv --markdown --limit 30 > dumps/vmtail-wide-1m-w16/vm_long_branch_top.md
@@ -79,7 +86,7 @@ sampled-operands: instruction-trace
 	python3 vm_sampled_operand_catalog.py dumps/vmtail-wide-1m-w16/vm_instruction_trace.tsv > dumps/vmtail-wide-1m-w16/vm_sampled_operand_catalog.tsv
 	python3 vm_sampled_operand_catalog.py dumps/vmtail-wide-1m-w16/vm_instruction_trace.tsv --markdown --limit 30 > dumps/vmtail-wide-1m-w16/vm_sampled_operand_top.md
 
-file-fill: instruction-trace long-branches hidden-transitions sampled-operands
+file-fill: instruction-trace file-atlas long-branches hidden-transitions sampled-operands
 	python3 vm_trace_file_fill.py dumps/vmtail-wide-1m-w16/vm_instruction_trace.tsv > dumps/vmtail-wide-1m-w16/vm_instruction_trace_filefill.tsv
 	python3 vm_bytecode_recover.py dumps/vmtail-wide-1m-w16/vm_instruction_trace_filefill.tsv --include-sampled > dumps/vmtail-wide-1m-w16/vm_bytecode_segments_filefill_sampled.tsv
 	python3 vm_bytecode_blocks.py dumps/vmtail-wide-1m-w16/vm_instruction_trace_filefill.tsv --include-sampled > dumps/vmtail-wide-1m-w16/vm_bytecode_blocks_filefill_sampled.tsv
