@@ -120,6 +120,8 @@ def fmt_ip_update(delta):
 
 
 def slot_is_table_offset(expr):
+    # Normal VM dispatch expressions are byte offsets into the dispatch table.
+    # Long-control operands are the direct-entry exception and are handled above.
     return bool(expr)
 
 
