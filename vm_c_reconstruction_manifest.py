@@ -155,6 +155,10 @@ def c_shape_metrics(rows):
         "Synthetic gap sites annotated with hidden-handler-chain probe evidence.")
     add(rows, "c_shape", "program_full_hidden_chain_comments", count(r"hidden chain: source=", program_full),
         "Hidden-handler-chain candidate comments carried into the full program sketch.")
+    add(rows, "c_shape", "program_full_residual_audit_sites", count(r"residual audit @", program_full),
+        "Residual synthetic gap audit sites carried into the full program sketch.")
+    add(rows, "c_shape", "program_full_residual_audit_comments", count(r"residual audit: source=", program_full),
+        "Per-start residual promotion-state comments carried into the full program sketch.")
     add(rows, "c_shape", "program_full_hidden_chain_resolved_calls", count(r"hidden source entry_\d+ replayed from", program_full),
         "Hidden-chain matches emitted as concrete handler calls before reentering a recovered block.")
     add(rows, "c_shape", "program_full_live_in_role_evidence_sites", count(r"live-in role evidence @", program_full),
@@ -197,6 +201,10 @@ def c_shape_metrics(rows):
         "Synthetic gap sites annotated with hidden-handler-chain probe evidence inside the combined source bundle.")
     add(rows, "c_shape", "bundle_hidden_chain_comments", count(r"hidden chain: source=", bundle),
         "Hidden-handler-chain candidate comments carried into the combined source bundle.")
+    add(rows, "c_shape", "bundle_residual_audit_sites", count(r"residual audit @", bundle),
+        "Residual synthetic gap audit sites carried into the combined source bundle.")
+    add(rows, "c_shape", "bundle_residual_audit_comments", count(r"residual audit: source=", bundle),
+        "Per-start residual promotion-state comments carried into the combined source bundle.")
     add(rows, "c_shape", "bundle_hidden_chain_resolved_calls", count(r"hidden source entry_\d+ replayed from", bundle),
         "Hidden-chain matches emitted as concrete handler calls inside the combined source bundle.")
     add(rows, "c_shape", "bundle_live_in_role_evidence_sites", count(r"live-in role evidence @", bundle),
