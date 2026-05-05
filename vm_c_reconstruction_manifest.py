@@ -55,6 +55,8 @@ ARTIFACTS = [
     ("synthetic_gap_chain_slot_reconciliation_md", TRACE_DIR / "vm_synthetic_gap_chain_slot_reconciliation.md"),
     ("synthetic_gap_unresolved_family_audit_tsv", TRACE_DIR / "vm_synthetic_gap_unresolved_family_audit.tsv"),
     ("synthetic_gap_unresolved_family_audit_md", TRACE_DIR / "vm_synthetic_gap_unresolved_family_audit.md"),
+    ("synthetic_gap_source299_context_probe_tsv", TRACE_DIR / "vm_synthetic_gap_source299_context_probe.tsv"),
+    ("synthetic_gap_source299_context_probe_md", TRACE_DIR / "vm_synthetic_gap_source299_context_probe.md"),
     ("synthetic_gap_symbolic_successors_tsv", TRACE_DIR / "vm_synthetic_gap_symbolic_successors.tsv"),
     ("synthetic_gap_symbolic_successors_md", TRACE_DIR / "vm_synthetic_gap_symbolic_successors.md"),
     ("synthetic_gap_live_in_roles_tsv", TRACE_DIR / "vm_synthetic_gap_live_in_roles.tsv"),
@@ -1181,6 +1183,51 @@ def synthetic_gap_unresolved_family_metrics(rows):
         "Unresolved families that cover more than one start VM IP.")
 
 
+def synthetic_gap_source299_context_probe_metrics(rows):
+    probe_rows = read_tsv(TRACE_DIR / "vm_synthetic_gap_source299_context_probe.tsv")
+    starts = Counter(row.get("synthetic_start_vm_ip", "") for row in probe_rows)
+    families = Counter(row.get("family_id", "") for row in probe_rows)
+    paths = Counter(row.get("resolved_path_hash", "") for row in probe_rows)
+    slot_classes = Counter(
+        f"{row.get('slot_region', '')}/{row.get('file_qword_class', '')}"
+        for row in probe_rows
+    )
+    next_relations = Counter(row.get("next_relation", "") for row in probe_rows)
+    interpretations = Counter(row.get("interpretation", "") for row in probe_rows)
+    b6c57 = Counter(row.get("branch_b6c57", "") for row in probe_rows)
+    rejected_slots = [
+        f"{row.get('synthetic_start_vm_ip')}:{row.get('resolved_slot')}"
+        for row in probe_rows
+        if row.get("file_qword_class", "") != "dispatch_target_pointer"
+    ]
+
+    add(rows, "gap_source299_context", "synthetic_gap_source299_context_probe_rows", len(probe_rows),
+        "Live VMTAIL source-299 residual snapshots with resolved branch path and concrete slot/table class.")
+    add(rows, "gap_source299_context", "synthetic_gap_source299_context_probe_starts", len(starts),
+        "Distinct source-299 residual VM starts represented in the context probe.")
+    add(rows, "gap_source299_context", "synthetic_gap_source299_context_probe_family_mix",
+        ",".join(f"{key}:{value}" for key, value in families.most_common()) or "-",
+        "Unresolved-family coverage in the source-299 context probe.")
+    add(rows, "gap_source299_context", "synthetic_gap_source299_context_probe_path_mix",
+        ",".join(f"{key}:{value}" for key, value in paths.most_common()) or "-",
+        "Resolved source-299 branch path hashes after live r8/flag evidence is applied.")
+    add(rows, "gap_source299_context", "synthetic_gap_source299_context_probe_b6c57_mix",
+        ",".join(f"{key}:{value}" for key, value in b6c57.most_common()) or "-",
+        "Live resolution of the former unknown cmp r8b,0 branch at native 0xb6c57.")
+    add(rows, "gap_source299_context", "synthetic_gap_source299_context_probe_slot_file_mix",
+        ",".join(f"{key}:{value}" for key, value in slot_classes.most_common()) or "-",
+        "Concrete slot/table-file class after the source-299 branch path is resolved.")
+    add(rows, "gap_source299_context", "synthetic_gap_source299_context_probe_next_relation_mix",
+        ",".join(f"{key}:{value}" for key, value in next_relations.most_common()) or "-",
+        "Relation between the next raw focused event and the observed-chain family row.")
+    add(rows, "gap_source299_context", "synthetic_gap_source299_context_probe_interpretation_mix",
+        ",".join(f"{key}:{value}" for key, value in interpretations.most_common()) or "-",
+        "Whether the resolved branch/table evidence supports hard CFG or remains sequence-only.")
+    add(rows, "gap_source299_context", "synthetic_gap_source299_context_probe_rejected_slots",
+        ",".join(rejected_slots) or "-",
+        "Concrete source-299 slot offsets that still reject as dispatch-table pointers.")
+
+
 def synthetic_gap_live_in_role_metrics(rows):
     role_rows = read_tsv(TRACE_DIR / "vm_synthetic_gap_live_in_roles.tsv")
     resolutions = Counter(row.get("resolution", "") for row in role_rows)
@@ -1536,6 +1583,7 @@ def build_rows():
     synthetic_gap_observed_chain_replay_metrics(rows)
     synthetic_gap_chain_slot_reconciliation_metrics(rows)
     synthetic_gap_unresolved_family_metrics(rows)
+    synthetic_gap_source299_context_probe_metrics(rows)
     synthetic_gap_live_in_role_metrics(rows)
     synthetic_gap_final_tail_site_metrics(rows)
     synthetic_gap_live_in_reentry_metrics(rows)
