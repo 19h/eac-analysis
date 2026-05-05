@@ -809,6 +809,7 @@ pseudocode-syntax-check: $(PSEUDOCODE_TOP_C) $(PROGRAM_PSEUDOCODE_TOP_C) $(PROGR
 	$(CC) -std=c11 -fsyntax-only -Wall -Wextra -Wno-unused-function dumps/vmtail-wide-1m-w16/vm_native_obfuscated_control_model.c
 	$(CC) -std=c11 -fsyntax-only -Wall -Wextra -Wno-unused-function dumps/vmtail-wide-1m-w16/vm_native_ret_patch_hidden_bridge.c
 	$(CC) -std=c11 -fsyntax-only -Wall -Wextra -Wno-unused-function dumps/vmtail-wide-1m-w16/vm_native_handler_environment_coverage.c
+	$(CC) -std=c11 -fsyntax-only -Wall -Wextra -Wno-unused-variable dumps/vmtail-wide-1m-w16/vm_config_coverage_frontier.c
 	$(CC) -std=c11 -fsyntax-only -Wall -Wextra -Wno-unused-variable dumps/vmtail-wide-1m-w16/vm_binary_data_sections.c
 	$(CC) -std=c11 -fsyntax-only -Wall -Wextra -Wno-unused-function dumps/vmtail-wide-1m-w16/vm_static_only_handler_queue.c
 	$(CC) -std=c11 -fsyntax-only -Wall -Wextra -Wno-unused-function dumps/vmtail-wide-1m-w16/vm_static_only_tier0_handler_models.c
@@ -927,6 +928,9 @@ C_RECONSTRUCTION_MANIFEST_INPUTS := \
 	$(NATIVE_HANDLER_ENVIRONMENT_COVERAGE_C) \
 	$(NATIVE_HANDLER_ENVIRONMENT_COVERAGE_TSV) \
 	$(NATIVE_HANDLER_ENVIRONMENT_COVERAGE_MD) \
+	$(CONFIG_COVERAGE_FRONTIER_C) \
+	$(CONFIG_COVERAGE_FRONTIER_TSV) \
+	$(CONFIG_COVERAGE_FRONTIER_MD) \
 	$(BINARY_DATA_SECTIONS_C) \
 	$(BINARY_DATA_SECTIONS_TSV) \
 	$(BINARY_DATA_SECTIONS_MD) \
@@ -999,6 +1003,7 @@ C_RECONSTRUCTION_NATIVE_ACCELERATION_INPUTS := \
 	vm_native_obfuscated_control_model_dump.c vm_native_obfuscated_control_model_dump \
 	vm_native_ret_patch_hidden_bridge_dump.c vm_native_ret_patch_hidden_bridge_dump \
 	vm_native_handler_environment_coverage_dump.c vm_native_handler_environment_coverage_dump \
+	vm_config_coverage_frontier_dump.c vm_config_coverage_frontier_dump \
 	vm_binary_data_sections_dump.c vm_binary_data_sections_dump \
 	vm_static_only_handler_queue_dump.c vm_static_only_handler_queue_dump \
 	vm_static_only_tier0_models_dump.c vm_static_only_tier0_models_dump \

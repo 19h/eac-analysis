@@ -101,6 +101,9 @@ ARTIFACTS = [
     ("native_handler_environment_coverage_c", TRACE_DIR / "vm_native_handler_environment_coverage.c"),
     ("native_handler_environment_coverage_tsv", TRACE_DIR / "vm_native_handler_environment_coverage.tsv"),
     ("native_handler_environment_coverage_md", TRACE_DIR / "vm_native_handler_environment_coverage.md"),
+    ("config_coverage_frontier_c", TRACE_DIR / "vm_config_coverage_frontier.c"),
+    ("config_coverage_frontier_tsv", TRACE_DIR / "vm_config_coverage_frontier.tsv"),
+    ("config_coverage_frontier_md", TRACE_DIR / "vm_config_coverage_frontier.md"),
     ("binary_data_sections_c", TRACE_DIR / "vm_binary_data_sections.c"),
     ("binary_data_sections_tsv", TRACE_DIR / "vm_binary_data_sections.tsv"),
     ("binary_data_sections_md", TRACE_DIR / "vm_binary_data_sections.md"),
@@ -250,6 +253,11 @@ def c_shape_metrics(rows):
     native_ret_patch_hidden_bridge_index = read_tsv(TRACE_DIR / "vm_native_ret_patch_hidden_bridge.tsv")
     native_handler_environment_coverage = read_text(TRACE_DIR / "vm_native_handler_environment_coverage.c")
     native_handler_environment_coverage_index = read_tsv(TRACE_DIR / "vm_native_handler_environment_coverage.tsv")
+    config_coverage_frontier = read_text(TRACE_DIR / "vm_config_coverage_frontier.c")
+    config_coverage_frontier_index = read_tsv(TRACE_DIR / "vm_config_coverage_frontier.tsv")
+    config_coverage_metric_rows = [row for row in config_coverage_frontier_index if row.get("row_type", "") == "metric"]
+    config_coverage_frontier_rows = [row for row in config_coverage_frontier_index if row.get("row_type", "") == "frontier"]
+    config_coverage_frontier_kinds = Counter(row.get("frontier_kind", "") for row in config_coverage_frontier_rows)
     binary_data_sections = read_text(TRACE_DIR / "vm_binary_data_sections.c")
     binary_data_sections_index = read_tsv(TRACE_DIR / "vm_binary_data_sections.tsv")
     binary_data_string_rows = [row for row in binary_data_sections_index if row.get("kind", "") == "string"]
