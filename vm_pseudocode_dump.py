@@ -530,6 +530,7 @@ def emit_block(block, rows, edge, synthetic_spans, tail_lifts, args, known_block
                 print(f"    {c_block_name(target_block)}(vm);")
             elif target_vm_ip is not None:
                 print(f"    /* synthetic successor 0x{target_vm_ip:x} is outside this selected sketch. */")
+                print(f"    vm_unresolved_synthetic_tail(vm, 0x{target_vm_ip:x});")
     print("    (void)next_entry;")
     print("    return;")
     print("}")

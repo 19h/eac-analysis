@@ -8,7 +8,7 @@ GPR_RUN ?= dumps/vmtail-scratch-wide-w16-fs337all-fs128/run.stderr
 PRED_ROWS ?= 128
 XFER_ROWS ?= 128
 
-.PHONY: all clean fast-replay fast-state fast-gpr fast-predicates fast-state-predicates fast-gpr-predicates fast-transfer fast-state-transfer fast-gpr-transfer fast-validators fast-paths fast-gpr-paths long-branches hidden-transitions sampled-operands hidden-fill frontier-fill footprint-fill control-edges bytecode-ir bytecode-basic-blocks synthetic-spans synthetic-tails synthetic-tail-lift pseudocode pseudocode-full handler-pseudocode path-pseudocode source-bundle pseudocode-syntax-check pseudocode-object-check pseudocode-link-check coverage-matrix coverage-audit c-reconstruction-manifest
+.PHONY: all clean fast-replay fast-state fast-gpr fast-predicates fast-state-predicates fast-gpr-predicates fast-transfer fast-state-transfer fast-gpr-transfer fast-validators fast-paths fast-gpr-paths long-branches hidden-transitions sampled-operands hidden-fill frontier-fill footprint-fill control-edges bytecode-ir bytecode-basic-blocks synthetic-spans synthetic-tails synthetic-tail-lift synthetic-successor-gaps pseudocode pseudocode-full handler-pseudocode path-pseudocode source-bundle pseudocode-syntax-check pseudocode-object-check pseudocode-link-check coverage-matrix coverage-audit c-reconstruction-manifest
 
 all: driver trace_preload.so vm_fast_path_profile
 
@@ -128,6 +128,10 @@ synthetic-tail-lift: synthetic-tails
 	python3 vm_synthetic_tail_lift.py > dumps/vmtail-wide-1m-w16/vm_synthetic_tail_lift.tsv
 	python3 vm_synthetic_tail_lift.py --markdown --limit 50 > dumps/vmtail-wide-1m-w16/vm_synthetic_tail_lift_top.md
 
+synthetic-successor-gaps: synthetic-tail-lift bytecode-basic-blocks
+	python3 vm_synthetic_successor_gap_report.py > dumps/vmtail-wide-1m-w16/vm_synthetic_successor_gaps.tsv
+	python3 vm_synthetic_successor_gap_report.py --markdown > dumps/vmtail-wide-1m-w16/vm_synthetic_successor_gaps.md
+
 pseudocode: bytecode-basic-blocks synthetic-tail-lift
 	python3 vm_pseudocode_dump.py --limit-blocks 60 --rows-per-block 32 > dumps/vmtail-wide-1m-w16/vm_pseudocode_top.c
 	python3 vm_program_pseudocode_dump.py --limit-blocks 80 --rows-per-block 80 > dumps/vmtail-wide-1m-w16/vm_program_pseudocode_top.c
@@ -169,7 +173,7 @@ coverage-audit: coverage-matrix
 	python3 vm_static_coverage_audit.py > dumps/vmtail-wide-1m-w16/vm_static_coverage_audit.tsv
 	python3 vm_static_coverage_audit.py --markdown > dumps/vmtail-wide-1m-w16/vm_static_coverage_audit.md
 
-c-reconstruction-manifest: pseudocode-syntax-check pseudocode-object-check pseudocode-link-check coverage-audit
+c-reconstruction-manifest: pseudocode-syntax-check pseudocode-object-check pseudocode-link-check coverage-audit synthetic-successor-gaps
 	python3 vm_c_reconstruction_manifest.py > dumps/vmtail-wide-1m-w16/vm_c_reconstruction_manifest.tsv
 	python3 vm_c_reconstruction_manifest.py --markdown > dumps/vmtail-wide-1m-w16/vm_c_reconstruction_manifest.md
 
