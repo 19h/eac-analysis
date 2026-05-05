@@ -3,6 +3,7 @@ import argparse
 import csv
 import re
 import sys
+from collections import Counter
 from pathlib import Path
 
 
@@ -18,6 +19,8 @@ ARTIFACTS = [
     ("source_bundle", TRACE_DIR / "vm_recovered_source_bundle.c"),
     ("synthetic_successor_gaps_tsv", TRACE_DIR / "vm_synthetic_successor_gaps.tsv"),
     ("synthetic_successor_gaps_md", TRACE_DIR / "vm_synthetic_successor_gaps.md"),
+    ("synthetic_gap_transfer_probe_tsv", TRACE_DIR / "vm_synthetic_gap_transfer_probe.tsv"),
+    ("synthetic_gap_transfer_probe_md", TRACE_DIR / "vm_synthetic_gap_transfer_probe.md"),
 ]
 
 
@@ -136,6 +139,30 @@ def coverage_metrics(rows):
             add(rows, "coverage", f"{key[0]}_{key[1]}", row.get("value", ""), row.get("note", ""))
 
 
+def synthetic_gap_probe_metrics(rows):
+    probe_rows = read_tsv(TRACE_DIR / "vm_synthetic_gap_transfer_probe.tsv")
+    classes = Counter(row.get("classification", "") for row in probe_rows)
+    statuses = Counter(row.get("zero_seed_status", "") for row in probe_rows)
+    live_sources = sorted({
+        row.get("source_entry", "")
+        for row in probe_rows
+        if row.get("classification", "") == "live_in_dispatch_regs" and row.get("source_entry", "")
+    }, key=lambda value: int(value, 0))
+
+    add(rows, "gap_probe", "synthetic_gap_transfer_probe_rows", len(probe_rows),
+        "Rows probed from the remaining synthetic successor gaps.")
+    add(rows, "gap_probe", "synthetic_gap_transfer_probe_symbolic_slot_expr", classes.get("symbolic_slot_expr", 0),
+        "Gaps whose suffix transfer reduces to a symbolic dispatch-table slot/IP expression.")
+    add(rows, "gap_probe", "synthetic_gap_transfer_probe_live_in_dispatch_regs", classes.get("live_in_dispatch_regs", 0),
+        "Gaps whose suffix target still depends on live-in central-dispatch GPRs.")
+    add(rows, "gap_probe", "synthetic_gap_transfer_probe_zero_seed_ok", statuses.get("ok", 0),
+        "Zero-seeded probe paths that reached a concrete dispatch target while preserving symbolic expressions.")
+    add(rows, "gap_probe", "synthetic_gap_transfer_probe_zero_seed_unknown_target", statuses.get("unknown_target", 0),
+        "Zero-seeded probe paths whose final target could not be concretized.")
+    add(rows, "gap_probe", "synthetic_gap_transfer_probe_live_in_sources", ",".join(live_sources) or "-",
+        "Source entries represented by the live-in central-dispatch register cases.")
+
+
 def gate_metrics(rows):
     add(rows, "gate", "syntax_check", "make pseudocode-syntax-check",
         "Regenerates and warning-checks all six C-like source artifacts with C11 -fsyntax-only.")
@@ -154,6 +181,7 @@ def build_rows():
     artifact_metrics(rows)
     c_shape_metrics(rows)
     coverage_metrics(rows)
+    synthetic_gap_probe_metrics(rows)
     gate_metrics(rows)
     add(rows, "caveat", "completion_status", "not_complete",
         "This is a mechanically checked C reconstruction of recovered layers, not proof that every VM bytecode path has been found.")
