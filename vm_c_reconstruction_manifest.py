@@ -281,6 +281,11 @@ def synthetic_gap_live_in_role_metrics(rows):
         for row in role_rows
         if row.get("resolution") == "missing_gpr_event" and row.get("source_entry", "")
     }, key=lambda value: int(value, 0))
+    final_tail_sites = sorted({
+        f"{row.get('source_entry')}@{row.get('final_tail_site')}:{row.get('final_tail_target_reg')}"
+        for row in role_rows
+        if row.get("source_entry") and row.get("final_tail_site")
+    }, key=lambda value: (int(value.split("@", 1)[0], 0), value))
     for row in role_rows:
         for cls in row.get("role_classes", "").split(","):
             if cls:
@@ -296,6 +301,12 @@ def synthetic_gap_live_in_role_metrics(rows):
     add(rows, "gap_live_in", "synthetic_gap_live_in_mem_deref_unresolved",
         resolutions.get("live_regs_named_mem_deref_unresolved", 0),
         "Rows where live registers are named but the target expression still depends on an event-local qword dereference.")
+    add(rows, "gap_live_in", "synthetic_gap_live_in_tail_mem_deref_matches",
+        resolutions.get("tail_mem_deref_matches_event_target", 0),
+        "Rows whose final-tail qword memory read matched the event target handler.")
+    add(rows, "gap_live_in", "synthetic_gap_live_in_final_tail_sites",
+        ",".join(final_tail_sites) or "-",
+        "Native final-tail hook sites needed to resolve the live-in qword dereferences.")
     add(rows, "gap_live_in", "synthetic_gap_live_in_role_class_mix",
         ",".join(f"{key}:{value}" for key, value in role_classes.most_common()) or "-",
         "Register value classes observed in the target expressions.")
