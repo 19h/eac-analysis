@@ -116,6 +116,9 @@ ARTIFACTS = [
     ("static_only_tier3_shared_c", TRACE_DIR / "vm_static_only_tier3_shared_models.c"),
     ("static_only_tier3_shared_tsv", TRACE_DIR / "vm_static_only_tier3_shared_models.tsv"),
     ("static_only_tier3_shared_md", TRACE_DIR / "vm_static_only_tier3_shared_models.md"),
+    ("static_only_tier4_callret_c", TRACE_DIR / "vm_static_only_tier4_callret_models.c"),
+    ("static_only_tier4_callret_tsv", TRACE_DIR / "vm_static_only_tier4_callret_models.tsv"),
+    ("static_only_tier4_callret_md", TRACE_DIR / "vm_static_only_tier4_callret_models.md"),
     ("target_only_handlers_retdec", TRACE_DIR / "vm_target_only_handlers_retdec.c"),
     ("unobserved_handlers_retdec_batch00", TRACE_DIR / "vm_unobserved_handlers_retdec_batch00.c"),
     ("unobserved_handlers_retdec_batch01", TRACE_DIR / "vm_unobserved_handlers_retdec_batch01.c"),
@@ -251,6 +254,8 @@ def c_shape_metrics(rows):
     static_only_tier2_split_index = read_tsv(TRACE_DIR / "vm_static_only_tier2_split_models.tsv")
     static_only_tier3_shared = read_text(TRACE_DIR / "vm_static_only_tier3_shared_models.c")
     static_only_tier3_shared_index = read_tsv(TRACE_DIR / "vm_static_only_tier3_shared_models.tsv")
+    static_only_tier4_callret = read_text(TRACE_DIR / "vm_static_only_tier4_callret_models.c")
+    static_only_tier4_callret_index = read_tsv(TRACE_DIR / "vm_static_only_tier4_callret_models.tsv")
     target_only_handlers_retdec = read_text(TRACE_DIR / "vm_target_only_handlers_retdec.c")
     unobserved_handlers_retdec_batches = [
         read_text(TRACE_DIR / f"vm_unobserved_handlers_retdec_batch{index:02d}.c")
@@ -379,6 +384,15 @@ def c_shape_metrics(rows):
     add(rows, "c_shape", "handler_tier3_static_slot_comment_only",
         count(r"tier3 slot expression kept comment-only", handlers),
         "Handler-layer tier3 static-only rows with candidate slots kept comment-only.")
+    add(rows, "c_shape", "handler_tier4_callret_model_comments",
+        count(r"tier4 call/ret model: rank=", handlers),
+        "Handler-layer tier4 static-only call/ret side-effect RetDec model annotations.")
+    add(rows, "c_shape", "handler_tier4_static_slot_recoveries",
+        count(r"tier4 static slot recovered from a call/ret RetDec primary tail", handlers),
+        "Handler-layer static-only tier4 entries with executable dispatch-table slot recovery in VMState form.")
+    add(rows, "c_shape", "handler_tier4_static_slot_comment_only",
+        count(r"tier4 slot expression kept comment-only", handlers),
+        "Handler-layer tier4 static-only rows with candidate slots kept comment-only.")
     add(rows, "c_shape", "native_ret_patch_target_functions",
         count(r"^static void native_retpatch_entry_", native_ret_patch_targets),
         "C-shaped native .text target helper functions emitted from sampled return-patch evidence.")
@@ -774,6 +788,33 @@ def c_shape_metrics(rows):
     add(rows, "coverage", "static_only_tier3_shared_entries",
         ",".join(row.get("entry", "") for row in static_only_tier3_shared_index) or "-",
         "Dispatch entries covered by the tier3 static-only shared model artifact.")
+    add(rows, "coverage", "static_only_tier4_callret_rows",
+        len(static_only_tier4_callret_index),
+        "Tier4 static-only native call/ret side-effect rows converted into primary handler model evidence.")
+    add(rows, "c_shape", "static_only_tier4_callret_functions",
+        count(r"^static VMTier4Result vm_tier4_entry_\d{3}\(VMTier4Frame \*vm\) \{", static_only_tier4_callret),
+        "Syntax-checkable C functions for tier4 static-only call/ret models.")
+    add(rows, "c_shape", "static_only_tier4_callret_dispatch_cases",
+        count(r"^    case \d+: return vm_tier4_entry_\d{3}\(vm\);", static_only_tier4_callret),
+        "Dispatcher cases for the tier4 static-only call/ret model artifact.")
+    add(rows, "coverage", "static_only_tier4_callret_candidate_slot_rows",
+        sum(1 for row in static_only_tier4_callret_index if row.get("slot_expr", "")),
+        "Tier4 call/ret rows with RetDec-derived candidate slot expressions.")
+    add(rows, "coverage", "static_only_tier4_callret_executable_slot_rows",
+        sum(1 for row in static_only_tier4_callret_index
+            if row.get("slot_status", "") == "retdec_dispatch_table_slot"),
+        "Tier4 call/ret rows whose primary RetDec tail exposes a clean dispatch-table slot.")
+    add(rows, "coverage", "static_only_tier4_callret_call_rows",
+        sum(1 for row in static_only_tier4_callret_index
+            if int(row.get("calls") or "0") > 0),
+        "Tier4 call/ret rows whose native skeleton contains call side effects.")
+    add(rows, "coverage", "static_only_tier4_callret_multi_ret_rows",
+        sum(1 for row in static_only_tier4_callret_index
+            if int(row.get("rets") or "0") > 1),
+        "Tier4 call/ret rows whose native skeleton contains multiple ret side-effect sites.")
+    add(rows, "coverage", "static_only_tier4_callret_entries",
+        ",".join(row.get("entry", "") for row in static_only_tier4_callret_index) or "-",
+        "Dispatch entries covered by the tier4 static-only call/ret model artifact.")
     add(rows, "c_shape", "target_only_handler_retdec_selected_ranges",
         count(r"^ \*   0x[0-9a-f]+-0x[0-9a-f]+ entry=\d+ ", target_only_handlers_retdec),
         "Target-only VM handler native ranges selected for targeted RetDec.")
@@ -1016,6 +1057,12 @@ def c_shape_metrics(rows):
     add(rows, "c_shape", "bundle_tier3_static_slot_recoveries",
         count(r"tier3 static slot recovered from a shared RetDec primary tail", bundle),
         "Executable tier3 static-only slot recoveries inside the combined source bundle.")
+    add(rows, "c_shape", "bundle_tier4_callret_model_comments",
+        count(r"tier4 call/ret model: rank=", bundle),
+        "Tier4 static-only call/ret model annotations inside the combined source bundle.")
+    add(rows, "c_shape", "bundle_tier4_static_slot_recoveries",
+        count(r"tier4 static slot recovered from a call/ret RetDec primary tail", bundle),
+        "Executable tier4 static-only slot recoveries inside the combined source bundle.")
     add(rows, "c_shape", "bundle_sampled_ret_patch_handler_evidence_comments",
         count(r"ret-patch evidence: rows=", bundle),
         "Handler-layer sampled ret-patch evidence summaries inside the combined source bundle.")
@@ -1146,6 +1193,9 @@ def c_shape_metrics(rows):
     add(rows, "c_shape", "all_evidence_bundle_tier3_static_slot_recoveries",
         count(r"tier3 static slot recovered from a shared RetDec primary tail", all_evidence_bundle),
         "Executable tier3 static-only slot recoveries retained in the all-evidence single file.")
+    add(rows, "c_shape", "all_evidence_bundle_tier4_static_slot_recoveries",
+        count(r"tier4 static slot recovered from a call/ret RetDec primary tail", all_evidence_bundle),
+        "Executable tier4 static-only slot recoveries retained in the all-evidence single file.")
 
 
 def coverage_metrics(rows):
@@ -2638,6 +2688,8 @@ def native_acceleration_metrics(rows):
     static_only_tier2_split_binary = Path("vm_static_only_tier2_split_dump")
     static_only_tier3_shared_source = read_text("vm_static_only_tier3_shared_dump.c")
     static_only_tier3_shared_binary = Path("vm_static_only_tier3_shared_dump")
+    static_only_tier4_callret_source = read_text("vm_static_only_tier4_callret_dump.c")
+    static_only_tier4_callret_binary = Path("vm_static_only_tier4_callret_dump")
     add(rows, "native_acceleration", "instruction_unique_fast_source_lines", line_count(unique_source),
         "Native exact-instruction reducer source size.")
     add(rows, "native_acceleration", "instruction_unique_fast_binary_bytes", file_size(unique_binary),
@@ -2810,6 +2862,13 @@ def native_acceleration_metrics(rows):
     add(rows, "native_acceleration", "static_only_tier3_shared_uses_native_generator",
         "yes" if "./vm_static_only_tier3_shared_dump --c" in makefile else "no",
         "Whether the tier3 static-only shared-model C/TSV/Markdown artifacts are generated by the native C tool.")
+    add(rows, "native_acceleration", "static_only_tier4_callret_dump_source_lines", line_count(static_only_tier4_callret_source),
+        "Native static-only tier4 call/ret model generator source size.")
+    add(rows, "native_acceleration", "static_only_tier4_callret_dump_binary_bytes", file_size(static_only_tier4_callret_binary),
+        "Current compiled static-only tier4 call/ret model generator size.")
+    add(rows, "native_acceleration", "static_only_tier4_callret_uses_native_generator",
+        "yes" if "./vm_static_only_tier4_callret_dump --c" in makefile else "no",
+        "Whether the tier4 static-only call/ret C/TSV/Markdown artifacts are generated by the native C tool.")
 
 
 def build_rows():
