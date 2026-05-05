@@ -6,6 +6,8 @@ STATE_DIR ?= dumps/vmtail-state-wide-w16
 TRACE ?= $(STATE_DIR)/vm_instruction_trace.tsv
 PRIMARY_DIR ?= dumps/vmtail-wide-1m-w16
 PRIMARY_TRACE ?= $(PRIMARY_DIR)/vm_instruction_trace.tsv
+RESIDUAL_STATE_DIR ?= dumps/vmtail-state-residual-targets
+LIVE_RESIDUAL_DIR ?= dumps/vmtail-live-residual-targets
 GPR_RUN ?= dumps/vmtail-scratch-wide-w16-fs337all-fs128/run.stderr
 FOCUS_GPR_RUN ?= dumps/vmtail-mem-focus-starts/run.stderr
 TAIL_MEM_RUN ?= dumps/vmtail-mem-focus-starts/run.stderr
@@ -650,7 +652,140 @@ coverage-audit: coverage-matrix
 	python3 vm_static_coverage_audit.py > dumps/vmtail-wide-1m-w16/vm_static_coverage_audit.tsv
 	python3 vm_static_coverage_audit.py --from-tsv dumps/vmtail-wide-1m-w16/vm_static_coverage_audit.tsv --markdown > dumps/vmtail-wide-1m-w16/vm_static_coverage_audit.md
 
-c-reconstruction-manifest: pseudocode-syntax-check pseudocode-object-check pseudocode-link-check coverage-audit synthetic-gap-transfer-probe synthetic-gap-dynamic-stitch synthetic-gap-chain-probe synthetic-gap-residual-audit synthetic-gap-concrete-state-audit synthetic-gap-state-trace-targets synthetic-gap-live-context-audit synthetic-gap-table-read-diagnostic synthetic-gap-table-memory-probe synthetic-gap-runtime-table-memory-probe synthetic-gap-sampled-control-correlation synthetic-gap-focused-direct-trace-audit synthetic-gap-focused-sequence-audit synthetic-gap-observed-chain-bridge synthetic-gap-observed-chain-replay synthetic-gap-chain-slot-reconciliation synthetic-gap-unresolved-family-audit synthetic-gap-source299-context-probe synthetic-gap-source299-ret-patch-probe synthetic-gap-sampled-ret-patch-probe synthetic-gap-ret-patch-native-target-atlas native-ret-patch-target-pseudocode native-ret-patch-epilogues-retdec native-ret-patch-source278-retdec native-ret-patch-followups native-ret-patch-followup-retdec native-obfuscated-islands native-obfuscated-second-stage native-obfuscated-second-stage-dynamic native-obfuscated-second-stage-slot-proof native-obfuscated-second-stage-stack-source native-obfuscated-second-stage-rbx-provenance native-obfuscated-second-stage-model native-obfuscated-control-model native-ret-patch-hidden-bridge target-only-handlers-retdec unobserved-handlers-retdec weak-handlers-retdec validated-handlers-retdec handler-retdec-index unresolved-family-chains synthetic-gap-live-snapshot-transfer-probe synthetic-gap-live-table-evidence synthetic-gap-symbolic-successors synthetic-gap-live-in-roles final-tail-site-probe synthetic-gap-live-in-reentry-probe synthetic-gap-allstatic-reentry-probe
+C_RECONSTRUCTION_MANIFEST_INPUTS := \
+	$(HANDLERS_PSEUDOCODE_C) \
+	$(PATH_HANDLERS_PSEUDOCODE_C) \
+	$(PSEUDOCODE_TOP_C) \
+	$(PROGRAM_PSEUDOCODE_TOP_C) \
+	$(PROGRAM_PSEUDOCODE_FULL_C) \
+	$(SOURCE_BUNDLE_C) \
+	$(PRIMARY_DIR)/vm_synthetic_successor_gaps.tsv \
+	$(PRIMARY_DIR)/vm_synthetic_successor_gaps.md \
+	$(PRIMARY_DIR)/vm_synthetic_gap_transfer_probe.tsv \
+	$(PRIMARY_DIR)/vm_synthetic_gap_transfer_probe.md \
+	$(PRIMARY_DIR)/vm_synthetic_gap_dynamic_stitch.tsv \
+	$(PRIMARY_DIR)/vm_synthetic_gap_dynamic_stitch.md \
+	$(PRIMARY_DIR)/vm_synthetic_gap_chain_probe.tsv \
+	$(PRIMARY_DIR)/vm_synthetic_gap_chain_probe.md \
+	$(PRIMARY_DIR)/vm_synthetic_gap_residual_audit.tsv \
+	$(PRIMARY_DIR)/vm_synthetic_gap_residual_audit.md \
+	$(PRIMARY_DIR)/vm_synthetic_gap_concrete_state_audit.tsv \
+	$(PRIMARY_DIR)/vm_synthetic_gap_concrete_state_audit.md \
+	$(PRIMARY_DIR)/vm_synthetic_gap_state_trace_targets.tsv \
+	$(PRIMARY_DIR)/vm_synthetic_gap_state_trace_targets.md \
+	$(PRIMARY_DIR)/vm_synthetic_gap_live_context_audit.tsv \
+	$(PRIMARY_DIR)/vm_synthetic_gap_live_context_audit.md \
+	$(PRIMARY_DIR)/vm_synthetic_gap_table_read_diagnostic.tsv \
+	$(PRIMARY_DIR)/vm_synthetic_gap_table_read_diagnostic.md \
+	$(PRIMARY_DIR)/vm_synthetic_gap_table_memory_probe.tsv \
+	$(PRIMARY_DIR)/vm_synthetic_gap_table_memory_probe.md \
+	$(PRIMARY_DIR)/vm_synthetic_gap_runtime_table_memory_probe.tsv \
+	$(PRIMARY_DIR)/vm_synthetic_gap_runtime_table_memory_probe.md \
+	$(PRIMARY_DIR)/vm_synthetic_gap_sampled_control_correlation.tsv \
+	$(PRIMARY_DIR)/vm_synthetic_gap_sampled_control_correlation.md \
+	$(PRIMARY_DIR)/vm_synthetic_gap_focused_direct_trace_audit.tsv \
+	$(PRIMARY_DIR)/vm_synthetic_gap_focused_direct_trace_audit.md \
+	$(PRIMARY_DIR)/vm_synthetic_gap_focused_sequence_audit.tsv \
+	$(PRIMARY_DIR)/vm_synthetic_gap_focused_sequence_audit.md \
+	$(PRIMARY_DIR)/vm_synthetic_gap_observed_chain_bridge.tsv \
+	$(PRIMARY_DIR)/vm_synthetic_gap_observed_chain_bridge.md \
+	$(PRIMARY_DIR)/vm_synthetic_gap_observed_chain_replay.tsv \
+	$(PRIMARY_DIR)/vm_synthetic_gap_observed_chain_replay.md \
+	$(PRIMARY_DIR)/vm_synthetic_gap_chain_slot_reconciliation.tsv \
+	$(PRIMARY_DIR)/vm_synthetic_gap_chain_slot_reconciliation.md \
+	$(PRIMARY_DIR)/vm_synthetic_gap_unresolved_family_audit.tsv \
+	$(PRIMARY_DIR)/vm_synthetic_gap_unresolved_family_audit.md \
+	$(PRIMARY_DIR)/vm_synthetic_gap_source299_context_probe.tsv \
+	$(PRIMARY_DIR)/vm_synthetic_gap_source299_context_probe.md \
+	$(PRIMARY_DIR)/vm_synthetic_gap_source299_ret_patch_probe.tsv \
+	$(PRIMARY_DIR)/vm_synthetic_gap_source299_ret_patch_probe.md \
+	$(PRIMARY_DIR)/vm_synthetic_gap_sampled_ret_patch_probe.tsv \
+	$(PRIMARY_DIR)/vm_synthetic_gap_sampled_ret_patch_probe.md \
+	$(PRIMARY_DIR)/vm_synthetic_gap_ret_patch_native_target_atlas.tsv \
+	$(PRIMARY_DIR)/vm_synthetic_gap_ret_patch_native_target_atlas.md \
+	$(NATIVE_RET_PATCH_TARGETS_C) \
+	$(NATIVE_RET_PATCH_EPILOGUES_RETDEC_C) \
+	$(NATIVE_RET_PATCH_SOURCE278_RETDEC_C) \
+	$(RET_PATCH_FOLLOWUPS_C) \
+	$(RET_PATCH_FOLLOWUPS_TSV) \
+	$(RET_PATCH_FOLLOWUPS_MD) \
+	$(RET_PATCH_FOLLOWUP_RETDEC_C) \
+	$(NATIVE_OBFUSCATED_ISLANDS_C) \
+	$(NATIVE_OBFUSCATED_ISLANDS_TSV) \
+	$(NATIVE_OBFUSCATED_ISLANDS_MD) \
+	$(NATIVE_OBFUSCATED_SECOND_STAGE_C) \
+	$(NATIVE_OBFUSCATED_SECOND_STAGE_TSV) \
+	$(NATIVE_OBFUSCATED_SECOND_STAGE_MD) \
+	$(NATIVE_OBFUSCATED_SECOND_STAGE_DYNAMIC_C) \
+	$(NATIVE_OBFUSCATED_SECOND_STAGE_DYNAMIC_TSV) \
+	$(NATIVE_OBFUSCATED_SECOND_STAGE_DYNAMIC_MD) \
+	$(NATIVE_OBFUSCATED_SECOND_STAGE_SLOT_PROOF_C) \
+	$(NATIVE_OBFUSCATED_SECOND_STAGE_SLOT_PROOF_TSV) \
+	$(NATIVE_OBFUSCATED_SECOND_STAGE_SLOT_PROOF_MD) \
+	$(NATIVE_OBFUSCATED_SECOND_STAGE_STACK_SOURCE_C) \
+	$(NATIVE_OBFUSCATED_SECOND_STAGE_STACK_SOURCE_TSV) \
+	$(NATIVE_OBFUSCATED_SECOND_STAGE_STACK_SOURCE_MD) \
+	$(NATIVE_OBFUSCATED_SECOND_STAGE_RBX_PROVENANCE_C) \
+	$(NATIVE_OBFUSCATED_SECOND_STAGE_RBX_PROVENANCE_TSV) \
+	$(NATIVE_OBFUSCATED_SECOND_STAGE_RBX_PROVENANCE_MD) \
+	$(NATIVE_OBFUSCATED_SECOND_STAGE_MODEL_C) \
+	$(NATIVE_OBFUSCATED_SECOND_STAGE_MODEL_TSV) \
+	$(NATIVE_OBFUSCATED_SECOND_STAGE_MODEL_MD) \
+	$(NATIVE_OBFUSCATED_CONTROL_MODEL_C) \
+	$(NATIVE_OBFUSCATED_CONTROL_MODEL_TSV) \
+	$(NATIVE_OBFUSCATED_CONTROL_MODEL_MD) \
+	$(NATIVE_RET_PATCH_HIDDEN_BRIDGE_C) \
+	$(NATIVE_RET_PATCH_HIDDEN_BRIDGE_TSV) \
+	$(NATIVE_RET_PATCH_HIDDEN_BRIDGE_MD) \
+	$(TARGET_ONLY_HANDLER_RETDEC_C) \
+	$(UNOBSERVED_HANDLER_RETDEC_CS) \
+	$(WEAK_HANDLER_RETDEC_C) \
+	$(VALIDATED_HANDLER_RETDEC_CS) \
+	$(HANDLER_RETDEC_INDEX_TSV) \
+	$(HANDLER_RETDEC_INDEX_MD) \
+	$(UNRESOLVED_FAMILY_C) \
+	$(PRIMARY_DIR)/vm_synthetic_gap_live_snapshot_transfer_probe.tsv \
+	$(PRIMARY_DIR)/vm_synthetic_gap_live_snapshot_transfer_probe.md \
+	$(PRIMARY_DIR)/vm_synthetic_gap_live_table_evidence.tsv \
+	$(PRIMARY_DIR)/vm_synthetic_gap_live_table_evidence.md \
+	$(PRIMARY_DIR)/vm_synthetic_gap_symbolic_successors.tsv \
+	$(PRIMARY_DIR)/vm_synthetic_gap_symbolic_successors.md \
+	$(PRIMARY_DIR)/vm_synthetic_gap_live_in_roles.tsv \
+	$(PRIMARY_DIR)/vm_synthetic_gap_live_in_roles.md \
+	$(PRIMARY_DIR)/vm_live_in_final_tail_site_probe.tsv \
+	$(PRIMARY_DIR)/vm_live_in_final_tail_site_probe.md \
+	$(PRIMARY_DIR)/vm_synthetic_gap_live_in_reentry_probe.tsv \
+	$(PRIMARY_DIR)/vm_synthetic_gap_live_in_reentry_probe.md \
+	$(PRIMARY_DIR)/vm_synthetic_gap_allstatic_reentry_probe.tsv \
+	$(PRIMARY_DIR)/vm_synthetic_gap_allstatic_reentry_probe.md \
+	$(PRIMARY_DIR)/vm_trace_coverage_matrix.tsv \
+	$(PRIMARY_DIR)/vm_trace_coverage_matrix.md \
+	$(PRIMARY_DIR)/vm_static_coverage_audit.tsv \
+	$(PRIMARY_DIR)/vm_static_coverage_audit.md \
+	$(RESIDUAL_STATE_DIR)/run.stderr \
+	$(RESIDUAL_STATE_DIR)/vm_instruction_trace.tsv \
+	$(LIVE_RESIDUAL_DIR)/run.stderr \
+	$(LIVE_RESIDUAL_DIR)/vm_instruction_trace.tsv
+
+C_RECONSTRUCTION_NATIVE_ACCELERATION_INPUTS := \
+	Makefile \
+	vm_c_reconstruction_manifest.py \
+	vm_instruction_unique_fast.c vm_instruction_unique_fast \
+	vm_bytecode_segments_fast.c vm_bytecode_segments_fast \
+	vm_bytecode_blocks_fast.c vm_bytecode_blocks_fast \
+	vm_native_ret_patch_followups_dump.c vm_native_ret_patch_followups_dump \
+	vm_native_ret_patch_followup_retdec_dump.c vm_native_ret_patch_followup_retdec_dump \
+	vm_native_obfuscated_islands_dump.c vm_native_obfuscated_islands_dump \
+	vm_native_obfuscated_second_stage_dump.c vm_native_obfuscated_second_stage_dump \
+	vm_native_obfuscated_second_stage_dynamic_dump.c vm_native_obfuscated_second_stage_dynamic_dump \
+	vm_native_obfuscated_second_stage_slot_proof_dump.c vm_native_obfuscated_second_stage_slot_proof_dump \
+	vm_native_obfuscated_second_stage_stack_source_dump.c vm_native_obfuscated_second_stage_stack_source_dump \
+	vm_native_obfuscated_second_stage_rbx_provenance_dump.c vm_native_obfuscated_second_stage_rbx_provenance_dump \
+	vm_native_obfuscated_second_stage_model_dump.c vm_native_obfuscated_second_stage_model_dump \
+	vm_native_obfuscated_control_model_dump.c vm_native_obfuscated_control_model_dump \
+	vm_native_ret_patch_hidden_bridge_dump.c vm_native_ret_patch_hidden_bridge_dump
+
+c-reconstruction-manifest: pseudocode-syntax-check pseudocode-object-check pseudocode-link-check $(C_RECONSTRUCTION_MANIFEST_INPUTS) $(C_RECONSTRUCTION_NATIVE_ACCELERATION_INPUTS)
 	python3 vm_c_reconstruction_manifest.py > dumps/vmtail-wide-1m-w16/vm_c_reconstruction_manifest.tsv
 	python3 vm_c_reconstruction_manifest.py --markdown > dumps/vmtail-wide-1m-w16/vm_c_reconstruction_manifest.md
 
