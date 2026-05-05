@@ -19,6 +19,7 @@ enum {
     EAC_X_OFFSET = 0x380dc,
     EAC_DISPATCH_C80B9 = 0xc80b9,
     EAC_DISPATCH_CDAC7 = 0xcdac7,
+    EAC_MAX_DISPATCH_SITES = 64,
     EAC_MAX_TAIL_SITES = 512,
     EAC_IP_WORD_COUNT = 16,
     EAC_MAX_SCRATCH_OFFSETS = 64,
@@ -58,8 +59,14 @@ struct read_range {
 };
 
 static uint8_t *g_eac_base;
-static uint64_t g_dispatch_counts[2];
+static uint64_t g_dispatch_counts[EAC_MAX_DISPATCH_SITES];
 static uint64_t g_dispatch_limit = 4096;
+static uintptr_t g_dispatch_sites[EAC_MAX_DISPATCH_SITES];
+static size_t g_dispatch_site_count;
+static uintptr_t g_dispatch_focus_sites[EAC_MAX_FOCUS_SITES];
+static size_t g_dispatch_focus_site_count;
+static uint64_t g_dispatch_focus_hits;
+static uint64_t g_dispatch_stop_after_matches;
 static uint64_t g_tail_count;
 static uint64_t g_tail_limit = 4096;
 static int g_dispatch_detail;
