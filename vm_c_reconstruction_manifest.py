@@ -104,6 +104,9 @@ ARTIFACTS = [
     ("static_only_handler_queue_c", TRACE_DIR / "vm_static_only_handler_queue.c"),
     ("static_only_handler_queue_tsv", TRACE_DIR / "vm_static_only_handler_queue.tsv"),
     ("static_only_handler_queue_md", TRACE_DIR / "vm_static_only_handler_queue.md"),
+    ("static_only_tier0_models_c", TRACE_DIR / "vm_static_only_tier0_handler_models.c"),
+    ("static_only_tier0_models_tsv", TRACE_DIR / "vm_static_only_tier0_handler_models.tsv"),
+    ("static_only_tier0_models_md", TRACE_DIR / "vm_static_only_tier0_handler_models.md"),
     ("target_only_handlers_retdec", TRACE_DIR / "vm_target_only_handlers_retdec.c"),
     ("unobserved_handlers_retdec_batch00", TRACE_DIR / "vm_unobserved_handlers_retdec_batch00.c"),
     ("unobserved_handlers_retdec_batch01", TRACE_DIR / "vm_unobserved_handlers_retdec_batch01.c"),
@@ -231,6 +234,8 @@ def c_shape_metrics(rows):
     native_handler_environment_coverage_index = read_tsv(TRACE_DIR / "vm_native_handler_environment_coverage.tsv")
     static_only_handler_queue = read_text(TRACE_DIR / "vm_static_only_handler_queue.c")
     static_only_handler_queue_index = read_tsv(TRACE_DIR / "vm_static_only_handler_queue.tsv")
+    static_only_tier0_models = read_text(TRACE_DIR / "vm_static_only_tier0_handler_models.c")
+    static_only_tier0_model_index = read_tsv(TRACE_DIR / "vm_static_only_tier0_handler_models.tsv")
     target_only_handlers_retdec = read_text(TRACE_DIR / "vm_target_only_handlers_retdec.c")
     unobserved_handlers_retdec_batches = [
         read_text(TRACE_DIR / f"vm_unobserved_handlers_retdec_batch{index:02d}.c")
