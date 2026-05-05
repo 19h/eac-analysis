@@ -67,6 +67,7 @@ ARTIFACTS = [
     ("native_ret_patch_epilogues_retdec", TRACE_DIR / "vm_native_ret_patch_epilogues_retdec.c"),
     ("native_ret_patch_source278_retdec", TRACE_DIR / "vm_native_ret_patch_source278_retdec.c"),
     ("target_only_handlers_retdec", TRACE_DIR / "vm_target_only_handlers_retdec.c"),
+    ("unobserved_handlers_retdec_batch00", TRACE_DIR / "vm_unobserved_handlers_retdec_batch00.c"),
     ("synthetic_gap_live_snapshot_transfer_probe_tsv", TRACE_DIR / "vm_synthetic_gap_live_snapshot_transfer_probe.tsv"),
     ("synthetic_gap_live_snapshot_transfer_probe_md", TRACE_DIR / "vm_synthetic_gap_live_snapshot_transfer_probe.md"),
     ("synthetic_gap_live_table_evidence_tsv", TRACE_DIR / "vm_synthetic_gap_live_table_evidence.tsv"),
@@ -150,6 +151,7 @@ def c_shape_metrics(rows):
     native_ret_patch_epilogues_retdec = read_text(TRACE_DIR / "vm_native_ret_patch_epilogues_retdec.c")
     native_ret_patch_source278_retdec = read_text(TRACE_DIR / "vm_native_ret_patch_source278_retdec.c")
     target_only_handlers_retdec = read_text(TRACE_DIR / "vm_target_only_handlers_retdec.c")
+    unobserved_handlers_retdec_batch00 = read_text(TRACE_DIR / "vm_unobserved_handlers_retdec_batch00.c")
 
     add(rows, "c_shape", "handler_functions", count(r"^static VMOpResult op_entry_\d{3}\(VMState \*vm\) \{", handlers),
         "All-entry handler/operator C functions.")
@@ -204,6 +206,18 @@ def c_shape_metrics(rows):
     add(rows, "c_shape", "target_only_handler_retdec_ranges",
         count(r"^// Address range: 0x[0-9a-f]+ - 0x[0-9a-f]+$", target_only_handlers_retdec),
         "Native address ranges emitted by RetDec for target-only handler coverage.")
+    add(rows, "c_shape", "unobserved_handler_retdec_batch00_selected_ranges",
+        count(r"^ \*   0x[0-9a-f]+-0x[0-9a-f]+ entry=\d+ ", unobserved_handlers_retdec_batch00),
+        "Smallest unobserved VM handler native ranges selected for targeted RetDec batch 0.")
+    add(rows, "c_shape", "unobserved_handler_retdec_batch00_functions",
+        count(r"^int64_t function_[0-9a-f]+\(.*\) \{", unobserved_handlers_retdec_batch00),
+        "Targeted RetDec C functions emitted from unobserved handler batch 0.")
+    add(rows, "c_shape", "unobserved_handler_retdec_batch00_ranges",
+        count(r"^// Address range: 0x[0-9a-f]+ - 0x[0-9a-f]+$", unobserved_handlers_retdec_batch00),
+        "Native address ranges emitted by RetDec for unobserved handler batch 0.")
+    add(rows, "c_shape", "unobserved_handler_retdec_batch00_external_helpers",
+        count(r"^int64_t function_[0-9a-f]+\(\);$", unobserved_handlers_retdec_batch00),
+        "External helper prototypes referenced by the selected unobserved RetDec batch.")
     add(rows, "c_shape", "path_specialized_functions", count(r"^static VMOpResult path_entry_\d{3}_[0-9a-f]+\(VMState \*vm\) \{", path_handlers),
         "Validated concrete branch-path C functions.")
     add(rows, "c_shape", "direct_top_block_defs", count(r"^static void bb_\d{4}\(VMState \*vm\) \{", direct_top),
