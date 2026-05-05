@@ -51,6 +51,8 @@ ARTIFACTS = [
     ("synthetic_gap_observed_chain_bridge_md", TRACE_DIR / "vm_synthetic_gap_observed_chain_bridge.md"),
     ("synthetic_gap_observed_chain_replay_tsv", TRACE_DIR / "vm_synthetic_gap_observed_chain_replay.tsv"),
     ("synthetic_gap_observed_chain_replay_md", TRACE_DIR / "vm_synthetic_gap_observed_chain_replay.md"),
+    ("synthetic_gap_chain_slot_reconciliation_tsv", TRACE_DIR / "vm_synthetic_gap_chain_slot_reconciliation.tsv"),
+    ("synthetic_gap_chain_slot_reconciliation_md", TRACE_DIR / "vm_synthetic_gap_chain_slot_reconciliation.md"),
     ("synthetic_gap_symbolic_successors_tsv", TRACE_DIR / "vm_synthetic_gap_symbolic_successors.tsv"),
     ("synthetic_gap_symbolic_successors_md", TRACE_DIR / "vm_synthetic_gap_symbolic_successors.md"),
     ("synthetic_gap_live_in_roles_tsv", TRACE_DIR / "vm_synthetic_gap_live_in_roles.tsv"),
@@ -1094,6 +1096,47 @@ def synthetic_gap_observed_chain_replay_metrics(rows):
         "Unique VM starts that appear as replay steps.")
 
 
+def synthetic_gap_chain_slot_reconciliation_metrics(rows):
+    recon_rows = read_tsv(TRACE_DIR / "vm_synthetic_gap_chain_slot_reconciliation.tsv")
+    relations = Counter(row.get("slot_target_relation", "") for row in recon_rows)
+    classes = Counter(row.get("reconciliation_class", "") for row in recon_rows)
+    roles = Counter(row.get("step_role", "") for row in recon_rows)
+    terminals = [
+        row for row in recon_rows
+        if row.get("step_role", "").endswith("terminal_step")
+    ]
+    sampled_supported = [
+        row.get("step_vm_ip", "")
+        for row in recon_rows
+        if row.get("reconciliation_class", "") == "symbolic_slot_with_sampled_dynamic_target_support"
+    ]
+    rejecting = [
+        row.get("step_vm_ip", "")
+        for row in recon_rows
+        if row.get("reconciliation_class", "") == "table_read_rejects_focused_first_hop_as_direct_slot"
+    ]
+
+    add(rows, "gap_chain_slot_reconciliation", "synthetic_gap_chain_slot_reconciliation_rows", len(recon_rows),
+        "Observed-chain replay steps reconciled against symbolic transfer and table-read evidence.")
+    add(rows, "gap_chain_slot_reconciliation", "synthetic_gap_chain_slot_reconciliation_terminal_rows", len(terminals),
+        "Terminal replay steps included in the slot reconciliation audit.")
+    add(rows, "gap_chain_slot_reconciliation", "synthetic_gap_chain_slot_reconciliation_relation_mix",
+        ",".join(f"{key}:{value}" for key, value in relations.most_common()) or "-",
+        "Whether table offsets directly match focused first-hop target slots.")
+    add(rows, "gap_chain_slot_reconciliation", "synthetic_gap_chain_slot_reconciliation_class_mix",
+        ",".join(f"{key}:{value}" for key, value in classes.most_common()) or "-",
+        "Final reconciliation class between slot/table evidence and focused first-hop targets.")
+    add(rows, "gap_chain_slot_reconciliation", "synthetic_gap_chain_slot_reconciliation_role_mix",
+        ",".join(f"{key}:{value}" for key, value in roles.most_common()) or "-",
+        "Replay step roles represented in the slot reconciliation audit.")
+    add(rows, "gap_chain_slot_reconciliation", "synthetic_gap_chain_slot_sampled_supported_steps",
+        ",".join(sampled_supported) or "-",
+        "Step VM starts whose symbolic slot also has sampled dynamic-target support.")
+    add(rows, "gap_chain_slot_reconciliation", "synthetic_gap_chain_slot_table_rejecting_steps",
+        ",".join(rejecting) or "-",
+        "Step VM starts where table-read evidence rejects the focused first-hop as a direct slot.")
+
+
 def synthetic_gap_live_in_role_metrics(rows):
     role_rows = read_tsv(TRACE_DIR / "vm_synthetic_gap_live_in_roles.tsv")
     resolutions = Counter(row.get("resolution", "") for row in role_rows)
@@ -1396,6 +1439,7 @@ def build_rows():
     synthetic_gap_focused_sequence_audit_metrics(rows)
     synthetic_gap_observed_chain_bridge_metrics(rows)
     synthetic_gap_observed_chain_replay_metrics(rows)
+    synthetic_gap_chain_slot_reconciliation_metrics(rows)
     synthetic_gap_live_in_role_metrics(rows)
     synthetic_gap_final_tail_site_metrics(rows)
     synthetic_gap_live_in_reentry_metrics(rows)
