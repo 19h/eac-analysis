@@ -5,8 +5,8 @@ Reproducible inventory of the current C-shaped reconstruction artifacts and gate
 | Section | Item | Value | Note |
 | --- | --- | ---: | --- |
 | `artifact` | `handlers_all_path` | `dumps/vmtail-wide-1m-w16/vm_handlers_pseudocode.c` | Generated reconstruction artifact. |
-| `artifact` | `handlers_all_lines` | `7567` | Current line count. |
-| `artifact` | `handlers_all_bytes` | `538787` | Current file size in bytes. |
+| `artifact` | `handlers_all_lines` | `7612` | Current line count. |
+| `artifact` | `handlers_all_bytes` | `546750` | Current file size in bytes. |
 | `artifact` | `path_handlers_all_path` | `dumps/vmtail-wide-1m-w16/vm_path_handlers_pseudocode.c` | Generated reconstruction artifact. |
 | `artifact` | `path_handlers_all_lines` | `10196` | Current line count. |
 | `artifact` | `path_handlers_all_bytes` | `635794` | Current file size in bytes. |
@@ -20,11 +20,11 @@ Reproducible inventory of the current C-shaped reconstruction artifacts and gate
 | `artifact` | `program_blocks_full_lines` | `296873` | Current line count. |
 | `artifact` | `program_blocks_full_bytes` | `19990155` | Current file size in bytes. |
 | `artifact` | `source_bundle_path` | `dumps/vmtail-wide-1m-w16/vm_recovered_source_bundle.c` | Generated reconstruction artifact. |
-| `artifact` | `source_bundle_lines` | `304219` | Current line count. |
-| `artifact` | `source_bundle_bytes` | `20519326` | Current file size in bytes. |
+| `artifact` | `source_bundle_lines` | `304264` | Current line count. |
+| `artifact` | `source_bundle_bytes` | `20527289` | Current file size in bytes. |
 | `artifact` | `source_all_evidence_bundle_path` | `dumps/vmtail-wide-1m-w16/vm_recovered_source_all_evidence_bundle.c` | Generated reconstruction artifact. |
-| `artifact` | `source_all_evidence_bundle_lines` | `334336` | Current line count. |
-| `artifact` | `source_all_evidence_bundle_bytes` | `22020949` | Current file size in bytes. |
+| `artifact` | `source_all_evidence_bundle_lines` | `334684` | Current line count. |
+| `artifact` | `source_all_evidence_bundle_bytes` | `22062831` | Current file size in bytes. |
 | `artifact` | `synthetic_successor_gaps_tsv_path` | `dumps/vmtail-wide-1m-w16/vm_synthetic_successor_gaps.tsv` | Generated reconstruction artifact. |
 | `artifact` | `synthetic_successor_gaps_tsv_lines` | `22` | Current line count. |
 | `artifact` | `synthetic_successor_gaps_tsv_bytes` | `5197` | Current file size in bytes. |
@@ -295,6 +295,15 @@ Reproducible inventory of the current C-shaped reconstruction artifacts and gate
 | `artifact` | `static_only_tier1_models_md_path` | `dumps/vmtail-wide-1m-w16/vm_static_only_tier1_handler_models.md` | Generated reconstruction artifact. |
 | `artifact` | `static_only_tier1_models_md_lines` | `57` | Current line count. |
 | `artifact` | `static_only_tier1_models_md_bytes` | `5336` | Current file size in bytes. |
+| `artifact` | `static_only_tier2_split_c_path` | `dumps/vmtail-wide-1m-w16/vm_static_only_tier2_split_models.c` | Generated reconstruction artifact. |
+| `artifact` | `static_only_tier2_split_c_lines` | `301` | Current line count. |
+| `artifact` | `static_only_tier2_split_c_bytes` | `23559` | Current file size in bytes. |
+| `artifact` | `static_only_tier2_split_tsv_path` | `dumps/vmtail-wide-1m-w16/vm_static_only_tier2_split_models.tsv` | Generated reconstruction artifact. |
+| `artifact` | `static_only_tier2_split_tsv_lines` | `16` | Current line count. |
+| `artifact` | `static_only_tier2_split_tsv_bytes` | `7510` | Current file size in bytes. |
+| `artifact` | `static_only_tier2_split_md_path` | `dumps/vmtail-wide-1m-w16/vm_static_only_tier2_split_models.md` | Generated reconstruction artifact. |
+| `artifact` | `static_only_tier2_split_md_lines` | `29` | Current line count. |
+| `artifact` | `static_only_tier2_split_md_bytes` | `2480` | Current file size in bytes. |
 | `artifact` | `target_only_handlers_retdec_path` | `dumps/vmtail-wide-1m-w16/vm_target_only_handlers_retdec.c` | Generated reconstruction artifact. |
 | `artifact` | `target_only_handlers_retdec_lines` | `317` | Current line count. |
 | `artifact` | `target_only_handlers_retdec_bytes` | `12635` | Current file size in bytes. |
@@ -419,7 +428,7 @@ Reproducible inventory of the current C-shaped reconstruction artifacts and gate
 | `artifact` | `live_residual_target_trace_tsv_lines` | `3405` | Current line count. |
 | `artifact` | `live_residual_target_trace_tsv_bytes` | `914456` | Current file size in bytes. |
 | `c_shape` | `handler_functions` | `360` | All-entry handler/operator C functions. |
-| `c_shape` | `handler_next_entry_table_offset_normalizations` | `132` | Handler fall-through slots normalized as dispatch-table byte offsets. |
+| `c_shape` | `handler_next_entry_table_offset_normalizations` | `137` | Handler fall-through slots normalized as dispatch-table byte offsets. |
 | `c_shape` | `handler_next_entry_slot_index_normalizations` | `10` | Handler fall-through slots normalized as direct slot indices. |
 | `c_shape` | `handler_sampled_ret_patch_functions` | `4` | Handler/operator functions rendered as native return-patch thunks instead of normal dispatch-table handlers. |
 | `c_shape` | `handler_sampled_ret_patch_evidence_comments` | `4` | Handler-layer sampled ret-patch evidence summaries. |
@@ -429,6 +438,9 @@ Reproducible inventory of the current C-shaped reconstruction artifacts and gate
 | `c_shape` | `handler_tier1_static_model_comments` | `43` | Handler-layer tier1 static-only RetDec model annotations. |
 | `c_shape` | `handler_tier1_static_slot_recoveries` | `3` | Handler-layer static-only tier1 entries with executable dispatch-table slot recovery in VMState form. |
 | `c_shape` | `handler_tier1_static_slot_comment_only` | `6` | Handler-layer tier1 static-only rows with candidate/masked slots kept comment-only. |
+| `c_shape` | `handler_tier2_split_model_comments` | `15` | Handler-layer tier2 static-only RetDec split/model annotations. |
+| `c_shape` | `handler_tier2_static_slot_recoveries` | `5` | Handler-layer static-only tier2 entries with executable dispatch-table slot recovery in VMState form. |
+| `c_shape` | `handler_tier2_static_slot_comment_only` | `0` | Handler-layer tier2 static-only rows with candidate slots kept comment-only. |
 | `c_shape` | `native_ret_patch_target_functions` | `16` | C-shaped native .text target helper functions emitted from sampled return-patch evidence. |
 | `c_shape` | `native_ret_patch_target_dispatch_cases` | `16` | Native return-patch target offsets handled by the generated dispatcher. |
 | `c_shape` | `native_ret_patch_target_bounded_epilogue_models` | `13` | Native return-patch target helpers classified as bounded native epilogues reaching ret. |
@@ -546,6 +558,12 @@ Reproducible inventory of the current C-shaped reconstruction artifacts and gate
 | `coverage` | `static_only_tier1_model_candidate_slot_rows` | `9` | Tier1 static-only model rows with RetDec-derived known or candidate slot expressions. |
 | `coverage` | `static_only_tier1_model_executable_slot_rows` | `3` | Tier1 static-only model rows whose RetDec tail exposes a clean dispatch-table slot. |
 | `coverage` | `static_only_tier1_model_entries` | `159,244,12,234,213,100,224,63,182,279,25,228,77,59,6,155,298,162,286,84,14,197,193,72,97,55,61,178,41,235,262,16,344,106,218,206,272,68,247,44,164,150,170` | Dispatch entries covered by the tier1 static-only model artifact. |
+| `coverage` | `static_only_tier2_split_rows` | `15` | Tier2 static-only shared-range rows split into primary handler model evidence. |
+| `c_shape` | `static_only_tier2_split_functions` | `15` | Syntax-checkable C functions for tier2 static-only split models. |
+| `c_shape` | `static_only_tier2_split_dispatch_cases` | `15` | Dispatcher cases for the tier2 static-only split model artifact. |
+| `coverage` | `static_only_tier2_split_candidate_slot_rows` | `5` | Tier2 split rows with RetDec-derived known or candidate slot expressions. |
+| `coverage` | `static_only_tier2_split_executable_slot_rows` | `5` | Tier2 split rows whose primary RetDec tail exposes a clean dispatch-table slot. |
+| `coverage` | `static_only_tier2_split_entries` | `204,34,45,60,289,46,328,191,111,263,39,335,274,137,232` | Dispatch entries covered by the tier2 static-only split model artifact. |
 | `c_shape` | `target_only_handler_retdec_selected_ranges` | `3` | Target-only VM handler native ranges selected for targeted RetDec. |
 | `c_shape` | `target_only_handler_retdec_functions` | `8` | Targeted RetDec C functions emitted from target-only VM handler native ranges. |
 | `c_shape` | `target_only_handler_retdec_ranges` | `8` | Native address ranges emitted by RetDec for target-only handler coverage. |
@@ -644,6 +662,8 @@ Reproducible inventory of the current C-shaped reconstruction artifacts and gate
 | `c_shape` | `bundle_tier0_static_slot_recoveries` | `10` | Executable tier0 static-only slot recoveries inside the combined source bundle. |
 | `c_shape` | `bundle_tier1_static_model_comments` | `43` | Tier1 static-only RetDec model annotations inside the combined source bundle. |
 | `c_shape` | `bundle_tier1_static_slot_recoveries` | `3` | Executable tier1 static-only slot recoveries inside the combined source bundle. |
+| `c_shape` | `bundle_tier2_split_model_comments` | `15` | Tier2 static-only split model annotations inside the combined source bundle. |
+| `c_shape` | `bundle_tier2_static_slot_recoveries` | `5` | Executable tier2 static-only slot recoveries inside the combined source bundle. |
 | `c_shape` | `bundle_sampled_ret_patch_handler_evidence_comments` | `4` | Handler-layer sampled ret-patch evidence summaries inside the combined source bundle. |
 | `c_shape` | `bundle_block_calls` | `483` | Concrete block-to-block calls inside the combined source bundle. |
 | `c_shape` | `bundle_synthetic_gap_unresolved_calls` | `0` | Explicit unresolved-tail calls inside the combined source bundle for remaining synthetic successor gaps. |
@@ -697,11 +717,12 @@ Reproducible inventory of the current C-shaped reconstruction artifacts and gate
 | `c_shape` | `bundle_observed_chain_replay_steps` | `0` | Observed focused-chain replay steps emitted inside disabled terminal bridge snippets in the combined source bundle. |
 | `c_shape` | `all_evidence_bundle_handler_functions` | `360` | All-entry handler/operator C functions present in the all-evidence single file. |
 | `c_shape` | `all_evidence_bundle_program_blocks` | `499` | Recovered VM bytecode block functions present in the all-evidence single file. |
-| `c_shape` | `all_evidence_bundle_sidecar_sections` | `35` | Renamed native RetDec/control sidecar files appended to the all-evidence single file. |
+| `c_shape` | `all_evidence_bundle_sidecar_sections` | `36` | Renamed native RetDec/control sidecar files appended to the all-evidence single file. |
 | `c_shape` | `all_evidence_bundle_prefixed_retdec_functions` | `624` | RetDec native C functions carried in the all-evidence single file with per-sidecar symbol prefixes. |
-| `c_shape` | `all_evidence_bundle_prefixed_symbols` | `3946` | Prefixed symbols used to keep overlapping native sidecar C in one translation unit. |
+| `c_shape` | `all_evidence_bundle_prefixed_symbols` | `4124` | Prefixed symbols used to keep overlapping native sidecar C in one translation unit. |
 | `c_shape` | `all_evidence_bundle_tier0_static_slot_recoveries` | `10` | Executable tier0 static-only slot recoveries retained in the all-evidence single file. |
 | `c_shape` | `all_evidence_bundle_tier1_static_slot_recoveries` | `3` | Executable tier1 static-only slot recoveries retained in the all-evidence single file. |
+| `c_shape` | `all_evidence_bundle_tier2_static_slot_recoveries` | `5` | Executable tier2 static-only slot recoveries retained in the all-evidence single file. |
 | `coverage` | `dynamic_primary_trace_source_handlers_seen` | `202` | Handlers directly executed as VM source entries by this scenario. |
 | `coverage` | `dynamic_primary_trace_target_handlers_seen` | `205` | Handlers reached as dispatch targets by this scenario. |
 | `coverage` | `dynamic_primary_trace_unique_vm_ip_starts` | `71522` | Distinct VM bytecode starts observed in this scenario. |
@@ -1048,6 +1069,9 @@ Reproducible inventory of the current C-shaped reconstruction artifacts and gate
 | `native_acceleration` | `static_only_tier1_models_dump_source_lines` | `463` | Native static-only tier1 model generator source size. |
 | `native_acceleration` | `static_only_tier1_models_dump_binary_bytes` | `33464` | Current compiled static-only tier1 model generator size. |
 | `native_acceleration` | `static_only_tier1_models_uses_native_generator` | `yes` | Whether the tier1 static-only model C/TSV/Markdown artifacts are generated by the native C tool. |
+| `native_acceleration` | `static_only_tier2_split_dump_source_lines` | `464` | Native static-only tier2 split/model generator source size. |
+| `native_acceleration` | `static_only_tier2_split_dump_binary_bytes` | `66904` | Current compiled static-only tier2 split/model generator size. |
+| `native_acceleration` | `static_only_tier2_split_uses_native_generator` | `yes` | Whether the tier2 static-only split/model C/TSV/Markdown artifacts are generated by the native C tool. |
 | `gate` | `syntax_check` | `make pseudocode-syntax-check` | Regenerates and warning-checks the generated C-like reconstruction artifacts with C11 -fsyntax-only. |
 | `gate` | `object_check` | `make pseudocode-object-check` | Codegen-compiles the combined source bundle to /tmp/eacsym-vm_recovered_source_bundle.o. |
 | `gate` | `link_smoke_check` | `make pseudocode-link-check` | Links the bundle with vm_recovered_source_harness.c and runs the smoke executable. |
