@@ -483,6 +483,17 @@ $(NATIVE_OBFUSCATED_CONTROL_MODEL_MD): vm_native_obfuscated_control_model_dump $
 
 native-obfuscated-control-model: $(NATIVE_OBFUSCATED_CONTROL_MODEL_C) $(NATIVE_OBFUSCATED_CONTROL_MODEL_TSV) $(NATIVE_OBFUSCATED_CONTROL_MODEL_MD)
 
+$(NATIVE_RET_PATCH_HIDDEN_BRIDGE_C): vm_native_ret_patch_hidden_bridge_dump $(PRIMARY_DIR)/vm_synthetic_gap_ret_patch_native_target_atlas.tsv $(NATIVE_OBFUSCATED_CONTROL_MODEL_TSV)
+	./vm_native_ret_patch_hidden_bridge_dump --c > $@
+
+$(NATIVE_RET_PATCH_HIDDEN_BRIDGE_TSV): vm_native_ret_patch_hidden_bridge_dump $(PRIMARY_DIR)/vm_synthetic_gap_ret_patch_native_target_atlas.tsv $(NATIVE_OBFUSCATED_CONTROL_MODEL_TSV)
+	./vm_native_ret_patch_hidden_bridge_dump --tsv > $@
+
+$(NATIVE_RET_PATCH_HIDDEN_BRIDGE_MD): vm_native_ret_patch_hidden_bridge_dump $(PRIMARY_DIR)/vm_synthetic_gap_ret_patch_native_target_atlas.tsv $(NATIVE_OBFUSCATED_CONTROL_MODEL_TSV)
+	./vm_native_ret_patch_hidden_bridge_dump --markdown > $@
+
+native-ret-patch-hidden-bridge: $(NATIVE_RET_PATCH_HIDDEN_BRIDGE_C) $(NATIVE_RET_PATCH_HIDDEN_BRIDGE_TSV) $(NATIVE_RET_PATCH_HIDDEN_BRIDGE_MD)
+
 $(TARGET_ONLY_HANDLER_RETDEC_C): vm_target_only_handlers_retdec.py $(PRIMARY_DIR)/vm_handler_semantics.tsv $(PRIMARY_DIR)/vm_handler_table.tsv eac.elf
 	python3 vm_target_only_handlers_retdec.py > $@
 
@@ -564,7 +575,7 @@ path-pseudocode:
 source-bundle: handler-pseudocode pseudocode-full
 	python3 vm_recovered_source_bundle.py > dumps/vmtail-wide-1m-w16/vm_recovered_source_bundle.c
 
-pseudocode-syntax-check: pseudocode source-bundle path-pseudocode native-ret-patch-target-pseudocode native-ret-patch-epilogues-retdec native-ret-patch-source278-retdec native-ret-patch-followups native-ret-patch-followup-retdec native-obfuscated-islands native-obfuscated-second-stage native-obfuscated-second-stage-dynamic native-obfuscated-second-stage-slot-proof native-obfuscated-second-stage-stack-source native-obfuscated-second-stage-rbx-provenance native-obfuscated-second-stage-model native-obfuscated-control-model target-only-handlers-retdec unobserved-handlers-retdec weak-handlers-retdec validated-handlers-retdec unresolved-family-chains
+pseudocode-syntax-check: pseudocode source-bundle path-pseudocode native-ret-patch-target-pseudocode native-ret-patch-epilogues-retdec native-ret-patch-source278-retdec native-ret-patch-followups native-ret-patch-followup-retdec native-obfuscated-islands native-obfuscated-second-stage native-obfuscated-second-stage-dynamic native-obfuscated-second-stage-slot-proof native-obfuscated-second-stage-stack-source native-obfuscated-second-stage-rbx-provenance native-obfuscated-second-stage-model native-obfuscated-control-model native-ret-patch-hidden-bridge target-only-handlers-retdec unobserved-handlers-retdec weak-handlers-retdec validated-handlers-retdec unresolved-family-chains
 	$(CC) -std=c11 -fsyntax-only -Wall -Wextra -Wno-unused-variable -Wno-unused-function -Wno-parentheses dumps/vmtail-wide-1m-w16/vm_handlers_pseudocode.c
 	$(CC) -std=c11 -fsyntax-only -Wall -Wextra -Wno-unused-variable -Wno-unused-function -Wno-parentheses dumps/vmtail-wide-1m-w16/vm_path_handlers_pseudocode.c
 	$(CC) -std=c11 -fsyntax-only -Wall -Wextra -Wno-unused-variable -Wno-unused-function -Wno-parentheses dumps/vmtail-wide-1m-w16/vm_pseudocode_top.c
@@ -584,6 +595,7 @@ pseudocode-syntax-check: pseudocode source-bundle path-pseudocode native-ret-pat
 	$(CC) -std=c11 -fsyntax-only -Wall -Wextra -Wno-unused-function dumps/vmtail-wide-1m-w16/vm_native_obfuscated_second_stage_rbx_provenance.c
 	$(CC) -std=c11 -fsyntax-only -Wall -Wextra -Wno-unused-function dumps/vmtail-wide-1m-w16/vm_native_obfuscated_second_stage_model.c
 	$(CC) -std=c11 -fsyntax-only -Wall -Wextra -Wno-unused-function dumps/vmtail-wide-1m-w16/vm_native_obfuscated_control_model.c
+	$(CC) -std=c11 -fsyntax-only -Wall -Wextra -Wno-unused-function dumps/vmtail-wide-1m-w16/vm_native_ret_patch_hidden_bridge.c
 	$(CC) -std=c11 -fsyntax-only -Wall -Wextra -Wno-unused-variable -Wno-unused-function -Wno-unused-parameter -Wno-uninitialized -Wno-parentheses dumps/vmtail-wide-1m-w16/vm_target_only_handlers_retdec.c
 	$(CC) -std=c11 -fsyntax-only -Wall -Wextra -Wno-unused-variable -Wno-unused-function -Wno-unused-parameter -Wno-uninitialized -Wno-parentheses -Wno-sign-compare -Wno-pointer-to-int-cast -Wno-tautological-constant-out-of-range-compare dumps/vmtail-wide-1m-w16/vm_unobserved_handlers_retdec_batch0*.c
 	$(CC) -std=c11 -fsyntax-only -Wall -Wextra -Wno-unused-variable -Wno-unused-function -Wno-unused-parameter -Wno-uninitialized -Wno-parentheses -Wno-sign-compare -Wno-pointer-to-int-cast -Wno-tautological-constant-out-of-range-compare dumps/vmtail-wide-1m-w16/vm_weak_handlers_retdec.c
@@ -605,7 +617,7 @@ coverage-audit: coverage-matrix
 	python3 vm_static_coverage_audit.py > dumps/vmtail-wide-1m-w16/vm_static_coverage_audit.tsv
 	python3 vm_static_coverage_audit.py --from-tsv dumps/vmtail-wide-1m-w16/vm_static_coverage_audit.tsv --markdown > dumps/vmtail-wide-1m-w16/vm_static_coverage_audit.md
 
-c-reconstruction-manifest: pseudocode-syntax-check pseudocode-object-check pseudocode-link-check coverage-audit synthetic-gap-transfer-probe synthetic-gap-dynamic-stitch synthetic-gap-chain-probe synthetic-gap-residual-audit synthetic-gap-concrete-state-audit synthetic-gap-state-trace-targets synthetic-gap-live-context-audit synthetic-gap-table-read-diagnostic synthetic-gap-table-memory-probe synthetic-gap-runtime-table-memory-probe synthetic-gap-sampled-control-correlation synthetic-gap-focused-direct-trace-audit synthetic-gap-focused-sequence-audit synthetic-gap-observed-chain-bridge synthetic-gap-observed-chain-replay synthetic-gap-chain-slot-reconciliation synthetic-gap-unresolved-family-audit synthetic-gap-source299-context-probe synthetic-gap-source299-ret-patch-probe synthetic-gap-sampled-ret-patch-probe synthetic-gap-ret-patch-native-target-atlas native-ret-patch-target-pseudocode native-ret-patch-epilogues-retdec native-ret-patch-source278-retdec native-ret-patch-followups native-ret-patch-followup-retdec native-obfuscated-islands native-obfuscated-second-stage native-obfuscated-second-stage-dynamic native-obfuscated-second-stage-slot-proof native-obfuscated-second-stage-stack-source native-obfuscated-second-stage-rbx-provenance native-obfuscated-second-stage-model native-obfuscated-control-model target-only-handlers-retdec unobserved-handlers-retdec weak-handlers-retdec validated-handlers-retdec handler-retdec-index unresolved-family-chains synthetic-gap-live-snapshot-transfer-probe synthetic-gap-live-table-evidence synthetic-gap-symbolic-successors synthetic-gap-live-in-roles final-tail-site-probe synthetic-gap-live-in-reentry-probe synthetic-gap-allstatic-reentry-probe
+c-reconstruction-manifest: pseudocode-syntax-check pseudocode-object-check pseudocode-link-check coverage-audit synthetic-gap-transfer-probe synthetic-gap-dynamic-stitch synthetic-gap-chain-probe synthetic-gap-residual-audit synthetic-gap-concrete-state-audit synthetic-gap-state-trace-targets synthetic-gap-live-context-audit synthetic-gap-table-read-diagnostic synthetic-gap-table-memory-probe synthetic-gap-runtime-table-memory-probe synthetic-gap-sampled-control-correlation synthetic-gap-focused-direct-trace-audit synthetic-gap-focused-sequence-audit synthetic-gap-observed-chain-bridge synthetic-gap-observed-chain-replay synthetic-gap-chain-slot-reconciliation synthetic-gap-unresolved-family-audit synthetic-gap-source299-context-probe synthetic-gap-source299-ret-patch-probe synthetic-gap-sampled-ret-patch-probe synthetic-gap-ret-patch-native-target-atlas native-ret-patch-target-pseudocode native-ret-patch-epilogues-retdec native-ret-patch-source278-retdec native-ret-patch-followups native-ret-patch-followup-retdec native-obfuscated-islands native-obfuscated-second-stage native-obfuscated-second-stage-dynamic native-obfuscated-second-stage-slot-proof native-obfuscated-second-stage-stack-source native-obfuscated-second-stage-rbx-provenance native-obfuscated-second-stage-model native-obfuscated-control-model native-ret-patch-hidden-bridge target-only-handlers-retdec unobserved-handlers-retdec weak-handlers-retdec validated-handlers-retdec handler-retdec-index unresolved-family-chains synthetic-gap-live-snapshot-transfer-probe synthetic-gap-live-table-evidence synthetic-gap-symbolic-successors synthetic-gap-live-in-roles final-tail-site-probe synthetic-gap-live-in-reentry-probe synthetic-gap-allstatic-reentry-probe
 	python3 vm_c_reconstruction_manifest.py > dumps/vmtail-wide-1m-w16/vm_c_reconstruction_manifest.tsv
 	python3 vm_c_reconstruction_manifest.py --markdown > dumps/vmtail-wide-1m-w16/vm_c_reconstruction_manifest.md
 
