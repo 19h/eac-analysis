@@ -174,6 +174,22 @@ static const char *tail_reg_name(enum tail_reg reg) {
     }
 }
 
+static uint32_t tail_reg_bit(enum tail_reg reg) {
+    if (reg == TAIL_REG_INVALID) return 0;
+    return 1u << (unsigned)reg;
+}
+
+static uint32_t all_tail_reg_bits(void) {
+    return tail_reg_bit(TAIL_REG_RAX) | tail_reg_bit(TAIL_REG_RBX) |
+           tail_reg_bit(TAIL_REG_RCX) | tail_reg_bit(TAIL_REG_RDX) |
+           tail_reg_bit(TAIL_REG_RSI) | tail_reg_bit(TAIL_REG_RDI) |
+           tail_reg_bit(TAIL_REG_RBP) | tail_reg_bit(TAIL_REG_RSP) |
+           tail_reg_bit(TAIL_REG_R8) | tail_reg_bit(TAIL_REG_R9) |
+           tail_reg_bit(TAIL_REG_R10) | tail_reg_bit(TAIL_REG_R11) |
+           tail_reg_bit(TAIL_REG_R12) | tail_reg_bit(TAIL_REG_R13) |
+           tail_reg_bit(TAIL_REG_R14) | tail_reg_bit(TAIL_REG_R15);
+}
+
 static int add_tail_site(uintptr_t off, enum tail_reg reg) {
     if (reg == TAIL_REG_INVALID || off == 0) return -1;
     for (size_t i = 0; i < g_tail_site_count; ++i) {
@@ -223,6 +239,31 @@ static void parse_extra_tail_sites(const char *spec) {
         }
         while (*p != '\0' && *p != ',') ++p;
     }
+}
+
+static uint32_t parse_tail_reg_mask(const char *spec) {
+    if (spec == NULL || *spec == '\0') return all_tail_reg_bits();
+
+    uint32_t mask = 0;
+    const char *p = spec;
+    while (*p != '\0') {
+        while (*p == ' ' || *p == '\t' || *p == ',') ++p;
+        if (*p == '\0') break;
+
+        const char *reg_start = p;
+        while ((*p >= 'a' && *p <= 'z') || (*p >= 'A' && *p <= 'Z') ||
+               (*p >= '0' && *p <= '9')) {
+            ++p;
+        }
+        enum tail_reg reg = parse_tail_reg(reg_start, (size_t)(p - reg_start));
+        if (reg == TAIL_REG_INVALID) {
+            fprintf(stderr, "[DRIVER] ignoring malformed VMTAIL mem reg near '%s'\n", reg_start);
+        } else {
+            mask |= tail_reg_bit(reg);
+        }
+        while (*p != '\0' && *p != ',') ++p;
+    }
+    return mask != 0 ? mask : all_tail_reg_bits();
 }
 
 static int add_scratch_offset(uint16_t off) {
@@ -314,6 +355,49 @@ static uint64_t read_frame_u64(uintptr_t frame, uint16_t off) {
     return value;
 }
 
+static int add_read_range(uintptr_t start, uintptr_t end) {
+    if (end <= start || g_read_range_count >= EAC_MAX_READ_RANGES) return -1;
+    g_read_ranges[g_read_range_count].start = start;
+    g_read_ranges[g_read_range_count].end = end;
+    ++g_read_range_count;
+    return 0;
+}
+
+static void load_read_ranges(void) {
+    g_read_range_count = 0;
+    FILE *maps = fopen("/proc/self/maps", "r");
+    if (maps == NULL) {
+        fprintf(stderr, "[DRIVER] VMTAIL mem maps open failed: %s\n", strerror(errno));
+        return;
+    }
+
+    char line[1024];
+    while (fgets(line, sizeof(line), maps) != NULL) {
+        unsigned long start = 0;
+        unsigned long end = 0;
+        char perms[8] = {0};
+        if (sscanf(line, "%lx-%lx %7s", &start, &end, perms) != 3) continue;
+        if (perms[0] != 'r') continue;
+        if (add_read_range((uintptr_t)start, (uintptr_t)end) != 0) break;
+    }
+    fclose(maps);
+}
+
+static int range_contains_qword(uintptr_t addr) {
+    if (addr > UINTPTR_MAX - sizeof(uint64_t)) return 0;
+    uintptr_t end = addr + sizeof(uint64_t);
+    for (size_t i = 0; i < g_read_range_count; ++i) {
+        if (addr >= g_read_ranges[i].start && end <= g_read_ranges[i].end) return 1;
+    }
+    return 0;
+}
+
+static int read_mapped_u64(uintptr_t addr, uint64_t *value) {
+    if (!range_contains_qword(addr)) return 0;
+    memcpy(value, (const void *)addr, sizeof(*value));
+    return 1;
+}
+
 static char *append_frame_scratch(char *p, char *end, uintptr_t frame) {
     for (size_t i = 0; i < g_scratch_offset_count; ++i) {
         uint16_t off = g_scratch_offsets[i];
@@ -326,6 +410,8 @@ static char *append_frame_scratch(char *p, char *end, uintptr_t frame) {
 }
 
 #if defined(__x86_64__)
+static uintptr_t tail_reg_value(const ucontext_t *uc, enum tail_reg reg);
+
 static char *append_gpr(char *p, char *end, const char *name, const ucontext_t *uc, int reg) {
     p = append_lit(p, end, " ");
     p = append_lit(p, end, name);
@@ -351,6 +437,35 @@ static char *append_gprs(char *p, char *end, const ucontext_t *uc) {
     p = append_gpr(p, end, "r15", uc, REG_R15);
     p = append_gpr(p, end, "rbp", uc, REG_RBP);
     p = append_gpr(p, end, "rsp", uc, REG_RSP);
+    return p;
+}
+
+static char *append_gpr_mem(char *p, char *end, const ucontext_t *uc, enum tail_reg reg) {
+    uint64_t value = 0;
+    uintptr_t addr = tail_reg_value(uc, reg);
+    p = append_lit(p, end, " mem_");
+    p = append_lit(p, end, tail_reg_name(reg));
+    p = append_lit(p, end, "=");
+    if (read_mapped_u64(addr, &value)) {
+        p = append_hex(p, end, value);
+    } else {
+        p = append_lit(p, end, "?");
+    }
+    return p;
+}
+
+static char *append_gpr_mems(char *p, char *end, const ucontext_t *uc) {
+    static const enum tail_reg regs[] = {
+        TAIL_REG_RAX, TAIL_REG_RBX, TAIL_REG_RCX, TAIL_REG_RDX,
+        TAIL_REG_RSI, TAIL_REG_RDI, TAIL_REG_RBP, TAIL_REG_RSP,
+        TAIL_REG_R8, TAIL_REG_R9, TAIL_REG_R10, TAIL_REG_R11,
+        TAIL_REG_R12, TAIL_REG_R13, TAIL_REG_R14, TAIL_REG_R15,
+    };
+    for (size_t i = 0; i < sizeof(regs) / sizeof(regs[0]); ++i) {
+        if ((g_tail_mem_reg_mask & tail_reg_bit(regs[i])) != 0) {
+            p = append_gpr_mem(p, end, uc, regs[i]);
+        }
+    }
     return p;
 }
 #endif
@@ -444,6 +559,9 @@ static void tail_trace_write(uintptr_t site, uintptr_t target, uintptr_t frame,
 #if defined(__x86_64__)
     if (g_tail_regs) {
         p = append_gprs(p, end, uc);
+    }
+    if (g_tail_mem) {
+        p = append_gpr_mems(p, end, uc);
     }
 #endif
     if (g_tail_scratch) {
@@ -565,6 +683,8 @@ static void install_dispatch_trace(void *sym) {
     g_tail_trace = env_is_one_driver("EAC_VMTAIL_TRACE");
     g_tail_regs = env_is_one_driver("EAC_VMTAIL_REGS");
     g_tail_scratch = env_is_one_driver("EAC_VMTAIL_SCRATCH");
+    g_tail_mem = env_is_one_driver("EAC_VMTAIL_MEM");
+    g_tail_mem_reg_mask = parse_tail_reg_mask(getenv("EAC_VMTAIL_MEM_REGS"));
     g_tail_limit = parse_ul(getenv("EAC_VMTAIL_LIMIT"), 4096);
     if (g_tail_limit == 0) g_tail_limit = 1;
     g_tail_site_count = 0;
@@ -576,6 +696,9 @@ static void install_dispatch_trace(void *sym) {
     if (g_tail_scratch) {
         add_default_scratch_offsets();
         parse_scratch_offsets(getenv("EAC_VMTAIL_SCRATCH_OFFSETS"));
+    }
+    if (g_tail_mem) {
+        load_read_ranges();
     }
 
     Dl_info info;
@@ -606,11 +729,12 @@ static void install_dispatch_trace(void *sym) {
 
     fprintf(stderr,
             "[DRIVER] dispatch trace enabled base=%p sites=+0x%x,+0x%x limit=%" PRIu64
-            " detail=%d tail=%d tail_regs=%d tail_scratch=%d tail_limit=%" PRIu64
-            " tail_sites=%zu scratch_offsets=%zu\n",
+            " detail=%d tail=%d tail_regs=%d tail_scratch=%d tail_mem=%d"
+            " tail_limit=%" PRIu64
+            " tail_sites=%zu scratch_offsets=%zu read_ranges=%zu\n",
             (void *)g_eac_base, EAC_DISPATCH_C80B9, EAC_DISPATCH_CDAC7, g_dispatch_limit,
-            g_dispatch_detail, g_tail_trace, g_tail_regs, g_tail_scratch,
-            g_tail_limit, g_tail_site_count, g_scratch_offset_count);
+            g_dispatch_detail, g_tail_trace, g_tail_regs, g_tail_scratch, g_tail_mem,
+            g_tail_limit, g_tail_site_count, g_scratch_offset_count, g_read_range_count);
     for (size_t i = 0; g_tail_trace && i < g_tail_site_count; ++i) {
         fprintf(stderr, "[DRIVER] tail site +0x%lx -> %s\n",
                 (unsigned long)g_tail_sites[i].off, tail_reg_name(g_tail_sites[i].reg));
