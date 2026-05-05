@@ -259,6 +259,44 @@ def load_symbolic_successors(path):
     return successors
 
 
+def load_hidden_chains(path):
+    chains = defaultdict(list)
+    if not path or not Path(path).exists():
+        return chains
+    for row in read_tsv(path):
+        start = normalize_vm_ip(row.get("synthetic_start_vm_ip", ""))
+        if start:
+            chains[start].append(row)
+
+    def sort_key(row):
+        status_rank = {
+            "hidden_chain_matches_next_event": 0,
+            "hidden_chain_target_only": 1,
+            "hidden_chain_end_only": 2,
+        }
+        try:
+            offset = parse_delta(row.get("hidden_source_delta_from_start", "0"))
+        except ValueError:
+            offset = 0
+        return (
+            status_rank.get(row.get("status", ""), 9),
+            offset,
+            int(row.get("hidden_source_entry", "0") or 0),
+        )
+
+    for rows in chains.values():
+        rows.sort(key=sort_key)
+    return chains
+
+
+def resolved_hidden_chain(target_vm_ip, hidden_chains):
+    start = normalize_vm_ip(target_vm_ip)
+    for row in hidden_chains.get(start, []):
+        if row.get("status", "") == "hidden_chain_matches_next_event":
+            return row
+    return None
+
+
 def load_live_in_roles(path):
     roles = defaultdict(list)
     if not path or not Path(path).exists():
@@ -404,6 +442,38 @@ def emit_symbolic_successor_comments(target_vm_ip, symbolic_successors, args):
     omitted = len(rows) - len(shown)
     if omitted > 0:
         print(f"    /* ... {omitted} additional symbolic successor rows omitted ... */")
+
+
+def emit_hidden_chain_comments(target_vm_ip, hidden_chains, args):
+    start = normalize_vm_ip(target_vm_ip)
+    rows = hidden_chains.get(start, [])
+    if not rows:
+        return
+    limit = getattr(args, "hidden_chain_top_items", 4)
+    shown = rows if limit <= 0 else rows[:limit]
+    max_expr = getattr(args, "hidden_chain_max_expr", 180)
+    print(
+        f"    /* hidden chain probe @ {start}: rows={len(rows)}; "
+        "candidate next-source handlers replayed at short offsets after the gap. */"
+    )
+    for row in shown:
+        print(
+            f"    /* hidden chain: source={row.get('source_entry', '?')}, "
+            f"hidden_entry={row.get('hidden_source_entry', '-')}"
+            f"@{normalize_vm_ip(row.get('hidden_source_start_vm_ip', ''))}, "
+            f"offset={row.get('hidden_source_delta_from_start', '-')}, "
+            f"pred_entry={row.get('hidden_pred_entry', '-')}, "
+            f"pred_delta={row.get('hidden_pred_delta', '-')}, "
+            f"pred_end={normalize_vm_ip(row.get('hidden_pred_end_vm_ip', ''))}, "
+            f"dynamic={normalize_vm_ip(row.get('dynamic_next_end_vm_ip', ''))}"
+            f"/entry_{row.get('dynamic_next_tail_target_entry', '-')}, "
+            f"slot={c_comment(clip(row.get('hidden_slot_expr', '') or '-', max_expr))}, "
+            f"ip={c_comment(clip(row.get('hidden_ip_expr', '') or '-', max_expr))}, "
+            f"status={c_comment(row.get('status', '') or '-')} */"
+        )
+    omitted = len(rows) - len(shown)
+    if omitted > 0:
+        print(f"    /* ... {omitted} additional hidden chain rows omitted ... */")
 
 
 def matching_final_tail_probe(row, final_tail_site_probes):
@@ -657,14 +727,19 @@ def emit_preamble():
     print("")
 
 
-def emit_synthetic_edge(edge, synthetic_spans, dynamic_stitches, transfer_probes, symbolic_successors, live_in_roles, final_tail_site_probes, args):
+def emit_synthetic_edge(edge, synthetic_spans, dynamic_stitches, transfer_probes, symbolic_successors, hidden_chains, live_in_roles, final_tail_site_probes, args):
     target_vm_ip = normalize_vm_ip(edge.get("target_vm_ip", ""))
+    chain = resolved_hidden_chain(target_vm_ip, hidden_chains)
     info = synthetic_spans.get(target_vm_ip)
     if not info:
         emit_transfer_probe_comments(target_vm_ip, transfer_probes, args)
         emit_dynamic_stitch_comments(target_vm_ip, dynamic_stitches, args)
         emit_symbolic_successor_comments(target_vm_ip, symbolic_successors, args)
+        emit_hidden_chain_comments(target_vm_ip, hidden_chains, args)
         emit_live_in_role_comments(target_vm_ip, live_in_roles, final_tail_site_probes, args)
+        if chain:
+            print(f"    /* hidden chain resolves synthetic reentry at {normalize_vm_ip(chain.get('hidden_pred_end_vm_ip', ''))}. */")
+            return
         print(f"    vm_unresolved_synthetic_tail(vm, 0x{parse_hex(target_vm_ip):x});")
         return
 
@@ -710,7 +785,26 @@ def emit_synthetic_edge(edge, synthetic_spans, dynamic_stitches, transfer_probes
     emit_transfer_probe_comments(target_vm_ip, transfer_probes, args)
     emit_dynamic_stitch_comments(target_vm_ip, dynamic_stitches, args)
     emit_symbolic_successor_comments(target_vm_ip, symbolic_successors, args)
+    emit_hidden_chain_comments(target_vm_ip, hidden_chains, args)
     emit_live_in_role_comments(target_vm_ip, live_in_roles, final_tail_site_probes, args)
+    if chain:
+        try:
+            offset = parse_delta(chain.get("hidden_source_delta_from_start", "0"))
+            pred_delta = parse_delta(chain.get("hidden_pred_delta", "0"))
+        except ValueError:
+            offset = 0
+            pred_delta = 0
+        if offset:
+            print(f"    {fmt_ip_update(offset)}")
+        print(
+            f"    /* hidden source entry_{chain.get('hidden_source_entry', '?')} "
+            f"replayed from {normalize_vm_ip(chain.get('hidden_source_start_vm_ip', ''))}. */"
+        )
+        if chain.get("hidden_pred_entry", ""):
+            print(f"    next_entry = {chain.get('hidden_pred_entry')};")
+        if pred_delta:
+            print(f"    {fmt_ip_update(pred_delta)}")
+        return
     tail_expr = tail_target_load(tail_lift)
     if tail_expr:
         print(f"    next_entry = {tail_expr};")
@@ -725,8 +819,16 @@ def emit_synthetic_edge(edge, synthetic_spans, dynamic_stitches, transfer_probes
         print(f"    {update}")
 
 
-def synthetic_successor(edge, synthetic_spans, block_by_start):
+def synthetic_successor(edge, synthetic_spans, hidden_chains, block_by_start):
     target_vm_ip = normalize_vm_ip(edge.get("target_vm_ip", ""))
+    chain = resolved_hidden_chain(target_vm_ip, hidden_chains)
+    if chain:
+        try:
+            dest = parse_hex(chain.get("hidden_pred_end_vm_ip", ""))
+        except (TypeError, ValueError):
+            dest = None
+        if dest is not None:
+            return block_by_start.get(dest), dest
     info = synthetic_spans.get(target_vm_ip)
     if not info:
         return None, None
