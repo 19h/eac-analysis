@@ -303,6 +303,24 @@ BATCHES = {
         "0x4b8660-0x4b8791",
         "0x4fdd8-0x4ff08",
     ],
+    16: [
+        "0x60dea-0x60f19",
+        "0x4cc900-0x4cca2f",
+        "0x525f0-0x5271d",
+        "0x4fa50-0x4fb7c",
+        "0x60c84-0x60db0",
+        "0x49e770-0x49e89c",
+        "0x4ce440-0x4ce56b",
+        "0x58947-0x58a71",
+        "0x4c8450-0x4c857a",
+        "0x25da6-0x25ecf",
+        "0x35c96-0x35dbf",
+        "0x519120-0x519249",
+        "0x573430-0x573559",
+        "0x29dd0-0x29ef7",
+        "0x57650-0x57777",
+        "0x6a3ea-0x6a511",
+    ],
 }
 
 
@@ -327,10 +345,12 @@ def extract_functions(text):
         raise SystemExit("retdec output did not contain the expected functions section")
     functions = text[start + len(start_marker):end].strip()
     functions = functions.replace(" = &v", " = (int64_t)&v")
+    functions = functions.replace("vsnprintf(", "eac_retdec_vsnprintf(")
     functions = re.sub(r"(int64_t\s+v\d+\s*=\s*)&([A-Za-z_]\w*)", r"\1(int64_t)&\2", functions)
     functions = re.sub(r" = &g(\d+)", r" = (int64_t)&g\1", functions)
     functions = re.sub(r"return &g(\d+)", r"return (int64_t)&g\1", functions)
     functions = re.sub(r"return &v(\d+)", r"return (int64_t)&v\1", functions)
+    functions = re.sub(r"return &([A-Za-z_]\w*)", r"return (int64_t)&\1", functions)
     return functions
 
 
@@ -415,6 +435,7 @@ def main():
     print("typedef double float64_t;")
     print("typedef long double float80_t;")
     print("struct __locale_struct;")
+    print("struct _TYPEDEF_glob_t;")
     print("struct _TYPEDEF___mbstate_t;")
     print("struct _IO_FILE;")
     print("struct sockaddr;")
@@ -504,6 +525,10 @@ def main():
     print("int getsockopt(int sockfd, int level, int optname, void *optval, int32_t *optlen);")
     print("int64_t readlink(const char *path, char *buf, size_t bufsiz);")
     print("char *realpath(const char *path, char *resolved_path);")
+    print("int glob(const char *pattern, int flags, void *errfunc, struct _TYPEDEF_glob_t *pglob);")
+    print("void globfree(struct _TYPEDEF_glob_t *pglob);")
+    print("char *__xpg_basename(char *path);")
+    print("int32_t eac_retdec_vsnprintf(char *str, int32_t size, char *format, int64_t ap);")
     print("int64_t __wctype_l(const char *property, struct __locale_struct *locale);")
     print("char *strdup(const char *s);")
     print("struct _Unwind_Exception;")
