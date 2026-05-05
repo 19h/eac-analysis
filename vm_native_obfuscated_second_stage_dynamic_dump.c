@@ -7,6 +7,7 @@
 
 #define SECOND_STAGE_PATH "dumps/vmtail-wide-1m-w16/vm_native_obfuscated_second_stage.tsv"
 #define HANDLER_TABLE_PATH "dumps/vmtail-wide-1m-w16/vm_handler_table.tsv"
+#define DISPATCH_TABLE_OFF 0xc3718ull
 #define MAX_FIELDS 64
 #define MAX_LINE 65536
 #define MAX_MIX 256
@@ -47,6 +48,8 @@ typedef struct {
     Mix target_entry_mix;
     Mix slot_entry_mix;
     Mix slot_target_check_mix;
+    Mix table_base_mix;
+    Mix slot_base_check_mix;
     Mix slot_mix;
     Mix idx_mix;
     Mix vm_ip_mix;
@@ -355,6 +358,8 @@ static void record_dispatch_line(DynamicSite *site, const char *run_label, const
     char key[128];
     char handler_key[160];
     char slot_entry_key[160];
+    bool have_slot;
+    bool have_idx;
 
     if (!parse_token_u64(line, "target_off=", &target)) {
         return;
@@ -364,11 +369,13 @@ static void record_dispatch_line(DynamicSite *site, const char *run_label, const
     mix_add(&site->target_mix, key, 1);
     handler_label_for_target(target, handler_key, sizeof(handler_key));
     mix_add(&site->target_entry_mix, handler_key, 1);
-    if (parse_token_u64(line, "slot_off=", &slot)) {
+    have_slot = parse_token_u64(line, "slot_off=", &slot);
+    if (have_slot) {
         hex64(key, sizeof(key), slot);
         mix_add(&site->slot_mix, key, 1);
     }
-    if (parse_token_u64(line, "idx=", &idx)) {
+    have_idx = parse_token_u64(line, "idx=", &idx);
+    if (have_idx) {
         hex64(key, sizeof(key), idx);
         mix_add(&site->idx_mix, key, 1);
         if ((idx & 7ull) == 0) {
@@ -386,6 +393,16 @@ static void record_dispatch_line(DynamicSite *site, const char *run_label, const
             }
         } else {
             mix_add(&site->slot_target_check_mix, "unaligned_slot_index", 1);
+        }
+    }
+    if (have_slot && have_idx) {
+        uint64_t base = slot - idx;
+        hex64(key, sizeof(key), base);
+        mix_add(&site->table_base_mix, key, 1);
+        if (base == DISPATCH_TABLE_OFF) {
+            mix_add(&site->slot_base_check_mix, "slot_minus_idx_matches_dispatch_table", 1);
+        } else {
+            mix_add(&site->slot_base_check_mix, "slot_minus_idx_base_mismatch", 1);
         }
     }
     if (parse_token_u64(line, "vm_ip_off=", &vm_ip)) {
@@ -461,12 +478,15 @@ static void print_c_string(const char *text) {
 static void site_mix_strings(const DynamicSite *site,
                              char *target_mix, char *target_entry_mix,
                              char *slot_entry_mix, char *slot_target_check_mix,
+                             char *table_base_mix, char *slot_base_check_mix,
                              char *slot_mix, char *idx_mix,
                              char *vm_ip_mix, char *run_mix) {
     mix_to_string(&site->target_mix, target_mix, MIX_TEXT);
     mix_to_string(&site->target_entry_mix, target_entry_mix, MIX_TEXT);
     mix_to_string(&site->slot_entry_mix, slot_entry_mix, MIX_TEXT);
     mix_to_string(&site->slot_target_check_mix, slot_target_check_mix, MIX_TEXT);
+    mix_to_string(&site->table_base_mix, table_base_mix, MIX_TEXT);
+    mix_to_string(&site->slot_base_check_mix, slot_base_check_mix, MIX_TEXT);
     mix_to_string(&site->slot_mix, slot_mix, MIX_TEXT);
     mix_to_string(&site->idx_mix, idx_mix, MIX_TEXT);
     mix_to_string(&site->vm_ip_mix, vm_ip_mix, MIX_TEXT);
@@ -474,15 +494,16 @@ static void site_mix_strings(const DynamicSite *site,
 }
 
 static void emit_tsv(void) {
-    printf("entry\tindirect_jmp_site\thit_count\tunique_targets\ttarget_mix\ttarget_entry_mix\tslot_entry_mix\tslot_target_check_mix\tslot_mix\tidx_mix\tvm_ip_mix\trun_mix\tchain\tstatic_status\tstatic_next_action\tdynamic_status\tdynamic_next_action\tfirst_stage_entries\tsource_mix\tfirst_stage_windows\tnote\n");
+    printf("entry\tindirect_jmp_site\thit_count\tunique_targets\ttarget_mix\ttarget_entry_mix\tslot_entry_mix\tslot_target_check_mix\ttable_base_mix\tslot_base_check_mix\tslot_mix\tidx_mix\tvm_ip_mix\trun_mix\tchain\tstatic_status\tstatic_next_action\tdynamic_status\tdynamic_next_action\tfirst_stage_entries\tsource_mix\tfirst_stage_windows\tnote\n");
     for (size_t i = 0; i < sizeof(g_sites) / sizeof(g_sites[0]); i++) {
         const DynamicSite *site = &g_sites[i];
         char target_mix[MIX_TEXT], target_entry_mix[MIX_TEXT], slot_entry_mix[MIX_TEXT];
-        char slot_target_check_mix[MIX_TEXT], slot_mix[MIX_TEXT];
+        char slot_target_check_mix[MIX_TEXT], table_base_mix[MIX_TEXT], slot_base_check_mix[MIX_TEXT];
+        char slot_mix[MIX_TEXT];
         char idx_mix[MIX_TEXT], vm_ip_mix[MIX_TEXT], run_mix[MIX_TEXT];
         site_mix_strings(site, target_mix, target_entry_mix, slot_entry_mix, slot_target_check_mix,
-                         slot_mix, idx_mix, vm_ip_mix, run_mix);
-        printf("0x%llx\t0x%llx\t%u\t%zu\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n",
+                         table_base_mix, slot_base_check_mix, slot_mix, idx_mix, vm_ip_mix, run_mix);
+        printf("0x%llx\t0x%llx\t%u\t%zu\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n",
                (unsigned long long)site->entry,
                (unsigned long long)site->site,
                site->hits,
@@ -491,6 +512,8 @@ static void emit_tsv(void) {
                target_entry_mix,
                slot_entry_mix,
                slot_target_check_mix,
+               table_base_mix,
+               slot_base_check_mix,
                slot_mix,
                idx_mix,
                vm_ip_mix,
@@ -510,37 +533,41 @@ static void emit_tsv(void) {
 static void emit_markdown(void) {
     printf("# Native Obfuscated Second-Stage Dynamic Dispatch\n\n");
     printf("Indexes bounded driver traces for the five computed `jmp [rax]` sites emitted by `vm_native_obfuscated_second_stage.c`.\n\n");
-    printf("| entry | site | hits | observed targets | slot entries | slot check | evidence runs | status |\n");
+    printf("| entry | site | hits | observed targets | slot entries | base check | slot check | status |\n");
     printf("| --- | --- | ---: | --- | --- | --- | --- | --- |\n");
     for (size_t i = 0; i < sizeof(g_sites) / sizeof(g_sites[0]); i++) {
         const DynamicSite *site = &g_sites[i];
         char target_mix[MIX_TEXT], target_entry_mix[MIX_TEXT], slot_entry_mix[MIX_TEXT];
-        char slot_target_check_mix[MIX_TEXT], slot_mix[MIX_TEXT];
+        char slot_target_check_mix[MIX_TEXT], table_base_mix[MIX_TEXT], slot_base_check_mix[MIX_TEXT];
+        char slot_mix[MIX_TEXT];
         char idx_mix[MIX_TEXT], vm_ip_mix[MIX_TEXT], run_mix[MIX_TEXT];
         site_mix_strings(site, target_mix, target_entry_mix, slot_entry_mix, slot_target_check_mix,
-                         slot_mix, idx_mix, vm_ip_mix, run_mix);
+                         table_base_mix, slot_base_check_mix, slot_mix, idx_mix, vm_ip_mix, run_mix);
         (void)target_entry_mix;
+        (void)table_base_mix;
         (void)idx_mix;
         (void)vm_ip_mix;
         (void)slot_mix;
+        (void)run_mix;
         printf("| `0x%llx` | `0x%llx` | %u | `%s` | `%s` | `%s` | `%s` | `%s` |\n",
                (unsigned long long)site->entry,
                (unsigned long long)site->site,
                site->hits,
                target_mix,
                slot_entry_mix,
+               slot_base_check_mix,
                slot_target_check_mix,
-               run_mix,
                dynamic_status(site));
     }
 }
 
 static void emit_c_function(const DynamicSite *site) {
     char target_mix[MIX_TEXT], target_entry_mix[MIX_TEXT], slot_entry_mix[MIX_TEXT];
-    char slot_target_check_mix[MIX_TEXT], slot_mix[MIX_TEXT];
+    char slot_target_check_mix[MIX_TEXT], table_base_mix[MIX_TEXT], slot_base_check_mix[MIX_TEXT];
+    char slot_mix[MIX_TEXT];
     char idx_mix[MIX_TEXT], vm_ip_mix[MIX_TEXT], run_mix[MIX_TEXT];
     site_mix_strings(site, target_mix, target_entry_mix, slot_entry_mix, slot_target_check_mix,
-                     slot_mix, idx_mix, vm_ip_mix, run_mix);
+                     table_base_mix, slot_base_check_mix, slot_mix, idx_mix, vm_ip_mix, run_mix);
     printf("static void second_stage_dynamic_%llx(VMState *vm, const VMSecondStageDynamicDispatch *edge) {\n",
            (unsigned long long)site->site);
     printf("    /* entry=0x%llx; indirect_jmp_site=0x%llx; chain=",
@@ -564,6 +591,11 @@ static void emit_c_function(const DynamicSite *site) {
     print_comment_text(slot_entry_mix);
     printf("; slot_target_check_mix=");
     print_comment_text(slot_target_check_mix);
+    printf(" */\n");
+    printf("    /* table_base_mix=");
+    print_comment_text(table_base_mix);
+    printf("; slot_base_check_mix=");
+    print_comment_text(slot_base_check_mix);
     printf(" */\n");
     printf("    /* slot_mix=");
     print_comment_text(slot_mix);
