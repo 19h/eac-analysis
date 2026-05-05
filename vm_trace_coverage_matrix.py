@@ -6,8 +6,6 @@ import sys
 from collections import Counter
 from pathlib import Path
 
-from vm_trace_log import strip_to_trace_marker
-
 
 DEFAULT_TRACE_DIRS = [
     "dumps/vmtail-wide",
@@ -28,6 +26,23 @@ GETADDR_RE = re.compile(r"\bgetaddrinfo node=(?P<node>[^ ]+) service=(?P<service
 SPAWN_EVENT_RE = re.compile(r"\b(?P<func>popen|system)\b")
 POPEN_RE = re.compile(r"\bpopen command=(?P<command>.*?) type=")
 CALLER_RE = re.compile(r"\bcaller=(?P<caller>[^ ]+)")
+RUN_METADATA_CACHE = {}
+TRACE_CACHE = {}
+
+
+def empty_trace():
+    return {
+        "rows": 0,
+        "source_entries": set(),
+        "target_entries": set(),
+        "start_ips": set(),
+        "intervals": [],
+        "exact_intervals": [],
+        "statuses": Counter(),
+        "kinds": Counter(),
+        "events_by_source": Counter(),
+        "events_by_target": Counter(),
+    }
 
 
 def read_tsv(path):
@@ -82,19 +97,13 @@ def classify_dir(path):
 
 
 def load_trace(path):
-    if not Path(path).exists():
-        return {
-            "rows": 0,
-            "source_entries": set(),
-            "target_entries": set(),
-            "start_ips": set(),
-            "intervals": [],
-            "exact_intervals": [],
-            "statuses": Counter(),
-            "kinds": Counter(),
-            "events_by_source": Counter(),
-            "events_by_target": Counter(),
-        }
+    path = Path(path)
+    if not path.exists():
+        return empty_trace()
+    cache_key = str(path.resolve())
+    cached = TRACE_CACHE.get(cache_key)
+    if cached is not None:
+        return cached
     rows = 0
     source_entries = set()
     target_entries = set()
@@ -105,36 +114,47 @@ def load_trace(path):
     kinds = Counter()
     events_by_source = Counter()
     events_by_target = Counter()
-    for row in read_tsv(path):
-        rows += 1
-        source = row.get("source_entry", "")
-        target = row.get("target_entry", "")
-        if source:
-            source_entries.add(source)
-            events_by_source[source] += 1
-        if target:
-            target_entries.add(target)
-            events_by_target[target] += 1
-        start = row.get("start_vm_ip", "")
-        end = row.get("end_vm_ip", "")
-        if start:
-            start_ips.add(start)
-        status = row.get("byte_status", "")
-        kind = row.get("kind", "")
-        if status:
-            statuses[status] += 1
-        if kind:
-            kinds[kind] += 1
-        try:
-            start_i = parse_hex(start)
-            end_i = parse_hex(end)
-        except ValueError:
-            continue
-        if end_i > start_i:
-            intervals.append((start_i, end_i))
-            if status == "exact":
-                exact_intervals.append((start_i, end_i))
-    return {
+    with path.open(errors="replace") as handle:
+        header = handle.readline().rstrip("\n").split("\t")
+        idx = {name: pos for pos, name in enumerate(header)}
+
+        def col(parts, name):
+            pos = idx.get(name)
+            if pos is None or pos >= len(parts):
+                return ""
+            return parts[pos]
+
+        for line in handle:
+            rows += 1
+            parts = line.rstrip("\n").split("\t")
+            source = col(parts, "source_entry")
+            target = col(parts, "target_entry")
+            if source:
+                source_entries.add(source)
+                events_by_source[source] += 1
+            if target:
+                target_entries.add(target)
+                events_by_target[target] += 1
+            start = col(parts, "start_vm_ip")
+            end = col(parts, "end_vm_ip")
+            if start:
+                start_ips.add(start)
+            status = col(parts, "byte_status")
+            kind = col(parts, "kind")
+            if status:
+                statuses[status] += 1
+            if kind:
+                kinds[kind] += 1
+            try:
+                start_i = parse_hex(start)
+                end_i = parse_hex(end)
+            except ValueError:
+                continue
+            if end_i > start_i:
+                intervals.append((start_i, end_i))
+                if status == "exact":
+                    exact_intervals.append((start_i, end_i))
+    data = {
         "rows": rows,
         "source_entries": source_entries,
         "target_entries": target_entries,
@@ -146,6 +166,8 @@ def load_trace(path):
         "events_by_source": events_by_source,
         "events_by_target": events_by_target,
     }
+    TRACE_CACHE[cache_key] = data
+    return data
 
 
 def origin_run_dir(trace_dir):
@@ -159,6 +181,10 @@ def origin_run_dir(trace_dir):
 
 def parse_run_metadata(trace_dir):
     run_dir = origin_run_dir(trace_dir)
+    cache_key = str(run_dir)
+    cached = RUN_METADATA_CACHE.get(cache_key)
+    if cached is not None:
+        return dict(cached)
     path = run_dir / "run.stderr"
     meta = {
         "origin_run_dir": str(run_dir),
@@ -189,6 +215,7 @@ def parse_run_metadata(trace_dir):
         "spawn_commands": "",
     }
     if not path.exists():
+        RUN_METADATA_CACHE[cache_key] = dict(meta)
         return meta
 
     meta["has_run_stderr"] = "1"
@@ -204,31 +231,45 @@ def parse_run_metadata(trace_dir):
     call_seen = False
     with path.open(errors="replace") as handle:
         for idx, line in enumerate(handle):
-            env_match = EAC_ENV_RE.search(line)
-            if env_match:
-                env_flags.add(env_match.group("name"))
-            call_match = CALL_RE.match(line)
-            if call_match:
-                meta["run_mode"] = call_match.group("mode")
-                call_seen = True
-            dispatch_match = DISPATCH_RE.match(line)
-            if dispatch_match:
-                dispatch_seen = True
-                fields = {m.group("key"): m.group("value") for m in KV_RE.finditer(dispatch_match.group("body"))}
-                meta["driver_tail_limit"] = fields.get("tail_limit", "")
-                meta["driver_tail_sites"] = fields.get("tail_sites", "")
-                meta["driver_tail_regs"] = fields.get("tail_regs", "0")
-                meta["driver_tail_scratch"] = fields.get("tail_scratch", "0")
-                meta["driver_tail_mem"] = fields.get("tail_mem", "0")
-                meta["driver_tail_focus_ips"] = fields.get("focus_ips", "")
-                meta["driver_tail_focus_sites"] = fields.get("focus_sites", "")
-                meta["driver_tail_stop_after_matches"] = fields.get("stop_after_matches", "")
-                meta["driver_scratch_offsets"] = fields.get("scratch_offsets", "")
-                meta["driver_read_ranges"] = fields.get("read_ranges", "")
-                meta["driver_detail"] = fields.get("detail", "")
-                meta["driver_tail_trace"] = fields.get("tail", "0")
-            network_match = NETWORK_EVENT_RE.search(line)
-            if network_match:
+            if "getenv name=EAC_" in line:
+                env_match = EAC_ENV_RE.search(line)
+                if env_match:
+                    env_flags.add(env_match.group("name"))
+            if not call_seen and line.startswith("[DRIVER] call "):
+                call_match = CALL_RE.match(line)
+                if call_match:
+                    meta["run_mode"] = call_match.group("mode")
+                    call_seen = True
+            if not dispatch_seen and line.startswith("[DRIVER] dispatch trace enabled "):
+                dispatch_match = DISPATCH_RE.match(line)
+                if dispatch_match:
+                    dispatch_seen = True
+                    fields = {m.group("key"): m.group("value") for m in KV_RE.finditer(dispatch_match.group("body"))}
+                    meta["driver_tail_limit"] = fields.get("tail_limit", "")
+                    meta["driver_tail_sites"] = fields.get("tail_sites", "")
+                    meta["driver_tail_regs"] = fields.get("tail_regs", "0")
+                    meta["driver_tail_scratch"] = fields.get("tail_scratch", "0")
+                    meta["driver_tail_mem"] = fields.get("tail_mem", "0")
+                    meta["driver_tail_focus_ips"] = fields.get("focus_ips", "")
+                    meta["driver_tail_focus_sites"] = fields.get("focus_sites", "")
+                    meta["driver_tail_stop_after_matches"] = fields.get("stop_after_matches", "")
+                    meta["driver_scratch_offsets"] = fields.get("scratch_offsets", "")
+                    meta["driver_read_ranges"] = fields.get("read_ranges", "")
+                    meta["driver_detail"] = fields.get("detail", "")
+                    meta["driver_tail_trace"] = fields.get("tail", "0")
+
+            network_func = ""
+            if "getaddrinfo " in line:
+                network_func = "getaddrinfo"
+            elif "socket domain=" in line:
+                network_func = "socket"
+            elif "connect fd=" in line:
+                network_func = "connect"
+            elif "send fd=" in line:
+                network_func = "send"
+            elif "recv fd=" in line:
+                network_func = "recv"
+            if network_func:
                 network_events += 1
                 if " DENY" in line:
                     network_denied_events += 1
@@ -239,10 +280,14 @@ def parse_run_metadata(trace_dir):
                         network_hosts[host] += 1
                 caller_match = CALLER_RE.search(line)
                 if caller_match:
-                    key = f"{network_match.group('func')}@{caller_match.group('caller')}"
+                    key = f"{network_func}@{caller_match.group('caller')}"
                     network_callers[key] += 1
-            spawn_match = SPAWN_EVENT_RE.search(line)
-            if spawn_match:
+            spawn_func = ""
+            if "popen command=" in line:
+                spawn_func = "popen"
+            elif "system command=" in line:
+                spawn_func = "system"
+            if spawn_func:
                 spawn_events += 1
                 if " DENY" in line:
                     spawn_denied_events += 1
@@ -295,6 +340,7 @@ def parse_run_metadata(trace_dir):
         meta["spawn_policy"] = "mixed_observed"
     else:
         meta["spawn_policy"] = "allowed_observed"
+    RUN_METADATA_CACHE[cache_key] = dict(meta)
     return meta
 
 
