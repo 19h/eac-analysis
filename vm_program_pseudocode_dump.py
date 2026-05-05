@@ -14,6 +14,7 @@ from vm_pseudocode_dump import (
     emit_live_in_reentry_comments,
     emit_live_in_role_comments,
     emit_concrete_state_audit_comments,
+    emit_live_context_audit_comments,
     emit_residual_audit_comments,
     emit_symbolic_successor_comments,
     emit_transfer_probe_comments,
@@ -28,6 +29,7 @@ from vm_pseudocode_dump import (
     load_live_in_reentries,
     load_live_in_roles,
     load_concrete_state_audits,
+    load_live_context_audits,
     load_residual_audits,
     load_rows,
     load_symbolic_successors,
@@ -240,7 +242,7 @@ def emit_decoded_control(row, args):
         print(f"    vm_ip -= 0x{-delta:x};")
 
 
-def emit_synthetic_edge(edge, synthetic_spans, dynamic_stitches, transfer_probes, symbolic_successors, hidden_chains, residual_audits, concrete_state_audits, live_in_roles, live_in_reentries, allstatic_reentries, final_tail_site_probes, args):
+def emit_synthetic_edge(edge, synthetic_spans, dynamic_stitches, transfer_probes, symbolic_successors, hidden_chains, residual_audits, concrete_state_audits, live_context_audits, live_in_roles, live_in_reentries, allstatic_reentries, final_tail_site_probes, args):
     target_vm_ip = normalize_vm_ip(edge.get("target_vm_ip", ""))
     chain = resolved_hidden_chain(target_vm_ip, hidden_chains)
     info = synthetic_spans.get(target_vm_ip)
@@ -251,6 +253,7 @@ def emit_synthetic_edge(edge, synthetic_spans, dynamic_stitches, transfer_probes
         emit_hidden_chain_comments(target_vm_ip, hidden_chains, args)
         emit_residual_audit_comments(target_vm_ip, residual_audits, args)
         emit_concrete_state_audit_comments(target_vm_ip, concrete_state_audits, args)
+        emit_live_context_audit_comments(target_vm_ip, live_context_audits, args)
         emit_live_in_role_comments(target_vm_ip, live_in_roles, final_tail_site_probes, args)
         emit_live_in_reentry_comments(target_vm_ip, live_in_reentries, args)
         emit_allstatic_reentry_comments(target_vm_ip, allstatic_reentries, args)
@@ -306,6 +309,7 @@ def emit_synthetic_edge(edge, synthetic_spans, dynamic_stitches, transfer_probes
     emit_hidden_chain_comments(target_vm_ip, hidden_chains, args)
     emit_residual_audit_comments(target_vm_ip, residual_audits, args)
     emit_concrete_state_audit_comments(target_vm_ip, concrete_state_audits, args)
+    emit_live_context_audit_comments(target_vm_ip, live_context_audits, args)
     emit_live_in_role_comments(target_vm_ip, live_in_roles, final_tail_site_probes, args)
     emit_live_in_reentry_comments(target_vm_ip, live_in_reentries, args)
     emit_allstatic_reentry_comments(target_vm_ip, allstatic_reentries, args)
