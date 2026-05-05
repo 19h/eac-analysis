@@ -47,35 +47,35 @@ static void vm_note_second_stage_slot_formula(VMState *vm,
 static void second_stage_slot_formula_cad88(VMState *vm, const VMSecondStageSlotProof *edge) {
     /* entry=0xc9849; site=0xcad88; static formula: rax_final=rax_initial+(rbx<<3) */
     /* shift_site=0xcacf1; add_index_site=0xcad3d; jmp_site=0xcad88; pre_delta=0xd96b6a9f; post_delta=0xffffffff26949561; net_delta=0x0 */
-    /* dynamic_target_mix=0xbb6e6:1,0x9af18:1,0xb8556:2; slot_entry_mix=323@0xbb6e6:1,169@0x9af18:1,310@0xb8556:2; slot_target_check_mix=slot_index_matches_handler_target:4 */
+    /* dynamic_target_mix=0xbb6e6:1,0x9af18:1,0xb8556:2; slot_entry_mix=323@0xbb6e6:1,169@0x9af18:1,310@0xb8556:2; slot_target_check_mix=slot_index_matches_handler_target:4; slot_base_check_mix=slot_minus_idx_matches_dispatch_table:4 */
     vm_note_second_stage_slot_formula(vm, edge, 0xc9849u, 0xcad88u, 3u, 0x0u, 4u, "static_slot_formula_net_zero", "static_dynamic_slot_formula_proven_for_observed_hits", "slot_index_matches_handler_target:4");
 }
 
 static void second_stage_slot_formula_cc3f5(VMState *vm, const VMSecondStageSlotProof *edge) {
     /* entry=0xcaf2a; site=0xcc3f5; static formula: rax_final=rax_initial+(rbx<<3) */
     /* shift_site=0xcc36a; add_index_site=0xcc3b0; jmp_site=0xcc3f5; pre_delta=0x1a4afd523; post_delta=0xfffffffe5b502add; net_delta=0x0 */
-    /* dynamic_target_mix=0x8a37f:1,0xb8556:1,0x9af18:2; slot_entry_mix=86@0x8a37f:1,310@0xb8556:1,169@0x9af18:2; slot_target_check_mix=slot_index_matches_handler_target:4 */
+    /* dynamic_target_mix=0x8a37f:1,0xb8556:1,0x9af18:2; slot_entry_mix=86@0x8a37f:1,310@0xb8556:1,169@0x9af18:2; slot_target_check_mix=slot_index_matches_handler_target:4; slot_base_check_mix=slot_minus_idx_matches_dispatch_table:4 */
     vm_note_second_stage_slot_formula(vm, edge, 0xcaf2au, 0xcc3f5u, 3u, 0x0u, 4u, "static_slot_formula_net_zero", "static_dynamic_slot_formula_proven_for_observed_hits", "slot_index_matches_handler_target:4");
 }
 
 static void second_stage_slot_formula_c559d(VMState *vm, const VMSecondStageSlotProof *edge) {
     /* entry=0xc4258; site=0xc559d; static formula: rax_final=rax_initial+(rbx<<3) */
     /* shift_site=0xc5512; add_index_site=0xc5558; jmp_site=0xc559d; pre_delta=0x189cc7284; post_delta=0xfffffffe76338d7c; net_delta=0x0 */
-    /* dynamic_target_mix=0xbb6e6:1,0x9af18:6,0xb8556:1; slot_entry_mix=323@0xbb6e6:1,169@0x9af18:6,310@0xb8556:1; slot_target_check_mix=slot_index_matches_handler_target:8 */
+    /* dynamic_target_mix=0xbb6e6:1,0x9af18:6,0xb8556:1; slot_entry_mix=323@0xbb6e6:1,169@0x9af18:6,310@0xb8556:1; slot_target_check_mix=slot_index_matches_handler_target:8; slot_base_check_mix=slot_minus_idx_matches_dispatch_table:8 */
     vm_note_second_stage_slot_formula(vm, edge, 0xc4258u, 0xc559du, 3u, 0x0u, 8u, "static_slot_formula_net_zero", "static_dynamic_slot_formula_proven_for_observed_hits", "slot_index_matches_handler_target:8");
 }
 
 static void second_stage_slot_formula_c6bce(VMState *vm, const VMSecondStageSlotProof *edge) {
     /* entry=0xc57b8; site=0xc6bce; static formula: rax_final=rax_initial+(rbx<<3) */
     /* shift_site=0xc6b43; add_index_site=0xc6b89; jmp_site=0xc6bce; pre_delta=0xffffffffc2ed13b2; post_delta=0x3d12ec4e; net_delta=0x0 */
-    /* dynamic_target_mix=0x8a37f:1,0x9af18:2,0xb8556:1; slot_entry_mix=86@0x8a37f:1,169@0x9af18:2,310@0xb8556:1; slot_target_check_mix=slot_index_matches_handler_target:4 */
+    /* dynamic_target_mix=0x8a37f:1,0x9af18:2,0xb8556:1; slot_entry_mix=86@0x8a37f:1,169@0x9af18:2,310@0xb8556:1; slot_target_check_mix=slot_index_matches_handler_target:4; slot_base_check_mix=slot_minus_idx_matches_dispatch_table:4 */
     vm_note_second_stage_slot_formula(vm, edge, 0xc57b8u, 0xc6bceu, 3u, 0x0u, 4u, "static_slot_formula_net_zero", "static_dynamic_slot_formula_proven_for_observed_hits", "slot_index_matches_handler_target:4");
 }
 
 static void second_stage_slot_formula_c80b9(VMState *vm, const VMSecondStageSlotProof *edge) {
     /* entry=0xc6d58; site=0xc80b9; static formula: rax_final=rax_initial+(rbx<<3) */
     /* shift_site=0xc802e; add_index_site=0xc8074; jmp_site=0xc80b9; pre_delta=0x425c7a2f; post_delta=0xffffffffbda385d1; net_delta=0x0 */
-    /* dynamic_target_mix=0x8a37f:1,0xb8556:3,0x9af18:4; slot_entry_mix=86@0x8a37f:1,310@0xb8556:3,169@0x9af18:4; slot_target_check_mix=slot_index_matches_handler_target:8 */
+    /* dynamic_target_mix=0x8a37f:1,0xb8556:3,0x9af18:4; slot_entry_mix=86@0x8a37f:1,310@0xb8556:3,169@0x9af18:4; slot_target_check_mix=slot_index_matches_handler_target:8; slot_base_check_mix=slot_minus_idx_matches_dispatch_table:8 */
     vm_note_second_stage_slot_formula(vm, edge, 0xc6d58u, 0xc80b9u, 3u, 0x0u, 8u, "static_slot_formula_net_zero", "static_dynamic_slot_formula_proven_for_observed_hits", "slot_index_matches_handler_target:8");
 }
 

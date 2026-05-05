@@ -26,6 +26,7 @@ typedef struct {
     char target_mix[MAX_TEXT];
     char slot_entry_mix[MAX_TEXT];
     char slot_target_check_mix[MAX_TEXT];
+    char slot_base_check_mix[MAX_TEXT];
     char run_mix[MAX_TEXT];
 } DynamicRow;
 
@@ -218,10 +219,12 @@ static DynamicRow load_dynamic_for_site(uint64_t site) {
     char *header[MAX_FIELDS];
     int header_count;
     int c_site, c_hits, c_unique, c_targets, c_slots, c_check, c_runs;
+    int c_base_check;
     DynamicRow out = {.site = site};
     copy_field(out.target_mix, sizeof(out.target_mix), "-");
     copy_field(out.slot_entry_mix, sizeof(out.slot_entry_mix), "-");
     copy_field(out.slot_target_check_mix, sizeof(out.slot_target_check_mix), "-");
+    copy_field(out.slot_base_check_mix, sizeof(out.slot_base_check_mix), "-");
     copy_field(out.run_mix, sizeof(out.run_mix), "-");
     if (!file) {
         perror(DYNAMIC_PATH);
@@ -239,6 +242,7 @@ static DynamicRow load_dynamic_for_site(uint64_t site) {
     c_targets = find_matching_column(header, header_count, "target_mix", DYNAMIC_PATH);
     c_slots = find_matching_column(header, header_count, "slot_entry_mix", DYNAMIC_PATH);
     c_check = find_matching_column(header, header_count, "slot_target_check_mix", DYNAMIC_PATH);
+    c_base_check = find_matching_column(header, header_count, "slot_base_check_mix", DYNAMIC_PATH);
     c_runs = find_matching_column(header, header_count, "run_mix", DYNAMIC_PATH);
     while (getline(&line, &cap, file) >= 0) {
         char *fields[MAX_FIELDS];
@@ -256,6 +260,7 @@ static DynamicRow load_dynamic_for_site(uint64_t site) {
         copy_field(out.target_mix, sizeof(out.target_mix), field_at(fields, field_count, c_targets));
         copy_field(out.slot_entry_mix, sizeof(out.slot_entry_mix), field_at(fields, field_count, c_slots));
         copy_field(out.slot_target_check_mix, sizeof(out.slot_target_check_mix), field_at(fields, field_count, c_check));
+        copy_field(out.slot_base_check_mix, sizeof(out.slot_base_check_mix), field_at(fields, field_count, c_base_check));
         copy_field(out.run_mix, sizeof(out.run_mix), field_at(fields, field_count, c_runs));
         break;
     }
@@ -267,6 +272,15 @@ static DynamicRow load_dynamic_for_site(uint64_t site) {
 static unsigned matching_slot_hits(const DynamicRow *row) {
     const char *prefix = "slot_index_matches_handler_target:";
     const char *text = row->slot_target_check_mix;
+    if (strncmp(text, prefix, strlen(prefix)) == 0 && strchr(text, ',') == NULL) {
+        return (unsigned)strtoul(text + strlen(prefix), NULL, 10);
+    }
+    return 0;
+}
+
+static unsigned matching_base_hits(const DynamicRow *row) {
+    const char *prefix = "slot_minus_idx_matches_dispatch_table:";
+    const char *text = row->slot_base_check_mix;
     if (strncmp(text, prefix, strlen(prefix)) == 0 && strchr(text, ',') == NULL) {
         return (unsigned)strtoul(text + strlen(prefix), NULL, 10);
     }
@@ -366,6 +380,7 @@ static const char *static_status(const SlotProof *proof) {
 static const char *proof_status(const SlotProof *proof) {
     if (strcmp(static_status(proof), "static_slot_formula_net_zero") == 0 &&
         matching_slot_hits(&proof->dynamic) == proof->dynamic.hit_count &&
+        matching_base_hits(&proof->dynamic) == proof->dynamic.hit_count &&
         proof->dynamic.hit_count > 0) {
         return "static_dynamic_slot_formula_proven_for_observed_hits";
     }
@@ -402,10 +417,10 @@ static void print_c_string(const char *text) {
 }
 
 static void emit_tsv(const SlotProof *proofs, size_t count) {
-    printf("entry\tindirect_jmp_site\tshift_site\tadd_index_site\tjmp_site\tbase_reg\tindex_reg\tindex_shift\tpre_index_rax_delta\tpost_index_rax_delta\tnet_rax_delta\tstatic_formula\tdynamic_hits\tunique_targets\ttarget_mix\tslot_entry_mix\tslot_target_check_mix\trun_mix\tstatic_status\tproof_status\tnote\n");
+    printf("entry\tindirect_jmp_site\tshift_site\tadd_index_site\tjmp_site\tbase_reg\tindex_reg\tindex_shift\tpre_index_rax_delta\tpost_index_rax_delta\tnet_rax_delta\tstatic_formula\tdynamic_hits\tunique_targets\ttarget_mix\tslot_entry_mix\tslot_target_check_mix\tslot_base_check_mix\trun_mix\tstatic_status\tproof_status\tnote\n");
     for (size_t i = 0; i < count; i++) {
         const SlotProof *p = &proofs[i];
-        printf("0x%llx\t0x%llx\t0x%llx\t0x%llx\t0x%llx\t%s\t%s\t%u\t0x%llx\t0x%llx\t0x%llx\t%s_final=%s_initial+(%s<<%u)\t%u\t%u\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n",
+        printf("0x%llx\t0x%llx\t0x%llx\t0x%llx\t0x%llx\t%s\t%s\t%u\t0x%llx\t0x%llx\t0x%llx\t%s_final=%s_initial+(%s<<%u)\t%u\t%u\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n",
                (unsigned long long)p->entry,
                (unsigned long long)p->site,
                (unsigned long long)p->shift_site,
@@ -426,6 +441,7 @@ static void emit_tsv(const SlotProof *proofs, size_t count) {
                p->dynamic.target_mix,
                p->dynamic.slot_entry_mix,
                p->dynamic.slot_target_check_mix,
+               p->dynamic.slot_base_check_mix,
                p->dynamic.run_mix,
                static_status(p),
                proof_status(p),
@@ -436,11 +452,11 @@ static void emit_tsv(const SlotProof *proofs, size_t count) {
 static void emit_markdown(const SlotProof *proofs, size_t count) {
     printf("# Native Obfuscated Second-Stage Slot Formula Proof\n\n");
     printf("Capstone-backed static proof for the five second-stage computed `jmp [rax]` sites, joined to focused dynamic slot evidence.\n\n");
-    printf("| entry | site | formula | net delta | dynamic hits | slot check | proof status |\n");
-    printf("| --- | --- | --- | ---: | ---: | --- | --- |\n");
+    printf("| entry | site | formula | net delta | dynamic hits | base check | slot check | proof status |\n");
+    printf("| --- | --- | --- | ---: | ---: | --- | --- | --- |\n");
     for (size_t i = 0; i < count; i++) {
         const SlotProof *p = &proofs[i];
-        printf("| `0x%llx` | `0x%llx` | `%s_final=%s_initial+(%s<<%u)` | `0x%llx` | %u | `%s` | `%s` |\n",
+        printf("| `0x%llx` | `0x%llx` | `%s_final=%s_initial+(%s<<%u)` | `0x%llx` | %u | `%s` | `%s` | `%s` |\n",
                (unsigned long long)p->entry,
                (unsigned long long)p->site,
                reg_name(p->base_reg),
@@ -449,6 +465,7 @@ static void emit_markdown(const SlotProof *proofs, size_t count) {
                p->shift_amount,
                (unsigned long long)p->net_rax_delta,
                p->dynamic.hit_count,
+               p->dynamic.slot_base_check_mix,
                p->dynamic.slot_target_check_mix,
                proof_status(p));
     }
@@ -477,6 +494,8 @@ static void emit_c_function(const SlotProof *p) {
     print_comment_text(p->dynamic.slot_entry_mix);
     printf("; slot_target_check_mix=");
     print_comment_text(p->dynamic.slot_target_check_mix);
+    printf("; slot_base_check_mix=");
+    print_comment_text(p->dynamic.slot_base_check_mix);
     printf(" */\n");
     printf("    vm_note_second_stage_slot_formula(vm, edge, 0x%llxu, 0x%llxu, %uu, 0x%llxu, %uu, ",
            (unsigned long long)p->entry,
