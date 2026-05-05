@@ -150,7 +150,7 @@ def emit_preamble():
     print("/*")
     print(" * VM handler pseudocode.")
     print(" * These functions are a C-like static reconstruction of dispatch-entry semantics.")
-    print(" * They are intentionally a decompiler sketch, not drop-in buildable source.")
+    print(" * They are syntax-checkable C, but still an analysis artifact rather than drop-in source.")
     print(" */")
     print("#include <stdint.h>")
     print("")

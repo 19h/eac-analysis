@@ -27,7 +27,7 @@ def main():
     print("/*")
     print(" * Combined VM reconstruction bundle.")
     print(" * Handler/operator bodies come first; recovered bytecode program blocks follow.")
-    print(" * This is a C-like analysis artifact, not drop-in buildable source.")
+    print(" * This is syntax-checkable C, but still an analysis artifact rather than drop-in source.")
     print(" */")
     print("")
     for line in handlers:

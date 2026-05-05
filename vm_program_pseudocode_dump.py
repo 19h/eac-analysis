@@ -28,6 +28,7 @@ def emit_preamble(used_entries):
     print("/*")
     print(" * VM bytecode program pseudocode.")
     print(" * This layer is intentionally compact: bytecode blocks call recovered op_entry_NNN handlers.")
+    print(" * It is syntax-checkable C, but still an analysis artifact rather than drop-in source.")
     print(" */")
     print("#include <stdint.h>")
     print("")
