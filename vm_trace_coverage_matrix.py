@@ -23,6 +23,11 @@ DISPATCH_RE = re.compile(r"^\[DRIVER\] dispatch trace enabled (?P<body>.*)$")
 CALL_RE = re.compile(r"^\[DRIVER\] call [^(]+\(.*\bmode=(?P<mode>[0-9]+),")
 EAC_ENV_RE = re.compile(r"\bgetenv name=(?P<name>EAC_[A-Z0-9_]+) -> set\b")
 KV_RE = re.compile(r"\b(?P<key>[a-z_]+)=(?P<value>[^ ]+)")
+NETWORK_EVENT_RE = re.compile(r"\b(?P<func>socket|connect|send|recv|getaddrinfo)\b")
+GETADDR_RE = re.compile(r"\bgetaddrinfo node=(?P<node>[^ ]+) service=(?P<service>[^ ]+)")
+SPAWN_EVENT_RE = re.compile(r"\b(?P<func>popen|system)\b")
+POPEN_RE = re.compile(r"\bpopen command=(?P<command>.*?) type=")
+CALLER_RE = re.compile(r"\bcaller=(?P<caller>[^ ]+)")
 
 
 def read_tsv(path):
@@ -173,12 +178,28 @@ def parse_run_metadata(trace_dir):
         "driver_tail_trace": "0",
         "env_flags": "",
         "runtime_config": "",
+        "network_policy": "not_observed",
+        "network_events": "0",
+        "network_denied_events": "0",
+        "network_hosts": "",
+        "network_callers": "",
+        "spawn_policy": "not_observed",
+        "spawn_events": "0",
+        "spawn_denied_events": "0",
+        "spawn_commands": "",
     }
     if not path.exists():
         return meta
 
     meta["has_run_stderr"] = "1"
     env_flags = set()
+    network_events = 0
+    network_denied_events = 0
+    network_hosts = Counter()
+    network_callers = Counter()
+    spawn_events = 0
+    spawn_denied_events = 0
+    spawn_commands = Counter()
     dispatch_seen = False
     call_seen = False
     with path.open(errors="replace") as handle:
@@ -206,11 +227,35 @@ def parse_run_metadata(trace_dir):
                 meta["driver_read_ranges"] = fields.get("read_ranges", "")
                 meta["driver_detail"] = fields.get("detail", "")
                 meta["driver_tail_trace"] = fields.get("tail", "0")
-            trace_line = strip_to_trace_marker(line, ("[VMTAIL]",))
-            if dispatch_seen and call_seen and trace_line.startswith("[VMTAIL]"):
-                break
-            if idx >= 20000:
-                break
+            network_match = NETWORK_EVENT_RE.search(line)
+            if network_match:
+                network_events += 1
+                if " DENY" in line:
+                    network_denied_events += 1
+                getaddr_match = GETADDR_RE.search(line)
+                if getaddr_match:
+                    host = getaddr_match.group("node")
+                    if host and host != "(null)":
+                        network_hosts[host] += 1
+                caller_match = CALLER_RE.search(line)
+                if caller_match:
+                    key = f"{network_match.group('func')}@{caller_match.group('caller')}"
+                    network_callers[key] += 1
+            spawn_match = SPAWN_EVENT_RE.search(line)
+            if spawn_match:
+                spawn_events += 1
+                if " DENY" in line:
+                    spawn_denied_events += 1
+                popen_match = POPEN_RE.search(line)
+                if popen_match:
+                    command = popen_match.group("command")
+                    if command and command != "(null)":
+                        spawn_commands[command] += 1
+            if idx >= 20000 and not (dispatch_seen and call_seen):
+                # Some failure-only runs never reach VMTAIL; keep later provenance
+                # scanning, but stop trying to infer early driver settings.
+                dispatch_seen = True
+                call_seen = True
 
     meta["env_flags"] = ",".join(sorted(env_flags))
     if "EAC_VMTAIL_TRACE" in env_flags:
@@ -227,6 +272,29 @@ def parse_run_metadata(trace_dir):
         meta["runtime_config"] = "local_blocked"
     else:
         meta["runtime_config"] = "unknown"
+    meta["network_events"] = str(network_events)
+    meta["network_denied_events"] = str(network_denied_events)
+    meta["network_hosts"] = fmt_counter(network_hosts, 8)
+    meta["network_callers"] = fmt_counter(network_callers, 8)
+    if network_events == 0:
+        meta["network_policy"] = "not_observed"
+    elif network_denied_events == network_events:
+        meta["network_policy"] = "blocked_observed"
+    elif network_denied_events:
+        meta["network_policy"] = "mixed_observed"
+    else:
+        meta["network_policy"] = "allowed_observed"
+    meta["spawn_events"] = str(spawn_events)
+    meta["spawn_denied_events"] = str(spawn_denied_events)
+    meta["spawn_commands"] = fmt_counter(spawn_commands, 8)
+    if spawn_events == 0:
+        meta["spawn_policy"] = "not_observed"
+    elif spawn_denied_events == spawn_events:
+        meta["spawn_policy"] = "blocked_observed"
+    elif spawn_denied_events:
+        meta["spawn_policy"] = "mixed_observed"
+    else:
+        meta["spawn_policy"] = "allowed_observed"
     return meta
 
 
@@ -370,6 +438,15 @@ def make_rows(args):
             "top_sources": fmt_counter(data["events_by_source"], args.max_items),
             "top_targets": fmt_counter(data["events_by_target"], args.max_items),
             "env_flags": meta["env_flags"],
+            "network_policy": meta["network_policy"],
+            "network_events": meta["network_events"],
+            "network_denied_events": meta["network_denied_events"],
+            "network_hosts": meta["network_hosts"],
+            "network_callers": meta["network_callers"],
+            "spawn_policy": meta["spawn_policy"],
+            "spawn_events": meta["spawn_events"],
+            "spawn_denied_events": meta["spawn_denied_events"],
+            "spawn_commands": meta["spawn_commands"],
             "has_run_stderr": meta["has_run_stderr"],
             "origin_run_dir": meta["origin_run_dir"],
             "path": str(path) if path.exists() else "",
@@ -418,6 +495,15 @@ def emit_tsv(rows):
         "top_sources",
         "top_targets",
         "env_flags",
+        "network_policy",
+        "network_events",
+        "network_denied_events",
+        "network_hosts",
+        "network_callers",
+        "spawn_policy",
+        "spawn_events",
+        "spawn_denied_events",
+        "spawn_commands",
         "has_run_stderr",
         "origin_run_dir",
         "path",
@@ -431,8 +517,8 @@ def emit_tsv(rows):
 def emit_markdown(rows):
     print("# VM Trace Coverage Matrix\n")
     print("Dynamic VM bytecode coverage is scenario-specific; this matrix compares available run directories.\n")
-    print("| Trace | Class | Mode | Tail Limit | Flags | Rows | Sources | Targets | Starts | Bytes | Vs Primary Sources | Vs Primary Starts |")
-    print("| --- | --- | ---: | ---: | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |")
+    print("| Trace | Class | Mode | Tail Limit | Flags | Network | Rows | Sources | Targets | Starts | Bytes | Vs Primary Sources | Vs Primary Starts |")
+    print("| --- | --- | ---: | ---: | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |")
     for row in rows:
         flags = []
         if row["driver_tail_regs"] == "1":
@@ -447,12 +533,13 @@ def emit_markdown(rows):
             flags.append("tail")
         print(
             f"| `{row['trace_dir']}` | `{row['trace_class']}` | {row['run_mode'] or '-'} | "
-            f"{row['driver_tail_limit'] or '-'} | `{','.join(flags) or '-'}` | {row['trace_rows']} | "
+            f"{row['driver_tail_limit'] or '-'} | `{','.join(flags) or '-'}` | `{row['network_policy']}` | {row['trace_rows']} | "
             f"{row['source_entries']} | {row['target_entries']} | {row['start_vm_ips']} | "
             f"`{row['covered_bytes']}` | "
             f"`{row['source_entries_vs_primary']}` | `{row['start_vm_ips_vs_primary']}` |"
         )
-    print("\nThe static handler inventory is broader than any one row here, but these dynamic rows do not prove full program coverage.")
+    print("\n`blocked_observed` means trace_preload saw network calls and denied them, so that row is not network-enabled coverage.")
+    print("The static handler inventory is broader than any one row here, but these dynamic rows do not prove full program coverage.")
 
 
 def main():
