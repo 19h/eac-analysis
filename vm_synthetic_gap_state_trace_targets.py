@@ -99,11 +99,11 @@ def pair_env(pred_ip, start_ip, pred_site, start_site, next_end_ip="", next_site
         "EAC_VMTAIL_REGS=1",
         "EAC_VMTAIL_SCRATCH=1",
         f"EAC_VMTAIL_LIMIT={max(16, stop_after + 4)}",
+        "EAC_VMTAIL_SITES=$ALL_TABLE_SPEC",
         f"EAC_VMTAIL_FOCUS_IPS={ips_s}",
         f"EAC_VMTAIL_STOP_AFTER_MATCHES={stop_after}",
     ]
     if sites_s != "-":
-        parts.insert(4, f"EAC_VMTAIL_SITES={sites_s}")
         parts.insert(6, f"EAC_VMTAIL_FOCUS_SITES={sites_s}")
     return " ".join(parts)
 
@@ -264,7 +264,7 @@ def emit_markdown(rows):
             f"{row.get('primary_predecessor_seq') or '-'} | `{row.get('primary_predecessor_start_vm_ip') or '-'}` | "
             f"`{sites}` | `{next_hook}` | {row['state_capture_goal']} |"
         )
-    print("\nThe `minimal_focus_env` TSV column gives a per-target focused VMTAIL environment. The `context_focus_env` variant also keeps the next hooked event, which is useful for sequence sanity checks but is not required for the concrete-state replay seed.")
+    print("\nThe `minimal_focus_env` TSV column gives a per-target focused VMTAIL environment. Set `ALL_TABLE_SPEC` from `python3 vm_tail_scan.py --all-table --eac eac.elf --window 0x1200 --limit 0` before using it. The `context_focus_env` variant also keeps the next hooked event, which is useful for sequence sanity checks but is not required for the concrete-state replay seed.")
 
 
 def main():
