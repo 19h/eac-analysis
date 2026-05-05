@@ -401,6 +401,7 @@ def extract_functions(text):
     functions = functions.replace(" = &v", " = (int64_t)&v")
     functions = functions.replace("vsnprintf(", "eac_retdec_vsnprintf(")
     functions = re.sub(r"(int64_t\s+v\d+\s*=\s*)&([A-Za-z_]\w*)", r"\1(int64_t)&\2", functions)
+    functions = re.sub(r"((?:u?int(?:8|16|32|64)_t|char)\s*\*\s+v\d+\s*=\s*)g(\d+)", r"\1(void *)(int64_t)g\2", functions)
     functions = re.sub(r" = &g(\d+)", r" = (int64_t)&g\1", functions)
     functions = re.sub(r"return &g(\d+)", r"return (int64_t)&g\1", functions)
     functions = re.sub(r"return &v(\d+)", r"return (int64_t)&v\1", functions)
