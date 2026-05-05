@@ -35,6 +35,8 @@ ARTIFACTS = [
     ("synthetic_gap_state_trace_targets_md", TRACE_DIR / "vm_synthetic_gap_state_trace_targets.md"),
     ("synthetic_gap_live_context_audit_tsv", TRACE_DIR / "vm_synthetic_gap_live_context_audit.tsv"),
     ("synthetic_gap_live_context_audit_md", TRACE_DIR / "vm_synthetic_gap_live_context_audit.md"),
+    ("synthetic_gap_table_read_diagnostic_tsv", TRACE_DIR / "vm_synthetic_gap_table_read_diagnostic.tsv"),
+    ("synthetic_gap_table_read_diagnostic_md", TRACE_DIR / "vm_synthetic_gap_table_read_diagnostic.md"),
     ("synthetic_gap_symbolic_successors_tsv", TRACE_DIR / "vm_synthetic_gap_symbolic_successors.tsv"),
     ("synthetic_gap_symbolic_successors_md", TRACE_DIR / "vm_synthetic_gap_symbolic_successors.md"),
     ("synthetic_gap_live_in_roles_tsv", TRACE_DIR / "vm_synthetic_gap_live_in_roles.tsv"),
@@ -179,6 +181,10 @@ def c_shape_metrics(rows):
         "Residual live-context replay audit sites carried into the full program sketch.")
     add(rows, "c_shape", "program_full_live_context_audit_comments", count(r"live-context audit: source=", program_full),
         "Per-start live GPR/scratch replay comments carried into the full program sketch.")
+    add(rows, "c_shape", "program_full_table_read_diagnostic_sites", count(r"table-read diagnostic @", program_full),
+        "Residual final table-read diagnostic sites carried into the full program sketch.")
+    add(rows, "c_shape", "program_full_table_read_diagnostic_comments", count(r"table-read diagnostic: source=", program_full),
+        "Per-start final table-read comments carried into the full program sketch.")
     add(rows, "c_shape", "program_full_hidden_chain_resolved_calls", count(r"hidden source entry_\d+ replayed from", program_full),
         "Hidden-chain matches emitted as concrete handler calls before reentering a recovered block.")
     add(rows, "c_shape", "program_full_live_in_role_evidence_sites", count(r"live-in role evidence @", program_full),
@@ -233,6 +239,10 @@ def c_shape_metrics(rows):
         "Residual live-context replay audit sites carried into the combined source bundle.")
     add(rows, "c_shape", "bundle_live_context_audit_comments", count(r"live-context audit: source=", bundle),
         "Per-start live GPR/scratch replay comments carried into the combined source bundle.")
+    add(rows, "c_shape", "bundle_table_read_diagnostic_sites", count(r"table-read diagnostic @", bundle),
+        "Residual final table-read diagnostic sites carried into the combined source bundle.")
+    add(rows, "c_shape", "bundle_table_read_diagnostic_comments", count(r"table-read diagnostic: source=", bundle),
+        "Per-start final table-read comments carried into the combined source bundle.")
     add(rows, "c_shape", "bundle_hidden_chain_resolved_calls", count(r"hidden source entry_\d+ replayed from", bundle),
         "Hidden-chain matches emitted as concrete handler calls inside the combined source bundle.")
     add(rows, "c_shape", "bundle_live_in_role_evidence_sites", count(r"live-in role evidence @", bundle),
