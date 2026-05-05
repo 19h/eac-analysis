@@ -1333,6 +1333,15 @@ def c_shape_metrics(rows):
     add(rows, "c_shape", "all_evidence_bundle_path_specialized_dispatchers",
         count(r"^static eac_evidence_path_handlers_pseudocode__VMOpResult eac_evidence_path_handlers_pseudocode__vm_call_path_handler\(uint16_t entry, uint64_t path_key_value, EACEvidence_path_handlers_pseudocode__VMState \*vm\) \{", all_evidence_bundle),
         "Validated path-specialized handler dispatcher functions retained in the all-evidence single file.")
+    add(rows, "coverage_frontier", "all_evidence_bundle_path_frontier_functions",
+        count(r"^static eac_evidence_path_handlers_frontier_pseudocode__VMOpResult eac_evidence_path_handlers_frontier_pseudocode__path_entry_\d{3}_[0-9a-f]+\(EACEvidence_path_handlers_frontier_pseudocode__VMState \*vm\) \{", all_evidence_bundle),
+        "Unvalidated path-specialized frontier functions retained in the all-evidence single file.")
+    add(rows, "coverage_frontier", "all_evidence_bundle_path_frontier_model_rows",
+        count(r"^    \{ \d+, 0x[0-9a-f]+ull, \d+u, .*eac_evidence_path_handlers_frontier_pseudocode__path_entry_\d{3}_[0-9a-f]+ \},", all_evidence_bundle),
+        "Unvalidated path-specialized frontier metadata rows retained in the all-evidence single file.")
+    add(rows, "coverage_frontier", "all_evidence_bundle_path_frontier_dispatch_cases",
+        count(r"^        case 0x[0-9a-f]+ull: return eac_evidence_path_handlers_frontier_pseudocode__path_entry_\d{3}_[0-9a-f]+\(vm\);", all_evidence_bundle),
+        "Unvalidated path-specialized frontier dispatcher cases retained in the all-evidence single file.")
     add(rows, "c_shape", "all_evidence_bundle_sidecar_sections",
         count(r"^/\* --- sidecar: ", all_evidence_bundle),
         "Renamed native RetDec/control sidecar files appended to the all-evidence single file.")

@@ -80,6 +80,8 @@ def collect_typedefs(text):
         names.add(match.group(1))
     for match in re.finditer(r"^\}\s*([A-Za-z_]\w*)\s*;", text, re.M):
         names.add(match.group(1))
+    for match in re.finditer(r"^typedef\s+[^;\n]*\(\s*\*\s*([A-Za-z_]\w*)\s*\)\s*\([^;]*\)\s*;", text, re.M):
+        names.add(match.group(1))
     for match in re.finditer(r"^typedef\s+[^;\n]+\s+([A-Za-z_]\w*)\s*;", text, re.M):
         names.add(match.group(1))
     return names
