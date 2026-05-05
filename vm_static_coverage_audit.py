@@ -132,7 +132,7 @@ def cross_trace_metrics(rows, trace_dir):
     synthetic_rows = [row for row in trace_rows if row.get("trace_class") == "synthetic_filled_trace"]
 
     add(rows, "dynamic_cross_trace", "coverage_matrix_rows", len(matrix),
-        "Run directories inventoried by the coverage matrix, including run-only register/scratch traces.")
+        "Run directories inventoried by the coverage matrix, including run-only register/scratch/memory traces.")
     add(rows, "dynamic_cross_trace", "instruction_trace_scenarios", len(trace_rows),
         "Directories with vm_instruction_trace.tsv rows contributing bytecode path coverage.")
     add(rows, "dynamic_cross_trace", "concrete_instruction_trace_scenarios", len(concrete_rows),
