@@ -71,7 +71,7 @@ sampled-recovery: instruction-trace
 	python3 vm_bytecode_recover.py dumps/vmtail-wide-1m-w16/vm_instruction_trace.tsv --include-sampled > dumps/vmtail-wide-1m-w16/vm_bytecode_segments_sampled.tsv
 	python3 vm_bytecode_blocks.py dumps/vmtail-wide-1m-w16/vm_instruction_trace.tsv --include-sampled > dumps/vmtail-wide-1m-w16/vm_bytecode_blocks_sampled.tsv
 
-file-atlas: sampled-recovery
+file-atlas: sampled-recovery instruction-unique
 	python3 vm_bytecode_file_atlas.py --max-gap 0x20 > dumps/vmtail-wide-1m-w16/vm_bytecode_file_atlas.tsv
 
 long-branches: instruction-trace
