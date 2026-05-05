@@ -119,24 +119,41 @@ def single_target_offset(text):
     return int(match.group(1), 16), int(match.group(2))
 
 
+def fmt_u16_load(offset):
+    if offset < 0:
+        return f"(int)U16(vm->ip - 0x{-offset:x})"
+    if offset == 0:
+        return "(int)U16(vm->ip)"
+    return f"(int)U16(vm->ip + 0x{offset:x})"
+
+
 def tail_target_load(tail_lift, after_prefix=False):
     if not tail_lift:
         return ""
     try:
         events = int(tail_lift.get("events", "0") or 0)
         encoded_events = int(tail_lift.get("target_encoded_events", "0") or 0)
+        span_encoded_events = int(tail_lift.get("span_target_encoded_events", "0") or 0)
     except ValueError:
         return ""
-    if not events or encoded_events != events:
+    if not events:
         return ""
     prefix_len, prefix_count = single_counted_hex(tail_lift.get("prefix_lens", ""))
-    target_off, target_count = single_target_offset(tail_lift.get("target_match_offsets", ""))
-    if prefix_len is None or target_off is None:
+    if prefix_len is None or prefix_count != events:
         return ""
-    if prefix_count != events or target_count != events:
-        return ""
-    offset = target_off if after_prefix else prefix_len + target_off
-    return f"(int)U16(vm->ip + 0x{offset:x})"
+    if encoded_events == events:
+        target_off, target_count = single_target_offset(tail_lift.get("target_match_offsets", ""))
+        if target_off is None or target_count != events:
+            return ""
+        offset = target_off if after_prefix else prefix_len + target_off
+        return fmt_u16_load(offset)
+    if span_encoded_events == events:
+        target_off, target_count = single_target_offset(tail_lift.get("span_target_match_offsets", ""))
+        if target_off is None or target_count != events:
+            return ""
+        offset = target_off - prefix_len if after_prefix else target_off
+        return fmt_u16_load(offset)
+    return ""
 
 
 def synthetic_bucket():
@@ -248,6 +265,7 @@ def emit_internal_tail_lift(row):
         print(
             f"    /* internal tail schema: schemas={c_comment(row.get('tail_schemas', '') or '-')}, "
             f"offsets={c_comment(row.get('target_match_offsets', '') or '-')}, "
+            f"span_offsets={c_comment(row.get('span_target_match_offsets', '') or '-')}, "
             f"tails={c_comment(row.get('top_tail_hexes', '') or '-')} */"
         )
 
@@ -377,8 +395,10 @@ def emit_synthetic_edge(edge, synthetic_spans, args):
     if tail_lift:
         print(
             f"    /* synthetic tail lift: encoded={tail_lift.get('target_encoded_events', '0')}/"
+            f"{tail_lift.get('events', '0')}, boundary={tail_lift.get('span_target_encoded_events', '0')}/"
             f"{tail_lift.get('events', '0')}, schemas={c_comment(tail_lift.get('tail_schemas', '') or '-')}, "
             f"offsets={c_comment(tail_lift.get('target_match_offsets', '') or '-')}, "
+            f"span_offsets={c_comment(tail_lift.get('span_target_match_offsets', '') or '-')}, "
             f"classes={c_comment(tail_lift.get('lift_classes', '') or '-')}, "
             f"tails={c_comment(tail_lift.get('top_tail_hexes', '') or '-')} */"
         )

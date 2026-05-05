@@ -68,6 +68,22 @@ def target_offset_key(data, target_entry):
     return f"{target_entry}@{','.join(offsets)}"
 
 
+def span_boundary_target_offset_key(data, footprint, target_entry):
+    if not target_entry or not footprint:
+        return ""
+    try:
+        value = int(target_entry)
+        prefix_len = int(footprint)
+    except ValueError:
+        return ""
+    if prefix_len <= 0 or prefix_len >= len(data):
+        return ""
+    off = prefix_len - 1
+    if int.from_bytes(data[off:off + 2], "little") != value:
+        return ""
+    return f"{target_entry}@+0x{off:x}"
+
+
 def signed_delta_from_u32(value):
     if value & 0x80000000:
         return -(value & 0x7fffffff)
@@ -172,6 +188,7 @@ def make_rows(args):
         bucket = lifts.setdefault(start, {
             "events": 0,
             "target_encoded_events": 0,
+            "span_target_encoded_events": 0,
             "schema_events": 0,
             "long_control_overlap_events": 0,
             "long_control_prefix_events": 0,
@@ -184,6 +201,7 @@ def make_rows(args):
             "unresolved_lens": Counter(),
             "tail_schemas": Counter(),
             "target_offsets": Counter(),
+            "span_target_offsets": Counter(),
             "motifs": Counter(),
             "tails": Counter(),
             "lift_classes": Counter(),
@@ -210,6 +228,7 @@ def make_rows(args):
         target_counter = single_target_counter(target_entry)
         schema = tail_schema(tail, target_counter)
         offsets = target_offset_key(tail, target_entry)
+        span_offsets = span_boundary_target_offset_key(data, footprint, target_entry)
         motif_text = motifs(tail)
         if schema:
             bucket["tail_schemas"][schema] += 1
@@ -221,6 +240,10 @@ def make_rows(args):
             bucket["target_offsets"][offsets] += 1
             bucket["target_encoded_events"] += 1
             bucket["lift_classes"]["target_encoded_tail"] += 1
+        elif span_offsets:
+            bucket["span_target_offsets"][span_offsets] += 1
+            bucket["span_target_encoded_events"] += 1
+            bucket["lift_classes"]["target_encoded_span_boundary"] += 1
         elif overlap_rows:
             bucket["long_control_overlap_events"] += 1
             bucket["lift_classes"]["long_control_overlap"] += 1
@@ -249,6 +272,7 @@ def make_rows(args):
             "start_vm_ip": start,
             "events": str(bucket["events"]),
             "target_encoded_events": str(bucket["target_encoded_events"]),
+            "span_target_encoded_events": str(bucket["span_target_encoded_events"]),
             "schema_events": str(bucket["schema_events"]),
             "long_control_overlap_events": str(bucket["long_control_overlap_events"]),
             "long_control_prefix_events": str(bucket["long_control_prefix_events"]),
@@ -263,6 +287,7 @@ def make_rows(args):
             "unresolved_lens": fmt_counter(bucket["unresolved_lens"], args.max_items),
             "tail_schemas": fmt_counter(bucket["tail_schemas"], args.max_items),
             "target_match_offsets": fmt_counter(bucket["target_offsets"], args.max_items),
+            "span_target_match_offsets": fmt_counter(bucket["span_target_offsets"], args.max_items),
             "tail_motifs": fmt_counter(bucket["motifs"], args.max_items),
             "lift_classes": fmt_counter(bucket["lift_classes"], args.max_items),
             "long_control_overlaps": fmt_counter(bucket["long_control_overlaps"], args.max_items),
@@ -283,6 +308,7 @@ def emit_tsv(rows):
         "start_vm_ip",
         "events",
         "target_encoded_events",
+        "span_target_encoded_events",
         "schema_events",
         "long_control_overlap_events",
         "long_control_prefix_events",
@@ -297,6 +323,7 @@ def emit_tsv(rows):
         "unresolved_lens",
         "tail_schemas",
         "target_match_offsets",
+        "span_target_match_offsets",
         "tail_motifs",
         "lift_classes",
         "long_control_overlaps",
@@ -316,16 +343,17 @@ def emit_tsv(rows):
 def emit_markdown(rows, args):
     print("# VM Synthetic Tail Lift\n")
     print(f"Top {min(args.limit, len(rows))} synthetic VM IPs with unresolved suffix bytes.\n")
-    print("| Events | VM IP | Encoded | Overlap | Prefix | Schemas | Targets | Offsets | Classes | Tails |")
-    print("| ---: | ---: | ---: | ---: | ---: | --- | --- | --- | --- | --- |")
+    print("| Events | VM IP | Encoded | Boundary | Overlap | Prefix | Schemas | Targets | Offsets | Classes | Tails |")
+    print("| ---: | ---: | ---: | ---: | ---: | ---: | --- | --- | --- | --- | --- |")
     for row in rows[:args.limit]:
         print(
             f"| {row['events']} | `{row['start_vm_ip']}` | "
             f"{row['target_encoded_events']}/{row['events']} | "
+            f"{row['span_target_encoded_events']}/{row['events']} | "
             f"{row['long_control_overlap_events']}/{row['events']} | "
             f"{row['long_control_prefix_events']}/{row['events']} | "
             f"`{row['tail_schemas'] or '-'}` | `{row['top_targets'] or '-'}` | "
-            f"`{row['target_match_offsets'] or '-'}` | `{row['lift_classes']}` | "
+            f"`{row['target_match_offsets'] or row['span_target_match_offsets'] or '-'}` | `{row['lift_classes']}` | "
             f"`{row['top_tail_hexes']}` |"
         )
 
@@ -359,12 +387,14 @@ def main():
 
     events = sum(int(row["events"]) for row in rows)
     encoded = sum(int(row["target_encoded_events"]) for row in rows)
+    span_encoded = sum(int(row["span_target_encoded_events"]) for row in rows)
     schemas = sum(int(row["schema_events"]) for row in rows)
     overlaps = sum(int(row["long_control_overlap_events"]) for row in rows)
     prefixes = sum(int(row["long_control_prefix_events"]) for row in rows)
     print(
         f"synthetic_tail_lift_ips={len(rows)} events={events} "
         f"target_encoded_events={encoded} schema_events={schemas} "
+        f"span_target_encoded_events={span_encoded} "
         f"long_control_overlap_events={overlaps} long_control_prefix_events={prefixes}",
         file=sys.stderr,
     )

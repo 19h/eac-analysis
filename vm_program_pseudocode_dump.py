@@ -208,8 +208,10 @@ def emit_synthetic_edge(edge, synthetic_spans, args):
     if tail_lift:
         print(
             f"    /* synthetic tail lift: encoded={tail_lift.get('target_encoded_events', '0')}/"
+            f"{tail_lift.get('events', '0')}, boundary={tail_lift.get('span_target_encoded_events', '0')}/"
             f"{tail_lift.get('events', '0')}, schemas={c_comment(tail_lift.get('tail_schemas', '') or '-')}, "
             f"offsets={c_comment(tail_lift.get('target_match_offsets', '') or '-')}, "
+            f"span_offsets={c_comment(tail_lift.get('span_target_match_offsets', '') or '-')}, "
             f"classes={c_comment(tail_lift.get('lift_classes', '') or '-')}, "
             f"tails={c_comment(tail_lift.get('top_tail_hexes', '') or '-')} */"
         )
