@@ -226,6 +226,8 @@ SHA-256: `0b44ad59697129534189efdb75cde2b96245f831438e9f6a53cb7725f190d739`
 - `dumps/vmtail-state-residual-targets/vm_instruction_trace.tsv`: supplemental state trace rows consumed by the concrete-state residual audit alongside the baseline state-wide trace.
 - `dumps/vmtail-live-residual-targets/run.stderr`: focused all-residual live-context run stopped after 40 predecessor/synthetic-start VMTAIL hits, with GPR and frame-scratch snapshots.
 - `dumps/vmtail-live-residual-targets/vm_instruction_trace.tsv`: parsed instruction rows from the all-residual live-context run.
+- `dumps/vmtail-residual-122e3c-context/run.stderr`: dedicated context trace for the former `0x122e3c` chain terminal. It stopped after four focused VMTAIL hits and captured `0x122e38 -> 0x122e3c -> 0x2c0468 -> 0x2c046a` with GPR/frame-scratch state, proving the next hooked event after `0x122e3c` without relying only on the broad trace.
+- `dumps/vmtail-residual-122e3c-context/vm_instruction_trace.tsv`: parsed instruction rows for that focused context run. It carries sequence provenance; the exact `0x2c0468 -> 0x2c046a` row was already present in the primary trace.
 - `dumps/vmtail-state-wide-w16/vm_state_effects.tsv`: per-handler frame-state effect summary.
 - `dumps/vmtail-state-wide-w16/vm_state_signatures.tsv`: per-signature frame-state effect summary keyed by source handler, byte delta, byte status, and byte sequence.
 - `dumps/vmtail-state-wide-w16/vm_state_affine.tsv`: affine `frame+0x170` post-state formulas using pre-state and instruction bytes, with 5-fold validation.
