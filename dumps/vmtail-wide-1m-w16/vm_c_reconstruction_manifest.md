@@ -414,6 +414,9 @@ Reproducible inventory of the current C-shaped reconstruction artifacts and gate
 | `c_shape` | `handler_next_entry_slot_index_normalizations` | `10` | Handler fall-through slots normalized as direct slot indices. |
 | `c_shape` | `handler_sampled_ret_patch_functions` | `4` | Handler/operator functions rendered as native return-patch thunks instead of normal dispatch-table handlers. |
 | `c_shape` | `handler_sampled_ret_patch_evidence_comments` | `4` | Handler-layer sampled ret-patch evidence summaries. |
+| `c_shape` | `handler_tier0_static_model_comments` | `11` | Handler-layer tier0 static-only RetDec model annotations. |
+| `c_shape` | `handler_tier0_static_slot_recoveries` | `10` | Handler-layer static-only tier0 entries with executable slot recovery in VMState form. |
+| `c_shape` | `handler_tier0_static_slot_comment_only` | `1` | Handler-layer tier0 static-only rows kept comment-only because the slot expression needs frame state outside VMState. |
 | `c_shape` | `native_ret_patch_target_functions` | `16` | C-shaped native .text target helper functions emitted from sampled return-patch evidence. |
 | `c_shape` | `native_ret_patch_target_dispatch_cases` | `16` | Native return-patch target offsets handled by the generated dispatcher. |
 | `c_shape` | `native_ret_patch_target_bounded_epilogue_models` | `13` | Native return-patch target helpers classified as bounded native epilogues reaching ret. |
@@ -619,6 +622,8 @@ Reproducible inventory of the current C-shaped reconstruction artifacts and gate
 | `c_shape` | `program_full_observed_chain_replay_steps` | `0` | Observed focused-chain replay steps emitted inside disabled terminal bridge snippets in the full program sketch. |
 | `c_shape` | `bundle_block_defs` | `499` | Full program block functions inside the combined source bundle. |
 | `c_shape` | `bundle_sampled_ret_patch_handler_functions` | `4` | Native return-patch handler/operator functions inside the combined source bundle. |
+| `c_shape` | `bundle_tier0_static_model_comments` | `11` | Tier0 static-only RetDec model annotations inside the combined source bundle. |
+| `c_shape` | `bundle_tier0_static_slot_recoveries` | `10` | Executable tier0 static-only slot recoveries inside the combined source bundle. |
 | `c_shape` | `bundle_sampled_ret_patch_handler_evidence_comments` | `4` | Handler-layer sampled ret-patch evidence summaries inside the combined source bundle. |
 | `c_shape` | `bundle_block_calls` | `483` | Concrete block-to-block calls inside the combined source bundle. |
 | `c_shape` | `bundle_synthetic_gap_unresolved_calls` | `0` | Explicit unresolved-tail calls inside the combined source bundle for remaining synthetic successor gaps. |
@@ -675,6 +680,7 @@ Reproducible inventory of the current C-shaped reconstruction artifacts and gate
 | `c_shape` | `all_evidence_bundle_sidecar_sections` | `34` | Renamed native RetDec/control sidecar files appended to the all-evidence single file. |
 | `c_shape` | `all_evidence_bundle_prefixed_retdec_functions` | `624` | RetDec native C functions carried in the all-evidence single file with per-sidecar symbol prefixes. |
 | `c_shape` | `all_evidence_bundle_prefixed_symbols` | `3579` | Prefixed symbols used to keep overlapping native sidecar C in one translation unit. |
+| `c_shape` | `all_evidence_bundle_tier0_static_slot_recoveries` | `10` | Executable tier0 static-only slot recoveries retained in the all-evidence single file. |
 | `coverage` | `dynamic_primary_trace_source_handlers_seen` | `202` | Handlers directly executed as VM source entries by this scenario. |
 | `coverage` | `dynamic_primary_trace_target_handlers_seen` | `205` | Handlers reached as dispatch targets by this scenario. |
 | `coverage` | `dynamic_primary_trace_unique_vm_ip_starts` | `71522` | Distinct VM bytecode starts observed in this scenario. |
