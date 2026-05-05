@@ -256,6 +256,7 @@ def main():
     print("int fclose(struct _IO_FILE *stream);")
     print("int32_t mbrtowc(int32_t *pwc, const char *s, size_t n, struct _TYPEDEF___mbstate_t *ps);")
     print("int32_t mbsnrtowcs(int32_t *dst, char **src, size_t nms, size_t len, struct _TYPEDEF___mbstate_t *ps);")
+    print("int32_t *wmemcpy(int32_t *dest, const int32_t *src, size_t n);")
     print("int32_t *wmemset(int32_t *wcs, int32_t wc, size_t n);")
     print("int pthread_mutex_lock(int64_t *mutex);")
     print("int pthread_mutex_unlock(int64_t *mutex);")
