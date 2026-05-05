@@ -23,14 +23,14 @@ Reproducible inventory of the current C-shaped reconstruction artifacts and gate
 | `artifact` | `path_frontier_slot_audit_md_lines` | `24` | Current line count. |
 | `artifact` | `path_frontier_slot_audit_md_bytes` | `1264` | Current file size in bytes. |
 | `artifact` | `native_executable_coverage_audit_c_path` | `dumps/vmtail-wide-1m-w16/vm_native_executable_coverage_audit.c` | Generated reconstruction artifact. |
-| `artifact` | `native_executable_coverage_audit_c_lines` | `3404` | Current line count. |
-| `artifact` | `native_executable_coverage_audit_c_bytes` | `394984` | Current file size in bytes. |
+| `artifact` | `native_executable_coverage_audit_c_lines` | `3450` | Current line count. |
+| `artifact` | `native_executable_coverage_audit_c_bytes` | `399134` | Current file size in bytes. |
 | `artifact` | `native_executable_coverage_audit_tsv_path` | `dumps/vmtail-wide-1m-w16/vm_native_executable_coverage_audit.tsv` | Generated reconstruction artifact. |
-| `artifact` | `native_executable_coverage_audit_tsv_lines` | `3343` | Current line count. |
-| `artifact` | `native_executable_coverage_audit_tsv_bytes` | `370019` | Current file size in bytes. |
+| `artifact` | `native_executable_coverage_audit_tsv_lines` | `3389` | Current line count. |
+| `artifact` | `native_executable_coverage_audit_tsv_bytes` | `373879` | Current file size in bytes. |
 | `artifact` | `native_executable_coverage_audit_md_path` | `dumps/vmtail-wide-1m-w16/vm_native_executable_coverage_audit.md` | Generated reconstruction artifact. |
 | `artifact` | `native_executable_coverage_audit_md_lines` | `63` | Current line count. |
-| `artifact` | `native_executable_coverage_audit_md_bytes` | `2515` | Current file size in bytes. |
+| `artifact` | `native_executable_coverage_audit_md_bytes` | `2516` | Current file size in bytes. |
 | `artifact` | `native_function_inventory_c_path` | `dumps/vmtail-wide-1m-w16/vm_native_function_inventory.c` | Generated reconstruction artifact. |
 | `artifact` | `native_function_inventory_c_lines` | `9969` | Current line count. |
 | `artifact` | `native_function_inventory_c_bytes` | `1177248` | Current file size in bytes. |
@@ -41,83 +41,86 @@ Reproducible inventory of the current C-shaped reconstruction artifacts and gate
 | `artifact` | `native_function_inventory_md_lines` | `52` | Current line count. |
 | `artifact` | `native_function_inventory_md_bytes` | `3767` | Current file size in bytes. |
 | `artifact` | `native_retdec_gap_queue_c_path` | `dumps/vmtail-wide-1m-w16/vm_native_retdec_gap_queue.c` | Generated reconstruction artifact. |
-| `artifact` | `native_retdec_gap_queue_c_lines` | `2708` | Current line count. |
-| `artifact` | `native_retdec_gap_queue_c_bytes` | `528123` | Current file size in bytes. |
+| `artifact` | `native_retdec_gap_queue_c_lines` | `2692` | Current line count. |
+| `artifact` | `native_retdec_gap_queue_c_bytes` | `525120` | Current file size in bytes. |
 | `artifact` | `native_retdec_gap_queue_tsv_path` | `dumps/vmtail-wide-1m-w16/vm_native_retdec_gap_queue.tsv` | Generated reconstruction artifact. |
-| `artifact` | `native_retdec_gap_queue_tsv_lines` | `2676` | Current line count. |
-| `artifact` | `native_retdec_gap_queue_tsv_bytes` | `401562` | Current file size in bytes. |
+| `artifact` | `native_retdec_gap_queue_tsv_lines` | `2660` | Current line count. |
+| `artifact` | `native_retdec_gap_queue_tsv_bytes` | `399311` | Current file size in bytes. |
 | `artifact` | `native_retdec_gap_queue_md_path` | `dumps/vmtail-wide-1m-w16/vm_native_retdec_gap_queue.md` | Generated reconstruction artifact. |
 | `artifact` | `native_retdec_gap_queue_md_lines` | `89` | Current line count. |
-| `artifact` | `native_retdec_gap_queue_md_bytes` | `10563` | Current file size in bytes. |
+| `artifact` | `native_retdec_gap_queue_md_bytes` | `10628` | Current file size in bytes. |
 | `artifact` | `native_gap_retdec_batch00_path` | `dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch00.c` | Generated reconstruction artifact. |
-| `artifact` | `native_gap_retdec_batch00_lines` | `1770` | Current line count. |
-| `artifact` | `native_gap_retdec_batch00_bytes` | `58009` | Current file size in bytes. |
+| `artifact` | `native_gap_retdec_batch00_lines` | `1771` | Current line count. |
+| `artifact` | `native_gap_retdec_batch00_bytes` | `58069` | Current file size in bytes. |
 | `artifact` | `native_gap_retdec_batch01_path` | `dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch01.c` | Generated reconstruction artifact. |
-| `artifact` | `native_gap_retdec_batch01_lines` | `2059` | Current line count. |
-| `artifact` | `native_gap_retdec_batch01_bytes` | `67584` | Current file size in bytes. |
+| `artifact` | `native_gap_retdec_batch01_lines` | `2060` | Current line count. |
+| `artifact` | `native_gap_retdec_batch01_bytes` | `67644` | Current file size in bytes. |
 | `artifact` | `native_gap_retdec_batch02_path` | `dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch02.c` | Generated reconstruction artifact. |
-| `artifact` | `native_gap_retdec_batch02_lines` | `1473` | Current line count. |
-| `artifact` | `native_gap_retdec_batch02_bytes` | `50821` | Current file size in bytes. |
+| `artifact` | `native_gap_retdec_batch02_lines` | `1474` | Current line count. |
+| `artifact` | `native_gap_retdec_batch02_bytes` | `50881` | Current file size in bytes. |
 | `artifact` | `native_gap_retdec_batch03_path` | `dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch03.c` | Generated reconstruction artifact. |
-| `artifact` | `native_gap_retdec_batch03_lines` | `1479` | Current line count. |
-| `artifact` | `native_gap_retdec_batch03_bytes` | `46757` | Current file size in bytes. |
+| `artifact` | `native_gap_retdec_batch03_lines` | `1480` | Current line count. |
+| `artifact` | `native_gap_retdec_batch03_bytes` | `46817` | Current file size in bytes. |
 | `artifact` | `native_gap_retdec_batch04_path` | `dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch04.c` | Generated reconstruction artifact. |
-| `artifact` | `native_gap_retdec_batch04_lines` | `1815` | Current line count. |
-| `artifact` | `native_gap_retdec_batch04_bytes` | `57264` | Current file size in bytes. |
+| `artifact` | `native_gap_retdec_batch04_lines` | `1816` | Current line count. |
+| `artifact` | `native_gap_retdec_batch04_bytes` | `57324` | Current file size in bytes. |
 | `artifact` | `native_gap_retdec_batch05_path` | `dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch05.c` | Generated reconstruction artifact. |
-| `artifact` | `native_gap_retdec_batch05_lines` | `1585` | Current line count. |
-| `artifact` | `native_gap_retdec_batch05_bytes` | `52422` | Current file size in bytes. |
+| `artifact` | `native_gap_retdec_batch05_lines` | `1586` | Current line count. |
+| `artifact` | `native_gap_retdec_batch05_bytes` | `52482` | Current file size in bytes. |
 | `artifact` | `native_gap_retdec_batch06_path` | `dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch06.c` | Generated reconstruction artifact. |
-| `artifact` | `native_gap_retdec_batch06_lines` | `1812` | Current line count. |
-| `artifact` | `native_gap_retdec_batch06_bytes` | `53811` | Current file size in bytes. |
+| `artifact` | `native_gap_retdec_batch06_lines` | `1813` | Current line count. |
+| `artifact` | `native_gap_retdec_batch06_bytes` | `53871` | Current file size in bytes. |
 | `artifact` | `native_gap_retdec_batch07_path` | `dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch07.c` | Generated reconstruction artifact. |
-| `artifact` | `native_gap_retdec_batch07_lines` | `1623` | Current line count. |
-| `artifact` | `native_gap_retdec_batch07_bytes` | `50949` | Current file size in bytes. |
+| `artifact` | `native_gap_retdec_batch07_lines` | `1624` | Current line count. |
+| `artifact` | `native_gap_retdec_batch07_bytes` | `51009` | Current file size in bytes. |
 | `artifact` | `native_gap_retdec_batch08_path` | `dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch08.c` | Generated reconstruction artifact. |
-| `artifact` | `native_gap_retdec_batch08_lines` | `1434` | Current line count. |
-| `artifact` | `native_gap_retdec_batch08_bytes` | `46528` | Current file size in bytes. |
+| `artifact` | `native_gap_retdec_batch08_lines` | `1435` | Current line count. |
+| `artifact` | `native_gap_retdec_batch08_bytes` | `46588` | Current file size in bytes. |
 | `artifact` | `native_gap_retdec_batch09_path` | `dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch09.c` | Generated reconstruction artifact. |
-| `artifact` | `native_gap_retdec_batch09_lines` | `1766` | Current line count. |
-| `artifact` | `native_gap_retdec_batch09_bytes` | `56990` | Current file size in bytes. |
+| `artifact` | `native_gap_retdec_batch09_lines` | `1767` | Current line count. |
+| `artifact` | `native_gap_retdec_batch09_bytes` | `57050` | Current file size in bytes. |
 | `artifact` | `native_gap_retdec_batch10_path` | `dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch10.c` | Generated reconstruction artifact. |
-| `artifact` | `native_gap_retdec_batch10_lines` | `1373` | Current line count. |
-| `artifact` | `native_gap_retdec_batch10_bytes` | `43794` | Current file size in bytes. |
+| `artifact` | `native_gap_retdec_batch10_lines` | `1374` | Current line count. |
+| `artifact` | `native_gap_retdec_batch10_bytes` | `43854` | Current file size in bytes. |
 | `artifact` | `native_gap_retdec_batch11_path` | `dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch11.c` | Generated reconstruction artifact. |
-| `artifact` | `native_gap_retdec_batch11_lines` | `1161` | Current line count. |
-| `artifact` | `native_gap_retdec_batch11_bytes` | `38396` | Current file size in bytes. |
+| `artifact` | `native_gap_retdec_batch11_lines` | `1162` | Current line count. |
+| `artifact` | `native_gap_retdec_batch11_bytes` | `38456` | Current file size in bytes. |
 | `artifact` | `native_gap_retdec_batch12_path` | `dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch12.c` | Generated reconstruction artifact. |
-| `artifact` | `native_gap_retdec_batch12_lines` | `1358` | Current line count. |
-| `artifact` | `native_gap_retdec_batch12_bytes` | `44490` | Current file size in bytes. |
+| `artifact` | `native_gap_retdec_batch12_lines` | `1359` | Current line count. |
+| `artifact` | `native_gap_retdec_batch12_bytes` | `44550` | Current file size in bytes. |
 | `artifact` | `native_gap_retdec_batch13_path` | `dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch13.c` | Generated reconstruction artifact. |
-| `artifact` | `native_gap_retdec_batch13_lines` | `1458` | Current line count. |
-| `artifact` | `native_gap_retdec_batch13_bytes` | `45673` | Current file size in bytes. |
+| `artifact` | `native_gap_retdec_batch13_lines` | `1459` | Current line count. |
+| `artifact` | `native_gap_retdec_batch13_bytes` | `45733` | Current file size in bytes. |
 | `artifact` | `native_gap_retdec_batch14_path` | `dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch14.c` | Generated reconstruction artifact. |
-| `artifact` | `native_gap_retdec_batch14_lines` | `1292` | Current line count. |
-| `artifact` | `native_gap_retdec_batch14_bytes` | `40734` | Current file size in bytes. |
+| `artifact` | `native_gap_retdec_batch14_lines` | `1293` | Current line count. |
+| `artifact` | `native_gap_retdec_batch14_bytes` | `40794` | Current file size in bytes. |
 | `artifact` | `native_gap_retdec_batch15_path` | `dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch15.c` | Generated reconstruction artifact. |
-| `artifact` | `native_gap_retdec_batch15_lines` | `1154` | Current line count. |
-| `artifact` | `native_gap_retdec_batch15_bytes` | `36151` | Current file size in bytes. |
+| `artifact` | `native_gap_retdec_batch15_lines` | `1155` | Current line count. |
+| `artifact` | `native_gap_retdec_batch15_bytes` | `36211` | Current file size in bytes. |
 | `artifact` | `native_gap_retdec_batch16_path` | `dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch16.c` | Generated reconstruction artifact. |
-| `artifact` | `native_gap_retdec_batch16_lines` | `1194` | Current line count. |
-| `artifact` | `native_gap_retdec_batch16_bytes` | `39495` | Current file size in bytes. |
+| `artifact` | `native_gap_retdec_batch16_lines` | `1195` | Current line count. |
+| `artifact` | `native_gap_retdec_batch16_bytes` | `39555` | Current file size in bytes. |
 | `artifact` | `native_gap_retdec_batch17_path` | `dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch17.c` | Generated reconstruction artifact. |
-| `artifact` | `native_gap_retdec_batch17_lines` | `1162` | Current line count. |
-| `artifact` | `native_gap_retdec_batch17_bytes` | `35448` | Current file size in bytes. |
+| `artifact` | `native_gap_retdec_batch17_lines` | `1163` | Current line count. |
+| `artifact` | `native_gap_retdec_batch17_bytes` | `35508` | Current file size in bytes. |
 | `artifact` | `native_gap_retdec_batch18_path` | `dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch18.c` | Generated reconstruction artifact. |
-| `artifact` | `native_gap_retdec_batch18_lines` | `1241` | Current line count. |
-| `artifact` | `native_gap_retdec_batch18_bytes` | `39727` | Current file size in bytes. |
+| `artifact` | `native_gap_retdec_batch18_lines` | `1242` | Current line count. |
+| `artifact` | `native_gap_retdec_batch18_bytes` | `39787` | Current file size in bytes. |
 | `artifact` | `native_gap_retdec_batch19_path` | `dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch19.c` | Generated reconstruction artifact. |
-| `artifact` | `native_gap_retdec_batch19_lines` | `1150` | Current line count. |
-| `artifact` | `native_gap_retdec_batch19_bytes` | `36463` | Current file size in bytes. |
+| `artifact` | `native_gap_retdec_batch19_lines` | `1151` | Current line count. |
+| `artifact` | `native_gap_retdec_batch19_bytes` | `36523` | Current file size in bytes. |
 | `artifact` | `native_gap_retdec_batch20_path` | `dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch20.c` | Generated reconstruction artifact. |
-| `artifact` | `native_gap_retdec_batch20_lines` | `1169` | Current line count. |
-| `artifact` | `native_gap_retdec_batch20_bytes` | `38328` | Current file size in bytes. |
+| `artifact` | `native_gap_retdec_batch20_lines` | `1170` | Current line count. |
+| `artifact` | `native_gap_retdec_batch20_bytes` | `38388` | Current file size in bytes. |
 | `artifact` | `native_gap_retdec_batch21_path` | `dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch21.c` | Generated reconstruction artifact. |
-| `artifact` | `native_gap_retdec_batch21_lines` | `1365` | Current line count. |
-| `artifact` | `native_gap_retdec_batch21_bytes` | `40735` | Current file size in bytes. |
+| `artifact` | `native_gap_retdec_batch21_lines` | `1366` | Current line count. |
+| `artifact` | `native_gap_retdec_batch21_bytes` | `40795` | Current file size in bytes. |
 | `artifact` | `native_gap_retdec_batch22_path` | `dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch22.c` | Generated reconstruction artifact. |
-| `artifact` | `native_gap_retdec_batch22_lines` | `1098` | Current line count. |
-| `artifact` | `native_gap_retdec_batch22_bytes` | `34511` | Current file size in bytes. |
+| `artifact` | `native_gap_retdec_batch22_lines` | `1099` | Current line count. |
+| `artifact` | `native_gap_retdec_batch22_bytes` | `34571` | Current file size in bytes. |
+| `artifact` | `native_gap_retdec_batch23_path` | `dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch23.c` | Generated reconstruction artifact. |
+| `artifact` | `native_gap_retdec_batch23_lines` | `1023` | Current line count. |
+| `artifact` | `native_gap_retdec_batch23_bytes` | `31339` | Current file size in bytes. |
 | `artifact` | `direct_blocks_top_path` | `dumps/vmtail-wide-1m-w16/vm_pseudocode_top.c` | Generated reconstruction artifact. |
 | `artifact` | `direct_blocks_top_lines` | `12619` | Current line count. |
 | `artifact` | `direct_blocks_top_bytes` | `1429721` | Current file size in bytes. |
@@ -131,8 +134,8 @@ Reproducible inventory of the current C-shaped reconstruction artifacts and gate
 | `artifact` | `source_bundle_lines` | `304448` | Current line count. |
 | `artifact` | `source_bundle_bytes` | `20567203` | Current file size in bytes. |
 | `artifact` | `source_all_evidence_bundle_path` | `dumps/vmtail-wide-1m-w16/vm_recovered_source_all_evidence_bundle.c` | Generated reconstruction artifact. |
-| `artifact` | `source_all_evidence_bundle_lines` | `480369` | Current line count. |
-| `artifact` | `source_all_evidence_bundle_bytes` | `33658291` | Current file size in bytes. |
+| `artifact` | `source_all_evidence_bundle_lines` | `481447` | Current line count. |
+| `artifact` | `source_all_evidence_bundle_bytes` | `33707275` | Current file size in bytes. |
 | `artifact` | `synthetic_successor_gaps_tsv_path` | `dumps/vmtail-wide-1m-w16/vm_synthetic_successor_gaps.tsv` | Generated reconstruction artifact. |
 | `artifact` | `synthetic_successor_gaps_tsv_lines` | `22` | Current line count. |
 | `artifact` | `synthetic_successor_gaps_tsv_bytes` | `5197` | Current file size in bytes. |
@@ -708,30 +711,30 @@ Reproducible inventory of the current C-shaped reconstruction artifacts and gate
 | `c_shape` | `config_coverage_metric_c_rows` | `71` | Syntax-checkable C metric rows in the config coverage frontier artifact. |
 | `c_shape` | `config_coverage_frontier_c_rows` | `173` | Syntax-checkable C frontier rows in the config coverage frontier artifact. |
 | `coverage_frontier` | `native_executable_coverage_section_rows` | `5` | Executable ELF section rows audited against recovered native C sidecar ranges. |
-| `coverage_frontier` | `native_executable_coverage_range_rows` | `2933` | Recovered native executable range rows included in the executable coverage audit. |
-| `coverage_frontier` | `native_executable_coverage_gap_rows` | `404` | Uncovered executable gap rows retained as explicit native reconstruction frontier evidence. |
+| `coverage_frontier` | `native_executable_coverage_range_rows` | `2965` | Recovered native executable range rows included in the executable coverage audit. |
+| `coverage_frontier` | `native_executable_coverage_gap_rows` | `418` | Uncovered executable gap rows retained as explicit native reconstruction frontier evidence. |
 | `coverage_frontier` | `native_executable_coverage_total_bytes` | `5651040` | Total executable ELF bytes in allocatable executable sections. |
-| `coverage_frontier` | `native_executable_coverage_recovered_bytes` | `469675` | Executable ELF bytes intersecting recovered native C sidecar ranges. |
-| `coverage_frontier` | `native_executable_coverage_uncovered_bytes` | `5181365` | Executable ELF bytes not yet represented by recovered native C sidecar ranges. |
-| `coverage_frontier` | `native_executable_coverage_percent_x100` | `831` | Recovered executable-byte percentage scaled by 100. |
-| `coverage_frontier` | `native_executable_text_coverage_x100` | `831` | Recovered .text executable-byte percentage scaled by 100. |
+| `coverage_frontier` | `native_executable_coverage_recovered_bytes` | `473617` | Executable ELF bytes intersecting recovered native C sidecar ranges. |
+| `coverage_frontier` | `native_executable_coverage_uncovered_bytes` | `5177423` | Executable ELF bytes not yet represented by recovered native C sidecar ranges. |
+| `coverage_frontier` | `native_executable_coverage_percent_x100` | `838` | Recovered executable-byte percentage scaled by 100. |
+| `coverage_frontier` | `native_executable_text_coverage_x100` | `838` | Recovered .text executable-byte percentage scaled by 100. |
 | `c_shape` | `native_executable_coverage_c_section_rows` | `5` | Executable section coverage rows retained in C form. |
-| `c_shape` | `native_executable_coverage_c_range_rows` | `2933` | Recovered native executable range rows retained in C form. |
-| `c_shape` | `native_executable_coverage_c_gap_rows` | `404` | Uncovered native executable gap rows retained in C form. |
+| `c_shape` | `native_executable_coverage_c_range_rows` | `2965` | Recovered native executable range rows retained in C form. |
+| `c_shape` | `native_executable_coverage_c_gap_rows` | `418` | Uncovered native executable gap rows retained in C form. |
 | `coverage_frontier` | `native_function_inventory_rows` | `3309` | Radare2 native function-boundary rows rendered as weak C skeleton metadata. |
 | `coverage_frontier` | `native_function_inventory_text_rows` | `3063` | Radare2 function-boundary rows inside the ELF .text section. |
 | `coverage_frontier` | `native_function_inventory_kind_mix` | `entrypoint:1,import_plt:244,native_discovered:591,r2_discovered:2412,symbol_named:61` | Kind mix for radare2 native function-boundary inventory rows. |
 | `coverage_frontier` | `native_function_inventory_text_merged_bytes` | `806070` | Merged .text bytes covered by radare2 native function-boundary inventory rows. |
 | `c_shape` | `native_function_inventory_c_stub_functions` | `3309` | Weak native function skeleton stubs retained in C form. |
 | `c_shape` | `native_function_inventory_c_metadata_rows` | `3309` | Weak native function inventory metadata rows retained in C form. |
-| `coverage_frontier` | `native_retdec_gap_queue_rows` | `2675` | Native function-boundary rows whose bytes are not yet covered by semantic RetDec/native C sidecars. |
-| `coverage_frontier` | `native_retdec_gap_queue_tier0_rows` | `2347` | Small uncovered native functions queued for targeted single-function RetDec. |
+| `coverage_frontier` | `native_retdec_gap_queue_rows` | `2659` | Native function-boundary rows whose bytes are not yet covered by semantic RetDec/native C sidecars. |
+| `coverage_frontier` | `native_retdec_gap_queue_tier0_rows` | `2331` | Small uncovered native functions queued for targeted single-function RetDec. |
 | `coverage_frontier` | `native_retdec_gap_queue_tier1_rows` | `247` | Medium uncovered native functions queued for targeted single-function RetDec. |
 | `coverage_frontier` | `native_retdec_gap_queue_tier2_rows` | `77` | Large uncovered native functions queued for timed RetDec or manual split. |
 | `coverage_frontier` | `native_retdec_gap_queue_tier3_rows` | `4` | Huge or noisy uncovered native functions that need splitting/modeling before broad RetDec. |
-| `coverage_frontier` | `native_retdec_gap_queue_total_uncovered_bytes` | `716213` | Function-boundary uncovered .text bytes represented by the native RetDec gap queue. |
+| `coverage_frontier` | `native_retdec_gap_queue_total_uncovered_bytes` | `711687` | Function-boundary uncovered .text bytes represented by the native RetDec gap queue. |
 | `coverage_frontier` | `native_retdec_gap_queue_top10_ranges` | `0x62b92-0x62d6d,0x4b1ca0-0x4b1e79,0x4bfaf0-0x4bfcc3,0x4ad2a0-0x4ad440,0x57c4c0-0x57c64f,0x4b16c0-0x4b17fb,0x570310-0x57043a,0x54ea90-0x54ebb0,0x54ebd0-0x54ecf0,0x6b7a0-0x6b8bb` | Top ten ranked native function ranges to target next. |
-| `c_shape` | `native_retdec_gap_queue_c_rows` | `2675` | Native RetDec gap queue rows retained in C form. |
+| `c_shape` | `native_retdec_gap_queue_c_rows` | `2659` | Native RetDec gap queue rows retained in C form. |
 | `c_shape` | `native_gap_retdec_batch00_selected_ranges` | `16` | Fixed top-ranked native gap queue ranges selected for RetDec batch 00. |
 | `c_shape` | `native_gap_retdec_batch00_functions` | `24` | RetDec native C function bodies emitted for native gap batch 00. |
 | `c_shape` | `native_gap_retdec_batch00_address_ranges` | `24` | RetDec address-range comments emitted for native gap batch 00. |
@@ -801,6 +804,9 @@ Reproducible inventory of the current C-shaped reconstruction artifacts and gate
 | `c_shape` | `native_gap_retdec_batch22_selected_ranges` | `16` | Fixed top-ranked native gap queue ranges selected for RetDec batch 22. |
 | `c_shape` | `native_gap_retdec_batch22_functions` | `16` | RetDec native C function bodies emitted for native gap batch 22. |
 | `c_shape` | `native_gap_retdec_batch22_address_ranges` | `16` | RetDec address-range comments emitted for native gap batch 22. |
+| `c_shape` | `native_gap_retdec_batch23_selected_ranges` | `16` | Fixed top-ranked native gap queue ranges selected for RetDec batch 23. |
+| `c_shape` | `native_gap_retdec_batch23_functions` | `16` | RetDec native C function bodies emitted for native gap batch 23. |
+| `c_shape` | `native_gap_retdec_batch23_address_ranges` | `16` | RetDec address-range comments emitted for native gap batch 23. |
 | `data_surface` | `binary_data_section_rows` | `29` | Allocatable ELF sections tracked by the binary data carrier. |
 | `data_surface` | `binary_data_emitted_section_rows` | `22` | Allocatable non-executable ELF sections emitted as exact C byte arrays. |
 | `data_surface` | `binary_data_emitted_bytes` | `0xe63f7` | Exact bytes carried for allocatable non-executable ELF data sections. |
@@ -1043,63 +1049,65 @@ Reproducible inventory of the current C-shaped reconstruction artifacts and gate
 | `coverage_frontier` | `all_evidence_bundle_path_frontier_slot_audit_rows` | `10` | Weak frontier slot-expression audit rows retained in the all-evidence single file. |
 | `coverage_frontier` | `all_evidence_bundle_path_frontier_slot_audit_symbols` | `6` | Prefixed path frontier slot-audit symbols retained in the all-evidence single file. |
 | `coverage_frontier` | `all_evidence_bundle_native_executable_coverage_section_rows` | `5` | Native executable section coverage rows retained in the all-evidence single file. |
-| `coverage_frontier` | `all_evidence_bundle_native_executable_coverage_range_rows` | `2933` | Recovered native executable range rows retained in the all-evidence single file. |
-| `coverage_frontier` | `all_evidence_bundle_native_executable_coverage_gap_rows` | `404` | Uncovered native executable gap rows retained in the all-evidence single file. |
+| `coverage_frontier` | `all_evidence_bundle_native_executable_coverage_range_rows` | `2965` | Recovered native executable range rows retained in the all-evidence single file. |
+| `coverage_frontier` | `all_evidence_bundle_native_executable_coverage_gap_rows` | `418` | Uncovered native executable gap rows retained in the all-evidence single file. |
 | `coverage_frontier` | `all_evidence_bundle_native_executable_coverage_symbols` | `18` | Prefixed native executable coverage audit symbols retained in the all-evidence single file. |
 | `coverage_frontier` | `all_evidence_bundle_native_function_inventory_stub_functions` | `3309` | Weak native function skeleton stubs retained in the all-evidence single file. |
 | `coverage_frontier` | `all_evidence_bundle_native_function_inventory_metadata_rows` | `3309` | Weak native function inventory metadata rows retained in the all-evidence single file. |
 | `coverage_frontier` | `all_evidence_bundle_native_function_inventory_symbols` | `6625` | Prefixed native function inventory symbols retained in the all-evidence single file. |
-| `coverage_frontier` | `all_evidence_bundle_native_retdec_gap_queue_rows` | `2675` | Native RetDec gap queue rows retained in the all-evidence single file. |
+| `coverage_frontier` | `all_evidence_bundle_native_retdec_gap_queue_rows` | `2659` | Native RetDec gap queue rows retained in the all-evidence single file. |
 | `coverage_frontier` | `all_evidence_bundle_native_retdec_gap_queue_symbols` | `6` | Prefixed native RetDec gap queue symbols retained in the all-evidence single file. |
 | `c_shape` | `all_evidence_bundle_native_gap_retdec_batch00_functions` | `24` | RetDec native C function bodies from native gap batch 00 retained in the all-evidence single file. |
-| `c_shape` | `all_evidence_bundle_native_gap_retdec_batch00_symbols` | `598` | Prefixed native gap RetDec batch 00 symbols retained in the all-evidence single file. |
+| `c_shape` | `all_evidence_bundle_native_gap_retdec_batch00_symbols` | `599` | Prefixed native gap RetDec batch 00 symbols retained in the all-evidence single file. |
 | `c_shape` | `all_evidence_bundle_native_gap_retdec_batch01_functions` | `16` | RetDec native C function bodies from native gap batch 01 retained in the all-evidence single file. |
-| `c_shape` | `all_evidence_bundle_native_gap_retdec_batch01_symbols` | `659` | Prefixed native gap RetDec batch 01 symbols retained in the all-evidence single file. |
+| `c_shape` | `all_evidence_bundle_native_gap_retdec_batch01_symbols` | `660` | Prefixed native gap RetDec batch 01 symbols retained in the all-evidence single file. |
 | `c_shape` | `all_evidence_bundle_native_gap_retdec_batch02_functions` | `19` | RetDec native C function bodies from native gap batch 02 retained in the all-evidence single file. |
-| `c_shape` | `all_evidence_bundle_native_gap_retdec_batch02_symbols` | `554` | Prefixed native gap RetDec batch 02 symbols retained in the all-evidence single file. |
+| `c_shape` | `all_evidence_bundle_native_gap_retdec_batch02_symbols` | `555` | Prefixed native gap RetDec batch 02 symbols retained in the all-evidence single file. |
 | `c_shape` | `all_evidence_bundle_native_gap_retdec_batch03_functions` | `37` | RetDec native C function bodies from native gap batch 03 retained in the all-evidence single file. |
-| `c_shape` | `all_evidence_bundle_native_gap_retdec_batch03_symbols` | `584` | Prefixed native gap RetDec batch 03 symbols retained in the all-evidence single file. |
+| `c_shape` | `all_evidence_bundle_native_gap_retdec_batch03_symbols` | `585` | Prefixed native gap RetDec batch 03 symbols retained in the all-evidence single file. |
 | `c_shape` | `all_evidence_bundle_native_gap_retdec_batch04_functions` | `16` | RetDec native C function bodies from native gap batch 04 retained in the all-evidence single file. |
-| `c_shape` | `all_evidence_bundle_native_gap_retdec_batch04_symbols` | `604` | Prefixed native gap RetDec batch 04 symbols retained in the all-evidence single file. |
+| `c_shape` | `all_evidence_bundle_native_gap_retdec_batch04_symbols` | `605` | Prefixed native gap RetDec batch 04 symbols retained in the all-evidence single file. |
 | `c_shape` | `all_evidence_bundle_native_gap_retdec_batch05_functions` | `38` | RetDec native C function bodies from native gap batch 05 retained in the all-evidence single file. |
-| `c_shape` | `all_evidence_bundle_native_gap_retdec_batch05_symbols` | `538` | Prefixed native gap RetDec batch 05 symbols retained in the all-evidence single file. |
+| `c_shape` | `all_evidence_bundle_native_gap_retdec_batch05_symbols` | `539` | Prefixed native gap RetDec batch 05 symbols retained in the all-evidence single file. |
 | `c_shape` | `all_evidence_bundle_native_gap_retdec_batch06_functions` | `23` | RetDec native C function bodies from native gap batch 06 retained in the all-evidence single file. |
-| `c_shape` | `all_evidence_bundle_native_gap_retdec_batch06_symbols` | `528` | Prefixed native gap RetDec batch 06 symbols retained in the all-evidence single file. |
+| `c_shape` | `all_evidence_bundle_native_gap_retdec_batch06_symbols` | `529` | Prefixed native gap RetDec batch 06 symbols retained in the all-evidence single file. |
 | `c_shape` | `all_evidence_bundle_native_gap_retdec_batch07_functions` | `42` | RetDec native C function bodies from native gap batch 07 retained in the all-evidence single file. |
-| `c_shape` | `all_evidence_bundle_native_gap_retdec_batch07_symbols` | `511` | Prefixed native gap RetDec batch 07 symbols retained in the all-evidence single file. |
+| `c_shape` | `all_evidence_bundle_native_gap_retdec_batch07_symbols` | `512` | Prefixed native gap RetDec batch 07 symbols retained in the all-evidence single file. |
 | `c_shape` | `all_evidence_bundle_native_gap_retdec_batch08_functions` | `36` | RetDec native C function bodies from native gap batch 08 retained in the all-evidence single file. |
-| `c_shape` | `all_evidence_bundle_native_gap_retdec_batch08_symbols` | `584` | Prefixed native gap RetDec batch 08 symbols retained in the all-evidence single file. |
+| `c_shape` | `all_evidence_bundle_native_gap_retdec_batch08_symbols` | `585` | Prefixed native gap RetDec batch 08 symbols retained in the all-evidence single file. |
 | `c_shape` | `all_evidence_bundle_native_gap_retdec_batch09_functions` | `19` | RetDec native C function bodies from native gap batch 09 retained in the all-evidence single file. |
-| `c_shape` | `all_evidence_bundle_native_gap_retdec_batch09_symbols` | `454` | Prefixed native gap RetDec batch 09 symbols retained in the all-evidence single file. |
+| `c_shape` | `all_evidence_bundle_native_gap_retdec_batch09_symbols` | `455` | Prefixed native gap RetDec batch 09 symbols retained in the all-evidence single file. |
 | `c_shape` | `all_evidence_bundle_native_gap_retdec_batch10_functions` | `25` | RetDec native C function bodies from native gap batch 10 retained in the all-evidence single file. |
-| `c_shape` | `all_evidence_bundle_native_gap_retdec_batch10_symbols` | `523` | Prefixed native gap RetDec batch 10 symbols retained in the all-evidence single file. |
+| `c_shape` | `all_evidence_bundle_native_gap_retdec_batch10_symbols` | `524` | Prefixed native gap RetDec batch 10 symbols retained in the all-evidence single file. |
 | `c_shape` | `all_evidence_bundle_native_gap_retdec_batch11_functions` | `23` | RetDec native C function bodies from native gap batch 11 retained in the all-evidence single file. |
-| `c_shape` | `all_evidence_bundle_native_gap_retdec_batch11_symbols` | `489` | Prefixed native gap RetDec batch 11 symbols retained in the all-evidence single file. |
+| `c_shape` | `all_evidence_bundle_native_gap_retdec_batch11_symbols` | `490` | Prefixed native gap RetDec batch 11 symbols retained in the all-evidence single file. |
 | `c_shape` | `all_evidence_bundle_native_gap_retdec_batch12_functions` | `19` | RetDec native C function bodies from native gap batch 12 retained in the all-evidence single file. |
-| `c_shape` | `all_evidence_bundle_native_gap_retdec_batch12_symbols` | `501` | Prefixed native gap RetDec batch 12 symbols retained in the all-evidence single file. |
+| `c_shape` | `all_evidence_bundle_native_gap_retdec_batch12_symbols` | `502` | Prefixed native gap RetDec batch 12 symbols retained in the all-evidence single file. |
 | `c_shape` | `all_evidence_bundle_native_gap_retdec_batch13_functions` | `20` | RetDec native C function bodies from native gap batch 13 retained in the all-evidence single file. |
-| `c_shape` | `all_evidence_bundle_native_gap_retdec_batch13_symbols` | `387` | Prefixed native gap RetDec batch 13 symbols retained in the all-evidence single file. |
+| `c_shape` | `all_evidence_bundle_native_gap_retdec_batch13_symbols` | `388` | Prefixed native gap RetDec batch 13 symbols retained in the all-evidence single file. |
 | `c_shape` | `all_evidence_bundle_native_gap_retdec_batch14_functions` | `15` | RetDec native C function bodies from native gap batch 14 retained in the all-evidence single file. |
-| `c_shape` | `all_evidence_bundle_native_gap_retdec_batch14_symbols` | `415` | Prefixed native gap RetDec batch 14 symbols retained in the all-evidence single file. |
+| `c_shape` | `all_evidence_bundle_native_gap_retdec_batch14_symbols` | `416` | Prefixed native gap RetDec batch 14 symbols retained in the all-evidence single file. |
 | `c_shape` | `all_evidence_bundle_native_gap_retdec_batch15_functions` | `20` | RetDec native C function bodies from native gap batch 15 retained in the all-evidence single file. |
-| `c_shape` | `all_evidence_bundle_native_gap_retdec_batch15_symbols` | `490` | Prefixed native gap RetDec batch 15 symbols retained in the all-evidence single file. |
+| `c_shape` | `all_evidence_bundle_native_gap_retdec_batch15_symbols` | `491` | Prefixed native gap RetDec batch 15 symbols retained in the all-evidence single file. |
 | `c_shape` | `all_evidence_bundle_native_gap_retdec_batch16_functions` | `18` | RetDec native C function bodies from native gap batch 16 retained in the all-evidence single file. |
-| `c_shape` | `all_evidence_bundle_native_gap_retdec_batch16_symbols` | `408` | Prefixed native gap RetDec batch 16 symbols retained in the all-evidence single file. |
+| `c_shape` | `all_evidence_bundle_native_gap_retdec_batch16_symbols` | `409` | Prefixed native gap RetDec batch 16 symbols retained in the all-evidence single file. |
 | `c_shape` | `all_evidence_bundle_native_gap_retdec_batch17_functions` | `17` | RetDec native C function bodies from native gap batch 17 retained in the all-evidence single file. |
-| `c_shape` | `all_evidence_bundle_native_gap_retdec_batch17_symbols` | `361` | Prefixed native gap RetDec batch 17 symbols retained in the all-evidence single file. |
+| `c_shape` | `all_evidence_bundle_native_gap_retdec_batch17_symbols` | `362` | Prefixed native gap RetDec batch 17 symbols retained in the all-evidence single file. |
 | `c_shape` | `all_evidence_bundle_native_gap_retdec_batch18_functions` | `18` | RetDec native C function bodies from native gap batch 18 retained in the all-evidence single file. |
-| `c_shape` | `all_evidence_bundle_native_gap_retdec_batch18_symbols` | `430` | Prefixed native gap RetDec batch 18 symbols retained in the all-evidence single file. |
+| `c_shape` | `all_evidence_bundle_native_gap_retdec_batch18_symbols` | `431` | Prefixed native gap RetDec batch 18 symbols retained in the all-evidence single file. |
 | `c_shape` | `all_evidence_bundle_native_gap_retdec_batch19_functions` | `21` | RetDec native C function bodies from native gap batch 19 retained in the all-evidence single file. |
-| `c_shape` | `all_evidence_bundle_native_gap_retdec_batch19_symbols` | `412` | Prefixed native gap RetDec batch 19 symbols retained in the all-evidence single file. |
+| `c_shape` | `all_evidence_bundle_native_gap_retdec_batch19_symbols` | `413` | Prefixed native gap RetDec batch 19 symbols retained in the all-evidence single file. |
 | `c_shape` | `all_evidence_bundle_native_gap_retdec_batch20_functions` | `19` | RetDec native C function bodies from native gap batch 20 retained in the all-evidence single file. |
-| `c_shape` | `all_evidence_bundle_native_gap_retdec_batch20_symbols` | `364` | Prefixed native gap RetDec batch 20 symbols retained in the all-evidence single file. |
+| `c_shape` | `all_evidence_bundle_native_gap_retdec_batch20_symbols` | `365` | Prefixed native gap RetDec batch 20 symbols retained in the all-evidence single file. |
 | `c_shape` | `all_evidence_bundle_native_gap_retdec_batch21_functions` | `31` | RetDec native C function bodies from native gap batch 21 retained in the all-evidence single file. |
-| `c_shape` | `all_evidence_bundle_native_gap_retdec_batch21_symbols` | `359` | Prefixed native gap RetDec batch 21 symbols retained in the all-evidence single file. |
+| `c_shape` | `all_evidence_bundle_native_gap_retdec_batch21_symbols` | `360` | Prefixed native gap RetDec batch 21 symbols retained in the all-evidence single file. |
 | `c_shape` | `all_evidence_bundle_native_gap_retdec_batch22_functions` | `16` | RetDec native C function bodies from native gap batch 22 retained in the all-evidence single file. |
-| `c_shape` | `all_evidence_bundle_native_gap_retdec_batch22_symbols` | `447` | Prefixed native gap RetDec batch 22 symbols retained in the all-evidence single file. |
-| `c_shape` | `all_evidence_bundle_sidecar_sections` | `70` | Renamed native RetDec/control sidecar files appended to the all-evidence single file. |
-| `c_shape` | `all_evidence_bundle_prefixed_retdec_functions` | `1156` | RetDec native C functions carried in the all-evidence single file with per-sidecar symbol prefixes. |
-| `c_shape` | `all_evidence_bundle_prefixed_symbols` | `29190` | Prefixed symbols used to keep overlapping native sidecar C in one translation unit. |
+| `c_shape` | `all_evidence_bundle_native_gap_retdec_batch22_symbols` | `448` | Prefixed native gap RetDec batch 22 symbols retained in the all-evidence single file. |
+| `c_shape` | `all_evidence_bundle_native_gap_retdec_batch23_functions` | `16` | RetDec native C function bodies from native gap batch 23 retained in the all-evidence single file. |
+| `c_shape` | `all_evidence_bundle_native_gap_retdec_batch23_symbols` | `348` | Prefixed native gap RetDec batch 23 symbols retained in the all-evidence single file. |
+| `c_shape` | `all_evidence_bundle_sidecar_sections` | `71` | Renamed native RetDec/control sidecar files appended to the all-evidence single file. |
+| `c_shape` | `all_evidence_bundle_prefixed_retdec_functions` | `1172` | RetDec native C functions carried in the all-evidence single file with per-sidecar symbol prefixes. |
+| `c_shape` | `all_evidence_bundle_prefixed_symbols` | `29561` | Prefixed symbols used to keep overlapping native sidecar C in one translation unit. |
 | `coverage_frontier` | `all_evidence_bundle_config_coverage_metric_rows` | `71` | Config coverage audit metric rows retained in the all-evidence single C file. |
 | `coverage_frontier` | `all_evidence_bundle_config_coverage_frontier_rows` | `173` | Config/path frontier rows retained in the all-evidence single C file. |
 | `coverage_frontier` | `all_evidence_bundle_config_coverage_frontier_symbols` | `8` | Prefixed config coverage frontier symbols retained in the all-evidence single C file. |
