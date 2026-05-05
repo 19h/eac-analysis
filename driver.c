@@ -205,6 +205,58 @@ static uint32_t all_tail_reg_bits(void) {
            tail_reg_bit(TAIL_REG_R14) | tail_reg_bit(TAIL_REG_R15);
 }
 
+static int add_dispatch_site(uintptr_t off) {
+    if (off == 0) return -1;
+    for (size_t i = 0; i < g_dispatch_site_count; ++i) {
+        if (g_dispatch_sites[i] == off) return 0;
+    }
+    if (g_dispatch_site_count >= EAC_MAX_DISPATCH_SITES) return -1;
+    g_dispatch_sites[g_dispatch_site_count++] = off;
+    return 0;
+}
+
+static int add_dispatch_focus_site(uintptr_t off) {
+    if (off == 0) return -1;
+    for (size_t i = 0; i < g_dispatch_focus_site_count; ++i) {
+        if (g_dispatch_focus_sites[i] == off) return 0;
+    }
+    if (g_dispatch_focus_site_count >= EAC_MAX_FOCUS_SITES) return -1;
+    g_dispatch_focus_sites[g_dispatch_focus_site_count++] = off;
+    return 0;
+}
+
+static void add_default_dispatch_sites(void) {
+    (void)add_dispatch_site(EAC_DISPATCH_C80B9);
+    (void)add_dispatch_site(EAC_DISPATCH_CDAC7);
+}
+
+static void parse_dispatch_sites(const char *spec, int focus_only) {
+    if (spec == NULL || *spec == '\0') return;
+    const char *p = spec;
+    while (*p != '\0') {
+        while (*p == ' ' || *p == '\t' || *p == ',') ++p;
+        if (*p == '\0') break;
+
+        errno = 0;
+        char *end = NULL;
+        unsigned long off = strtoul(p, &end, 0);
+        if (errno != 0 || end == p) {
+            fprintf(stderr, "[DRIVER] ignoring malformed dispatch site near '%s'\n", p);
+            while (*p != '\0' && *p != ',') ++p;
+            continue;
+        }
+        if (focus_only) {
+            if (add_dispatch_focus_site((uintptr_t)off) != 0) {
+                fprintf(stderr, "[DRIVER] ignoring dispatch focus site 0x%lx\n", off);
+            }
+        } else if (add_dispatch_site((uintptr_t)off) != 0) {
+            fprintf(stderr, "[DRIVER] ignoring dispatch site 0x%lx\n", off);
+        }
+        p = end;
+        while (*p != '\0' && *p != ',') ++p;
+    }
+}
+
 static int add_tail_site(uintptr_t off, enum tail_reg reg) {
     if (reg == TAIL_REG_INVALID || off == 0) return -1;
     for (size_t i = 0; i < g_tail_site_count; ++i) {
@@ -462,9 +514,9 @@ static void load_read_ranges(void) {
     fclose(maps);
 }
 
-static int range_contains_qword(uintptr_t addr) {
-    if (addr > UINTPTR_MAX - sizeof(uint64_t)) return 0;
-    uintptr_t end = addr + sizeof(uint64_t);
+static int range_contains_bytes(uintptr_t addr, size_t size) {
+    if (addr > UINTPTR_MAX - size) return 0;
+    uintptr_t end = addr + size;
     for (size_t i = 0; i < g_read_range_count; ++i) {
         if (addr >= g_read_ranges[i].start && end <= g_read_ranges[i].end) return 1;
     }
@@ -472,9 +524,32 @@ static int range_contains_qword(uintptr_t addr) {
 }
 
 static int read_mapped_u64(uintptr_t addr, uint64_t *value) {
-    if (!range_contains_qword(addr)) return 0;
+    if (!range_contains_bytes(addr, sizeof(uint64_t))) return 0;
     memcpy(value, (const void *)addr, sizeof(*value));
     return 1;
+}
+
+static int read_mapped_u32(uintptr_t addr, uint32_t *value) {
+    if (!range_contains_bytes(addr, sizeof(uint32_t))) return 0;
+    memcpy(value, (const void *)addr, sizeof(*value));
+    return 1;
+}
+
+static int read_mapped_u8(uintptr_t addr, uint8_t *value) {
+    if (!range_contains_bytes(addr, sizeof(uint8_t))) return 0;
+    memcpy(value, (const void *)addr, sizeof(*value));
+    return 1;
+}
+
+static void read_ip_words_mapped(uint64_t vm_ip, uint16_t words[EAC_IP_WORD_COUNT]) {
+    for (size_t i = 0; i < EAC_IP_WORD_COUNT; ++i) {
+        uint32_t value = 0;
+        if (read_mapped_u32((uintptr_t)(vm_ip + i * 2u), &value)) {
+            words[i] = (uint16_t)value;
+        } else {
+            words[i] = 0;
+        }
+    }
 }
 
 static char *append_frame_scratch(char *p, char *end, uintptr_t frame) {
@@ -602,6 +677,31 @@ static void dispatch_trace_write(size_t idx, uintptr_t site, uintptr_t slot,
 
 static int tail_focus_enabled(void) {
     return g_tail_focus_ip_count != 0 || g_tail_focus_site_count != 0;
+}
+
+static int dispatch_focus_match(uintptr_t site) {
+    if (g_dispatch_focus_site_count == 0) return 1;
+    for (size_t i = 0; i < g_dispatch_focus_site_count; ++i) {
+        if (g_dispatch_focus_sites[i] == site) return 1;
+    }
+    return 0;
+}
+
+static void dispatch_focus_maybe_stop(uintptr_t site) {
+    if (g_dispatch_focus_site_count == 0 || g_dispatch_stop_after_matches == 0) return;
+    uint64_t hits = __atomic_add_fetch(&g_dispatch_focus_hits, 1, __ATOMIC_RELAXED);
+    if (hits < g_dispatch_stop_after_matches) return;
+
+    char buf[160];
+    char *p = buf;
+    char *end = buf + sizeof(buf) - 1;
+    p = append_lit(p, end, "[DRIVER] DISPATCH focus stop hits=");
+    p = append_dec(p, end, hits);
+    p = append_lit(p, end, " site=");
+    p = append_hex(p, end, site);
+    p = append_lit(p, end, "\n");
+    write(STDERR_FILENO, buf, (size_t)(p - buf));
+    _exit(0);
 }
 
 static int tail_focus_match(uintptr_t site, uintptr_t vm_ip_off) {
