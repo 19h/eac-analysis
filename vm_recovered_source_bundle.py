@@ -45,7 +45,7 @@ def main():
 
     print(
         f"source_bundle_handlers={sum(1 for line in handlers if line.startswith('static VMOpResult op_entry_'))} "
-        f"program_blocks={sum(1 for line in program if line.startswith('static void prog_'))}",
+        f"program_blocks={sum(1 for line in program if line.startswith('static void prog_') and line.endswith('{'))}",
         file=sys.stderr,
     )
 

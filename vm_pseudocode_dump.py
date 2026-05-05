@@ -501,7 +501,9 @@ def emit_block(block, rows, edge, synthetic_spans, tail_lifts, args, known_block
         )
         if target_block:
             print(f"    /* goto {c_block_name(target_block)}; */")
-            if target_block in known_blocks:
+            if target_block == block["block"]:
+                print("    /* self-loop edge retained as a CFG comment. */")
+            elif target_block in known_blocks:
                 print(f"    {c_block_name(target_block)}(vm);")
             else:
                 print("    /* target block is outside this selected sketch. */")
