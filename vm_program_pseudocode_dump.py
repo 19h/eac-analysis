@@ -51,7 +51,7 @@ def emit_preamble(used_entries):
     print("    return (raw & 0x80000000u) ? -(int64_t)(raw & 0x7fffffffu) : (int64_t)raw;")
     print("}")
     for entry in sorted(used_entries):
-        print(f"static VMOpResult op_entry_{entry:03d}(VMState *vm);")
+        print(f"extern VMOpResult op_entry_{entry:03d}(VMState *vm);")
     print("")
 
 
@@ -286,7 +286,7 @@ def emit_synthetic_edge(edge, synthetic_spans, args):
 def emit_block(block, rows, edge, synthetic_spans, tail_lifts, args):
     name = c_block_name(block["block"])
     print(f"static void prog_{name}(VMState *vm, uint64_t vm_ip) {{")
-    print("    VMOpResult r;")
+    print("    VMOpResult r = { .next_entry = -1, .slot = 0xffffffffu };")
     print("    int next_entry = -1;")
     print(
         f"    /* VM {block['start_vm_ip']}..{block['byte_end_min']}; "
@@ -318,6 +318,8 @@ def emit_block(block, rows, edge, synthetic_spans, tail_lifts, args):
             print(f"    /* goto prog_{c_block_name(target_block)}; */")
         elif edge_kind == "covered_synthetic_fallthrough":
             emit_synthetic_edge(edge, synthetic_spans, args)
+    print("    (void)r;")
+    print("    (void)next_entry;")
     print("}")
     print("")
 
