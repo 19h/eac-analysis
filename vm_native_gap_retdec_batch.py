@@ -555,6 +555,24 @@ BATCHES = {
         "0x4b28b0-0x4b2984",
         "0x4b8fd0-0x4b90a4",
     ],
+    30: [
+        "0x54f0e0-0x54f1b4",
+        "0x24f44-0x25017",
+        "0x51c60-0x51d33",
+        "0x48e14d-0x48e220",
+        "0x4b7730-0x4b7803",
+        "0x4b7cd0-0x4b7da3",
+        "0x52e467-0x52e53a",
+        "0x4b5940-0x4b5a12",
+        "0x4e706-0x4e7d7",
+        "0x56188-0x56259",
+        "0x3bc0e4-0x3bc1b5",
+        "0x4b0ac0-0x4b0b91",
+        "0x4c8fa0-0x4c9071",
+        "0x27fbe-0x2808e",
+        "0x570190-0x570260",
+        "0x4b1220-0x4b12ef",
+    ],
 }
 
 
@@ -586,7 +604,19 @@ def extract_functions(text):
     functions = re.sub(r"return &g(\d+)", r"return (int64_t)&g\1", functions)
     functions = re.sub(r"return &v(\d+)", r"return (int64_t)&v\1", functions)
     functions = re.sub(r"return &([A-Za-z_]\w*)", r"return (int64_t)&\1", functions)
+    functions = normalize_wide_movdqa_immediates(functions)
     return normalize_pointer_local_assignments(functions)
+
+
+def normalize_wide_movdqa_immediates(functions):
+    def repl(match):
+        hex_digits = match.group(1)
+        padded = hex_digits.rjust(32, "0")
+        hi = padded[:-16] or "0"
+        lo = padded[-16:]
+        return f"__asm_movdqa(eac_retdec_i128(0x{hi}ull, 0x{lo}ull))"
+
+    return re.sub(r"__asm_movdqa\(0x([0-9a-fA-F]{17,})\)", repl, functions)
 
 
 def normalize_pointer_local_assignments(functions):
@@ -689,6 +719,7 @@ def main():
     print("typedef float float32_t;")
     print("typedef double float64_t;")
     print("typedef long double float80_t;")
+    print("static inline int128_t eac_retdec_i128(uint64_t hi, uint64_t lo) { return (int128_t)(((uint128_t)hi << 64) | (uint128_t)lo); }")
     print("struct __locale_struct;")
     print("struct _TYPEDEF_glob_t;")
     print("struct _TYPEDEF___mbstate_t;")
@@ -719,6 +750,7 @@ def main():
     print("void __asm_out(uint16_t port, char value);")
     print("void __asm_out_135(uint16_t port, int32_t value);")
     print("void __asm_outsb(uint16_t port, char value);")
+    print("void __asm_outsd(uint16_t port, int32_t value);")
     print("uint8_t __readfsbyte(int64_t offset);")
     print("uint64_t __readfsqword(int64_t offset);")
     print("int64_t __asm_iretd(void);")
