@@ -6,22 +6,22 @@
  * coverage -> queue -> RetDec batch -> coverage.
  *
  * Ranges:
- *   0x535930-0x535ad8 rank=4 name=method.std::__cxx11::time_get_wchar_t__std::istreambuf_iterator_wchar_t__std::char_traits_wchar_t_____.virtual_56 kind=native_discovered bytes=424 uncovered=424
- *   0x527483-0x52762a rank=5 name=fcn.00527483 kind=r2_discovered bytes=423 uncovered=423
- *   0x54d0a0-0x54d247 rank=6 name=fcn.0054d0a0 kind=r2_discovered bytes=423 uncovered=423
- *   0x6747c-0x67622 rank=7 name=fcn.0006747c kind=r2_discovered bytes=422 uncovered=422
- *   0x48aec0-0x48b066 rank=8 name=fcn.0048aec0 kind=r2_discovered bytes=422 uncovered=422
- *   0x4f3230-0x4f33d6 rank=9 name=fcn.004f3230 kind=r2_discovered bytes=422 uncovered=422
- *   0x542770-0x542916 rank=10 name=fcn.00542770 kind=r2_discovered bytes=422 uncovered=422
- *   0x69802-0x699a6 rank=11 name=fcn.00069802 kind=r2_discovered bytes=420 uncovered=420
- *   0x4b13e0-0x4b1584 rank=12 name=fcn.004b13e0 kind=r2_discovered bytes=420 uncovered=420
- *   0x6bd8a-0x6bf2a rank=13 name=fcn.0006bd8a kind=r2_discovered bytes=416 uncovered=416
- *   0x568b50-0x568d00 rank=15 name=method.std::__cxx11::messages_char_.virtual_32 kind=native_discovered bytes=432 uncovered=416
- *   0x61082-0x61221 rank=16 name=fcn.00061082 kind=r2_discovered bytes=415 uncovered=415
- *   0x4886f0-0x48888d rank=17 name=fcn.004886f0 kind=r2_discovered bytes=413 uncovered=413
- *   0x55620-0x557b9 rank=18 name=fcn.00055620 kind=r2_discovered bytes=409 uncovered=409
- *   0x4ae080-0x4ae218 rank=19 name=fcn.004ae080 kind=r2_discovered bytes=408 uncovered=408
- *   0x4cd900-0x4cda96 rank=20 name=fcn.004cd900 kind=r2_discovered bytes=406 uncovered=406
+ *   0x535930-0x535ad8 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x527483-0x52762a rank=- name=- kind=- bytes=- uncovered=-
+ *   0x54d0a0-0x54d247 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x6747c-0x67622 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x48aec0-0x48b066 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x4f3230-0x4f33d6 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x542770-0x542916 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x69802-0x699a6 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x4b13e0-0x4b1584 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x6bd8a-0x6bf2a rank=- name=- kind=- bytes=- uncovered=-
+ *   0x568b50-0x568d00 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x61082-0x61221 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x4886f0-0x48888d rank=- name=- kind=- bytes=- uncovered=-
+ *   0x55620-0x557b9 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x4ae080-0x4ae218 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x4cd900-0x4cda96 rank=- name=- kind=- bytes=- uncovered=-
  */
 #include <stdbool.h>
 #include <stdio.h>
@@ -63,7 +63,9 @@ int64_t __asm_iretd(void);
 void __asm_rep_stosb_memset(char *dst, char value, int64_t count);
 void __asm_rep_stosd_memset(char *dst, int32_t value, int64_t count);
 void __asm_rep_stosq_memset(char *dst, int64_t value, int64_t count);
-void __asm_mfence(void);
+void __asm_rep_movsq_memcpy(char *dst, char *src, int64_t count);
+int64_t __asm_hlt(void);
+int64_t __asm_mfence(void);
 void __stack_chk_fail(void);
 int __cxa_atexit(void (*func)(int64_t *), void *arg, void *dso);
 int128_t __asm_movsd(int64_t value);
@@ -93,8 +95,8 @@ int32_t mbsnrtowcs(int32_t *dst, char **src, size_t nms, size_t len, struct _TYP
 int32_t *wmemcpy(int32_t *dest, const int32_t *src, size_t n);
 int32_t *wmemset(int32_t *wcs, int32_t wc, size_t n);
 void *memset2(void *s, int c, size_t n);
-int pthread_mutex_lock(int64_t *mutex);
-int pthread_mutex_unlock(int64_t *mutex);
+int pthread_mutex_lock(void *mutex);
+int pthread_mutex_unlock(void *mutex);
 char *strdup(const char *s);
 struct _Unwind_Exception;
 void _Unwind_Resume(struct _Unwind_Exception *exception);
