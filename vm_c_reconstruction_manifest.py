@@ -2399,6 +2399,12 @@ def native_acceleration_metrics(rows):
         "Primary instruction trace is a file-backed dependency; force refresh remains explicit.")
     add(rows, "native_acceleration", "primary_trace_refresh_target", "make instruction-trace-refresh",
         "Explicit command to rebuild the primary raw instruction trace from run.stderr.")
+    add(rows, "native_acceleration", "pseudocode_syntax_check_uses_file_targets",
+        "yes" if "pseudocode-syntax-check: $(PSEUDOCODE_TOP_C)" in makefile else "no",
+        "Whether the C syntax gate depends on concrete generated files instead of phony pseudocode aggregates.")
+    add(rows, "native_acceleration", "pseudocode_object_link_checks_use_source_file_target",
+        "yes" if "pseudocode-object-check: $(SOURCE_BUNDLE_C)" in makefile and "pseudocode-link-check: $(SOURCE_BUNDLE_C)" in makefile else "no",
+        "Whether object/link smoke checks avoid phony source-bundle regeneration when the bundle is unchanged.")
     add(rows, "native_acceleration", "native_ret_patch_followups_dump_source_lines", line_count(followups_source),
         "Native return-patch follow-up classifier/generator source size.")
     add(rows, "native_acceleration", "native_ret_patch_followups_dump_binary_bytes", file_size(followups_binary),

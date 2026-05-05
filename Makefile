@@ -608,7 +608,7 @@ $(SOURCE_BUNDLE_C): vm_recovered_source_bundle.py $(HANDLERS_PSEUDOCODE_C) $(PRO
 
 source-bundle: $(SOURCE_BUNDLE_C)
 
-pseudocode-syntax-check: pseudocode source-bundle path-pseudocode native-ret-patch-target-pseudocode native-ret-patch-epilogues-retdec native-ret-patch-source278-retdec native-ret-patch-followups native-ret-patch-followup-retdec native-obfuscated-islands native-obfuscated-second-stage native-obfuscated-second-stage-dynamic native-obfuscated-second-stage-slot-proof native-obfuscated-second-stage-stack-source native-obfuscated-second-stage-rbx-provenance native-obfuscated-second-stage-model native-obfuscated-control-model native-ret-patch-hidden-bridge target-only-handlers-retdec unobserved-handlers-retdec weak-handlers-retdec validated-handlers-retdec unresolved-family-chains
+pseudocode-syntax-check: $(PSEUDOCODE_TOP_C) $(PROGRAM_PSEUDOCODE_TOP_C) $(PROGRAM_PSEUDOCODE_FULL_C) $(HANDLERS_PSEUDOCODE_C) $(PATH_HANDLERS_PSEUDOCODE_C) $(SOURCE_BUNDLE_C) $(NATIVE_RET_PATCH_TARGETS_C) $(NATIVE_RET_PATCH_EPILOGUES_RETDEC_C) $(NATIVE_RET_PATCH_SOURCE278_RETDEC_C) $(RET_PATCH_FOLLOWUPS_C) $(RET_PATCH_FOLLOWUP_RETDEC_C) $(NATIVE_OBFUSCATED_ISLANDS_C) $(NATIVE_OBFUSCATED_SECOND_STAGE_C) $(NATIVE_OBFUSCATED_SECOND_STAGE_DYNAMIC_C) $(NATIVE_OBFUSCATED_SECOND_STAGE_SLOT_PROOF_C) $(NATIVE_OBFUSCATED_SECOND_STAGE_STACK_SOURCE_C) $(NATIVE_OBFUSCATED_SECOND_STAGE_RBX_PROVENANCE_C) $(NATIVE_OBFUSCATED_SECOND_STAGE_MODEL_C) $(NATIVE_OBFUSCATED_CONTROL_MODEL_C) $(NATIVE_RET_PATCH_HIDDEN_BRIDGE_C) $(TARGET_ONLY_HANDLER_RETDEC_C) $(UNOBSERVED_HANDLER_RETDEC_CS) $(WEAK_HANDLER_RETDEC_C) $(VALIDATED_HANDLER_RETDEC_CS) $(UNRESOLVED_FAMILY_C)
 	$(CC) -std=c11 -fsyntax-only -Wall -Wextra -Wno-unused-variable -Wno-unused-function -Wno-parentheses dumps/vmtail-wide-1m-w16/vm_handlers_pseudocode.c
 	$(CC) -std=c11 -fsyntax-only -Wall -Wextra -Wno-unused-variable -Wno-unused-function -Wno-parentheses dumps/vmtail-wide-1m-w16/vm_path_handlers_pseudocode.c
 	$(CC) -std=c11 -fsyntax-only -Wall -Wextra -Wno-unused-variable -Wno-unused-function -Wno-parentheses dumps/vmtail-wide-1m-w16/vm_pseudocode_top.c
@@ -635,10 +635,10 @@ pseudocode-syntax-check: pseudocode source-bundle path-pseudocode native-ret-pat
 	$(CC) -std=c11 -fsyntax-only -Wall -Wextra -Wno-unused-variable -Wno-unused-function -Wno-unused-parameter -Wno-uninitialized -Wno-parentheses -Wno-sign-compare -Wno-pointer-to-int-cast -Wno-tautological-constant-out-of-range-compare -Wno-return-stack-address -Wno-deprecated-non-prototype dumps/vmtail-wide-1m-w16/vm_validated_handlers_retdec_batch0*.c
 	$(CC) -std=c11 -fsyntax-only -Wall -Wextra -Wno-unused-function dumps/vmtail-wide-1m-w16/vm_unresolved_family_chains.c
 
-pseudocode-object-check: source-bundle
+pseudocode-object-check: $(SOURCE_BUNDLE_C)
 	$(CC) -std=c11 -O0 -g0 -fno-strict-aliasing -Wall -Wextra -Wno-unused-variable -Wno-unused-function -Wno-parentheses -c dumps/vmtail-wide-1m-w16/vm_recovered_source_bundle.c -o /tmp/eacsym-vm_recovered_source_bundle.o
 
-pseudocode-link-check: source-bundle
+pseudocode-link-check: $(SOURCE_BUNDLE_C)
 	$(CC) -std=c11 -O0 -g0 -fno-strict-aliasing -Wall -Wextra -Wno-unused-variable -Wno-unused-function -Wno-parentheses dumps/vmtail-wide-1m-w16/vm_recovered_source_bundle.c vm_recovered_source_harness.c -o /tmp/eacsym-vm_recovered_source_smoke
 	/tmp/eacsym-vm_recovered_source_smoke
 
