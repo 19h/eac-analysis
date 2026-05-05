@@ -73,6 +73,9 @@ ARTIFACTS = [
     ("native_obfuscated_islands_c", TRACE_DIR / "vm_native_obfuscated_islands.c"),
     ("native_obfuscated_islands_tsv", TRACE_DIR / "vm_native_obfuscated_islands.tsv"),
     ("native_obfuscated_islands_md", TRACE_DIR / "vm_native_obfuscated_islands.md"),
+    ("native_obfuscated_second_stage_c", TRACE_DIR / "vm_native_obfuscated_second_stage.c"),
+    ("native_obfuscated_second_stage_tsv", TRACE_DIR / "vm_native_obfuscated_second_stage.tsv"),
+    ("native_obfuscated_second_stage_md", TRACE_DIR / "vm_native_obfuscated_second_stage.md"),
     ("target_only_handlers_retdec", TRACE_DIR / "vm_target_only_handlers_retdec.c"),
     ("unobserved_handlers_retdec_batch00", TRACE_DIR / "vm_unobserved_handlers_retdec_batch00.c"),
     ("unobserved_handlers_retdec_batch01", TRACE_DIR / "vm_unobserved_handlers_retdec_batch01.c"),
@@ -179,6 +182,8 @@ def c_shape_metrics(rows):
     native_ret_patch_followup_retdec = read_text(TRACE_DIR / "vm_native_ret_patch_followup_retdec.c")
     native_obfuscated_islands = read_text(TRACE_DIR / "vm_native_obfuscated_islands.c")
     native_obfuscated_island_index = read_tsv(TRACE_DIR / "vm_native_obfuscated_islands.tsv")
+    native_obfuscated_second_stage = read_text(TRACE_DIR / "vm_native_obfuscated_second_stage.c")
+    native_obfuscated_second_stage_index = read_tsv(TRACE_DIR / "vm_native_obfuscated_second_stage.tsv")
     target_only_handlers_retdec = read_text(TRACE_DIR / "vm_target_only_handlers_retdec.c")
     unobserved_handlers_retdec_batches = [
         read_text(TRACE_DIR / f"vm_unobserved_handlers_retdec_batch{index:02d}.c")
@@ -206,6 +211,8 @@ def c_shape_metrics(rows):
         row.get("downstream_status", "") for row in native_obfuscated_island_index
     )
     obfuscated_next_actions = Counter(row.get("next_action", "") for row in native_obfuscated_island_index)
+    second_stage_statuses = Counter(row.get("status", "") for row in native_obfuscated_second_stage_index)
+    second_stage_next_actions = Counter(row.get("next_action", "") for row in native_obfuscated_second_stage_index)
 
     add(rows, "c_shape", "handler_functions", count(r"^static VMOpResult op_entry_\d{3}\(VMState \*vm\) \{", handlers),
         "All-entry handler/operator C functions.")
@@ -305,6 +312,30 @@ def c_shape_metrics(rows):
     add(rows, "c_shape", "native_obfuscated_island_entry_helpers",
         sum(1 for row in native_obfuscated_island_index if row.get("kind", "") == "entry_helper"),
         "Normal-prologue helper rows that enter the first native obfuscation island.")
+    add(rows, "c_shape", "native_obfuscated_second_stage_rows",
+        len(native_obfuscated_second_stage_index),
+        "Second-stage native obfuscated downstream thunks reached after first-stage island collapse.")
+    add(rows, "c_shape", "native_obfuscated_second_stage_c_functions",
+        count(r"^static void second_stage_thunk_[0-9a-f]+\(VMState \*vm,", native_obfuscated_second_stage),
+        "Syntax-checkable C helper functions for second-stage computed-thunk evidence.")
+    add(rows, "c_shape", "native_obfuscated_second_stage_dispatch_cases",
+        count(r"^    case 0x[0-9a-f]+u:$", native_obfuscated_second_stage),
+        "Dispatcher cases in the native obfuscated second-stage C artifact.")
+    add(rows, "c_shape", "native_obfuscated_second_stage_computed_jumps",
+        sum(1 for row in native_obfuscated_second_stage_index if row.get("indirect_jmp_site", "")),
+        "Second-stage thunks with an exact computed jmp [rax] native site.")
+    add(rows, "c_shape", "native_obfuscated_second_stage_internal_loop_edges",
+        sum(
+            int(bool(row.get("loop1_jmp_site", ""))) + int(bool(row.get("loop2_jmp_site", "")))
+            for row in native_obfuscated_second_stage_index
+        ),
+        "Internal loop edges recorded across second-stage computed thunks.")
+    add(rows, "c_shape", "native_obfuscated_second_stage_status_mix",
+        ",".join(f"{key}:{value}" for key, value in second_stage_statuses.most_common()) or "-",
+        "Status mix for second-stage native computed thunks.")
+    add(rows, "c_shape", "native_obfuscated_second_stage_next_action_mix",
+        ",".join(f"{key}:{value}" for key, value in second_stage_next_actions.most_common()) or "-",
+        "Next-action mix for second-stage native computed thunks.")
     add(rows, "c_shape", "target_only_handler_retdec_selected_ranges",
         count(r"^ \*   0x[0-9a-f]+-0x[0-9a-f]+ entry=\d+ ", target_only_handlers_retdec),
         "Target-only VM handler native ranges selected for targeted RetDec.")
@@ -2086,6 +2117,8 @@ def native_acceleration_metrics(rows):
     followup_retdec_binary = Path("vm_native_ret_patch_followup_retdec_dump")
     obfuscated_islands_source = read_text("vm_native_obfuscated_islands_dump.c")
     obfuscated_islands_binary = Path("vm_native_obfuscated_islands_dump")
+    obfuscated_second_stage_source = read_text("vm_native_obfuscated_second_stage_dump.c")
+    obfuscated_second_stage_binary = Path("vm_native_obfuscated_second_stage_dump")
     add(rows, "native_acceleration", "instruction_unique_fast_source_lines", line_count(unique_source),
         "Native exact-instruction reducer source size.")
     add(rows, "native_acceleration", "instruction_unique_fast_binary_bytes", file_size(unique_binary),
@@ -2148,6 +2181,13 @@ def native_acceleration_metrics(rows):
     add(rows, "native_acceleration", "native_obfuscated_islands_uses_native_generator",
         "yes" if "./vm_native_obfuscated_islands_dump --c" in makefile else "no",
         "Whether the native obfuscated-island C/TSV/Markdown artifacts are generated by the native C tool.")
+    add(rows, "native_acceleration", "native_obfuscated_second_stage_dump_source_lines", line_count(obfuscated_second_stage_source),
+        "Native second-stage obfuscated-thunk classifier/generator source size.")
+    add(rows, "native_acceleration", "native_obfuscated_second_stage_dump_binary_bytes", file_size(obfuscated_second_stage_binary),
+        "Current compiled native second-stage obfuscated-thunk classifier/generator size.")
+    add(rows, "native_acceleration", "native_obfuscated_second_stage_uses_native_generator",
+        "yes" if "./vm_native_obfuscated_second_stage_dump --c" in makefile else "no",
+        "Whether the second-stage obfuscated-thunk C/TSV/Markdown artifacts are generated by the native C tool.")
 
 
 def build_rows():
