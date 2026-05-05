@@ -598,7 +598,7 @@ BATCHES = {
         "0x5019b0-0x501a79",
         "0x494dd0-0x494e98",
         "0x49a820-0x49a8e8",
-        "0x54e240-0x54e308",
+        "0x3629a-0x3635f",
         "0x558300-0x5583c8",
         "0x6a974-0x6aa3b",
         "0x3cc938-0x3cc9ff",
@@ -769,6 +769,7 @@ def main():
     print("struct utsname;")
     print("struct iovec;")
     print("struct epoll_event;")
+    print("struct struct3 { uint32_t e0; uint32_t e1; uint32_t e2; uint32_t e3; };")
     print("#define F_GETFL 3")
     print("#define F_SETFL 4")
     print("#define SO_DEBUG 1")
@@ -800,6 +801,10 @@ def main():
     print("void __asm_rep_movsq_memcpy(char *dst, char *src, int64_t count);")
     print("int64_t __asm_hlt(void);")
     print("int64_t __asm_mfence();")
+    print("struct struct3 __asm_cpuid(uint32_t leaf);")
+    print("struct struct3 __asm_cpuid_133(uint32_t leaf);")
+    print("struct struct3 __asm_cpuid_134(uint32_t leaf);")
+    print("uint64_t __asm_xgetbv(uint64_t index);")
     print("void __stack_chk_fail(void);")
     print("int __cxa_atexit(void (*func)(int64_t *), void *arg, void *dso);")
     print("int128_t __asm_movsd(int64_t value);")

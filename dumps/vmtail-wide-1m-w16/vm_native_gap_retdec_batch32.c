@@ -12,7 +12,7 @@
  *   0x5019b0-0x501a79 rank=14 name=method.std::basic_filebuf_wchar_t__std::char_traits_wchar_t___.virtual_40 kind=native_discovered bytes=201 uncovered=201
  *   0x494dd0-0x494e98 rank=15 name=fcn.00494dd0 kind=r2_discovered bytes=200 uncovered=200
  *   0x49a820-0x49a8e8 rank=16 name=fcn.0049a820 kind=r2_discovered bytes=200 uncovered=200
- *   0x54e240-0x54e308 rank=17 name=fcn.0054e240 kind=r2_discovered bytes=200 uncovered=200
+ *   0x3629a-0x3635f rank=27 name=fcn.0003629a kind=r2_discovered bytes=197 uncovered=197
  *   0x558300-0x5583c8 rank=18 name=fcn.00558300 kind=r2_discovered bytes=200 uncovered=200
  *   0x6a974-0x6aa3b rank=19 name=fcn.0006a974 kind=r2_discovered bytes=199 uncovered=199
  *   0x3cc938-0x3cc9ff rank=20 name=fcn.003cc938 kind=r2_discovered bytes=199 uncovered=199
@@ -48,6 +48,7 @@ struct timeval;
 struct utsname;
 struct iovec;
 struct epoll_event;
+struct struct3 { uint32_t e0; uint32_t e1; uint32_t e2; uint32_t e3; };
 #define F_GETFL 3
 #define F_SETFL 4
 #define SO_DEBUG 1
@@ -75,6 +76,16 @@ extern int g19;
 extern int g20;
 extern int g21;
 extern int g22;
+extern int g23;
+extern int g24;
+extern int g25;
+extern int g26;
+extern int g27;
+extern int g28;
+extern int g29;
+extern int g30;
+extern int g31;
+extern int g32;
 unsigned char llvm_ctpop_i8(unsigned char value);
 uint16_t llvm_bswap_i16(uint16_t value);
 void __asm_int(int32_t interrupt);
@@ -99,6 +110,10 @@ void __asm_rep_movsd_memcpy(char *dst, char *src, int64_t count);
 void __asm_rep_movsq_memcpy(char *dst, char *src, int64_t count);
 int64_t __asm_hlt(void);
 int64_t __asm_mfence();
+struct struct3 __asm_cpuid(uint32_t leaf);
+struct struct3 __asm_cpuid_133(uint32_t leaf);
+struct struct3 __asm_cpuid_134(uint32_t leaf);
+uint64_t __asm_xgetbv(uint64_t index);
 void __stack_chk_fail(void);
 int __cxa_atexit(void (*func)(int64_t *), void *arg, void *dso);
 int128_t __asm_movsd(int64_t value);
@@ -188,9 +203,12 @@ struct _Unwind_Exception;
 int64_t _Unwind_GetRegionStart();
 void _Unwind_Resume(struct _Unwind_Exception *exception);
 
+int64_t function_1ff50();
+int64_t function_20550();
 int64_t function_25622();
 int64_t function_2562c();
 int64_t function_259ce();
+int64_t function_3629a();
 int64_t function_3ae24();
 int64_t function_3b222();
 int64_t function_3cc938();
@@ -223,8 +241,6 @@ int64_t function_501420();
 int64_t function_5019b0();
 int64_t function_50b2b0();
 int64_t function_50e0e0();
-int64_t function_54df80();
-int64_t function_54e240();
 int64_t function_555500();
 int64_t function_558300();
 int64_t function_5630c0();
@@ -234,6 +250,32 @@ int64_t function_566890();
 int64_t function_68e1a();
 int64_t function_6a974();
 int64_t function_c57b8();
+
+// Address range: 0x3629a - 0x3635f
+int64_t function_3629a(void) {
+    // 0x3629a
+    if (*(char *)&g26 != 0) {
+        // 0x3634e
+        return (int64_t)&g17;
+    }
+    // 0x362a8
+    if ((int32_t)function_20550(&g26) != 0) {
+        // 0x362c0
+        g19 = 1;
+        g20 = 0;
+        g18 = (int64_t)&g24;
+        g21 = 0;
+        *(int32_t *)&g22 = 0x3f800000;
+        g23 = 0;
+        g17 = (int64_t)&g28;
+        g24 = 0;
+        g25 = (int64_t)&g28;
+        function_1ff50(&g26);
+        __cxa_atexit((void (*)(int64_t *))0x36210, &g17, (int64_t *)0x849800);
+    }
+    // 0x3634e
+    return (int64_t)&g17;
+}
 
 // Address range: 0x3ae24 - 0x3aeea
 int64_t function_3ae24(int64_t a1, uint64_t a2) {
@@ -298,10 +340,10 @@ int64_t function_3ae24(int64_t a1, uint64_t a2) {
 
 // Address range: 0x6a974 - 0x6aa33
 int64_t function_6a974(int64_t a1, int64_t a2) {
-    int64_t v1 = a1 + (int64_t)&g13; // 0x6a97d
+    int64_t v1 = a1 + (int64_t)&g12; // 0x6a97d
     int64_t v2 = a1 + 184; // 0x6a988
-    int64_t v3 = a1 + (int64_t)&g20; // 0x6a99b
-    int64_t v4 = a1 + (int64_t)&g12; // 0x6a9a2
+    int64_t v3 = a1 + (int64_t)&g30; // 0x6a99b
+    int64_t v4 = a1 + (int64_t)&g11; // 0x6a9a2
     function_49a820(v1);
     int64_t v5 = a1 + (int64_t)&g8; // 0x6a9b1
     function_4ab380(v2);
@@ -314,7 +356,7 @@ int64_t function_6a974(int64_t a1, int64_t a2) {
     __asm_rep_stosd_memset((char *)v4, 0, 86);
     __asm_rep_stosd_memset((char *)v1, 0, 110);
     __asm_rep_stosd_memset((char *)v3, 0, 94);
-    *(char *)(a1 + (int64_t)&g22) = 0;
+    *(char *)(a1 + (int64_t)&g32) = 0;
     return function_68e1a(a1);
 }
 
@@ -349,7 +391,7 @@ int64_t function_494dd0(int64_t a1) {
         return result;
     }
     // 0x494de9
-    function_49e770(a1, 3, "/home/richard/code/mbedtls/library/ssl_tls.c", &g21, "swap epochs");
+    function_49e770(a1, 3, "/home/richard/code/mbedtls/library/ssl_tls.c", &g31, "swap epochs");
     int64_t v3 = *v1; // 0x494e08
     int64_t * v4 = (int64_t *)(v3 + (int64_t)&g9); // 0x494e10
     *v2 = *v4;
@@ -492,7 +534,7 @@ int64_t function_4b91b0(int64_t a1, int64_t a2, int64_t a3, int64_t a4, int64_t 
 
 // Address range: 0x4d8e90 - 0x4d8f54
 int64_t function_4d8e90(int64_t a1, int64_t a2, int64_t a3, int64_t a4, int64_t a5) {
-    struct struct3 v1; // 0x4d8e95
+    struct struct2 v1; // 0x4d8e95
     // 0x4d8e90
     v1 = __asm_cpuid(0);
     uint32_t v2 = __asm_cpuid_133(1).e2; // 0x4d8e9f
@@ -502,20 +544,20 @@ int64_t function_4d8e90(int64_t a1, int64_t a2, int64_t a3, int64_t a4, int64_t 
     int64_t result = v5; // 0x4d8ec7
     if ((v2 & 0x8000000) == 0) {
         // 0x4d8eef
-        *(int32_t *)&g17 = (int32_t)result;
+        *(int32_t *)&g16 = (int32_t)result;
         return result;
     }
     int64_t v6 = v2; // 0x4d8e9f
     int64_t v7 = __asm_xgetbv(v6); // 0x4d8ed7
     if ((v7 & 6) != 6) {
         // 0x4d8eef
-        *(int32_t *)&g17 = (int32_t)result;
+        *(int32_t *)&g16 = (int32_t)result;
         return result;
     }
     int64_t result2 = (v6 & 0x10000000) != 0 ? result | 8 : result; // 0x4d8f0c
     if (v1.e0 < 7) {
         // 0x4d8eef
-        *(int32_t *)&g17 = (int32_t)result2;
+        *(int32_t *)&g16 = (int32_t)result2;
         return result2;
     }
     uint32_t v8 = __asm_cpuid_134(7).e1; // 0x4d8f1b
@@ -525,7 +567,7 @@ int64_t function_4d8e90(int64_t a1, int64_t a2, int64_t a3, int64_t a4, int64_t 
         return result3 & 0xffffffdf | (int64_t)(v8 / 0x2000000 & 64 | 32);
     }
     // 0x4d8eef
-    *(int32_t *)&g17 = (int32_t)result3;
+    *(int32_t *)&g16 = (int32_t)result3;
     return result3;
 }
 
@@ -659,7 +701,7 @@ int64_t function_5019b0(int64_t a1, int64_t a2, int64_t a3, int64_t a4) {
 // From class:    std::__numpunct_cache<wchar_t>
 // Type:          constructor
 int64_t function_50e0e0(int64_t a1, int64_t a2) {
-    int64_t v1 = function_566390(&g18); // 0x50e0f4
+    int64_t v1 = function_566390(&g27); // 0x50e0f4
     int64_t * v2 = (int64_t *)(*(int64_t *)(a2 + 24) + 8 * v1); // 0x50e108
     int64_t result = *v2; // 0x50e108
     if (result != 0) {
@@ -674,7 +716,7 @@ int64_t function_50e0e0(int64_t a1, int64_t a2) {
     *(int64_t *)(v3 + 40) = 0;
     *(int64_t *)(v3 + 48) = 0;
     *(int64_t *)(v3 + 56) = 0;
-    *(int64_t *)v3 = (int64_t)&g14;
+    *(int64_t *)v3 = (int64_t)&g13;
     *(int64_t *)(v3 + 64) = 0;
     *(int64_t *)(v3 + 72) = 0;
     *(char *)(v3 + 328) = 0;
@@ -683,132 +725,11 @@ int64_t function_50e0e0(int64_t a1, int64_t a2) {
     return *v2;
 }
 
-// Address range: 0x54e240 - 0x54e306
-int64_t function_54e240(int64_t result, int64_t a2, uint64_t a3, int64_t a4) {
-    int64_t * v1 = (int64_t *)(result + 8); // 0x54e243
-    int64_t v2 = *v1; // 0x54e243
-    if (v2 == result) {
-        // 0x54e2ff
-        return result;
-    }
-    int64_t v3 = v2 - result >> 1;
-    uint16_t v4 = *(int16_t *)result; // 0x54e2d4
-    int64_t v5 = v4; // 0x54e2d4
-    int64_t v6 = v5 + 0xffff2800; // 0x54e2d7
-    int64_t v7; // 0x54e240
-    int64_t v8; // 0x54e240
-    int64_t v9; // 0x54e240
-    int64_t v10; // 0x54e283
-    int64_t v11; // 0x54e287
-    int64_t v12; // 0x54e29e
-    if ((int32_t)v6 > (int32_t)&g11) {
-        // 0x54e2e5
-        v8 = v3;
-        v9 = v5;
-        v7 = 1;
-        if (v5 > a3 || (int32_t)v4 - 0xdc00 <= (int32_t)&g11) {
-            // break -> 0x54e2ff
-            break;
-        }
-    } else {
-        // 0x54e270
-        if ((int32_t)a4 == 1) {
-            // break -> 0x54e2ff
-            break;
-        }
-        // 0x54e279
-        if (v3 < 2) {
-            // break -> 0x54e2ff
-            break;
-        }
-        // 0x54e283
-        v10 = (int64_t)*(int16_t *)(result + 2);
-        v11 = v10 + 0xffff2400;
-        if ((int32_t)v11 > (int32_t)&g11) {
-            // break -> 0x54e2ff
-            break;
-        }
-        // 0x54e295
-        v12 = 1024 * v5 + 0xfca02400 + v10 & 0xffffffff;
-        v8 = v11 & 0xffffffff;
-        v9 = v12;
-        v7 = 2;
-        if (v12 > a3) {
-            // break -> 0x54e2ff
-            break;
-        }
-    }
-    int64_t v13 = function_54df80(a2, v9, v8, v6 & 0xffffffff, v7); // 0x54e2af
-    int64_t result2 = v13; // 0x54e2b6
-    while ((char)v13 != 0) {
-        int64_t v14 = *v1; // 0x54e2bb
-        int64_t v15 = 2 * v7 + a2; // 0x54e2bf
-        *(int64_t *)result = v15;
-        result2 = v14;
-        if (v14 == v15) {
-            // break -> 0x54e2ff
-            break;
-        }
-        int64_t v16 = v15;
-        v3 = v14 - v15 >> 1;
-        v4 = *(int16_t *)v16;
-        v5 = v4;
-        v6 = v5 + 0xffff2800;
-        if ((int32_t)v6 > (int32_t)&g11) {
-            // 0x54e2e5
-            v8 = v3;
-            v9 = v5;
-            v7 = 1;
-            result2 = 2;
-            if (v5 > a3 || (int32_t)v4 - 0xdc00 <= (int32_t)&g11) {
-                // break -> 0x54e2ff
-                break;
-            }
-        } else {
-            // 0x54e270
-            result2 = 2;
-            if ((int32_t)a4 == 1) {
-                // break -> 0x54e2ff
-                break;
-            }
-            // 0x54e279
-            result2 = v16;
-            if (v3 < 2) {
-                // break -> 0x54e2ff
-                break;
-            }
-            // 0x54e283
-            v10 = (int64_t)*(int16_t *)(v16 + 2);
-            v11 = v10 + 0xffff2400;
-            result2 = 2;
-            if ((int32_t)v11 > (int32_t)&g11) {
-                // break -> 0x54e2ff
-                break;
-            }
-            // 0x54e295
-            v12 = 1024 * v5 + 0xfca02400 + v10 & 0xffffffff;
-            v8 = v11 & 0xffffffff;
-            v9 = v12;
-            v7 = 2;
-            result2 = 2;
-            if (v12 > a3) {
-                // break -> 0x54e2ff
-                break;
-            }
-        }
-        // 0x54e2ac
-        v13 = function_54df80(a2, v9, v8, v6 & 0xffffffff, v7);
-        result2 = v13;
-    }
-    // 0x54e2ff
-    return result2;
-}
-
 // Address range: 0x558300 - 0x5583c7
 // From class:    std::__numpunct_cache<char>
 // Type:          constructor
 int64_t function_558300(int64_t a1, int64_t a2) {
-    int64_t v1 = function_566390(&g19); // 0x558314
+    int64_t v1 = function_566390(&g29); // 0x558314
     int64_t * v2 = (int64_t *)(*(int64_t *)(a2 + 24) + 8 * v1); // 0x558328
     int64_t result = *v2; // 0x558328
     if (result != 0) {
@@ -823,9 +744,9 @@ int64_t function_558300(int64_t a1, int64_t a2) {
     *(int64_t *)(v3 + 40) = 0;
     *(int64_t *)(v3 + 48) = 0;
     *(int64_t *)(v3 + 56) = 0;
-    *(int64_t *)v3 = (int64_t)&g16;
+    *(int64_t *)v3 = (int64_t)&g15;
     *(int64_t *)(v3 + 64) = 0;
-    *(int16_t *)(v3 + 72) = (int16_t)((int32_t)&g16 ^ (int32_t)&g16);
+    *(int16_t *)(v3 + 72) = (int16_t)((int32_t)&g15 ^ (int32_t)&g15);
     *(char *)(v3 + 136) = 0;
     function_555500(v3, a2);
     function_566890(a2, v3, v1);
@@ -838,7 +759,7 @@ int64_t function_558300(int64_t a1, int64_t a2) {
 int64_t function_5630c0(int64_t a1, int64_t a2, int64_t a3, int64_t a4) {
     // 0x5630c0
     *(int32_t *)(a1 + 8) = (int32_t)(bool)(a4 != 0);
-    *(int64_t *)a1 = (int64_t)&g15;
+    *(int64_t *)a1 = (int64_t)&g14;
     int64_t v1 = function_565f30(); // 0x5630e6
     *(int64_t *)(a1 + 16) = v1;
     *(char *)(a1 + 24) = (char)((int64_t)(a2 != 0) & a3);
