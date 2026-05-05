@@ -6,22 +6,22 @@
  * coverage -> queue -> RetDec batch -> coverage.
  *
  * Ranges:
- *   0x4b2760-0x4b282a rank=11 name=fcn.004b2760 kind=r2_discovered bytes=202 uncovered=202
- *   0x4e9cb0-0x4e9d7a rank=12 name=fcn.004e9cb0 kind=r2_discovered bytes=202 uncovered=202
- *   0x50e0e0-0x50e1aa rank=13 name=fcn.0050e0e0 kind=r2_discovered bytes=202 uncovered=202
- *   0x5019b0-0x501a79 rank=14 name=method.std::basic_filebuf_wchar_t__std::char_traits_wchar_t___.virtual_40 kind=native_discovered bytes=201 uncovered=201
- *   0x494dd0-0x494e98 rank=15 name=fcn.00494dd0 kind=r2_discovered bytes=200 uncovered=200
- *   0x49a820-0x49a8e8 rank=16 name=fcn.0049a820 kind=r2_discovered bytes=200 uncovered=200
- *   0x3629a-0x3635f rank=27 name=fcn.0003629a kind=r2_discovered bytes=197 uncovered=197
- *   0x558300-0x5583c8 rank=18 name=fcn.00558300 kind=r2_discovered bytes=200 uncovered=200
- *   0x6a974-0x6aa3b rank=19 name=fcn.0006a974 kind=r2_discovered bytes=199 uncovered=199
- *   0x3cc938-0x3cc9ff rank=20 name=fcn.003cc938 kind=r2_discovered bytes=199 uncovered=199
- *   0x4b6490-0x4b6557 rank=21 name=fcn.004b6490 kind=r2_discovered bytes=199 uncovered=199
- *   0x4d8e90-0x4d8f57 rank=22 name=fcn.004d8e90 kind=r2_discovered bytes=199 uncovered=199
- *   0x5630c0-0x563187 rank=23 name=fcn.005630c0 kind=r2_discovered bytes=199 uncovered=199
- *   0x3ae24-0x3aeea rank=24 name=fcn.0003ae24 kind=r2_discovered bytes=198 uncovered=198
- *   0x4b91b0-0x4b9276 rank=25 name=fcn.004b91b0 kind=r2_discovered bytes=198 uncovered=198
- *   0x4ffb20-0x4ffbe6 rank=26 name=method.std::basic_filebuf_char__std::char_traits_char___.virtual_40 kind=native_discovered bytes=198 uncovered=198
+ *   0x4b2760-0x4b282a rank=- name=- kind=- bytes=- uncovered=-
+ *   0x4e9cb0-0x4e9d7a rank=- name=- kind=- bytes=- uncovered=-
+ *   0x50e0e0-0x50e1aa rank=- name=- kind=- bytes=- uncovered=-
+ *   0x5019b0-0x501a79 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x494dd0-0x494e98 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x49a820-0x49a8e8 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x3629a-0x3635f rank=- name=- kind=- bytes=- uncovered=-
+ *   0x558300-0x5583c8 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x6a974-0x6aa3b rank=- name=- kind=- bytes=- uncovered=-
+ *   0x3cc938-0x3cc9ff rank=- name=- kind=- bytes=- uncovered=-
+ *   0x4b6490-0x4b6557 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x4d8e90-0x4d8f57 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x5630c0-0x563187 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x3ae24-0x3aeea rank=- name=- kind=- bytes=- uncovered=-
+ *   0x4b91b0-0x4b9276 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x4ffb20-0x4ffbe6 rank=- name=- kind=- bytes=- uncovered=-
  */
 #include <stdbool.h>
 #include <stdio.h>
@@ -48,7 +48,10 @@ struct timeval;
 struct utsname;
 struct iovec;
 struct epoll_event;
+#ifndef EAC_RETDEC_CPUID_REGS_DEFINED
+#define EAC_RETDEC_CPUID_REGS_DEFINED 1
 struct eac_retdec_cpuid_regs { uint32_t e0; uint32_t e1; uint32_t e2; uint32_t e3; };
+#endif
 #define F_GETFL 3
 #define F_SETFL 4
 #define SO_DEBUG 1
