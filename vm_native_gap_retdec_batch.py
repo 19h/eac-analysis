@@ -159,6 +159,24 @@ BATCHES = {
         "0x5143e0-0x51455f",
         "0x61d90-0x61f0e",
     ],
+    8: [
+        "0x55ead0-0x55ec4e",
+        "0x497e60-0x497fdd",
+        "0x5422a-0x543a6",
+        "0x48c190-0x48c30c",
+        "0x54d560-0x54d6dc",
+        "0x61792-0x6190c",
+        "0x4ff270-0x4ff3e8",
+        "0x5010e0-0x501258",
+        "0x2247e-0x225f5",
+        "0x327a0-0x32917",
+        "0x36b64-0x36cda",
+        "0x4b51a-0x4b690",
+        "0x71d34-0x71eaa",
+        "0x4c5bd0-0x4c5d45",
+        "0x4ea160-0x4ea2d5",
+        "0x548780-0x5488f5",
+    ],
 }
 
 
@@ -278,8 +296,12 @@ def main():
         print(f"extern int g{index};")
     print("unsigned char llvm_ctpop_i8(unsigned char value);")
     print("void __asm_int(int32_t interrupt);")
+    print("int64_t __asm_int1(int32_t interrupt);")
     print("int32_t __asm_in(uint16_t port);")
+    print("int32_t __asm_in_134(uint16_t port);")
+    print("char __asm_in_136(uint16_t port);")
     print("void __asm_out(uint16_t port, char value);")
+    print("void __asm_out_135(uint16_t port, int32_t value);")
     print("void __asm_outsb(uint16_t port, char value);")
     print("uint8_t __readfsbyte(int64_t offset);")
     print("uint64_t __readfsqword(int64_t offset);")
@@ -296,6 +318,7 @@ def main():
     print("int128_t __asm_movsd(int64_t value);")
     print("int128_t __asm_movss(int32_t value);")
     print("int64_t __asm_movss_133(int128_t value);")
+    print("int128_t __asm_movdqa(int128_t value);")
     print("int128_t __asm_movdqu(int128_t value);")
     print("int128_t __asm_movapd(int128_t value);")
     print("int128_t __asm_andpd(int128_t left, int128_t right);")
@@ -306,7 +329,8 @@ def main():
     print("int128_t __asm_subsd(int128_t left, int128_t right);")
     print("int64_t __asm_cvttsd2si(int128_t value);")
     print("void __asm_ucomisd(int128_t left, int128_t right);")
-    print("void __asm_movups(int128_t dst, int128_t src);")
+    print("int128_t __asm_movups();")
+    print("void __asm_movups_133();")
     print("float80_t __frontend_reg_load_fpr(int32_t reg);")
     print("void __frontend_reg_store_fpr(int32_t reg, float80_t value);")
     print("char *__nl_langinfo_l(int32_t item, struct __locale_struct *locale);")
