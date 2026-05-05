@@ -133,6 +133,12 @@ def c_shape_metrics(rows):
         "Synthetic gap sites annotated with next-hooked-source dynamic stitch evidence.")
     add(rows, "c_shape", "program_full_dynamic_stitch_event_comments", count(r"dynamic stitch: event=", program_full),
         "Dynamic stitch event-instance comments carried into the full program sketch.")
+    add(rows, "c_shape", "program_full_live_in_role_evidence_sites", count(r"live-in role evidence @", program_full),
+        "Synthetic gap sites annotated with prioritized live-in register role evidence.")
+    add(rows, "c_shape", "program_full_live_in_role_comments", count(r"live-in role: source=", program_full),
+        "Live-in role row comments carried into the full program sketch.")
+    add(rows, "c_shape", "program_full_final_tail_site_proof_comments", count(r"final-tail site proof:", program_full),
+        "Exact native final-tail site proof comments carried into the full program sketch.")
     add(rows, "c_shape", "bundle_block_defs", count(r"^static void prog_bb_\d{4}\(VMState \*vm, uint64_t vm_ip\) \{", bundle),
         "Full program block functions inside the combined source bundle.")
     add(rows, "c_shape", "bundle_block_calls", count(r"^    prog_bb_\d{4}\(vm, vm_ip\);$", bundle),
@@ -147,6 +153,12 @@ def c_shape_metrics(rows):
         "Synthetic gap sites annotated with dynamic stitch evidence inside the combined source bundle.")
     add(rows, "c_shape", "bundle_dynamic_stitch_event_comments", count(r"dynamic stitch: event=", bundle),
         "Dynamic stitch event-instance comments carried into the combined source bundle.")
+    add(rows, "c_shape", "bundle_live_in_role_evidence_sites", count(r"live-in role evidence @", bundle),
+        "Synthetic gap sites annotated with prioritized live-in register role evidence inside the combined source bundle.")
+    add(rows, "c_shape", "bundle_live_in_role_comments", count(r"live-in role: source=", bundle),
+        "Live-in role row comments carried into the combined source bundle.")
+    add(rows, "c_shape", "bundle_final_tail_site_proof_comments", count(r"final-tail site proof:", bundle),
+        "Exact native final-tail site proof comments carried into the combined source bundle.")
 
 
 def coverage_metrics(rows):

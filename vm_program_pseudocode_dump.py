@@ -416,12 +416,16 @@ def main():
     parser.add_argument("--synthetic-tail-lift", default="dumps/vmtail-wide-1m-w16/vm_synthetic_tail_lift.tsv")
     parser.add_argument("--synthetic-gap-transfer-probe", default="dumps/vmtail-wide-1m-w16/vm_synthetic_gap_transfer_probe.tsv")
     parser.add_argument("--synthetic-gap-dynamic-stitch", default="dumps/vmtail-wide-1m-w16/vm_synthetic_gap_dynamic_stitch.tsv")
+    parser.add_argument("--synthetic-gap-live-in-roles", default="dumps/vmtail-wide-1m-w16/vm_synthetic_gap_live_in_roles.tsv")
+    parser.add_argument("--live-in-final-tail-site-probe", default="dumps/vmtail-wide-1m-w16/vm_live_in_final_tail_site_probe.tsv")
     parser.add_argument("--synthetic-top-items", type=int, default=4)
     parser.add_argument("--synthetic-max-bytes", type=int, default=48)
     parser.add_argument("--transfer-probe-top-items", type=int, default=4)
     parser.add_argument("--transfer-probe-max-expr", type=int, default=180)
     parser.add_argument("--dynamic-stitch-top-items", type=int, default=4)
     parser.add_argument("--dynamic-stitch-max-candidates", type=int, default=180)
+    parser.add_argument("--live-in-role-top-items", type=int, default=4)
+    parser.add_argument("--live-in-role-max-expr", type=int, default=220)
     parser.add_argument("--max-expr-len", type=int, default=220)
     parser.add_argument("--start", action="append", default=[])
     parser.add_argument("--keep-order", action="store_true")
@@ -434,6 +438,8 @@ def main():
     synthetic_spans = load_synthetic_spans(args.synthetic_trace, args.synthetic_tail_lift)
     dynamic_stitches = load_dynamic_stitches(args.synthetic_gap_dynamic_stitch)
     transfer_probes = load_transfer_probes(args.synthetic_gap_transfer_probe)
+    live_in_roles = load_live_in_roles(args.synthetic_gap_live_in_roles)
+    final_tail_site_probes = load_final_tail_site_probes(args.live_in_final_tail_site_probe)
     tail_lifts = load_tail_lifts(args.synthetic_tail_lift)
 
     emit_preamble(collect_used_entries(chosen, rows_by_block, args.rows_per_block, edges, synthetic_spans))
@@ -441,7 +447,20 @@ def main():
     known_blocks = {block["block"] for block in chosen}
     block_by_start = {parse_hex(block["start_vm_ip"]): block["block"] for block in chosen}
     for block in chosen:
-        emit_block(block, rows_by_block.get(block["block"], []), edges.get(block["block"]), synthetic_spans, dynamic_stitches, transfer_probes, tail_lifts, args, known_blocks, block_by_start)
+        emit_block(
+            block,
+            rows_by_block.get(block["block"], []),
+            edges.get(block["block"]),
+            synthetic_spans,
+            dynamic_stitches,
+            transfer_probes,
+            live_in_roles,
+            final_tail_site_probes,
+            tail_lifts,
+            args,
+            known_blocks,
+            block_by_start,
+        )
     emit_dispatch(chosen)
     print(
         f"program_pseudocode_blocks={len(chosen)} rows_per_block={args.rows_per_block}",
