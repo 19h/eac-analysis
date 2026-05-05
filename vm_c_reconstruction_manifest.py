@@ -27,6 +27,8 @@ ARTIFACTS = [
     ("synthetic_gap_chain_probe_md", TRACE_DIR / "vm_synthetic_gap_chain_probe.md"),
     ("synthetic_gap_residual_audit_tsv", TRACE_DIR / "vm_synthetic_gap_residual_audit.tsv"),
     ("synthetic_gap_residual_audit_md", TRACE_DIR / "vm_synthetic_gap_residual_audit.md"),
+    ("synthetic_gap_concrete_state_audit_tsv", TRACE_DIR / "vm_synthetic_gap_concrete_state_audit.tsv"),
+    ("synthetic_gap_concrete_state_audit_md", TRACE_DIR / "vm_synthetic_gap_concrete_state_audit.md"),
     ("synthetic_gap_symbolic_successors_tsv", TRACE_DIR / "vm_synthetic_gap_symbolic_successors.tsv"),
     ("synthetic_gap_symbolic_successors_md", TRACE_DIR / "vm_synthetic_gap_symbolic_successors.md"),
     ("synthetic_gap_live_in_roles_tsv", TRACE_DIR / "vm_synthetic_gap_live_in_roles.tsv"),
@@ -159,6 +161,10 @@ def c_shape_metrics(rows):
         "Residual synthetic gap audit sites carried into the full program sketch.")
     add(rows, "c_shape", "program_full_residual_audit_comments", count(r"residual audit: source=", program_full),
         "Per-start residual promotion-state comments carried into the full program sketch.")
+    add(rows, "c_shape", "program_full_concrete_state_audit_sites", count(r"concrete-state audit @", program_full),
+        "Residual concrete-state replay audit sites carried into the full program sketch.")
+    add(rows, "c_shape", "program_full_concrete_state_audit_comments", count(r"concrete-state audit: source=", program_full),
+        "Per-start concrete-state replay comments carried into the full program sketch.")
     add(rows, "c_shape", "program_full_hidden_chain_resolved_calls", count(r"hidden source entry_\d+ replayed from", program_full),
         "Hidden-chain matches emitted as concrete handler calls before reentering a recovered block.")
     add(rows, "c_shape", "program_full_live_in_role_evidence_sites", count(r"live-in role evidence @", program_full),
@@ -205,6 +211,10 @@ def c_shape_metrics(rows):
         "Residual synthetic gap audit sites carried into the combined source bundle.")
     add(rows, "c_shape", "bundle_residual_audit_comments", count(r"residual audit: source=", bundle),
         "Per-start residual promotion-state comments carried into the combined source bundle.")
+    add(rows, "c_shape", "bundle_concrete_state_audit_sites", count(r"concrete-state audit @", bundle),
+        "Residual concrete-state replay audit sites carried into the combined source bundle.")
+    add(rows, "c_shape", "bundle_concrete_state_audit_comments", count(r"concrete-state audit: source=", bundle),
+        "Per-start concrete-state replay comments carried into the combined source bundle.")
     add(rows, "c_shape", "bundle_hidden_chain_resolved_calls", count(r"hidden source entry_\d+ replayed from", bundle),
         "Hidden-chain matches emitted as concrete handler calls inside the combined source bundle.")
     add(rows, "c_shape", "bundle_live_in_role_evidence_sites", count(r"live-in role evidence @", bundle),
