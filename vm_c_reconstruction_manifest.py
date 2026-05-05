@@ -23,6 +23,8 @@ ARTIFACTS = [
     ("synthetic_gap_transfer_probe_md", TRACE_DIR / "vm_synthetic_gap_transfer_probe.md"),
     ("synthetic_gap_dynamic_stitch_tsv", TRACE_DIR / "vm_synthetic_gap_dynamic_stitch.tsv"),
     ("synthetic_gap_dynamic_stitch_md", TRACE_DIR / "vm_synthetic_gap_dynamic_stitch.md"),
+    ("synthetic_gap_symbolic_successors_tsv", TRACE_DIR / "vm_synthetic_gap_symbolic_successors.tsv"),
+    ("synthetic_gap_symbolic_successors_md", TRACE_DIR / "vm_synthetic_gap_symbolic_successors.md"),
 ]
 
 
@@ -213,6 +215,43 @@ def synthetic_gap_dynamic_stitch_metrics(rows):
         "Synthetic start IPs that remain only ambiguous in the dynamic stitch report.")
 
 
+def synthetic_gap_symbolic_successor_metrics(rows):
+    symbolic_rows = read_tsv(TRACE_DIR / "vm_synthetic_gap_symbolic_successors.tsv")
+    status_counts = Counter()
+    for row in symbolic_rows:
+        for status in (row.get("status", "") or "").split(","):
+            if status:
+                status_counts[status] += 1
+    recovered = [
+        row.get("concrete_dest_vm_ip", "")
+        for row in symbolic_rows
+        if "recovered_exact_entry_match" in (row.get("status", "") or "")
+    ]
+    uncovered = [
+        row.get("concrete_dest_vm_ip", "")
+        for row in symbolic_rows
+        if "uncovered_dest" in (row.get("status", "") or "")
+    ]
+    add(rows, "gap_symbolic", "synthetic_gap_symbolic_successor_rows", len(symbolic_rows),
+        "Symbolic-slot transfer-probe successor candidates audited against recovered bytecode rows.")
+    add(rows, "gap_symbolic", "synthetic_gap_symbolic_recovered_exact_entry_match",
+        status_counts.get("recovered_exact_entry_match", 0),
+        "Candidate destinations that land on an exact recovered IR row with the predicted source entry.")
+    add(rows, "gap_symbolic", "synthetic_gap_symbolic_mid_block_split_needed",
+        status_counts.get("mid_block_split_needed", 0),
+        "Candidate destinations that are inside a recovered block but not at a current block entry.")
+    add(rows, "gap_symbolic", "synthetic_gap_symbolic_uncovered_dest",
+        status_counts.get("uncovered_dest", 0),
+        "Candidate destinations that do not land in current recovered bytecode coverage.")
+    add(rows, "gap_symbolic", "synthetic_gap_symbolic_dynamic_next_end_mismatch",
+        status_counts.get("dynamic_next_end_mismatch", 0),
+        "Candidate destinations that differ from the next hooked VMTAIL event end IP.")
+    add(rows, "gap_symbolic", "synthetic_gap_symbolic_recovered_destinations", ",".join(recovered) or "-",
+        "Concrete symbolic-slot destinations already present in recovered IR.")
+    add(rows, "gap_symbolic", "synthetic_gap_symbolic_uncovered_destinations", ",".join(uncovered) or "-",
+        "Concrete symbolic-slot destinations not yet present in recovered IR.")
+
+
 def gate_metrics(rows):
     add(rows, "gate", "syntax_check", "make pseudocode-syntax-check",
         "Regenerates and warning-checks all six C-like source artifacts with C11 -fsyntax-only.")
@@ -233,6 +272,7 @@ def build_rows():
     coverage_metrics(rows)
     synthetic_gap_probe_metrics(rows)
     synthetic_gap_dynamic_stitch_metrics(rows)
+    synthetic_gap_symbolic_successor_metrics(rows)
     gate_metrics(rows)
     add(rows, "caveat", "completion_status", "not_complete",
         "This is a mechanically checked C reconstruction of recovered layers, not proof that every VM bytecode path has been found.")
