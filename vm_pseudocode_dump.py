@@ -246,6 +246,38 @@ def load_transfer_probes(path):
     return probes
 
 
+def load_live_in_roles(path):
+    roles = defaultdict(list)
+    if not path or not Path(path).exists():
+        return roles
+    for row in read_tsv(path):
+        start = normalize_vm_ip(row.get("synthetic_start_vm_ip", ""))
+        if start:
+            roles[start].append(row)
+    for rows in roles.values():
+        rows.sort(
+            key=lambda row: (
+                int(row.get("source_entry", "0") or 0),
+                normalize_vm_ip(row.get("missing_successor_vm_ip", "")),
+                row.get("resolution", ""),
+            )
+        )
+    return roles
+
+
+def load_final_tail_site_probes(path):
+    probes = defaultdict(list)
+    if not path or not Path(path).exists():
+        return probes
+    for row in read_tsv(path):
+        source = row.get("source_entry", "")
+        if source:
+            probes[source].append(row)
+    for rows in probes.values():
+        rows.sort(key=lambda row: (row.get("final_tail_site", ""), row.get("final_tail_target_reg", "")))
+    return probes
+
+
 def emit_transfer_probe_comments(target_vm_ip, transfer_probes, args):
     start = normalize_vm_ip(target_vm_ip)
     rows = transfer_probes.get(start, [])
@@ -319,6 +351,72 @@ def emit_dynamic_stitch_comments(target_vm_ip, dynamic_stitches, args):
     omitted = len(rows) - len(shown)
     if omitted > 0:
         print(f"    /* ... {omitted} additional dynamic stitch rows omitted ... */")
+
+
+def matching_final_tail_probe(row, final_tail_site_probes):
+    source = row.get("source_entry", "")
+    final_site = normalize_vm_ip(row.get("final_tail_site", ""))
+    target_reg = row.get("final_tail_target_reg", "")
+    for probe in final_tail_site_probes.get(source, []):
+        if final_site and normalize_vm_ip(probe.get("final_tail_site", "")) != final_site:
+            continue
+        if target_reg and probe.get("final_tail_target_reg", "") != target_reg:
+            continue
+        return probe
+    return None
+
+
+def emit_live_in_role_comments(target_vm_ip, live_in_roles, final_tail_site_probes, args):
+    start = normalize_vm_ip(target_vm_ip)
+    rows = live_in_roles.get(start, [])
+    if not rows:
+        return
+    limit = getattr(args, "live_in_role_top_items", 4)
+    shown = rows if limit <= 0 else rows[:limit]
+    max_expr = getattr(args, "live_in_role_max_expr", 220)
+    print(
+        f"    /* live-in role evidence @ {start}: rows={len(rows)}; "
+        "prioritized GPR/memory traces; final-tail site proof is mechanism evidence, not path-complete coverage. */"
+    )
+    for row in shown:
+        tail_target = "-"
+        if row.get("tail_event_target_entry", ""):
+            tail_target = f"entry={row.get('tail_event_target_entry')},off={row.get('tail_event_target_off', '-')}"
+        event_target = "-"
+        if row.get("event_target_entry", ""):
+            event_target = f"entry={row.get('event_target_entry')},off={row.get('event_target_off', '-')}"
+        final_site = normalize_vm_ip(row.get("final_tail_site", ""))
+        print(
+            f"    /* live-in role: source={row.get('source_entry', '?')}, "
+            f"missing_successor={normalize_vm_ip(row.get('missing_successor_vm_ip', ''))}, "
+            f"target={c_comment(clip(row.get('target_expr', '') or '-', max_expr))}, "
+            f"regs={c_comment(row.get('expr_regs', '') or '-')}, "
+            f"deref={c_comment(row.get('deref_regs', '') or '-')}, "
+            f"start_site={normalize_vm_ip(row.get('event_site', ''))}, "
+            f"start_target={c_comment(event_target)}, "
+            f"final_site={final_site}:{row.get('final_tail_target_reg', '-')}, "
+            f"tail_site={normalize_vm_ip(row.get('tail_event_site', ''))}, "
+            f"exact_tail={row.get('tail_event_site_match', '0') or '0'}, "
+            f"tail_target={c_comment(tail_target)}, "
+            f"mem={c_comment(clip(row.get('deref_reads', '') or '-', max_expr))}, "
+            f"roles={c_comment(clip(row.get('reg_roles', '') or '-', max_expr))}, "
+            f"classes={c_comment(row.get('role_classes', '') or '-')}, "
+            f"resolution={c_comment(row.get('resolution', '') or '-')} */"
+        )
+        probe = matching_final_tail_probe(row, final_tail_site_probes)
+        if probe:
+            print(
+                f"    /* final-tail site proof: source={probe.get('source_entry', '?')}, "
+                f"site={normalize_vm_ip(probe.get('final_tail_site', ''))}:{probe.get('final_tail_target_reg', '-')}, "
+                f"deref={c_comment(probe.get('deref_regs', '') or '-')}, "
+                f"events={probe.get('events', '0')}, "
+                f"target_reg_match={c_comment(probe.get('target_reg_equals_target', '') or '-')}, "
+                f"deref_mem_match={c_comment(probe.get('deref_mem_matches_target', '') or '-')}, "
+                f"top_targets={c_comment(clip(probe.get('top_target_entries', '') or '-', max_expr))} */"
+            )
+    omitted = len(rows) - len(shown)
+    if omitted > 0:
+        print(f"    /* ... {omitted} additional live-in role rows omitted ... */")
 
 
 def load_tail_lifts(path):
@@ -506,12 +604,13 @@ def emit_preamble():
     print("")
 
 
-def emit_synthetic_edge(edge, synthetic_spans, dynamic_stitches, transfer_probes, args):
+def emit_synthetic_edge(edge, synthetic_spans, dynamic_stitches, transfer_probes, live_in_roles, final_tail_site_probes, args):
     target_vm_ip = normalize_vm_ip(edge.get("target_vm_ip", ""))
     info = synthetic_spans.get(target_vm_ip)
     if not info:
         emit_transfer_probe_comments(target_vm_ip, transfer_probes, args)
         emit_dynamic_stitch_comments(target_vm_ip, dynamic_stitches, args)
+        emit_live_in_role_comments(target_vm_ip, live_in_roles, final_tail_site_probes, args)
         print(f"    vm_unresolved_synthetic_tail(vm, 0x{parse_hex(target_vm_ip):x});")
         return
 
@@ -556,6 +655,7 @@ def emit_synthetic_edge(edge, synthetic_spans, dynamic_stitches, transfer_probes
             )
     emit_transfer_probe_comments(target_vm_ip, transfer_probes, args)
     emit_dynamic_stitch_comments(target_vm_ip, dynamic_stitches, args)
+    emit_live_in_role_comments(target_vm_ip, live_in_roles, final_tail_site_probes, args)
     tail_expr = tail_target_load(tail_lift)
     if tail_expr:
         print(f"    next_entry = {tail_expr};")
@@ -591,7 +691,7 @@ def emit_block_prototypes(blocks):
     print("")
 
 
-def emit_block(block, rows, edge, synthetic_spans, dynamic_stitches, transfer_probes, tail_lifts, args, known_blocks, block_by_start):
+def emit_block(block, rows, edge, synthetic_spans, dynamic_stitches, transfer_probes, live_in_roles, final_tail_site_probes, tail_lifts, args, known_blocks, block_by_start):
     name = c_block_name(block["block"])
     print(f"static void {name}(VMState *vm) {{")
     print("    int next_entry = -1;")
@@ -628,7 +728,7 @@ def emit_block(block, rows, edge, synthetic_spans, dynamic_stitches, transfer_pr
             else:
                 print("    /* target block is outside this selected sketch. */")
         elif edge_kind == "covered_synthetic_fallthrough":
-            emit_synthetic_edge(edge, synthetic_spans, dynamic_stitches, transfer_probes, args)
+            emit_synthetic_edge(edge, synthetic_spans, dynamic_stitches, transfer_probes, live_in_roles, final_tail_site_probes, args)
             target_block, target_vm_ip = synthetic_successor(edge, synthetic_spans, block_by_start)
             if target_block is not None:
                 print(f"    /* synthetic successor after lifted delta: {c_block_name(target_block)} @ 0x{target_vm_ip:x}; */")
@@ -669,12 +769,16 @@ def main():
     parser.add_argument("--synthetic-tail-lift", default="dumps/vmtail-wide-1m-w16/vm_synthetic_tail_lift.tsv")
     parser.add_argument("--synthetic-gap-transfer-probe", default="dumps/vmtail-wide-1m-w16/vm_synthetic_gap_transfer_probe.tsv")
     parser.add_argument("--synthetic-gap-dynamic-stitch", default="dumps/vmtail-wide-1m-w16/vm_synthetic_gap_dynamic_stitch.tsv")
+    parser.add_argument("--synthetic-gap-live-in-roles", default="dumps/vmtail-wide-1m-w16/vm_synthetic_gap_live_in_roles.tsv")
+    parser.add_argument("--live-in-final-tail-site-probe", default="dumps/vmtail-wide-1m-w16/vm_live_in_final_tail_site_probe.tsv")
     parser.add_argument("--synthetic-top-items", type=int, default=4)
     parser.add_argument("--synthetic-max-bytes", type=int, default=48)
     parser.add_argument("--transfer-probe-top-items", type=int, default=4)
     parser.add_argument("--transfer-probe-max-expr", type=int, default=180)
     parser.add_argument("--dynamic-stitch-top-items", type=int, default=4)
     parser.add_argument("--dynamic-stitch-max-candidates", type=int, default=180)
+    parser.add_argument("--live-in-role-top-items", type=int, default=4)
+    parser.add_argument("--live-in-role-max-expr", type=int, default=220)
     parser.add_argument("--start", action="append", default=[])
     parser.add_argument("--keep-order", action="store_true")
     args = parser.parse_args()
@@ -686,6 +790,8 @@ def main():
     synthetic_spans = load_synthetic_spans(args.synthetic_trace, args.synthetic_tail_lift)
     dynamic_stitches = load_dynamic_stitches(args.synthetic_gap_dynamic_stitch)
     transfer_probes = load_transfer_probes(args.synthetic_gap_transfer_probe)
+    live_in_roles = load_live_in_roles(args.synthetic_gap_live_in_roles)
+    final_tail_site_probes = load_final_tail_site_probes(args.live_in_final_tail_site_probe)
     tail_lifts = load_tail_lifts(args.synthetic_tail_lift)
 
     emit_preamble()
@@ -695,7 +801,20 @@ def main():
     known_blocks = {block["block"] for block in chosen}
     block_by_start = {parse_hex(block["start_vm_ip"]): block["block"] for block in chosen}
     for block in chosen:
-        emit_block(block, rows_by_block.get(block["block"], []), edges.get(block["block"]), synthetic_spans, dynamic_stitches, transfer_probes, tail_lifts, args, known_blocks, block_by_start)
+        emit_block(
+            block,
+            rows_by_block.get(block["block"], []),
+            edges.get(block["block"]),
+            synthetic_spans,
+            dynamic_stitches,
+            transfer_probes,
+            live_in_roles,
+            final_tail_site_probes,
+            tail_lifts,
+            args,
+            known_blocks,
+            block_by_start,
+        )
     emit_dispatch(chosen)
 
     print(
