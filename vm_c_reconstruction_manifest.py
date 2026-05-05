@@ -1255,7 +1255,7 @@ def c_shape_metrics(rows):
         count(r"^static void prog_bb_\d{4}\(VMState \*vm, uint64_t vm_ip\) \{", all_evidence_bundle),
         "Recovered VM bytecode block functions present in the all-evidence single file.")
     add(rows, "c_shape", "all_evidence_bundle_path_specialized_functions",
-        count(r"^static EACEvidence_path_handlers_pseudocode__VMOpResult eac_evidence_path_handlers_pseudocode__path_entry_\d{3}_[0-9a-f]+\(EACEvidence_path_handlers_pseudocode__VMState \*vm\) \{", all_evidence_bundle),
+        count(r"^static eac_evidence_path_handlers_pseudocode__VMOpResult eac_evidence_path_handlers_pseudocode__path_entry_\d{3}_[0-9a-f]+\(EACEvidence_path_handlers_pseudocode__VMState \*vm\) \{", all_evidence_bundle),
         "Validated path-specialized handler functions retained in the all-evidence single file.")
     add(rows, "c_shape", "all_evidence_bundle_path_specialized_model_rows",
         count(r"^    \{ \d+, 0x[0-9a-f]+ull, \d+u, .*eac_evidence_path_handlers_pseudocode__path_entry_\d{3}_[0-9a-f]+ \},", all_evidence_bundle),
@@ -1264,7 +1264,7 @@ def c_shape_metrics(rows):
         count(r"^        case 0x[0-9a-f]+ull: return eac_evidence_path_handlers_pseudocode__path_entry_\d{3}_[0-9a-f]+\(vm\);", all_evidence_bundle),
         "Validated path-specialized handler dispatcher cases retained in the all-evidence single file.")
     add(rows, "c_shape", "all_evidence_bundle_path_specialized_dispatchers",
-        count(r"^static EACEvidence_path_handlers_pseudocode__VMOpResult eac_evidence_path_handlers_pseudocode__vm_call_path_handler\(uint16_t entry, uint64_t path_key_value, EACEvidence_path_handlers_pseudocode__VMState \*vm\) \{", all_evidence_bundle),
+        count(r"^static eac_evidence_path_handlers_pseudocode__VMOpResult eac_evidence_path_handlers_pseudocode__vm_call_path_handler\(uint16_t entry, uint64_t path_key_value, EACEvidence_path_handlers_pseudocode__VMState \*vm\) \{", all_evidence_bundle),
         "Validated path-specialized handler dispatcher functions retained in the all-evidence single file.")
     add(rows, "c_shape", "all_evidence_bundle_sidecar_sections",
         count(r"^/\* --- sidecar: ", all_evidence_bundle),

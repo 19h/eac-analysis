@@ -800,10 +800,10 @@ Reproducible inventory of the current C-shaped reconstruction artifacts and gate
 | `c_shape` | `bundle_observed_chain_replay_steps` | `0` | Observed focused-chain replay steps emitted inside disabled terminal bridge snippets in the combined source bundle. |
 | `c_shape` | `all_evidence_bundle_handler_functions` | `360` | All-entry handler/operator C functions present in the all-evidence single file. |
 | `c_shape` | `all_evidence_bundle_program_blocks` | `499` | Recovered VM bytecode block functions present in the all-evidence single file. |
-| `c_shape` | `all_evidence_bundle_path_specialized_functions` | `0` | Validated path-specialized handler functions retained in the all-evidence single file. |
+| `c_shape` | `all_evidence_bundle_path_specialized_functions` | `560` | Validated path-specialized handler functions retained in the all-evidence single file. |
 | `c_shape` | `all_evidence_bundle_path_specialized_model_rows` | `560` | Validated path-specialized handler metadata rows retained in the all-evidence single file. |
 | `c_shape` | `all_evidence_bundle_path_specialized_dispatch_cases` | `560` | Validated path-specialized handler dispatcher cases retained in the all-evidence single file. |
-| `c_shape` | `all_evidence_bundle_path_specialized_dispatchers` | `0` | Validated path-specialized handler dispatcher functions retained in the all-evidence single file. |
+| `c_shape` | `all_evidence_bundle_path_specialized_dispatchers` | `1` | Validated path-specialized handler dispatcher functions retained in the all-evidence single file. |
 | `c_shape` | `all_evidence_bundle_sidecar_sections` | `41` | Renamed native RetDec/control sidecar files appended to the all-evidence single file. |
 | `c_shape` | `all_evidence_bundle_prefixed_retdec_functions` | `624` | RetDec native C functions carried in the all-evidence single file with per-sidecar symbol prefixes. |
 | `c_shape` | `all_evidence_bundle_prefixed_symbols` | `8331` | Prefixed symbols used to keep overlapping native sidecar C in one translation unit. |
