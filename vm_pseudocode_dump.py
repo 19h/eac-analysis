@@ -888,7 +888,7 @@ def emit_preamble():
     print("")
 
 
-def emit_synthetic_edge(edge, synthetic_spans, dynamic_stitches, transfer_probes, symbolic_successors, hidden_chains, live_in_roles, live_in_reentries, final_tail_site_probes, args):
+def emit_synthetic_edge(edge, synthetic_spans, dynamic_stitches, transfer_probes, symbolic_successors, hidden_chains, live_in_roles, live_in_reentries, allstatic_reentries, final_tail_site_probes, args):
     target_vm_ip = normalize_vm_ip(edge.get("target_vm_ip", ""))
     chain = resolved_hidden_chain(target_vm_ip, hidden_chains)
     info = synthetic_spans.get(target_vm_ip)
@@ -899,6 +899,7 @@ def emit_synthetic_edge(edge, synthetic_spans, dynamic_stitches, transfer_probes
         emit_hidden_chain_comments(target_vm_ip, hidden_chains, args)
         emit_live_in_role_comments(target_vm_ip, live_in_roles, final_tail_site_probes, args)
         emit_live_in_reentry_comments(target_vm_ip, live_in_reentries, args)
+        emit_allstatic_reentry_comments(target_vm_ip, allstatic_reentries, args)
         if chain:
             print(f"    /* hidden chain resolves synthetic reentry at {normalize_vm_ip(chain.get('hidden_pred_end_vm_ip', ''))}. */")
             return
@@ -1011,7 +1012,7 @@ def emit_block_prototypes(blocks):
     print("")
 
 
-def emit_block(block, rows, edge, synthetic_spans, dynamic_stitches, transfer_probes, symbolic_successors, hidden_chains, live_in_roles, live_in_reentries, final_tail_site_probes, tail_lifts, args, known_blocks, block_by_start):
+def emit_block(block, rows, edge, synthetic_spans, dynamic_stitches, transfer_probes, symbolic_successors, hidden_chains, live_in_roles, live_in_reentries, allstatic_reentries, final_tail_site_probes, tail_lifts, args, known_blocks, block_by_start):
     name = c_block_name(block["block"])
     print(f"static void {name}(VMState *vm) {{")
     print("    int next_entry = -1;")
@@ -1048,7 +1049,7 @@ def emit_block(block, rows, edge, synthetic_spans, dynamic_stitches, transfer_pr
             else:
                 print("    /* target block is outside this selected sketch. */")
         elif edge_kind == "covered_synthetic_fallthrough":
-            emit_synthetic_edge(edge, synthetic_spans, dynamic_stitches, transfer_probes, symbolic_successors, hidden_chains, live_in_roles, live_in_reentries, final_tail_site_probes, args)
+            emit_synthetic_edge(edge, synthetic_spans, dynamic_stitches, transfer_probes, symbolic_successors, hidden_chains, live_in_roles, live_in_reentries, allstatic_reentries, final_tail_site_probes, args)
             target_block, target_vm_ip = synthetic_successor(edge, synthetic_spans, hidden_chains, block_by_start)
             if target_block is not None:
                 print(f"    /* synthetic successor after lifted delta: {c_block_name(target_block)} @ 0x{target_vm_ip:x}; */")
@@ -1093,6 +1094,7 @@ def main():
     parser.add_argument("--synthetic-gap-chain-probe", default="dumps/vmtail-wide-1m-w16/vm_synthetic_gap_chain_probe.tsv")
     parser.add_argument("--synthetic-gap-live-in-roles", default="dumps/vmtail-wide-1m-w16/vm_synthetic_gap_live_in_roles.tsv")
     parser.add_argument("--synthetic-gap-live-in-reentry-probe", default="dumps/vmtail-wide-1m-w16/vm_synthetic_gap_live_in_reentry_probe.tsv")
+    parser.add_argument("--synthetic-gap-allstatic-reentry-probe", default="dumps/vmtail-wide-1m-w16/vm_synthetic_gap_allstatic_reentry_probe.tsv")
     parser.add_argument("--live-in-final-tail-site-probe", default="dumps/vmtail-wide-1m-w16/vm_live_in_final_tail_site_probe.tsv")
     parser.add_argument("--synthetic-top-items", type=int, default=4)
     parser.add_argument("--synthetic-max-bytes", type=int, default=48)
@@ -1108,6 +1110,8 @@ def main():
     parser.add_argument("--live-in-role-max-expr", type=int, default=220)
     parser.add_argument("--live-in-reentry-top-items", type=int, default=4)
     parser.add_argument("--live-in-reentry-max-expr", type=int, default=220)
+    parser.add_argument("--allstatic-reentry-top-items", type=int, default=4)
+    parser.add_argument("--allstatic-reentry-max-expr", type=int, default=220)
     parser.add_argument("--start", action="append", default=[])
     parser.add_argument("--keep-order", action="store_true")
     args = parser.parse_args()
@@ -1123,6 +1127,7 @@ def main():
     hidden_chains = load_hidden_chains(args.synthetic_gap_chain_probe)
     live_in_roles = load_live_in_roles(args.synthetic_gap_live_in_roles)
     live_in_reentries = load_live_in_reentries(args.synthetic_gap_live_in_reentry_probe)
+    allstatic_reentries = load_allstatic_reentries(args.synthetic_gap_allstatic_reentry_probe)
     final_tail_site_probes = load_final_tail_site_probes(args.live_in_final_tail_site_probe)
     tail_lifts = load_tail_lifts(args.synthetic_tail_lift)
 
@@ -1144,6 +1149,7 @@ def main():
             hidden_chains,
             live_in_roles,
             live_in_reentries,
+            allstatic_reentries,
             final_tail_site_probes,
             tail_lifts,
             args,
