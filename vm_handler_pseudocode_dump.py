@@ -3,7 +3,7 @@ import argparse
 import csv
 import re
 import sys
-from collections import Counter
+from collections import Counter, defaultdict
 from pathlib import Path
 
 from vm_pseudocode_dump import c_comment, clip, read_tsv
@@ -25,6 +25,21 @@ def load_by(path, key):
         if value:
             rows[value] = row
     return rows
+
+
+def load_ret_patch_summaries(path):
+    by_entry = defaultdict(list)
+    if not path or not Path(path).exists():
+        return {}
+    for row in read_tsv(path):
+        entry = row.get("source_entry", "")
+        if entry:
+            by_entry[entry].append(row)
+    return by_entry
+
+
+def counter_text(counter, limit=6):
+    return ",".join(f"{key}:{value}" for key, value in counter.most_common(limit)) or "-"
 
 
 def c_expr(expr):
@@ -147,6 +162,55 @@ def is_sampled_operand_only_handler(row):
     return row.get("class", "") == "sampled_operand_lifted" and bool(row.get("sampled_operand_ir", ""))
 
 
+def ret_patch_base_class(row):
+    source = row.get("ret_patch_base_source", "")
+    if source.startswith("postcall_map_"):
+        return "mapped_frame_qword"
+    if source:
+        return "inferred_image_base"
+    return "unknown_base"
+
+
+def emit_ret_patch_handler_body(row, ret_patch_rows, args):
+    starts = Counter(item.get("synthetic_start_vm_ip", "") for item in ret_patch_rows)
+    patched = Counter(item.get("patched_ret_eac_off", "") for item in ret_patch_rows)
+    seeds = Counter(item.get("seed_quality", "") for item in ret_patch_rows)
+    base_sources = Counter(ret_patch_base_class(item) for item in ret_patch_rows)
+    relations = Counter(item.get("ret_patch_relation", "") for item in ret_patch_rows)
+    sections = Counter(item.get("patched_ret_section", "") for item in ret_patch_rows)
+    formulas = Counter(item.get("ret_patch_formula", "") for item in ret_patch_rows)
+    stack_offsets = Counter(item.get("stack_write_offset", "") for item in ret_patch_rows)
+
+    print(
+        "    /* native return-patch thunk: the observed entry_299 body ends in a native ret; "
+        "the normal dispatch decode that follows belongs to the next native handler entry. */"
+    )
+    print(
+        f"    /* ret-patch evidence: rows={len(ret_patch_rows)}, "
+        f"starts={c_comment(counter_text(starts, args.ret_patch_comment_items))}, "
+        f"patched_text={c_comment(counter_text(patched, args.ret_patch_comment_items))}, "
+        f"stack_offsets={c_comment(counter_text(stack_offsets, args.ret_patch_comment_items))}, "
+        f"sections={c_comment(counter_text(sections, args.ret_patch_comment_items))}, "
+        f"seed={c_comment(counter_text(seeds, args.ret_patch_comment_items))}, "
+        f"base={c_comment(counter_text(base_sources, args.ret_patch_comment_items))}, "
+        f"relation={c_comment(counter_text(relations, args.ret_patch_comment_items))} */"
+    )
+    if formulas:
+        print(f"    /* ret-patch formula: {c_comment(clip(formulas.most_common(1)[0][0], args.max_comment_len))} */")
+    print("    uint32_t native_ret_off = U32(vm->ip + 0x0);")
+    print("    uint16_t native_stack_off = U16(vm->ip + 0x4);")
+    print("    r.slot = native_ret_off;")
+    print("    r.next_entry = -1;")
+    print("    /* r.slot carries the native text/file offset for this analysis artifact, not a dispatch-table slot. */")
+    print("    /* native effect: *(uint64_t *)(rsp + native_stack_off) = frame_qword_0xbb + native_ret_off; ret */")
+    print("    (void)native_stack_off;")
+    if row.get("sampled_operand_ir"):
+        print(f"    /* sampled sidecars remain bytecode-layer evidence: {c_comment(clip(row['sampled_operand_ir'], args.max_comment_len))} */")
+    if row.get("validation"):
+        print(f"    /* validation: {c_comment(clip(row['validation'], args.max_comment_len))} */")
+    print("    return r;")
+
+
 def emit_preamble():
     print("/*")
     print(" * VM handler pseudocode.")
@@ -190,7 +254,7 @@ def emit_preamble():
     print("")
 
 
-def emit_handler(row, transition, tail_ip_advances, args):
+def emit_handler(row, transition, tail_ip_advances, ret_patch_summaries, args):
     entry = row["entry"]
     name = f"op_entry_{int(entry):03d}"
     klass = row.get("class", "")
@@ -208,6 +272,12 @@ def emit_handler(row, transition, tail_ip_advances, args):
         f"    /* entry={entry}, native={target}, class={klass}, events={events}, "
         f"shape={shape or '-'}, delta={delta or '-'} */"
     )
+    ret_patch_rows = ret_patch_summaries.get(entry, [])
+    if ret_patch_rows:
+        emit_ret_patch_handler_body(row, ret_patch_rows, args)
+        print("}")
+        print("")
+        return
     if row.get("operand_layout"):
         print(f"    /* operands: {c_comment(clip(row['operand_layout'], args.max_comment_len))} */")
     if row.get("ip_reads"):
