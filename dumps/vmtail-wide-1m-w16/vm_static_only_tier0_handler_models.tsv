@@ -1,0 +1,12 @@
+rank	entry	target	function	model_function	ip_advance	slot_status	slot_expr	effects
+1	57	0x841f9	function_841f9	vm_tier0_entry_057	4	retdec_state_slot	(state0 + 0x09df7e26 - (state0 ^ s16(ip+0))) & 0xffff	frame[u16(ip+2)] = frame[0xa1]; state = slot_expr; ip += 4
+2	255	0xad768	function_ad768	vm_tier0_entry_255	8	retdec_return_slot	(s16(ip+4) - state0) & g3_mask	qword store through frame[s16(ip+6)]; pointer step by frame[s16(ip+0)] sign; ip += 8
+3	96	0x8c4cf	function_8c4cf	vm_tier0_entry_096	8	decode_candidate_slot	(s16(ip+4) + 0x1f18e1aa) & 0xffff	qword copy through frame[s16(ip+2)] to frame[u16(ip+6)]; pointer step by frame[s16(ip+0)] sign; state = slot_expr ^ state0; ip += 8
+4	71	0x86766	function_86766	vm_tier0_entry_071	8	decode_candidate_slot	u16(ip+2)	byte copy through frame[s16(ip+4)] to frame[u16(ip+6)]; pointer step by frame[s16(ip+0)] sign; ip += 8
+5	73	0x86be4	function_86be4	vm_tier0_entry_073	8	final_state_candidate_slot	s16(ip+2) & 0xffff	state pre-subtract; word copy through frame[s16(ip+4)] to frame[s16(ip+6)]; pointer step by frame[s16(ip+0)] sign; state = s16(ip+2); ip += 8
+6	339	0xbf2d5	function_bf2d5	vm_tier0_entry_339	8	decode_candidate_slot	u16(ip+0)	state = state0 - flags0 + 0x2393cc37; dword copy through frame[s16(ip+4)] to frame[s16(ip+6)]; pointer step by frame[s16(ip+2)] sign; ip += 8
+7	324	0xbb8aa	function_bb8aa	vm_tier0_entry_324	8	retdec_table_slot	(s16(ip+0) - (state0 + flags0) + 0x6e06065a) & 0xffff	state += flags; word store through frame[s16(ip+6)]; pointer step by frame[s16(ip+2)] sign; final state &= slot source; ip += 8
+8	38	0x80d79	function_80d79	vm_tier0_entry_038	8	decode_candidate_slot	(s16(ip+2) - 0x23aef0b2) & 0xffff	conditional flags rewrite; byte store through frame[s16(ip+0)]; pointer step by frame[s16(ip+4)] sign; state = slot_expr; ip += 8
+9	67	0x859fc	function_859fc	vm_tier0_entry_067	8	retdec_table_slot	(s16(ip+2) - 0x7138da2d + ((state0 | 0x26d4dee7 | flags0) - flags0)) & 0xffff	dword copy through frame[s16(ip+6)] to frame[s16(ip+4)]; pointer step by frame[s16(ip+0)] sign; state = v11 | v10; ip += 8
+10	138	0x94c3a	function_94c3a	vm_tier0_entry_138	8	decode_candidate_slot	(s16(ip+0) - 0x3010a5b9) & 0xffff	flags += state; dword store through frame[s16(ip+4)]; pointer step by frame[s16(ip+2)] sign; state = slot_expr; ip += 8
+11	47	0x822bc	function_822bc	vm_tier0_entry_047	9	final_state_candidate_slot	s16(ip+5) & 0xffff	qword copy through frame[s16(ip+3)] from frame[s16(ip+7)]; paired pointer step by frame[s16(ip+1)]/frame[0x199] sign; state = s16(ip+5); ip += 9
