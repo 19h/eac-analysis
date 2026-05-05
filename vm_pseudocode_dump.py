@@ -341,6 +341,32 @@ def load_table_read_diagnostics(path):
     return diagnostics
 
 
+def load_table_memory_probes(path):
+    probes = defaultdict(list)
+    if not path or not Path(path).exists():
+        return probes
+    for row in read_tsv(path):
+        start = normalize_vm_ip(row.get("synthetic_start_vm_ip", ""))
+        if start:
+            probes[start].append(row)
+    for rows in probes.values():
+        rows.sort(key=lambda row: (row.get("region", ""), row.get("table_offset", "")))
+    return probes
+
+
+def load_sampled_control_correlations(path):
+    correlations = defaultdict(list)
+    if not path or not Path(path).exists():
+        return correlations
+    for row in read_tsv(path):
+        start = normalize_vm_ip(row.get("synthetic_start_vm_ip", ""))
+        if start:
+            correlations[start].append(row)
+    for rows in correlations.values():
+        rows.sort(key=lambda row: (row.get("sampled_correlation_class", ""), row.get("dynamic_next_source_entry", "")))
+    return correlations
+
+
 def resolved_hidden_chain(target_vm_ip, hidden_chains):
     start = normalize_vm_ip(target_vm_ip)
     for row in hidden_chains.get(start, []):
@@ -724,6 +750,72 @@ def emit_table_read_diagnostic_comments(target_vm_ip, table_read_diagnostics, ar
         print(f"    /* ... {omitted} additional table-read diagnostic rows omitted ... */")
 
 
+def emit_table_memory_probe_comments(target_vm_ip, table_memory_probes, args):
+    start = normalize_vm_ip(target_vm_ip)
+    rows = table_memory_probes.get(start, [])
+    if not rows:
+        return
+    limit = getattr(args, "table_memory_probe_top_items", 4)
+    shown = rows if limit <= 0 else rows[:limit]
+    print(
+        f"    /* table-memory probe @ {start}: rows={len(rows)}; "
+        "dispatch-table-base plus residual offset mapped back to eac.elf bytes. */"
+    )
+    for row in shown:
+        print(
+            f"    /* table-memory probe: source={row.get('source_entry', '?')}, "
+            f"offset={c_comment(row.get('table_offset', '') or '-')}, "
+            f"count={row.get('table_offset_count', '0')}, "
+            f"file_off={c_comment(row.get('absolute_file_off', '') or '-')}, "
+            f"section={c_comment(row.get('section', '') or '-')}, "
+            f"region={c_comment(row.get('region', '') or '-')}, "
+            f"align={c_comment(row.get('alignment', '') or '-')}, "
+            f"nearest_entry={c_comment(row.get('nearest_dispatch_entry', '') or '-')}"
+            f"+{c_comment(row.get('nearest_dispatch_entry_delta', '') or '-')}, "
+            f"qword={c_comment(row.get('file_qword_le', '') or '-')}, "
+            f"qword_class={c_comment(row.get('file_qword_class', '') or '-')}, "
+            f"dynamic_next=entry_{row.get('dynamic_next_source_entry', '-')}"
+            f"@{normalize_vm_ip(row.get('dynamic_next_source_start_vm_ip', ''))} */"
+        )
+    omitted = len(rows) - len(shown)
+    if omitted > 0:
+        print(f"    /* ... {omitted} additional table-memory probe rows omitted ... */")
+
+
+def emit_sampled_control_correlation_comments(target_vm_ip, sampled_control_correlations, args):
+    start = normalize_vm_ip(target_vm_ip)
+    rows = sampled_control_correlations.get(start, [])
+    if not rows:
+        return
+    limit = getattr(args, "sampled_control_correlation_top_items", 4)
+    shown = rows if limit <= 0 else rows[:limit]
+    max_expr = getattr(args, "sampled_control_correlation_max_expr", 180)
+    print(
+        f"    /* sampled-control correlation @ {start}: rows={len(rows)}; "
+        "sampled-operand target/delta sidecars joined to the next hooked VMTAIL source. */"
+    )
+    for row in shown:
+        print(
+            f"    /* sampled-control correlation: source={row.get('source_entry', '?')}, "
+            f"footprint={c_comment(row.get('footprint_len', '') or '-')}, "
+            f"span={c_comment(row.get('span_semantic_gap_class', '') or '-')}"
+            f"/{c_comment(row.get('span_source_observation', '') or '-')}, "
+            f"sampled_targets={c_comment(row.get('sampled_target_entries', '') or '-')}, "
+            f"sampled_deltas={c_comment(row.get('sampled_deltas', '') or '-')}, "
+            f"byte_matches={c_comment(row.get('sampled_operand_byte_exact_matches', '') or '-')}, "
+            f"dynamic_next=entry_{row.get('dynamic_next_source_entry', '-')}"
+            f"@{normalize_vm_ip(row.get('dynamic_next_source_start_vm_ip', ''))}"
+            f"/{c_comment(row.get('dynamic_next_delta', '') or '-')}, "
+            f"target_match={c_comment(row.get('dynamic_next_matches_sampled_target', '') or '-')}, "
+            f"delta_match={c_comment(row.get('dynamic_next_delta_matches_sampled_delta', '') or '-')}, "
+            f"class={c_comment(row.get('sampled_correlation_class', '') or '-')}, "
+            f"variants={c_comment(clip(row.get('sampled_variants_for_source', '') or '-', max_expr))} */"
+        )
+    omitted = len(rows) - len(shown)
+    if omitted > 0:
+        print(f"    /* ... {omitted} additional sampled-control correlation rows omitted ... */")
+
+
 def matching_final_tail_probe(row, final_tail_site_probes):
     source = row.get("source_entry", "")
     final_site = normalize_vm_ip(row.get("final_tail_site", ""))
@@ -1075,7 +1167,7 @@ def emit_preamble():
     print("")
 
 
-def emit_synthetic_edge(edge, synthetic_spans, dynamic_stitches, transfer_probes, symbolic_successors, hidden_chains, residual_audits, concrete_state_audits, live_context_audits, table_read_diagnostics, live_in_roles, live_in_reentries, allstatic_reentries, final_tail_site_probes, args):
+def emit_synthetic_edge(edge, synthetic_spans, dynamic_stitches, transfer_probes, symbolic_successors, hidden_chains, residual_audits, concrete_state_audits, live_context_audits, table_read_diagnostics, table_memory_probes, sampled_control_correlations, live_in_roles, live_in_reentries, allstatic_reentries, final_tail_site_probes, args):
     target_vm_ip = normalize_vm_ip(edge.get("target_vm_ip", ""))
     chain = resolved_hidden_chain(target_vm_ip, hidden_chains)
     info = synthetic_spans.get(target_vm_ip)
@@ -1088,6 +1180,8 @@ def emit_synthetic_edge(edge, synthetic_spans, dynamic_stitches, transfer_probes
         emit_concrete_state_audit_comments(target_vm_ip, concrete_state_audits, args)
         emit_live_context_audit_comments(target_vm_ip, live_context_audits, args)
         emit_table_read_diagnostic_comments(target_vm_ip, table_read_diagnostics, args)
+        emit_table_memory_probe_comments(target_vm_ip, table_memory_probes, args)
+        emit_sampled_control_correlation_comments(target_vm_ip, sampled_control_correlations, args)
         emit_live_in_role_comments(target_vm_ip, live_in_roles, final_tail_site_probes, args)
         emit_live_in_reentry_comments(target_vm_ip, live_in_reentries, args)
         emit_allstatic_reentry_comments(target_vm_ip, allstatic_reentries, args)
@@ -1144,6 +1238,8 @@ def emit_synthetic_edge(edge, synthetic_spans, dynamic_stitches, transfer_probes
     emit_concrete_state_audit_comments(target_vm_ip, concrete_state_audits, args)
     emit_live_context_audit_comments(target_vm_ip, live_context_audits, args)
     emit_table_read_diagnostic_comments(target_vm_ip, table_read_diagnostics, args)
+    emit_table_memory_probe_comments(target_vm_ip, table_memory_probes, args)
+    emit_sampled_control_correlation_comments(target_vm_ip, sampled_control_correlations, args)
     emit_live_in_role_comments(target_vm_ip, live_in_roles, final_tail_site_probes, args)
     emit_live_in_reentry_comments(target_vm_ip, live_in_reentries, args)
     if chain:
@@ -1207,7 +1303,7 @@ def emit_block_prototypes(blocks):
     print("")
 
 
-def emit_block(block, rows, edge, synthetic_spans, dynamic_stitches, transfer_probes, symbolic_successors, hidden_chains, residual_audits, concrete_state_audits, live_context_audits, table_read_diagnostics, live_in_roles, live_in_reentries, allstatic_reentries, final_tail_site_probes, tail_lifts, args, known_blocks, block_by_start):
+def emit_block(block, rows, edge, synthetic_spans, dynamic_stitches, transfer_probes, symbolic_successors, hidden_chains, residual_audits, concrete_state_audits, live_context_audits, table_read_diagnostics, table_memory_probes, sampled_control_correlations, live_in_roles, live_in_reentries, allstatic_reentries, final_tail_site_probes, tail_lifts, args, known_blocks, block_by_start):
     name = c_block_name(block["block"])
     print(f"static void {name}(VMState *vm) {{")
     print("    int next_entry = -1;")
@@ -1244,7 +1340,7 @@ def emit_block(block, rows, edge, synthetic_spans, dynamic_stitches, transfer_pr
             else:
                 print("    /* target block is outside this selected sketch. */")
         elif edge_kind == "covered_synthetic_fallthrough":
-            emit_synthetic_edge(edge, synthetic_spans, dynamic_stitches, transfer_probes, symbolic_successors, hidden_chains, residual_audits, concrete_state_audits, live_context_audits, table_read_diagnostics, live_in_roles, live_in_reentries, allstatic_reentries, final_tail_site_probes, args)
+            emit_synthetic_edge(edge, synthetic_spans, dynamic_stitches, transfer_probes, symbolic_successors, hidden_chains, residual_audits, concrete_state_audits, live_context_audits, table_read_diagnostics, table_memory_probes, sampled_control_correlations, live_in_roles, live_in_reentries, allstatic_reentries, final_tail_site_probes, args)
             target_block, target_vm_ip = synthetic_successor(edge, synthetic_spans, hidden_chains, block_by_start)
             if target_block is not None:
                 print(f"    /* synthetic successor after lifted delta: {c_block_name(target_block)} @ 0x{target_vm_ip:x}; */")
