@@ -39,6 +39,9 @@ def main():
         print("static int64_t signed_vm_delta_u32(uint32_t raw) {")
         print("    return (raw & 0x80000000u) ? -(int64_t)(raw & 0x7fffffffu) : (int64_t)raw;")
         print("}")
+    print("#ifndef VM_ENABLE_OBSERVED_REENTRY_BRIDGES")
+    print("#define VM_ENABLE_OBSERVED_REENTRY_BRIDGES 0")
+    print("#endif")
     print("")
     for line in program_body(program):
         print(line)
