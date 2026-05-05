@@ -154,7 +154,7 @@ def add_exact_rows(args, segments, rows, sidecars, transitions):
         })
 
 
-def add_decoded_rows(args, segments, rows, sidecars):
+def add_decoded_rows(args, segments, rows, sidecars, transitions):
     groups = {}
     eac = Path(args.eac).read_bytes() if args.eac else b""
 
@@ -212,7 +212,12 @@ def add_decoded_rows(args, segments, rows, sidecars):
         target_segment = find_segment(segments, end)
         operand_len = int(operand_min_len, 16) if operand_min_len else 0
         operand_bytes = eac[start:start + operand_len].hex() if eac and operand_len else ""
+        transition = transitions.get(source_entry, {})
+        state_effect = compact_text(transition.get("final_state_expr", ""), args.max_expr_len)
         direction = "backedge" if parse_signed_hex(delta_s) < 0 else "forward"
+        validation = "file_backed_operand"
+        if state_effect:
+            validation += ";source_state=transition_model"
         rows.append({
             "start_vm_ip": start_s,
             "end_vm_ip": end_s,
@@ -230,12 +235,12 @@ def add_decoded_rows(args, segments, rows, sidecars):
             "source_block": segment_text(source_segment, start),
             "target_block": segment_text(target_segment, end) if target_segment else "",
             "semantic_ir": lifted_ir,
-            "state_ir": "",
-            "state_effect_ir": "",
+            "state_ir": transition.get("observation", ""),
+            "state_effect_ir": state_effect,
             "dispatch_ir": lifted_ir,
             "dispatch_expr_ir": lifted_ir,
             "ip_advance_expr_ir": lifted_ir,
-            "validation": "file_backed_operand",
+            "validation": validation,
             "provenance": kind,
         })
 
@@ -319,7 +324,7 @@ def main():
     transitions = load_by(args.transition_model, "entry")
     rows = []
     add_exact_rows(args, segments, rows, sidecars, transitions)
-    add_decoded_rows(args, segments, rows, sidecars)
+    add_decoded_rows(args, segments, rows, sidecars, transitions)
     rows.sort(key=lambda row: (int(row["start_vm_ip"], 16), row["row_kind"], row["source_entry"], row["delta"]))
 
     if args.markdown:
