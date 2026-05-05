@@ -222,6 +222,8 @@ def c_shape_metrics(rows):
     native_obfuscated_control_model_index = read_tsv(TRACE_DIR / "vm_native_obfuscated_control_model.tsv")
     native_ret_patch_hidden_bridge = read_text(TRACE_DIR / "vm_native_ret_patch_hidden_bridge.c")
     native_ret_patch_hidden_bridge_index = read_tsv(TRACE_DIR / "vm_native_ret_patch_hidden_bridge.tsv")
+    native_handler_environment_coverage = read_text(TRACE_DIR / "vm_native_handler_environment_coverage.c")
+    native_handler_environment_coverage_index = read_tsv(TRACE_DIR / "vm_native_handler_environment_coverage.tsv")
     target_only_handlers_retdec = read_text(TRACE_DIR / "vm_target_only_handlers_retdec.c")
     unobserved_handlers_retdec_batches = [
         read_text(TRACE_DIR / f"vm_unobserved_handlers_retdec_batch{index:02d}.c")
@@ -292,6 +294,9 @@ def c_shape_metrics(rows):
     )
     ret_patch_hidden_bridge_edges = Counter(
         row.get("edge_kind", "") for row in native_ret_patch_hidden_bridge_index
+    )
+    handler_environment_statuses = Counter(
+        row.get("coverage_status", "") for row in native_handler_environment_coverage_index
     )
 
     add(rows, "c_shape", "handler_functions", count(r"^static VMOpResult op_entry_\d{3}\(VMState \*vm\) \{", handlers),
@@ -560,6 +565,42 @@ def c_shape_metrics(rows):
     add(rows, "c_shape", "native_ret_patch_hidden_bridge_status_mix",
         ",".join(f"{key}:{value}" for key, value in ret_patch_hidden_bridge_statuses.most_common()) or "-",
         "Status mix for ret-patch exits joined to hidden-control rows.")
+    add(rows, "coverage", "native_handler_environment_coverage_rows",
+        len(native_handler_environment_coverage_index),
+        "Handler-level environment provenance rows generated from the cross-run trace matrix.")
+    add(rows, "c_shape", "native_handler_environment_coverage_c_entries",
+        count(r"^    \{ \d+, 0x[0-9a-f]+ull, 0x[0-9a-f]+u, 0x[0-9a-f]+u,", native_handler_environment_coverage),
+        "Syntax-checkable C entries in the handler-level environment coverage map.")
+    add(rows, "coverage", "native_handler_environment_coverage_concrete_source_rows",
+        sum(1 for row in native_handler_environment_coverage_index if row.get("concrete_source", "") == "1"),
+        "Dispatch entries observed as a source in at least one concrete instruction trace.")
+    add(rows, "coverage", "native_handler_environment_coverage_concrete_target_rows",
+        sum(1 for row in native_handler_environment_coverage_index if row.get("concrete_target", "") == "1"),
+        "Dispatch entries observed as a target in at least one concrete instruction trace.")
+    add(rows, "coverage", "native_handler_environment_coverage_blocked_source_rows",
+        sum(1 for row in native_handler_environment_coverage_index if row.get("blocked_source", "") == "1"),
+        "Dispatch entries observed as a source under blocked-network runs.")
+    add(rows, "coverage", "native_handler_environment_coverage_blocked_target_rows",
+        sum(1 for row in native_handler_environment_coverage_index if row.get("blocked_target", "") == "1"),
+        "Dispatch entries observed as a target under blocked-network runs.")
+    add(rows, "coverage", "native_handler_environment_coverage_fake_source_rows",
+        sum(1 for row in native_handler_environment_coverage_index if row.get("fake_source", "") == "1"),
+        "Dispatch entries observed as a source under fake-network runs.")
+    add(rows, "coverage", "native_handler_environment_coverage_fake_target_rows",
+        sum(1 for row in native_handler_environment_coverage_index if row.get("fake_target", "") == "1"),
+        "Dispatch entries observed as a target under fake-network runs.")
+    add(rows, "coverage", "native_handler_environment_coverage_synthetic_source_rows",
+        sum(1 for row in native_handler_environment_coverage_index if row.get("synthetic_source", "") == "1"),
+        "Dispatch entries seen as a source only through synthetic fill sidecars or mixed synthetic evidence.")
+    add(rows, "coverage", "native_handler_environment_coverage_synthetic_target_rows",
+        sum(1 for row in native_handler_environment_coverage_index if row.get("synthetic_target", "") == "1"),
+        "Dispatch entries seen as a target only through synthetic fill sidecars or mixed synthetic evidence.")
+    add(rows, "coverage", "native_handler_environment_coverage_static_only_rows",
+        handler_environment_statuses.get("static_only_unobserved_in_trace_matrix", 0),
+        "Dispatch entries present in the static handler table but not observed in the trace matrix.")
+    add(rows, "coverage", "native_handler_environment_coverage_status_mix",
+        ",".join(f"{key}:{value}" for key, value in handler_environment_statuses.most_common()) or "-",
+        "Status mix for handler-level environment coverage.")
     add(rows, "c_shape", "target_only_handler_retdec_selected_ranges",
         count(r"^ \*   0x[0-9a-f]+-0x[0-9a-f]+ entry=\d+ ", target_only_handlers_retdec),
         "Target-only VM handler native ranges selected for targeted RetDec.")
@@ -2361,6 +2402,8 @@ def native_acceleration_metrics(rows):
     obfuscated_control_model_binary = Path("vm_native_obfuscated_control_model_dump")
     ret_patch_hidden_bridge_source = read_text("vm_native_ret_patch_hidden_bridge_dump.c")
     ret_patch_hidden_bridge_binary = Path("vm_native_ret_patch_hidden_bridge_dump")
+    handler_environment_coverage_source = read_text("vm_native_handler_environment_coverage_dump.c")
+    handler_environment_coverage_binary = Path("vm_native_handler_environment_coverage_dump")
     add(rows, "native_acceleration", "instruction_unique_fast_source_lines", line_count(unique_source),
         "Native exact-instruction reducer source size.")
     add(rows, "native_acceleration", "instruction_unique_fast_binary_bytes", file_size(unique_binary),
@@ -2488,6 +2531,13 @@ def native_acceleration_metrics(rows):
     add(rows, "native_acceleration", "native_ret_patch_hidden_bridge_uses_native_generator",
         "yes" if "./vm_native_ret_patch_hidden_bridge_dump --c" in makefile else "no",
         "Whether the ret-patch hidden bridge C/TSV/Markdown artifacts are generated by the native C tool.")
+    add(rows, "native_acceleration", "native_handler_environment_coverage_dump_source_lines", line_count(handler_environment_coverage_source),
+        "Native handler environment coverage generator source size.")
+    add(rows, "native_acceleration", "native_handler_environment_coverage_dump_binary_bytes", file_size(handler_environment_coverage_binary),
+        "Current compiled native handler environment coverage generator size.")
+    add(rows, "native_acceleration", "native_handler_environment_coverage_uses_native_generator",
+        "yes" if "./vm_native_handler_environment_coverage_dump --c" in makefile else "no",
+        "Whether the handler environment coverage C/TSV/Markdown artifacts are generated by the native C tool.")
 
 
 def build_rows():
