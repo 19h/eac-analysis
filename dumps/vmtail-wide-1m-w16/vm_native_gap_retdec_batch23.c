@@ -6,22 +6,22 @@
  * coverage -> queue -> RetDec batch -> coverage.
  *
  * Ranges:
- *   0x2c7a0-0x2c899 rank=11 name=fcn.0002c7a0 kind=r2_discovered bytes=249 uncovered=249
- *   0x52b68-0x52c61 rank=12 name=fcn.00052b68 kind=r2_discovered bytes=249 uncovered=249
- *   0x52cc60-0x52cd59 rank=13 name=fcn.0052cc60 kind=r2_discovered bytes=249 uncovered=249
- *   0x2b252-0x2b34a rank=14 name=fcn.0002b252 kind=r2_discovered bytes=248 uncovered=248
- *   0x1f5d10-0x1f5e08 rank=15 name=fcn.001f5d10 kind=r2_discovered bytes=248 uncovered=248
- *   0x52bdc0-0x52beb8 rank=16 name=fcn.0052bdc0 kind=r2_discovered bytes=248 uncovered=248
- *   0x54a8d0-0x54a9c8 rank=17 name=fcn.0054a8d0 kind=r2_discovered bytes=248 uncovered=248
- *   0x36ff8-0x370ef rank=18 name=fcn.00036ff8 kind=r2_discovered bytes=247 uncovered=247
- *   0x522710-0x522807 rank=19 name=fcn.00522710 kind=r2_discovered bytes=247 uncovered=247
- *   0x507f6-0x508eb rank=20 name=fcn.000507f6 kind=r2_discovered bytes=245 uncovered=245
- *   0x4b5690-0x4b5785 rank=21 name=fcn.004b5690 kind=r2_discovered bytes=245 uncovered=245
- *   0x2b674-0x2b768 rank=22 name=fcn.0002b674 kind=r2_discovered bytes=244 uncovered=244
- *   0x5a160-0x5a254 rank=23 name=fcn.0005a160 kind=r2_discovered bytes=244 uncovered=244
- *   0x4c3a10-0x4c3b04 rank=24 name=fcn.004c3a10 kind=r2_discovered bytes=244 uncovered=244
- *   0x52b8e0-0x52b9d4 rank=25 name=fcn.0052b8e0 kind=r2_discovered bytes=244 uncovered=244
- *   0x48e88e-0x48e981 rank=26 name=fcn.0048e88e kind=r2_discovered bytes=243 uncovered=243
+ *   0x2c7a0-0x2c899 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x52b68-0x52c61 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x52cc60-0x52cd59 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x2b252-0x2b34a rank=- name=- kind=- bytes=- uncovered=-
+ *   0x1f5d10-0x1f5e08 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x52bdc0-0x52beb8 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x54a8d0-0x54a9c8 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x36ff8-0x370ef rank=- name=- kind=- bytes=- uncovered=-
+ *   0x522710-0x522807 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x507f6-0x508eb rank=- name=- kind=- bytes=- uncovered=-
+ *   0x4b5690-0x4b5785 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x2b674-0x2b768 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x5a160-0x5a254 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x4c3a10-0x4c3b04 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x52b8e0-0x52b9d4 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x48e88e-0x48e981 rank=- name=- kind=- bytes=- uncovered=-
  */
 #include <stdbool.h>
 #include <stdio.h>
@@ -39,7 +39,9 @@ struct __locale_struct;
 struct _TYPEDEF_glob_t;
 struct _TYPEDEF___mbstate_t;
 struct _IO_FILE;
+struct pollfd;
 struct sockaddr;
+struct stat64;
 struct timespec;
 struct timeval;
 struct utsname;
@@ -47,6 +49,7 @@ struct utsname;
 #define F_SETFL 4
 #define SO_DEBUG 1
 #define _SC_PAGESIZE 30
+#define SYS_getegid32 50
 extern int g1;
 extern int g2;
 unsigned char llvm_ctpop_i8(unsigned char value);
@@ -127,9 +130,14 @@ int pthread_mutex_unlock(void *mutex);
 int pthread_cond_wait(void *cond, void *mutex);
 int pthread_cond_timedwait(void *cond, void *mutex, const struct timespec *abstime);
 int fcntl(int fd, int cmd, ...);
+int ioctl(int fd, unsigned long request, ...);
+int poll(struct pollfd *fds, unsigned long nfds, int timeout);
 int gettimeofday(struct timeval *tv, void *tz);
 int64_t sysconf(int name);
+int64_t syscall(int64_t number, ...);
 int mprotect(void *addr, size_t len, int prot);
+int __fxstat64(int ver, int fd, struct stat64 *buf);
+int64_t lseek64(int fd, int64_t offset, int whence);
 int32_t *__errno_location(void);
 int connect(int sockfd, const struct sockaddr *addr, int32_t addrlen);
 int getsockopt(int sockfd, int level, int optname, void *optval, int32_t *optlen);
@@ -143,6 +151,7 @@ int64_t __wctype_l(const char *property, struct __locale_struct *locale);
 char *strdup(const char *s);
 int __sprintf_chk(char *str, int flag, size_t slen, const char *format, ...);
 struct _Unwind_Exception;
+int64_t _Unwind_GetRegionStart();
 void _Unwind_Resume(struct _Unwind_Exception *exception);
 
 int64_t function_1f5d10();
