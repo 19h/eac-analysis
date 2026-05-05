@@ -31,6 +31,7 @@ from vm_state_static_validate import (
     mask_for_size,
     mem_ptr,
     parse_int,
+    preserve_stack_insn,
     read_skeletons,
     read_trace_rows,
     reg_of,
@@ -506,6 +507,10 @@ def execute(
             continue
 
         if not ops:
+            pc = next_pc
+            continue
+
+        if preserve_stack_insn(mnem, ops):
             pc = next_pc
             continue
 

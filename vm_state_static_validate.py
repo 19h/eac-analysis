@@ -334,6 +334,10 @@ def branch_taken(mnemonic, zf):
     return None
 
 
+def preserve_stack_insn(mnemonic, ops):
+    return mnemonic in {"push", "pop"} and len(ops) == 1 and ops[0].type == X86_OP_REG
+
+
 def disassemble_region(md, data, start, stop):
     start = max(0, start)
     stop = min(len(data), stop)
@@ -393,6 +397,10 @@ def execute(insns_by_addr, start, tail_site, row, max_steps):
             continue
 
         if not ops:
+            pc = next_pc
+            continue
+
+        if preserve_stack_insn(mnem, ops):
             pc = next_pc
             continue
 
