@@ -838,6 +838,30 @@ def c_shape_metrics(rows):
     add(rows, "c_shape", "native_function_inventory_c_metadata_rows",
         count(r'^    \{ "\.[A-Za-z0-9_.]+", 0x[0-9a-f]+ull, 0x[0-9a-f]+ull, \d+u, \d+u, ', native_function_inventory),
         "Weak native function inventory metadata rows retained in C form.")
+    add(rows, "coverage_frontier", "native_retdec_gap_queue_rows",
+        len(native_retdec_gap_queue_index),
+        "Native function-boundary rows whose bytes are not yet covered by semantic RetDec/native C sidecars.")
+    add(rows, "coverage_frontier", "native_retdec_gap_queue_tier0_rows",
+        native_retdec_gap_queue_tiers.get("tier0_small_native_gap", 0),
+        "Small uncovered native functions queued for targeted single-function RetDec.")
+    add(rows, "coverage_frontier", "native_retdec_gap_queue_tier1_rows",
+        native_retdec_gap_queue_tiers.get("tier1_medium_native_gap", 0),
+        "Medium uncovered native functions queued for targeted single-function RetDec.")
+    add(rows, "coverage_frontier", "native_retdec_gap_queue_tier2_rows",
+        native_retdec_gap_queue_tiers.get("tier2_large_native_gap", 0),
+        "Large uncovered native functions queued for timed RetDec or manual split.")
+    add(rows, "coverage_frontier", "native_retdec_gap_queue_tier3_rows",
+        native_retdec_gap_queue_tiers.get("tier3_huge_or_noisy_native_gap", 0),
+        "Huge or noisy uncovered native functions that need splitting/modeling before broad RetDec.")
+    add(rows, "coverage_frontier", "native_retdec_gap_queue_total_uncovered_bytes",
+        sum(int(row.get("semantic_uncovered_bytes", "0") or "0") for row in native_retdec_gap_queue_index),
+        "Function-boundary uncovered .text bytes represented by the native RetDec gap queue.")
+    add(rows, "coverage_frontier", "native_retdec_gap_queue_top10_ranges",
+        ",".join(row.get("selected_range", "") for row in native_retdec_gap_queue_index[:10]),
+        "Top ten ranked native function ranges to target next.")
+    add(rows, "c_shape", "native_retdec_gap_queue_c_rows",
+        count(r'^    \{ \d+u, 0x[0-9a-f]+ull, 0x[0-9a-f]+ull, \d+u, \d+u, \d+u, \d+u, ', native_retdec_gap_queue),
+        "Native RetDec gap queue rows retained in C form.")
     add(rows, "data_surface", "binary_data_section_rows",
         sum(1 for row in binary_data_sections_index if row.get("kind", "") == "section"),
         "Allocatable ELF sections tracked by the binary data carrier.")
@@ -1479,6 +1503,12 @@ def c_shape_metrics(rows):
     add(rows, "coverage_frontier", "all_evidence_bundle_native_function_inventory_symbols",
         count(r"\beac_evidence_native_function_inventory__", all_evidence_bundle),
         "Prefixed native function inventory symbols retained in the all-evidence single file.")
+    add(rows, "coverage_frontier", "all_evidence_bundle_native_retdec_gap_queue_rows",
+        count(r'^    \{ \d+u, 0x[0-9a-f]+ull, 0x[0-9a-f]+ull, \d+u, \d+u, \d+u, \d+u, ', all_evidence_bundle),
+        "Native RetDec gap queue rows retained in the all-evidence single file.")
+    add(rows, "coverage_frontier", "all_evidence_bundle_native_retdec_gap_queue_symbols",
+        count(r"\beac_evidence_native_retdec_gap_queue__", all_evidence_bundle),
+        "Prefixed native RetDec gap queue symbols retained in the all-evidence single file.")
     add(rows, "c_shape", "all_evidence_bundle_sidecar_sections",
         count(r"^/\* --- sidecar: ", all_evidence_bundle),
         "Renamed native RetDec/control sidecar files appended to the all-evidence single file.")
