@@ -594,10 +594,11 @@ def main():
     parser.add_argument("--primary", default="dumps/vmtail-wide-1m-w16")
     parser.add_argument("--dumps-root", default="dumps")
     parser.add_argument("--max-items", type=int, default=8)
+    parser.add_argument("--from-tsv", help="Render rows from a precomputed matrix TSV instead of rescanning traces")
     parser.add_argument("--markdown", action="store_true")
     args = parser.parse_args()
 
-    rows = make_rows(args)
+    rows = list(read_tsv(args.from_tsv)) if args.from_tsv else make_rows(args)
     if args.markdown:
         emit_markdown(rows)
     else:

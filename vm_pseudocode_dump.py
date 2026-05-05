@@ -1253,6 +1253,7 @@ def emit_preamble():
     print("/*")
     print(" * Decompiled VM pseudocode sketch.")
     print(" * This is syntax-checkable C, but still an analysis artifact rather than drop-in source.")
+    print(" * Dynamic bytecode coverage is scenario-specific; see vm_trace_coverage_matrix.tsv for run/network provenance.")
     print(" */")
     print("#include <stdint.h>")
     print("")

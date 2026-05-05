@@ -136,9 +136,9 @@ def cross_trace_metrics(rows, trace_dir):
     classes = Counter(row.get("trace_class", "") for row in matrix)
     concrete_modes = sorted({row.get("run_mode", "") for row in concrete_rows if row.get("run_mode", "")})
     tail_mem_rows = [row for row in matrix if row.get("driver_tail_mem") == "1"]
-    network_policies = Counter(row.get("network_policy", "") for row in matrix)
-    concrete_network_policies = Counter(row.get("network_policy", "") for row in concrete_rows)
-    spawn_policies = Counter(row.get("spawn_policy", "") for row in matrix)
+    network_policies = Counter(row.get("network_policy") or "unknown" for row in matrix)
+    concrete_network_policies = Counter(row.get("network_policy") or "unknown" for row in concrete_rows)
+    spawn_policies = Counter(row.get("spawn_policy") or "unknown" for row in matrix)
     concrete_network_requested = [row for row in concrete_rows if parse_int(row.get("network_events")) > 0]
     concrete_network_denied = [row for row in concrete_rows if parse_int(row.get("network_denied_events")) > 0]
     concrete_network_allowed = [
