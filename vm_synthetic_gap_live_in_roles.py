@@ -149,6 +149,12 @@ def event_target_entry(fields, target_to_entry):
     return str(entry), target_off_text, target_off
 
 
+def tail_site_match_text(fields, tail_site):
+    if not fields or tail_site is None:
+        return ""
+    return "1" if fields.get("site") == tail_site else "0"
+
+
 def image_base_from_event(fields):
     if not fields:
         return None
@@ -223,12 +229,16 @@ def make_rows(args):
         regs = sorted(set(REG_RE.findall(target_expr)))
         deref_regs = sorted(set(match.group("reg") for match in DEREF_RE.finditer(target_expr)))
         tail_entry, tail_target_off_text, _tail_target_off = event_target_entry(tail_fields, target_to_entry)
+        tail_site_match = tail_site_match_text(tail_fields, tail_site)
+        tail_site_matched = tail_site_match == "1"
         deref_reads, deref_observed, deref_target_matches = deref_read_roles(deref_regs, tail_fields, target_to_entry)
         if not fields:
-            if deref_regs and deref_target_matches:
-                resolution = "tail_mem_deref_matches_event_target"
+            if deref_regs and deref_target_matches and tail_site_matched:
+                resolution = "final_tail_mem_deref_matches_event_target"
+            elif deref_regs and deref_target_matches:
+                resolution = "tail_mem_deref_matches_event_target_at_observed_site"
             elif deref_regs and deref_observed:
-                resolution = "tail_mem_deref_observed_without_start_regs"
+                resolution = "final_tail_mem_deref_observed_without_start_regs" if tail_site_matched else "tail_mem_deref_observed_without_start_regs"
             else:
                 resolution = "missing_gpr_event"
             rows.append({
@@ -244,6 +254,7 @@ def make_rows(args):
                 "final_tail_site": tail_info.get("tail_site_text", ""),
                 "final_tail_target_reg": tail_info.get("tail_target_reg", ""),
                 "tail_event_site": f"0x{tail_fields.get('site', 0):x}" if tail_fields else "",
+                "tail_event_site_match": tail_site_match,
                 "tail_event_target_entry": tail_entry,
                 "tail_event_target_off": tail_target_off_text,
                 "deref_reads": deref_reads,
@@ -260,12 +271,16 @@ def make_rows(args):
             for reg in regs
         ]
         classes = sorted(set(role_class(text) for text in role_texts))
-        if deref_regs and deref_target_matches:
-            resolution = "tail_mem_deref_matches_event_target"
+        if deref_regs and deref_target_matches and tail_site_matched:
+            resolution = "final_tail_mem_deref_matches_event_target"
+        elif deref_regs and deref_target_matches:
+            resolution = "tail_mem_deref_matches_event_target_at_observed_site"
+        elif deref_regs and deref_observed == len(deref_regs) and tail_site_matched:
+            resolution = "final_tail_mem_deref_observed_target_mismatch"
         elif deref_regs and deref_observed == len(deref_regs):
             resolution = "tail_mem_deref_observed_target_mismatch"
         elif deref_regs and deref_observed:
-            resolution = "tail_mem_deref_partially_observed"
+            resolution = "final_tail_mem_deref_partially_observed" if tail_site_matched else "tail_mem_deref_partially_observed"
         elif deref_regs:
             resolution = "live_regs_named_mem_deref_unresolved"
         elif "unknown" in classes:
@@ -285,6 +300,7 @@ def make_rows(args):
             "final_tail_site": tail_info.get("tail_site_text", ""),
             "final_tail_target_reg": tail_info.get("tail_target_reg", ""),
             "tail_event_site": f"0x{tail_fields.get('site', 0):x}" if tail_fields else "",
+            "tail_event_site_match": tail_site_match,
             "tail_event_target_entry": tail_entry,
             "tail_event_target_off": tail_target_off_text,
             "deref_reads": deref_reads,
@@ -309,6 +325,7 @@ def emit_tsv(rows):
         "final_tail_site",
         "final_tail_target_reg",
         "tail_event_site",
+        "tail_event_site_match",
         "tail_event_target_entry",
         "tail_event_target_off",
         "deref_reads",
@@ -334,8 +351,8 @@ def emit_markdown(rows):
     print(f"Rows: {len(rows)}.")
     print("Resolution mix: " + ", ".join(f"{key}:{value}" for key, value in resolutions.most_common()) + ".")
     print("Role-class mix: " + ", ".join(f"{key}:{value}" for key, value in classes.most_common()) + ".\n")
-    print("| Start | Source | Target Expr | Start Site | Final Site | Tail Target | Deref Reads | Resolution |")
-    print("| --- | ---: | --- | --- | --- | ---: | --- | --- |")
+    print("| Start | Source | Target Expr | Start Site | Final Site | Tail Site Match | Tail Target | Deref Reads | Resolution |")
+    print("| --- | ---: | --- | --- | --- | ---: | ---: | --- | --- |")
     for row in rows:
         deref_reads = row["deref_reads"]
         if len(deref_reads) > 100:
@@ -343,10 +360,10 @@ def emit_markdown(rows):
         print(
             f"| `{row['synthetic_start_vm_ip']}` | {row['source_entry']} | "
             f"`{row['target_expr']}` | `{row['event_site'] or '-'}` | "
-            f"`{row['final_tail_site'] or '-'}` | {row['tail_event_target_entry'] or '-'} | "
+            f"`{row['final_tail_site'] or '-'}` | {row['tail_event_site_match'] or '-'} | {row['tail_event_target_entry'] or '-'} | "
             f"`{deref_reads or '-'}` | `{row['resolution']}` |"
         )
-    print("\nThe start-site registers name live inputs; final-tail `mem_<reg>` fields resolve the qword dereferences when `EAC_VMTAIL_MEM=1` traces those sites.")
+    print("\nThe start-site registers name live inputs; `Tail Site Match=1` means the memory-enabled VMTAIL event was captured at the exact final native tail site for that source.")
 
 
 def main():

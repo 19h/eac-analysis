@@ -5,6 +5,7 @@ LDFLAGS ?=
 STATE_DIR ?= dumps/vmtail-state-wide-w16
 TRACE ?= $(STATE_DIR)/vm_instruction_trace.tsv
 GPR_RUN ?= dumps/vmtail-scratch-wide-w16-fs337all-fs128/run.stderr
+TAIL_MEM_RUN ?= dumps/vmtail-mem-focus-starts/run.stderr
 PRED_ROWS ?= 128
 XFER_ROWS ?= 128
 
@@ -145,8 +146,8 @@ synthetic-gap-symbolic-successors: synthetic-gap-transfer-probe synthetic-gap-dy
 	python3 vm_synthetic_gap_symbolic_successors.py --markdown > dumps/vmtail-wide-1m-w16/vm_synthetic_gap_symbolic_successors.md
 
 synthetic-gap-live-in-roles: synthetic-gap-transfer-probe
-	python3 vm_synthetic_gap_live_in_roles.py > dumps/vmtail-wide-1m-w16/vm_synthetic_gap_live_in_roles.tsv
-	python3 vm_synthetic_gap_live_in_roles.py --markdown > dumps/vmtail-wide-1m-w16/vm_synthetic_gap_live_in_roles.md
+	python3 vm_synthetic_gap_live_in_roles.py --tail-mem-run $(TAIL_MEM_RUN) > dumps/vmtail-wide-1m-w16/vm_synthetic_gap_live_in_roles.tsv
+	python3 vm_synthetic_gap_live_in_roles.py --tail-mem-run $(TAIL_MEM_RUN) --markdown > dumps/vmtail-wide-1m-w16/vm_synthetic_gap_live_in_roles.md
 
 pseudocode: bytecode-basic-blocks synthetic-tail-lift synthetic-gap-transfer-probe synthetic-gap-dynamic-stitch
 	python3 vm_pseudocode_dump.py --limit-blocks 60 --rows-per-block 32 > dumps/vmtail-wide-1m-w16/vm_pseudocode_top.c

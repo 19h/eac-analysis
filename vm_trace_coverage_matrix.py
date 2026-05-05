@@ -61,6 +61,8 @@ def classify_dir(path):
     text = str(path)
     if "filefill" in text or "hiddenfill" in text or "frontierfill" in text or "footprintfill" in text:
         return "synthetic_filled_trace"
+    if "mem" in text:
+        return "memory_context_trace"
     if "regs" in text or "scratch" in text:
         return "register_context_trace"
     if "state" in text:

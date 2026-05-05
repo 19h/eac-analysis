@@ -276,10 +276,24 @@ def synthetic_gap_live_in_role_metrics(rows):
     role_rows = read_tsv(TRACE_DIR / "vm_synthetic_gap_live_in_roles.tsv")
     resolutions = Counter(row.get("resolution", "") for row in role_rows)
     role_classes = Counter()
+    gpr_event_rows = [row for row in role_rows if row.get("event_site", "")]
+    missing_gpr_rows = [row for row in role_rows if not row.get("event_site", "")]
+    tail_event_rows = [row for row in role_rows if row.get("tail_event_site", "")]
+    final_tail_event_rows = [row for row in role_rows if row.get("tail_event_site_match", "") == "1"]
+    total_mem_matches = (
+        resolutions.get("final_tail_mem_deref_matches_event_target", 0)
+        + resolutions.get("tail_mem_deref_matches_event_target_at_observed_site", 0)
+        + resolutions.get("tail_mem_deref_matches_event_target", 0)
+    )
+    observed_without_match = sum(
+        value
+        for key, value in resolutions.items()
+        if "mem_deref_observed" in key and "matches_event_target" not in key
+    )
     missing_sources = sorted({
         row.get("source_entry", "")
-        for row in role_rows
-        if row.get("resolution") == "missing_gpr_event" and row.get("source_entry", "")
+        for row in missing_gpr_rows
+        if row.get("source_entry", "")
     }, key=lambda value: int(value, 0))
     final_tail_sites = sorted({
         f"{row.get('source_entry')}@{row.get('final_tail_site')}:{row.get('final_tail_target_reg')}"
@@ -294,16 +308,31 @@ def synthetic_gap_live_in_role_metrics(rows):
     add(rows, "gap_live_in", "synthetic_gap_live_in_role_rows", len(role_rows),
         "Live-in synthetic gap transfer-probe rows joined against the GPR/scratch VMTAIL trace.")
     add(rows, "gap_live_in", "synthetic_gap_live_in_gpr_events_found",
-        len(role_rows) - resolutions.get("missing_gpr_event", 0),
+        len(gpr_event_rows),
         "Rows whose synthetic start VM IP was present in the GPR/scratch trace.")
     add(rows, "gap_live_in", "synthetic_gap_live_in_missing_gpr_events", resolutions.get("missing_gpr_event", 0),
-        "Rows still requiring a GPR/scratch trace at that synthetic start.")
+        "Rows with no start GPR event and no memory observation strong enough to refine the row.")
+    add(rows, "gap_live_in", "synthetic_gap_live_in_rows_without_start_gpr_event", len(missing_gpr_rows),
+        "Rows still missing the same-run start-site GPR/scratch event, even if a separate memory trace observed the IP.")
     add(rows, "gap_live_in", "synthetic_gap_live_in_mem_deref_unresolved",
         resolutions.get("live_regs_named_mem_deref_unresolved", 0),
         "Rows where live registers are named but the target expression still depends on an event-local qword dereference.")
+    add(rows, "gap_live_in", "synthetic_gap_live_in_tail_mem_events_found", len(tail_event_rows),
+        "Rows with a memory-enabled VMTAIL event at the synthetic start or missing-successor IP.")
+    add(rows, "gap_live_in", "synthetic_gap_live_in_tail_event_site_matches", len(final_tail_event_rows),
+        "Rows where that memory-enabled event was at the exact final native tail site for the source.")
     add(rows, "gap_live_in", "synthetic_gap_live_in_tail_mem_deref_matches",
-        resolutions.get("tail_mem_deref_matches_event_target", 0),
-        "Rows whose final-tail qword memory read matched the event target handler.")
+        total_mem_matches,
+        "Rows whose event-local qword memory read matched the observed target handler.")
+    add(rows, "gap_live_in", "synthetic_gap_live_in_final_tail_mem_deref_matches",
+        resolutions.get("final_tail_mem_deref_matches_event_target", 0),
+        "Rows whose qword memory read matched the observed target handler at the exact final native tail site.")
+    add(rows, "gap_live_in", "synthetic_gap_live_in_observed_site_mem_deref_matches",
+        resolutions.get("tail_mem_deref_matches_event_target_at_observed_site", 0),
+        "Rows whose qword memory read matched the observed target handler at a non-final observed VMTAIL site.")
+    add(rows, "gap_live_in", "synthetic_gap_live_in_tail_mem_deref_observed_without_match",
+        observed_without_match,
+        "Rows with a qword memory read that did not match the observed target handler or lacked the paired start GPR event.")
     add(rows, "gap_live_in", "synthetic_gap_live_in_final_tail_sites",
         ",".join(final_tail_sites) or "-",
         "Native final-tail hook sites needed to resolve the live-in qword dereferences.")
