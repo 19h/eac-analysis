@@ -256,6 +256,15 @@ Reproducible inventory of the current C-shaped reconstruction artifacts and gate
 | `artifact` | `native_ret_patch_hidden_bridge_md_path` | `dumps/vmtail-wide-1m-w16/vm_native_ret_patch_hidden_bridge.md` | Generated reconstruction artifact. |
 | `artifact` | `native_ret_patch_hidden_bridge_md_lines` | `14` | Current line count. |
 | `artifact` | `native_ret_patch_hidden_bridge_md_bytes` | `1817` | Current file size in bytes. |
+| `artifact` | `native_handler_environment_coverage_c_path` | `dumps/vmtail-wide-1m-w16/vm_native_handler_environment_coverage.c` | Generated reconstruction artifact. |
+| `artifact` | `native_handler_environment_coverage_c_lines` | `403` | Current line count. |
+| `artifact` | `native_handler_environment_coverage_c_bytes` | `32272` | Current file size in bytes. |
+| `artifact` | `native_handler_environment_coverage_tsv_path` | `dumps/vmtail-wide-1m-w16/vm_native_handler_environment_coverage.tsv` | Generated reconstruction artifact. |
+| `artifact` | `native_handler_environment_coverage_tsv_lines` | `361` | Current line count. |
+| `artifact` | `native_handler_environment_coverage_tsv_bytes` | `88351` | Current file size in bytes. |
+| `artifact` | `native_handler_environment_coverage_md_path` | `dumps/vmtail-wide-1m-w16/vm_native_handler_environment_coverage.md` | Generated reconstruction artifact. |
+| `artifact` | `native_handler_environment_coverage_md_lines` | `15` | Current line count. |
+| `artifact` | `native_handler_environment_coverage_md_bytes` | `618` | Current file size in bytes. |
 | `artifact` | `target_only_handlers_retdec_path` | `dumps/vmtail-wide-1m-w16/vm_target_only_handlers_retdec.c` | Generated reconstruction artifact. |
 | `artifact` | `target_only_handlers_retdec_lines` | `317` | Current line count. |
 | `artifact` | `target_only_handlers_retdec_bytes` | `12635` | Current file size in bytes. |
@@ -467,6 +476,18 @@ Reproducible inventory of the current C-shaped reconstruction artifacts and gate
 | `c_shape` | `native_ret_patch_hidden_bridge_dynamic_hits` | `28` | Focused second-stage dynamic hits reachable through the ret-patch hidden bridge. |
 | `c_shape` | `native_ret_patch_hidden_bridge_edge_kind_mix` | `jump:7,call:1` | Call/jump edge mix for ret-patch follow-up targets that enter hidden control. |
 | `c_shape` | `native_ret_patch_hidden_bridge_status_mix` | `end_to_end_second_stage_dispatch_model_joined:5,source278_retdec_target_joined:2,entry_helper_to_source278_retdec_target_joined:1` | Status mix for ret-patch exits joined to hidden-control rows. |
+| `coverage` | `native_handler_environment_coverage_rows` | `360` | Handler-level environment provenance rows generated from the cross-run trace matrix. |
+| `c_shape` | `native_handler_environment_coverage_c_entries` | `360` | Syntax-checkable C entries in the handler-level environment coverage map. |
+| `coverage` | `native_handler_environment_coverage_concrete_source_rows` | `202` | Dispatch entries observed as a source in at least one concrete instruction trace. |
+| `coverage` | `native_handler_environment_coverage_concrete_target_rows` | `205` | Dispatch entries observed as a target in at least one concrete instruction trace. |
+| `coverage` | `native_handler_environment_coverage_blocked_source_rows` | `205` | Dispatch entries observed as a source under blocked-network runs. |
+| `coverage` | `native_handler_environment_coverage_blocked_target_rows` | `205` | Dispatch entries observed as a target under blocked-network runs. |
+| `coverage` | `native_handler_environment_coverage_fake_source_rows` | `191` | Dispatch entries observed as a source under fake-network runs. |
+| `coverage` | `native_handler_environment_coverage_fake_target_rows` | `195` | Dispatch entries observed as a target under fake-network runs. |
+| `coverage` | `native_handler_environment_coverage_synthetic_source_rows` | `205` | Dispatch entries seen as a source only through synthetic fill sidecars or mixed synthetic evidence. |
+| `coverage` | `native_handler_environment_coverage_synthetic_target_rows` | `205` | Dispatch entries seen as a target only through synthetic fill sidecars or mixed synthetic evidence. |
+| `coverage` | `native_handler_environment_coverage_static_only_rows` | `155` | Dispatch entries present in the static handler table but not observed in the trace matrix. |
+| `coverage` | `native_handler_environment_coverage_status_mix` | `concrete_source_and_target_seen:202,static_only_unobserved_in_trace_matrix:155,concrete_target_only:3` | Status mix for handler-level environment coverage. |
 | `c_shape` | `target_only_handler_retdec_selected_ranges` | `3` | Target-only VM handler native ranges selected for targeted RetDec. |
 | `c_shape` | `target_only_handler_retdec_functions` | `8` | Targeted RetDec C functions emitted from target-only VM handler native ranges. |
 | `c_shape` | `target_only_handler_retdec_ranges` | `8` | Native address ranges emitted by RetDec for target-only handler coverage. |
@@ -945,6 +966,9 @@ Reproducible inventory of the current C-shaped reconstruction artifacts and gate
 | `native_acceleration` | `native_ret_patch_hidden_bridge_dump_source_lines` | `618` | Native ret-patch hidden-control bridge generator source size. |
 | `native_acceleration` | `native_ret_patch_hidden_bridge_dump_binary_bytes` | `90384` | Current compiled native ret-patch hidden bridge generator size. |
 | `native_acceleration` | `native_ret_patch_hidden_bridge_uses_native_generator` | `yes` | Whether the ret-patch hidden bridge C/TSV/Markdown artifacts are generated by the native C tool. |
+| `native_acceleration` | `native_handler_environment_coverage_dump_source_lines` | `507` | Native handler environment coverage generator source size. |
+| `native_acceleration` | `native_handler_environment_coverage_dump_binary_bytes` | `64448` | Current compiled native handler environment coverage generator size. |
+| `native_acceleration` | `native_handler_environment_coverage_uses_native_generator` | `yes` | Whether the handler environment coverage C/TSV/Markdown artifacts are generated by the native C tool. |
 | `gate` | `syntax_check` | `make pseudocode-syntax-check` | Regenerates and warning-checks the generated C-like reconstruction artifacts with C11 -fsyntax-only. |
 | `gate` | `object_check` | `make pseudocode-object-check` | Codegen-compiles the combined source bundle to /tmp/eacsym-vm_recovered_source_bundle.o. |
 | `gate` | `link_smoke_check` | `make pseudocode-link-check` | Links the bundle with vm_recovered_source_harness.c and runs the smoke executable. |
