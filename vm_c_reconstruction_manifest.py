@@ -1860,6 +1860,7 @@ def build_rows():
     synthetic_gap_unresolved_family_metrics(rows)
     synthetic_gap_source299_context_probe_metrics(rows)
     synthetic_gap_source299_ret_patch_probe_metrics(rows)
+    synthetic_gap_sampled_ret_patch_probe_metrics(rows)
     synthetic_gap_live_snapshot_transfer_probe_metrics(rows)
     synthetic_gap_live_table_evidence_metrics(rows)
     synthetic_gap_live_in_role_metrics(rows)
