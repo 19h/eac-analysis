@@ -123,6 +123,9 @@ def cross_trace_metrics(rows, trace_dir):
     union_sources = max((union_denominator(row.get("source_entries_vs_union", "")) for row in trace_rows), default=0)
     union_targets = max((union_denominator(row.get("target_entries_vs_union", "")) for row in trace_rows), default=0)
     union_starts = max((union_denominator(row.get("start_vm_ips_vs_union", "")) for row in trace_rows), default=0)
+    max_concrete_sources = max((parse_int(row.get("source_entries")) for row in concrete_rows), default=0)
+    max_concrete_targets = max((parse_int(row.get("target_entries")) for row in concrete_rows), default=0)
+    max_concrete_starts = max((parse_int(row.get("start_vm_ips")) for row in concrete_rows), default=0)
     extra_source_rows = [row for row in concrete_rows if plus_count(row.get("source_entries_vs_primary", "")) > 0]
     missing_source_rows = [row for row in concrete_rows if minus_count(row.get("source_entries_vs_primary", "")) > 0]
     synthetic_rows = [row for row in trace_rows if row.get("trace_class") == "synthetic_filled_trace"]
@@ -139,12 +142,18 @@ def cross_trace_metrics(rows, trace_dir):
         "Trace inventory classes; synthetic rows are derived coverage, not independent runtime configs.")
     add(rows, "dynamic_cross_trace", "concrete_runtime_modes_seen", ",".join(concrete_modes) or "-",
         "x() mode values among concrete instruction traces.")
+    add(rows, "dynamic_cross_trace", "max_concrete_source_handlers_seen", max_concrete_sources,
+        "Largest source-handler count in any concrete runtime trace; separate from synthetic fill sidecars.")
+    add(rows, "dynamic_cross_trace", "max_concrete_target_handlers_seen", max_concrete_targets,
+        "Largest target-handler count in any concrete runtime trace; separate from synthetic fill sidecars.")
+    add(rows, "dynamic_cross_trace", "max_concrete_vm_ip_starts_seen", max_concrete_starts,
+        "Largest VM-IP-start count in any concrete runtime trace; separate from synthetic fill sidecars.")
     add(rows, "dynamic_cross_trace", "union_source_handlers_seen", union_sources,
-        "Union of source handlers seen across instruction traces in the matrix.")
+        "Union of source handlers across instruction traces in the matrix, including derived synthetic fill rows.")
     add(rows, "dynamic_cross_trace", "union_target_handlers_seen", union_targets,
-        "Union of target handlers seen across instruction traces in the matrix.")
+        "Union of target handlers across instruction traces in the matrix, including derived synthetic fill rows.")
     add(rows, "dynamic_cross_trace", "union_vm_ip_starts_seen", union_starts,
-        "Union of VM-IP starts seen across instruction traces in the matrix.")
+        "Union of VM-IP starts across instruction traces in the matrix, including derived synthetic fill rows.")
     add(rows, "dynamic_cross_trace", "concrete_traces_adding_sources_vs_primary", len(extra_source_rows),
         "Concrete instruction traces that add source handlers beyond the primary long trace.")
     add(rows, "dynamic_cross_trace", "concrete_traces_missing_primary_sources", len(missing_source_rows),

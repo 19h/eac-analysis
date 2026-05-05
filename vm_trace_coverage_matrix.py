@@ -198,6 +198,12 @@ def parse_run_metadata(trace_dir):
                 break
 
     meta["env_flags"] = ",".join(sorted(env_flags))
+    if "EAC_VMTAIL_TRACE" in env_flags:
+        meta["driver_tail_trace"] = "1"
+    if "EAC_VMTAIL_REGS" in env_flags:
+        meta["driver_tail_regs"] = "1"
+    if "EAC_VMTAIL_SCRATCH" in env_flags:
+        meta["driver_tail_scratch"] = "1"
     if meta["run_mode"]:
         meta["runtime_config"] = f"x_mode_{meta['run_mode']}"
     elif "local-blocked" in str(trace_dir):

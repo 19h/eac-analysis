@@ -25,6 +25,10 @@ ARTIFACTS = [
     ("synthetic_gap_dynamic_stitch_md", TRACE_DIR / "vm_synthetic_gap_dynamic_stitch.md"),
     ("synthetic_gap_symbolic_successors_tsv", TRACE_DIR / "vm_synthetic_gap_symbolic_successors.tsv"),
     ("synthetic_gap_symbolic_successors_md", TRACE_DIR / "vm_synthetic_gap_symbolic_successors.md"),
+    ("trace_coverage_matrix_tsv", TRACE_DIR / "vm_trace_coverage_matrix.tsv"),
+    ("trace_coverage_matrix_md", TRACE_DIR / "vm_trace_coverage_matrix.md"),
+    ("static_coverage_audit_tsv", TRACE_DIR / "vm_static_coverage_audit.tsv"),
+    ("static_coverage_audit_md", TRACE_DIR / "vm_static_coverage_audit.md"),
 ]
 
 
@@ -151,6 +155,19 @@ def coverage_metrics(rows):
         ("dynamic_primary_trace", "source_handlers_seen"),
         ("dynamic_primary_trace", "target_handlers_seen"),
         ("dynamic_primary_trace", "unique_vm_ip_starts"),
+        ("dynamic_cross_trace", "coverage_matrix_rows"),
+        ("dynamic_cross_trace", "instruction_trace_scenarios"),
+        ("dynamic_cross_trace", "concrete_instruction_trace_scenarios"),
+        ("dynamic_cross_trace", "run_dirs_without_instruction_trace"),
+        ("dynamic_cross_trace", "concrete_runtime_modes_seen"),
+        ("dynamic_cross_trace", "max_concrete_source_handlers_seen"),
+        ("dynamic_cross_trace", "max_concrete_target_handlers_seen"),
+        ("dynamic_cross_trace", "max_concrete_vm_ip_starts_seen"),
+        ("dynamic_cross_trace", "union_source_handlers_seen"),
+        ("dynamic_cross_trace", "union_target_handlers_seen"),
+        ("dynamic_cross_trace", "union_vm_ip_starts_seen"),
+        ("dynamic_cross_trace", "concrete_traces_adding_sources_vs_primary"),
+        ("dynamic_cross_trace", "concrete_traces_missing_primary_sources"),
         ("validated_static_model", "dispatch_model_100pct_handlers"),
     }
     for row in read_tsv(TRACE_DIR / "vm_static_coverage_audit.tsv"):
