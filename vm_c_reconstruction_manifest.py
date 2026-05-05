@@ -548,6 +548,81 @@ def synthetic_gap_live_in_reentry_metrics(rows):
         "Byte-matched next-hooked reentries retained as comment-only evidence.")
 
 
+def synthetic_gap_allstatic_reentry_metrics(rows):
+    allstatic_rows = read_tsv(TRACE_DIR / "vm_synthetic_gap_allstatic_reentry_probe.tsv")
+    statuses = Counter(row.get("allstatic_status", "") for row in allstatic_rows)
+    evidence = Counter(row.get("allstatic_evidence_class", "") for row in allstatic_rows)
+    actions = Counter(row.get("hard_cfg_action", "") for row in allstatic_rows)
+    all_starts = sorted({
+        row.get("synthetic_start_vm_ip", "")
+        for row in allstatic_rows
+        if row.get("synthetic_start_vm_ip", "")
+    }, key=lambda value: int(value, 16))
+    seen_rows = [
+        row for row in allstatic_rows
+        if int(row.get("allstatic_start_events", "0") or 0) > 0
+    ]
+    seen_starts = sorted({
+        row.get("synthetic_start_vm_ip", "")
+        for row in seen_rows
+        if row.get("synthetic_start_vm_ip", "")
+    }, key=lambda value: int(value, 16))
+    exact_rows = [
+        row for row in allstatic_rows
+        if int(row.get("allstatic_exact_match_events", "0") or 0) > 0
+    ]
+    exact_starts = sorted({
+        row.get("synthetic_start_vm_ip", "")
+        for row in exact_rows
+        if row.get("synthetic_start_vm_ip", "")
+    }, key=lambda value: int(value, 16))
+    dynamic_match_rows = [
+        row for row in allstatic_rows
+        if row.get("allstatic_status", "") == "allstatic_next_matches_dynamic_reentry"
+    ]
+    paths = [
+        f"{row.get('synthetic_start_vm_ip')}->{row.get('inferred_next_source_entry')}@"
+        f"{row.get('inferred_next_source_start_vm_ip')}->{row.get('expected_next_end_vm_ip')}"
+        for row in dynamic_match_rows
+    ]
+
+    add(rows, "gap_allstatic_reentry", "synthetic_gap_allstatic_reentry_probe_rows", len(allstatic_rows),
+        "Rows correlating live-in dynamic reentry expectations with the all-static VMTAIL sequence.")
+    add(rows, "gap_allstatic_reentry", "synthetic_gap_allstatic_reentry_unique_starts", len(all_starts),
+        "Unique live-in synthetic starts represented by the all-static reentry probe.")
+    add(rows, "gap_allstatic_reentry", "synthetic_gap_allstatic_reentry_seen_rows", len(seen_rows),
+        "Rows whose live-in start appeared in the all-static trace.")
+    add(rows, "gap_allstatic_reentry", "synthetic_gap_allstatic_reentry_seen_starts", len(seen_starts),
+        "Unique live-in starts seen in the all-static trace.")
+    add(rows, "gap_allstatic_reentry", "synthetic_gap_allstatic_reentry_exact_match_rows", len(exact_rows),
+        "Rows where the immediate next all-static tail hook matched the dynamic reentry event.")
+    add(rows, "gap_allstatic_reentry", "synthetic_gap_allstatic_reentry_exact_match_starts", len(exact_starts),
+        "Unique live-in starts with an exact immediate-next all-static match.")
+    add(rows, "gap_allstatic_reentry", "synthetic_gap_allstatic_reentry_dynamic_match_rows", len(dynamic_match_rows),
+        "Byte-matched dynamic reentry rows corroborated by all-static immediate next-hook evidence.")
+    add(rows, "gap_allstatic_reentry", "synthetic_gap_allstatic_reentry_not_seen_rows",
+        statuses.get("not_seen_in_allstatic", 0),
+        "Rows absent from the 250k-event all-static trace window.")
+    add(rows, "gap_allstatic_reentry", "synthetic_gap_allstatic_reentry_status_mix",
+        ",".join(f"{key}:{value}" for key, value in statuses.most_common()) or "-",
+        "All-static correlation status mix.")
+    add(rows, "gap_allstatic_reentry", "synthetic_gap_allstatic_reentry_evidence_mix",
+        ",".join(f"{key}:{value}" for key, value in evidence.most_common()) or "-",
+        "All-static evidence class mix.")
+    add(rows, "gap_allstatic_reentry", "synthetic_gap_allstatic_reentry_action_mix",
+        ",".join(f"{key}:{value}" for key, value in actions.most_common()) or "-",
+        "Whether all-static rows are hard CFG promotions or comment-only evidence.")
+    add(rows, "gap_allstatic_reentry", "synthetic_gap_allstatic_reentry_hard_promotions",
+        actions.get("hard_cfg", 0),
+        "Rows promoted to hard CFG edges by this probe; should remain zero without hidden-chain replay.")
+    add(rows, "gap_allstatic_reentry", "synthetic_gap_allstatic_reentry_seen_starts_list",
+        ",".join(seen_starts) or "-",
+        "Live-in starts observed in the all-static trace window.")
+    add(rows, "gap_allstatic_reentry", "synthetic_gap_allstatic_reentry_dynamic_match_paths",
+        ",".join(paths) or "-",
+        "All-static corroborated next-hooked reentries retained as comment-only evidence.")
+
+
 def gate_metrics(rows):
     add(rows, "gate", "syntax_check", "make pseudocode-syntax-check",
         "Regenerates and warning-checks all six C-like source artifacts with C11 -fsyntax-only.")
@@ -573,6 +648,7 @@ def build_rows():
     synthetic_gap_live_in_role_metrics(rows)
     synthetic_gap_final_tail_site_metrics(rows)
     synthetic_gap_live_in_reentry_metrics(rows)
+    synthetic_gap_allstatic_reentry_metrics(rows)
     gate_metrics(rows)
     add(rows, "caveat", "completion_status", "not_complete",
         "This is a mechanically checked C reconstruction of recovered layers, not proof that every VM bytecode path has been found.")
