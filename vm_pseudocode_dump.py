@@ -354,6 +354,19 @@ def load_table_memory_probes(path):
     return probes
 
 
+def load_runtime_table_memory_probes(path):
+    probes = defaultdict(list)
+    if not path or not Path(path).exists():
+        return probes
+    for row in read_tsv(path):
+        start = normalize_vm_ip(row.get("synthetic_start_vm_ip", ""))
+        if start:
+            probes[start].append(row)
+    for rows in probes.values():
+        rows.sort(key=lambda row: (row.get("runtime_matches_file", ""), row.get("runtime_qword_class", ""), row.get("table_offset", "")))
+    return probes
+
+
 def load_sampled_control_correlations(path):
     correlations = defaultdict(list)
     if not path or not Path(path).exists():
@@ -806,6 +819,41 @@ def emit_table_memory_probe_comments(target_vm_ip, table_memory_probes, args):
     omitted = len(rows) - len(shown)
     if omitted > 0:
         print(f"    /* ... {omitted} additional table-memory probe rows omitted ... */")
+
+
+def emit_runtime_table_memory_probe_comments(target_vm_ip, runtime_table_memory_probes, args):
+    start = normalize_vm_ip(target_vm_ip)
+    rows = runtime_table_memory_probes.get(start, [])
+    if not rows:
+        return
+    limit = getattr(args, "runtime_table_memory_probe_top_items", 4)
+    shown = rows if limit <= 0 else rows[:limit]
+    print(
+        f"    /* runtime table-memory probe @ {start}: rows={len(rows)}; "
+        "postcall mapped EAC bytes compared against eac.elf at the residual table offset. */"
+    )
+    for row in shown:
+        runtime_target = row.get("runtime_qword_eac_off", "") or "-"
+        if row.get("runtime_qword_dispatch_entry", ""):
+            runtime_target = f"entry_{row.get('runtime_qword_dispatch_entry')}@{runtime_target}"
+        print(
+            f"    /* runtime table-memory probe: source={row.get('source_entry', '?')}, "
+            f"offset={c_comment(row.get('table_offset', '') or '-')}, "
+            f"count={row.get('table_offset_count', '0')}, "
+            f"match_file={c_comment(row.get('runtime_matches_file', '') or '-')}, "
+            f"file_off={c_comment(row.get('absolute_file_off', '') or '-')}, "
+            f"runtime_va={c_comment(row.get('runtime_va', '') or '-')}, "
+            f"region={c_comment(row.get('region', '') or '-')}, "
+            f"file_qword={c_comment(row.get('file_qword_le', '') or '-')}, "
+            f"runtime_qword={c_comment(row.get('runtime_qword_le', '') or '-')}, "
+            f"runtime_class={c_comment(row.get('runtime_qword_class', '') or '-')}, "
+            f"runtime_target={c_comment(runtime_target)}, "
+            f"dynamic_next=entry_{row.get('dynamic_next_source_entry', '-')}"
+            f"@{normalize_vm_ip(row.get('dynamic_next_source_start_vm_ip', ''))} */"
+        )
+    omitted = len(rows) - len(shown)
+    if omitted > 0:
+        print(f"    /* ... {omitted} additional runtime table-memory probe rows omitted ... */")
 
 
 def emit_sampled_control_correlation_comments(target_vm_ip, sampled_control_correlations, args):
