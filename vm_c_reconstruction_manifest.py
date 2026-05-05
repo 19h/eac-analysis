@@ -252,6 +252,12 @@ def c_shape_metrics(rows):
     native_handler_environment_coverage_index = read_tsv(TRACE_DIR / "vm_native_handler_environment_coverage.tsv")
     binary_data_sections = read_text(TRACE_DIR / "vm_binary_data_sections.c")
     binary_data_sections_index = read_tsv(TRACE_DIR / "vm_binary_data_sections.tsv")
+    binary_data_string_rows = [row for row in binary_data_sections_index if row.get("kind", "") == "string"]
+    binary_data_string_ref_c_rows = count(
+        r"^    \{ \d+, 0x[0-9a-f]+ull, 0x[0-9a-f]+ull, \d+, vm_eac_section_\d+_[A-Za-z0-9_]+ \+ 0x[0-9a-f]+ull, \"",
+        binary_data_sections,
+    )
+    binary_data_section_array_c_rows = count(r"^static const uint8_t vm_eac_section_\d+_", binary_data_sections)
     static_only_handler_queue = read_text(TRACE_DIR / "vm_static_only_handler_queue.c")
     static_only_handler_queue_index = read_tsv(TRACE_DIR / "vm_static_only_handler_queue.tsv")
     static_only_tier0_models = read_text(TRACE_DIR / "vm_static_only_tier0_handler_models.c")
@@ -712,14 +718,26 @@ def c_shape_metrics(rows):
                 if row.get("kind", "") == "section" and row.get("emitted_data", "") == "yes")),
         "Exact bytes carried for allocatable non-executable ELF data sections.")
     add(rows, "data_surface", "binary_data_string_refs",
-        sum(1 for row in binary_data_sections_index if row.get("kind", "") == "string"),
+        len(binary_data_string_rows),
         "Printable string references indexed from emitted runtime data sections.")
+    add(rows, "data_surface", "binary_data_string_bytes",
+        hex(sum(int(row.get("size", "0") or "0", 0) for row in binary_data_string_rows)),
+        "Exact printable bytes covered by the indexed runtime string rows.")
     add(rows, "data_surface", "binary_data_dispatch_table_rows",
         sum(1 for row in binary_data_sections_index if row.get("kind", "") == "dispatch_table"),
         "Embedded .text VM dispatch-table byte carriers.")
     add(rows, "c_shape", "binary_data_section_arrays",
-        count(r"^static const uint8_t vm_eac_section_\d+_", binary_data_sections),
+        binary_data_section_array_c_rows,
         "C byte arrays emitted for exact runtime data sections.")
+    add(rows, "c_shape", "binary_data_full_string_rows",
+        binary_data_string_ref_c_rows,
+        "C string-reference rows with full text and pointers into exact backing byte arrays.")
+    add(rows, "c_shape", "binary_data_string_row_static_asserts",
+        count(r"^_Static_assert\(sizeof\(k_vm_binary_string_refs\)", binary_data_sections),
+        "C11 static assertion proving the emitted string-reference array count.")
+    add(rows, "data_surface", "binary_data_string_rows_match_index",
+        "yes" if binary_data_string_ref_c_rows == len(binary_data_string_rows) else "no",
+        "Whether every TSV-indexed runtime string has a full C row in the data carrier.")
     add(rows, "c_shape", "binary_data_dispatch_table_offsets",
         count(r"^static const uint64_t vm_eac_dispatch_table_raw_offsets\[360\]", binary_data_sections),
         "Raw 360-entry VM dispatch-table offset array carried in C.")

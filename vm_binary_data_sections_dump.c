@@ -226,16 +226,22 @@ static void print_c_bytes(const unsigned char *data, uint64_t size) {
 
 static void emit_string_ref_c(size_t section_slot, const SectionInfo *section, uint64_t string_off,
                               const unsigned char *data, size_t len) {
-    printf("    { %zu, 0x%llxull, 0x%llxull, %zu, ",
+    printf("    { %zu, 0x%llxull, 0x%llxull, %zu, %s + 0x%llxull, ",
            section_slot,
            (unsigned long long)string_off,
            (unsigned long long)(section->addr + string_off),
-           len);
-    char preview[256];
-    size_t n = len < sizeof(preview) - 1 ? len : sizeof(preview) - 1;
-    memcpy(preview, data, n);
-    preview[n] = '\0';
-    print_c_string(preview);
+           len,
+           section->symbol,
+           (unsigned long long)string_off);
+    char *text = (char *)malloc(len + 1);
+    if (!text) {
+        fprintf(stderr, "malloc failed for string ref length %zu\n", len);
+        exit(1);
+    }
+    memcpy(text, data, len);
+    text[len] = '\0';
+    print_c_string(text);
+    free(text);
     puts(" },");
 }
 
@@ -264,15 +270,43 @@ static size_t count_strings(const Image *image) {
     return count;
 }
 
+static uint64_t count_string_bytes(const Image *image) {
+    uint64_t total = 0;
+    for (size_t i = 0; i < image->section_count; i++) {
+        const SectionInfo *section = &image->sections[i];
+        if (!emit_section_data(section) || !section_string_scan_enabled(section)) {
+            continue;
+        }
+        const unsigned char *data = image->data + section->offset;
+        uint64_t pos = 0;
+        while (pos < section->size) {
+            while (pos < section->size && !printable(data[pos])) {
+                pos++;
+            }
+            uint64_t start = pos;
+            while (pos < section->size && printable(data[pos])) {
+                pos++;
+            }
+            if (pos - start >= 4) {
+                total += pos - start;
+            }
+        }
+    }
+    return total;
+}
+
 static void emit_c(const Image *image) {
     size_t emitted_data_sections = 0;
     size_t string_count = count_strings(image);
+    uint64_t string_bytes = count_string_bytes(image);
     puts("/*");
     puts(" * Binary data sections and string/data carrier for eac.elf.");
     puts(" *");
     puts(" * This preserves allocatable non-executable ELF section bytes plus");
     puts(" * the VM dispatch table embedded in .text, so the all-evidence C");
     puts(" * artifact carries program data as well as reconstructed code.");
+    puts(" * String rows carry full escaped text and a pointer into the exact");
+    puts(" * backing section byte array, not just a shortened preview.");
     puts(" */");
     puts("#include <stdint.h>");
     puts("#include <stddef.h>");
@@ -294,7 +328,8 @@ static void emit_c(const Image *image) {
     puts("    uint64_t section_offset;");
     puts("    uint64_t vaddr;");
     puts("    uint64_t length;");
-    puts("    const char *preview;");
+    puts("    const uint8_t *bytes;");
+    puts("    const char *text;");
     puts("} VMBinaryStringRef;");
     puts("");
 
@@ -337,7 +372,16 @@ static void emit_c(const Image *image) {
         }
         puts("};");
         puts("");
+        puts("_Static_assert(sizeof(vm_eac_dispatch_table_raw_offsets) / sizeof(vm_eac_dispatch_table_raw_offsets[0]) == 360,");
+        puts("               \"all VM dispatch-table entries are carried\");");
+        puts("");
     }
+
+    printf("enum { VM_BINARY_DATA_SECTION_COUNT = %zu };\n", image->section_count);
+    printf("enum { VM_BINARY_EMITTED_DATA_SECTION_COUNT = %zu };\n", emitted_data_sections);
+    printf("enum { VM_BINARY_STRING_REF_COUNT = %zu };\n", string_count);
+    printf("enum { VM_BINARY_STRING_BYTE_COUNT = %llu };\n", (unsigned long long)string_bytes);
+    puts("");
 
     puts("static const VMBinaryDataSection k_vm_binary_data_sections[] = {");
     for (size_t i = 0; i < image->section_count; i++) {
@@ -361,9 +405,13 @@ static void emit_c(const Image *image) {
     }
     puts("};");
     puts("");
-    printf("static const size_t k_vm_binary_data_section_count = %zu;\n", image->section_count);
-    printf("static const size_t k_vm_binary_emitted_data_section_count = %zu;\n", emitted_data_sections);
-    printf("static const size_t k_vm_binary_string_ref_count = %zu;\n", string_count);
+    puts("_Static_assert(sizeof(k_vm_binary_data_sections) / sizeof(k_vm_binary_data_sections[0]) == VM_BINARY_DATA_SECTION_COUNT,");
+    puts("               \"all allocatable ELF sections are indexed\");");
+    puts("");
+    puts("static const size_t k_vm_binary_data_section_count = VM_BINARY_DATA_SECTION_COUNT;");
+    puts("static const size_t k_vm_binary_emitted_data_section_count = VM_BINARY_EMITTED_DATA_SECTION_COUNT;");
+    puts("static const size_t k_vm_binary_string_ref_count = VM_BINARY_STRING_REF_COUNT;");
+    puts("static const size_t k_vm_binary_string_byte_count = VM_BINARY_STRING_BYTE_COUNT;");
     puts("");
     puts("static const VMBinaryStringRef k_vm_binary_string_refs[] = {");
     for (size_t i = 0; i < image->section_count; i++) {
@@ -387,6 +435,9 @@ static void emit_c(const Image *image) {
         }
     }
     puts("};");
+    puts("");
+    puts("_Static_assert(sizeof(k_vm_binary_string_refs) / sizeof(k_vm_binary_string_refs[0]) == VM_BINARY_STRING_REF_COUNT,");
+    puts("               \"all indexed runtime strings are carried with full text and backing bytes\");");
 }
 
 static void emit_tsv(const Image *image) {
@@ -433,7 +484,7 @@ static void emit_tsv(const Image *image) {
                        section->type,
                        (unsigned long long)section->flags,
                        section->writable ? "yes" : "no");
-                print_tsv_text(data + start, (size_t)(pos - start), 160);
+                print_tsv_text(data + start, (size_t)(pos - start), (size_t)(pos - start));
                 putchar('\n');
             }
         }
@@ -465,6 +516,7 @@ static void emit_markdown(const Image *image) {
     printf("| emitted data bytes | 0x%llx |\n", (unsigned long long)emitted_bytes);
     printf("| bss/nobits sections tracked | %zu |\n", nobits_sections);
     printf("| string refs indexed | %zu |\n", count_strings(image));
+    printf("| indexed string bytes | 0x%llx |\n", (unsigned long long)count_string_bytes(image));
     printf("| dispatch table entries | %u |\n", DISPATCH_TABLE_ENTRIES);
     puts("");
     puts("| section | vaddr | file offset | size | emitted | writable | executable | nobits |");
