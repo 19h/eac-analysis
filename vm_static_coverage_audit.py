@@ -68,6 +68,21 @@ def compact_counter(counter):
     return ", ".join(f"{key}:{value}" for key, value in counter.most_common())
 
 
+def split_compact_counter(text):
+    counter = Counter()
+    if not text:
+        return counter
+    for part in text.split(","):
+        if not part:
+            continue
+        if ":" not in part:
+            counter[part] += 1
+            continue
+        key, value = part.rsplit(":", 1)
+        counter[key] += parse_int(value)
+    return counter
+
+
 def add(rows, scope, metric, value, note):
     rows.append({
         "scope": scope,
@@ -121,6 +136,22 @@ def cross_trace_metrics(rows, trace_dir):
     classes = Counter(row.get("trace_class", "") for row in matrix)
     concrete_modes = sorted({row.get("run_mode", "") for row in concrete_rows if row.get("run_mode", "")})
     tail_mem_rows = [row for row in matrix if row.get("driver_tail_mem") == "1"]
+    network_policies = Counter(row.get("network_policy", "") for row in matrix)
+    concrete_network_policies = Counter(row.get("network_policy", "") for row in concrete_rows)
+    spawn_policies = Counter(row.get("spawn_policy", "") for row in matrix)
+    concrete_network_requested = [row for row in concrete_rows if parse_int(row.get("network_events")) > 0]
+    concrete_network_denied = [row for row in concrete_rows if parse_int(row.get("network_denied_events")) > 0]
+    concrete_network_allowed = [
+        row for row in concrete_rows
+        if parse_int(row.get("network_events")) > 0 and parse_int(row.get("network_denied_events")) == 0
+    ]
+    concrete_no_network_events = [
+        row for row in concrete_rows
+        if parse_int(row.get("network_events")) == 0
+    ]
+    network_hosts = Counter()
+    for row in concrete_rows:
+        network_hosts.update(split_compact_counter(row.get("network_hosts", "")))
     union_sources = max((union_denominator(row.get("source_entries_vs_union", "")) for row in trace_rows), default=0)
     union_targets = max((union_denominator(row.get("target_entries_vs_union", "")) for row in trace_rows), default=0)
     union_starts = max((union_denominator(row.get("start_vm_ips_vs_union", "")) for row in trace_rows), default=0)
@@ -143,8 +174,24 @@ def cross_trace_metrics(rows, trace_dir):
         "Run directories whose driver logs include event-local qword reads from live GPR pointers.")
     add(rows, "dynamic_cross_trace", "trace_class_mix", compact_counter(classes),
         "Trace inventory classes; synthetic rows are derived coverage, not independent runtime configs.")
+    add(rows, "dynamic_cross_trace", "network_policy_mix", compact_counter(network_policies),
+        "Observed preload network policy across all run directories; blocked rows denied live network calls.")
+    add(rows, "dynamic_cross_trace", "concrete_network_policy_mix", compact_counter(concrete_network_policies),
+        "Network provenance among concrete instruction traces before synthetic fill sidecars.")
+    add(rows, "dynamic_cross_trace", "spawn_policy_mix", compact_counter(spawn_policies),
+        "Observed preload process-spawn policy across all run directories.")
     add(rows, "dynamic_cross_trace", "concrete_runtime_modes_seen", ",".join(concrete_modes) or "-",
         "x() mode values among concrete instruction traces.")
+    add(rows, "dynamic_cross_trace", "concrete_instruction_traces_with_network_events", len(concrete_network_requested),
+        "Concrete instruction traces where the log reached network calls.")
+    add(rows, "dynamic_cross_trace", "concrete_instruction_traces_with_network_denied", len(concrete_network_denied),
+        "Concrete instruction traces whose network calls were denied by trace_preload.")
+    add(rows, "dynamic_cross_trace", "concrete_instruction_traces_with_network_allowed", len(concrete_network_allowed),
+        "Concrete instruction traces with network calls that were not denied in the preload log.")
+    add(rows, "dynamic_cross_trace", "concrete_instruction_traces_without_network_events", len(concrete_no_network_events),
+        "Concrete instruction traces that did not reach preload-logged network calls.")
+    add(rows, "dynamic_cross_trace", "concrete_network_host_mix", compact_counter(network_hosts) or "-",
+        "Hostnames reached by concrete instruction traces before network denial or allowance.")
     add(rows, "dynamic_cross_trace", "max_concrete_source_handlers_seen", max_concrete_sources,
         "Largest source-handler count in any concrete runtime trace; separate from synthetic fill sidecars.")
     add(rows, "dynamic_cross_trace", "max_concrete_target_handlers_seen", max_concrete_targets,

@@ -28,6 +28,7 @@ def main():
     print(" * Combined VM reconstruction bundle.")
     print(" * Handler/operator bodies come first; recovered bytecode program blocks follow.")
     print(" * This is syntax-checkable C, but still an analysis artifact rather than drop-in source.")
+    print(" * Dynamic bytecode coverage is scenario-specific; see vm_trace_coverage_matrix.tsv for run/network provenance.")
     print(" */")
     print("")
     for line in handlers:

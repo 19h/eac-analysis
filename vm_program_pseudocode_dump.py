@@ -61,6 +61,7 @@ def emit_preamble(used_entries):
     print(" * VM bytecode program pseudocode.")
     print(" * This layer is intentionally compact: bytecode blocks call recovered op_entry_NNN handlers.")
     print(" * It is syntax-checkable C, but still an analysis artifact rather than drop-in source.")
+    print(" * Dynamic bytecode coverage is scenario-specific; see vm_trace_coverage_matrix.tsv for run/network provenance.")
     print(" */")
     print("#include <stdint.h>")
     print("")
