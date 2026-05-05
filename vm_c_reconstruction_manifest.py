@@ -1413,6 +1413,18 @@ def c_shape_metrics(rows):
     add(rows, "coverage_frontier", "all_evidence_bundle_path_frontier_slot_audit_symbols",
         count(r"\beac_evidence_path_frontier_slot_audit__", all_evidence_bundle),
         "Prefixed path frontier slot-audit symbols retained in the all-evidence single file.")
+    add(rows, "coverage_frontier", "all_evidence_bundle_native_executable_coverage_section_rows",
+        count(r'^    \{ "\.[A-Za-z0-9_.]+", 0x[0-9a-f]+ull, 0x[0-9a-f]+ull, \d+ull, \d+ull, \d+ull, \d+u, \d+u, \d+u \},', all_evidence_bundle),
+        "Native executable section coverage rows retained in the all-evidence single file.")
+    add(rows, "coverage_frontier", "all_evidence_bundle_native_executable_coverage_range_rows",
+        count(r'^    \{ "\.[A-Za-z0-9_.]+", 0x[0-9a-f]+ull, 0x[0-9a-f]+ull, \d+ull, "[^"]+", ', all_evidence_bundle),
+        "Recovered native executable range rows retained in the all-evidence single file.")
+    add(rows, "coverage_frontier", "all_evidence_bundle_native_executable_coverage_gap_rows",
+        count(r'^    \{ "\.[A-Za-z0-9_.]+", 0x[0-9a-f]+ull, 0x[0-9a-f]+ull, \d+ull \},', all_evidence_bundle),
+        "Uncovered native executable gap rows retained in the all-evidence single file.")
+    add(rows, "coverage_frontier", "all_evidence_bundle_native_executable_coverage_symbols",
+        count(r"\beac_evidence_native_executable_coverage_audit__", all_evidence_bundle),
+        "Prefixed native executable coverage audit symbols retained in the all-evidence single file.")
     add(rows, "c_shape", "all_evidence_bundle_sidecar_sections",
         count(r"^/\* --- sidecar: ", all_evidence_bundle),
         "Renamed native RetDec/control sidecar files appended to the all-evidence single file.")
