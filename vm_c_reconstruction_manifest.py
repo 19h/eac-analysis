@@ -82,6 +82,9 @@ ARTIFACTS = [
     ("native_obfuscated_second_stage_slot_proof_c", TRACE_DIR / "vm_native_obfuscated_second_stage_slot_proof.c"),
     ("native_obfuscated_second_stage_slot_proof_tsv", TRACE_DIR / "vm_native_obfuscated_second_stage_slot_proof.tsv"),
     ("native_obfuscated_second_stage_slot_proof_md", TRACE_DIR / "vm_native_obfuscated_second_stage_slot_proof.md"),
+    ("native_obfuscated_second_stage_rbx_provenance_c", TRACE_DIR / "vm_native_obfuscated_second_stage_rbx_provenance.c"),
+    ("native_obfuscated_second_stage_rbx_provenance_tsv", TRACE_DIR / "vm_native_obfuscated_second_stage_rbx_provenance.tsv"),
+    ("native_obfuscated_second_stage_rbx_provenance_md", TRACE_DIR / "vm_native_obfuscated_second_stage_rbx_provenance.md"),
     ("target_only_handlers_retdec", TRACE_DIR / "vm_target_only_handlers_retdec.c"),
     ("unobserved_handlers_retdec_batch00", TRACE_DIR / "vm_unobserved_handlers_retdec_batch00.c"),
     ("unobserved_handlers_retdec_batch01", TRACE_DIR / "vm_unobserved_handlers_retdec_batch01.c"),
@@ -194,6 +197,8 @@ def c_shape_metrics(rows):
     native_obfuscated_second_stage_dynamic_index = read_tsv(TRACE_DIR / "vm_native_obfuscated_second_stage_dynamic.tsv")
     native_obfuscated_second_stage_slot_proof = read_text(TRACE_DIR / "vm_native_obfuscated_second_stage_slot_proof.c")
     native_obfuscated_second_stage_slot_proof_index = read_tsv(TRACE_DIR / "vm_native_obfuscated_second_stage_slot_proof.tsv")
+    native_obfuscated_second_stage_rbx_provenance = read_text(TRACE_DIR / "vm_native_obfuscated_second_stage_rbx_provenance.c")
+    native_obfuscated_second_stage_rbx_provenance_index = read_tsv(TRACE_DIR / "vm_native_obfuscated_second_stage_rbx_provenance.tsv")
     target_only_handlers_retdec = read_text(TRACE_DIR / "vm_target_only_handlers_retdec.c")
     unobserved_handlers_retdec_batches = [
         read_text(TRACE_DIR / f"vm_unobserved_handlers_retdec_batch{index:02d}.c")
@@ -246,6 +251,9 @@ def c_shape_metrics(rows):
     )
     second_stage_slot_proof_statuses = Counter(
         row.get("proof_status", "") for row in native_obfuscated_second_stage_slot_proof_index
+    )
+    second_stage_rbx_statuses = Counter(
+        row.get("status", "") for row in native_obfuscated_second_stage_rbx_provenance_index
     )
 
     add(rows, "c_shape", "handler_functions", count(r"^static VMOpResult op_entry_\d{3}\(VMState \*vm\) \{", handlers),
@@ -418,6 +426,24 @@ def c_shape_metrics(rows):
     add(rows, "c_shape", "native_obfuscated_second_stage_slot_proof_status_mix",
         ",".join(f"{key}:{value}" for key, value in second_stage_slot_proof_statuses.most_common()) or "-",
         "Proof status mix after joining static slot formula proof with dynamic slot/base checks.")
+    add(rows, "c_shape", "native_obfuscated_second_stage_rbx_provenance_rows",
+        len(native_obfuscated_second_stage_rbx_provenance_index),
+        "RBX handler-entry provenance rows for second-stage computed dispatch sites.")
+    add(rows, "c_shape", "native_obfuscated_second_stage_rbx_provenance_c_functions",
+        count(r"^static void second_stage_rbx_provenance_[0-9a-f]+\(VMState \*vm,", native_obfuscated_second_stage_rbx_provenance),
+        "Syntax-checkable C helper functions for second-stage RBX provenance evidence.")
+    add(rows, "c_shape", "native_obfuscated_second_stage_rbx_provenance_dispatch_cases",
+        count(r"^    case 0x[0-9a-f]+u:$", native_obfuscated_second_stage_rbx_provenance),
+        "Dispatcher cases in the second-stage RBX provenance C artifact.")
+    add(rows, "c_shape", "native_obfuscated_second_stage_rbx_provenance_observed_rows",
+        sum(int(row.get("observed_rows", "0") or "0") for row in native_obfuscated_second_stage_rbx_provenance_index),
+        "Single-step probe observation rows tied to second-stage RBX provenance.")
+    add(rows, "c_shape", "native_obfuscated_second_stage_rbx_provenance_shift_matches",
+        sum(int(row.get("shift_rbx_to_dispatch_idx_matches", "0") or "0") for row in native_obfuscated_second_stage_rbx_provenance_index),
+        "Observed rows where rbx before shl maps to dispatch idx by rbx << 3.")
+    add(rows, "c_shape", "native_obfuscated_second_stage_rbx_provenance_status_mix",
+        ",".join(f"{key}:{value}" for key, value in second_stage_rbx_statuses.most_common()) or "-",
+        "Status mix for second-stage RBX stack-entry provenance.")
     add(rows, "c_shape", "target_only_handler_retdec_selected_ranges",
         count(r"^ \*   0x[0-9a-f]+-0x[0-9a-f]+ entry=\d+ ", target_only_handlers_retdec),
         "Target-only VM handler native ranges selected for targeted RetDec.")
@@ -2205,6 +2231,8 @@ def native_acceleration_metrics(rows):
     obfuscated_second_stage_dynamic_binary = Path("vm_native_obfuscated_second_stage_dynamic_dump")
     obfuscated_second_stage_slot_proof_source = read_text("vm_native_obfuscated_second_stage_slot_proof_dump.c")
     obfuscated_second_stage_slot_proof_binary = Path("vm_native_obfuscated_second_stage_slot_proof_dump")
+    obfuscated_second_stage_rbx_source = read_text("vm_native_obfuscated_second_stage_rbx_provenance_dump.c")
+    obfuscated_second_stage_rbx_binary = Path("vm_native_obfuscated_second_stage_rbx_provenance_dump")
     add(rows, "native_acceleration", "instruction_unique_fast_source_lines", line_count(unique_source),
         "Native exact-instruction reducer source size.")
     add(rows, "native_acceleration", "instruction_unique_fast_binary_bytes", file_size(unique_binary),
@@ -2288,6 +2316,13 @@ def native_acceleration_metrics(rows):
     add(rows, "native_acceleration", "native_obfuscated_second_stage_slot_proof_uses_native_generator",
         "yes" if "./vm_native_obfuscated_second_stage_slot_proof_dump --c" in makefile else "no",
         "Whether the second-stage slot proof C/TSV/Markdown artifacts are generated by the native C tool.")
+    add(rows, "native_acceleration", "native_obfuscated_second_stage_rbx_provenance_dump_source_lines", line_count(obfuscated_second_stage_rbx_source),
+        "Native RBX provenance trace-index generator source size for second-stage computed thunks.")
+    add(rows, "native_acceleration", "native_obfuscated_second_stage_rbx_provenance_dump_binary_bytes", file_size(obfuscated_second_stage_rbx_binary),
+        "Current compiled native RBX provenance generator size.")
+    add(rows, "native_acceleration", "native_obfuscated_second_stage_rbx_provenance_uses_native_generator",
+        "yes" if "./vm_native_obfuscated_second_stage_rbx_provenance_dump --c" in makefile else "no",
+        "Whether the second-stage RBX provenance C/TSV/Markdown artifacts are generated by the native C tool.")
 
 
 def build_rows():
