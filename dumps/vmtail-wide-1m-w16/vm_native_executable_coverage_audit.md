@@ -4,17 +4,17 @@ Compares executable ELF sections against native ranges already represented by re
 
 - executable sections: 5
 - executable bytes: 5651040
-- recovered executable bytes: 477451
-- uncovered executable bytes: 5173589
-- recovered range rows: 2997
-- uncovered gaps: 434
+- recovered executable bytes: 481218
+- uncovered executable bytes: 5169822
+- recovered range rows: 3029
+- uncovered gaps: 448
 
 | section | range | bytes | covered | uncovered | coverage | ranges |
 | --- | --- | ---: | ---: | ---: | ---: | ---: |
 | `.init` | `0x1fbd0-0x1fbe7` | 23 | 0 | 23 | 0.00% | 0 |
 | `.plt` | `0x1fbf0-0x20bd0` | 4064 | 0 | 4064 | 0.00% | 0 |
 | `.plt.got` | `0x20bd0-0x20be0` | 16 | 0 | 16 | 0.00% | 0 |
-| `.text` | `0x20c00-0x583650` | 5646928 | 477451 | 5169477 | 8.45% | 2997 |
+| `.text` | `0x20c00-0x583650` | 5646928 | 481218 | 5165710 | 8.52% | 3029 |
 | `.fini` | `0x583650-0x583659` | 9 | 0 | 9 | 0.00% | 0 |
 
 ## Largest Uncovered Gaps
@@ -24,7 +24,7 @@ Compares executable ELF sections against native ranges already represented by re
 | `.text` | `0x3ddc80-0x4885ae` | 698670 |
 | `.text` | `0x2316b6-0x2d2cf4` | 661054 |
 | `.text` | `0x1061bf-0x15b5b2` | 349171 |
-| `.text` | `0x1a3fa9-0x1f5d10` | 335207 |
+| `.text` | `0x1a3fa9-0x1e15fc` | 251475 |
 | `.text` | `0x3a2739-0x3ddb5d` | 242724 |
 | `.text` | `0x2d2e69-0x30d540` | 239319 |
 | `.text` | `0x36b11b-0x3a262e` | 226579 |
@@ -35,6 +35,7 @@ Compares executable ELF sections against native ranges already represented by re
 | `.text` | `0x212547-0x231586` | 127039 |
 | `.text` | `0xe0166-0xfeebc` | 126294 |
 | `.text` | `0x1f5e08-0x212399` | 116113 |
+| `.text` | `0x1e16e8-0x1f5d10` | 83496 |
 | `.text` | `0xcf5c7-0xe0017` | 68176 |
 | `.text` | `0x4d918b-0x4e9ae0` | 67925 |
 | `.text` | `0x519847-0x522540` | 36089 |
@@ -60,4 +61,3 @@ Compares executable ELF sections against native ranges already represented by re
 | `.text` | `0x63514-0x66ea2` | 14734 |
 | `.text` | `0x522807-0x525bd0` | 13257 |
 | `.text` | `0x337e7b-0x33b1f2` | 13175 |
-| `.text` | `0x53907d-0x53c390` | 13075 |
