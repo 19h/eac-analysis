@@ -1238,6 +1238,8 @@ def synthetic_gap_live_snapshot_transfer_probe_metrics(rows):
     source_mix = Counter(row.get("source_entry", "") for row in probe_rows)
     seed_mix = Counter(row.get("seed_quality", "") for row in live_rows)
     status_mix = Counter(row.get("live_status", "") for row in live_rows)
+    table_diagnosis_mix = Counter(row.get("live_table_diagnosis", "") for row in live_rows)
+    table_offset_mix = Counter(row.get("live_table_offset", "") for row in live_rows)
     branch_mix = Counter(row.get("branch_resolution", "") for row in probe_rows)
     next_relation_mix = Counter(row.get("next_relation", "") for row in live_rows)
     interpretation_mix = Counter(row.get("interpretation", "") for row in probe_rows)
@@ -1275,6 +1277,12 @@ def synthetic_gap_live_snapshot_transfer_probe_metrics(rows):
     add(rows, "gap_live_snapshot_transfer", "synthetic_gap_live_snapshot_transfer_probe_status_mix",
         ",".join(f"{key}:{value}" for key, value in status_mix.most_common()) or "-",
         "Transfer interpreter result after applying available live snapshot state.")
+    add(rows, "gap_live_snapshot_transfer", "synthetic_gap_live_snapshot_transfer_probe_table_diagnosis_mix",
+        ",".join(f"{key}:{value}" for key, value in table_diagnosis_mix.most_common()) or "-",
+        "Concrete final table-read diagnosis for each live snapshot replay.")
+    add(rows, "gap_live_snapshot_transfer", "synthetic_gap_live_snapshot_transfer_probe_table_offset_mix",
+        ",".join(f"{key}:{value}" for key, value in table_offset_mix.most_common()) or "-",
+        "Concrete final table offsets reached by live snapshot replay.")
     add(rows, "gap_live_snapshot_transfer", "synthetic_gap_live_snapshot_transfer_probe_branch_resolution_mix",
         ",".join(f"{key}:{value}" for key, value in branch_mix.most_common()) or "-",
         "Whether live snapshots remove formerly unknown native branch predicates.")
