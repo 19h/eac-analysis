@@ -53,6 +53,8 @@ ARTIFACTS = [
     ("synthetic_gap_observed_chain_replay_md", TRACE_DIR / "vm_synthetic_gap_observed_chain_replay.md"),
     ("synthetic_gap_chain_slot_reconciliation_tsv", TRACE_DIR / "vm_synthetic_gap_chain_slot_reconciliation.tsv"),
     ("synthetic_gap_chain_slot_reconciliation_md", TRACE_DIR / "vm_synthetic_gap_chain_slot_reconciliation.md"),
+    ("synthetic_gap_unresolved_family_audit_tsv", TRACE_DIR / "vm_synthetic_gap_unresolved_family_audit.tsv"),
+    ("synthetic_gap_unresolved_family_audit_md", TRACE_DIR / "vm_synthetic_gap_unresolved_family_audit.md"),
     ("synthetic_gap_symbolic_successors_tsv", TRACE_DIR / "vm_synthetic_gap_symbolic_successors.tsv"),
     ("synthetic_gap_symbolic_successors_md", TRACE_DIR / "vm_synthetic_gap_symbolic_successors.md"),
     ("synthetic_gap_live_in_roles_tsv", TRACE_DIR / "vm_synthetic_gap_live_in_roles.tsv"),
@@ -1137,6 +1139,48 @@ def synthetic_gap_chain_slot_reconciliation_metrics(rows):
         "Step VM starts where table-read evidence rejects the focused first-hop as a direct slot.")
 
 
+def synthetic_gap_unresolved_family_metrics(rows):
+    family_rows = read_tsv(TRACE_DIR / "vm_synthetic_gap_unresolved_family_audit.tsv")
+    family_ids = Counter(row.get("family_id", "") for row in family_rows)
+    source_mix = Counter(row.get("source_entry", "") for row in family_rows)
+    chain_classes = Counter(row.get("observed_chain_bridge_class", "") for row in family_rows)
+    table_diagnoses = Counter(row.get("table_diagnosis", "") for row in family_rows)
+    next_targets = Counter(row.get("next_reconstruction_target", "") for row in family_rows)
+    family_members = {}
+    for row in family_rows:
+        family_id = row.get("family_id", "")
+        if not family_id:
+            continue
+        family_members.setdefault(family_id, []).append(row.get("synthetic_start_vm_ip", ""))
+    multi_member_families = []
+    for family_id, members in sorted(
+        family_members.items(),
+        key=lambda item: int(item[0].rsplit("_", 1)[1]) if "_" in item[0] else 0,
+    ):
+        if len(members) > 1:
+            multi_member_families.append(f"{family_id}:{len(members)}[{','.join(members)}]")
+
+    add(rows, "gap_unresolved_family", "synthetic_gap_unresolved_family_rows", len(family_rows),
+        "Default-unresolved synthetic successor calls clustered by transfer/table/sample/observed-chain evidence family.")
+    add(rows, "gap_unresolved_family", "synthetic_gap_unresolved_family_count", len(family_ids),
+        "Distinct unresolved evidence families.")
+    add(rows, "gap_unresolved_family", "synthetic_gap_unresolved_family_source_mix",
+        ",".join(f"{key}:{value}" for key, value in source_mix.most_common()) or "-",
+        "Source handler distribution across unresolved evidence families.")
+    add(rows, "gap_unresolved_family", "synthetic_gap_unresolved_family_chain_class_mix",
+        ",".join(f"{key}:{value}" for key, value in chain_classes.most_common()) or "-",
+        "Observed chain terminal classes for unresolved family rows.")
+    add(rows, "gap_unresolved_family", "synthetic_gap_unresolved_family_table_diagnosis_mix",
+        ",".join(f"{key}:{value}" for key, value in table_diagnoses.most_common()) or "-",
+        "Table-memory rejection classes represented by unresolved families.")
+    add(rows, "gap_unresolved_family", "synthetic_gap_unresolved_family_next_target_mix",
+        ",".join(f"{key}:{value}" for key, value in next_targets.most_common()) or "-",
+        "Recommended next reconstruction targets for unresolved families.")
+    add(rows, "gap_unresolved_family", "synthetic_gap_unresolved_family_multi_member_families",
+        ";".join(multi_member_families) or "-",
+        "Unresolved families that cover more than one start VM IP.")
+
+
 def synthetic_gap_live_in_role_metrics(rows):
     role_rows = read_tsv(TRACE_DIR / "vm_synthetic_gap_live_in_roles.tsv")
     resolutions = Counter(row.get("resolution", "") for row in role_rows)
@@ -1491,6 +1535,7 @@ def build_rows():
     synthetic_gap_observed_chain_bridge_metrics(rows)
     synthetic_gap_observed_chain_replay_metrics(rows)
     synthetic_gap_chain_slot_reconciliation_metrics(rows)
+    synthetic_gap_unresolved_family_metrics(rows)
     synthetic_gap_live_in_role_metrics(rows)
     synthetic_gap_final_tail_site_metrics(rows)
     synthetic_gap_live_in_reentry_metrics(rows)
