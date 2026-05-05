@@ -99,6 +99,12 @@ def c_shape_metrics(rows):
 
     add(rows, "c_shape", "handler_functions", count(r"^static VMOpResult op_entry_\d{3}\(VMState \*vm\) \{", handlers),
         "All-entry handler/operator C functions.")
+    add(rows, "c_shape", "handler_next_entry_table_offset_normalizations",
+        count(r"r\.next_entry = vm_entry_from_table_offset\(r\.slot\);", handlers),
+        "Handler fall-through slots normalized as dispatch-table byte offsets.")
+    add(rows, "c_shape", "handler_next_entry_slot_index_normalizations",
+        count(r"r\.next_entry = vm_entry_from_slot_index\(r\.slot\);", handlers),
+        "Handler fall-through slots normalized as direct slot indices.")
     add(rows, "c_shape", "path_specialized_functions", count(r"^static VMOpResult path_entry_\d{3}_[0-9a-f]+\(VMState \*vm\) \{", path_handlers),
         "Validated concrete branch-path C functions.")
     add(rows, "c_shape", "direct_top_block_defs", count(r"^static void bb_\d{4}\(VMState \*vm\) \{", direct_top),
