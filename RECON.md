@@ -13,7 +13,7 @@ SHA-256: `0b44ad59697129534189efdb75cde2b96245f831438e9f6a53cb7725f190d739`
 - `vm_trace_log.py`: shared raw-log helper that trims driver/output-buffer prefixes before `[VMTAIL]`/`[DISPATCH]` markers; instruction-trace, GPR-seed, tail-role, live-in, all-static, branch-predicate, and coverage parsers use it so embedded trace records are not missed.
 - `vm_trace_graph.py`: converts a traced run into VM edge TSV form; default output is site-based, and `--sequential` emits dynamic per-frame transitions from ordered trace events. It parses arbitrary `ip_wN` fields; legacy TSVs still print `w0..w5`, but exact byte reconstruction uses the full logged lookahead window. It also normalizes driver-prefixed log lines by trimming to embedded `[VMTAIL]`/`[DISPATCH]` markers before parsing, so output-buffer echo text no longer hides valid tail events.
 - `vm_handler_table.py`: merges dispatch-table metadata, dynamic trace profiles, and static Capstone handler features into one TSV.
-- `vm_bytecode_blocks.py`: reduces direct executed VM instruction rows into contiguous bytecode coverage blocks. Default mode uses exact consumed bytes; `--include-sampled` adds logged prefix/backedge byte windows as partial coverage only.
+- `vm_bytecode_blocks.py`: legacy Python reducer for direct executed VM instruction rows into contiguous bytecode coverage blocks. Default mode uses exact consumed bytes; `--include-sampled` adds logged prefix/backedge byte windows as partial coverage only. Routine Makefile refreshes now use the native `vm_bytecode_blocks_fast` reducer.
 - `vm_bytecode_recover.py`: reconstructs VM byte values from instruction rows, verifies byte consistency, and emits segment hashes plus a unique instruction table. Default mode is exact-only; `--include-sampled` also inserts logged prefix/backedge byte windows without claiming the full instruction length is known.
 - `vm_bytecode_cfg.py`: builds a bytecode block graph from instruction rows and recovered exact bytecode segments.
 - `vm_bytecode_control_edges.py`: turns decoded long-branch and sampled-operand sidecars into explicit non-exact VM control-flow edges between recovered bytecode segments, with operand footprints and lifted target/IP-update pseudo-IR.
@@ -37,6 +37,7 @@ SHA-256: `0b44ad59697129534189efdb75cde2b96245f831438e9f6a53cb7725f190d739`
 - `vm_fast_path_profile.c`: native Capstone/OpenSSL reimplementation of the concrete replay core. It emits the same summary/by-path TSV schemas as `vm_static_path_profile.py`, native state/static-dispatch validation schemas, a `--branch-sites` full-trace branch-outcome TSV, SHA-256 path hashes, an `--emit-dir` batch mode that regenerates all `_fast.tsv` replay artifacts through `make fast-replay`, a `--branch-predicates` sampler, and a `--transfer-expr` sampler that replace the slow Python predicate/transfer replays for routine refreshes. The native model now preserves restore-trampoline `push`/`pop` register values, reads safe image-backed frame/IP values, normalizes frame/table/IP/stack pointers, and uses low-bit inequality proofs; `make fast-replay fast-predicates fast-transfer` refreshes replay, predicate, and transfer artifacts in `elapsed=0:31.69` on this host.
 - `vm_instruction_unique_fast.c`: native reducer for `vm_bytecode_recover.py --instructions`. It streams the existing 110 MiB instruction trace, groups exact instruction signatures with Python-compatible Counter tie ordering, and now backs the `make instruction-unique` target; `make instruction-unique-fast-check` byte-compares it against the Python output without forcing a raw trace rebuild. On the current trace it emitted the same 71365-line TSV in about 0.30s versus 4.04s for the Python reducer.
 - `vm_bytecode_segments_fast.c`: native reducer for `vm_bytecode_recover.py` segment mode. It reproduces exact and `--include-sampled` bytecode segment TSVs, including dominant-byte selection, conflict accounting, SHA-256 segment hashes, prefix/suffix hex, and Python-compatible top source/target/delta counters; `make bytecode-segments-fast-check` compares raw exact, raw sampled, and final footprint-filled sampled outputs against Python. On the current trace it emits exact/sampled segment TSVs in about 0.63-0.68s versus about 4.9s per Python pass.
+- `vm_bytecode_blocks_fast.c`: native reducer for `vm_bytecode_blocks.py`. It preserves exact and `--include-sampled` block TSVs, including interval merge semantics, stable row ordering for equal starts, and Python-compatible top source/target/delta/status counters; `make bytecode-blocks-fast-check` compares raw exact, raw sampled, and final footprint-filled sampled outputs against Python. On the current trace it emits raw exact/sampled block TSVs in about 0.56-0.65s and final augmented blocks in about 1.07s versus about 4.2s for Python.
 - `vm_branch_predicates.py`: catalogs each static-replay branch predicate, including observed outcomes, unresolved predicate classes, and top concrete/symbolic condition expressions; for normal refreshes it is now only needed to render Markdown from the native TSVs.
 - `vm_dispatch_model_combine.py`: combines the static dispatch validator with affine fallback formulas for static-dispatch misses.
 - `vm_tail_registers.py`: infers per-tail-site register roles from `EAC_VMTAIL_REGS=1` traces, including target value, dispatch-slot pointer, byte index, table pointer, and frame pointer. It can also join those roles back onto an instruction trace by source handler and tail site.
@@ -400,7 +401,7 @@ python3 vm_trace_graph.py dumps/vmtail-wide-w16 --eac eac.elf --window 0x1200 --
   >dumps/vmtail-wide-w16/vm_instruction_trace.tsv
 python3 vm_handler_table.py dumps/vmtail-wide-w16 --eac eac.elf --window 0x1200 \
   >dumps/vmtail-wide-w16/vm_handler_table.tsv
-python3 vm_bytecode_blocks.py dumps/vmtail-wide-w16/vm_instruction_trace.tsv \
+./vm_bytecode_blocks_fast dumps/vmtail-wide-w16/vm_instruction_trace.tsv \
   >dumps/vmtail-wide-w16/vm_bytecode_blocks.tsv
 ./vm_bytecode_segments_fast dumps/vmtail-wide-w16/vm_instruction_trace.tsv \
   >dumps/vmtail-wide-w16/vm_bytecode_segments.tsv
@@ -445,7 +446,7 @@ python3 vm_trace_graph.py dumps/vmtail-wide-1m-w16 --eac eac.elf --window 0x1200
   >dumps/vmtail-wide-1m-w16/vm_instruction_trace.tsv
 python3 vm_handler_table.py dumps/vmtail-wide-1m-w16 --eac eac.elf --window 0x1200 \
   >dumps/vmtail-wide-1m-w16/vm_handler_table.tsv
-python3 vm_bytecode_blocks.py dumps/vmtail-wide-1m-w16/vm_instruction_trace.tsv \
+./vm_bytecode_blocks_fast dumps/vmtail-wide-1m-w16/vm_instruction_trace.tsv \
   >dumps/vmtail-wide-1m-w16/vm_bytecode_blocks.tsv
 ./vm_bytecode_segments_fast dumps/vmtail-wide-1m-w16/vm_instruction_trace.tsv \
   >dumps/vmtail-wide-1m-w16/vm_bytecode_segments.tsv
@@ -454,7 +455,7 @@ python3 vm_bytecode_blocks.py dumps/vmtail-wide-1m-w16/vm_instruction_trace.tsv 
 python3 vm_bytecode_cfg.py dumps/vmtail-wide-1m-w16/vm_instruction_trace.tsv \
   --segments dumps/vmtail-wide-1m-w16/vm_bytecode_segments.tsv \
   >dumps/vmtail-wide-1m-w16/vm_bytecode_block_edges.tsv
-python3 vm_bytecode_blocks.py dumps/vmtail-wide-1m-w16/vm_instruction_trace.tsv --include-sampled \
+./vm_bytecode_blocks_fast dumps/vmtail-wide-1m-w16/vm_instruction_trace.tsv --include-sampled \
   >dumps/vmtail-wide-1m-w16/vm_bytecode_blocks_sampled.tsv
 ./vm_bytecode_segments_fast dumps/vmtail-wide-1m-w16/vm_instruction_trace.tsv --include-sampled \
   >dumps/vmtail-wide-1m-w16/vm_bytecode_segments_sampled.tsv
@@ -639,7 +640,7 @@ python3 vm_state_static_slice.py --entries 258 \
 ./vm_bytecode_segments_fast dumps/vmtail-wide-1m-w16/vm_instruction_trace_filefill.tsv \
   --include-sampled \
   >dumps/vmtail-wide-1m-w16/vm_bytecode_segments_filefill_sampled.tsv
-python3 vm_bytecode_blocks.py dumps/vmtail-wide-1m-w16/vm_instruction_trace_filefill.tsv \
+./vm_bytecode_blocks_fast dumps/vmtail-wide-1m-w16/vm_instruction_trace_filefill.tsv \
   --include-sampled \
   >dumps/vmtail-wide-1m-w16/vm_bytecode_blocks_filefill_sampled.tsv
 make footprint-fill
@@ -1472,6 +1473,8 @@ The most path-diverse source is entry 330 with 12 observed paths over 169 state-
 `vm_instruction_unique_fast` is the native version of the exact instruction-signature reducer. It preserves the TSV schema and ordering of `vm_bytecode_recover.py --instructions`, including Counter tie order for `top_end_ips`, `top_targets`, and `top_sites`, but avoids Python CSV and object churn over the 110 MiB full trace. The current parity check is byte-for-byte clean, and the latest local timings are 0.30s native versus 4.04s Python. `make instruction-unique` now uses the native reducer over the existing trace, while `make instruction-unique-fast-check` keeps the Python parity gate available without forcing a raw trace rebuild.
 
 `vm_bytecode_segments_fast` is the native version of the bytecode segment reducer. It preserves the exact TSV schema for both exact-only and sampled/file-backed segment recovery: dominant bytes, conflict offsets/events, SHA-256 segment hashes, 64-byte prefix/suffix hex, and top source/target/delta counters are byte-compatible with Python. The raw exact and sampled outputs match Python byte-for-byte, and the same check passes on the final file-fill/hidden-fill/frontier-fill/footprint-fill sampled trace. Current timings are about 0.63-0.68s native for raw exact/sampled versus about 4.9s per Python pass, and about 1.12s native versus 4.68s Python for the final augmented trace.
+
+`vm_bytecode_blocks_fast` is the native version of the contiguous coverage-block reducer. It preserves the Python interval merge rule, the stable row order used for per-block counters, and the output schema for exact-only and sampled/file-backed coverage blocks. The raw exact, raw sampled, and final file-fill/hidden-fill/frontier-fill/footprint-fill sampled outputs all match Python byte-for-byte. Current timings are about 0.56s native for raw exact, 0.65s native for raw sampled, and 1.07s native for the final augmented trace, versus about 4.2s for the Python pass.
 
 The native `--branch-sites` mode gives full-trace branch outcome counts without the slow Python provenance pass. It emits 855 branch-site rows and accounts for 1007971 dynamic branch evaluations. State-only replay leaves 207821 branch events unresolved, while GPR+scratch seeding now resolves every branch outcome:
 
