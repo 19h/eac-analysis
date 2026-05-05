@@ -39,6 +39,8 @@ ARTIFACTS = [
     ("synthetic_gap_table_read_diagnostic_md", TRACE_DIR / "vm_synthetic_gap_table_read_diagnostic.md"),
     ("synthetic_gap_table_memory_probe_tsv", TRACE_DIR / "vm_synthetic_gap_table_memory_probe.tsv"),
     ("synthetic_gap_table_memory_probe_md", TRACE_DIR / "vm_synthetic_gap_table_memory_probe.md"),
+    ("synthetic_gap_sampled_control_correlation_tsv", TRACE_DIR / "vm_synthetic_gap_sampled_control_correlation.tsv"),
+    ("synthetic_gap_sampled_control_correlation_md", TRACE_DIR / "vm_synthetic_gap_sampled_control_correlation.md"),
     ("synthetic_gap_symbolic_successors_tsv", TRACE_DIR / "vm_synthetic_gap_symbolic_successors.tsv"),
     ("synthetic_gap_symbolic_successors_md", TRACE_DIR / "vm_synthetic_gap_symbolic_successors.md"),
     ("synthetic_gap_live_in_roles_tsv", TRACE_DIR / "vm_synthetic_gap_live_in_roles.tsv"),
@@ -730,6 +732,54 @@ def synthetic_gap_table_memory_probe_metrics(rows):
         "Residual starts whose file qword is classified as ordinary/non-pointer bytes.")
 
 
+def synthetic_gap_sampled_control_correlation_metrics(rows):
+    corr_rows = read_tsv(TRACE_DIR / "vm_synthetic_gap_sampled_control_correlation.tsv")
+    classes = Counter(row.get("sampled_correlation_class", "") for row in corr_rows)
+    sampled_targets = Counter()
+    dynamic_targets = Counter(row.get("dynamic_next_source_entry", "") for row in corr_rows)
+    target_matches = [
+        row.get("synthetic_start_vm_ip", "")
+        for row in corr_rows
+        if row.get("dynamic_next_matches_sampled_target", "") == "yes"
+    ]
+    delta_matches = [
+        row.get("synthetic_start_vm_ip", "")
+        for row in corr_rows
+        if row.get("dynamic_next_delta_matches_sampled_delta", "") == "yes"
+    ]
+    byte_matches = [
+        row.get("synthetic_start_vm_ip", "")
+        for row in corr_rows
+        if row.get("sampled_operand_byte_exact_matches", "") not in {"", "-"}
+    ]
+    for row in corr_rows:
+        for item in (row.get("sampled_target_entries", "") or "").split(","):
+            if item and ":" in item:
+                key, value = item.rsplit(":", 1)
+                sampled_targets[key] += int(value)
+
+    add(rows, "gap_sampled_control", "synthetic_gap_sampled_control_correlation_rows", len(corr_rows),
+        "Residual starts correlated with sampled-operand target/delta sidecars.")
+    add(rows, "gap_sampled_control", "synthetic_gap_sampled_control_class_mix",
+        ",".join(f"{key}:{value}" for key, value in classes.most_common()) or "-",
+        "Correlation class mix against sampled-operand evidence and dynamic next-hook sequence.")
+    add(rows, "gap_sampled_control", "synthetic_gap_sampled_control_dynamic_target_mix",
+        ",".join(f"{key}:{value}" for key, value in dynamic_targets.most_common()) or "-",
+        "Next hooked source entries observed after residual synthetic starts.")
+    add(rows, "gap_sampled_control", "synthetic_gap_sampled_control_sampled_target_mix",
+        ",".join(f"{key}:{value}" for key, value in sampled_targets.most_common()) or "-",
+        "Sampled-operand target-entry evidence available for the same source/footprint length.")
+    add(rows, "gap_sampled_control", "synthetic_gap_sampled_control_target_match_starts",
+        ",".join(target_matches) or "-",
+        "Residual starts whose dynamic next hooked source entry appears in sampled-operand target evidence.")
+    add(rows, "gap_sampled_control", "synthetic_gap_sampled_control_delta_match_starts",
+        ",".join(delta_matches) or "-",
+        "Residual starts whose dynamic next hooked source delta matches a sampled-operand delta.")
+    add(rows, "gap_sampled_control", "synthetic_gap_sampled_control_exact_byte_match_starts",
+        ",".join(byte_matches) or "-",
+        "Residual starts whose exact footprint bytes appear in sampled-operand observations.")
+
+
 def synthetic_gap_live_in_role_metrics(rows):
     role_rows = read_tsv(TRACE_DIR / "vm_synthetic_gap_live_in_roles.tsv")
     resolutions = Counter(row.get("resolution", "") for row in role_rows)
@@ -1026,6 +1076,7 @@ def build_rows():
     synthetic_gap_live_context_audit_metrics(rows)
     synthetic_gap_table_read_diagnostic_metrics(rows)
     synthetic_gap_table_memory_probe_metrics(rows)
+    synthetic_gap_sampled_control_correlation_metrics(rows)
     synthetic_gap_live_in_role_metrics(rows)
     synthetic_gap_final_tail_site_metrics(rows)
     synthetic_gap_live_in_reentry_metrics(rows)
