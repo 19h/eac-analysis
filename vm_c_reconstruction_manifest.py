@@ -66,6 +66,9 @@ ARTIFACTS = [
     ("native_ret_patch_targets", TRACE_DIR / "vm_native_ret_patch_targets.c"),
     ("native_ret_patch_epilogues_retdec", TRACE_DIR / "vm_native_ret_patch_epilogues_retdec.c"),
     ("native_ret_patch_source278_retdec", TRACE_DIR / "vm_native_ret_patch_source278_retdec.c"),
+    ("native_ret_patch_followups_c", TRACE_DIR / "vm_native_ret_patch_followups.c"),
+    ("native_ret_patch_followups_tsv", TRACE_DIR / "vm_native_ret_patch_followups.tsv"),
+    ("native_ret_patch_followups_md", TRACE_DIR / "vm_native_ret_patch_followups.md"),
     ("target_only_handlers_retdec", TRACE_DIR / "vm_target_only_handlers_retdec.c"),
     ("unobserved_handlers_retdec_batch00", TRACE_DIR / "vm_unobserved_handlers_retdec_batch00.c"),
     ("unobserved_handlers_retdec_batch01", TRACE_DIR / "vm_unobserved_handlers_retdec_batch01.c"),
@@ -167,6 +170,8 @@ def c_shape_metrics(rows):
     native_ret_patch_targets = read_text(TRACE_DIR / "vm_native_ret_patch_targets.c")
     native_ret_patch_epilogues_retdec = read_text(TRACE_DIR / "vm_native_ret_patch_epilogues_retdec.c")
     native_ret_patch_source278_retdec = read_text(TRACE_DIR / "vm_native_ret_patch_source278_retdec.c")
+    native_ret_patch_followups = read_text(TRACE_DIR / "vm_native_ret_patch_followups.c")
+    native_ret_patch_followup_index = read_tsv(TRACE_DIR / "vm_native_ret_patch_followups.tsv")
     target_only_handlers_retdec = read_text(TRACE_DIR / "vm_target_only_handlers_retdec.c")
     unobserved_handlers_retdec_batches = [
         read_text(TRACE_DIR / f"vm_unobserved_handlers_retdec_batch{index:02d}.c")
@@ -188,6 +193,8 @@ def c_shape_metrics(rows):
     handler_retdec_sidecars_all = "\n".join(handler_retdec_sidecars)
     handler_retdec_index = read_tsv(TRACE_DIR / "vm_handler_retdec_index.tsv")
     unresolved_family_chains = read_text(TRACE_DIR / "vm_unresolved_family_chains.c")
+    followup_classes = Counter(row.get("classification", "") for row in native_ret_patch_followup_index)
+    followup_priorities = Counter(row.get("priority", "") for row in native_ret_patch_followup_index)
 
     add(rows, "c_shape", "handler_functions", count(r"^static VMOpResult op_entry_\d{3}\(VMState \*vm\) \{", handlers),
         "All-entry handler/operator C functions.")
@@ -233,6 +240,27 @@ def c_shape_metrics(rows):
     add(rows, "c_shape", "native_ret_patch_source278_retdec_tail_calls",
         count(r"\breturn function_[0-9a-f]+\(", native_ret_patch_source278_retdec),
         "Recovered C-shaped tail calls inside the source278 native trampoline chain.")
+    add(rows, "c_shape", "native_ret_patch_followup_index_rows",
+        len(native_ret_patch_followup_index),
+        "Unique direct call/jump targets reached from native return-patch target windows.")
+    add(rows, "c_shape", "native_ret_patch_followup_c_functions",
+        count(r"^static void followup_target_[0-9a-f]+\(VMState \*vm,", native_ret_patch_followups),
+        "Syntax-checkable C helper functions classifying native return-patch follow-up targets.")
+    add(rows, "c_shape", "native_ret_patch_followup_dispatch_cases",
+        count(r"^    case 0x[0-9a-f]+u:$", native_ret_patch_followups),
+        "Dispatcher cases in the native return-patch follow-up C artifact.")
+    add(rows, "c_shape", "native_ret_patch_followup_class_mix",
+        ",".join(f"{key}:{value}" for key, value in followup_classes.most_common()) or "-",
+        "Static classification mix for return-patch follow-up targets.")
+    add(rows, "c_shape", "native_ret_patch_followup_priority_mix",
+        ",".join(f"{key}:{value}" for key, value in followup_priorities.most_common()) or "-",
+        "Next-action priority mix for return-patch follow-up targets.")
+    add(rows, "c_shape", "native_ret_patch_followup_obfuscated_islands",
+        followup_classes.get("obfuscated_native_island", 0),
+        "Follow-up targets classified as native obfuscation islands rather than VM CFG successors.")
+    add(rows, "c_shape", "native_ret_patch_followup_targeted_retdec_candidates",
+        sum(value for key, value in followup_priorities.items() if "targeted" in key),
+        "Follow-up targets that should get narrow targeted RetDec/static reconstruction before any broader sweep.")
     add(rows, "c_shape", "target_only_handler_retdec_selected_ranges",
         count(r"^ \*   0x[0-9a-f]+-0x[0-9a-f]+ entry=\d+ ", target_only_handlers_retdec),
         "Target-only VM handler native ranges selected for targeted RetDec.")
@@ -1989,7 +2017,7 @@ def synthetic_gap_allstatic_reentry_metrics(rows):
 
 def gate_metrics(rows):
     add(rows, "gate", "syntax_check", "make pseudocode-syntax-check",
-        "Regenerates and warning-checks all six C-like source artifacts with C11 -fsyntax-only.")
+        "Regenerates and warning-checks the generated C-like reconstruction artifacts with C11 -fsyntax-only.")
     add(rows, "gate", "object_check", "make pseudocode-object-check",
         "Codegen-compiles the combined source bundle to /tmp/eacsym-vm_recovered_source_bundle.o.")
     add(rows, "gate", "link_smoke_check", "make pseudocode-link-check",
@@ -2008,6 +2036,8 @@ def native_acceleration_metrics(rows):
     segment_binary = Path("vm_bytecode_segments_fast")
     block_source = read_text("vm_bytecode_blocks_fast.c")
     block_binary = Path("vm_bytecode_blocks_fast")
+    followups_source = read_text("vm_native_ret_patch_followups_dump.c")
+    followups_binary = Path("vm_native_ret_patch_followups_dump")
     add(rows, "native_acceleration", "instruction_unique_fast_source_lines", line_count(unique_source),
         "Native exact-instruction reducer source size.")
     add(rows, "native_acceleration", "instruction_unique_fast_binary_bytes", file_size(unique_binary),
@@ -2049,6 +2079,13 @@ def native_acceleration_metrics(rows):
         "Primary instruction trace is a file-backed dependency; force refresh remains explicit.")
     add(rows, "native_acceleration", "primary_trace_refresh_target", "make instruction-trace-refresh",
         "Explicit command to rebuild the primary raw instruction trace from run.stderr.")
+    add(rows, "native_acceleration", "native_ret_patch_followups_dump_source_lines", line_count(followups_source),
+        "Native return-patch follow-up classifier/generator source size.")
+    add(rows, "native_acceleration", "native_ret_patch_followups_dump_binary_bytes", file_size(followups_binary),
+        "Current compiled native return-patch follow-up classifier/generator size.")
+    add(rows, "native_acceleration", "native_ret_patch_followups_uses_native_generator",
+        "yes" if "./vm_native_ret_patch_followups_dump --c" in makefile else "no",
+        "Whether the ret-patch follow-up C/TSV/Markdown artifacts are generated by the native C tool.")
 
 
 def build_rows():
