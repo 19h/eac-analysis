@@ -3,7 +3,7 @@ import argparse
 import csv
 import re
 import sys
-from collections import defaultdict
+from collections import Counter, defaultdict
 from pathlib import Path
 
 
@@ -66,6 +66,76 @@ def fmt_ip_update(delta):
     if delta > 0:
         return f"vm->ip += 0x{delta:x};"
     return f"vm->ip -= 0x{-delta:x};"
+
+
+def normalize_vm_ip(text):
+    try:
+        return f"0x{parse_hex(text):x}"
+    except (TypeError, ValueError):
+        return text or ""
+
+
+def fmt_counter(counter, limit):
+    return ",".join(f"{key}:{value}" for key, value in counter.most_common(limit))
+
+
+def top_key(counter):
+    return counter.most_common(1)[0][0] if counter else ""
+
+
+def top_int(counter):
+    key = top_key(counter)
+    try:
+        return int(key, 0)
+    except (TypeError, ValueError):
+        return None
+
+
+def short_bytes(counter, limit, max_hex):
+    parts = []
+    for value, count in counter.most_common(limit):
+        suffix = "..." if len(value) > max_hex else ""
+        parts.append(f"{count}:{value[:max_hex]}{suffix}")
+    return ",".join(parts)
+
+
+def load_synthetic_spans(path):
+    spans = {}
+    if not path:
+        return spans
+    try:
+        rows = read_tsv(path)
+    except FileNotFoundError:
+        return spans
+    for row in rows:
+        status = row.get("byte_status", "")
+        if not status or status == "exact":
+            continue
+        start = normalize_vm_ip(row.get("start_vm_ip", ""))
+        if not start:
+            continue
+        bucket = spans.setdefault(start, {
+            "events": 0,
+            "sources": Counter(),
+            "targets": Counter(),
+            "deltas": Counter(),
+            "statuses": Counter(),
+            "sites": Counter(),
+            "bytes": Counter(),
+        })
+        bucket["events"] += 1
+        for field, name in (
+            ("source_entry", "sources"),
+            ("target_entry", "targets"),
+            ("delta", "deltas"),
+            ("byte_status", "statuses"),
+            ("site", "sites"),
+            ("bytes", "bytes"),
+        ):
+            value = row.get(field, "")
+            if value:
+                bucket[name][value] += 1
+    return spans
 
 
 def row_to_c(row, max_expr_len):
@@ -168,7 +238,39 @@ def emit_preamble():
     print("")
 
 
-def emit_block(block, rows, edge, args):
+def emit_synthetic_edge(edge, synthetic_spans, args):
+    target_vm_ip = normalize_vm_ip(edge.get("target_vm_ip", ""))
+    info = synthetic_spans.get(target_vm_ip)
+    if not info:
+        print(f"    vm_unresolved_synthetic_tail(vm, 0x{parse_hex(target_vm_ip):x});")
+        return
+
+    target = top_int(info["targets"])
+    delta_text = top_key(info["deltas"])
+    status = fmt_counter(info["statuses"], args.synthetic_top_items)
+    sites = fmt_counter(info["sites"], args.synthetic_top_items)
+    byte_variants = short_bytes(info["bytes"], args.synthetic_top_items, args.synthetic_max_bytes)
+    print(
+        f"    /* recovered synthetic span @ {target_vm_ip}: events={info['events']}, "
+        f"source={fmt_counter(info['sources'], args.synthetic_top_items)}, "
+        f"target={fmt_counter(info['targets'], args.synthetic_top_items)}, "
+        f"delta={fmt_counter(info['deltas'], args.synthetic_top_items)}, "
+        f"status={c_comment(status)} */"
+    )
+    if sites or byte_variants:
+        print(f"    /* synthetic sites={c_comment(sites)}; bytes={c_comment(byte_variants)} */")
+    if target is not None:
+        print(f"    next_entry = {target};")
+    try:
+        delta = parse_delta(delta_text)
+    except ValueError:
+        delta = 0
+    update = fmt_ip_update(delta)
+    if update:
+        print(f"    {update}")
+
+
+def emit_block(block, rows, edge, synthetic_spans, args):
     name = c_block_name(block["block"])
     print(f"static void {name}(VMState *vm) {{")
     print("    int next_entry = -1;")
@@ -198,7 +300,7 @@ def emit_block(block, rows, edge, args):
             print(f"    /* goto {c_block_name(target_block)}; */")
             print("    return;")
         elif edge_kind == "covered_synthetic_fallthrough":
-            print(f"    vm_unresolved_synthetic_tail(vm, 0x{parse_hex(target_vm_ip):x});")
+            emit_synthetic_edge(edge, synthetic_spans, args)
         else:
             print("    return;")
     else:
@@ -230,6 +332,9 @@ def main():
     parser.add_argument("--limit-blocks", type=int, default=40)
     parser.add_argument("--rows-per-block", type=int, default=24)
     parser.add_argument("--max-expr-len", type=int, default=220)
+    parser.add_argument("--synthetic-trace", default="dumps/vmtail-wide-1m-w16/vm_instruction_trace_filefill_hiddenfill_frontierfill_footprintfill.tsv")
+    parser.add_argument("--synthetic-top-items", type=int, default=4)
+    parser.add_argument("--synthetic-max-bytes", type=int, default=48)
     parser.add_argument("--start", action="append", default=[])
     parser.add_argument("--keep-order", action="store_true")
     args = parser.parse_args()
@@ -238,12 +343,13 @@ def main():
     chosen = selected_blocks(blocks, args)
     rows_by_block = map_rows_to_blocks(load_rows(args.ir), blocks)
     edges = load_edges(args.edges)
+    synthetic_spans = load_synthetic_spans(args.synthetic_trace)
 
     emit_preamble()
     print("extern void vm_unresolved_synthetic_tail(VMState *vm, uint64_t vm_ip);")
     print("")
     for block in chosen:
-        emit_block(block, rows_by_block.get(block["block"], []), edges.get(block["block"]), args)
+        emit_block(block, rows_by_block.get(block["block"], []), edges.get(block["block"]), synthetic_spans, args)
     emit_dispatch(chosen)
 
     print(
