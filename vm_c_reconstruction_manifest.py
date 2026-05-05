@@ -64,6 +64,7 @@ ARTIFACTS = [
     ("synthetic_gap_ret_patch_native_target_atlas_tsv", TRACE_DIR / "vm_synthetic_gap_ret_patch_native_target_atlas.tsv"),
     ("synthetic_gap_ret_patch_native_target_atlas_md", TRACE_DIR / "vm_synthetic_gap_ret_patch_native_target_atlas.md"),
     ("native_ret_patch_targets", TRACE_DIR / "vm_native_ret_patch_targets.c"),
+    ("native_ret_patch_source278_retdec", TRACE_DIR / "vm_native_ret_patch_source278_retdec.c"),
     ("synthetic_gap_live_snapshot_transfer_probe_tsv", TRACE_DIR / "vm_synthetic_gap_live_snapshot_transfer_probe.tsv"),
     ("synthetic_gap_live_snapshot_transfer_probe_md", TRACE_DIR / "vm_synthetic_gap_live_snapshot_transfer_probe.md"),
     ("synthetic_gap_live_table_evidence_tsv", TRACE_DIR / "vm_synthetic_gap_live_table_evidence.tsv"),
@@ -144,6 +145,7 @@ def c_shape_metrics(rows):
     program_full = read_text(TRACE_DIR / "vm_program_pseudocode_full.c")
     bundle = read_text(TRACE_DIR / "vm_recovered_source_bundle.c")
     native_ret_patch_targets = read_text(TRACE_DIR / "vm_native_ret_patch_targets.c")
+    native_ret_patch_source278_retdec = read_text(TRACE_DIR / "vm_native_ret_patch_source278_retdec.c")
 
     add(rows, "c_shape", "handler_functions", count(r"^static VMOpResult op_entry_\d{3}\(VMState \*vm\) \{", handlers),
         "All-entry handler/operator C functions.")
@@ -171,6 +173,15 @@ def c_shape_metrics(rows):
     add(rows, "c_shape", "native_ret_patch_target_tail_dispatchers",
         count(r"^void vm_native_ret_patch_tail\(VMState \*vm,", native_ret_patch_targets),
         "Syntax-checkable vm_native_ret_patch_tail implementation for the native target helper artifact.")
+    add(rows, "c_shape", "native_ret_patch_source278_retdec_functions",
+        count(r"^int64_t function_[0-9a-f]+\(.*\) \{", native_ret_patch_source278_retdec),
+        "Targeted RetDec C functions for source278's double native return-patch trampoline chain.")
+    add(rows, "c_shape", "native_ret_patch_source278_retdec_ranges",
+        count(r"^// Address range: 0x[0-9a-f]+ - 0x[0-9a-f]+$", native_ret_patch_source278_retdec),
+        "Native .text ranges selected for the source278 targeted RetDec artifact.")
+    add(rows, "c_shape", "native_ret_patch_source278_retdec_tail_calls",
+        count(r"\breturn function_[0-9a-f]+\(", native_ret_patch_source278_retdec),
+        "Recovered C-shaped tail calls inside the source278 native trampoline chain.")
     add(rows, "c_shape", "path_specialized_functions", count(r"^static VMOpResult path_entry_\d{3}_[0-9a-f]+\(VMState \*vm\) \{", path_handlers),
         "Validated concrete branch-path C functions.")
     add(rows, "c_shape", "direct_top_block_defs", count(r"^static void bb_\d{4}\(VMState \*vm\) \{", direct_top),
