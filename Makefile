@@ -8,7 +8,7 @@ GPR_RUN ?= dumps/vmtail-scratch-wide-w16-fs337all-fs128/run.stderr
 PRED_ROWS ?= 128
 XFER_ROWS ?= 128
 
-.PHONY: all clean fast-replay fast-state fast-gpr fast-predicates fast-state-predicates fast-gpr-predicates fast-transfer fast-state-transfer fast-gpr-transfer fast-validators fast-paths fast-gpr-paths long-branches hidden-transitions sampled-operands hidden-fill frontier-fill footprint-fill control-edges bytecode-ir bytecode-basic-blocks synthetic-spans synthetic-tails pseudocode pseudocode-full handler-pseudocode path-pseudocode source-bundle coverage-matrix
+.PHONY: all clean fast-replay fast-state fast-gpr fast-predicates fast-state-predicates fast-gpr-predicates fast-transfer fast-state-transfer fast-gpr-transfer fast-validators fast-paths fast-gpr-paths long-branches hidden-transitions sampled-operands hidden-fill frontier-fill footprint-fill control-edges bytecode-ir bytecode-basic-blocks synthetic-spans synthetic-tails synthetic-tail-lift pseudocode pseudocode-full handler-pseudocode path-pseudocode source-bundle coverage-matrix
 
 all: driver trace_preload.so vm_fast_path_profile
 
@@ -124,11 +124,15 @@ synthetic-tails: synthetic-spans
 	python3 vm_synthetic_tail_catalog.py > dumps/vmtail-wide-1m-w16/vm_synthetic_tail_catalog.tsv
 	python3 vm_synthetic_tail_catalog.py --markdown --limit 50 > dumps/vmtail-wide-1m-w16/vm_synthetic_tail_top.md
 
-pseudocode: bytecode-basic-blocks
+synthetic-tail-lift: synthetic-tails
+	python3 vm_synthetic_tail_lift.py > dumps/vmtail-wide-1m-w16/vm_synthetic_tail_lift.tsv
+	python3 vm_synthetic_tail_lift.py --markdown --limit 50 > dumps/vmtail-wide-1m-w16/vm_synthetic_tail_lift_top.md
+
+pseudocode: bytecode-basic-blocks synthetic-tail-lift
 	python3 vm_pseudocode_dump.py --limit-blocks 60 --rows-per-block 32 > dumps/vmtail-wide-1m-w16/vm_pseudocode_top.c
 	python3 vm_program_pseudocode_dump.py --limit-blocks 80 --rows-per-block 80 > dumps/vmtail-wide-1m-w16/vm_program_pseudocode_top.c
 
-pseudocode-full: bytecode-basic-blocks
+pseudocode-full: bytecode-basic-blocks synthetic-tail-lift
 	python3 vm_program_pseudocode_dump.py --limit-blocks 0 --rows-per-block 0 > dumps/vmtail-wide-1m-w16/vm_program_pseudocode_full.c
 
 handler-pseudocode:
