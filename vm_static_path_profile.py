@@ -33,6 +33,7 @@ from vm_static_dispatch_validate import (
     read_op,
     write_op,
 )
+from vm_trace_log import strip_to_trace_marker
 
 
 FIELD_RE = re.compile(r"\b([a-z][a-z0-9_]*)=0x([0-9a-f]+)")
@@ -91,6 +92,7 @@ def load_gpr_seeds(path):
     seeds = {}
     with Path(path).open(errors="replace") as handle:
         for line in handle:
+            line = strip_to_trace_marker(line, ("[VMTAIL]",))
             if not TRACE_RE.search(line):
                 continue
             fields = parse_gpr_fields(line)

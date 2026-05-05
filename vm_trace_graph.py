@@ -9,6 +9,8 @@ from pathlib import Path
 from capstone import CS_ARCH_X86, CS_MODE_64, Cs
 from capstone.x86_const import X86_OP_REG
 
+from vm_trace_log import strip_to_trace_marker
+
 
 REG_NAMES = {
     "rax", "rbx", "rcx", "rdx", "rsi", "rdi", "rbp", "rsp",
@@ -65,14 +67,9 @@ def build_tail_maps(eac: bytes, table, window: int):
 
 
 def parse_event(line: str, target_to_entry):
-    tail_pos = line.find("[VMTAIL]")
-    dispatch_pos = line.find("[DISPATCH]")
-    if tail_pos < 0 and dispatch_pos < 0:
+    line = strip_to_trace_marker(line)
+    if not (line.startswith("[VMTAIL]") or line.startswith("[DISPATCH]")):
         return None
-    if tail_pos >= 0 and (dispatch_pos < 0 or tail_pos < dispatch_pos):
-        line = line[tail_pos:]
-    else:
-        line = line[dispatch_pos:]
 
     words = parse_ip_words(line)
     hex_fields = parse_hex_fields(line)
