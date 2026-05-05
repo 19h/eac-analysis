@@ -1431,7 +1431,10 @@ def native_acceleration_metrics(rows):
     add(rows, "native_acceleration", "instruction_unique_fast_binary_bytes", file_size(unique_binary),
         "Current compiled native exact-instruction reducer size.")
     add(rows, "native_acceleration", "instruction_unique_uses_native_reducer",
-        "yes" if "./vm_instruction_unique_fast dumps/vmtail-wide-1m-w16/vm_instruction_trace.tsv" in makefile else "no",
+        "yes" if (
+            "./vm_instruction_unique_fast $(PRIMARY_TRACE)" in makefile
+            or "./vm_instruction_unique_fast dumps/vmtail-wide-1m-w16/vm_instruction_trace.tsv" in makefile
+        ) else "no",
         "Whether the instruction-unique Make target uses the native reducer.")
     add(rows, "native_acceleration", "instruction_unique_fast_check", "make instruction-unique-fast-check",
         "Byte-for-byte parity gate against vm_bytecode_recover.py --instructions.")
@@ -1440,7 +1443,10 @@ def native_acceleration_metrics(rows):
     add(rows, "native_acceleration", "bytecode_segments_fast_binary_bytes", file_size(segment_binary),
         "Current compiled native bytecode segment reducer size.")
     add(rows, "native_acceleration", "bytecode_segments_sampled_uses_native_reducer",
-        "yes" if "./vm_bytecode_segments_fast dumps/vmtail-wide-1m-w16/vm_instruction_trace.tsv --include-sampled" in makefile else "no",
+        "yes" if (
+            "./vm_bytecode_segments_fast $(PRIMARY_TRACE) --include-sampled" in makefile
+            or "./vm_bytecode_segments_fast dumps/vmtail-wide-1m-w16/vm_instruction_trace.tsv --include-sampled" in makefile
+        ) else "no",
         "Whether sampled bytecode segment recovery uses the native reducer.")
     add(rows, "native_acceleration", "bytecode_segments_fast_check", "make bytecode-segments-fast-check",
         "Byte-for-byte parity gate against vm_bytecode_recover.py raw exact, raw sampled, and final augmented sampled segment modes.")
@@ -1449,10 +1455,18 @@ def native_acceleration_metrics(rows):
     add(rows, "native_acceleration", "bytecode_blocks_fast_binary_bytes", file_size(block_binary),
         "Current compiled native bytecode block reducer size.")
     add(rows, "native_acceleration", "bytecode_blocks_sampled_uses_native_reducer",
-        "yes" if "./vm_bytecode_blocks_fast dumps/vmtail-wide-1m-w16/vm_instruction_trace.tsv --include-sampled" in makefile else "no",
+        "yes" if (
+            "./vm_bytecode_blocks_fast $(PRIMARY_TRACE) --include-sampled" in makefile
+            or "./vm_bytecode_blocks_fast dumps/vmtail-wide-1m-w16/vm_instruction_trace.tsv --include-sampled" in makefile
+        ) else "no",
         "Whether sampled bytecode block recovery uses the native reducer.")
     add(rows, "native_acceleration", "bytecode_blocks_fast_check", "make bytecode-blocks-fast-check",
         "Byte-for-byte parity gate against vm_bytecode_blocks.py raw exact, raw sampled, and final augmented sampled block modes.")
+    add(rows, "native_acceleration", "primary_trace_file_backed_make_target",
+        "yes" if "$(PRIMARY_TRACE):" in makefile and "instruction-trace-refresh:" in makefile else "no",
+        "Primary instruction trace is a file-backed dependency; force refresh remains explicit.")
+    add(rows, "native_acceleration", "primary_trace_refresh_target", "make instruction-trace-refresh",
+        "Explicit command to rebuild the primary raw instruction trace from run.stderr.")
 
 
 def build_rows():
