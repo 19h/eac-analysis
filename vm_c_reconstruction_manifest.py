@@ -244,6 +244,8 @@ def c_shape_metrics(rows):
     static_only_tier0_model_index = read_tsv(TRACE_DIR / "vm_static_only_tier0_handler_models.tsv")
     static_only_tier1_models = read_text(TRACE_DIR / "vm_static_only_tier1_handler_models.c")
     static_only_tier1_model_index = read_tsv(TRACE_DIR / "vm_static_only_tier1_handler_models.tsv")
+    static_only_tier2_split = read_text(TRACE_DIR / "vm_static_only_tier2_split_models.c")
+    static_only_tier2_split_index = read_tsv(TRACE_DIR / "vm_static_only_tier2_split_models.tsv")
     target_only_handlers_retdec = read_text(TRACE_DIR / "vm_target_only_handlers_retdec.c")
     unobserved_handlers_retdec_batches = [
         read_text(TRACE_DIR / f"vm_unobserved_handlers_retdec_batch{index:02d}.c")
@@ -354,6 +356,15 @@ def c_shape_metrics(rows):
     add(rows, "c_shape", "handler_tier1_static_slot_comment_only",
         count(r"tier1 slot expression kept comment-only", handlers),
         "Handler-layer tier1 static-only rows with candidate/masked slots kept comment-only.")
+    add(rows, "c_shape", "handler_tier2_split_model_comments",
+        count(r"tier2 split model: rank=", handlers),
+        "Handler-layer tier2 static-only RetDec split/model annotations.")
+    add(rows, "c_shape", "handler_tier2_static_slot_recoveries",
+        count(r"tier2 static slot recovered from a split RetDec primary tail", handlers),
+        "Handler-layer static-only tier2 entries with executable dispatch-table slot recovery in VMState form.")
+    add(rows, "c_shape", "handler_tier2_static_slot_comment_only",
+        count(r"tier2 slot expression kept comment-only", handlers),
+        "Handler-layer tier2 static-only rows with candidate slots kept comment-only.")
     add(rows, "c_shape", "native_ret_patch_target_functions",
         count(r"^static void native_retpatch_entry_", native_ret_patch_targets),
         "C-shaped native .text target helper functions emitted from sampled return-patch evidence.")
@@ -711,6 +722,25 @@ def c_shape_metrics(rows):
     add(rows, "coverage", "static_only_tier1_model_entries",
         ",".join(row.get("entry", "") for row in static_only_tier1_model_index) or "-",
         "Dispatch entries covered by the tier1 static-only model artifact.")
+    add(rows, "coverage", "static_only_tier2_split_rows",
+        len(static_only_tier2_split_index),
+        "Tier2 static-only shared-range rows split into primary handler model evidence.")
+    add(rows, "c_shape", "static_only_tier2_split_functions",
+        count(r"^static VMTier2Result vm_tier2_entry_\d{3}\(VMTier2Frame \*vm\) \{", static_only_tier2_split),
+        "Syntax-checkable C functions for tier2 static-only split models.")
+    add(rows, "c_shape", "static_only_tier2_split_dispatch_cases",
+        count(r"^    case \d+: return vm_tier2_entry_\d{3}\(vm\);", static_only_tier2_split),
+        "Dispatcher cases for the tier2 static-only split model artifact.")
+    add(rows, "coverage", "static_only_tier2_split_candidate_slot_rows",
+        sum(1 for row in static_only_tier2_split_index if row.get("slot_expr", "")),
+        "Tier2 split rows with RetDec-derived known or candidate slot expressions.")
+    add(rows, "coverage", "static_only_tier2_split_executable_slot_rows",
+        sum(1 for row in static_only_tier2_split_index
+            if row.get("slot_status", "") == "retdec_dispatch_table_slot"),
+        "Tier2 split rows whose primary RetDec tail exposes a clean dispatch-table slot.")
+    add(rows, "coverage", "static_only_tier2_split_entries",
+        ",".join(row.get("entry", "") for row in static_only_tier2_split_index) or "-",
+        "Dispatch entries covered by the tier2 static-only split model artifact.")
     add(rows, "c_shape", "target_only_handler_retdec_selected_ranges",
         count(r"^ \*   0x[0-9a-f]+-0x[0-9a-f]+ entry=\d+ ", target_only_handlers_retdec),
         "Target-only VM handler native ranges selected for targeted RetDec.")
@@ -941,6 +971,12 @@ def c_shape_metrics(rows):
     add(rows, "c_shape", "bundle_tier1_static_slot_recoveries",
         count(r"tier1 static slot recovered from a clean RetDec dispatch-table tail", bundle),
         "Executable tier1 static-only slot recoveries inside the combined source bundle.")
+    add(rows, "c_shape", "bundle_tier2_split_model_comments",
+        count(r"tier2 split model: rank=", bundle),
+        "Tier2 static-only split model annotations inside the combined source bundle.")
+    add(rows, "c_shape", "bundle_tier2_static_slot_recoveries",
+        count(r"tier2 static slot recovered from a split RetDec primary tail", bundle),
+        "Executable tier2 static-only slot recoveries inside the combined source bundle.")
     add(rows, "c_shape", "bundle_sampled_ret_patch_handler_evidence_comments",
         count(r"ret-patch evidence: rows=", bundle),
         "Handler-layer sampled ret-patch evidence summaries inside the combined source bundle.")
@@ -1065,6 +1101,9 @@ def c_shape_metrics(rows):
     add(rows, "c_shape", "all_evidence_bundle_tier1_static_slot_recoveries",
         count(r"tier1 static slot recovered from a clean RetDec dispatch-table tail", all_evidence_bundle),
         "Executable tier1 static-only slot recoveries retained in the all-evidence single file.")
+    add(rows, "c_shape", "all_evidence_bundle_tier2_static_slot_recoveries",
+        count(r"tier2 static slot recovered from a split RetDec primary tail", all_evidence_bundle),
+        "Executable tier2 static-only slot recoveries retained in the all-evidence single file.")
 
 
 def coverage_metrics(rows):
@@ -2553,6 +2592,8 @@ def native_acceleration_metrics(rows):
     static_only_tier0_models_binary = Path("vm_static_only_tier0_models_dump")
     static_only_tier1_models_source = read_text("vm_static_only_tier1_models_dump.c")
     static_only_tier1_models_binary = Path("vm_static_only_tier1_models_dump")
+    static_only_tier2_split_source = read_text("vm_static_only_tier2_split_dump.c")
+    static_only_tier2_split_binary = Path("vm_static_only_tier2_split_dump")
     add(rows, "native_acceleration", "instruction_unique_fast_source_lines", line_count(unique_source),
         "Native exact-instruction reducer source size.")
     add(rows, "native_acceleration", "instruction_unique_fast_binary_bytes", file_size(unique_binary),
@@ -2711,6 +2752,13 @@ def native_acceleration_metrics(rows):
     add(rows, "native_acceleration", "static_only_tier1_models_uses_native_generator",
         "yes" if "./vm_static_only_tier1_models_dump --c" in makefile else "no",
         "Whether the tier1 static-only model C/TSV/Markdown artifacts are generated by the native C tool.")
+    add(rows, "native_acceleration", "static_only_tier2_split_dump_source_lines", line_count(static_only_tier2_split_source),
+        "Native static-only tier2 split/model generator source size.")
+    add(rows, "native_acceleration", "static_only_tier2_split_dump_binary_bytes", file_size(static_only_tier2_split_binary),
+        "Current compiled static-only tier2 split/model generator size.")
+    add(rows, "native_acceleration", "static_only_tier2_split_uses_native_generator",
+        "yes" if "./vm_static_only_tier2_split_dump --c" in makefile else "no",
+        "Whether the tier2 static-only split/model C/TSV/Markdown artifacts are generated by the native C tool.")
 
 
 def build_rows():
