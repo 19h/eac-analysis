@@ -82,18 +82,103 @@ def classify(pred_entry, pred_end, dynamic_target, dynamic_end):
     return "hidden_chain_mismatch"
 
 
+def classify_dynamic_next_hook(pred_entry, pred_end, dynamic_target, dynamic_end, exec_status):
+    if exec_status != "ok":
+        return f"dynamic_next_hook_{exec_status}"
+    chain_status = classify(pred_entry, pred_end, dynamic_target, dynamic_end)
+    if chain_status == "hidden_chain_matches_next_event":
+        return "dynamic_next_hook_matches_static_transfer"
+    if chain_status == "hidden_chain_target_only":
+        return "dynamic_next_hook_target_only"
+    if chain_status == "hidden_chain_end_only":
+        return "dynamic_next_hook_end_only"
+    return "dynamic_next_hook_mismatch"
+
+
 def better_candidate(row):
     status_rank = {
         "hidden_chain_matches_next_event": 0,
-        "hidden_chain_target_only": 1,
-        "hidden_chain_end_only": 2,
-        "hidden_chain_mismatch": 3,
+        "dynamic_next_hook_matches_static_transfer": 1,
+        "hidden_chain_target_only": 2,
+        "dynamic_next_hook_target_only": 3,
+        "hidden_chain_end_only": 4,
+        "dynamic_next_hook_end_only": 5,
+        "hidden_chain_mismatch": 6,
+        "dynamic_next_hook_mismatch": 7,
     }
     return (
         status_rank.get(row.get("status", ""), 9),
         int(row.get("hidden_source_delta_from_start", "+0x0").replace("+", ""), 16),
         int(row.get("hidden_source_entry", "0") or 0),
     )
+
+
+def probe_inferred_next_hook(row, eac, table, target_to_entry, decoded, args):
+    try:
+        entry = int(row.get("inferred_next_source_entry", ""), 0)
+        hidden_start = parse_hex(row.get("inferred_next_source_start_vm_ip", ""))
+        dynamic_end = parse_hex(row.get("next_end_vm_ip", ""))
+        dynamic_target = int(row.get("next_tail_target_entry", ""), 0)
+    except (TypeError, ValueError):
+        return []
+    decoded_entry = decoded.get(entry)
+    if not decoded_entry:
+        return []
+    target, by_addr = decoded_entry
+    byte_end = min(len(eac), hidden_start + args.bytes_window)
+    probe = {
+        "bytes": eac[hidden_start:byte_end].hex(),
+        "pre_state": "0x0",
+        "pre_flags": "0x0",
+        "pre_byte": "0x0",
+        "start_vm_ip": fmt_hex(hidden_start),
+    }
+    (
+        pred_entry,
+        pred_target,
+        pred_delta,
+        exec_status,
+        target_expr,
+        slot_expr,
+        ip_expr,
+        steps,
+        unknown,
+        branch_unknown,
+        path,
+    ) = execute(by_addr, target, probe, table, target_to_entry, args.max_steps, args.max_expr_len)
+    pred_end = hidden_start + pred_delta
+    status = classify_dynamic_next_hook(pred_entry, pred_end, dynamic_target, dynamic_end, exec_status)
+    return [{
+        "source_entry": row.get("source_entry", ""),
+        "synthetic_start_vm_ip": row.get("synthetic_start_vm_ip", ""),
+        "missing_successor_vm_ip": row.get("missing_successor_vm_ip", ""),
+        "gap_bytes": row.get("gap_bytes", ""),
+        "dynamic_resolution": row.get("resolution", ""),
+        "start_event_count": row.get("start_event_count", ""),
+        "start_site": row.get("start_site", ""),
+        "next_event_count": row.get("next_event_count", ""),
+        "next_site": row.get("next_site", ""),
+        "dynamic_next_end_vm_ip": row.get("next_end_vm_ip", ""),
+        "dynamic_next_tail_target_entry": row.get("next_tail_target_entry", ""),
+        "candidate_entries": row.get("candidate_entries", ""),
+        "hidden_source_entry": str(entry),
+        "hidden_source_target": fmt_hex(target),
+        "hidden_source_start_vm_ip": fmt_hex(hidden_start),
+        "hidden_source_delta_from_start": row.get("inferred_hidden_delta", ""),
+        "hidden_source_bytes": eac[hidden_start:hidden_start + args.max_bytes].hex(),
+        "hidden_pred_entry": "" if pred_entry is None else str(pred_entry),
+        "hidden_pred_target": "" if pred_target is None else fmt_hex(pred_target),
+        "hidden_pred_delta": fmt_delta(pred_delta),
+        "hidden_pred_end_vm_ip": fmt_hex(pred_end),
+        "hidden_target_expr": target_expr,
+        "hidden_slot_expr": slot_expr,
+        "hidden_ip_expr": ip_expr,
+        "steps": str(steps),
+        "unknown_ops": str(unknown),
+        "branch_unknown": str(branch_unknown),
+        "path": ";".join(path),
+        "status": status,
+    }]
 
 
 def probe_dynamic_row(row, eac, table, target_to_entry, decoded, args):
@@ -193,12 +278,14 @@ def build_rows(args):
 
     out = []
     for row in read_tsv(args.dynamic_stitch):
-        if row.get("resolution", "") != "ambiguous_next_source":
-            continue
         start = row.get("synthetic_start_vm_ip", "")
         if start and not row.get("gap_bytes", ""):
             row["gap_bytes"] = gap_bytes.get(start, "")
-        out.extend(probe_dynamic_row(row, eac, table, target_to_entry, decoded, args))
+        resolution = row.get("resolution", "")
+        if resolution == "dynamic_stitch_to_next_hooked_source":
+            out.extend(probe_inferred_next_hook(row, eac, table, target_to_entry, decoded, args))
+        elif resolution == "ambiguous_next_source":
+            out.extend(probe_dynamic_row(row, eac, table, target_to_entry, decoded, args))
     out.sort(key=lambda row: (parse_hex(row["synthetic_start_vm_ip"]), better_candidate(row)))
     return out
 
@@ -244,8 +331,8 @@ def emit_tsv(rows):
 def emit_markdown(rows):
     statuses = Counter(row.get("status", "") for row in rows)
     print("# Synthetic Gap Hidden Chain Probe\n")
-    print("Probe of ambiguous dynamic stitches by replaying candidate next-source handlers at short offsets after the synthetic gap.")
-    print("A full match means the candidate handler's static transfer predicts both the next hooked target entry and the next hooked VM IP.\n")
+    print("Probe of dynamic stitches by replaying candidate next-source handlers.")
+    print("Short-offset full matches can become hard hidden-chain CFG evidence. Dynamic next-hook matches validate the observed next hooked handler but remain sequence evidence for the skipped hidden span.\n")
     print(f"Rows: {len(rows)}.")
     print(f"Status mix: {', '.join(f'{key}:{value}' for key, value in statuses.most_common()) or '-'}.\n")
     print("| Synthetic Start | Source | Hidden Source | Hidden Start | Pred End | Pred Entry | Dynamic End | Dynamic Entry | Status |")
