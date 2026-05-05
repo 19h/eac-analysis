@@ -32,8 +32,9 @@ def load_events(path):
     by_start_target = defaultdict(list)
     with Path(path).open(errors="replace") as handle:
         for line in handle:
-            if not line.startswith("[VMTAIL]"):
+            if "[VMTAIL]" not in line:
                 continue
+            line = line[line.index("[VMTAIL]"):]
             fields = parse_gpr_fields(line)
             needed = {"count", "site", "frame", "vm_ip_off", "target_off"}
             if not needed.issubset(fields):
