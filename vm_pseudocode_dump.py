@@ -315,6 +315,19 @@ def load_concrete_state_audits(path):
     return audits
 
 
+def load_live_context_audits(path):
+    audits = defaultdict(list)
+    if not path or not Path(path).exists():
+        return audits
+    for row in read_tsv(path):
+        start = normalize_vm_ip(row.get("synthetic_start_vm_ip", ""))
+        if start:
+            audits[start].append(row)
+    for rows in audits.values():
+        rows.sort(key=lambda row: (row.get("live_resolution", ""), normalize_vm_ip(row.get("missing_successor_vm_ip", ""))))
+    return audits
+
+
 def resolved_hidden_chain(target_vm_ip, hidden_chains):
     start = normalize_vm_ip(target_vm_ip)
     for row in hidden_chains.get(start, []):
@@ -631,6 +644,37 @@ def emit_concrete_state_audit_comments(target_vm_ip, concrete_state_audits, args
     omitted = len(rows) - len(shown)
     if omitted > 0:
         print(f"    /* ... {omitted} additional concrete-state audit rows omitted ... */")
+
+
+def emit_live_context_audit_comments(target_vm_ip, live_context_audits, args):
+    start = normalize_vm_ip(target_vm_ip)
+    rows = live_context_audits.get(start, [])
+    if not rows:
+        return
+    limit = getattr(args, "live_context_audit_top_items", 4)
+    shown = rows if limit <= 0 else rows[:limit]
+    max_expr = getattr(args, "live_context_audit_max_expr", 180)
+    print(
+        f"    /* live-context audit @ {start}: rows={len(rows)}; "
+        "residual replay seeded with state plus entry GPR/frame-scratch snapshots. */"
+    )
+    for row in shown:
+        print(
+            f"    /* live-context audit: source={row.get('source_entry', '?')}, "
+            f"state_rows={row.get('state_trace_rows', '0')}, "
+            f"seeds={row.get('live_seed_rows', '0')}, "
+            f"resolution={c_comment(row.get('live_resolution', '') or '-')}, "
+            f"status={c_comment(row.get('live_status_mix', '') or '-')}, "
+            f"reason={c_comment(row.get('live_unknown_reason_mix', '') or '-')}, "
+            f"pred_entries={c_comment(row.get('live_pred_entries', '') or '-')}, "
+            f"pred_ends={c_comment(row.get('live_pred_ends', '') or '-')}, "
+            f"seed_site={c_comment(row.get('live_example_seed_site', '') or '-')}, "
+            f"seed_target={c_comment(row.get('live_example_seed_target_off', '') or '-')}, "
+            f"path={c_comment(clip(row.get('live_example_path', '') or '-', max_expr))} */"
+        )
+    omitted = len(rows) - len(shown)
+    if omitted > 0:
+        print(f"    /* ... {omitted} additional live-context audit rows omitted ... */")
 
 
 def matching_final_tail_probe(row, final_tail_site_probes):
