@@ -48,6 +48,7 @@ struct timeval;
 struct utsname;
 struct iovec;
 struct epoll_event;
+struct eac_retdec_cpuid_regs { uint32_t e0; uint32_t e1; uint32_t e2; uint32_t e3; };
 #define F_GETFL 3
 #define F_SETFL 4
 #define SO_DEBUG 1
@@ -131,6 +132,10 @@ void __asm_rep_movsd_memcpy(char *dst, char *src, int64_t count);
 void __asm_rep_movsq_memcpy(char *dst, char *src, int64_t count);
 int64_t __asm_hlt(void);
 int64_t __asm_mfence();
+struct eac_retdec_cpuid_regs __asm_cpuid(uint32_t leaf);
+struct eac_retdec_cpuid_regs __asm_cpuid_133(uint32_t leaf);
+struct eac_retdec_cpuid_regs __asm_cpuid_134(uint32_t leaf);
+uint64_t __asm_xgetbv(uint64_t index);
 void __stack_chk_fail(void);
 int __cxa_atexit(void (*func)(int64_t *), void *arg, void *dso);
 int128_t __asm_movsd(int64_t value);
