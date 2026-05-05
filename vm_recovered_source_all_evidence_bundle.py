@@ -98,7 +98,7 @@ def collect_symbols(text):
     ):
         names.add(match.group(1))
     for match in re.finditer(
-        r"^(?:extern\s+)?(?:static\s+)?(?:const\s+)?[A-Za-z_][A-Za-z0-9_\s\*]*?\s+([A-Za-z_]\w*)\s*(?:\[[^\]]*\])?\s*(?:=|;)",
+        r"^(?:extern\s+)?(?:static\s+)?(?:const\s+)?[A-Za-z_][A-Za-z0-9_\s\*]*?\s+([A-Za-z_]\w*)\s*(?:\[[^\]]*\])?\s*(?:[A-Z_][A-Z0-9_]*\s*)?(?:=|;)",
         text,
         re.M,
     ):

@@ -181,7 +181,7 @@ def read_tsv(path):
     if not path.exists():
         return []
     with path.open(newline="", errors="replace") as handle:
-        return list(csv.DictReader(handle, delimiter="\t"))
+        return list(csv.DictReader(handle, delimiter="\t", quoting=csv.QUOTE_NONE))
 
 
 def add(rows, section, item, value, note):
