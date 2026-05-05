@@ -1,0 +1,40 @@
+[DRIVER] dlopen path=./eac.elf
+[TRACE] caller=driver+0x1608 dlopen file=./eac.elf flags=0x2
+[DRIVER] dlsym x=0x7ea47e2380dc
+[TRACE] caller=driver+0x2455 getenv name=EAC_DISPATCH_TRACE -> set
+[TRACE] caller=driver+0x1a7a getenv name=EAC_DISPATCH_LIMIT -> set
+[TRACE] caller=driver+0x2455 getenv name=EAC_DISPATCH_DETAIL -> set
+[TRACE] caller=driver+0x1ae2 getenv name=EAC_DISPATCH_STOP_AFTER_MATCHES -> set
+[TRACE] caller=driver+0x1b06 getenv name=EAC_DISPATCH_EXTRA_SITES -> set
+[TRACE] caller=driver+0x1b1c getenv name=EAC_DISPATCH_FOCUS_SITES -> set
+[TRACE] caller=driver+0x2455 getenv name=EAC_VMTAIL_TRACE -> null
+[TRACE] caller=driver+0x2455 getenv name=EAC_VMTAIL_REGS -> null
+[TRACE] caller=driver+0x2455 getenv name=EAC_VMTAIL_SCRATCH -> null
+[TRACE] caller=driver+0x2455 getenv name=EAC_VMTAIL_MEM -> null
+[TRACE] caller=driver+0x1b7d getenv name=EAC_VMTAIL_MEM_REGS -> null
+[TRACE] caller=driver+0x1b97 getenv name=EAC_VMTAIL_LIMIT -> null
+[TRACE] caller=driver+0x1bed getenv name=EAC_VMTAIL_FOCUS_IPS -> null
+[TRACE] caller=driver+0x1c01 getenv name=EAC_VMTAIL_FOCUS_SITES -> null
+[TRACE] caller=driver+0x1c15 getenv name=EAC_VMTAIL_STOP_AFTER_MATCHES -> null
+[TRACE] caller=driver+0x3099 fopen path=/proc/self/maps mode=r
+[TRACE] caller=driver+0x3632 mprotect addr=0x7ea47e2c8000 len=0x1000 prot=0x7
+[TRACE] caller=driver+0x3632 mprotect addr=0x7ea47e2cd000 len=0x1000 prot=0x7
+[TRACE] caller=driver+0x3632 mprotect addr=0x7ea47e2ca000 len=0x1000 prot=0x7
+[TRACE] caller=driver+0x3632 mprotect addr=0x7ea47e2cc000 len=0x1000 prot=0x7
+[TRACE] caller=driver+0x3632 mprotect addr=0x7ea47e2c5000 len=0x1000 prot=0x7
+[TRACE] caller=driver+0x3632 mprotect addr=0x7ea47e2c6000 len=0x1000 prot=0x7
+[DRIVER] dispatch trace enabled base=0x7ea47e200000 dispatch_sites=6 limit=16 detail=1 tail=0 tail_regs=0 tail_scratch=0 tail_mem=0 tail_limit=4096 tail_sites=0 scratch_offsets=0 read_ranges=54 focus_ips=0 focus_sites=0 stop_after_matches=0 dispatch_focus_sites=1 dispatch_stop_after_matches=4
+[DRIVER] dispatch site +0xc80b9
+[DRIVER] dispatch site +0xcdac7
+[DRIVER] dispatch site +0xcad88
+[DRIVER] dispatch site +0xcc3f5
+[DRIVER] dispatch site +0xc559d
+[DRIVER] dispatch site +0xc6bce
+[DRIVER] call x(buf=0x5d34b857a010,len=0x800,mode=1,out=0x5d34b857a820)
+[TRACE] caller=eac.elf+0x4c000b fopen path=/dev/urandom mode=rb
+[TRACE] caller=eac.elf+0x4c000b fopen path=/dev/urandom mode=rb
+[DISPATCH] site=0xc6bce count=1 slot=0x7ea47e2c39c8 slot_off=0xc39c8 idx=0x2b0 frame=0x7ea47e27836d frame_off=0x7836d vm_ip=0x7ea47e31ac5a vm_ip_off=0x11ac5a vm_flags=0xf9ffff2e vm_state=0xf05f0900 vm_byte=0x3a table=0x7ea47e2c3718 table_off=0xc3718 ip_w0=0xa9 ip_w1=0x0 ip_w2=0xab ip_w3=0x1e8 ip_w4=0xac ip_w5=0xafb2 ip_w6=0xeb ip_w7=0x8b34 ip_w8=0x2de ip_w9=0x13f8 ip_w10=0x2056 ip_w11=0xe84a ip_w12=0xfd01 ip_w13=0xd65 ip_w14=0x5c30 ip_w15=0x4411 target=0x7ea47e28a37f target_off=0x8a37f
+[DISPATCH] site=0xc6bce count=2 slot=0x7ea47e2c3c60 slot_off=0xc3c60 idx=0x548 frame=0x7ea47e27836d frame_off=0x7836d vm_ip=0x7ea47e31aeea vm_ip_off=0x11aeea vm_flags=0xbaeeff37 vm_state=0xb8e60930 vm_byte=0x3a table=0x7ea47e2c3718 table_off=0xc3718 ip_w0=0x162 ip_w1=0x1e8 ip_w2=0x72 ip_w3=0x646b ip_w4=0xac8c ip_w5=0x9ebf ip_w6=0x7675 ip_w7=0x988 ip_w8=0xdd04 ip_w9=0xe852 ip_w10=0xf501 ip_w11=0x717d ip_w12=0x4be1 ip_w13=0x9016 ip_w14=0xefc3 ip_w15=0xab target=0x7ea47e29af18 target_off=0x9af18
+[DISPATCH] site=0xc6bce count=3 slot=0x7ea47e2c3c60 slot_off=0xc3c60 idx=0x548 frame=0x7ea47e27836d frame_off=0x7836d vm_ip=0x7ea47e31b12c vm_ip_off=0x11b12c vm_flags=0x8920f7c0 vm_state=0x8920f7c0 vm_byte=0x3a table=0x7ea47e2c3718 table_off=0xc3718 ip_w0=0xab ip_w1=0x1e8 ip_w2=0x154 ip_w3=0x17d4 ip_w4=0x99 ip_w5=0xefcf ip_w6=0x99 ip_w7=0x988 ip_w8=0xe184 ip_w9=0xe860 ip_w10=0x6001 ip_w11=0x3206 ip_w12=0x9300 ip_w13=0x9a3 ip_w14=0x87c5 ip_w15=0xcb92 target=0x7ea47e29af18 target_off=0x9af18
+[DISPATCH] site=0xc6bce count=4 slot=0x7ea47e2c40c8 slot_off=0xc40c8 idx=0x9b0 frame=0x7ea47e27836d frame_off=0x7836d vm_ip=0x7ea47e31b36e vm_ip_off=0x11b36e vm_flags=0x14896ba4 vm_state=0xffb9bdf9 vm_byte=0x3a table=0x7ea47e2c3718 table_off=0xc3718 ip_w0=0x1e8 ip_w1=0xab ip_w2=0x42 ip_w3=0x9121 ip_w4=0xf63a ip_w5=0x871 ip_w6=0xa3b0 ip_w7=0x99f9 ip_w8=0xcd00 ip_w9=0xe8d3 ip_w10=0x6901 ip_w11=0x642b ip_w12=0x58e3 ip_w13=0xf001 ip_w14=0x7513 ip_w15=0x1f7 target=0x7ea47e2b8556 target_off=0xb8556
+[DRIVER] DISPATCH focus stop hits=4 site=0xc6bce
