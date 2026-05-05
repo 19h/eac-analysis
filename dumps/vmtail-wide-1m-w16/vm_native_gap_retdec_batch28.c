@@ -6,22 +6,22 @@
  * coverage -> queue -> RetDec batch -> coverage.
  *
  * Ranges:
- *   0x592ee-0x593cd rank=11 name=fcn.000592ee kind=r2_discovered bytes=223 uncovered=223
- *   0x4aedd0-0x4aeeaf rank=12 name=fcn.004aedd0 kind=r2_discovered bytes=223 uncovered=223
- *   0x4b63a0-0x4b647f rank=13 name=fcn.004b63a0 kind=r2_discovered bytes=223 uncovered=223
- *   0x3e18d-0x3e26b rank=14 name=fcn.0003e18d kind=r2_discovered bytes=222 uncovered=222
- *   0x7826e-0x7834c rank=15 name=fcn.0007826e kind=r2_discovered bytes=222 uncovered=222
- *   0x4d4790-0x4d486e rank=16 name=fcn.004d4790 kind=r2_discovered bytes=222 uncovered=222
- *   0x4ee710-0x4ee7ee rank=17 name=sym.ZydisRegisterGetLargestEnclosing kind=symbol_named bytes=222 uncovered=222
- *   0x502870-0x50294e rank=18 name=fcn.00502870 kind=r2_discovered bytes=222 uncovered=222
- *   0x505130-0x50520e rank=19 name=fcn.00505130 kind=r2_discovered bytes=222 uncovered=222
- *   0x36f05-0x36fe2 rank=20 name=fcn.00036f05 kind=r2_discovered bytes=221 uncovered=221
- *   0x67d18-0x67df5 rank=21 name=fcn.00067d18 kind=r2_discovered bytes=221 uncovered=221
- *   0x28cb6f-0x28cc4c rank=22 name=fcn.0028cb6f kind=r2_discovered bytes=221 uncovered=221
- *   0x4f17f0-0x4f18cd rank=23 name=fcn.004f17f0 kind=r2_discovered bytes=221 uncovered=221
- *   0x24bd0-0x24cac rank=24 name=fcn.00024bd0 kind=r2_discovered bytes=220 uncovered=220
- *   0x423a3-0x4247f rank=25 name=fcn.000423a3 kind=r2_discovered bytes=220 uncovered=220
- *   0x52c62-0x52d3e rank=26 name=fcn.00052c62 kind=r2_discovered bytes=220 uncovered=220
+ *   0x592ee-0x593cd rank=- name=- kind=- bytes=- uncovered=-
+ *   0x4aedd0-0x4aeeaf rank=- name=- kind=- bytes=- uncovered=-
+ *   0x4b63a0-0x4b647f rank=- name=- kind=- bytes=- uncovered=-
+ *   0x3e18d-0x3e26b rank=- name=- kind=- bytes=- uncovered=-
+ *   0x7826e-0x7834c rank=- name=- kind=- bytes=- uncovered=-
+ *   0x4d4790-0x4d486e rank=- name=- kind=- bytes=- uncovered=-
+ *   0x4ee710-0x4ee7ee rank=- name=- kind=- bytes=- uncovered=-
+ *   0x502870-0x50294e rank=- name=- kind=- bytes=- uncovered=-
+ *   0x505130-0x50520e rank=- name=- kind=- bytes=- uncovered=-
+ *   0x36f05-0x36fe2 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x67d18-0x67df5 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x28cb6f-0x28cc4c rank=- name=- kind=- bytes=- uncovered=-
+ *   0x4f17f0-0x4f18cd rank=- name=- kind=- bytes=- uncovered=-
+ *   0x24bd0-0x24cac rank=- name=- kind=- bytes=- uncovered=-
+ *   0x423a3-0x4247f rank=- name=- kind=- bytes=- uncovered=-
+ *   0x52c62-0x52d3e rank=- name=- kind=- bytes=- uncovered=-
  */
 #include <stdbool.h>
 #include <stdio.h>
@@ -46,6 +46,7 @@ struct timespec;
 struct timeval;
 struct utsname;
 struct iovec;
+struct epoll_event;
 #define F_GETFL 3
 #define F_SETFL 4
 #define SO_DEBUG 1
@@ -108,6 +109,7 @@ int128_t __asm_psllq(int128_t value, int count);
 int128_t __asm_psrlq(int128_t value, int count);
 int128_t __asm_por(int128_t left, int128_t right);
 int128_t __asm_pxor(int128_t left, int128_t right);
+int128_t __asm_xorps(int128_t left, int128_t right);
 int128_t __asm_cmpnlesd(int128_t left, int128_t right);
 int128_t __asm_cvtsi2sd(int64_t value);
 int128_t __asm_subsd(int128_t left, int128_t right);
@@ -146,6 +148,10 @@ int pthread_cond_wait(void *cond, void *mutex);
 int pthread_cond_timedwait(void *cond, void *mutex, const struct timespec *abstime);
 int fcntl(int fd, int cmd, ...);
 int writev(int fd, const struct iovec *iov, int iovcnt);
+int epoll_create(int size);
+int epoll_ctl(int epfd, int op, int fd, struct epoll_event *event);
+int epoll_wait(int epfd, struct epoll_event *events, int maxevents, int timeout);
+int close(int fd);
 int ioctl(int fd, unsigned long request, ...);
 int poll(struct pollfd *fds, unsigned long nfds, int timeout);
 int gettimeofday(struct timeval *tv, void *tz);

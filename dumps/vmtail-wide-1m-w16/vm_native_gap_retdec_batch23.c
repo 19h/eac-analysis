@@ -46,6 +46,7 @@ struct timespec;
 struct timeval;
 struct utsname;
 struct iovec;
+struct epoll_event;
 #define F_GETFL 3
 #define F_SETFL 4
 #define SO_DEBUG 1
@@ -96,6 +97,7 @@ int128_t __asm_psllq(int128_t value, int count);
 int128_t __asm_psrlq(int128_t value, int count);
 int128_t __asm_por(int128_t left, int128_t right);
 int128_t __asm_pxor(int128_t left, int128_t right);
+int128_t __asm_xorps(int128_t left, int128_t right);
 int128_t __asm_cmpnlesd(int128_t left, int128_t right);
 int128_t __asm_cvtsi2sd(int64_t value);
 int128_t __asm_subsd(int128_t left, int128_t right);
@@ -134,6 +136,10 @@ int pthread_cond_wait(void *cond, void *mutex);
 int pthread_cond_timedwait(void *cond, void *mutex, const struct timespec *abstime);
 int fcntl(int fd, int cmd, ...);
 int writev(int fd, const struct iovec *iov, int iovcnt);
+int epoll_create(int size);
+int epoll_ctl(int epfd, int op, int fd, struct epoll_event *event);
+int epoll_wait(int epfd, struct epoll_event *events, int maxevents, int timeout);
+int close(int fd);
 int ioctl(int fd, unsigned long request, ...);
 int poll(struct pollfd *fds, unsigned long nfds, int timeout);
 int gettimeofday(struct timeval *tv, void *tz);
