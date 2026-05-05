@@ -123,7 +123,7 @@ def load_state_by_end(paths):
     return by_end
 
 
-def execute_concrete(insns_by_addr, start, row, table, target_to_entry, max_steps):
+def execute_concrete(insns_by_addr, start, row, table, target_to_entry, max_steps, seed_regs=None, seed_frame_mem=None):
     ip_bytes = bytes.fromhex(row["bytes"])
     frame = {
         "state": parse_int(row["pre_state"]) & MASK32,
@@ -132,8 +132,9 @@ def execute_concrete(insns_by_addr, start, row, table, target_to_entry, max_step
         "ip_delta": 0,
         "ip_base_low12": (parse_int(row.get("start_vm_ip", "0x0") or "0x0") or 0) & 0xfff,
     }
-    regs = {"rbp": Ptr("frame", 0)}
-    frame_mem = {}
+    regs = dict(seed_regs or {})
+    regs["rbp"] = Ptr("frame", 0)
+    frame_mem = dict(seed_frame_mem or {})
     pc = start
     zf = None
     steps = 0
