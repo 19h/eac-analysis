@@ -94,6 +94,9 @@ ARTIFACTS = [
     ("native_obfuscated_control_model_c", TRACE_DIR / "vm_native_obfuscated_control_model.c"),
     ("native_obfuscated_control_model_tsv", TRACE_DIR / "vm_native_obfuscated_control_model.tsv"),
     ("native_obfuscated_control_model_md", TRACE_DIR / "vm_native_obfuscated_control_model.md"),
+    ("native_ret_patch_hidden_bridge_c", TRACE_DIR / "vm_native_ret_patch_hidden_bridge.c"),
+    ("native_ret_patch_hidden_bridge_tsv", TRACE_DIR / "vm_native_ret_patch_hidden_bridge.tsv"),
+    ("native_ret_patch_hidden_bridge_md", TRACE_DIR / "vm_native_ret_patch_hidden_bridge.md"),
     ("target_only_handlers_retdec", TRACE_DIR / "vm_target_only_handlers_retdec.c"),
     ("unobserved_handlers_retdec_batch00", TRACE_DIR / "vm_unobserved_handlers_retdec_batch00.c"),
     ("unobserved_handlers_retdec_batch01", TRACE_DIR / "vm_unobserved_handlers_retdec_batch01.c"),
@@ -214,6 +217,8 @@ def c_shape_metrics(rows):
     native_obfuscated_second_stage_model_index = read_tsv(TRACE_DIR / "vm_native_obfuscated_second_stage_model.tsv")
     native_obfuscated_control_model = read_text(TRACE_DIR / "vm_native_obfuscated_control_model.c")
     native_obfuscated_control_model_index = read_tsv(TRACE_DIR / "vm_native_obfuscated_control_model.tsv")
+    native_ret_patch_hidden_bridge = read_text(TRACE_DIR / "vm_native_ret_patch_hidden_bridge.c")
+    native_ret_patch_hidden_bridge_index = read_tsv(TRACE_DIR / "vm_native_ret_patch_hidden_bridge.tsv")
     target_only_handlers_retdec = read_text(TRACE_DIR / "vm_target_only_handlers_retdec.c")
     unobserved_handlers_retdec_batches = [
         read_text(TRACE_DIR / f"vm_unobserved_handlers_retdec_batch{index:02d}.c")
@@ -278,6 +283,12 @@ def c_shape_metrics(rows):
     )
     obfuscated_control_model_statuses = Counter(
         row.get("control_status", "") for row in native_obfuscated_control_model_index
+    )
+    ret_patch_hidden_bridge_statuses = Counter(
+        row.get("control_status", "") for row in native_ret_patch_hidden_bridge_index
+    )
+    ret_patch_hidden_bridge_edges = Counter(
+        row.get("edge_kind", "") for row in native_ret_patch_hidden_bridge_index
     )
 
     add(rows, "c_shape", "handler_functions", count(r"^static VMOpResult op_entry_\d{3}\(VMState \*vm\) \{", handlers),
@@ -522,6 +533,30 @@ def c_shape_metrics(rows):
     add(rows, "c_shape", "native_obfuscated_control_model_status_mix",
         ",".join(f"{key}:{value}" for key, value in obfuscated_control_model_statuses.most_common()) or "-",
         "Status mix for joined native obfuscated hidden-control rows.")
+    add(rows, "c_shape", "native_ret_patch_hidden_bridge_rows",
+        len(native_ret_patch_hidden_bridge_index),
+        "Ret-patch native target windows joined back to the hidden obfuscated-control C model.")
+    add(rows, "c_shape", "native_ret_patch_hidden_bridge_c_functions",
+        count(r"^static int ret_patch_hidden_[0-9]+_[0-9a-f]+_(?:call|jump)_[0-9a-f]+\(VMState \*vm,", native_ret_patch_hidden_bridge),
+        "Syntax-checkable bridge helper functions mapping ret-patch exits to hidden-control entries.")
+    add(rows, "c_shape", "native_ret_patch_hidden_bridge_dispatch_cases",
+        count(r"^    case 0x[0-9a-f]+ull:$", native_ret_patch_hidden_bridge),
+        "Dispatcher cases in the ret-patch hidden-control bridge artifact.")
+    add(rows, "c_shape", "native_ret_patch_hidden_bridge_second_stage_rows",
+        sum(1 for row in native_ret_patch_hidden_bridge_index if row.get("final_model", "") == "dispatch_table[stack_qword(rsp+0x88)]"),
+        "Ret-patch bridge rows that flow into the static second-stage dispatch-table model.")
+    add(rows, "c_shape", "native_ret_patch_hidden_bridge_source278_rows",
+        sum(1 for row in native_ret_patch_hidden_bridge_index if "source278_retdec" in row.get("final_model", "")),
+        "Ret-patch bridge rows that flow into source278 RetDec-covered native targets.")
+    add(rows, "c_shape", "native_ret_patch_hidden_bridge_dynamic_hits",
+        sum(int(row.get("dynamic_hits", "0") or "0") for row in native_ret_patch_hidden_bridge_index),
+        "Focused second-stage dynamic hits reachable through the ret-patch hidden bridge.")
+    add(rows, "c_shape", "native_ret_patch_hidden_bridge_edge_kind_mix",
+        ",".join(f"{key}:{value}" for key, value in ret_patch_hidden_bridge_edges.most_common()) or "-",
+        "Call/jump edge mix for ret-patch follow-up targets that enter hidden control.")
+    add(rows, "c_shape", "native_ret_patch_hidden_bridge_status_mix",
+        ",".join(f"{key}:{value}" for key, value in ret_patch_hidden_bridge_statuses.most_common()) or "-",
+        "Status mix for ret-patch exits joined to hidden-control rows.")
     add(rows, "c_shape", "target_only_handler_retdec_selected_ranges",
         count(r"^ \*   0x[0-9a-f]+-0x[0-9a-f]+ entry=\d+ ", target_only_handlers_retdec),
         "Target-only VM handler native ranges selected for targeted RetDec.")
@@ -2317,6 +2352,8 @@ def native_acceleration_metrics(rows):
     obfuscated_second_stage_model_binary = Path("vm_native_obfuscated_second_stage_model_dump")
     obfuscated_control_model_source = read_text("vm_native_obfuscated_control_model_dump.c")
     obfuscated_control_model_binary = Path("vm_native_obfuscated_control_model_dump")
+    ret_patch_hidden_bridge_source = read_text("vm_native_ret_patch_hidden_bridge_dump.c")
+    ret_patch_hidden_bridge_binary = Path("vm_native_ret_patch_hidden_bridge_dump")
     add(rows, "native_acceleration", "instruction_unique_fast_source_lines", line_count(unique_source),
         "Native exact-instruction reducer source size.")
     add(rows, "native_acceleration", "instruction_unique_fast_binary_bytes", file_size(unique_binary),
@@ -2428,6 +2465,13 @@ def native_acceleration_metrics(rows):
     add(rows, "native_acceleration", "native_obfuscated_control_model_uses_native_generator",
         "yes" if "./vm_native_obfuscated_control_model_dump --c" in makefile else "no",
         "Whether the joined hidden-control C/TSV/Markdown artifacts are generated by the native C tool.")
+    add(rows, "native_acceleration", "native_ret_patch_hidden_bridge_dump_source_lines", line_count(ret_patch_hidden_bridge_source),
+        "Native ret-patch hidden-control bridge generator source size.")
+    add(rows, "native_acceleration", "native_ret_patch_hidden_bridge_dump_binary_bytes", file_size(ret_patch_hidden_bridge_binary),
+        "Current compiled native ret-patch hidden bridge generator size.")
+    add(rows, "native_acceleration", "native_ret_patch_hidden_bridge_uses_native_generator",
+        "yes" if "./vm_native_ret_patch_hidden_bridge_dump --c" in makefile else "no",
+        "Whether the ret-patch hidden bridge C/TSV/Markdown artifacts are generated by the native C tool.")
 
 
 def build_rows():
