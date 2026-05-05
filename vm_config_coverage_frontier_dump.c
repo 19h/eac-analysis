@@ -432,7 +432,7 @@ static void build_rows(void) {
     uint64_t concrete_adds_sources = 0, max_concrete_sources = 0, max_concrete_targets = 0, max_concrete_vm_ips = 0;
     uint64_t static_only = 0, target_only = 0, path_unknown = 0, path_validated = 0;
 
-    for (size_t i = 0; i < g_traces[i].trace_dir[0] && i < g_trace_count; i++) {
+    for (size_t i = 0; i < g_trace_count; i++) {
         const TraceRow *row = &g_traces[i];
         if (is_instruction_trace(row)) instruction_traces++;
         else run_only++;
@@ -446,7 +446,7 @@ static void build_rows(void) {
             else if (row->network_fake_events > 0) concrete_network_fake++;
             else if (row->network_events > 0) concrete_network_allowed++;
             if (row->source_entries_vs_primary[0] == '+') {
-                char *slash = strchr(row->source_entries_vs_primary, '/');
+                const char *slash = strchr(row->source_entries_vs_primary, '/');
                 long plus = strtol(row->source_entries_vs_primary + 1, NULL, 10);
                 if ((!slash || slash > row->source_entries_vs_primary + 1) && plus > 0) {
                     concrete_adds_sources++;
@@ -491,7 +491,7 @@ static void build_rows(void) {
 
     for (size_t i = 0; i < g_static_metric_count; i++) {
         char scope[TEXT];
-        snprintf(scope, sizeof(scope), "static_audit.%s", g_static_metrics[i].scope);
+        snprintf(scope, sizeof(scope), "static_audit.%.480s", g_static_metrics[i].scope);
         add_metric(scope, g_static_metrics[i].metric, g_static_metrics[i].value, g_static_metrics[i].note);
     }
 
@@ -551,14 +551,14 @@ static void build_rows(void) {
                      "concrete instruction traces reached network calls but 11 were denied and 1 was locally faked",
                      "run controlled real-network trace or deeper protocol-faithful fake responses");
     }
-    for (size_t i = 0; i < g_traces[i].trace_dir[0] && i < g_trace_count; i++) {
+    for (size_t i = 0; i < g_trace_count; i++) {
         const TraceRow *row = &g_traces[i];
         char evidence[TEXT];
         if (!is_synthetic_trace(row)) {
             continue;
         }
         snprintf(evidence, sizeof(evidence),
-                 "trace_dir=%s trace_rows=%llu source_entries=%llu target_entries=%llu vm_ip_starts=%llu",
+                 "trace_dir=%.180s trace_rows=%llu source_entries=%llu target_entries=%llu vm_ip_starts=%llu",
                  row->trace_dir,
                  (unsigned long long)row->trace_rows,
                  (unsigned long long)row->source_entries,
