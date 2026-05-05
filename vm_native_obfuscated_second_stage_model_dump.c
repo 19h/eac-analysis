@@ -432,6 +432,8 @@ static void emit_c(void) {
     printf("#include <stdint.h>\n\n");
     printf("typedef struct VMState {\n");
     printf("    uint64_t dispatch_table_base;\n");
+    printf("    const uint64_t *dispatch_table;\n");
+    printf("    uint32_t dispatch_table_entries;\n");
     printf("} VMState;\n\n");
     printf("typedef struct VMSecondStageNativeStack {\n");
     printf("    const uint64_t *qwords;\n");
@@ -446,8 +448,10 @@ static void emit_c(void) {
     printf("}\n\n");
     printf("static uint64_t vm_second_stage_dispatch_target(const VMState *vm, uint64_t handler_entry) {\n");
     printf("    uint64_t slot = (vm ? vm->dispatch_table_base : 0) + (handler_entry << 3);\n");
-    printf("    (void)slot;\n");
-    printf("    return 0;\n");
+    printf("    if (vm && vm->dispatch_table && handler_entry < vm->dispatch_table_entries) {\n");
+    printf("        return vm->dispatch_table[handler_entry];\n");
+    printf("    }\n");
+    printf("    return slot;\n");
     printf("}\n\n");
     printf("static void vm_note_second_stage_model(VMState *vm, const VMSecondStageNativeStack *stack,\n");
     printf("                                       uint32_t entry, uint32_t site,\n");
