@@ -19,6 +19,11 @@ def path_name(row):
     return f"path_entry_{entry:03d}_{digest}"
 
 
+def path_key(row):
+    digest = re.sub(r"[^0-9a-fA-F]", "", row.get("path_hash", ""))[:16]
+    return f"0x{digest or '0'}ull"
+
+
 def single_count_expr(text):
     exprs = parse_count_exprs(text or "")
     if len(exprs) == 1:
@@ -45,6 +50,17 @@ def emit_preamble():
     print("    int next_entry;")
     print("    uint32_t slot;")
     print("} VMOpResult;")
+    print("")
+    print("typedef VMOpResult (*VMPathFn)(VMState *vm);")
+    print("")
+    print("typedef struct VMPathModelInfo {")
+    print("    uint16_t entry;")
+    print("    uint64_t path_key;")
+    print("    uint32_t events;")
+    print("    const char *source_class;")
+    print("    const char *validation;")
+    print("    VMPathFn function;")
+    print("} VMPathModelInfo;")
     print("")
     print("#define U8(p)  (*(const uint8_t *)(p))")
     print("#define U16(p) (*(const uint16_t *)(p))")
@@ -130,6 +146,44 @@ def emit_path(row, args):
     print("")
 
 
+def emit_path_index(rows):
+    print("static const VMPathModelInfo k_vm_path_models[] = {")
+    for row in rows:
+        print(
+            f"    {{ {int(row['source_entry'])}, {path_key(row)}, "
+            f"{int(row.get('events') or 0)}u, "
+            f"\"{c_comment(row.get('source_class', '-'))}\", "
+            f"\"{c_comment(row.get('validation', '-'))}\", "
+            f"{path_name(row)} }},"
+        )
+    print("};")
+    print("")
+    print("static unsigned vm_path_model_count(void) {")
+    print("    return (unsigned)(sizeof(k_vm_path_models) / sizeof(k_vm_path_models[0]));")
+    print("}")
+    print("")
+
+
+def emit_path_dispatcher(rows):
+    rows_by_entry = {}
+    for row in rows:
+        rows_by_entry.setdefault(int(row["source_entry"]), []).append(row)
+    print("static VMOpResult vm_call_path_handler(uint16_t entry, uint64_t path_key_value, VMState *vm) {")
+    print("    switch (entry) {")
+    for entry in sorted(rows_by_entry):
+        print(f"    case {entry}:")
+        print("        switch (path_key_value) {")
+        for row in sorted(rows_by_entry[entry], key=lambda item: item["path_hash"]):
+            print(f"        case {path_key(row)}: return {path_name(row)}(vm);")
+        print("        default: break;")
+        print("        }")
+        print("        break;")
+    print("    default: break;")
+    print("    }")
+    print("    return (VMOpResult){ .next_entry = -1, .slot = 0xffffffffu };")
+    print("}")
+
+
 def selected_rows(rows, args):
     rows.sort(key=lambda row: (-int(row.get("events") or 0), int(row["source_entry"]), row["path_hash"]))
     if args.entry:
@@ -156,6 +210,8 @@ def main():
     emit_preamble()
     for row in rows:
         emit_path(row, args)
+    emit_path_index(rows)
+    emit_path_dispatcher(rows)
     print(f"path_pseudocode_rows={len(rows)}", file=sys.stderr)
 
 

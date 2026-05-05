@@ -17,6 +17,17 @@ typedef struct VMOpResult {
     uint32_t slot;
 } VMOpResult;
 
+typedef VMOpResult (*VMPathFn)(VMState *vm);
+
+typedef struct VMPathModelInfo {
+    uint16_t entry;
+    uint64_t path_key;
+    uint32_t events;
+    const char *source_class;
+    const char *validation;
+    VMPathFn function;
+} VMPathModelInfo;
+
 #define U8(p)  (*(const uint8_t *)(p))
 #define U16(p) (*(const uint16_t *)(p))
 #define U32(p) (*(const uint32_t *)(p))
@@ -1535,3 +1546,431 @@ static VMOpResult path_entry_268_0fdc3b6a8836(VMState *vm) {
     return r;
 }
 
+static const VMPathModelInfo k_vm_path_models[] = {
+    { 307, 0x53af157f8d5a451eull, 6610u, "static_validated", "target=100.0%, ip=100.0%, ok:6610", path_entry_307_53af157f8d5a },
+    { 258, 0x4be73f077fec7fc7ull, 6275u, "static_validated", "target=100.0%, ip=100.0%, ok:6275", path_entry_258_4be73f077fec },
+    { 347, 0xcb333c548cc440f3ull, 5868u, "static_validated", "target=100.0%, ip=100.0%, ok:5868", path_entry_347_cb333c548cc4 },
+    { 337, 0xc8492588f16e2cbbull, 5158u, "static_validated", "target=100.0%, ip=100.0%, ok:5158", path_entry_337_c8492588f16e },
+    { 199, 0x454bb50b5a012434ull, 4835u, "static_validated", "target=100.0%, ip=100.0%, ok:4835", path_entry_199_454bb50b5a01 },
+    { 18, 0xbdfe2dc323c2ac6dull, 4728u, "static_validated", "target=100.0%, ip=100.0%, ok:4728", path_entry_018_bdfe2dc323c2 },
+    { 66, 0xf47171d373278492ull, 4708u, "static_validated", "target=100.0%, ip=100.0%, ok:4708", path_entry_066_f47171d37327 },
+    { 215, 0x3c30635855970371ull, 4283u, "static_validated", "target=100.0%, ip=100.0%, ok:4283", path_entry_215_3c3063585597 },
+    { 196, 0x44a20faf942e72a8ull, 4088u, "static_validated", "target=100.0%, ip=100.0%, ok:4088", path_entry_196_44a20faf942e },
+    { 297, 0x6091fdb2f82dc3fbull, 4065u, "static_validated", "target=100.0%, ip=100.0%, ok:4065", path_entry_297_6091fdb2f82d },
+    { 340, 0x02ae05a16ed89aaeull, 4010u, "static_validated", "target=100.0%, ip=100.0%, ok:4010", path_entry_340_02ae05a16ed8 },
+    { 185, 0xfec4d0c2dccf8472ull, 3823u, "static_validated", "target=100.0%, ip=100.0%, ok:3823", path_entry_185_fec4d0c2dccf },
+    { 189, 0x0474812a78a0c853ull, 3804u, "static_validated", "target=100.0%, ip=100.0%, ok:3804", path_entry_189_0474812a78a0 },
+    { 333, 0x5dba04465e0f3b28ull, 3475u, "static_validated", "target=100.0%, ip=100.0%, ok:3475", path_entry_333_5dba04465e0f },
+    { 64, 0x362f895a05304b24ull, 3435u, "static_validated", "target=100.0%, ip=100.0%, ok:3435", path_entry_064_362f895a0530 },
+    { 258, 0x9273c2ebf377ada8ull, 3418u, "static_validated", "target=100.0%, ip=100.0%, ok:3418", path_entry_258_9273c2ebf377 },
+    { 174, 0x1d005b75b3304463ull, 3318u, "static_validated", "target=100.0%, ip=100.0%, ok:3318", path_entry_174_1d005b75b330 },
+    { 189, 0x8589bd83a0e8cea0ull, 3116u, "static_validated", "target=100.0%, ip=100.0%, ok:3116", path_entry_189_8589bd83a0e8 },
+    { 184, 0xe4bc9d81d7bb0910ull, 3100u, "static_validated", "target=100.0%, ip=100.0%, ok:3100", path_entry_184_e4bc9d81d7bb },
+    { 28, 0x9b3b818dc141b14full, 3051u, "static_validated", "target=100.0%, ip=100.0%, ok:3051", path_entry_028_9b3b818dc141 },
+    { 28, 0xe0fd2755e33377c7ull, 2924u, "static_validated", "target=100.0%, ip=100.0%, ok:2924", path_entry_028_e0fd2755e333 },
+    { 215, 0x93bcd881b4003839ull, 2838u, "static_validated", "target=100.0%, ip=100.0%, ok:2838", path_entry_215_93bcd881b400 },
+    { 114, 0x6d97aa419b6e45b1ull, 2743u, "static_validated", "target=100.0%, ip=100.0%, ok:2743", path_entry_114_6d97aa419b6e },
+    { 64, 0x4db1c9febad343e7ull, 2740u, "static_validated", "target=100.0%, ip=100.0%, ok:2740", path_entry_064_4db1c9febad3 },
+    { 340, 0x2a0ce8aa7d3ecb4eull, 2661u, "static_validated", "target=100.0%, ip=100.0%, ok:2661", path_entry_340_2a0ce8aa7d3e },
+    { 43, 0x6350e9318aa572ffull, 2585u, "static_validated", "target=100.0%, ip=100.0%, ok:2585", path_entry_043_6350e9318aa5 },
+    { 43, 0xb3c385ba08ea674aull, 2558u, "static_validated", "target=100.0%, ip=100.0%, ok:2558", path_entry_043_b3c385ba08ea },
+    { 172, 0x5946e91076802dafull, 2423u, "static_validated", "target=100.0%, ip=100.0%, ok:2423", path_entry_172_5946e9107680 },
+    { 28, 0xa584853ff2ab10f8ull, 2373u, "static_validated", "target=100.0%, ip=100.0%, ok:2373", path_entry_028_a584853ff2ab },
+    { 185, 0x095a648478af979eull, 2349u, "static_validated", "target=100.0%, ip=100.0%, ok:2349", path_entry_185_095a648478af },
+    { 337, 0x70340f3100826d12ull, 2344u, "static_validated", "target=100.0%, ip=100.0%, ok:2344", path_entry_337_70340f310082 },
+    { 168, 0x8eac2b09ff5fd809ull, 2276u, "static_validated", "target=100.0%, ip=100.0%, ok:2276", path_entry_168_8eac2b09ff5f },
+    { 347, 0x98d7cb445c7961a8ull, 2260u, "static_validated", "target=100.0%, ip=100.0%, ok:2260", path_entry_347_98d7cb445c79 },
+    { 172, 0x9f43d3ef44650cf6ull, 2107u, "static_validated", "target=100.0%, ip=100.0%, ok:2107", path_entry_172_9f43d3ef4465 },
+    { 315, 0x856d4d06835c131aull, 2024u, "static_validated", "target=100.0%, ip=100.0%, ok:2024", path_entry_315_856d4d06835c },
+    { 18, 0x30ead7f21142b97eull, 2010u, "static_validated", "target=100.0%, ip=100.0%, ok:2010", path_entry_018_30ead7f21142 },
+    { 305, 0xe9d3813fa05892b0ull, 1981u, "static_validated", "target=100.0%, ip=100.0%, ok:1981", path_entry_305_e9d3813fa058 },
+    { 49, 0x14dc36f04060df7aull, 1844u, "static_validated", "target=100.0%, ip=100.0%, ok:1844", path_entry_049_14dc36f04060 },
+    { 203, 0x4292cfe2955518a7ull, 1771u, "static_validated", "target=100.0%, ip=100.0%, ok:1771", path_entry_203_4292cfe29555 },
+    { 161, 0x0cf4855e16d07afbull, 1767u, "static_validated", "target=100.0%, ip=100.0%, ok:1767", path_entry_161_0cf4855e16d0 },
+    { 297, 0x1438e06c94d04486ull, 1718u, "static_validated", "target=100.0%, ip=100.0%, ok:1718", path_entry_297_1438e06c94d0 },
+    { 168, 0xc62eeb38897cc019ull, 1661u, "static_validated", "target=100.0%, ip=100.0%, ok:1661", path_entry_168_c62eeb38897c },
+    { 66, 0x213fac87c7056b3cull, 1654u, "static_validated", "target=100.0%, ip=100.0%, ok:1654", path_entry_066_213fac87c705 },
+    { 268, 0x0465db1cd6ce279eull, 1618u, "static_validated", "target=100.0%, ip=100.0%, ok:1618", path_entry_268_0465db1cd6ce },
+    { 158, 0xcf24ba4d3b8dd524ull, 1603u, "static_validated", "target=100.0%, ip=100.0%, ok:1603", path_entry_158_cf24ba4d3b8d },
+    { 176, 0xbbe0d482f93ad097ull, 1598u, "static_validated", "target=100.0%, ip=100.0%, ok:1598", path_entry_176_bbe0d482f93a },
+    { 300, 0x833b04476f7a3399ull, 1560u, "static_validated", "target=100.0%, ip=100.0%, ok:1560", path_entry_300_833b04476f7a },
+    { 157, 0x674a4baf101eb4d8ull, 1558u, "static_validated", "target=100.0%, ip=100.0%, ok:1558", path_entry_157_674a4baf101e },
+    { 203, 0x1f7d4c17755b5949ull, 1512u, "static_validated", "target=100.0%, ip=100.0%, ok:1512", path_entry_203_1f7d4c17755b },
+    { 287, 0xbae1d16b43d47f2dull, 1510u, "static_validated", "target=100.0%, ip=100.0%, ok:1510", path_entry_287_bae1d16b43d4 },
+    { 173, 0x45fd438f0ec970b1ull, 1457u, "static_validated", "target=100.0%, ip=100.0%, ok:1457", path_entry_173_45fd438f0ec9 },
+    { 332, 0x074498403375c74bull, 1429u, "static_validated", "target=100.0%, ip=100.0%, ok:1429", path_entry_332_074498403375 },
+    { 114, 0x9062c46ada00e046ull, 1420u, "static_validated", "target=100.0%, ip=100.0%, ok:1420", path_entry_114_9062c46ada00 },
+    { 114, 0x2d4f31d7d7d3afb9ull, 1398u, "static_validated", "target=100.0%, ip=100.0%, ok:1398", path_entry_114_2d4f31d7d7d3 },
+    { 199, 0xa3fd491b93ac1355ull, 1364u, "static_validated", "target=100.0%, ip=100.0%, ok:1364", path_entry_199_a3fd491b93ac },
+    { 108, 0x8877d7eba92eb84bull, 1363u, "static_validated", "target=100.0%, ip=100.0%, ok:1363", path_entry_108_8877d7eba92e },
+    { 243, 0x72733eb95153883eull, 1341u, "static_validated", "target=100.0%, ip=100.0%, ok:1341", path_entry_243_72733eb95153 },
+    { 33, 0x462a88e3c9a1365dull, 1295u, "static_validated", "target=100.0%, ip=100.0%, ok:1295", path_entry_033_462a88e3c9a1 },
+    { 114, 0x102f846cb456dd47ull, 1293u, "static_validated", "target=100.0%, ip=100.0%, ok:1293", path_entry_114_102f846cb456 },
+    { 257, 0x9572ab8966df7a4cull, 1285u, "static_validated", "target=100.0%, ip=100.0%, ok:1285", path_entry_257_9572ab8966df },
+    { 20, 0xc81d765888be54d9ull, 1280u, "static_validated", "target=100.0%, ip=100.0%, ok:1280", path_entry_020_c81d765888be },
+    { 315, 0x6ac4fb503bb44b35ull, 1274u, "static_validated", "target=100.0%, ip=100.0%, ok:1274", path_entry_315_6ac4fb503bb4 },
+    { 160, 0x561db656c124c784ull, 1267u, "static_validated", "target=100.0%, ip=100.0%, ok:1267", path_entry_160_561db656c124 },
+    { 301, 0x10c8c7c12593d729ull, 1239u, "static_validated", "target=100.0%, ip=100.0%, ok:1239", path_entry_301_10c8c7c12593 },
+    { 157, 0x72c0228628af92a9ull, 1227u, "static_validated", "target=100.0%, ip=100.0%, ok:1227", path_entry_157_72c0228628af },
+    { 26, 0x433dde54934b5cb8ull, 1190u, "static_validated", "target=100.0%, ip=100.0%, ok:1190", path_entry_026_433dde54934b },
+    { 198, 0x280c64f01840924full, 1182u, "static_validated", "target=100.0%, ip=100.0%, ok:1182", path_entry_198_280c64f01840 },
+    { 256, 0x1413958a75f2cf9aull, 1176u, "static_validated", "target=100.0%, ip=100.0%, ok:1176", path_entry_256_1413958a75f2 },
+    { 350, 0x4fe792b99d9f1417ull, 1176u, "static_validated", "target=100.0%, ip=100.0%, ok:1176", path_entry_350_4fe792b99d9f },
+    { 123, 0xfdf7985107851946ull, 1153u, "static_validated", "target=100.0%, ip=100.0%, ok:1153", path_entry_123_fdf798510785 },
+    { 346, 0x7b6c336f65e8be9bull, 1140u, "static_validated", "target=100.0%, ip=100.0%, ok:1140", path_entry_346_7b6c336f65e8 },
+    { 287, 0x85b8f11eb2613f99ull, 1102u, "static_validated", "target=100.0%, ip=100.0%, ok:1102", path_entry_287_85b8f11eb261 },
+    { 157, 0xfba811183513b6e0ull, 1073u, "static_validated", "target=100.0%, ip=100.0%, ok:1073", path_entry_157_fba811183513 },
+    { 273, 0xe3b0c44298fc1c14ull, 1072u, "static_validated", "target=100.0%, ip=100.0%, ok:1072", path_entry_273_e3b0c44298fc },
+    { 171, 0x6a4f585c5930d681ull, 1069u, "static_validated", "target=100.0%, ip=100.0%, ok:1069", path_entry_171_6a4f585c5930 },
+    { 220, 0x2b46c944c8ee5aefull, 1037u, "static_validated", "target=100.0%, ip=100.0%, ok:1037", path_entry_220_2b46c944c8ee },
+    { 158, 0xf28d957b796a4608ull, 1029u, "static_validated", "target=100.0%, ip=100.0%, ok:1029", path_entry_158_f28d957b796a },
+    { 157, 0xb6de45798a7e1422ull, 975u, "static_validated", "target=100.0%, ip=100.0%, ok:975", path_entry_157_b6de45798a7e },
+    { 26, 0x4676bd26495ff772ull, 971u, "static_validated", "target=100.0%, ip=100.0%, ok:971", path_entry_026_4676bd26495f },
+    { 268, 0x0fdc3b6a88369fd7ull, 957u, "static_validated", "target=100.0%, ip=100.0%, ok:957", path_entry_268_0fdc3b6a8836 },
+};
+
+static unsigned vm_path_model_count(void) {
+    return (unsigned)(sizeof(k_vm_path_models) / sizeof(k_vm_path_models[0]));
+}
+
+static VMOpResult vm_call_path_handler(uint16_t entry, uint64_t path_key_value, VMState *vm) {
+    switch (entry) {
+    case 18:
+        switch (path_key_value) {
+        case 0x30ead7f21142b97eull: return path_entry_018_30ead7f21142(vm);
+        case 0xbdfe2dc323c2ac6dull: return path_entry_018_bdfe2dc323c2(vm);
+        default: break;
+        }
+        break;
+    case 20:
+        switch (path_key_value) {
+        case 0xc81d765888be54d9ull: return path_entry_020_c81d765888be(vm);
+        default: break;
+        }
+        break;
+    case 26:
+        switch (path_key_value) {
+        case 0x433dde54934b5cb8ull: return path_entry_026_433dde54934b(vm);
+        case 0x4676bd26495ff772ull: return path_entry_026_4676bd26495f(vm);
+        default: break;
+        }
+        break;
+    case 28:
+        switch (path_key_value) {
+        case 0x9b3b818dc141b14full: return path_entry_028_9b3b818dc141(vm);
+        case 0xa584853ff2ab10f8ull: return path_entry_028_a584853ff2ab(vm);
+        case 0xe0fd2755e33377c7ull: return path_entry_028_e0fd2755e333(vm);
+        default: break;
+        }
+        break;
+    case 33:
+        switch (path_key_value) {
+        case 0x462a88e3c9a1365dull: return path_entry_033_462a88e3c9a1(vm);
+        default: break;
+        }
+        break;
+    case 43:
+        switch (path_key_value) {
+        case 0x6350e9318aa572ffull: return path_entry_043_6350e9318aa5(vm);
+        case 0xb3c385ba08ea674aull: return path_entry_043_b3c385ba08ea(vm);
+        default: break;
+        }
+        break;
+    case 49:
+        switch (path_key_value) {
+        case 0x14dc36f04060df7aull: return path_entry_049_14dc36f04060(vm);
+        default: break;
+        }
+        break;
+    case 64:
+        switch (path_key_value) {
+        case 0x362f895a05304b24ull: return path_entry_064_362f895a0530(vm);
+        case 0x4db1c9febad343e7ull: return path_entry_064_4db1c9febad3(vm);
+        default: break;
+        }
+        break;
+    case 66:
+        switch (path_key_value) {
+        case 0x213fac87c7056b3cull: return path_entry_066_213fac87c705(vm);
+        case 0xf47171d373278492ull: return path_entry_066_f47171d37327(vm);
+        default: break;
+        }
+        break;
+    case 108:
+        switch (path_key_value) {
+        case 0x8877d7eba92eb84bull: return path_entry_108_8877d7eba92e(vm);
+        default: break;
+        }
+        break;
+    case 114:
+        switch (path_key_value) {
+        case 0x102f846cb456dd47ull: return path_entry_114_102f846cb456(vm);
+        case 0x2d4f31d7d7d3afb9ull: return path_entry_114_2d4f31d7d7d3(vm);
+        case 0x6d97aa419b6e45b1ull: return path_entry_114_6d97aa419b6e(vm);
+        case 0x9062c46ada00e046ull: return path_entry_114_9062c46ada00(vm);
+        default: break;
+        }
+        break;
+    case 123:
+        switch (path_key_value) {
+        case 0xfdf7985107851946ull: return path_entry_123_fdf798510785(vm);
+        default: break;
+        }
+        break;
+    case 157:
+        switch (path_key_value) {
+        case 0x674a4baf101eb4d8ull: return path_entry_157_674a4baf101e(vm);
+        case 0x72c0228628af92a9ull: return path_entry_157_72c0228628af(vm);
+        case 0xb6de45798a7e1422ull: return path_entry_157_b6de45798a7e(vm);
+        case 0xfba811183513b6e0ull: return path_entry_157_fba811183513(vm);
+        default: break;
+        }
+        break;
+    case 158:
+        switch (path_key_value) {
+        case 0xcf24ba4d3b8dd524ull: return path_entry_158_cf24ba4d3b8d(vm);
+        case 0xf28d957b796a4608ull: return path_entry_158_f28d957b796a(vm);
+        default: break;
+        }
+        break;
+    case 160:
+        switch (path_key_value) {
+        case 0x561db656c124c784ull: return path_entry_160_561db656c124(vm);
+        default: break;
+        }
+        break;
+    case 161:
+        switch (path_key_value) {
+        case 0x0cf4855e16d07afbull: return path_entry_161_0cf4855e16d0(vm);
+        default: break;
+        }
+        break;
+    case 168:
+        switch (path_key_value) {
+        case 0x8eac2b09ff5fd809ull: return path_entry_168_8eac2b09ff5f(vm);
+        case 0xc62eeb38897cc019ull: return path_entry_168_c62eeb38897c(vm);
+        default: break;
+        }
+        break;
+    case 171:
+        switch (path_key_value) {
+        case 0x6a4f585c5930d681ull: return path_entry_171_6a4f585c5930(vm);
+        default: break;
+        }
+        break;
+    case 172:
+        switch (path_key_value) {
+        case 0x5946e91076802dafull: return path_entry_172_5946e9107680(vm);
+        case 0x9f43d3ef44650cf6ull: return path_entry_172_9f43d3ef4465(vm);
+        default: break;
+        }
+        break;
+    case 173:
+        switch (path_key_value) {
+        case 0x45fd438f0ec970b1ull: return path_entry_173_45fd438f0ec9(vm);
+        default: break;
+        }
+        break;
+    case 174:
+        switch (path_key_value) {
+        case 0x1d005b75b3304463ull: return path_entry_174_1d005b75b330(vm);
+        default: break;
+        }
+        break;
+    case 176:
+        switch (path_key_value) {
+        case 0xbbe0d482f93ad097ull: return path_entry_176_bbe0d482f93a(vm);
+        default: break;
+        }
+        break;
+    case 184:
+        switch (path_key_value) {
+        case 0xe4bc9d81d7bb0910ull: return path_entry_184_e4bc9d81d7bb(vm);
+        default: break;
+        }
+        break;
+    case 185:
+        switch (path_key_value) {
+        case 0x095a648478af979eull: return path_entry_185_095a648478af(vm);
+        case 0xfec4d0c2dccf8472ull: return path_entry_185_fec4d0c2dccf(vm);
+        default: break;
+        }
+        break;
+    case 189:
+        switch (path_key_value) {
+        case 0x0474812a78a0c853ull: return path_entry_189_0474812a78a0(vm);
+        case 0x8589bd83a0e8cea0ull: return path_entry_189_8589bd83a0e8(vm);
+        default: break;
+        }
+        break;
+    case 196:
+        switch (path_key_value) {
+        case 0x44a20faf942e72a8ull: return path_entry_196_44a20faf942e(vm);
+        default: break;
+        }
+        break;
+    case 198:
+        switch (path_key_value) {
+        case 0x280c64f01840924full: return path_entry_198_280c64f01840(vm);
+        default: break;
+        }
+        break;
+    case 199:
+        switch (path_key_value) {
+        case 0x454bb50b5a012434ull: return path_entry_199_454bb50b5a01(vm);
+        case 0xa3fd491b93ac1355ull: return path_entry_199_a3fd491b93ac(vm);
+        default: break;
+        }
+        break;
+    case 203:
+        switch (path_key_value) {
+        case 0x1f7d4c17755b5949ull: return path_entry_203_1f7d4c17755b(vm);
+        case 0x4292cfe2955518a7ull: return path_entry_203_4292cfe29555(vm);
+        default: break;
+        }
+        break;
+    case 215:
+        switch (path_key_value) {
+        case 0x3c30635855970371ull: return path_entry_215_3c3063585597(vm);
+        case 0x93bcd881b4003839ull: return path_entry_215_93bcd881b400(vm);
+        default: break;
+        }
+        break;
+    case 220:
+        switch (path_key_value) {
+        case 0x2b46c944c8ee5aefull: return path_entry_220_2b46c944c8ee(vm);
+        default: break;
+        }
+        break;
+    case 243:
+        switch (path_key_value) {
+        case 0x72733eb95153883eull: return path_entry_243_72733eb95153(vm);
+        default: break;
+        }
+        break;
+    case 256:
+        switch (path_key_value) {
+        case 0x1413958a75f2cf9aull: return path_entry_256_1413958a75f2(vm);
+        default: break;
+        }
+        break;
+    case 257:
+        switch (path_key_value) {
+        case 0x9572ab8966df7a4cull: return path_entry_257_9572ab8966df(vm);
+        default: break;
+        }
+        break;
+    case 258:
+        switch (path_key_value) {
+        case 0x4be73f077fec7fc7ull: return path_entry_258_4be73f077fec(vm);
+        case 0x9273c2ebf377ada8ull: return path_entry_258_9273c2ebf377(vm);
+        default: break;
+        }
+        break;
+    case 268:
+        switch (path_key_value) {
+        case 0x0465db1cd6ce279eull: return path_entry_268_0465db1cd6ce(vm);
+        case 0x0fdc3b6a88369fd7ull: return path_entry_268_0fdc3b6a8836(vm);
+        default: break;
+        }
+        break;
+    case 273:
+        switch (path_key_value) {
+        case 0xe3b0c44298fc1c14ull: return path_entry_273_e3b0c44298fc(vm);
+        default: break;
+        }
+        break;
+    case 287:
+        switch (path_key_value) {
+        case 0x85b8f11eb2613f99ull: return path_entry_287_85b8f11eb261(vm);
+        case 0xbae1d16b43d47f2dull: return path_entry_287_bae1d16b43d4(vm);
+        default: break;
+        }
+        break;
+    case 297:
+        switch (path_key_value) {
+        case 0x1438e06c94d04486ull: return path_entry_297_1438e06c94d0(vm);
+        case 0x6091fdb2f82dc3fbull: return path_entry_297_6091fdb2f82d(vm);
+        default: break;
+        }
+        break;
+    case 300:
+        switch (path_key_value) {
+        case 0x833b04476f7a3399ull: return path_entry_300_833b04476f7a(vm);
+        default: break;
+        }
+        break;
+    case 301:
+        switch (path_key_value) {
+        case 0x10c8c7c12593d729ull: return path_entry_301_10c8c7c12593(vm);
+        default: break;
+        }
+        break;
+    case 305:
+        switch (path_key_value) {
+        case 0xe9d3813fa05892b0ull: return path_entry_305_e9d3813fa058(vm);
+        default: break;
+        }
+        break;
+    case 307:
+        switch (path_key_value) {
+        case 0x53af157f8d5a451eull: return path_entry_307_53af157f8d5a(vm);
+        default: break;
+        }
+        break;
+    case 315:
+        switch (path_key_value) {
+        case 0x6ac4fb503bb44b35ull: return path_entry_315_6ac4fb503bb4(vm);
+        case 0x856d4d06835c131aull: return path_entry_315_856d4d06835c(vm);
+        default: break;
+        }
+        break;
+    case 332:
+        switch (path_key_value) {
+        case 0x074498403375c74bull: return path_entry_332_074498403375(vm);
+        default: break;
+        }
+        break;
+    case 333:
+        switch (path_key_value) {
+        case 0x5dba04465e0f3b28ull: return path_entry_333_5dba04465e0f(vm);
+        default: break;
+        }
+        break;
+    case 337:
+        switch (path_key_value) {
+        case 0x70340f3100826d12ull: return path_entry_337_70340f310082(vm);
+        case 0xc8492588f16e2cbbull: return path_entry_337_c8492588f16e(vm);
+        default: break;
+        }
+        break;
+    case 340:
+        switch (path_key_value) {
+        case 0x02ae05a16ed89aaeull: return path_entry_340_02ae05a16ed8(vm);
+        case 0x2a0ce8aa7d3ecb4eull: return path_entry_340_2a0ce8aa7d3e(vm);
+        default: break;
+        }
+        break;
+    case 346:
+        switch (path_key_value) {
+        case 0x7b6c336f65e8be9bull: return path_entry_346_7b6c336f65e8(vm);
+        default: break;
+        }
+        break;
+    case 347:
+        switch (path_key_value) {
+        case 0x98d7cb445c7961a8ull: return path_entry_347_98d7cb445c79(vm);
+        case 0xcb333c548cc440f3ull: return path_entry_347_cb333c548cc4(vm);
+        default: break;
+        }
+        break;
+    case 350:
+        switch (path_key_value) {
+        case 0x4fe792b99d9f1417ull: return path_entry_350_4fe792b99d9f(vm);
+        default: break;
+        }
+        break;
+    default: break;
+    }
+    return (VMOpResult){ .next_entry = -1, .slot = 0xffffffffu };
+}
