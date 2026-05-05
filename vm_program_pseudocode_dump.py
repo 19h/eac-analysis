@@ -272,7 +272,7 @@ def emit_synthetic_edge(edge, synthetic_spans, dynamic_stitches, transfer_probes
         focused_bridge = select_focused_direct_bridge(target_vm_ip, focused_direct_trace_audits, block_by_start)
         if focused_bridge:
             emit_focused_direct_bridge(focused_bridge)
-            return
+            return True
         if chain:
             print(f"    /* hidden chain resolves synthetic reentry at {normalize_vm_ip(chain.get('hidden_pred_end_vm_ip', ''))}. */")
             return
@@ -333,6 +333,10 @@ def emit_synthetic_edge(edge, synthetic_spans, dynamic_stitches, transfer_probes
     emit_live_in_role_comments(target_vm_ip, live_in_roles, final_tail_site_probes, args)
     emit_live_in_reentry_comments(target_vm_ip, live_in_reentries, args)
     emit_allstatic_reentry_comments(target_vm_ip, allstatic_reentries, args)
+    focused_bridge = select_focused_direct_bridge(target_vm_ip, focused_direct_trace_audits, block_by_start)
+    if focused_bridge:
+        emit_focused_direct_bridge(focused_bridge)
+        return True
     if source is not None:
         print(f"    r = {op_name(source)}(vm);")
     if chain:
@@ -613,24 +617,25 @@ def emit_block(block, rows, edge, synthetic_spans, dynamic_stitches, transfer_pr
             else:
                 print("    /* target block is outside this selected sketch. */")
         elif edge_kind == "covered_synthetic_fallthrough":
-            emit_synthetic_edge(edge, synthetic_spans, dynamic_stitches, transfer_probes, symbolic_successors, hidden_chains, residual_audits, concrete_state_audits, live_context_audits, table_read_diagnostics, table_memory_probes, sampled_control_correlations, focused_direct_trace_audits, live_in_roles, live_in_reentries, allstatic_reentries, final_tail_site_probes, args, block_by_start)
-            target_block, target_vm_ip = synthetic_successor(edge, synthetic_spans, hidden_chains, block_by_start)
-            if target_block is not None:
-                print(f"    /* synthetic successor after lifted delta: prog_{c_block_name(target_block)} @ 0x{target_vm_ip:x}; */")
-                print(f"    prog_{c_block_name(target_block)}(vm, vm_ip);")
-            elif target_vm_ip is not None:
-                print(f"    /* synthetic successor 0x{target_vm_ip:x} is outside this selected sketch. */")
-                bridge = select_observed_reentry_bridge(
-                    edge.get("target_vm_ip", ""),
-                    f"0x{target_vm_ip:x}",
-                    dynamic_stitches,
-                    live_in_reentries,
-                    allstatic_reentries,
-                    block_by_start,
-                )
-                if bridge:
-                    emit_observed_reentry_bridge(bridge)
-                print(f"    vm_unresolved_synthetic_tail(vm, 0x{target_vm_ip:x});")
+            terminal_handled = emit_synthetic_edge(edge, synthetic_spans, dynamic_stitches, transfer_probes, symbolic_successors, hidden_chains, residual_audits, concrete_state_audits, live_context_audits, table_read_diagnostics, table_memory_probes, sampled_control_correlations, focused_direct_trace_audits, live_in_roles, live_in_reentries, allstatic_reentries, final_tail_site_probes, args, block_by_start)
+            if not terminal_handled:
+                target_block, target_vm_ip = synthetic_successor(edge, synthetic_spans, hidden_chains, block_by_start)
+                if target_block is not None:
+                    print(f"    /* synthetic successor after lifted delta: prog_{c_block_name(target_block)} @ 0x{target_vm_ip:x}; */")
+                    print(f"    prog_{c_block_name(target_block)}(vm, vm_ip);")
+                elif target_vm_ip is not None:
+                    print(f"    /* synthetic successor 0x{target_vm_ip:x} is outside this selected sketch. */")
+                    bridge = select_observed_reentry_bridge(
+                        edge.get("target_vm_ip", ""),
+                        f"0x{target_vm_ip:x}",
+                        dynamic_stitches,
+                        live_in_reentries,
+                        allstatic_reentries,
+                        block_by_start,
+                    )
+                    if bridge:
+                        emit_observed_reentry_bridge(bridge)
+                    print(f"    vm_unresolved_synthetic_tail(vm, 0x{target_vm_ip:x});")
     print("    (void)r;")
     print("    (void)next_entry;")
     print("    (void)vm_ip;")
