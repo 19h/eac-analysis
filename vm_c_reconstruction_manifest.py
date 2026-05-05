@@ -82,6 +82,8 @@ ARTIFACTS = [
     ("validated_handlers_retdec_batch04", TRACE_DIR / "vm_validated_handlers_retdec_batch04.c"),
     ("validated_handlers_retdec_batch05", TRACE_DIR / "vm_validated_handlers_retdec_batch05.c"),
     ("validated_handlers_retdec_batch06", TRACE_DIR / "vm_validated_handlers_retdec_batch06.c"),
+    ("handler_retdec_index_tsv", TRACE_DIR / "vm_handler_retdec_index.tsv"),
+    ("handler_retdec_index_md", TRACE_DIR / "vm_handler_retdec_index.md"),
     ("synthetic_gap_live_snapshot_transfer_probe_tsv", TRACE_DIR / "vm_synthetic_gap_live_snapshot_transfer_probe.tsv"),
     ("synthetic_gap_live_snapshot_transfer_probe_md", TRACE_DIR / "vm_synthetic_gap_live_snapshot_transfer_probe.md"),
     ("synthetic_gap_live_table_evidence_tsv", TRACE_DIR / "vm_synthetic_gap_live_table_evidence.tsv"),
@@ -183,6 +185,7 @@ def c_shape_metrics(rows):
         validated_handlers_retdec_all,
     ]
     handler_retdec_sidecars_all = "\n".join(handler_retdec_sidecars)
+    handler_retdec_index = read_tsv(TRACE_DIR / "vm_handler_retdec_index.tsv")
 
     add(rows, "c_shape", "handler_functions", count(r"^static VMOpResult op_entry_\d{3}\(VMState \*vm\) \{", handlers),
         "All-entry handler/operator C functions.")
@@ -292,6 +295,15 @@ def c_shape_metrics(rows):
     add(rows, "c_shape", "handler_retdec_sidecar_ranges",
         count(r"^// Address range: 0x[0-9a-f]+ - 0x[0-9a-f]+$", handler_retdec_sidecars_all),
         "All native address ranges emitted by RetDec across handler sidecars.")
+    add(rows, "c_shape", "handler_retdec_index_rows",
+        len(handler_retdec_index),
+        "Per-dispatch-entry index rows tying handler entries to native RetDec sidecar functions.")
+    add(rows, "c_shape", "handler_retdec_index_entries",
+        len({row.get("entry", "") for row in handler_retdec_index if row.get("entry", "")}),
+        "Distinct VM dispatch entries present in the handler RetDec sidecar index.")
+    add(rows, "c_shape", "handler_retdec_index_rows_with_functions",
+        sum(1 for row in handler_retdec_index if int(row.get("function_count") or "0") > 0),
+        "Handler RetDec index rows with at least one overlapping native C function.")
     add(rows, "c_shape", "path_specialized_functions", count(r"^static VMOpResult path_entry_\d{3}_[0-9a-f]+\(VMState \*vm\) \{", path_handlers),
         "Validated concrete branch-path C functions.")
     add(rows, "c_shape", "direct_top_block_defs", count(r"^static void bb_\d{4}\(VMState \*vm\) \{", direct_top),
