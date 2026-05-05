@@ -187,18 +187,23 @@ static void parse_file(const FileSpec *spec) {
         char *range_line = strstr(line, "*   0x");
         uint64_t start = 0;
         uint64_t stop = 0;
+        unsigned long long parsed_start = 0;
+        unsigned long long parsed_stop = 0;
         int entry = -1;
         char rest[MAX_LINE] = {0};
         if (range_line &&
             sscanf(range_line, "*   0x%llx-0x%llx entry=%d%4095[^\n]",
-                   (unsigned long long *)&start, (unsigned long long *)&stop,
+                   &parsed_start, &parsed_stop,
                    &entry, rest) >= 3) {
+            start = (uint64_t)parsed_start;
+            stop = (uint64_t)parsed_stop;
             add_handler_range(spec, start, stop, entry, rest);
             continue;
         }
         if (sscanf(line, "// Address range: 0x%llx - 0x%llx",
-                   (unsigned long long *)&pending_start,
-                   (unsigned long long *)&pending_stop) == 2) {
+                   &parsed_start, &parsed_stop) == 2) {
+            pending_start = (uint64_t)parsed_start;
+            pending_stop = (uint64_t)parsed_stop;
             pending_func = true;
             continue;
         }
