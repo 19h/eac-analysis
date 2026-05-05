@@ -170,7 +170,7 @@ def c_shape_metrics(rows):
     add(rows, "c_shape", "program_full_allstatic_reentry_comments", count(r"all-static reentry: source=", program_full),
         "All-static reentry rows carried into the full program sketch.")
     add(rows, "c_shape", "program_full_observed_reentry_bridge_sites", count(r"observed reentry bridge @", program_full),
-        "Disabled-by-default observed next-hook bridge snippets emitted beside unresolved live-in synthetic successors.")
+        "Disabled-by-default observed next-hook bridge snippets emitted beside dynamically stitched unresolved synthetic successors.")
     add(rows, "c_shape", "program_full_observed_reentry_bridge_macros", count(r"^#if VM_ENABLE_OBSERVED_REENTRY_BRIDGES$", program_full),
         "Disabled bridge bodies guarded by VM_ENABLE_OBSERVED_REENTRY_BRIDGES in the full program sketch.")
     add(rows, "c_shape", "bundle_block_defs", count(r"^static void prog_bb_\d{4}\(VMState \*vm, uint64_t vm_ip\) \{", bundle),
@@ -212,7 +212,7 @@ def c_shape_metrics(rows):
     add(rows, "c_shape", "bundle_allstatic_reentry_comments", count(r"all-static reentry: source=", bundle),
         "All-static reentry rows carried into the combined source bundle.")
     add(rows, "c_shape", "bundle_observed_reentry_bridge_sites", count(r"observed reentry bridge @", bundle),
-        "Disabled-by-default observed next-hook bridge snippets emitted beside unresolved live-in synthetic successors inside the combined source bundle.")
+        "Disabled-by-default observed next-hook bridge snippets emitted beside dynamically stitched unresolved synthetic successors inside the combined source bundle.")
     add(rows, "c_shape", "bundle_observed_reentry_bridge_macros", count(r"^#if VM_ENABLE_OBSERVED_REENTRY_BRIDGES$", bundle),
         "Disabled bridge bodies guarded by VM_ENABLE_OBSERVED_REENTRY_BRIDGES inside the combined source bundle.")
 
