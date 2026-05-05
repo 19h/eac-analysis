@@ -73,6 +73,7 @@ static VMOpResult op_entry_001(VMState *vm) {
     uint8_t byte0 = vm->byte;
     /* entry=1, native=0x78835, class=unobserved_static, events=0, shape=-, delta=- */
     /* native IP reads: 0x78850:u16_6,0x78875:u16_4,0x788a2:u32_0,0x78900:u32_2,0x789bd:byte0,0x78b8c:u16_0 */
+    /* static-only queue: rank=145, tier=tier4_native_call_or_ret_side_effect, sidecar=vm_unobserved_handlers_retdec_batch05.c, funcs=function_78835,function_788e2,function_78c79,function_78c7f, span=1103, action=audit_call_ret_side_effects_before_inlining */
     /* decode signature: IPADV+0x0;RIP+0x0/2:movzx;RF+0x170/4:sub;WF+0x170/4:and;TDYN;RTdyn/8:mov;WF+0xa/8:add */
     /* dispatch skeleton: RF+0xa/8:mov;RF+0x10f/8:mov;IPADV+0x0;RIP+0x0/2:movzx;RF+0x170/4:sub;WF+0x170/4:and;TDYN;RTdyn/8:mov;WF+0xa/8:add;JMP:r12 */
     /* vm->state = state0 & U32(vm->ip + 0x2u) + flags0 - 0x7a70ea42u + 0x68fd81fau | 0x5792765au ^ flags0 - 0x7a70ea42u + 0x68fd81fau | 0x5792765au & state0 & U32(vm->ip + 0x2u) + flags0 - 0x7a70ea42u + 0x68fd81fau | 0x5792765au - 0x53332262u + state0 & U32(vm->ip + 0x2u) + flags0 - 0x7a70ea42u + 0x68fd81fau | 0x5792765au + 0x18181cd5u - flags0 - 0x7a70ea42u + 0x68fd81fau ...; */
@@ -91,6 +92,7 @@ static VMOpResult op_entry_002(VMState *vm) {
     uint8_t byte0 = vm->byte;
     /* entry=2, native=0x788e2, class=unobserved_static, events=0, shape=-, delta=- */
     /* native IP reads: 0x78900:u32_2,0x789bd:byte0,0x78b8c:u16_0 */
+    /* static-only queue: rank=100, tier=tier3_multi_function_shared_range, sidecar=vm_unobserved_handlers_retdec_batch04.c, funcs=function_788e2,function_78c79,function_78c7f, span=930, action=recover_shared_chunks_or split_by_entry */
     /* decode signature: IPADV+0x0;RIP+0x0/2:movzx;RF+0x170/4:sub;WF+0x170/4:and;TDYN;RTdyn/8:mov;WF+0xa/8:add */
     /* dispatch skeleton: RF+0xa/8:mov;RF+0x10f/8:mov;IPADV+0x0;RIP+0x0/2:movzx;RF+0x170/4:sub;WF+0x170/4:and;TDYN;RTdyn/8:mov;WF+0xa/8:add;JMP:r12 */
     /* vm->state = state0 & U32(vm->ip + 0x2u) + flags0 - 0x7a70ea42u + 0x68fd81fau | 0x5792765au ^ flags0 - 0x7a70ea42u + 0x68fd81fau | 0x5792765au & state0 & U32(vm->ip + 0x2u) + flags0 - 0x7a70ea42u + 0x68fd81fau | 0x5792765au - 0x53332262u + state0 & U32(vm->ip + 0x2u) + flags0 - 0x7a70ea42u + 0x68fd81fau | 0x5792765au + 0x18181cd5u - flags0 - 0x7a70ea42u + 0x68fd81fau ...; */
@@ -130,6 +132,7 @@ static VMOpResult op_entry_004(VMState *vm) {
     uint8_t byte0 = vm->byte;
     /* entry=4, native=0x792f8, class=unobserved_static, events=0, shape=-, delta=- */
     /* native IP reads: 0x79364:byte0,0x793c6:byte0,0x793e8:byte0,0x7941d:byte0,0x794c2:u32_0,0x795e1:u16_4,0x79626:u16_4 - state0 + 0x3b3bbe74 - 0x3732e4cc + 0x154265a3 & 0x2bd560b0 ^ 0x3aea6ba6 + flags0 - state0 + 0x3b3bbe74 - 0x3732e4cc + 0x1f59164b - 0x3bcedb21 ^ u32_0 + state... */
+    /* static-only queue: rank=91, tier=tier3_multi_function_shared_range, sidecar=vm_unobserved_handlers_retdec_batch03.c, funcs=function_792f8,function_79677, span=903, action=recover_shared_chunks_or split_by_entry */
     /* decode signature: IPADV+0x4;RIP+0x4/2:movzx;RF+0x170/4:sub;WF+0x170/4:or;TDYN;RTdyn/8:mov;WF+0xa/8:add */
     /* dispatch skeleton: RF+0x10f/8:mov;RF+0xa/8:mov;IPADV+0x4;RIP+0x4/2:movzx;RF+0x170/4:sub;WF+0x170/4:or;TDYN;RTdyn/8:mov;WF+0xa/8:add;JMP:r10 */
     /* vm->state = state0 + 0x3b3bbe74u - 0x3732e4ccu + 0x154265a3u & 0x2bd560b0u ^ 0x3aea6ba6u + flags0 - state0 + 0x3b3bbe74u - 0x3732e4ccu + 0x1f59164bu - 0x3bcedb21u ^ U32(vm->ip + 0x0u) + state0 + 0x3b3bbe74u - 0x3732e4ccu + 0x154265a3u & 0x2bd560b0u ^ 0x3aea6ba6u + flags0 - state0 + 0x3b3bbe74u - 0x3732e4ccu + 0x1f59164bu - 0x3bcedb21u ^ flags0 - state0 + 0x3b3bbe74u ...; */
@@ -165,6 +168,7 @@ static VMOpResult op_entry_006(VMState *vm) {
     uint8_t byte0 = vm->byte;
     /* entry=6, native=0x7971e, class=unobserved_static, events=0, shape=-, delta=- */
     /* native IP reads: 0x7977d:u16_3,0x79782:u16_0,0x797ea:u16_5,0x79871:u16_3,0x7989f:u16_0,0x79935:u16_7 */
+    /* static-only queue: rank=26, tier=tier1_single_function_medium_static_replay, sidecar=vm_unobserved_handlers_retdec_batch02.c, funcs=function_7971e, span=691, action=inline_retdec_function_after_operand_rewrite */
     /* decode signature: IPADV+0x7;RIP+0x7/2:movzx;RF+0x170/4:xor;WF+0x170/4:add;TDYN;RTdyn/8:mov;WF+0xa/8:add */
     /* dispatch skeleton: RF+0xa/8:mov;IPADV+0x7;RIP+0x7/2:movzx;RF+0x10f/8:mov;RF+0x170/4:xor;WF+0x170/4:add;TDYN;RTdyn/8:mov;WF+0xa/8:add;JMP:r14 */
     vm->state = state0 + U16(vm->ip + 0x7u) ^ state0 + 0x17cd41c1u;
@@ -182,6 +186,7 @@ static VMOpResult op_entry_007(VMState *vm) {
     uint8_t byte0 = vm->byte;
     /* entry=7, native=0x799c7, class=unobserved_static, events=0, shape=-, delta=- */
     /* native IP reads: 0x799e2:u16_2,0x79a08:u16_0,0x79b22:u16_3,0x79b90:byte0,0x79ca9:b2,0x79ce5:u16_3,0x79d32:u16_0 */
+    /* static-only queue: rank=138, tier=tier4_native_call_or_ret_side_effect, sidecar=vm_unobserved_handlers_retdec_batch04.c, funcs=function_799c7,function_79a3d,function_79da7, span=1002, action=audit_call_ret_side_effects_before_inlining */
     /* decode signature: IPADV+0x0;RIP+0x0/2:movzx;TDYN;RTdyn/8:mov;WF+0xa/8:add */
     /* dispatch skeleton: RF+0x10f/8:mov;RF+0xa/8:mov;IPADV+0x0;RIP+0x0/2:movzx;TDYN;RTdyn/8:mov;WF+0xa/8:add;JMP:rax */
     vm->state = state0 | flags0;
@@ -199,6 +204,7 @@ static VMOpResult op_entry_008(VMState *vm) {
     uint8_t byte0 = vm->byte;
     /* entry=8, native=0x79a3d, class=unobserved_static, events=0, shape=-, delta=- */
     /* native IP reads: 0x79b22:u16_3,0x79b90:byte0,0x79ca9:b2,0x79ce5:u16_3,0x79d32:u16_0 */
+    /* static-only queue: rank=89, tier=tier3_multi_function_shared_range, sidecar=vm_unobserved_handlers_retdec_batch03.c, funcs=function_79a3d,function_79da7, span=884, action=recover_shared_chunks_or split_by_entry */
     /* decode signature: IPADV+0x0;RIP+0x0/2:movzx;TDYN;RTdyn/8:mov;WF+0xa/8:add */
     /* dispatch skeleton: RF+0x10f/8:mov;RF+0xa/8:mov;IPADV+0x0;RIP+0x0/2:movzx;TDYN;RTdyn/8:mov;WF+0xa/8:add;JMP:rax */
     vm->state = state0 | flags0;
@@ -233,6 +239,7 @@ static VMOpResult op_entry_010(VMState *vm) {
     uint8_t byte0 = vm->byte;
     /* entry=10, native=0x7a04f, class=unobserved_static, events=0, shape=-, delta=- */
     /* native IP reads: 0x7a058:byte0,0x7a065:byte0,0x7a20d:byte0,0x7a324:b4,0x7a354:u16_2,0x7a43a:u16_0 */
+    /* static-only queue: rank=103, tier=tier3_multi_function_shared_range, sidecar=vm_unobserved_handlers_retdec_batch05.c, funcs=function_7a04f,function_7a4e3, span=1170, action=recover_shared_chunks_or split_by_entry */
     /* decode signature: IPADV+0x0;RIP+0x0/2:movzx;RF+0x170/4:xor;WF+0x170/4:sub;TDYN;RTdyn/8:mov;WF+0xa/8:add */
     /* dispatch skeleton: RF+0xa/8:mov;RF+0x10f/8:mov;IPADV+0x0;RIP+0x0/2:movzx;RF+0x170/4:xor;WF+0x170/4:sub;TDYN;RTdyn/8:mov;WF+0xa/8:add;JMP:rdx */
     vm->state = state0 & flags0 ^ flags0 + state0 & flags0 + 0x564636d2u & 0x1a79a963u ^ 0x36174357u + 0x4123783cu - U16(vm->ip + 0x0u) ^ state0 & flags0 ^ flags0 + state0 & flags0 + 0x564636d2u & 0x1a79a963u ^ 0x36174357u + 0x4123783cu - 0x19471e33u;
@@ -251,6 +258,7 @@ static VMOpResult op_entry_011(VMState *vm) {
     uint8_t byte0 = vm->byte;
     /* entry=11, native=0x7a4d8, class=unobserved_static, events=0, shape=-, delta=- */
     /* native IP reads: 0x7a533:u16_6,0x7a575:b8,0x7ab62:u32_0,0x7ab8d:u16_4,0x7abdd:u16_9,0x7ac3f:u16_11 */
+    /* static-only queue: rank=150, tier=tier4_native_call_or_ret_side_effect, sidecar=vm_unobserved_handlers_retdec_batch06.c, funcs=function_7a4d8, span=2061, action=audit_call_ret_side_effects_before_inlining */
     /* decode signature: IPADV+0xb;RIP+0xb/2:movzx;RF+0x170/4:add;WF+0x170/4:add;TDYN;RTdyn/8:mov;WF+0xa/8:add */
     /* dispatch skeleton: RF+0x10f/8:mov;RF+0xa/8:mov;IPADV+0xb;RIP+0xb/2:movzx;RF+0x170/4:add;WF+0x170/4:add;TDYN;RTdyn/8:mov;WF+0xa/8:add;JMP:rsi */
     vm->state = state0 + U16(vm->ip + 0xbu) + state0 ^ 0x4ecbeff6u;
@@ -268,6 +276,7 @@ static VMOpResult op_entry_012(VMState *vm) {
     uint8_t byte0 = vm->byte;
     /* entry=12, native=0x7acd8, class=unobserved_static, events=0, shape=-, delta=- */
     /* native IP reads: 0x7ad3c:u16_4,0x7ad46:u16_6,0x7adc1:u16_2,0x7ae68:u16_0 */
+    /* static-only queue: rank=14, tier=tier1_single_function_medium_static_replay, sidecar=vm_unobserved_handlers_retdec_batch01.c, funcs=function_7acd8, span=541, action=inline_retdec_function_after_operand_rewrite */
     /* decode signature: IPADV+0x0;RIP+0x0/2:movzx;RF+0x170/4:sub;WF+0x170/4:or;TDYN;RTdyn/8:mov;WF+0xa/8:add */
     /* dispatch skeleton: RF+0x10f/8:mov;RF+0xa/8:mov;IPADV+0x0;RIP+0x0/2:movzx;RF+0x170/4:sub;WF+0x170/4:or;TDYN;RTdyn/8:mov;WF+0xa/8:add;JMP:rax */
     vm->state = state0 | flags0 | U16(vm->ip + 0x0u) - state0 | flags0 + 0x61ec39cdu;
@@ -306,6 +315,7 @@ static VMOpResult op_entry_014(VMState *vm) {
     uint8_t byte0 = vm->byte;
     /* entry=14, native=0x7b3be, class=unobserved_static, events=0, shape=-, delta=- */
     /* native IP reads: 0x7b543:b4,0x7b59d:u16_2,0x7b655:u16_0 */
+    /* static-only queue: rank=32, tier=tier1_single_function_medium_static_replay, sidecar=vm_unobserved_handlers_retdec_batch02.c, funcs=function_7b3be, span=794, action=inline_retdec_function_after_operand_rewrite */
     /* decode signature: IPADV+0x0;RIP+0x0/2:movzx;WF+0x170/4:xor;TDYN;RTdyn/8:mov;WF+0xa/8:add */
     /* dispatch skeleton: RF+0x10f/8:mov;RF+0xa/8:mov;IPADV+0x0;RIP+0x0/2:movzx;WF+0x170/4:xor;TDYN;RTdyn/8:mov;WF+0xa/8:add;JMP:rbx;RF+0xa/8:mov */
     vm->state = state0 & flags0 ^ U16(vm->ip + 0x0u) - 0x7584d103u;
@@ -323,6 +333,7 @@ static VMOpResult op_entry_015(VMState *vm) {
     uint8_t byte0 = vm->byte;
     /* entry=15, native=0x7b6cb, class=unobserved_static, events=0, shape=-, delta=- */
     /* native IP reads: 0x7b6df:u32_0,0x7b732:u32_0,0x7b961:b0,0x7b9bc:u16_3,0x7ba42:u16_1 */
+    /* static-only queue: rank=131, tier=tier4_native_call_or_ret_side_effect, sidecar=vm_unobserved_handlers_retdec_batch05.c, funcs=function_7b6cb,function_7b77c, span=1067, action=audit_call_ret_side_effects_before_inlining */
     /* decode signature: IPADV+0x1;RIP+0x1/2:movzx;WF+0x170/4:xor;TDYN;RTdyn/8:mov;WF+0xa/8:add */
     /* dispatch skeleton: RF+0xa/8:mov;IPADV+0x1;RIP+0x1/2:movzx;RF+0x10f/8:mov;WF+0x170/4:xor;TDYN;RTdyn/8:mov;WF+0xa/8:add;JMP:rdx;RF+0x81/8:mov */
     vm->state = state0 ^ flags0 ^ U16(vm->ip + 0x1u) - 0x699ad46au;
@@ -340,6 +351,7 @@ static VMOpResult op_entry_016(VMState *vm) {
     uint8_t byte0 = vm->byte;
     /* entry=16, native=0x7b77c, class=unobserved_static, events=0, shape=-, delta=- */
     /* native IP reads: 0x7b961:b0,0x7b9bc:u16_3,0x7ba42:u16_1 */
+    /* static-only queue: rank=43, tier=tier1_single_function_medium_static_replay, sidecar=vm_unobserved_handlers_retdec_batch03.c, funcs=function_7b77c, span=890, action=inline_retdec_function_after_operand_rewrite */
     /* decode signature: IPADV+0x1;RIP+0x1/2:movzx;WF+0x170/4:xor;TDYN;RTdyn/8:mov;WF+0xa/8:add */
     /* dispatch skeleton: RF+0xa/8:mov;IPADV+0x1;RIP+0x1/2:movzx;RF+0x10f/8:mov;WF+0x170/4:xor;TDYN;RTdyn/8:mov;WF+0xa/8:add;JMP:rdx;RF+0x81/8:mov */
     vm->state = state0 ^ flags0 ^ U16(vm->ip + 0x1u) - 0x699ad46au;
@@ -398,6 +410,7 @@ static VMOpResult op_entry_019(VMState *vm) {
     uint8_t byte0 = vm->byte;
     /* entry=19, native=0x7c30a, class=unobserved_static, events=0, shape=-, delta=- */
     /* native IP reads: 0x7c361:u16_4,0x7c365:u16_2,0x7c3da:u16_9,0x7c45a:u16_2,0x7c47a:u16_4,0x7c50c:b8,0x7c54b:u16_0,0x7c5b4:u16_6 */
+    /* static-only queue: rank=81, tier=tier3_multi_function_shared_range, sidecar=vm_unobserved_handlers_retdec_batch02.c, funcs=function_7c30a,function_7c630, span=814, action=recover_shared_chunks_or split_by_entry */
     /* decode signature: IPADV+0x6;RIP+0x6/2:movzx;RF+0x170/4:sub;WF+0x170/4:and;TDYN;RTdyn/8:mov;WF+0xa/8:add */
     /* dispatch skeleton: RF+0xa/8:mov;RF+0x10f/8:mov;IPADV+0x6;RIP+0x6/2:movzx;RF+0x170/4:sub;WF+0x170/4:and;TDYN;RTdyn/8:mov;WF+0xa/8:add;JMP:r12 */
     vm->state = state0 & U16(vm->ip + 0x6u) - state0 + 0x7d53d38du;
@@ -435,6 +448,7 @@ static VMOpResult op_entry_021(VMState *vm) {
     uint8_t byte0 = vm->byte;
     /* entry=21, native=0x7ca98, class=unobserved_static, events=0, shape=-, delta=- */
     /* native IP reads: 0x7caaa:u32_0,0x7cafb:u32_0,0x7cb91:byte0,0x7ccbf:byte0,0x7cd3f:byte0,0x7ce38:byte0,0x7ce66:b2,0x7ce92:u16_0,0x7cf10:u16_3 */
+    /* static-only queue: rank=148, tier=tier4_native_call_or_ret_side_effect, sidecar=vm_unobserved_handlers_retdec_batch05.c, funcs=function_7ca98,function_7cb43,function_7d009,function_7d00c, span=1404, action=audit_call_ret_side_effects_before_inlining */
     /* decode signature: IPADV+0x3;RIP+0x3/2:movzx;RF+0x170/4:add;WF+0x170/4:xor;TDYN;RTdyn/8:mov;WF+0xa/8:add */
     /* dispatch skeleton: RF+0xa/8:mov;IPADV+0x3;RIP+0x3/2:movzx;RF+0x10f/8:mov;RF+0x170/4:add;WF+0x170/4:xor;TDYN;RTdyn/8:mov;WF+0xa/8:add;JMP:r14;RF+0x71/8:sub */
     vm->state = state0 - flags0 ^ 0x293ef0b0u + 0xf4dbe5au & 0x75af46bu | flags0 ^ 0x293ef0b0u + 0xf4dbe5au ^ U16(vm->ip + 0x3u) + state0 - flags0 ^ 0x293ef0b0u + 0xf4dbe5au & 0x75af46bu | flags0 ^ 0x293ef0b0u + 0xf4dbe5au;
@@ -453,6 +467,7 @@ static VMOpResult op_entry_022(VMState *vm) {
     uint8_t byte0 = vm->byte;
     /* entry=22, native=0x7cb43, class=unobserved_static, events=0, shape=-, delta=- */
     /* native IP reads: 0x7cb91:byte0,0x7ccbf:byte0,0x7cd3f:byte0,0x7ce38:byte0,0x7ce66:b2,0x7ce92:u16_0,0x7cf10:u16_3 */
+    /* static-only queue: rank=108, tier=tier3_multi_function_shared_range, sidecar=vm_unobserved_handlers_retdec_batch05.c, funcs=function_7cb43,function_7d009,function_7d00c, span=1233, action=recover_shared_chunks_or split_by_entry */
     /* decode signature: IPADV+0x3;RIP+0x3/2:movzx;RF+0x170/4:add;WF+0x170/4:xor;TDYN;RTdyn/8:mov;WF+0xa/8:add */
     /* dispatch skeleton: RF+0xa/8:mov;IPADV+0x3;RIP+0x3/2:movzx;RF+0x10f/8:mov;RF+0x170/4:add;WF+0x170/4:xor;TDYN;RTdyn/8:mov;WF+0xa/8:add;JMP:r14;RF+0x71/8:sub */
     vm->state = state0 - flags0 ^ 0x293ef0b0u + 0xf4dbe5au & 0x75af46bu | flags0 ^ 0x293ef0b0u + 0xf4dbe5au ^ U16(vm->ip + 0x3u) + state0 - flags0 ^ 0x293ef0b0u + 0xf4dbe5au & 0x75af46bu | flags0 ^ 0x293ef0b0u + 0xf4dbe5au;
@@ -471,6 +486,7 @@ static VMOpResult op_entry_023(VMState *vm) {
     uint8_t byte0 = vm->byte;
     /* entry=23, native=0x7d007, class=unobserved_static, events=0, shape=-, delta=- */
     /* native IP reads: 0x7d2a2:byte0,0x7d2b9:byte0,0x7d402:b2,0x7d44f:u16_0,0x7d501:u16_3 */
+    /* static-only queue: rank=115, tier=tier5_large_static_replay, sidecar=vm_unobserved_handlers_retdec_batch06.c, funcs=function_7d007, span=1521, action=defer_until_small_static_handlers_are_inlined */
     /* decode signature: IPADV+0x3;RIP+0x3/2:movzx;RF+0x170/4:add;WF+0x170/4:sub;TDYN;RTdyn/8:mov;WF+0xa/8:add */
     /* dispatch skeleton: RF+0xa/8:mov;IPADV+0x3;RF+0x10f/8:mov;RIP+0x3/2:movzx;RF+0x170/4:add;WF+0x170/4:sub;TDYN;RTdyn/8:mov;WF+0xa/8:add;JMP:r9 */
     vm->state = state0 ^ flags0 & 0x3758c69bu | 0x21171a0cu | 0x76974dc1u - flags0 & 0x3758c69bu + 0x69611da6u - U16(vm->ip + 0x3u) + state0 ^ flags0 & 0x3758c69bu | 0x21171a0cu | 0x76974dc1u - flags0 & 0x3758c69bu + 0x69611da6u ^ 0x6fa319ceu;
@@ -489,6 +505,7 @@ static VMOpResult op_entry_024(VMState *vm) {
     uint8_t byte0 = vm->byte;
     /* entry=24, native=0x7d5ec, class=unobserved_static, events=0, shape=-, delta=- */
     /* native IP reads: 0x7d6a0:u16_0,0x7d6ba:u16_4,0x7d713:u16_9,0x7d7bb:u16_0,0x7d7cc:u16_4,0x7d84d:b6,0x7d888:u16_7,0x7d88f:u16_7 + (Ptr(kind='frame', off=0)),0x7d8da:u16_2,0x7d91b:u16_2 ^ state0 + 0x68420565 & 0xffff */
+    /* static-only queue: rank=86, tier=tier3_multi_function_shared_range, sidecar=vm_unobserved_handlers_retdec_batch03.c, funcs=function_7d5ec,function_7d945, span=866, action=recover_shared_chunks_or split_by_entry */
     /* decode signature: IPADV+0x2;RIP+0x2/2:movzx;RF+0x170/4:xor;TDYN;RTdyn/8:mov;WF+0xa/8:add */
     /* dispatch skeleton: RF+0xa/8:mov;IPADV+0x2;RIP+0x2/2:movzx;RF+0x10f/8:mov;RF+0x170/4:xor;TDYN;RTdyn/8:mov;WF+0xa/8:add;JMP:rcx */
     vm->state = state0;
@@ -507,6 +524,7 @@ static VMOpResult op_entry_025(VMState *vm) {
     uint8_t byte0 = vm->byte;
     /* entry=25, native=0x7d941, class=unobserved_static, events=0, shape=-, delta=- */
     /* native IP reads: 0x7d9b0:u16_0,0x7d9ba:u16_7,0x7d9e8:u16_9,0x7da2e:u16_7,0x7da3f:u16_0,0x7daa4:b6,0x7daea:u16_2,0x7db49:u16_4 */
+    /* static-only queue: rank=22, tier=tier1_single_function_medium_static_replay, sidecar=vm_unobserved_handlers_retdec_batch01.c, funcs=function_7d941, span=647, action=inline_retdec_function_after_operand_rewrite */
     /* decode signature: IPADV+0x4;RIP+0x4/2:movzx;RF+0x170/4:add;WF+0x170/4:xor;TDYN;RTdyn/8:mov;WF+0xa/8:add;RF+0x170/4:mov */
     /* dispatch skeleton: RF+0xa/8:mov;RF+0x10f/8:mov;IPADV+0x4;RIP+0x4/2:movzx;RF+0x170/4:add;WF+0x170/4:xor;TDYN;RTdyn/8:mov;WF+0xa/8:add;JMP:r12;RF+0x170/4:mov */
     vm->state = state0 ^ U16(vm->ip + 0x4u) + state0;
@@ -545,6 +563,7 @@ static VMOpResult op_entry_027(VMState *vm) {
     uint8_t byte0 = vm->byte;
     /* entry=27, native=0x7dfbf, class=unobserved_static, events=0, shape=-, delta=- */
     /* native IP reads: 0x7e001:u16_3,0x7e04c:b2,0x7e082:u16_3 + (Ptr(kind='frame', off=0)),0x7e2fe:u16_0,0x7e35d:u16_0 - state0 */
+    /* static-only queue: rank=96, tier=tier3_multi_function_shared_range, sidecar=vm_unobserved_handlers_retdec_batch04.c, funcs=function_7dfbf,function_7e392, span=989, action=recover_shared_chunks_or split_by_entry */
     /* decode signature: IPADV+0x0;RIP+0x0/2:movzx;RF+0x170/4:sub;WF+0x170/4:and;TDYN;RTdyn/8:mov;WF+0xa/8:add;RF+0x170/4:mov */
     /* dispatch skeleton: RF+0x10f/8:mov;RF+0xa/8:mov;IPADV+0x0;RIP+0x0/2:movzx;RF+0x170/4:sub;WF+0x170/4:and;TDYN;RTdyn/8:mov;WF+0xa/8:add;JMP:r10;RF+0x170/4:mov */
     vm->state = state0 & U16(vm->ip + 0x0u) - state0;
@@ -583,6 +602,7 @@ static VMOpResult op_entry_029(VMState *vm) {
     uint8_t byte0 = vm->byte;
     /* entry=29, native=0x7e7cd, class=unobserved_static, events=0, shape=-, delta=- */
     /* native IP reads: 0x7e7e8:u32_2,0x7e813:u16_0,0x7e853:byte0,0x7e965:byte0,0x7ea01:u16_2,0x7ec01:u16_0 */
+    /* static-only queue: rank=144, tier=tier4_native_call_or_ret_side_effect, sidecar=vm_unobserved_handlers_retdec_batch05.c, funcs=function_7e7cd,function_7e849,function_7ecda, span=1298, action=audit_call_ret_side_effects_before_inlining */
     /* decode signature: IPADV+0x0;RIP+0x0/2:movzx;RF+0x170/4:xor;TDYN;RTdyn/8:mov;WF+0xa/8:add */
     /* dispatch skeleton: RF+0x10f/8:mov;RF+0xa/8:mov;IPADV+0x0;RIP+0x0/2:movzx;RF+0x170/4:xor;TDYN;RTdyn/8:mov;WF+0xa/8:add;JMP:rdi */
     vm->state = state0 | flags0 & 0x614d4b17u + 0x64fd160cu;
@@ -641,6 +661,7 @@ static VMOpResult op_entry_032(VMState *vm) {
     uint8_t byte0 = vm->byte;
     /* entry=32, native=0x7efa8, class=unobserved_static, events=0, shape=-, delta=- */
     /* native IP reads: 0x7effd:u16_6,0x7f047:b8,0x7f652:u32_0,0x7f67d:u16_4,0x7f6cc:u16_9,0x7f733:u16_11 */
+    /* static-only queue: rank=155, tier=tier4_native_call_or_ret_side_effect, sidecar=vm_unobserved_handlers_retdec_batch06.c, funcs=function_7efa8,function_7f7c6,function_7f7c9, span=2089, action=audit_call_ret_side_effects_before_inlining */
     /* decode signature: IPADV+0xb;RIP+0xb/2:movzx;WF+0x170/4:sub;TDYN;RTdyn/8:mov;WF+0xa/8:add;RF+0x170/4:mov */
     /* dispatch skeleton: RF+0x10f/8:mov;RF+0xa/8:mov;IPADV+0xb;RIP+0xb/2:movzx;WF+0x170/4:sub;TDYN;RTdyn/8:mov;WF+0xa/8:add;JMP:r8;RF+0x170/4:mov */
     vm->state = state0 - U16(vm->ip + 0xbu);
@@ -679,6 +700,7 @@ static VMOpResult op_entry_034(VMState *vm) {
     uint8_t byte0 = vm->byte;
     /* entry=34, native=0x7fba3, class=unobserved_static, events=0, shape=-, delta=- */
     /* native IP reads: 0x7fbd2:u16_1,0x7fbe9:u16_5,0x7fc16:u16_7,0x7fc65:u16_1,0x7fc6c:u16_5,0x7fcda:u16_3 */
+    /* static-only queue: rank=56, tier=tier2_small_shared_range_split, sidecar=vm_unobserved_handlers_retdec_batch00.c, funcs=function_7fba3,function_7fd52, span=439, action=split_overlapping_retdec_chunks_then_inline */
     /* decode signature: IPADV+0x3;RIP+0x3/2:movzx;RF+0x170/4:add;WF+0x170/4:add;TDYN;RTdyn/8:mov;WF+0xa/8:add */
     /* dispatch skeleton: RF+0xa/8:mov;IPADV+0x3;RIP+0x3/2:movzx;RF+0x10f/8:mov;RF+0x170/4:add;WF+0x170/4:add;TDYN;RTdyn/8:mov;WF+0xa/8:add;JMP:r13 */
     vm->state = state0 - 0x3a52e622u + U16(vm->ip + 0x3u) + state0 - 0x3a52e622u ^ 0x459b6b23u;
@@ -758,6 +780,7 @@ static VMOpResult op_entry_038(VMState *vm) {
     uint8_t byte0 = vm->byte;
     /* entry=38, native=0x80d79, class=unobserved_static, events=0, shape=-, delta=- */
     /* native IP reads: 0x80d9d:u16_0,0x80deb:u16_6,0x80e11:u16_4,0x80e8e:u16_2 */
+    /* static-only queue: rank=8, tier=tier0_single_function_small_static_replay, sidecar=vm_unobserved_handlers_retdec_batch00.c, funcs=function_80d79, span=394, action=inline_retdec_function_into_handler_model */
     /* tier0 static model: rank=8, retdec=function_80d79, slot_status=decode_candidate_slot, ip_advance=8 */
     /* tier0 effects: conditional flags rewrite; byte store through frame[s16(ip+0)]; pointer step by frame[s16(ip+4)] sign; state = slot_expr; ip += 8 */
     /* decode signature: IPADV+0x2;RIP+0x2/2:movzx;RF+0x170/4:sub;WF+0x170/4:add;TDYN;RTdyn/8:mov;WF+0xa/8:add */
@@ -781,6 +804,7 @@ static VMOpResult op_entry_039(VMState *vm) {
     uint8_t byte0 = vm->byte;
     /* entry=39, native=0x80ef6, class=unobserved_static, events=0, shape=-, delta=- */
     /* native IP reads: 0x80f34:u16_4,0x80f77:u16_8,0x80fa0:u16_0,0x80fe8:u16_8,0x80ff3:u16_4,0x81058:b10,0x81098:u16_2,0x810f4:u16_6 */
+    /* static-only queue: rank=65, tier=tier2_small_shared_range_split, sidecar=vm_unobserved_handlers_retdec_batch01.c, funcs=function_80ef6,function_81162, span=628, action=split_overlapping_retdec_chunks_then_inline */
     /* decode signature: IPADV+0x6;RIP+0x6/2:movzx;WF+0x170/4:or;TDYN;RTdyn/8:mov;WF+0xa/8:add;RF+0x170/4:mov */
     /* dispatch skeleton: RF+0x10f/8:mov;RF+0xa/8:mov;IPADV+0x6;RIP+0x6/2:movzx;WF+0x170/4:or;TDYN;RTdyn/8:mov;WF+0xa/8:add;JMP:r9;RF+0x170/4:mov */
     vm->state = state0 | U16(vm->ip + 0x6u);
@@ -820,6 +844,7 @@ static VMOpResult op_entry_041(VMState *vm) {
     uint8_t byte0 = vm->byte;
     /* entry=41, native=0x8129d, class=unobserved_static, events=0, shape=-, delta=- */
     /* native IP reads: 0x8138b:byte0,0x81432:byte0,0x81469:b2,0x814a0:u16_3,0x81555:u16_0 */
+    /* static-only queue: rank=40, tier=tier1_single_function_medium_static_replay, sidecar=vm_unobserved_handlers_retdec_batch03.c, funcs=function_8129d, span=858, action=inline_retdec_function_after_operand_rewrite */
     /* decode signature: IPADV+0x0;RIP+0x0/2:movzx;RF+0x170/4:xor;WF+0x170/4:or;TDYN;RTdyn/8:mov;WF+0xa/8:add */
     /* dispatch skeleton: RF+0x10f/8:mov;RF+0xa/8:mov;IPADV+0x0;RIP+0x0/2:movzx;RF+0x170/4:xor;WF+0x170/4:or;TDYN;RTdyn/8:mov;WF+0xa/8:add;JMP:r15 */
     vm->state = state0 + flags0 | U16(vm->ip + 0x0u) ^ state0 + flags0 - 0x7c7cd82fu;
@@ -879,6 +904,7 @@ static VMOpResult op_entry_044(VMState *vm) {
     uint8_t byte0 = vm->byte;
     /* entry=44, native=0x81b7f, class=unobserved_static, events=0, shape=-, delta=- */
     /* native IP reads: 0x81bcc:u16_3,0x81c2f:b0,0x81eb0:u16_1 */
+    /* static-only queue: rank=51, tier=tier1_single_function_medium_static_replay, sidecar=vm_unobserved_handlers_retdec_batch04.c, funcs=function_81b7f, span=956, action=inline_retdec_function_after_operand_rewrite */
     /* decode signature: IPADV+0x1;RIP+0x1/2:movzx;RF+0x170/4:sub;WF+0x170/4:or;TDYN;RTdyn/8:mov;WF+0xa/8:add */
     /* dispatch skeleton: RF+0x10f/8:mov;RF+0xa/8:mov;IPADV+0x1;RIP+0x1/2:movzx;RF+0x170/4:sub;WF+0x170/4:or;TDYN;RTdyn/8:mov;WF+0xa/8:add;JMP:rbx */
     vm->state = state0 | U16(vm->ip + 0x1u) - state0;
@@ -896,6 +922,7 @@ static VMOpResult op_entry_045(VMState *vm) {
     uint8_t byte0 = vm->byte;
     /* entry=45, native=0x81f2e, class=unobserved_static, events=0, shape=-, delta=- */
     /* native IP reads: 0x81f56:u16_3,0x81f60:u16_5,0x81f95:u16_7,0x81fe0:u16_3,0x81fee:u16_5,0x8206c:u16_0 */
+    /* static-only queue: rank=57, tier=tier2_small_shared_range_split, sidecar=vm_unobserved_handlers_retdec_batch00.c, funcs=function_81f2e,function_820e1, span=445, action=split_overlapping_retdec_chunks_then_inline */
     /* decode signature: IPADV+0x0;RIP+0x0/2:movzx;WF+0x170/4:sub;TDYN;RTdyn/8:mov;WF+0xa/8:add */
     /* dispatch skeleton: RF+0x10f/8:mov;RF+0xa/8:mov;IPADV+0x0;RIP+0x0/2:movzx;WF+0x170/4:sub;TDYN;RTdyn/8:mov;WF+0xa/8:add;JMP:rcx */
     vm->state = state0 - U16(vm->ip + 0x0u) - 0x6050ae66u;
@@ -913,6 +940,7 @@ static VMOpResult op_entry_046(VMState *vm) {
     uint8_t byte0 = vm->byte;
     /* entry=46, native=0x820e1, class=unobserved_static, events=0, shape=-, delta=- */
     /* native IP reads: 0x8213f:u16_0,0x8216e:u16_2,0x821aa:u16_4,0x82238:u16_6 */
+    /* static-only queue: rank=60, tier=tier2_small_shared_range_split, sidecar=vm_unobserved_handlers_retdec_batch00.c, funcs=function_820e1,function_822bc, span=488, action=split_overlapping_retdec_chunks_then_inline */
     /* decode signature: IPADV+0x6;RIP+0x6/2:movzx;RF+0x170/4:add;WF+0x170/4:or;TDYN;RTdyn/8:mov;WF+0xa/8:add */
     /* dispatch skeleton: RF+0xa/8:mov;RF+0x10f/8:mov;IPADV+0x6;RIP+0x6/2:movzx;RF+0x170/4:add;WF+0x170/4:or;TDYN;RTdyn/8:mov;WF+0xa/8:add;JMP:r9 */
     vm->state = state0 + 0x6aceff9au | U16(vm->ip + 0x6u) + state0 + 0x6aceff9au + 0x368668ddu;
@@ -930,6 +958,7 @@ static VMOpResult op_entry_047(VMState *vm) {
     uint8_t byte0 = vm->byte;
     /* entry=47, native=0x822bc, class=unobserved_static, events=0, shape=-, delta=- */
     /* native IP reads: 0x822e8:u16_7,0x822fd:u16_3,0x82329:u16_1,0x8236f:u16_3,0x82380:u16_7,0x82416:u16_5 */
+    /* static-only queue: rank=11, tier=tier0_single_function_small_static_replay, sidecar=vm_unobserved_handlers_retdec_batch00.c, funcs=function_822bc, span=456, action=inline_retdec_function_into_handler_model */
     /* tier0 static model: rank=11, retdec=function_822bc, slot_status=final_state_candidate_slot, ip_advance=9 */
     /* tier0 effects: qword copy through frame[s16(ip+3)] from frame[s16(ip+7)]; paired pointer step by frame[s16(ip+1)]/frame[0x199] sign; state = s16(ip+5); ip += 9 */
     /* decode signature: IPADV+0x5;RIP+0x5/2:movzx;RF+0x170/4:xor;WF+0x170/4:xor;TDYN;RTdyn/8:mov;WF+0xa/8:add */
@@ -1011,6 +1040,7 @@ static VMOpResult op_entry_051(VMState *vm) {
     uint8_t byte0 = vm->byte;
     /* entry=51, native=0x83061, class=unobserved_static, events=0, shape=-, delta=- */
     /* native IP reads: 0x83115:u16_9,0x83120:u16_2,0x83199:u16_0,0x8322c:u16_9,0x8323e:u16_2,0x832e5:b4,0x8330f:u16_5,0x83363:u16_7 */
+    /* static-only queue: rank=88, tier=tier3_multi_function_shared_range, sidecar=vm_unobserved_handlers_retdec_batch03.c, funcs=function_83061,function_833cc, span=883, action=recover_shared_chunks_or split_by_entry */
     /* decode signature: IPADV+0x7;RIP+0x7/2:movzx;RF+0x170/4:sub;WF+0x170/4:sub;TDYN;RTdyn/8:mov;WF+0xa/8:add */
     /* dispatch skeleton: RF+0xa/8:mov;IPADV+0x7;RIP+0x7/2:movzx;RF+0x10f/8:mov;RF+0x170/4:sub;WF+0x170/4:sub;TDYN;RTdyn/8:mov;WF+0xa/8:add;JMP:rdx */
     vm->state = state0 ^ 0x167c9a49u - U16(vm->ip + 0x7u) - state0 ^ 0x167c9a49u ^ 0x1217a3f5u;
@@ -1049,6 +1079,7 @@ static VMOpResult op_entry_053(VMState *vm) {
     uint8_t byte0 = vm->byte;
     /* entry=53, native=0x8371d, class=unobserved_static, events=0, shape=-, delta=- */
     /* native IP reads: 0x8372f:u32_0,0x83780:u32_0,0x838d0:u16_3,0x83936:byte0,0x83a1e:b2,0x83a66:u16_3,0x83ad2:u16_0 */
+    /* static-only queue: rank=132, tier=tier4_native_call_or_ret_side_effect, sidecar=vm_unobserved_handlers_retdec_batch05.c, funcs=function_8371d,function_837cb, span=1072, action=audit_call_ret_side_effects_before_inlining */
     /* decode signature: IPADV+0x0;RIP+0x0/2:movzx;RF+0x170/4:xor;TDYN;RTdyn/8:mov;WF+0xa/8:add */
     /* dispatch skeleton: RF+0x10f/8:mov;RF+0xa/8:mov;IPADV+0x0;RIP+0x0/2:movzx;RF+0x170/4:xor;TDYN;RTdyn/8:mov;WF+0xa/8:add;JMP:r12 */
     vm->state = state0 & flags0 - 0x68b4ad2fu;
@@ -1086,6 +1117,7 @@ static VMOpResult op_entry_055(VMState *vm) {
     uint8_t byte0 = vm->byte;
     /* entry=55, native=0x83b40, class=unobserved_static, events=0, shape=-, delta=- */
     /* native IP reads: 0x83b57:byte0,0x83bea:u16_0,0x83c5d:byte0,0x83d3b:b4,0x83d7e:u16_0,0x83deb:u16_2 */
+    /* static-only queue: rank=37, tier=tier1_single_function_medium_static_replay, sidecar=vm_unobserved_handlers_retdec_batch03.c, funcs=function_83b40, span=831, action=inline_retdec_function_after_operand_rewrite */
     /* decode signature: IPADV+0x2;RIP+0x2/2:movzx;RF+0x170/4:xor;WF+0x170/4:or;TDYN;RTdyn/8:mov;WF+0xa/8:add */
     /* dispatch skeleton: RF+0x10f/8:mov;RF+0xa/8:mov;IPADV+0x2;RIP+0x2/2:movzx;RF+0x170/4:xor;WF+0x170/4:or;TDYN;RTdyn/8:mov;WF+0xa/8:add;JMP:r9 */
     vm->state = state0 | U16(vm->ip + 0x2u) ^ state0;
@@ -1123,6 +1155,7 @@ static VMOpResult op_entry_057(VMState *vm) {
     uint8_t byte0 = vm->byte;
     /* entry=57, native=0x841f9, class=unobserved_static, events=0, shape=-, delta=- */
     /* native IP reads: 0x8421b:u16_2,0x84243:u16_0 */
+    /* static-only queue: rank=1, tier=tier0_single_function_small_static_replay, sidecar=vm_unobserved_handlers_retdec_batch00.c, funcs=function_841f9, span=157, action=inline_retdec_function_into_handler_model */
     /* tier0 static model: rank=1, retdec=function_841f9, slot_status=retdec_state_slot, ip_advance=4 */
     /* tier0 effects: frame[u16(ip+2)] = frame[0xa1]; state = slot_expr; ip += 4 */
     /* decode signature: IPADV+0x0;RIP+0x0/2:movzx;RF+0x170/4:xor;WF+0x170/4:sub;TDYN;RTdyn/8:mov;WF+0xa/8:add */
@@ -1145,6 +1178,7 @@ static VMOpResult op_entry_058(VMState *vm) {
     uint8_t byte0 = vm->byte;
     /* entry=58, native=0x8428c, class=unobserved_static, events=0, shape=-, delta=- */
     /* native IP reads: 0x842a7:u16_2,0x842cc:u16_0,0x8432d:u16_8,0x8433b:u16_2,0x84378:u16_4,0x843bf:u16_2,0x843d1:u16_8,0x84470:b10,0x844b4:u16_0,0x844f6:u16_6 */
+    /* static-only queue: rank=124, tier=tier4_native_call_or_ret_side_effect, sidecar=vm_unobserved_handlers_retdec_batch02.c, funcs=function_8428c,function_84302, span=791, action=audit_call_ret_side_effects_before_inlining */
     /* decode signature: IPADV+0x6;RIP+0x6/2:movzx;WF+0x170/4:and;TDYN;RTdyn/8:mov;WF+0xa/8:add */
     /* dispatch skeleton: RF+0xa/8:mov;IPADV+0x6;RIP+0x6/2:movzx;RF+0x10f/8:mov;WF+0x170/4:and;TDYN;RTdyn/8:mov;WF+0xa/8:add;JMP:r11 */
     vm->state = state0 & U16(vm->ip + 0x6u) - 0x26d85c20u;
@@ -1162,6 +1196,7 @@ static VMOpResult op_entry_059(VMState *vm) {
     uint8_t byte0 = vm->byte;
     /* entry=59, native=0x84302, class=unobserved_static, events=0, shape=-, delta=- */
     /* native IP reads: 0x8432d:u16_8,0x8433b:u16_2,0x84378:u16_4,0x843bf:u16_2,0x843d1:u16_8,0x84470:b10,0x844b4:u16_0,0x844f6:u16_6 */
+    /* static-only queue: rank=25, tier=tier1_single_function_medium_static_replay, sidecar=vm_unobserved_handlers_retdec_batch02.c, funcs=function_84302, span=673, action=inline_retdec_function_after_operand_rewrite */
     /* decode signature: IPADV+0x6;RIP+0x6/2:movzx;WF+0x170/4:and;TDYN;RTdyn/8:mov;WF+0xa/8:add */
     /* dispatch skeleton: RF+0xa/8:mov;IPADV+0x6;RIP+0x6/2:movzx;RF+0x10f/8:mov;WF+0x170/4:and;TDYN;RTdyn/8:mov;WF+0xa/8:add;JMP:r11 */
     vm->state = state0 & U16(vm->ip + 0x6u) - 0x26d85c20u;
@@ -1179,6 +1214,7 @@ static VMOpResult op_entry_060(VMState *vm) {
     uint8_t byte0 = vm->byte;
     /* entry=60, native=0x84596, class=unobserved_static, events=0, shape=-, delta=- */
     /* native IP reads: 0x845c8:u16_3,0x845d2:u16_0,0x84619:u16_7,0x8465f:u16_3,0x84670:u16_0,0x846fa:u16_5 */
+    /* static-only queue: rank=58, tier=tier2_small_shared_range_split, sidecar=vm_unobserved_handlers_retdec_batch00.c, funcs=function_84596,function_84764, span=474, action=split_overlapping_retdec_chunks_then_inline */
     /* decode signature: IPADV+0x5;RIP+0x5/2:movzx;RF+0x170/4:xor;WF+0x170/4:and;TDYN;RTdyn/8:mov;WF+0xa/8:add */
     /* dispatch skeleton: RF+0x10f/8:mov;RF+0xa/8:mov;IPADV+0x5;RIP+0x5/2:movzx;RF+0x170/4:xor;WF+0x170/4:and;TDYN;RTdyn/8:mov;WF+0xa/8:add;JMP:rdx */
     vm->state = state0 | 0x6dbd49a4u & U16(vm->ip + 0x5u) ^ state0 | 0x6dbd49a4u - 0x4424226au;
@@ -1196,6 +1232,7 @@ static VMOpResult op_entry_061(VMState *vm) {
     uint8_t byte0 = vm->byte;
     /* entry=61, native=0x84762, class=unobserved_static, events=0, shape=-, delta=- */
     /* native IP reads: 0x847aa:u16_3,0x847d3:byte0,0x847f4:u16_0,0x8485e:u16_9,0x848d9:u16_0,0x8490e:u16_3,0x84993:b2,0x849bf:u16_7,0x84a1e:u16_5 */
+    /* static-only queue: rank=38, tier=tier1_single_function_medium_static_replay, sidecar=vm_unobserved_handlers_retdec_batch03.c, funcs=function_84762, span=843, action=inline_retdec_function_after_operand_rewrite */
     /* decode signature: IPADV+0x5;RIP+0x5/2:movzx;RF+0x170/4:sub;WF+0x170/4:sub;TDYN;RTdyn/8:mov;WF+0xa/8:add */
     /* dispatch skeleton: RF+0xa/8:mov;IPADV+0x5;RIP+0x5/2:movzx;RF+0x10f/8:mov;RF+0x170/4:sub;WF+0x170/4:sub;TDYN;RTdyn/8:mov;WF+0xa/8:add;JMP:r8 */
     vm->state = state0 - U16(vm->ip + 0x5u) - state0 + 0x326db6ecu;
@@ -1235,6 +1272,7 @@ static VMOpResult op_entry_063(VMState *vm) {
     uint8_t byte0 = vm->byte;
     /* entry=63, native=0x84e1d, class=unobserved_static, events=0, shape=-, delta=- */
     /* native IP reads: 0x84e52:u16_0,0x84e56:u16_4,0x84e89:u16_7,0x84ed3:u16_4,0x84ee1:u16_0,0x84f38:b6,0x84f86:u16_9,0x84ff3:u16_2 */
+    /* static-only queue: rank=19, tier=tier1_single_function_medium_static_replay, sidecar=vm_unobserved_handlers_retdec_batch01.c, funcs=function_84e1d, span=584, action=inline_retdec_function_after_operand_rewrite */
     /* decode signature: IPADV+0x2;RIP+0x2/2:movzx;RF+0x170/4:sub;WF+0x170/4:add;TDYN;RTdyn/8:mov;WF+0xa/8:add */
     /* dispatch skeleton: RF+0xa/8:mov;RF+0x10f/8:mov;IPADV+0x2;RIP+0x2/2:movzx;RF+0x170/4:sub;WF+0x170/4:add;TDYN;RTdyn/8:mov;WF+0xa/8:add;JMP:r9;RF+0x194/1:mov */
     vm->state = state0 + U16(vm->ip + 0x2u) - state0 ^ 0x14083b5au;
@@ -1313,6 +1351,7 @@ static VMOpResult op_entry_067(VMState *vm) {
     uint8_t byte0 = vm->byte;
     /* entry=67, native=0x859fc, class=unobserved_static, events=0, shape=-, delta=- */
     /* native IP reads: 0x85a60:u16_4,0x85a75:u16_6,0x85aa1:u16_0,0x85b1c:u16_2,0x85b67:u16_2 + state0 | 0x26d4dee7 | flags0 - flags0 - 0x7138da2d & 0xffff */
+    /* static-only queue: rank=9, tier=tier0_single_function_small_static_replay, sidecar=vm_unobserved_handlers_retdec_batch00.c, funcs=function_859fc, span=409, action=inline_retdec_function_into_handler_model */
     /* tier0 static model: rank=9, retdec=function_859fc, slot_status=retdec_table_slot, ip_advance=8 */
     /* tier0 effects: dword copy through frame[s16(ip+6)] to frame[s16(ip+4)]; pointer step by frame[s16(ip+0)] sign; state = v11 | v10; ip += 8 */
     /* decode signature: IPADV+0x2;RIP+0x2/2:movzx;RF+0x170/4:add;WF+0x170/4:or;TDYN;RTdyn/8:mov;WF+0xa/8:add */
@@ -1335,6 +1374,7 @@ static VMOpResult op_entry_068(VMState *vm) {
     uint8_t byte0 = vm->byte;
     /* entry=68, native=0x85b89, class=unobserved_static, events=0, shape=-, delta=- */
     /* native IP reads: 0x85c6b:u16_3,0x85cdb:byte0,0x85e11:b2,0x85e58:u16_3,0x85e86:u16_3 + (Ptr(kind='frame', off=0)) & 0x400,0x85eb3:u16_0 */
+    /* static-only queue: rank=49, tier=tier1_single_function_medium_static_replay, sidecar=vm_unobserved_handlers_retdec_batch04.c, funcs=function_85b89, span=936, action=inline_retdec_function_after_operand_rewrite */
     /* decode signature: IPADV+0x0;RIP+0x0/2:movzx;RF+0x170/4:xor;WF+0x170/4:xor;TDYN;RTdyn/8:mov;WF+0xa/8:add */
     /* dispatch skeleton: RF+0xa/8:mov;RF+0x10f/8:mov;IPADV+0x0;RIP+0x0/2:movzx;RF+0x170/4:xor;WF+0x170/4:xor;TDYN;RTdyn/8:mov;WF+0xa/8:add;JMP:rsi;RF+0xa/8:mov */
     vm->state = state0 ^ U16(vm->ip + 0x0u) ^ state0 + 0x72639e4eu;
@@ -1391,6 +1431,7 @@ static VMOpResult op_entry_071(VMState *vm) {
     uint8_t byte0 = vm->byte;
     /* entry=71, native=0x86766, class=unobserved_static, events=0, shape=-, delta=- */
     /* native IP reads: 0x867a4:u16_4,0x867af:u16_6,0x867d8:u16_0,0x86846:u16_2 */
+    /* static-only queue: rank=4, tier=tier0_single_function_small_static_replay, sidecar=vm_unobserved_handlers_retdec_batch00.c, funcs=function_86766, span=353, action=inline_retdec_function_into_handler_model */
     /* tier0 static model: rank=4, retdec=function_86766, slot_status=decode_candidate_slot, ip_advance=8 */
     /* tier0 effects: byte copy through frame[s16(ip+4)] to frame[u16(ip+6)]; pointer step by frame[s16(ip+0)] sign; ip += 8 */
     /* decode signature: IPADV+0x2;RIP+0x2/2:movzx;TDYN;RTdyn/8:mov;WF+0xa/8:add */
@@ -1413,6 +1454,7 @@ static VMOpResult op_entry_072(VMState *vm) {
     uint8_t byte0 = vm->byte;
     /* entry=72, native=0x868bd, class=unobserved_static, events=0, shape=-, delta=- */
     /* native IP reads: 0x868f2:u16_9,0x8691e:u16_3,0x8696f:u16_7,0x869e8:u16_3,0x86a0d:u16_9,0x86aa0:b2,0x86ade:u16_5,0x86b58:u16_0 */
+    /* static-only queue: rank=35, tier=tier1_single_function_medium_static_replay, sidecar=vm_unobserved_handlers_retdec_batch03.c, funcs=function_868bd, span=819, action=inline_retdec_function_after_operand_rewrite */
     /* decode signature: IPADV+0x0;RIP+0x0/2:movzx;RF+0x170/4:xor;WF+0x170/4:sub;TDYN;RTdyn/8:mov;WF+0xa/8:add */
     /* dispatch skeleton: RF+0x10f/8:mov;RF+0xa/8:mov;IPADV+0x0;RIP+0x0/2:movzx;RF+0x170/4:xor;WF+0x170/4:sub;TDYN;RTdyn/8:mov;WF+0xa/8:add;JMP:rdx */
     vm->state = state0 & 0x1cdfcc1du - U16(vm->ip + 0x0u) ^ state0 & 0x1cdfcc1du + 0x17395727u;
@@ -1430,6 +1472,7 @@ static VMOpResult op_entry_073(VMState *vm) {
     uint8_t byte0 = vm->byte;
     /* entry=73, native=0x86be4, class=unobserved_static, events=0, shape=-, delta=- */
     /* native IP reads: 0x86c11:u16_4,0x86c2c:u16_6,0x86c4d:u16_0,0x86cd8:u16_2,0x86d04:u16_2 - state0 - 0x3f7f9f2 */
+    /* static-only queue: rank=5, tier=tier0_single_function_small_static_replay, sidecar=vm_unobserved_handlers_retdec_batch00.c, funcs=function_86be4, span=364, action=inline_retdec_function_into_handler_model */
     /* tier0 static model: rank=5, retdec=function_86be4, slot_status=final_state_candidate_slot, ip_advance=8 */
     /* tier0 effects: state pre-subtract; word copy through frame[s16(ip+4)] to frame[s16(ip+6)]; pointer step by frame[s16(ip+0)] sign; state = s16(ip+2); ip += 8 */
     /* decode signature: IPADV+0x2;RIP+0x2/2:movzx;RF+0x170/4:sub;WF+0x170/4:add;TDYN;RTdyn/8:mov;WF+0xa/8:add */
@@ -1493,6 +1536,7 @@ static VMOpResult op_entry_076(VMState *vm) {
     uint8_t byte0 = vm->byte;
     /* entry=76, native=0x87d17, class=unobserved_static, events=0, shape=-, delta=- */
     /* native IP reads: 0x87dca:byte0,0x87dd9:byte0,0x87e40:u32_2,0x87f51:byte0,0x88045:u16_0 */
+    /* static-only queue: rank=110, tier=tier5_large_static_replay, sidecar=vm_unobserved_handlers_retdec_batch04.c, funcs=function_87d17, span=1059, action=defer_until_small_static_handlers_are_inlined */
     /* decode signature: IPADV+0x0;RIP+0x0/2:movzx;RF+0x170/4:add;WF+0x170/4:and;TDYN;RTdyn/8:mov;WF+0xa/8:add */
     /* dispatch skeleton: RF+0x10f/8:mov;RF+0xa/8:mov;IPADV+0x0;RIP+0x0/2:movzx;RF+0x170/4:add;WF+0x170/4:and;TDYN;RTdyn/8:mov;WF+0xa/8:add;JMP:rdi */
     vm->state = state0 - 0x795b9aa4u + U32(vm->ip + 0x2u) + state0 - 0x795b9aa4u ^ flags0 ^ state0 | 0x574ce9b7u & 0x3247cd40u ^ flags0 ^ state0 | 0x574ce9b7u & 0x3247cd40u ^ 0x6e4cfe36u & U16(vm->ip + 0x0u) + state0 - 0x795b9aa4u + U32(vm->ip + 0x2u) + state0 - 0x795b9aa4u ^ flags0 ^ state0 | 0x574ce9b7u & 0x3247cd40u ^ flags0 ^ state0 | 0x574ce9b7u & 0x3247cd40u ^ 0x6e4cfe36u ^ 0x5381a641u;
@@ -1511,6 +1555,7 @@ static VMOpResult op_entry_077(VMState *vm) {
     uint8_t byte0 = vm->byte;
     /* entry=77, native=0x88131, class=unobserved_static, events=0, shape=-, delta=- */
     /* native IP reads: 0x882a9:b2,0x882f3:u16_3,0x88343:u16_0 */
+    /* static-only queue: rank=24, tier=tier1_single_function_medium_static_replay, sidecar=vm_unobserved_handlers_retdec_batch02.c, funcs=function_88131, span=668, action=inline_retdec_function_after_operand_rewrite */
     /* decode signature: IPADV+0x0;RIP+0x0/2:movzx;WF+0x170/4:add;TDYN;RTdyn/8:mov;WF+0xa/8:add */
     /* dispatch skeleton: RF+0x10f/8:mov;RF+0xa/8:mov;IPADV+0x0;RIP+0x0/2:movzx;WF+0x170/4:add;TDYN;RTdyn/8:mov;WF+0xa/8:add;JMP:rbx;RF+0xa/8:mov */
     vm->state = state0 + U16(vm->ip + 0x0u);
@@ -1586,6 +1631,7 @@ static VMOpResult op_entry_081(VMState *vm) {
     uint8_t byte0 = vm->byte;
     /* entry=81, native=0x88c3f, class=unobserved_static, events=0, shape=-, delta=- */
     /* native IP reads: 0x88dc4:byte0,0x88e90:byte0,0x89016:b4,0x89079:u16_2,0x8913c:u16_0 */
+    /* static-only queue: rank=109, tier=tier3_multi_function_shared_range, sidecar=vm_unobserved_handlers_retdec_batch06.c, funcs=function_88c3f,function_89216, span=1500, action=recover_shared_chunks_or split_by_entry */
     /* decode signature: IPADV+0x0;RIP+0x0/2:movzx;RF+0x170/4:add;WF+0x170/4:sub;TDYN;RTdyn/8:mov;WF+0xa/8:add */
     /* dispatch skeleton: RF+0xa/8:mov;RF+0x10f/8:mov;IPADV+0x0;RIP+0x0/2:movzx;RF+0x170/4:add;WF+0x170/4:sub;TDYN;RTdyn/8:mov;WF+0xa/8:add;JMP:r15 */
     vm->state = state0 ^ flags0 ^ 0x5d998d49u & 0x4500f854u ^ flags0 ^ 0x15fca088u ^ 0x49ede177u & 0x6a005710u - U16(vm->ip + 0x0u) + state0 ^ flags0 ^ 0x5d998d49u & 0x4500f854u ^ flags0 ^ 0x15fca088u ^ 0x49ede177u & 0x6a005710u ^ 0x5263a45bu;
@@ -1645,6 +1691,7 @@ static VMOpResult op_entry_084(VMState *vm) {
     uint8_t byte0 = vm->byte;
     /* entry=84, native=0x8983b, class=unobserved_static, events=0, shape=-, delta=- */
     /* native IP reads: 0x8991e:u16_3,0x8994f:byte0,0x89a03:b2,0x89a30:u16_3,0x89ab7:u16_0 */
+    /* static-only queue: rank=31, tier=tier1_single_function_medium_static_replay, sidecar=vm_unobserved_handlers_retdec_batch02.c, funcs=function_8983b, span=777, action=inline_retdec_function_after_operand_rewrite */
     /* decode signature: IPADV+0x0;RIP+0x0/2:movzx;RF+0x170/4:add;WF+0x170/4:add;TDYN;RTdyn/8:mov;WF+0xa/8:add */
     /* dispatch skeleton: RF+0xa/8:mov;IPADV+0x0;RIP+0x0/2:movzx;RF+0x10f/8:mov;RF+0x170/4:add;WF+0x170/4:add;TDYN;RTdyn/8:mov;WF+0xa/8:add;JMP:rsi */
     vm->state = state0 | 0x206f2f12u + flags0 + U16(vm->ip + 0x0u) + state0 | 0x206f2f12u + flags0;
@@ -1743,6 +1790,7 @@ static VMOpResult op_entry_089(VMState *vm) {
     uint8_t byte0 = vm->byte;
     /* entry=89, native=0x8b028, class=unobserved_static, events=0, shape=-, delta=- */
     /* native IP reads: 0x8b063:u16_1,0x8b08e:u16_5,0x8b0cb:u16_3,0x8b176:u16_1,0x8b184:u16_5,0x8b227:b0,0x8b259:u16_7,0x8b2aa:u16_9 */
+    /* static-only queue: rank=97, tier=tier3_multi_function_shared_range, sidecar=vm_unobserved_handlers_retdec_batch02.c, funcs=function_8b028,function_8b336,function_8b339, span=793, action=recover_shared_chunks_or split_by_entry */
     /* decode signature: IPADV+0x9;RIP+0x9/2:movzx;RF+0x170/4:xor;WF+0x170/4:and;TDYN;RTdyn/8:mov;WF+0xa/8:add */
     /* dispatch skeleton: RF+0x10f/8:mov;RF+0xa/8:mov;IPADV+0x9;RIP+0x9/2:movzx;RF+0x170/4:xor;WF+0x170/4:and;TDYN;RTdyn/8:mov;WF+0xa/8:add;JMP:rcx;RF+0x23/4:mov */
     vm->state = state0 & U16(vm->ip + 0x9u) ^ state0 + 0x7c8d5d40u;
@@ -1822,6 +1870,7 @@ static VMOpResult op_entry_093(VMState *vm) {
     uint8_t byte0 = vm->byte;
     /* entry=93, native=0x8bcef, class=unobserved_static, events=0, shape=-, delta=- */
     /* native IP reads: 0x8bd0a:u32_2,0x8bd35:u16_0,0x8bf98:byte0,0x8c087:byte0,0x8c0e8:byte0,0x8c1de:b0,0x8c251:u16_3,0x8c373:u16_1 */
+    /* static-only queue: rank=154, tier=tier4_native_call_or_ret_side_effect, sidecar=vm_unobserved_handlers_retdec_batch06.c, funcs=function_8bcef,function_8bd69,function_8c41e, span=1847, action=audit_call_ret_side_effects_before_inlining */
     /* decode signature: IPADV+0x1;RIP+0x1/2:movzx;RF+0x170/4:xor;WF+0x170/4:sub;TDYN;RTdyn/8:mov;WF+0xa/8:add */
     /* dispatch skeleton: RF+0xa/8:mov;RF+0x10f/8:mov;IPADV+0x1;RIP+0x1/2:movzx;RF+0x170/4:xor;WF+0x170/4:sub;TDYN;RTdyn/8:mov;WF+0xa/8:add;JMP:rbx */
     vm->state = state0 & flags0 ^ state0 + 0x551fa912u & 0x7af574e5u + flags0 ^ state0 + 0x551fa912u | 0x23f8268cu - U16(vm->ip + 0x1u) ^ state0 & flags0 ^ state0 + 0x551fa912u & 0x7af574e5u + flags0 ^ state0 + 0x551fa912u | 0x23f8268cu;
@@ -1881,6 +1930,7 @@ static VMOpResult op_entry_096(VMState *vm) {
     uint8_t byte0 = vm->byte;
     /* entry=96, native=0x8c4cf, class=unobserved_static, events=0, shape=-, delta=- */
     /* native IP reads: 0x8c4f0:u16_6,0x8c4fe:u16_2,0x8c523:u16_0,0x8c576:u16_4 */
+    /* static-only queue: rank=3, tier=tier0_single_function_small_static_replay, sidecar=vm_unobserved_handlers_retdec_batch00.c, funcs=function_8c4cf, span=246, action=inline_retdec_function_into_handler_model */
     /* tier0 static model: rank=3, retdec=function_8c4cf, slot_status=decode_candidate_slot, ip_advance=8 */
     /* tier0 effects: qword copy through frame[s16(ip+2)] to frame[u16(ip+6)]; pointer step by frame[s16(ip+0)] sign; state = slot_expr ^ state0; ip += 8 */
     /* decode signature: IPADV+0x4;RIP+0x4/2:movzx;WF+0x170/4:xor;TDYN;RTdyn/8:mov;WF+0xa/8:add */
@@ -1903,6 +1953,7 @@ static VMOpResult op_entry_097(VMState *vm) {
     uint8_t byte0 = vm->byte;
     /* entry=97, native=0x8c5b9, class=unobserved_static, events=0, shape=-, delta=- */
     /* native IP reads: 0x8c6c2:byte0,0x8c78a:byte0,0x8c7cc:b0,0x8c824:u16_1,0x8c878:u16_3 */
+    /* static-only queue: rank=36, tier=tier1_single_function_medium_static_replay, sidecar=vm_unobserved_handlers_retdec_batch03.c, funcs=function_8c5b9, span=829, action=inline_retdec_function_after_operand_rewrite */
     /* decode signature: IPADV+0x3;RIP+0x3/2:movzx;RF+0x170/4:sub;WF+0x170/4:and;TDYN;RTdyn/8:mov;WF+0xa/8:add */
     /* dispatch skeleton: RF+0x10f/8:mov;RF+0xa/8:mov;IPADV+0x3;RIP+0x3/2:movzx;RF+0x170/4:sub;WF+0x170/4:and;TDYN;RTdyn/8:mov;WF+0xa/8:add;JMP:r11 */
     vm->state = state0 | flags0 & U16(vm->ip + 0x3u) - state0 | flags0;
@@ -1920,6 +1971,7 @@ static VMOpResult op_entry_098(VMState *vm) {
     uint8_t byte0 = vm->byte;
     /* entry=98, native=0x8c8ec, class=unobserved_static, events=0, shape=-, delta=- */
     /* native IP reads: 0x8c907:u16_6,0x8c92f:u16_4,0x8c95b:u32_0,0x8cb3b:b0,0x8cb8e:u16_3,0x8cbf5:u16_1,0x8cc0b:u16_1 ^ state0 - 0x48503105 */
+    /* static-only queue: rank=135, tier=tier4_native_call_or_ret_side_effect, sidecar=vm_unobserved_handlers_retdec_batch04.c, funcs=function_8c8ec,function_8c99a,function_8cc86, span=930, action=audit_call_ret_side_effects_before_inlining */
     /* decode signature: IPADV+0x1;RIP+0x1/2:movzx;RF+0x170/4:xor;WF+0x170/4:and;TDYN;RTdyn/8:mov;WF+0xa/8:add */
     /* dispatch skeleton: RF+0xa/8:mov;IPADV+0x1;RF+0x10f/8:mov;RIP+0x1/2:movzx;RF+0x170/4:xor;WF+0x170/4:and;TDYN;RTdyn/8:mov;WF+0xa/8:add;JMP:rax */
     vm->state = state0 & U16(vm->ip + 0x1u) ^ state0 - 0x48503105u;
@@ -1957,6 +2009,7 @@ static VMOpResult op_entry_100(VMState *vm) {
     uint8_t byte0 = vm->byte;
     /* entry=100, native=0x8cc81, class=unobserved_static, events=0, shape=-, delta=- */
     /* native IP reads: 0x8ccc1:u16_0,0x8cccf:u16_2,0x8ccfc:u16_6,0x8cd41:u16_2,0x8cd52:u16_0,0x8cd8d:b8,0x8cddb:u16_4,0x8ce44:u16_9 */
+    /* static-only queue: rank=17, tier=tier1_single_function_medium_static_replay, sidecar=vm_unobserved_handlers_retdec_batch01.c, funcs=function_8cc81, span=572, action=inline_retdec_function_after_operand_rewrite */
     /* decode signature: IPADV+0x9;RIP+0x9/2:movzx;RF+0x170/4:add;WF+0x170/4:xor;TDYN;RTdyn/8:mov;WF+0xa/8:add */
     /* dispatch skeleton: RF+0x10f/8:mov;RF+0xa/8:mov;IPADV+0x9;RIP+0x9/2:movzx;RF+0x170/4:add;WF+0x170/4:xor;TDYN;RTdyn/8:mov;WF+0xa/8:add;JMP:rdi */
     vm->state = state0 ^ U16(vm->ip + 0x9u) + state0 - 0x4b931360u;
@@ -2014,6 +2067,7 @@ static VMOpResult op_entry_103(VMState *vm) {
     uint8_t byte0 = vm->byte;
     /* entry=103, native=0x8df9c, class=unobserved_static, events=0, shape=-, delta=- */
     /* native IP reads: 0x8e06f:u16_3,0x8e0ee:byte0,0x8e1de:b2,0x8e225:u16_3,0x8e27b:u16_0 */
+    /* static-only queue: rank=85, tier=tier3_multi_function_shared_range, sidecar=vm_unobserved_handlers_retdec_batch03.c, funcs=function_8df9c,function_8e2f7, span=863, action=recover_shared_chunks_or split_by_entry */
     /* decode signature: IPADV+0x0;RIP+0x0/2:movzx;RF+0x170/4:sub;WF+0x170/4:and;TDYN;RTdyn/8:mov;WF+0xa/8:add */
     /* dispatch skeleton: RF+0xa/8:mov;IPADV+0x0;RF+0x10f/8:mov;RIP+0x0/2:movzx;RF+0x170/4:sub;WF+0x170/4:and;TDYN;RTdyn/8:mov;WF+0xa/8:add;JMP:rcx */
     vm->state = state0 & U16(vm->ip + 0x0u) - state0 ^ 0x2bde36beu;
@@ -2031,6 +2085,7 @@ static VMOpResult op_entry_104(VMState *vm) {
     uint8_t byte0 = vm->byte;
     /* entry=104, native=0x8e2ef, class=unobserved_static, events=0, shape=-, delta=- */
     /* native IP reads: 0x8e432:byte0,0x8e4e8:b0,0x8e544:u16_1,0x8e62b:u16_3 */
+    /* static-only queue: rank=95, tier=tier3_multi_function_shared_range, sidecar=vm_unobserved_handlers_retdec_batch04.c, funcs=function_8e2ef,function_8e6b6, span=975, action=recover_shared_chunks_or split_by_entry */
     /* decode signature: IPADV+0x3;RIP+0x3/2:movzx;RF+0x170/4:sub;TDYN;RTdyn/8:mov;WF+0xa/8:add */
     /* dispatch skeleton: RF+0xa/8:mov;IPADV+0x3;RIP+0x3/2:movzx;RF+0x10f/8:mov;RF+0x170/4:sub;TDYN;RTdyn/8:mov;WF+0xa/8:add;JMP:rsi */
     vm->state = state0;
@@ -2070,6 +2125,7 @@ static VMOpResult op_entry_106(VMState *vm) {
     uint8_t byte0 = vm->byte;
     /* entry=106, native=0x8eb79, class=unobserved_static, events=0, shape=-, delta=- */
     /* native IP reads: 0x8ecc3:byte0,0x8edbb:b0,0x8ee09:u16_1,0x8ee74:u16_3 */
+    /* static-only queue: rank=45, tier=tier1_single_function_medium_static_replay, sidecar=vm_unobserved_handlers_retdec_batch03.c, funcs=function_8eb79, span=904, action=inline_retdec_function_after_operand_rewrite */
     /* decode signature: IPADV+0x3;RIP+0x3/2:movzx;WF+0x170/4:sub;TDYN;RTdyn/8:mov;WF+0xa/8:add */
     /* dispatch skeleton: RF+0x10f/8:mov;RF+0xa/8:mov;IPADV+0x3;RIP+0x3/2:movzx;WF+0x170/4:sub;TDYN;RTdyn/8:mov;WF+0xa/8:add;JMP:r9 */
     vm->state = state0 - U16(vm->ip + 0x3u);
@@ -2130,6 +2186,7 @@ static VMOpResult op_entry_109(VMState *vm) {
     uint8_t byte0 = vm->byte;
     /* entry=109, native=0x8f6d1, class=unobserved_static, events=0, shape=-, delta=- */
     /* native IP reads: 0x8f6de:byte0,0x8f700:u16_2,0x8f70b:u16_6,0x8f734:u16_4,0x8f7cc:u16_0 */
+    /* static-only queue: rank=71, tier=tier3_multi_function_shared_range, sidecar=vm_unobserved_handlers_retdec_batch00.c, funcs=function_8f6d1,function_8f838,function_8f840, span=365, action=recover_shared_chunks_or split_by_entry */
     /* decode signature: IPADV+0x0;RIP+0x0/2:movzx;RF+0x170/4:sub;WF+0x170/4:xor;TDYN;RTdyn/8:mov;WF+0xa/8:add */
     /* dispatch skeleton: RF+0xa/8:mov;RF+0x10f/8:mov;IPADV+0x0;RIP+0x0/2:movzx;RF+0x170/4:sub;WF+0x170/4:xor;TDYN;RTdyn/8:mov;WF+0xa/8:add;JMP:r8 */
     vm->state = state0 ^ U16(vm->ip + 0x0u) - state0 ^ 0x33e5dfdu;
@@ -2147,6 +2204,7 @@ static VMOpResult op_entry_110(VMState *vm) {
     uint8_t byte0 = vm->byte;
     /* entry=110, native=0x8f834, class=unobserved_static, events=0, shape=-, delta=- */
     /* native IP reads: 0x8f84f:u32_2,0x8f879:u16_0,0x8f9a8:b0,0x8f9db:u16_1,0x8fa6f:u16_3 */
+    /* static-only queue: rank=126, tier=tier4_native_call_or_ret_side_effect, sidecar=vm_unobserved_handlers_retdec_batch02.c, funcs=function_8f834,function_8f8ae,function_8faf1, span=709, action=audit_call_ret_side_effects_before_inlining */
     /* decode signature: IPADV+0x3;RIP+0x3/2:movzx;RF+0x170/4:xor;WF+0x170/4:xor;TDYN;RTdyn/8:mov;WF+0xa/8:add */
     /* dispatch skeleton: RF+0xa/8:mov;RF+0x10f/8:mov;IPADV+0x3;RIP+0x3/2:movzx;RF+0x170/4:xor;WF+0x170/4:xor;TDYN;RTdyn/8:mov;WF+0xa/8:add;JMP:rdi */
     vm->state = state0 & 0xc8a0d06u ^ U16(vm->ip + 0x3u) ^ state0 & 0xc8a0d06u - 0x29ce8b8au;
@@ -2164,6 +2222,7 @@ static VMOpResult op_entry_111(VMState *vm) {
     uint8_t byte0 = vm->byte;
     /* entry=111, native=0x8f8ae, class=unobserved_static, events=0, shape=-, delta=- */
     /* native IP reads: 0x8f9a8:b0,0x8f9db:u16_1,0x8fa6f:u16_3 */
+    /* static-only queue: rank=63, tier=tier2_small_shared_range_split, sidecar=vm_unobserved_handlers_retdec_batch01.c, funcs=function_8f8ae,function_8faf1, span=587, action=split_overlapping_retdec_chunks_then_inline */
     /* decode signature: IPADV+0x3;RIP+0x3/2:movzx;RF+0x170/4:xor;WF+0x170/4:xor;TDYN;RTdyn/8:mov;WF+0xa/8:add */
     /* dispatch skeleton: RF+0xa/8:mov;RF+0x10f/8:mov;IPADV+0x3;RIP+0x3/2:movzx;RF+0x170/4:xor;WF+0x170/4:xor;TDYN;RTdyn/8:mov;WF+0xa/8:add;JMP:rdi */
     vm->state = state0 & 0xc8a0d06u ^ U16(vm->ip + 0x3u) ^ state0 & 0xc8a0d06u - 0x29ce8b8au;
@@ -2199,6 +2258,7 @@ static VMOpResult op_entry_113(VMState *vm) {
     uint8_t byte0 = vm->byte;
     /* entry=113, native=0x9026f, class=unobserved_static, events=0, shape=-, delta=- */
     /* native IP reads: 0x9028a:u16_6,0x902af:u16_4,0x902da:u32_0,0x903ca:byte0,0x905bc:u16_2,0x90746:byte0,0x907d0:u16_0 */
+    /* static-only queue: rank=147, tier=tier4_native_call_or_ret_side_effect, sidecar=vm_unobserved_handlers_retdec_batch06.c, funcs=function_9026f,function_90319, span=1587, action=audit_call_ret_side_effects_before_inlining */
     /* decode signature: IPADV+0x0;RIP+0x0/2:movzx;RF+0x170/4:add;WF+0x170/4:sub;TDYN;RTdyn/8:mov;WF+0xa/8:add */
     /* dispatch skeleton: RF+0x10f/8:mov;RF+0xa/8:mov;IPADV+0x0;RIP+0x0/2:movzx;RF+0x170/4:add;WF+0x170/4:sub;TDYN;RTdyn/8:mov;WF+0xa/8:add;JMP:rdi */
     /* vm->state = state0 ^ flags0 & state0 | 0x6729b5bfu - 0x3dca653fu ^ 0x671da5f4u + state0 & 0x48367f78u ^ 0x63bb548fu + flags0 & state0 | 0x6729b5bfu - 0x3dca653fu ^ 0x671da5f4u + state0 & 0x292b555du ^ U16(vm->ip + 0x2u) + state0 ^ flags0 & state0 | 0x6729b5bfu - 0x3dca653fu ^ 0x671da5f4u + state0 & 0x48367f78u ^ 0x63bb548fu + flags0 & state0 | 0x6729b5bfu - 0x3dca653...; */
@@ -2237,6 +2297,7 @@ static VMOpResult op_entry_115(VMState *vm) {
     uint8_t byte0 = vm->byte;
     /* entry=115, native=0x90895, class=unobserved_static, events=0, shape=-, delta=- */
     /* native IP reads: 0x908d0:u16_2,0x908e0:u16_0,0x90902:u16_4,0x909a7:u16_6 */
+    /* static-only queue: rank=72, tier=tier3_multi_function_shared_range, sidecar=vm_unobserved_handlers_retdec_batch00.c, funcs=function_90895,function_90a1d,function_90a20, span=403, action=recover_shared_chunks_or split_by_entry */
     /* decode signature: IPADV+0x6;RIP+0x6/2:movzx;WF+0x170/4:xor;TDYN;RTdyn/8:mov;WF+0xa/8:add */
     /* dispatch skeleton: RF+0x10f/8:mov;RF+0xa/8:mov;IPADV+0x6;RIP+0x6/2:movzx;WF+0x170/4:xor;TDYN;RTdyn/8:mov;WF+0xa/8:add;JMP:r12;RF+0xa/8:mov */
     vm->state = state0 & flags0 - flags0 ^ U16(vm->ip + 0x6u) - 0x65879915u;
@@ -2254,6 +2315,7 @@ static VMOpResult op_entry_116(VMState *vm) {
     uint8_t byte0 = vm->byte;
     /* entry=116, native=0x90a1b, class=unobserved_static, events=0, shape=-, delta=- */
     /* native IP reads: 0x90a2f:u32_0,0x90a82:u32_0,0x90b09:u16_0,0x90b96:u32_4,0x90b99:u32_4 */
+    /* static-only queue: rank=119, tier=tier4_native_call_or_ret_side_effect, sidecar=vm_unobserved_handlers_retdec_batch01.c, funcs=function_90a1b,function_90acd, span=533, action=audit_call_ret_side_effects_before_inlining */
     /* decode signature: IPADV+0x0;RIP+0x0/2:mov;TDYN;RTdyn/8:mov;IPADV+0x4;RIP+0x4/4:mov;WF+0xa/8:sub;WF+0xa/8:add */
     /* dispatch skeleton: RF+0xa/8:mov;IPADV+0x0;RIP+0x0/2:mov;RF+0x10f/8:mov;TDYN;RTdyn/8:mov;RF+0xa/8:mov;IPADV+0x4;RIP+0x4/4:mov;WF+0xa/8:sub;WF+0xa/8:add;JMP:rax */
     vm->state = state0;
@@ -2331,6 +2393,7 @@ static VMOpResult op_entry_120(VMState *vm) {
     uint8_t byte0 = vm->byte;
     /* entry=120, native=0x9106a, class=unobserved_static, events=0, shape=-, delta=- */
     /* native IP reads: 0x910cc:u16_4,0x9111c:u16_6,0x9117d:u16_9,0x91209:u16_6,0x91221:u16_4,0x9128a:b8,0x912c6:u16_2,0x9130e:u16_0 */
+    /* static-only queue: rank=77, tier=tier3_multi_function_shared_range, sidecar=vm_unobserved_handlers_retdec_batch02.c, funcs=function_9106a,function_9137e, span=796, action=recover_shared_chunks_or split_by_entry */
     /* decode signature: IPADV+0x0;RIP+0x0/2:movzx;WF+0x170/4:xor;TDYN;RTdyn/8:mov;WF+0xa/8:add */
     /* dispatch skeleton: RF+0x10f/8:mov;RF+0xa/8:mov;IPADV+0x0;RIP+0x0/2:movzx;WF+0x170/4:xor;TDYN;RTdyn/8:mov;WF+0xa/8:add;JMP:rbx */
     vm->state = state0 ^ U16(vm->ip + 0x0u);
@@ -2450,6 +2513,7 @@ static VMOpResult op_entry_126(VMState *vm) {
     uint8_t byte0 = vm->byte;
     /* entry=126, native=0x92615, class=unobserved_static, events=0, shape=-, delta=- */
     /* native IP reads: 0x92630:u16_6,0x92658:u16_4,0x92684:u32_0,0x926cd:byte0,0x9274e:u16_3,0x9276c:byte0,0x92857:b2,0x928aa:u16_3,0x92926:u16_0 */
+    /* static-only queue: rank=127, tier=tier4_native_call_or_ret_side_effect, sidecar=vm_unobserved_handlers_retdec_batch04.c, funcs=function_92615,function_926c3, span=915, action=audit_call_ret_side_effects_before_inlining */
     /* decode signature: IPADV+0x0;RIP+0x0/2:movzx;RF+0x170/4:sub;WF+0x170/4:or;TDYN;RTdyn/8:mov;WF+0xa/8:add */
     /* dispatch skeleton: RF+0x10f/8:mov;RF+0xa/8:mov;IPADV+0x0;RIP+0x0/2:movzx;RF+0x170/4:sub;WF+0x170/4:or;TDYN;RTdyn/8:mov;WF+0xa/8:add;JMP:r14;RF+0x23/4:mov */
     vm->state = state0 | U16(vm->ip + 0x0u) - state0 + 0xf376a6au;
@@ -2568,6 +2632,7 @@ static VMOpResult op_entry_132(VMState *vm) {
     uint8_t byte0 = vm->byte;
     /* entry=132, native=0x93f79, class=unobserved_static, events=0, shape=-, delta=- */
     /* native IP reads: 0x93f94:u32_2,0x93fbd:u16_0,0x9400e:u16_0,0x94036:u16_2,0x94127:u32_0,0x9415b:byte0,0x941c4:u32_0 + flags0 + 0x1c953985,0x943d2:u16_4,0x94454:u32_0 + flags0 + 0x1c953985 ^ 0xda3b7d9 & (Ptr(kind='frame', off=35)) + -0x80000000 ^ (Ptr(kind='frame', off=10)) -... */
+    /* static-only queue: rank=151, tier=tier4_native_call_or_ret_side_effect, sidecar=vm_unobserved_handlers_retdec_batch05.c, funcs=function_93f79,function_93ff3,function_9406d,function_9447d,function_94483, span=1288, action=audit_call_ret_side_effects_before_inlining */
     /* decode signature: IPADV+0x4;RIP+0x4/2:movzx;RF+0x170/4:xor;TDYN;RTdyn/8:mov;WF+0xa/8:add */
     /* dispatch skeleton: RF+0xa/8:mov;RF+0x10f/8:mov;IPADV+0x4;RIP+0x4/2:movzx;RF+0x170/4:xor;TDYN;RTdyn/8:mov;WF+0xa/8:add;JMP:r11 */
     vm->state = state0 + U32(vm->ip + 0x0u) + flags0 + 0x1c953985u & flags0 + 0x1c953985u - 0x29fcf13eu + 0x1f834ebcu + flags0 + 0x1c953985u - 0x29fcf13eu ^ 0x60b79571u;
@@ -2586,6 +2651,7 @@ static VMOpResult op_entry_133(VMState *vm) {
     uint8_t byte0 = vm->byte;
     /* entry=133, native=0x93ff3, class=unobserved_static, events=0, shape=-, delta=- */
     /* native IP reads: 0x9400e:u16_0,0x94036:u16_2,0x94127:u32_0,0x9415b:byte0,0x941c4:u32_0 + flags0 + 0x1c953985,0x943d2:u16_4,0x94454:u32_0 + flags0 + 0x1c953985 ^ 0xda3b7d9 & (Ptr(kind='frame', off=35)) + -0x80000000 ^ (Ptr(kind='frame', off=10)) - (Ptr(kind='ip', off=4)) + -... */
+    /* static-only queue: rank=146, tier=tier4_native_call_or_ret_side_effect, sidecar=vm_unobserved_handlers_retdec_batch05.c, funcs=function_93ff3,function_9406d,function_9447d,function_94483, span=1166, action=audit_call_ret_side_effects_before_inlining */
     /* decode signature: IPADV+0x4;RIP+0x4/2:movzx;RF+0x170/4:xor;TDYN;RTdyn/8:mov;WF+0xa/8:add */
     /* dispatch skeleton: RF+0xa/8:mov;RF+0x10f/8:mov;IPADV+0x4;RIP+0x4/2:movzx;RF+0x170/4:xor;TDYN;RTdyn/8:mov;WF+0xa/8:add;JMP:r11 */
     vm->state = state0 + U32(vm->ip + 0x0u) + flags0 + 0x1c953985u & flags0 + 0x1c953985u - 0x29fcf13eu + 0x1f834ebcu + flags0 + 0x1c953985u - 0x29fcf13eu ^ 0x60b79571u;
@@ -2604,6 +2670,7 @@ static VMOpResult op_entry_134(VMState *vm) {
     uint8_t byte0 = vm->byte;
     /* entry=134, native=0x9406d, class=unobserved_static, events=0, shape=-, delta=- */
     /* native IP reads: 0x94127:u32_0,0x9415b:byte0,0x941c4:u32_0 + flags0 + 0x1c953985,0x943d2:u16_4,0x94454:u32_0 + flags0 + 0x1c953985 ^ 0xda3b7d9 & (Ptr(kind='frame', off=35)) + -0x80000000 ^ (Ptr(kind='frame', off=10)) - (Ptr(kind='ip', off=4)) + -0x80000000 & u32_0 + flags0 ... */
+    /* static-only queue: rank=106, tier=tier3_multi_function_shared_range, sidecar=vm_unobserved_handlers_retdec_batch04.c, funcs=function_9406d,function_9447d,function_94483, span=1044, action=recover_shared_chunks_or split_by_entry */
     /* decode signature: IPADV+0x4;RIP+0x4/2:movzx;RF+0x170/4:xor;TDYN;RTdyn/8:mov;WF+0xa/8:add */
     /* dispatch skeleton: RF+0xa/8:mov;RF+0x10f/8:mov;IPADV+0x4;RIP+0x4/2:movzx;RF+0x170/4:xor;TDYN;RTdyn/8:mov;WF+0xa/8:add;JMP:r11 */
     vm->state = state0 + U32(vm->ip + 0x0u) + flags0 + 0x1c953985u & flags0 + 0x1c953985u - 0x29fcf13eu + 0x1f834ebcu + flags0 + 0x1c953985u - 0x29fcf13eu ^ 0x60b79571u;
@@ -2622,6 +2689,7 @@ static VMOpResult op_entry_135(VMState *vm) {
     uint8_t byte0 = vm->byte;
     /* entry=135, native=0x94478, class=unobserved_static, events=0, shape=-, delta=- */
     /* native IP reads: 0x9449d:u16_0,0x944c8:u16_7,0x944f3:u16_3,0x94538:u16_0,0x94546:u16_7,0x945af:u16_5 */
+    /* static-only queue: rank=74, tier=tier3_multi_function_shared_range, sidecar=vm_unobserved_handlers_retdec_batch00.c, funcs=function_94478,function_9461d,function_94623, span=432, action=recover_shared_chunks_or split_by_entry */
     /* decode signature: IPADV+0x5;RIP+0x5/2:movzx;RF+0x170/4:xor;TDYN;RTdyn/8:mov;WF+0xa/8:add */
     /* dispatch skeleton: RF+0x10f/8:mov;RF+0xa/8:mov;IPADV+0x5;RIP+0x5/2:movzx;RF+0x170/4:xor;TDYN;RTdyn/8:mov;WF+0xa/8:add;JMP:rdx */
     vm->state = state0;
@@ -2659,6 +2727,7 @@ static VMOpResult op_entry_137(VMState *vm) {
     uint8_t byte0 = vm->byte;
     /* entry=137, native=0x94973, class=unobserved_static, events=0, shape=-, delta=- */
     /* native IP reads: 0x949f8:u16_0,0x94a15:u16_4,0x94a7d:u16_6,0x94b1e:u16_0,0x94b25:u16_4,0x94bc2:u16_2 */
+    /* static-only queue: rank=68, tier=tier2_small_shared_range_split, sidecar=vm_unobserved_handlers_retdec_batch02.c, funcs=function_94973,function_94c3c, span=724, action=split_overlapping_retdec_chunks_then_inline */
     /* decode signature: IPADV+0x2;RIP+0x2/2:movzx;RF+0x170/4:sub;WF+0x170/4:add;TDYN;RTdyn/8:mov;WF+0xa/8:add */
     /* dispatch skeleton: RF+0x10f/8:mov;RF+0xa/8:mov;IPADV+0x2;RIP+0x2/2:movzx;RF+0x170/4:sub;WF+0x170/4:add;TDYN;RTdyn/8:mov;WF+0xa/8:add;JMP:rax;RF+0xa/8:mov */
     vm->state = state0 + U16(vm->ip + 0x2u) - state0 - 0x5ff6cae6u;
@@ -2676,6 +2745,7 @@ static VMOpResult op_entry_138(VMState *vm) {
     uint8_t byte0 = vm->byte;
     /* entry=138, native=0x94c3a, class=unobserved_static, events=0, shape=-, delta=- */
     /* native IP reads: 0x94c66:u16_6,0x94c87:u16_4,0x94caa:u16_2,0x94d45:u16_0 */
+    /* static-only queue: rank=10, tier=tier0_single_function_small_static_replay, sidecar=vm_unobserved_handlers_retdec_batch00.c, funcs=function_94c3a, span=431, action=inline_retdec_function_into_handler_model */
     /* tier0 static model: rank=10, retdec=function_94c3a, slot_status=decode_candidate_slot, ip_advance=8 */
     /* tier0 effects: flags += state; dword store through frame[s16(ip+4)]; pointer step by frame[s16(ip+2)] sign; state = slot_expr; ip += 8 */
     /* decode signature: IPADV+0x0;RIP+0x0/2:movzx;RF+0x170/4:sub;WF+0x170/4:add;TDYN;RTdyn/8:mov;WF+0xa/8:add */
@@ -2699,6 +2769,7 @@ static VMOpResult op_entry_139(VMState *vm) {
     uint8_t byte0 = vm->byte;
     /* entry=139, native=0x94ddf, class=unobserved_static, events=0, shape=-, delta=- */
     /* native IP reads: 0x94df8:u32_0,0x94e23:u16_4,0x94eda:byte0,0x94efe:u32_2,0x95038:byte0,0x95104:u16_0 */
+    /* static-only queue: rank=139, tier=tier4_native_call_or_ret_side_effect, sidecar=vm_unobserved_handlers_retdec_batch04.c, funcs=function_94ddf,function_94e5a,function_951cb, span=1009, action=audit_call_ret_side_effects_before_inlining */
     /* decode signature: IPADV+0x0;RIP+0x0/2:movzx;RF+0x170/4:xor;WF+0x170/4:add;TDYN;RTdyn/8:mov;WF+0xa/8:add */
     /* dispatch skeleton: RF+0xa/8:mov;RF+0x10f/8:mov;IPADV+0x0;RIP+0x0/2:movzx;RF+0x170/4:xor;WF+0x170/4:add;TDYN;RTdyn/8:mov;WF+0xa/8:add;JMP:rsi */
     vm->state = state0 - flags0 - 0x6f549f79u - state0 | 0xf17c331u | 0x16a9ca8cu + U16(vm->ip + 0x0u) ^ state0 - flags0 - 0x6f549f79u - state0 | 0xf17c331u | 0x16a9ca8cu ^ 0x6e089febu;
@@ -2737,6 +2808,7 @@ static VMOpResult op_entry_141(VMState *vm) {
     uint8_t byte0 = vm->byte;
     /* entry=141, native=0x951c2, class=unobserved_static, events=0, shape=-, delta=- */
     /* native IP reads: 0x95225:u16_6,0x9525d:u16_0,0x952ba:u16_4,0x9533c:u16_2 */
+    /* static-only queue: rank=75, tier=tier3_multi_function_shared_range, sidecar=vm_unobserved_handlers_retdec_batch00.c, funcs=function_951c2,function_953b3,function_953b6, span=508, action=recover_shared_chunks_or split_by_entry */
     /* decode signature: IPADV+0x2;RIP+0x2/2:movzx;RF+0x170/4:add;TDYN;RTdyn/8:mov;WF+0xa/8:add */
     /* dispatch skeleton: RF+0x10f/8:mov;RF+0xa/8:mov;IPADV+0x2;RIP+0x2/2:movzx;RF+0x170/4:add;TDYN;RTdyn/8:mov;WF+0xa/8:add;JMP:rsi */
     vm->state = state0;
@@ -2772,6 +2844,7 @@ static VMOpResult op_entry_143(VMState *vm) {
     uint8_t byte0 = vm->byte;
     /* entry=143, native=0x957d9, class=unobserved_static, events=0, shape=-, delta=- */
     /* native IP reads: 0x957f4:u16_6,0x9581c:u16_4,0x95848:u32_0,0x9589b:byte0,0x9597f:byte0,0x959a0:byte0,0x95aa3:u16_0 */
+    /* static-only queue: rank=141, tier=tier4_native_call_or_ret_side_effect, sidecar=vm_unobserved_handlers_retdec_batch03.c, funcs=function_957d9,function_95887,function_95b5e,function_95b67, span=908, action=audit_call_ret_side_effects_before_inlining */
     /* decode signature: IPADV+0x0;RIP+0x0/2:movzx;RF+0x170/4:xor;WF+0x170/4:and;TDYN;RTdyn/8:mov;WF+0xa/8:add */
     /* dispatch skeleton: RF+0x10f/8:mov;RF+0xa/8:mov;IPADV+0x0;RIP+0x0/2:movzx;RF+0x170/4:xor;WF+0x170/4:and;TDYN;RTdyn/8:mov;WF+0xa/8:add;JMP:r8 */
     vm->state = state0 & 0x61f88068u & 0x1d022eeeu ^ 0x6367b3ddu & U16(vm->ip + 0x0u) ^ state0 & 0x61f88068u & 0x1d022eeeu ^ 0x6367b3ddu - 0x2f1222e2u;
@@ -2851,6 +2924,7 @@ static VMOpResult op_entry_147(VMState *vm) {
     uint8_t byte0 = vm->byte;
     /* entry=147, native=0x96918, class=unobserved_static, events=0, shape=-, delta=- */
     /* native IP reads: 0x96a47:b0,0x96a97:u16_3,0x96af7:u16_1 */
+    /* static-only queue: rank=78, tier=tier3_multi_function_shared_range, sidecar=vm_unobserved_handlers_retdec_batch01.c, funcs=function_96918,function_96b77,function_96b7a, span=608, action=recover_shared_chunks_or split_by_entry */
     /* decode signature: IPADV+0x1;RIP+0x1/2:movzx;TDYN;RTdyn/8:mov;WF+0xa/8:add */
     /* dispatch skeleton: RF+0xa/8:mov;IPADV+0x1;RF+0x10f/8:mov;RIP+0x1/2:movzx;TDYN;RTdyn/8:mov;WF+0xa/8:add;JMP:r12 */
     vm->state = state0 + flags0;
@@ -2888,6 +2962,7 @@ static VMOpResult op_entry_149(VMState *vm) {
     uint8_t byte0 = vm->byte;
     /* entry=149, native=0x96eb4, class=unobserved_static, events=0, shape=-, delta=- */
     /* native IP reads: 0x96ecf:u16_0,0x96ef4:u16_2,0x96feb:u16_0,0x97069:byte0,0x971d9:b4,0x97226:u16_0,0x9728b:u16_2 */
+    /* static-only queue: rank=136, tier=tier4_native_call_or_ret_side_effect, sidecar=vm_unobserved_handlers_retdec_batch05.c, funcs=function_96eb4,function_96f2a, span=1130, action=audit_call_ret_side_effects_before_inlining */
     /* decode signature: IPADV+0x2;RIP+0x2/2:movzx;WF+0x170/4:sub;TDYN;RTdyn/8:mov;WF+0xa/8:add */
     /* dispatch skeleton: RF+0x10f/8:mov;RF+0xa/8:mov;IPADV+0x2;RIP+0x2/2:movzx;WF+0x170/4:sub;TDYN;RTdyn/8:mov;WF+0xa/8:add;JMP:r10 */
     vm->state = state0 ^ flags0 - 0xd8a75efu - U16(vm->ip + 0x2u) + 0x64a62ad2u;
@@ -2905,6 +2980,7 @@ static VMOpResult op_entry_150(VMState *vm) {
     uint8_t byte0 = vm->byte;
     /* entry=150, native=0x96f2a, class=unobserved_static, events=0, shape=-, delta=- */
     /* native IP reads: 0x96feb:u16_0,0x97069:byte0,0x971d9:b4,0x97226:u16_0,0x9728b:u16_2 */
+    /* static-only queue: rank=53, tier=tier1_single_function_medium_static_replay, sidecar=vm_unobserved_handlers_retdec_batch04.c, funcs=function_96f2a, span=1012, action=inline_retdec_function_after_operand_rewrite */
     /* decode signature: IPADV+0x2;RIP+0x2/2:movzx;WF+0x170/4:sub;TDYN;RTdyn/8:mov;WF+0xa/8:add */
     /* dispatch skeleton: RF+0x10f/8:mov;RF+0xa/8:mov;IPADV+0x2;RIP+0x2/2:movzx;WF+0x170/4:sub;TDYN;RTdyn/8:mov;WF+0xa/8:add;JMP:r10 */
     vm->state = state0 ^ flags0 - 0xd8a75efu - U16(vm->ip + 0x2u) + 0x64a62ad2u;
@@ -2942,6 +3018,7 @@ static VMOpResult op_entry_152(VMState *vm) {
     uint8_t byte0 = vm->byte;
     /* entry=152, native=0x9768c, class=unobserved_static, events=0, shape=-, delta=- */
     /* native IP reads: 0x976b4:u16_9,0x976d0:u16_1,0x97723:u16_7,0x977bb:u16_9,0x977d3:u16_1,0x97843:b0,0x9788a:u16_3,0x97927:u16_5 */
+    /* static-only queue: rank=80, tier=tier3_multi_function_shared_range, sidecar=vm_unobserved_handlers_retdec_batch02.c, funcs=function_9768c,function_979b0, span=812, action=recover_shared_chunks_or split_by_entry */
     /* decode signature: IPADV+0x5;RIP+0x5/2:movzx;RF+0x170/4:xor;WF+0x170/4:xor;TDYN;RTdyn/8:mov;WF+0xa/8:add */
     /* dispatch skeleton: RF+0xa/8:mov;IPADV+0x5;RIP+0x5/2:movzx;RF+0x10f/8:mov;RF+0x170/4:xor;WF+0x170/4:xor;TDYN;RTdyn/8:mov;WF+0xa/8:add;JMP:r13 */
     vm->state = state0 ^ U16(vm->ip + 0x5u) ^ state0;
@@ -2999,6 +3076,7 @@ static VMOpResult op_entry_155(VMState *vm) {
     uint8_t byte0 = vm->byte;
     /* entry=155, native=0x980ab, class=unobserved_static, events=0, shape=-, delta=- */
     /* native IP reads: 0x98123:u16_0,0x98147:u16_4,0x98191:u16_6,0x9822f:u16_0,0x98246:u16_4,0x982cd:u16_2 */
+    /* static-only queue: rank=27, tier=tier1_single_function_medium_static_replay, sidecar=vm_unobserved_handlers_retdec_batch02.c, funcs=function_980ab, span=694, action=inline_retdec_function_after_operand_rewrite */
     /* decode signature: IPADV+0x2;RIP+0x2/2:movzx;WF+0x170/4:or;TDYN;RTdyn/8:mov;WF+0xa/8:add */
     /* dispatch skeleton: RF+0x10f/8:mov;RF+0xa/8:mov;IPADV+0x2;RIP+0x2/2:movzx;WF+0x170/4:or;TDYN;RTdyn/8:mov;WF+0xa/8:add;JMP:r13 */
     vm->state = state0 | U16(vm->ip + 0x2u) - 0x24797ebcu;
@@ -3016,6 +3094,7 @@ static VMOpResult op_entry_156(VMState *vm) {
     uint8_t byte0 = vm->byte;
     /* entry=156, native=0x98354, class=unobserved_static, events=0, shape=-, delta=- */
     /* native IP reads: 0x983e1:byte0,0x98471:byte0,0x984ab:byte0,0x98539:byte0,0x98724:byte0,0x98889:b4,0x98918:u16_0,0x989e3:u16_2 */
+    /* static-only queue: rank=118, tier=tier5_large_static_replay, sidecar=vm_unobserved_handlers_retdec_batch06.c, funcs=function_98354, span=1876, action=defer_until_small_static_handlers_are_inlined */
     /* decode signature: IPADV+0x2;RIP+0x2/2:movzx;RF+0x170/4:add;WF+0x170/4:xor;TDYN;RTdyn/8:mov;WF+0xa/8:add */
     /* dispatch skeleton: RF+0xa/8:mov;IPADV+0x2;RIP+0x2/2:movzx;RF+0x10f/8:mov;RF+0x170/4:add;WF+0x170/4:xor;TDYN;RTdyn/8:mov;WF+0xa/8:add;JMP:rdi;RF+0x23/4:mov */
     vm->state = state0 + 0x240c2129u | flags0 ^ 0x392b0561u ^ 0x7de2a785u + state0 ^ 0x661ea917u + 0x6aad9867u & 0x799af059u ^ U16(vm->ip + 0x2u) + state0 + 0x240c2129u | flags0 ^ 0x392b0561u ^ 0x7de2a785u + state0 ^ 0x661ea917u + 0x6aad9867u & 0x799af059u - 0x2430893au;
@@ -3074,6 +3153,7 @@ static VMOpResult op_entry_159(VMState *vm) {
     uint8_t byte0 = vm->byte;
     /* entry=159, native=0x992cd, class=unobserved_static, events=0, shape=-, delta=- */
     /* native IP reads: 0x99326:u16_2,0x9933a:u16_0,0x99365:u16_6,0x993b6:u16_0,0x993ba:u16_2,0x993fc:byte0,0x99456:u16_4 */
+    /* static-only queue: rank=12, tier=tier1_single_function_medium_static_replay, sidecar=vm_unobserved_handlers_retdec_batch00.c, funcs=function_992cd, span=526, action=inline_retdec_function_after_operand_rewrite */
     /* decode signature: IPADV+0x4;RIP+0x4/2:movzx;RF+0x170/4:add;WF+0x170/4:add;TDYN;RTdyn/8:mov;WF+0xa/8:add */
     /* dispatch skeleton: RF+0xa/8:mov;RF+0x10f/8:mov;IPADV+0x4;RIP+0x4/2:movzx;RF+0x170/4:add;WF+0x170/4:add;TDYN;RTdyn/8:mov;WF+0xa/8:add;JMP:r11;RF+0x81/8:mov */
     vm->state = state0 + U16(vm->ip + 0x4u) + state0;
@@ -3134,6 +3214,7 @@ static VMOpResult op_entry_162(VMState *vm) {
     uint8_t byte0 = vm->byte;
     /* entry=162, native=0x99b3c, class=unobserved_static, events=0, shape=-, delta=- */
     /* native IP reads: 0x99bcb:u16_7,0x99bef:u16_3,0x99c40:u16_5,0x99ca3:u16_7,0x99cc8:u16_3,0x99d41:b2,0x99d6e:u16_0,0x99dbf:u16_9 */
+    /* static-only queue: rank=29, tier=tier1_single_function_medium_static_replay, sidecar=vm_unobserved_handlers_retdec_batch02.c, funcs=function_99b3c, span=751, action=inline_retdec_function_after_operand_rewrite */
     /* decode signature: IPADV+0x9;RIP+0x9/2:movzx;WF+0x170/4:sub;TDYN;RTdyn/8:mov;WF+0xa/8:add */
     /* dispatch skeleton: RF+0x10f/8:mov;RF+0xa/8:mov;IPADV+0x9;RIP+0x9/2:movzx;WF+0x170/4:sub;TDYN;RTdyn/8:mov;WF+0xa/8:add;JMP:r15 */
     vm->state = state0 + 0x490e5ce5u - U16(vm->ip + 0x9u) + 0x2201cbefu;
@@ -3151,6 +3232,7 @@ static VMOpResult op_entry_163(VMState *vm) {
     uint8_t byte0 = vm->byte;
     /* entry=163, native=0x99e21, class=unobserved_static, events=0, shape=-, delta=- */
     /* native IP reads: 0x99e3d:u16_0,0x99e63:u16_2,0x99fa0:u16_2,0x9a017:byte0,0x9a0c1:b4,0x9a113:u16_2,0x9a1e0:u16_0 */
+    /* static-only queue: rank=133, tier=tier4_native_call_or_ret_side_effect, sidecar=vm_unobserved_handlers_retdec_batch05.c, funcs=function_99e21,function_99e99, span=1079, action=audit_call_ret_side_effects_before_inlining */
     /* decode signature: IPADV+0x0;RIP+0x0/2:movzx;RF+0x170/4:xor;WF+0x170/4:or;TDYN;RTdyn/8:mov;WF+0xa/8:add */
     /* dispatch skeleton: RF+0x10f/8:mov;RF+0xa/8:mov;IPADV+0x0;RIP+0x0/2:movzx;RF+0x170/4:xor;WF+0x170/4:or;TDYN;RTdyn/8:mov;WF+0xa/8:add;JMP:r14 */
     vm->state = state0 - flags0 + 0x5d1cfd6u | 0x7c3f7914u | U16(vm->ip + 0x0u) ^ state0 - flags0 + 0x5d1cfd6u | 0x7c3f7914u - 0x51b094c3u;
@@ -3168,6 +3250,7 @@ static VMOpResult op_entry_164(VMState *vm) {
     uint8_t byte0 = vm->byte;
     /* entry=164, native=0x99e99, class=unobserved_static, events=0, shape=-, delta=- */
     /* native IP reads: 0x99fa0:u16_2,0x9a017:byte0,0x9a0c1:b4,0x9a113:u16_2,0x9a1e0:u16_0 */
+    /* static-only queue: rank=52, tier=tier1_single_function_medium_static_replay, sidecar=vm_unobserved_handlers_retdec_batch04.c, funcs=function_99e99, span=959, action=inline_retdec_function_after_operand_rewrite */
     /* decode signature: IPADV+0x0;RIP+0x0/2:movzx;RF+0x170/4:xor;WF+0x170/4:or;TDYN;RTdyn/8:mov;WF+0xa/8:add */
     /* dispatch skeleton: RF+0x10f/8:mov;RF+0xa/8:mov;IPADV+0x0;RIP+0x0/2:movzx;RF+0x170/4:xor;WF+0x170/4:or;TDYN;RTdyn/8:mov;WF+0xa/8:add;JMP:r14 */
     vm->state = state0 - flags0 + 0x5d1cfd6u | 0x7c3f7914u | U16(vm->ip + 0x0u) ^ state0 - flags0 + 0x5d1cfd6u | 0x7c3f7914u - 0x51b094c3u;
@@ -3206,6 +3289,7 @@ static VMOpResult op_entry_166(VMState *vm) {
     uint8_t byte0 = vm->byte;
     /* entry=166, native=0x9a46e, class=unobserved_static, events=0, shape=-, delta=- */
     /* native IP reads: 0x9a619:u32_2,0x9a67d:u32_2 + state0 & 0x6ea7f6f2 | flags0 - state0 | 0x72ac0577 | state0 & 0x6ea7f6f2 & 0x4490e6ab ^ flags0 - state0 | 0x72ac0577 | state0 & 0x6ea7f6f2 & 0x4490e6ab,0x9a822:u16_0 */
+    /* static-only queue: rank=101, tier=tier3_multi_function_shared_range, sidecar=vm_unobserved_handlers_retdec_batch05.c, funcs=function_9a46e,function_9a8d4, span=1131, action=recover_shared_chunks_or split_by_entry */
     /* decode signature: IPADV+0x0;RIP+0x0/2:movzx;RF+0x170/4:xor;WF+0x170/4:sub;TDYN;RTdyn/8:mov;WF+0xa/8:add */
     /* dispatch skeleton: RF+0xa/8:mov;IPADV+0x0;RF+0x10f/8:mov;RIP+0x0/2:movzx;RF+0x170/4:xor;WF+0x170/4:sub;TDYN;RTdyn/8:mov;WF+0xa/8:add;JMP:r12 */
     /* vm->state = state0 & 0x6ea7f6f2u | flags0 - state0 | 0x72ac0577u | state0 & 0x6ea7f6f2u & 0x4490e6abu - U32(vm->ip + 0x2u) + state0 & 0x6ea7f6f2u | flags0 - state0 | 0x72ac0577u | state0 & 0x6ea7f6f2u & 0x4490e6abu ^ flags0 - state0 | 0x72ac0577u | state0 & 0x6ea7f6f2u & 0x4490e6abu - flags0 - state0 | 0x72ac0577u | state0 & 0x6ea7f6f2u & 0x4490e6abu | 0x47cfdd0bu - ...; */
@@ -3286,6 +3370,7 @@ static VMOpResult op_entry_170(VMState *vm) {
     uint8_t byte0 = vm->byte;
     /* entry=170, native=0x9b0c8, class=unobserved_static, events=0, shape=-, delta=- */
     /* native IP reads: 0x9b0ff:byte0,0x9b139:u16_9,0x9b13d:u16_3,0x9b1bc:u16_5,0x9b277:u16_3,0x9b2a2:u16_9,0x9b387:b0,0x9b3ea:u16_1,0x9b44b:u16_7 */
+    /* static-only queue: rank=54, tier=tier1_single_function_medium_static_replay, sidecar=vm_unobserved_handlers_retdec_batch04.c, funcs=function_9b0c8, span=1012, action=inline_retdec_function_after_operand_rewrite */
     /* decode signature: IPADV+0x7;RIP+0x7/2:movzx;RF+0x170/4:add;WF+0x170/4:add;TDYN;RTdyn/8:mov;WF+0xa/8:add */
     /* dispatch skeleton: RF+0xa/8:mov;IPADV+0x7;RF+0x10f/8:mov;RIP+0x7/2:movzx;RF+0x170/4:add;WF+0x170/4:add;TDYN;RTdyn/8:mov;WF+0xa/8:add;JMP:r10 */
     vm->state = state0 + U16(vm->ip + 0x7u) + state0;
@@ -3427,6 +3512,7 @@ static VMOpResult op_entry_177(VMState *vm) {
     uint8_t byte0 = vm->byte;
     /* entry=177, native=0x9c3f7, class=unobserved_static, events=0, shape=-, delta=- */
     /* native IP reads: 0x9c430:u16_3,0x9c468:b2,0x9c6c2:u16_0 */
+    /* static-only queue: rank=84, tier=tier3_multi_function_shared_range, sidecar=vm_unobserved_handlers_retdec_batch03.c, funcs=function_9c3f7,function_9c74a, span=860, action=recover_shared_chunks_or split_by_entry */
     /* decode signature: IPADV+0x0;RIP+0x0/2:movzx;WF+0x170/4:sub;TDYN;RTdyn/8:mov;WF+0xa/8:add */
     /* dispatch skeleton: RF+0x10f/8:mov;RF+0xa/8:mov;IPADV+0x0;RIP+0x0/2:movzx;WF+0x170/4:sub;TDYN;RTdyn/8:mov;WF+0xa/8:add;JMP:rcx */
     vm->state = state0 - U16(vm->ip + 0x0u);
@@ -3444,6 +3530,7 @@ static VMOpResult op_entry_178(VMState *vm) {
     uint8_t byte0 = vm->byte;
     /* entry=178, native=0x9c74a, class=unobserved_static, events=0, shape=-, delta=- */
     /* native IP reads: 0x9c7b4:u16_9,0x9c7c1:u16_2,0x9c818:u16_0,0x9c8a3:u16_2,0x9c8cb:u16_9,0x9c96f:b6,0x9c9b5:u16_7,0x9c9c2:u16_0 + (Ptr(kind='frame', off=0)) & (Ptr(kind='frame', off=409)) ^ (r14),0x9ca04:u16_4 */
+    /* static-only queue: rank=39, tier=tier1_single_function_medium_static_replay, sidecar=vm_unobserved_handlers_retdec_batch03.c, funcs=function_9c74a, span=845, action=inline_retdec_function_after_operand_rewrite */
     /* decode signature: IPADV+0x4;RIP+0x4/2:movzx;TDYN;RTdyn/8:mov;WF+0xa/8:add */
     /* dispatch skeleton: RF+0xa/8:mov;RF+0x10f/8:mov;IPADV+0x4;RIP+0x4/2:movzx;TDYN;RTdyn/8:mov;WF+0xa/8:add;JMP:r9 */
     vm->state = state0;
@@ -3523,6 +3610,7 @@ static VMOpResult op_entry_182(VMState *vm) {
     uint8_t byte0 = vm->byte;
     /* entry=182, native=0x9d24c, class=unobserved_static, events=0, shape=-, delta=- */
     /* native IP reads: 0x9d2e9:u16_2,0x9d31f:u16_6,0x9d364:u16_0,0x9d3f0:u16_4 */
+    /* static-only queue: rank=20, tier=tier1_single_function_medium_static_replay, sidecar=vm_unobserved_handlers_retdec_batch01.c, funcs=function_9d24c, span=598, action=inline_retdec_function_after_operand_rewrite */
     /* decode signature: IPADV+0x4;RIP+0x4/2:movzx;WF+0x170/4:sub;TDYN;RTdyn/8:mov;WF+0xa/8:add */
     /* dispatch skeleton: RF+0xa/8:mov;IPADV+0x4;RF+0x10f/8:mov;RIP+0x4/2:movzx;WF+0x170/4:sub;TDYN;RTdyn/8:mov;WF+0xa/8:add;JMP:r15 */
     vm->state = state0 - U16(vm->ip + 0x4u) ^ 0x4174ae3eu;
@@ -3702,6 +3790,7 @@ static VMOpResult op_entry_191(VMState *vm) {
     uint8_t byte0 = vm->byte;
     /* entry=191, native=0x9ede9, class=unobserved_static, events=0, shape=-, delta=- */
     /* native IP reads: 0x9eeee:b4,0x9ef46:u16_0,0x9ef93:u16_2 */
+    /* static-only queue: rank=62, tier=tier2_small_shared_range_split, sidecar=vm_unobserved_handlers_retdec_batch01.c, funcs=function_9ede9,function_9f00f, span=558, action=split_overlapping_retdec_chunks_then_inline */
     /* decode signature: IPADV+0x2;RIP+0x2/2:movzx;RF+0x170/4:sub;WF+0x170/4:add;TDYN;RTdyn/8:mov;WF+0xa/8:add */
     /* dispatch skeleton: RF+0x10f/8:mov;RF+0xa/8:mov;IPADV+0x2;RIP+0x2/2:movzx;RF+0x170/4:sub;WF+0x170/4:add;TDYN;RTdyn/8:mov;WF+0xa/8:add;JMP:r15;RF+0x23/4:mov */
     vm->state = state0 ^ 0x41c37245u + U16(vm->ip + 0x2u) - state0 ^ 0x41c37245u ^ 0x5e6d2a06u;
@@ -3739,6 +3828,7 @@ static VMOpResult op_entry_193(VMState *vm) {
     uint8_t byte0 = vm->byte;
     /* entry=193, native=0x9f77c, class=unobserved_static, events=0, shape=-, delta=- */
     /* native IP reads: 0x9f7e0:u16_3,0x9f84f:u16_7,0x9f8d3:u16_0,0x9f96e:u16_3,0x9f9a1:u16_7,0x9fa0a:u16_5 */
+    /* static-only queue: rank=34, tier=tier1_single_function_medium_static_replay, sidecar=vm_unobserved_handlers_retdec_batch02.c, funcs=function_9f77c, span=818, action=inline_retdec_function_after_operand_rewrite */
     /* decode signature: IPADV+0x5;RIP+0x5/2:movzx;RF+0x170/4:sub;WF+0x170/4:xor;TDYN;RTdyn/8:mov;WF+0xa/8:add */
     /* dispatch skeleton: RF+0xa/8:mov;IPADV+0x5;RIP+0x5/2:movzx;RF+0x10f/8:mov;RF+0x170/4:sub;WF+0x170/4:xor;TDYN;RTdyn/8:mov;WF+0xa/8:add;JMP:rbx */
     vm->state = state0 ^ flags0 ^ 0xd9682bau ^ U16(vm->ip + 0x5u) - state0 ^ flags0 ^ 0xd9682bau - 0x1aead89au;
@@ -3756,6 +3846,7 @@ static VMOpResult op_entry_194(VMState *vm) {
     uint8_t byte0 = vm->byte;
     /* entry=194, native=0x9faa4, class=unobserved_static, events=0, shape=-, delta=- */
     /* native IP reads: 0x9fabf:u16_6,0x9fae6:u16_4,0x9fb12:u32_0,0x9fb6b:u32_0,0x9fb96:u16_4,0x9fc34:u16_0,0x9fe55:byte0,0x9fe91:byte0,0x9ffa2:u16_2 */
+    /* static-only queue: rank=152, tier=tier4_native_call_or_ret_side_effect, sidecar=vm_unobserved_handlers_retdec_batch05.c, funcs=function_9faa4,function_9fb50,function_9fbcd,function_a006d, span=1492, action=audit_call_ret_side_effects_before_inlining */
     /* decode signature: IPADV+0x2;RIP+0x2/2:movzx;RF+0x170/4:add;TDYN;RTdyn/8:mov;WF+0xa/8:add */
     /* dispatch skeleton: RF+0xa/8:mov;IPADV+0x2;RF+0x10f/8:mov;RIP+0x2/2:movzx;RF+0x170/4:add;TDYN;RTdyn/8:mov;WF+0xa/8:add;JMP:r10 */
     vm->state = state0 | 0x52e5924au + flags0 | 0x4083ed99u & state0 | 0x52e5924au ^ 0x20047816u & 0x7ca762c5u - 0x5ff2f608u + 0x789b1461u + 0x37b5a024u + 0x2e12e35au ^ 0x44fb7fdbu + flags0 | 0x4083ed99u & state0 | 0x52e5924au ^ 0x20047816u & 0x7ca762c5u - 0x5ff2f608u + 0x789b1461u + 0x32c4b127u & 0x7c737923u;
@@ -3815,6 +3906,7 @@ static VMOpResult op_entry_197(VMState *vm) {
     uint8_t byte0 = vm->byte;
     /* entry=197, native=0xa006b, class=unobserved_static, events=0, shape=-, delta=- */
     /* native IP reads: 0xa00b1:u16_0,0xa00e3:b4,0xa02fe:u16_2 */
+    /* static-only queue: rank=33, tier=tier1_single_function_medium_static_replay, sidecar=vm_unobserved_handlers_retdec_batch02.c, funcs=function_a006b, span=800, action=inline_retdec_function_after_operand_rewrite */
     /* decode signature: IPADV+0x2;RIP+0x2/2:movzx;RF+0x170/4:xor;WF+0x170/4:sub;TDYN;RTdyn/8:mov;WF+0xa/8:add */
     /* dispatch skeleton: RF+0xa/8:mov;IPADV+0x2;RF+0x10f/8:mov;RIP+0x2/2:movzx;RF+0x170/4:xor;WF+0x170/4:sub;TDYN;RTdyn/8:mov;WF+0xa/8:add;JMP:r8;RF+0x81/8:mov */
     vm->state = state0 - U16(vm->ip + 0x2u) ^ state0;
@@ -3915,6 +4007,7 @@ static VMOpResult op_entry_202(VMState *vm) {
     uint8_t byte0 = vm->byte;
     /* entry=202, native=0xa13d6, class=unobserved_static, events=0, shape=-, delta=- */
     /* native IP reads: 0xa13f1:u16_6,0xa1419:u16_4,0xa1445:u32_0,0xa155f:byte0,0xa162c:u16_2,0xa1802:byte0,0xa1890:u16_0 */
+    /* static-only queue: rank=142, tier=tier4_native_call_or_ret_side_effect, sidecar=vm_unobserved_handlers_retdec_batch05.c, funcs=function_a13d6,function_a1484, span=1392, action=audit_call_ret_side_effects_before_inlining */
     /* decode signature: IPADV+0x0;RIP+0x0/2:movzx;WF+0x170/4:and;TDYN;RTdyn/8:mov;WF+0xa/8:add */
     /* dispatch skeleton: RF+0x10f/8:mov;RF+0xa/8:mov;IPADV+0x0;RIP+0x0/2:movzx;WF+0x170/4:and;TDYN;RTdyn/8:mov;WF+0xa/8:add;JMP:r12 */
     /* vm->state = state0 - flags0 + 0x97da242u & flags0 + 0x97da242u ^ 0x370370f1u | 0x1f1759cu | flags0 + 0x97da242u & state0 - flags0 + 0x97da242u & flags0 + 0x97da242u ^ 0x370370f1u | 0x1f1759cu & 0x71376753u + 0x2c217984u | 0x24d2add8u & 0x6ef19beeu - flags0 + 0x97da242u & state0 - flags0 + 0x97da242u & flags0 + 0x97da242u ^ 0x370370f1u | 0x1f1759cu & 0x71376753u + 0x2...; */
@@ -3954,6 +4047,7 @@ static VMOpResult op_entry_204(VMState *vm) {
     uint8_t byte0 = vm->byte;
     /* entry=204, native=0xa1939, class=unobserved_static, events=0, shape=-, delta=- */
     /* native IP reads: 0xa194d:byte0,0xa198a:u16_2,0xa198f:u16_6,0xa19ba:u16_0,0xa1a20:u16_4 */
+    /* static-only queue: rank=55, tier=tier2_small_shared_range_split, sidecar=vm_unobserved_handlers_retdec_batch00.c, funcs=function_a1939,function_a1a97, span=358, action=split_overlapping_retdec_chunks_then_inline */
     /* decode signature: IPADV+0x4;RIP+0x4/2:movzx;WF+0x170/4:xor;TDYN;RTdyn/8:mov;WF+0xa/8:add */
     /* dispatch skeleton: RF+0x10f/8:mov;RF+0xa/8:mov;IPADV+0x4;RIP+0x4/2:movzx;WF+0x170/4:xor;TDYN;RTdyn/8:mov;WF+0xa/8:add;JMP:r12 */
     vm->state = state0 ^ U16(vm->ip + 0x4u) - 0x452939b9u;
@@ -3971,6 +4065,7 @@ static VMOpResult op_entry_205(VMState *vm) {
     uint8_t byte0 = vm->byte;
     /* entry=205, native=0xa1a95, class=unobserved_static, events=0, shape=-, delta=- */
     /* native IP reads: 0xa1ab1:u16_6,0xa1ad7:u16_4,0xa1b01:u32_0,0xa1c1e:u16_1,0xa1c93:byte0,0xa1d56:b0,0xa1d92:u16_1,0xa1e42:u16_3 */
+    /* static-only queue: rank=140, tier=tier4_native_call_or_ret_side_effect, sidecar=vm_unobserved_handlers_retdec_batch05.c, funcs=function_a1a95,function_a1b3e,function_a1ecf, span=1095, action=audit_call_ret_side_effects_before_inlining */
     /* decode signature: IPADV+0x3;RIP+0x3/2:movzx;WF+0x170/4:and;TDYN;RTdyn/8:mov;WF+0xa/8:add */
     /* dispatch skeleton: RF+0xa/8:mov;IPADV+0x3;RIP+0x3/2:movzx;RF+0x10f/8:mov;WF+0x170/4:and;TDYN;RTdyn/8:mov;WF+0xa/8:add;JMP:rbx */
     vm->state = state0 & U16(vm->ip + 0x3u) + 0x79a60067u;
@@ -3988,6 +4083,7 @@ static VMOpResult op_entry_206(VMState *vm) {
     uint8_t byte0 = vm->byte;
     /* entry=206, native=0xa1b3e, class=unobserved_static, events=0, shape=-, delta=- */
     /* native IP reads: 0xa1c1e:u16_1,0xa1c93:byte0,0xa1d56:b0,0xa1d92:u16_1,0xa1e42:u16_3 */
+    /* static-only queue: rank=47, tier=tier1_single_function_medium_static_replay, sidecar=vm_unobserved_handlers_retdec_batch04.c, funcs=function_a1b3e, span=926, action=inline_retdec_function_after_operand_rewrite */
     /* decode signature: IPADV+0x3;RIP+0x3/2:movzx;WF+0x170/4:and;TDYN;RTdyn/8:mov;WF+0xa/8:add */
     /* dispatch skeleton: RF+0xa/8:mov;IPADV+0x3;RIP+0x3/2:movzx;RF+0x10f/8:mov;WF+0x170/4:and;TDYN;RTdyn/8:mov;WF+0xa/8:add;JMP:rbx */
     vm->state = state0 & U16(vm->ip + 0x3u) + 0x79a60067u;
@@ -4005,6 +4101,7 @@ static VMOpResult op_entry_207(VMState *vm) {
     uint8_t byte0 = vm->byte;
     /* entry=207, native=0xa1ecf, class=unobserved_static, events=0, shape=-, delta=- */
     /* native IP reads: 0xa1f48:byte0,0xa206f:u32_0,0xa2290:u16_4 */
+    /* static-only queue: rank=105, tier=tier3_multi_function_shared_range, sidecar=vm_unobserved_handlers_retdec_batch05.c, funcs=function_a1ecf,function_a2366, span=1183, action=recover_shared_chunks_or split_by_entry */
     /* decode signature: IPADV+0x4;RIP+0x4/2:movzx;RF+0x170/4:sub;WF+0x170/4:sub;TDYN;RTdyn/8:mov;WF+0xa/8:add */
     /* dispatch skeleton: RF+0xa/8:mov;IPADV+0x4;RF+0x10f/8:mov;RIP+0x4/2:movzx;RF+0x170/4:sub;WF+0x170/4:sub;TDYN;RTdyn/8:mov;WF+0xa/8:add;JMP:r14;RF+0x23/4:mov */
     vm->state = state0 - flags0 - flags0 & flags0 & 0x5dbf06d2u & U32(vm->ip + 0x0u) + flags0 ^ 0x2a95895du ^ 0x26d4cf3eu | flags0 ^ 0x4fbbd017u - U16(vm->ip + 0x4u) - state0 - flags0 - flags0 & flags0 & 0x5dbf06d2u & U32(vm->ip + 0x0u) + flags0 ^ 0x2a95895du ^ 0x26d4cf3eu | flags0 ^ 0x4fbbd017u ^ 0x75fbb160u;
@@ -4084,6 +4181,7 @@ static VMOpResult op_entry_211(VMState *vm) {
     uint8_t byte0 = vm->byte;
     /* entry=211, native=0xa36c9, class=unobserved_static, events=0, shape=-, delta=- */
     /* native IP reads: 0xa37fb:u32_0,0xa3956:u16_8 */
+    /* static-only queue: rank=93, tier=tier3_multi_function_shared_range, sidecar=vm_unobserved_handlers_retdec_batch04.c, funcs=function_a36c9,function_a3a4d, span=911, action=recover_shared_chunks_or split_by_entry */
     /* decode signature: IPADV+0x8;RIP+0x8/2:movzx;RF+0x170/4:sub;WF+0x170/4:and;TDYN;RTdyn/8:mov;WF+0xa/8:add */
     /* dispatch skeleton: RF+0xa/8:mov;IPADV+0x8;RIP+0x8/2:movzx;RF+0x10f/8:mov;RF+0x170/4:sub;WF+0x170/4:and;TDYN;RTdyn/8:mov;WF+0xa/8:add;JMP:rdx */
     /* vm->state = state0 | flags0 - state0 - 0x11e0e25au ^ U32(vm->ip + 0x0u) ^ flags0 - state0 - 0x11e0e25au - 0x7fb611ffu - 0x61e44634u - 0x4be2eb7au - flags0 - state0 - 0x11e0e25au - 0x7fb611ffu - 0x61e44634u - 0x4be2eb7au ^ 0x3f63da53u & state0 | flags0 - state0 - 0x11e0e25au ^ U32(vm->ip + 0x0u) ^ flags0 - state0 - 0x11e0e25au - 0x7fb611ffu - 0x61e44634u - 0x4be2eb7au...; */
@@ -4102,6 +4200,7 @@ static VMOpResult op_entry_212(VMState *vm) {
     uint8_t byte0 = vm->byte;
     /* entry=212, native=0xa3a4b, class=unobserved_static, events=0, shape=-, delta=- */
     /* native IP reads: 0xa3aa9:u16_0,0xa3ae5:u16_4,0xa3b9e:u16_6,0xa3c29:u16_4,0xa3c47:u16_0,0xa3d41:u16_2 */
+    /* static-only queue: rank=92, tier=tier3_multi_function_shared_range, sidecar=vm_unobserved_handlers_retdec_batch03.c, funcs=function_a3a4b,function_a3dc9, span=905, action=recover_shared_chunks_or split_by_entry */
     /* decode signature: IPADV+0x2;RIP+0x2/2:movzx;WF+0x170/4:add;TDYN;RTdyn/8:mov;WF+0xa/8:add */
     /* dispatch skeleton: RF+0xa/8:mov;IPADV+0x2;RF+0x10f/8:mov;RIP+0x2/2:movzx;WF+0x170/4:add;TDYN;RTdyn/8:mov;WF+0xa/8:add;JMP:r14 */
     vm->state = state0 + U16(vm->ip + 0x2u) ^ 0x712d507bu;
@@ -4120,6 +4219,7 @@ static VMOpResult op_entry_213(VMState *vm) {
     uint8_t byte0 = vm->byte;
     /* entry=213, native=0xa3dc7, class=unobserved_static, events=0, shape=-, delta=- */
     /* native IP reads: 0xa3e42:u16_6,0xa3e7c:u16_0,0xa3eef:u16_4,0xa3f7e:u16_2 */
+    /* static-only queue: rank=16, tier=tier1_single_function_medium_static_replay, sidecar=vm_unobserved_handlers_retdec_batch01.c, funcs=function_a3dc7, span=559, action=inline_retdec_function_after_operand_rewrite */
     /* decode signature: IPADV+0x2;RIP+0x2/2:movzx;WF+0x170/4:sub;TDYN;RTdyn/8:mov;WF+0xa/8:add */
     /* dispatch skeleton: RF+0x10f/8:mov;RF+0xa/8:mov;IPADV+0x2;RIP+0x2/2:movzx;WF+0x170/4:sub;TDYN;RTdyn/8:mov;WF+0xa/8:add;JMP:rdx;RF+0x194/1:mov */
     vm->state = state0 - U16(vm->ip + 0x2u) - 0x45c6c3bbu;
@@ -4218,6 +4318,7 @@ static VMOpResult op_entry_218(VMState *vm) {
     uint8_t byte0 = vm->byte;
     /* entry=218, native=0xa4df7, class=unobserved_static, events=0, shape=-, delta=- */
     /* native IP reads: 0xa4eb0:u16_2,0xa4f2b:byte0,0xa505c:b4,0xa50a2:u16_2,0xa5112:u16_0 */
+    /* static-only queue: rank=46, tier=tier1_single_function_medium_static_replay, sidecar=vm_unobserved_handlers_retdec_batch04.c, funcs=function_a4df7, span=910, action=inline_retdec_function_after_operand_rewrite */
     /* decode signature: IPADV+0x0;RIP+0x0/2:movzx;RF+0x170/4:sub;WF+0x170/4:or;TDYN;RTdyn/8:mov;WF+0xa/8:add */
     /* dispatch skeleton: RF+0x10f/8:mov;RF+0xa/8:mov;IPADV+0x0;RIP+0x0/2:movzx;RF+0x170/4:sub;WF+0x170/4:or;TDYN;RTdyn/8:mov;WF+0xa/8:add;JMP:r12 */
     vm->state = state0 & 0x844d83du | U16(vm->ip + 0x0u) - state0 & 0x844d83du ^ 0x77e8718eu;
@@ -4235,6 +4336,7 @@ static VMOpResult op_entry_219(VMState *vm) {
     uint8_t byte0 = vm->byte;
     /* entry=219, native=0xa517b, class=unobserved_static, events=0, shape=-, delta=- */
     /* native IP reads: 0xa5190:u32_0,0xa51e4:u32_0,0xa52f6:byte0,0xa5652:b0,0xa56d2:u16_1,0xa579f:u16_3,0xa57c4:u16_3 */
+    /* static-only queue: rank=149, tier=tier4_native_call_or_ret_side_effect, sidecar=vm_unobserved_handlers_retdec_batch06.c, funcs=function_a517b,function_a522e, span=1816, action=audit_call_ret_side_effects_before_inlining */
     /* decode signature: IPADV+0x3;RIP+0x3/2:movzx;RF+0x170/4:sub;WF+0x170/4:xor;TDYN;RTdyn/8:mov;WF+0xa/8:add */
     /* dispatch skeleton: RF+0xa/8:mov;IPADV+0x3;RIP+0x3/2:movzx;RF+0x10f/8:mov;RF+0x170/4:sub;WF+0x170/4:xor;TDYN;RTdyn/8:mov;WF+0xa/8:add;JMP:r10 */
     vm->state = state0 | flags0 + 0x46462807u & 0x2332d827u - flags0 - state0 | flags0 & 0x4297c9ddu + 0x6f8e6e16u ^ U16(vm->ip + 0x3u) - state0 | flags0 + 0x46462807u & 0x2332d827u - flags0 - state0 | flags0 & 0x4297c9ddu + 0x6f8e6e16u + 0x8f8037au;
@@ -4314,6 +4416,7 @@ static VMOpResult op_entry_223(VMState *vm) {
     uint8_t byte0 = vm->byte;
     /* entry=223, native=0xa6470, class=unobserved_static, events=0, shape=-, delta=- */
     /* native IP reads: 0xa6621:byte0,0xa6716:b2,0xa6742:u16_3,0xa67d0:u16_0 */
+    /* static-only queue: rank=107, tier=tier3_multi_function_shared_range, sidecar=vm_unobserved_handlers_retdec_batch05.c, funcs=function_a6470,function_a68c4,function_a68ca, span=1115, action=recover_shared_chunks_or split_by_entry */
     /* decode signature: IPADV+0x0;RIP+0x0/2:movzx;RF+0x170/4:xor;WF+0x170/4:sub;TDYN;RTdyn/8:mov;WF+0xa/8:add */
     /* dispatch skeleton: RF+0xa/8:mov;IPADV+0x0;RIP+0x0/2:movzx;RF+0x10f/8:mov;RF+0x170/4:xor;WF+0x170/4:sub;TDYN;RTdyn/8:mov;WF+0xa/8:add;JMP:r10 */
     vm->state = state0 + 0x196a30fu & flags0 - U16(vm->ip + 0x0u) ^ state0 + 0x196a30fu & flags0 - 0x1f5fe778u;
@@ -4331,6 +4434,7 @@ static VMOpResult op_entry_224(VMState *vm) {
     uint8_t byte0 = vm->byte;
     /* entry=224, native=0xa68c2, class=unobserved_static, events=0, shape=-, delta=- */
     /* native IP reads: 0xa6914:u16_5,0xa692a:u16_7,0xa6952:u16_1,0xa698f:u16_7,0xa69a7:u16_5,0xa6a84:u16_3 */
+    /* static-only queue: rank=18, tier=tier1_single_function_medium_static_replay, sidecar=vm_unobserved_handlers_retdec_batch01.c, funcs=function_a68c2, span=580, action=inline_retdec_function_after_operand_rewrite */
     /* decode signature: IPADV+0x3;RIP+0x3/2:movzx;RF+0x170/4:add;WF+0x170/4:or;TDYN;RTdyn/8:mov;WF+0xa/8:add */
     /* dispatch skeleton: RF+0xa/8:mov;RF+0x10f/8:mov;IPADV+0x3;RIP+0x3/2:movzx;RF+0x170/4:add;WF+0x170/4:or;TDYN;RTdyn/8:mov;WF+0xa/8:add;JMP:r14;RF+0x60/8:mov */
     vm->state = state0 | U16(vm->ip + 0x3u) + state0;
@@ -4366,6 +4470,7 @@ static VMOpResult op_entry_226(VMState *vm) {
     uint8_t byte0 = vm->byte;
     /* entry=226, native=0xa6e55, class=unobserved_static, events=0, shape=-, delta=- */
     /* native IP reads: 0xa6e70:u16_6,0xa6e96:u16_4,0xa6ec3:u32_0,0xa6f1e:u16_0,0xa6f43:u16_2,0xa6fb2:u16_0,0xa6fc7:u16_2,0xa6ff6:u16_9,0xa703c:u16_2,0xa704e:u16_0,0xa70de:b6,0xa7127:u16_7,0xa7188:u16_4 */
+    /* static-only queue: rank=137, tier=tier4_native_call_or_ret_side_effect, sidecar=vm_unobserved_handlers_retdec_batch04.c, funcs=function_a6e55,function_a6f03,function_a6f79, span=950, action=audit_call_ret_side_effects_before_inlining */
     /* decode signature: IPADV+0x4;RIP+0x4/2:movzx;WF+0x170/4:and;TDYN;RTdyn/8:mov;WF+0xa/8:add */
     /* dispatch skeleton: RF+0xa/8:mov;RF+0x10f/8:mov;IPADV+0x4;RIP+0x4/2:movzx;WF+0x170/4:and;TDYN;RTdyn/8:mov;WF+0xa/8:add;JMP:r8 */
     vm->state = state0 | flags0 | state0 ^ 0x63e0134eu & U16(vm->ip + 0x4u) ^ 0x5537ca3fu;
@@ -4384,6 +4489,7 @@ static VMOpResult op_entry_227(VMState *vm) {
     uint8_t byte0 = vm->byte;
     /* entry=227, native=0xa6f03, class=unobserved_static, events=0, shape=-, delta=- */
     /* native IP reads: 0xa6f1e:u16_0,0xa6f43:u16_2,0xa6fb2:u16_0,0xa6fc7:u16_2,0xa6ff6:u16_9,0xa703c:u16_2,0xa704e:u16_0,0xa70de:b6,0xa7127:u16_7,0xa7188:u16_4 */
+    /* static-only queue: rank=123, tier=tier4_native_call_or_ret_side_effect, sidecar=vm_unobserved_handlers_retdec_batch02.c, funcs=function_a6f03,function_a6f79, span=776, action=audit_call_ret_side_effects_before_inlining */
     /* decode signature: IPADV+0x4;RIP+0x4/2:movzx;WF+0x170/4:and;TDYN;RTdyn/8:mov;WF+0xa/8:add */
     /* dispatch skeleton: RF+0xa/8:mov;RF+0x10f/8:mov;IPADV+0x4;RIP+0x4/2:movzx;WF+0x170/4:and;TDYN;RTdyn/8:mov;WF+0xa/8:add;JMP:r8 */
     vm->state = state0 | flags0 | state0 ^ 0x63e0134eu & U16(vm->ip + 0x4u) ^ 0x5537ca3fu;
@@ -4402,6 +4508,7 @@ static VMOpResult op_entry_228(VMState *vm) {
     uint8_t byte0 = vm->byte;
     /* entry=228, native=0xa6f79, class=unobserved_static, events=0, shape=-, delta=- */
     /* native IP reads: 0xa6fb2:u16_0,0xa6fc7:u16_2,0xa6ff6:u16_9,0xa703c:u16_2,0xa704e:u16_0,0xa70de:b6,0xa7127:u16_7,0xa7188:u16_4 */
+    /* static-only queue: rank=23, tier=tier1_single_function_medium_static_replay, sidecar=vm_unobserved_handlers_retdec_batch01.c, funcs=function_a6f79, span=658, action=inline_retdec_function_after_operand_rewrite */
     /* decode signature: IPADV+0x4;RIP+0x4/2:movzx;WF+0x170/4:and;TDYN;RTdyn/8:mov;WF+0xa/8:add */
     /* dispatch skeleton: RF+0xa/8:mov;RF+0x10f/8:mov;IPADV+0x4;RIP+0x4/2:movzx;WF+0x170/4:and;TDYN;RTdyn/8:mov;WF+0xa/8:add;JMP:r8 */
     vm->state = state0 | flags0 | state0 ^ 0x63e0134eu & U16(vm->ip + 0x4u) ^ 0x5537ca3fu;
@@ -4438,6 +4545,7 @@ static VMOpResult op_entry_230(VMState *vm) {
     uint8_t byte0 = vm->byte;
     /* entry=230, native=0xa757f, class=unobserved_static, events=0, shape=-, delta=- */
     /* native IP reads: 0xa769b:byte0,0xa77dc:b4,0xa7845:u16_0,0xa78bf:u16_2,0xa78e3:u16_2 */
+    /* static-only queue: rank=98, tier=tier3_multi_function_shared_range, sidecar=vm_unobserved_handlers_retdec_batch04.c, funcs=function_a757f,function_a799e, span=1065, action=recover_shared_chunks_or split_by_entry */
     /* decode signature: IPADV+0x2;RIP+0x2/2:movzx;WF+0x170/4:or;TDYN;RTdyn/8:mov;WF+0xa/8:add */
     /* dispatch skeleton: RF+0x10f/8:mov;RF+0xa/8:mov;IPADV+0x2;RIP+0x2/2:movzx;WF+0x170/4:or;TDYN;RTdyn/8:mov;WF+0xa/8:add;JMP:rdi */
     vm->state = state0 & flags0 | 0x7e6d6467u + 0x2e32a3a2u | U16(vm->ip + 0x2u) ^ 0x272d9a0bu;
@@ -4476,6 +4584,7 @@ static VMOpResult op_entry_232(VMState *vm) {
     uint8_t byte0 = vm->byte;
     /* entry=232, native=0xa7ef8, class=unobserved_static, events=0, shape=-, delta=- */
     /* native IP reads: 0xa7f64:u16_1,0xa7f8a:u16_7,0xa7fc7:u16_5,0xa8058:u16_7,0xa8076:u16_1,0xa8142:u16_3 */
+    /* static-only queue: rank=69, tier=tier2_small_shared_range_split, sidecar=vm_unobserved_handlers_retdec_batch02.c, funcs=function_a7ef8,function_a81c4, span=726, action=split_overlapping_retdec_chunks_then_inline */
     /* decode signature: IPADV+0x3;RIP+0x3/2:movzx;WF+0x170/4:sub;TDYN;RTdyn/8:mov;WF+0xa/8:add */
     /* dispatch skeleton: RF+0x10f/8:mov;RF+0xa/8:mov;IPADV+0x3;RIP+0x3/2:movzx;WF+0x170/4:sub;TDYN;RTdyn/8:mov;WF+0xa/8:add;JMP:r12 */
     vm->state = state0 - flags0 ^ 0x4821c1c7u - U16(vm->ip + 0x3u) + 0x231e4204u;
@@ -4493,6 +4602,7 @@ static VMOpResult op_entry_233(VMState *vm) {
     uint8_t byte0 = vm->byte;
     /* entry=233, native=0xa81c4, class=unobserved_static, events=0, shape=-, delta=- */
     /* native IP reads: 0xa81df:u16_0,0xa8207:u16_2,0xa8277:u16_3,0xa8284:u16_9,0xa82ae:u16_5,0xa82f8:u16_9,0xa8306:u16_3,0xa8369:b2,0xa8396:u16_7,0xa83e2:u16_0 */
+    /* static-only queue: rank=122, tier=tier4_native_call_or_ret_side_effect, sidecar=vm_unobserved_handlers_retdec_batch02.c, funcs=function_a81c4,function_a823e, span=664, action=audit_call_ret_side_effects_before_inlining */
     /* decode signature: IPADV+0x0;RIP+0x0/2:movzx;RF+0x170/4:xor;WF+0x170/4:or;TDYN;RTdyn/8:mov;WF+0xa/8:add */
     /* dispatch skeleton: RF+0xa/8:mov;IPADV+0x0;RIP+0x0/2:movzx;RF+0x10f/8:mov;RF+0x170/4:xor;WF+0x170/4:or;TDYN;RTdyn/8:mov;WF+0xa/8:add;JMP:rdi */
     vm->state = state0 | U16(vm->ip + 0x0u) ^ state0 + 0x6352399cu;
@@ -4511,6 +4621,7 @@ static VMOpResult op_entry_234(VMState *vm) {
     uint8_t byte0 = vm->byte;
     /* entry=234, native=0xa823e, class=unobserved_static, events=0, shape=-, delta=- */
     /* native IP reads: 0xa8277:u16_3,0xa8284:u16_9,0xa82ae:u16_5,0xa82f8:u16_9,0xa8306:u16_3,0xa8369:b2,0xa8396:u16_7,0xa83e2:u16_0 */
+    /* static-only queue: rank=15, tier=tier1_single_function_medium_static_replay, sidecar=vm_unobserved_handlers_retdec_batch01.c, funcs=function_a823e, span=542, action=inline_retdec_function_after_operand_rewrite */
     /* decode signature: IPADV+0x0;RIP+0x0/2:movzx;RF+0x170/4:xor;WF+0x170/4:or;TDYN;RTdyn/8:mov;WF+0xa/8:add */
     /* dispatch skeleton: RF+0xa/8:mov;IPADV+0x0;RIP+0x0/2:movzx;RF+0x10f/8:mov;RF+0x170/4:xor;WF+0x170/4:or;TDYN;RTdyn/8:mov;WF+0xa/8:add;JMP:rdi */
     vm->state = state0 | U16(vm->ip + 0x0u) ^ state0 + 0x6352399cu;
@@ -4529,6 +4640,7 @@ static VMOpResult op_entry_235(VMState *vm) {
     uint8_t byte0 = vm->byte;
     /* entry=235, native=0xa8450, class=unobserved_static, events=0, shape=-, delta=- */
     /* native IP reads: 0xa852a:u16_3,0xa85b4:byte0,0xa865b:b2,0xa868a:u16_3,0xa8740:u16_0 */
+    /* static-only queue: rank=41, tier=tier1_single_function_medium_static_replay, sidecar=vm_unobserved_handlers_retdec_batch03.c, funcs=function_a8450, span=883, action=inline_retdec_function_after_operand_rewrite */
     /* decode signature: IPADV+0x0;RIP+0x0/2:movzx;RF+0x170/4:add;WF+0x170/4:add;TDYN;RTdyn/8:mov;WF+0xa/8:add */
     /* dispatch skeleton: RF+0x10f/8:mov;RF+0xa/8:mov;IPADV+0x0;RIP+0x0/2:movzx;RF+0x170/4:add;WF+0x170/4:add;TDYN;RTdyn/8:mov;WF+0xa/8:add;JMP:rbx */
     vm->state = state0 + U16(vm->ip + 0x0u) + state0;
@@ -4546,6 +4658,7 @@ static VMOpResult op_entry_236(VMState *vm) {
     uint8_t byte0 = vm->byte;
     /* entry=236, native=0xa87b6, class=unobserved_static, events=0, shape=-, delta=- */
     /* native IP reads: 0xa88f7:byte0,0xa89c4:byte0,0xa8ae3:byte0,0xa8c25:b2,0xa8cb1:u16_3,0xa8d6f:u16_0 */
+    /* static-only queue: rank=117, tier=tier5_large_static_replay, sidecar=vm_unobserved_handlers_retdec_batch06.c, funcs=function_a87b6, span=1654, action=defer_until_small_static_handlers_are_inlined */
     /* decode signature: IPADV+0x0;RIP+0x0/2:movzx;RF+0x170/4:add;WF+0x170/4:or;TDYN;RTdyn/8:mov;WF+0xa/8:add */
     /* dispatch skeleton: RF+0xa/8:mov;RF+0x10f/8:mov;IPADV+0x0;RIP+0x0/2:movzx;RF+0x170/4:add;WF+0x170/4:or;TDYN;RTdyn/8:mov;WF+0xa/8:add;JMP:rsi */
     vm->state = state0 ^ flags0 & state0 ^ 0x630a2958u ^ 0x7d6f69f0u - 0x350e18e3u ^ 0x55d05067u - flags0 & state0 ^ 0x630a2958u ^ 0x7d6f69f0u - 0x350e18e3u ^ 0x55d05067u | 0x696679a3u | U16(vm->ip + 0x0u) + state0 ^ flags0 & state0 ^ 0x630a2958u ^ 0x7d6f69f0u - 0x350e18e3u ^ 0x55d05067u - flags0 & state0 ^ 0x630a2958u ^ 0x7d6f69f0u - 0x350e18e3u ^ 0x55d05067u | 0x696679a3u - 0x292b93dcu;
@@ -4584,6 +4697,7 @@ static VMOpResult op_entry_238(VMState *vm) {
     uint8_t byte0 = vm->byte;
     /* entry=238, native=0xa94a5, class=unobserved_static, events=0, shape=-, delta=- */
     /* native IP reads: 0xa960a:byte0,0xa96b4:b2,0xa96df:u16_0,0xa9839:u16_3,0xa9850:u16_3 */
+    /* static-only queue: rank=112, tier=tier5_large_static_replay, sidecar=vm_unobserved_handlers_retdec_batch05.c, funcs=function_a94a5, span=1155, action=defer_until_small_static_handlers_are_inlined */
     /* decode signature: IPADV+0x3;RIP+0x3/2:movzx;WF+0x170/4:xor;TDYN;RTdyn/8:mov;WF+0xa/8:add */
     /* dispatch skeleton: RF+0xa/8:mov;IPADV+0x3;RIP+0x3/2:movzx;RF+0x10f/8:mov;WF+0x170/4:xor;TDYN;RTdyn/8:mov;WF+0xa/8:add;JMP:rdx */
     vm->state = state0 | flags0 & 0x5077208fu - flags0 & 0x5077208fu & 0x7d76c5bau ^ U16(vm->ip + 0x3u) + 0x48a4c63eu;
@@ -4702,6 +4816,7 @@ static VMOpResult op_entry_244(VMState *vm) {
     uint8_t byte0 = vm->byte;
     /* entry=244, native=0xaaf3e, class=unobserved_static, events=0, shape=-, delta=- */
     /* native IP reads: 0xaaf7b:u16_7,0xaaf86:u16_0,0xaafb8:u16_5,0xab001:u16_0,0xab00f:u16_7,0xab0d7:u16_2 */
+    /* static-only queue: rank=13, tier=tier1_single_function_medium_static_replay, sidecar=vm_unobserved_handlers_retdec_batch01.c, funcs=function_aaf3e, span=528, action=inline_retdec_function_after_operand_rewrite */
     /* decode signature: IPADV+0x2;RIP+0x2/2:movzx;RF+0x170/4:sub;TDYN;RTdyn/8:mov;WF+0xa/8:add */
     /* dispatch skeleton: RF+0x10f/8:mov;RF+0xa/8:mov;IPADV+0x2;RIP+0x2/2:movzx;RF+0x170/4:sub;TDYN;RTdyn/8:mov;WF+0xa/8:add;JMP:r14 */
     vm->state = state0;
@@ -4760,6 +4875,7 @@ static VMOpResult op_entry_247(VMState *vm) {
     uint8_t byte0 = vm->byte;
     /* entry=247, native=0xabd6f, class=unobserved_static, events=0, shape=-, delta=- */
     /* native IP reads: 0xabdcf:u16_3,0xabe09:b2,0xac08e:u16_0 */
+    /* static-only queue: rank=50, tier=tier1_single_function_medium_static_replay, sidecar=vm_unobserved_handlers_retdec_batch04.c, funcs=function_abd6f, span=941, action=inline_retdec_function_after_operand_rewrite */
     /* decode signature: IPADV+0x0;RIP+0x0/2:movzx;RF+0x170/4:add;WF+0x170/4:xor;TDYN;RTdyn/8:mov;WF+0xa/8:add */
     /* dispatch skeleton: RF+0xa/8:mov;IPADV+0x0;RF+0x10f/8:mov;RIP+0x0/2:movzx;RF+0x170/4:add;WF+0x170/4:xor;TDYN;RTdyn/8:mov;WF+0xa/8:add;JMP:rdx;RF+0x81/8:mov */
     vm->state = state0 ^ U16(vm->ip + 0x0u) + state0 + 0x4c044f6fu;
@@ -4798,6 +4914,7 @@ static VMOpResult op_entry_249(VMState *vm) {
     uint8_t byte0 = vm->byte;
     /* entry=249, native=0xac440, class=unobserved_static, events=0, shape=-, delta=- */
     /* native IP reads: 0xac51f:u16_9,0xac530:u16_4,0xac5ac:u16_2,0xac64b:u16_9,0xac64f:u16_4,0xac6de:b8,0xac72a:u16_6,0xac77a:u16_0 */
+    /* static-only queue: rank=104, tier=tier3_multi_function_shared_range, sidecar=vm_unobserved_handlers_retdec_batch04.c, funcs=function_ac440,function_ac804,function_ac807, span=975, action=recover_shared_chunks_or split_by_entry */
     /* decode signature: IPADV+0x0;RIP+0x0/2:movzx;RF+0x170/4:sub;WF+0x170/4:sub;TDYN;RTdyn/8:mov;WF+0xa/8:add */
     /* dispatch skeleton: RF+0xa/8:mov;IPADV+0x0;RIP+0x0/2:movzx;RF+0x10f/8:mov;RF+0x170/4:sub;WF+0x170/4:sub;TDYN;RTdyn/8:mov;WF+0xa/8:add;JMP:r11;RF+0x81/8:mov */
     vm->state = state0 - U16(vm->ip + 0x0u) - state0 + 0x4522afcau;
@@ -4857,6 +4974,7 @@ static VMOpResult op_entry_252(VMState *vm) {
     uint8_t byte0 = vm->byte;
     /* entry=252, native=0xacefd, class=unobserved_static, events=0, shape=-, delta=- */
     /* native IP reads: 0xacf11:u32_0,0xacf65:u32_0,0xacfc8:byte0,0xad0b4:u32_2,0xad292:u16_0 */
+    /* static-only queue: rank=134, tier=tier4_native_call_or_ret_side_effect, sidecar=vm_unobserved_handlers_retdec_batch05.c, funcs=function_acefd,function_acfb1, span=1081, action=audit_call_ret_side_effects_before_inlining */
     /* decode signature: IPADV+0x0;RIP+0x0/2:movzx;WF+0x170/4:xor;TDYN;RTdyn/8:mov;WF+0xa/8:add */
     /* dispatch skeleton: RF+0xa/8:mov;IPADV+0x0;RIP+0x0/2:movzx;RF+0x10f/8:mov;WF+0x170/4:xor;TDYN;RTdyn/8:mov;WF+0xa/8:add;JMP:r8 */
     vm->state = state0 | 0x764111b0u + 0x6d2270cbu + U32(vm->ip + 0x2u) ^ flags0 + flags0 | 0x62c3b0ddu | 0x2b96d1d1u & 0x2d46e2e3u ^ U16(vm->ip + 0x0u) + 0x7c5d4802u;
@@ -4917,6 +5035,7 @@ static VMOpResult op_entry_255(VMState *vm) {
     uint8_t byte0 = vm->byte;
     /* entry=255, native=0xad768, class=unobserved_static, events=0, shape=-, delta=- */
     /* native IP reads: 0xad789:u16_2,0xad794:u16_6,0xad7bb:u16_0,0xad80e:u16_4 */
+    /* static-only queue: rank=2, tier=tier0_single_function_small_static_replay, sidecar=vm_unobserved_handlers_retdec_batch00.c, funcs=function_ad768, span=238, action=inline_retdec_function_into_handler_model */
     /* tier0 static model: rank=2, retdec=function_ad768, slot_status=retdec_return_slot, ip_advance=8 */
     /* tier0 effects: qword store through frame[s16(ip+6)]; pointer step by frame[s16(ip+0)] sign; ip += 8 */
     /* decode signature: IPADV+0x4;RIP+0x4/2:movzx;RF+0x170/4:sub;TDYN;RTdyn/8:mov;WF+0xa/8:add */
@@ -5056,6 +5175,7 @@ static VMOpResult op_entry_262(VMState *vm) {
     uint8_t byte0 = vm->byte;
     /* entry=262, native=0xaef02, class=unobserved_static, events=0, shape=-, delta=- */
     /* native IP reads: 0xaef49:u16_2,0xaef4d:u16_4,0xaefa9:u16_0,0xaf05a:u16_4,0xaf06c:u16_2,0xaf0e1:byte0,0xaf132:b10,0xaf176:u16_6,0xaf1ec:u16_8 */
+    /* static-only queue: rank=42, tier=tier1_single_function_medium_static_replay, sidecar=vm_unobserved_handlers_retdec_batch03.c, funcs=function_aef02, span=888, action=inline_retdec_function_after_operand_rewrite */
     /* decode signature: IPADV+0x8;RIP+0x8/2:movzx;RF+0x170/4:add;TDYN;RTdyn/8:mov;WF+0xa/8:add;RF+0x170/4:mov */
     /* dispatch skeleton: RF+0x10f/8:mov;RF+0xa/8:mov;IPADV+0x8;RIP+0x8/2:movzx;RF+0x170/4:add;TDYN;RTdyn/8:mov;WF+0xa/8:add;JMP:r13;RF+0x170/4:mov */
     vm->state = state0 + flags0;
@@ -5073,6 +5193,7 @@ static VMOpResult op_entry_263(VMState *vm) {
     uint8_t byte0 = vm->byte;
     /* entry=263, native=0xaf26d, class=unobserved_static, events=0, shape=-, delta=- */
     /* native IP reads: 0xaf2b7:u16_4,0xaf301:u16_9,0xaf32e:u16_6,0xaf378:u16_4,0xaf383:u16_9,0xaf3d4:b8,0xaf401:u16_2,0xaf465:u16_0 */
+    /* static-only queue: rank=64, tier=tier2_small_shared_range_split, sidecar=vm_unobserved_handlers_retdec_batch01.c, funcs=function_af26d,function_af4d1, span=620, action=split_overlapping_retdec_chunks_then_inline */
     /* decode signature: IPADV+0x0;RIP+0x0/2:movzx;WF+0x170/4:sub;TDYN;RTdyn/8:mov;WF+0xa/8:add */
     /* dispatch skeleton: RF+0x10f/8:mov;RF+0xa/8:mov;IPADV+0x0;RIP+0x0/2:movzx;WF+0x170/4:sub;TDYN;RTdyn/8:mov;WF+0xa/8:add;JMP:r13 */
     vm->state = state0 - U16(vm->ip + 0x0u) ^ 0x6d9939f2u;
@@ -5111,6 +5232,7 @@ static VMOpResult op_entry_265(VMState *vm) {
     uint8_t byte0 = vm->byte;
     /* entry=265, native=0xaf57f, class=unobserved_static, events=0, shape=-, delta=- */
     /* native IP reads: 0xaf5b8:u16_24,0xaf5de:u16_26,0xaf604:u16_18,0xaf62a:u16_10,0xaf64f:u16_22,0xaf674:u16_14,0xaf69a:u16_20,0xaf6be:u16_12,0xaf6e3:u16_6,0xaf709:u16_0,0xaf72d:u16_2,0xaf74e:u16_30,0xaf771:u16_32,0xaf795:u16_4,0xaf7c9:u16_28,0xaf7ee:u16_16,0xaf86c:u16_8 */
+    /* static-only queue: rank=121, tier=tier4_native_call_or_ret_side_effect, sidecar=vm_unobserved_handlers_retdec_batch03.c, funcs=function_af57f, span=826, action=audit_call_ret_side_effects_before_inlining */
     /* decode signature: IPADV+0x8;RIP+0x8/2:movzx;RF+0x170/4:add;WF+0x170/4:and;TDYN;RTdyn/8:mov;WF+0xa/8:add */
     /* dispatch skeleton: RF+0xa/8:mov;RF+0x10f/8:mov;IPADV+0x8;RIP+0x8/2:movzx;RF+0x170/4:add;WF+0x170/4:and;TDYN;RTdyn/8:mov;WF+0xa/8:add;JMP:r8 */
     vm->state = state0 & U16(vm->ip + 0x8u) + state0 - 0x6fba3362u;
@@ -5209,6 +5331,7 @@ static VMOpResult op_entry_270(VMState *vm) {
     uint8_t byte0 = vm->byte;
     /* entry=270, native=0xb0930, class=unobserved_static, events=0, shape=-, delta=- */
     /* native IP reads: 0xb094b:u32_0,0xb0976:u16_4,0xb0aa7:u32_0,0xb0c8e:byte0,0xb0d49:u16_8 */
+    /* static-only queue: rank=143, tier=tier4_native_call_or_ret_side_effect, sidecar=vm_unobserved_handlers_retdec_batch05.c, funcs=function_b0930,function_b09ab,function_b0e32, span=1289, action=audit_call_ret_side_effects_before_inlining */
     /* decode signature: IPADV+0x8;RIP+0x8/2:movzx;RF+0x170/4:xor;WF+0x170/4:and;TDYN;RTdyn/8:mov;WF+0xa/8:add */
     /* dispatch skeleton: RF+0xa/8:mov;IPADV+0x8;RF+0x10f/8:mov;RIP+0x8/2:movzx;RF+0x170/4:xor;WF+0x170/4:and;TDYN;RTdyn/8:mov;WF+0xa/8:add;JMP:r12 */
     vm->state = state0 - flags0 ^ flags0 ^ 0x50b7f0a2u & 0x409cc142u | 0x3d990ad0u - flags0 - 0x20f67834u + 0x5bab660u & 0x52dfbf43u & U16(vm->ip + 0x8u) ^ state0 - flags0 ^ flags0 ^ 0x50b7f0a2u & 0x409cc142u | 0x3d990ad0u - flags0 - 0x20f67834u + 0x5bab660u & 0x52dfbf43u;
@@ -5227,6 +5350,7 @@ static VMOpResult op_entry_271(VMState *vm) {
     uint8_t byte0 = vm->byte;
     /* entry=271, native=0xb09ab, class=unobserved_static, events=0, shape=-, delta=- */
     /* native IP reads: 0xb0aa7:u32_0,0xb0c8e:byte0,0xb0d49:u16_8 */
+    /* static-only queue: rank=102, tier=tier3_multi_function_shared_range, sidecar=vm_unobserved_handlers_retdec_batch05.c, funcs=function_b09ab,function_b0e32, span=1166, action=recover_shared_chunks_or split_by_entry */
     /* decode signature: IPADV+0x8;RIP+0x8/2:movzx;RF+0x170/4:xor;WF+0x170/4:and;TDYN;RTdyn/8:mov;WF+0xa/8:add */
     /* dispatch skeleton: RF+0xa/8:mov;IPADV+0x8;RF+0x10f/8:mov;RIP+0x8/2:movzx;RF+0x170/4:xor;WF+0x170/4:and;TDYN;RTdyn/8:mov;WF+0xa/8:add;JMP:r12 */
     vm->state = state0 - flags0 ^ flags0 ^ 0x50b7f0a2u & 0x409cc142u | 0x3d990ad0u - flags0 - 0x20f67834u + 0x5bab660u & 0x52dfbf43u & U16(vm->ip + 0x8u) ^ state0 - flags0 ^ flags0 ^ 0x50b7f0a2u & 0x409cc142u | 0x3d990ad0u - flags0 - 0x20f67834u + 0x5bab660u & 0x52dfbf43u;
@@ -5245,6 +5369,7 @@ static VMOpResult op_entry_272(VMState *vm) {
     uint8_t byte0 = vm->byte;
     /* entry=272, native=0xb0e30, class=unobserved_static, events=0, shape=-, delta=- */
     /* native IP reads: 0xb0e95:u16_6,0xb0eac:u16_4,0xb0f09:u16_8,0xb0f8e:u16_6,0xb0fcb:u16_4,0xb106b:b10,0xb10a7:u16_2,0xb1156:u16_0 */
+    /* static-only queue: rank=48, tier=tier1_single_function_medium_static_replay, sidecar=vm_unobserved_handlers_retdec_batch04.c, funcs=function_b0e30, span=935, action=inline_retdec_function_after_operand_rewrite */
     /* decode signature: IPADV+0x0;RIP+0x0/2:movzx;RF+0x170/4:sub;WF+0x170/4:sub;TDYN;RTdyn/8:mov;WF+0xa/8:add */
     /* dispatch skeleton: RF+0x10f/8:mov;RF+0xa/8:mov;IPADV+0x0;RIP+0x0/2:movzx;RF+0x170/4:sub;WF+0x170/4:sub;TDYN;RTdyn/8:mov;WF+0xa/8:add;JMP:r15 */
     vm->state = state0 - U16(vm->ip + 0x0u) - state0;
@@ -5282,6 +5407,7 @@ static VMOpResult op_entry_274(VMState *vm) {
     uint8_t byte0 = vm->byte;
     /* entry=274, native=0xb1548, class=unobserved_static, events=0, shape=-, delta=- */
     /* native IP reads: 0xb15c1:u16_7,0xb15fc:u16_5,0xb1630:u16_3,0xb166c:u16_5,0xb1684:u16_7,0xb16dc:b2,0xb171f:u16_9,0xb1774:u16_0 */
+    /* static-only queue: rank=67, tier=tier2_small_shared_range_split, sidecar=vm_unobserved_handlers_retdec_batch02.c, funcs=function_b1548,function_b180e, span=722, action=split_overlapping_retdec_chunks_then_inline */
     /* decode signature: IPADV+0x0;RIP+0x0/2:movzx;RF+0x170/4:xor;WF+0x170/4:add;TDYN;RTdyn/8:mov;WF+0xa/8:add */
     /* dispatch skeleton: RF+0xa/8:mov;IPADV+0x0;RIP+0x0/2:movzx;RF+0x10f/8:mov;RF+0x170/4:xor;WF+0x170/4:add;TDYN;RTdyn/8:mov;WF+0xa/8:add;JMP:r11 */
     vm->state = state0 + U16(vm->ip + 0x0u) ^ state0;
@@ -5300,6 +5426,7 @@ static VMOpResult op_entry_275(VMState *vm) {
     uint8_t byte0 = vm->byte;
     /* entry=275, native=0xb180e, class=unobserved_static, events=0, shape=-, delta=- */
     /* native IP reads: 0xb186c:u16_5,0xb1889:u16_7,0xb18dc:u16_9,0xb1977:u16_7,0xb19a4:u16_5,0xb1a09:b0,0xb1a61:u16_3,0xb1a9d:u16_1 */
+    /* static-only queue: rank=79, tier=tier3_multi_function_shared_range, sidecar=vm_unobserved_handlers_retdec_batch02.c, funcs=function_b180e,function_b1b32, span=809, action=recover_shared_chunks_or split_by_entry */
     /* decode signature: IPADV+0x1;RIP+0x1/2:movzx;RF+0x170/4:xor;WF+0x170/4:or;TDYN;RTdyn/8:mov;WF+0xa/8:add */
     /* dispatch skeleton: RF+0xa/8:mov;IPADV+0x1;RIP+0x1/2:movzx;RF+0x10f/8:mov;RF+0x170/4:xor;WF+0x170/4:or;TDYN;RTdyn/8:mov;WF+0xa/8:add;JMP:r15 */
     vm->state = state0 | U16(vm->ip + 0x1u) ^ state0 - 0x26ed1596u;
@@ -5336,6 +5463,7 @@ static VMOpResult op_entry_277(VMState *vm) {
     uint8_t byte0 = vm->byte;
     /* entry=277, native=0xb1fd5, class=unobserved_static, events=0, shape=-, delta=- */
     /* native IP reads: 0xb209c:u16_3,0xb2116:byte0,0xb222f:b2,0xb227d:u16_3,0xb22c9:u16_0 */
+    /* static-only queue: rank=90, tier=tier3_multi_function_shared_range, sidecar=vm_unobserved_handlers_retdec_batch03.c, funcs=function_b1fd5,function_b2346, span=887, action=recover_shared_chunks_or split_by_entry */
     /* decode signature: IPADV+0x0;RIP+0x0/2:movzx;RF+0x170/4:add;WF+0x170/4:sub;TDYN;RTdyn/8:mov;WF+0xa/8:add */
     /* dispatch skeleton: RF+0x10f/8:mov;RF+0xa/8:mov;IPADV+0x0;RIP+0x0/2:movzx;RF+0x170/4:add;WF+0x170/4:sub;TDYN;RTdyn/8:mov;WF+0xa/8:add;JMP:rdi */
     vm->state = state0 & flags0 - U16(vm->ip + 0x0u) + state0 & flags0;
@@ -5377,6 +5505,7 @@ static VMOpResult op_entry_279(VMState *vm) {
     uint8_t byte0 = vm->byte;
     /* entry=279, native=0xb23f7, class=unobserved_static, events=0, shape=-, delta=- */
     /* native IP reads: 0xb2474:byte0,0xb24e8:b4,0xb2536:u16_0,0xb25cd:u16_2 */
+    /* static-only queue: rank=21, tier=tier1_single_function_medium_static_replay, sidecar=vm_unobserved_handlers_retdec_batch01.c, funcs=function_b23f7, span=631, action=inline_retdec_function_after_operand_rewrite */
     /* decode signature: IPADV+0x2;RIP+0x2/2:movzx;RF+0x170/4:sub;WF+0x170/4:or;TDYN;RTdyn/8:mov;WF+0xa/8:add */
     /* dispatch skeleton: RF+0x10f/8:mov;RF+0xa/8:mov;IPADV+0x2;RIP+0x2/2:movzx;RF+0x170/4:sub;WF+0x170/4:or;TDYN;RTdyn/8:mov;WF+0xa/8:add;JMP:r10;RF+0x23/4:mov */
     vm->state = state0 | flags0 | U16(vm->ip + 0x2u) - state0 | flags0 + 0x68baea26u;
@@ -5515,6 +5644,7 @@ static VMOpResult op_entry_286(VMState *vm) {
     uint8_t byte0 = vm->byte;
     /* entry=286, native=0xb42e2, class=unobserved_static, events=0, shape=-, delta=- */
     /* native IP reads: 0xb4362:byte0,0xb449c:b4,0xb44e3:u16_0,0xb454c:u16_2 */
+    /* static-only queue: rank=30, tier=tier1_single_function_medium_static_replay, sidecar=vm_unobserved_handlers_retdec_batch02.c, funcs=function_b42e2, span=762, action=inline_retdec_function_after_operand_rewrite */
     /* decode signature: IPADV+0x2;RIP+0x2/2:movzx;RF+0x170/4:add;WF+0x170/4:xor;TDYN;RTdyn/8:mov;WF+0xa/8:add */
     /* dispatch skeleton: RF+0x10f/8:mov;RF+0xa/8:mov;IPADV+0x2;RIP+0x2/2:movzx;RF+0x170/4:add;WF+0x170/4:xor;TDYN;RTdyn/8:mov;WF+0xa/8:add;JMP:r10 */
     vm->state = state0 & flags0 ^ U16(vm->ip + 0x2u) + state0 & flags0;
@@ -5553,6 +5683,7 @@ static VMOpResult op_entry_288(VMState *vm) {
     uint8_t byte0 = vm->byte;
     /* entry=288, native=0xb4980, class=unobserved_static, events=0, shape=-, delta=- */
     /* native IP reads: 0xb499b:u16_6,0xb49c1:u16_4,0xb49ed:u32_0,0xb4ab9:u16_6,0xb4ac7:u16_4,0xb4b16:u16_2,0xb4ba0:u16_0 */
+    /* static-only queue: rank=125, tier=tier4_native_call_or_ret_side_effect, sidecar=vm_unobserved_handlers_retdec_batch01.c, funcs=function_b4980,function_b4a2b,function_b4c05, span=650, action=audit_call_ret_side_effects_before_inlining */
     /* decode signature: IPADV+0x0;RIP+0x0/2:movzx;RF+0x170/4:sub;TDYN;RTdyn/8:mov;WF+0xa/8:add */
     /* dispatch skeleton: RF+0x10f/8:mov;RF+0xa/8:mov;IPADV+0x0;RIP+0x0/2:movzx;RF+0x170/4:sub;TDYN;RTdyn/8:mov;WF+0xa/8:add;JMP:rdx */
     vm->state = state0;
@@ -5570,6 +5701,7 @@ static VMOpResult op_entry_289(VMState *vm) {
     uint8_t byte0 = vm->byte;
     /* entry=289, native=0xb4a2b, class=unobserved_static, events=0, shape=-, delta=- */
     /* native IP reads: 0xb4ab9:u16_6,0xb4ac7:u16_4,0xb4b16:u16_2,0xb4ba0:u16_0 */
+    /* static-only queue: rank=59, tier=tier2_small_shared_range_split, sidecar=vm_unobserved_handlers_retdec_batch00.c, funcs=function_b4a2b,function_b4c05, span=479, action=split_overlapping_retdec_chunks_then_inline */
     /* decode signature: IPADV+0x0;RIP+0x0/2:movzx;RF+0x170/4:sub;TDYN;RTdyn/8:mov;WF+0xa/8:add */
     /* dispatch skeleton: RF+0x10f/8:mov;RF+0xa/8:mov;IPADV+0x0;RIP+0x0/2:movzx;RF+0x170/4:sub;TDYN;RTdyn/8:mov;WF+0xa/8:add;JMP:rdx */
     vm->state = state0;
@@ -5649,6 +5781,7 @@ static VMOpResult op_entry_293(VMState *vm) {
     uint8_t byte0 = vm->byte;
     /* entry=293, native=0xb593f, class=unobserved_static, events=0, shape=-, delta=- */
     /* native IP reads: 0xb59b0:u32_0,0xb5ba3:byte0,0xb5bc1:byte0,0xb5c90:u16_8 */
+    /* static-only queue: rank=111, tier=tier5_large_static_replay, sidecar=vm_unobserved_handlers_retdec_batch05.c, funcs=function_b593f, span=1098, action=defer_until_small_static_handlers_are_inlined */
     /* decode signature: IPADV+0x8;RIP+0x8/2:movzx;RF+0x170/4:add;TDYN;RTdyn/8:mov;WF+0xa/8:add */
     /* dispatch skeleton: RF+0x10f/8:mov;RF+0xa/8:mov;IPADV+0x8;RIP+0x8/2:movzx;RF+0x170/4:add;TDYN;RTdyn/8:mov;WF+0xa/8:add;JMP:rcx */
     vm->state = state0 + U32(vm->ip + 0x0u) ^ flags0 | 0x18ec5db5u & 0x2a26c115u ^ flags0 | 0x18ec5db5u ^ 0x77a19d87u - 0x79e5d6a1u & 0x2b2bf075u | 0x1ed6f586u & 0x32259d7eu;
@@ -5667,6 +5800,7 @@ static VMOpResult op_entry_294(VMState *vm) {
     uint8_t byte0 = vm->byte;
     /* entry=294, native=0xb5d7c, class=unobserved_static, events=0, shape=-, delta=- */
     /* native IP reads: 0xb5dbd:u16_0,0xb5dea:b4,0xb6051:u16_2 */
+    /* static-only queue: rank=99, tier=tier3_multi_function_shared_range, sidecar=vm_unobserved_handlers_retdec_batch03.c, funcs=function_b5d7c,function_b60e2,function_b60e7, span=878, action=recover_shared_chunks_or split_by_entry */
     /* decode signature: IPADV+0x2;RIP+0x2/2:movzx;RF+0x170/4:xor;WF+0x170/4:and;TDYN;RTdyn/8:mov;WF+0xa/8:add */
     /* dispatch skeleton: RF+0xa/8:mov;RF+0x10f/8:mov;IPADV+0x2;RIP+0x2/2:movzx;RF+0x170/4:xor;WF+0x170/4:and;TDYN;RTdyn/8:mov;WF+0xa/8:add;JMP:r14 */
     vm->state = state0 & U16(vm->ip + 0x2u) ^ state0;
@@ -5704,6 +5838,7 @@ static VMOpResult op_entry_296(VMState *vm) {
     uint8_t byte0 = vm->byte;
     /* entry=296, native=0xb625d, class=unobserved_static, events=0, shape=-, delta=- */
     /* native IP reads: 0xb62f5:byte0,0xb63bb:b0,0xb63f6:u16_1,0xb6452:u16_3 */
+    /* static-only queue: rank=82, tier=tier3_multi_function_shared_range, sidecar=vm_unobserved_handlers_retdec_batch01.c, funcs=function_b625d,function_b64dc,function_b64df, span=647, action=recover_shared_chunks_or split_by_entry */
     /* decode signature: IPADV+0x3;RIP+0x3/2:movzx;WF+0x170/4:sub;TDYN;RTdyn/8:mov;WF+0xa/8:add */
     /* dispatch skeleton: RF+0x10f/8:mov;RF+0xa/8:mov;IPADV+0x3;RIP+0x3/2:movzx;WF+0x170/4:sub;TDYN;RTdyn/8:mov;WF+0xa/8:add;JMP:rsi */
     vm->state = state0 - U16(vm->ip + 0x3u) - 0x1240ca15u;
@@ -5741,6 +5876,7 @@ static VMOpResult op_entry_298(VMState *vm) {
     uint8_t byte0 = vm->byte;
     /* entry=298, native=0xb6902, class=unobserved_static, events=0, shape=-, delta=- */
     /* native IP reads: 0xb6970:u16_5,0xb697a:u16_3,0xb69e9:u16_0,0xb6a8a:u16_5,0xb6aa1:u16_3,0xb6abc:u16_5 + (Ptr(kind='frame', off=0)),0xb6b2a:u16_7 */
+    /* static-only queue: rank=28, tier=tier1_single_function_medium_static_replay, sidecar=vm_unobserved_handlers_retdec_batch02.c, funcs=function_b6902, span=706, action=inline_retdec_function_after_operand_rewrite */
     /* decode signature: IPADV+0x7;RIP+0x7/2:movzx;RF+0x170/4:add;TDYN;RTdyn/8:mov;WF+0xa/8:add */
     /* dispatch skeleton: RF+0x10f/8:mov;RF+0xa/8:mov;IPADV+0x7;RIP+0x7/2:movzx;RF+0x170/4:add;TDYN;RTdyn/8:mov;WF+0xa/8:add;JMP:r10 */
     vm->state = state0;
@@ -5840,6 +5976,7 @@ static VMOpResult op_entry_303(VMState *vm) {
     uint8_t byte0 = vm->byte;
     /* entry=303, native=0xb769c, class=unobserved_static, events=0, shape=-, delta=- */
     /* native IP reads: 0xb76b7:u16_2,0xb76e0:u16_0,0xb7749:u16_4,0xb7763:u16_2,0xb7789:u16_6,0xb781e:u16_0 */
+    /* static-only queue: rank=128, tier=tier4_native_call_or_ret_side_effect, sidecar=vm_unobserved_handlers_retdec_batch01.c, funcs=function_b769c,function_b7717,function_b78b2,function_b78b5, span=545, action=audit_call_ret_side_effects_before_inlining */
     /* decode signature: IPADV+0x0;RIP+0x0/2:movzx;TDYN;RTdyn/8:mov;WF+0xa/8:add */
     /* dispatch skeleton: RF+0x10f/8:mov;RF+0xa/8:mov;IPADV+0x0;RIP+0x0/2:movzx;TDYN;RTdyn/8:mov;WF+0xa/8:add;JMP:r9 */
     vm->state = state0;
@@ -5858,6 +5995,7 @@ static VMOpResult op_entry_304(VMState *vm) {
     uint8_t byte0 = vm->byte;
     /* entry=304, native=0xb7717, class=unobserved_static, events=0, shape=-, delta=- */
     /* native IP reads: 0xb7749:u16_4,0xb7763:u16_2,0xb7789:u16_6,0xb781e:u16_0 */
+    /* static-only queue: rank=73, tier=tier3_multi_function_shared_range, sidecar=vm_unobserved_handlers_retdec_batch00.c, funcs=function_b7717,function_b78b2,function_b78b5, span=422, action=recover_shared_chunks_or split_by_entry */
     /* decode signature: IPADV+0x0;RIP+0x0/2:movzx;TDYN;RTdyn/8:mov;WF+0xa/8:add */
     /* dispatch skeleton: RF+0x10f/8:mov;RF+0xa/8:mov;IPADV+0x0;RIP+0x0/2:movzx;TDYN;RTdyn/8:mov;WF+0xa/8:add;JMP:r9 */
     vm->state = state0;
@@ -5897,6 +6035,7 @@ static VMOpResult op_entry_306(VMState *vm) {
     uint8_t byte0 = vm->byte;
     /* entry=306, native=0xb7bba, class=unobserved_static, events=0, shape=-, delta=- */
     /* native IP reads: 0xb7de3:u32_0,0xb7f88:u16_4 */
+    /* static-only queue: rank=113, tier=tier5_large_static_replay, sidecar=vm_unobserved_handlers_retdec_batch05.c, funcs=function_b7bba, span=1207, action=defer_until_small_static_handlers_are_inlined */
     /* decode signature: IPADV+0x4;RIP+0x4/2:movzx;RF+0x170/4:xor;WF+0x170/4:sub;TDYN;RTdyn/8:mov;WF+0xa/8:add */
     /* dispatch skeleton: RF+0xa/8:mov;IPADV+0x4;RIP+0x4/2:movzx;RF+0x10f/8:mov;RF+0x170/4:xor;WF+0x170/4:sub;TDYN;RTdyn/8:mov;WF+0xa/8:add;JMP:rbx */
     vm->state = state0 + flags0 & flags0 & 0x65f916c5u + 0x39659fc4u ^ 0x20457dau & 0x3f8e5ee9u & flags0 & 0x65f916c5u + 0x39659fc4u ^ 0x6a71ecf1u & 0x3fa191cu - U16(vm->ip + 0x4u) ^ state0 + flags0 & flags0 & 0x65f916c5u + 0x39659fc4u ^ 0x20457dau & 0x3f8e5ee9u & flags0 & 0x65f916c5u + 0x39659fc4u ^ 0x6a71ecf1u & 0x3fa191cu + 0x735687d1u;
@@ -5957,6 +6096,7 @@ static VMOpResult op_entry_309(VMState *vm) {
     uint8_t byte0 = vm->byte;
     /* entry=309, native=0xb84a7, class=unobserved_static, events=0, shape=-, delta=- */
     /* native IP reads: 0xb84bb:u32_0,0xb850d:u32_0,0xb8577:byte0,0xb85e5:u16_0,0xb863f:byte0,0xb868c:u16_2 */
+    /* static-only queue: rank=120, tier=tier4_native_call_or_ret_side_effect, sidecar=vm_unobserved_handlers_retdec_batch01.c, funcs=function_b84a7,function_b8556, span=603, action=audit_call_ret_side_effects_before_inlining */
     /* decode signature: IPADV+0x2;RIP+0x2/2:mov;TDYN;RTdyn/8:mov;WF+0xa/8:add */
     /* dispatch skeleton: RF+0xa/8:mov;IPADV+0x2;RIP+0x2/2:mov;RF+0x10f/8:mov;TDYN;RTdyn/8:mov;WF+0xa/8:add;JMP:r13 */
     vm->state = state0;
@@ -6017,6 +6157,7 @@ static VMOpResult op_entry_312(VMState *vm) {
     uint8_t byte0 = vm->byte;
     /* entry=312, native=0xb87aa, class=unobserved_static, events=0, shape=-, delta=- */
     /* native IP reads: 0xb87bd:byte0,0xb887f:byte0,0xb88a0:byte0,0xb891c:b0,0xb8948:u16_1,0xb8975:byte0,0xb8a92:u16_3 */
+    /* static-only queue: rank=94, tier=tier3_multi_function_shared_range, sidecar=vm_unobserved_handlers_retdec_batch04.c, funcs=function_b87aa,function_b8b47, span=933, action=recover_shared_chunks_or split_by_entry */
     /* decode signature: IPADV+0x3;RIP+0x3/2:movzx;RF+0x170/4:xor;WF+0x170/4:sub;TDYN;RTdyn/8:mov;WF+0xa/8:add */
     /* dispatch skeleton: RF+0xa/8:mov;IPADV+0x3;RIP+0x3/2:movzx;RF+0x10f/8:mov;RF+0x170/4:xor;WF+0x170/4:sub;TDYN;RTdyn/8:mov;WF+0xa/8:add;JMP:r8;RF+0x81/8:mov */
     vm->state = state0 - 0x1889c111u - flags0 - state0 - 0x1889c111u + 0x3cae9026u | 0x2b959efau | 0x35e8abc1u - U16(vm->ip + 0x3u) ^ state0 - 0x1889c111u - flags0 - state0 - 0x1889c111u + 0x3cae9026u | 0x2b959efau | 0x35e8abc1u ^ 0xa9f4228u;
@@ -6137,6 +6278,7 @@ static VMOpResult op_entry_318(VMState *vm) {
     uint8_t byte0 = vm->byte;
     /* entry=318, native=0xba683, class=unobserved_static, events=0, shape=-, delta=- */
     /* native IP reads: 0xba69e:u16_6,0xba6c3:u16_4,0xba6ef:u32_0,0xba96e:byte0,0xbaafd:b4,0xbab6d:u16_0,0xbacbf:u16_2 */
+    /* static-only queue: rank=153, tier=tier4_native_call_or_ret_side_effect, sidecar=vm_unobserved_handlers_retdec_batch06.c, funcs=function_ba683,function_ba72f,function_badaa, span=1839, action=audit_call_ret_side_effects_before_inlining */
     /* decode signature: IPADV+0x2;RIP+0x2/2:movzx;RF+0x170/4:add;WF+0x170/4:add;TDYN;RTdyn/8:mov;WF+0xa/8:add */
     /* dispatch skeleton: RF+0xa/8:mov;RF+0x10f/8:mov;IPADV+0x2;RIP+0x2/2:movzx;RF+0x170/4:add;WF+0x170/4:add;TDYN;RTdyn/8:mov;WF+0xa/8:add;JMP:r8 */
     /* vm->state = state0 & flags0 | 0x6be63b72u ^ 0x55d6ffe2u ^ 0x655e4f3bu | 0x27c134adu & state0 + 0x4fa9822eu | 0x5ed258f1u | flags0 | 0x6be63b72u ^ 0x55d6ffe2u ^ 0x655e4f3bu | 0x27c134adu & state0 + 0x4fa9822eu ^ flags0 | 0x6be63b72u ^ 0x55d6ffe2u ^ 0x655e4f3bu | 0x27c134adu & state0 + 0x4fa9822eu + 0x2ba77993u + U16(vm->ip + 0x2u) + state0 & flags0 | 0x6be63b72u ^ 0x5...; */
@@ -6258,6 +6400,7 @@ static VMOpResult op_entry_324(VMState *vm) {
     uint8_t byte0 = vm->byte;
     /* entry=324, native=0xbb8aa, class=unobserved_static, events=0, shape=-, delta=- */
     /* native IP reads: 0xbb909:u16_4,0xbb913:u16_6,0xbb937:u16_2,0xbb9aa:u16_0 */
+    /* static-only queue: rank=7, tier=tier0_single_function_small_static_replay, sidecar=vm_unobserved_handlers_retdec_batch00.c, funcs=function_bb8aa, span=370, action=inline_retdec_function_into_handler_model */
     /* tier0 static model: rank=7, retdec=function_bb8aa, slot_status=retdec_table_slot, ip_advance=8 */
     /* tier0 effects: state += flags; word store through frame[s16(ip+6)]; pointer step by frame[s16(ip+2)] sign; final state &= slot source; ip += 8 */
     /* decode signature: IPADV+0x0;RIP+0x0/2:movzx;RF+0x170/4:sub;WF+0x170/4:and;TDYN;RTdyn/8:mov;WF+0xa/8:add */
@@ -6280,6 +6423,7 @@ static VMOpResult op_entry_325(VMState *vm) {
     uint8_t byte0 = vm->byte;
     /* entry=325, native=0xbba0f, class=unobserved_static, events=0, shape=-, delta=- */
     /* native IP reads: 0xbbbbe:byte0,0xbbcc8:b2,0xbbd83:u16_0,0xbbfbb:u16_3 */
+    /* static-only queue: rank=116, tier=tier5_large_static_replay, sidecar=vm_unobserved_handlers_retdec_batch06.c, funcs=function_bba0f, span=1643, action=defer_until_small_static_handlers_are_inlined */
     /* decode signature: IPADV+0x3;RIP+0x3/2:movzx;WF+0x170/4:and;TDYN;RTdyn/8:mov;WF+0xa/8:add */
     /* dispatch skeleton: RF+0x10f/8:mov;RF+0xa/8:mov;IPADV+0x3;RIP+0x3/2:movzx;WF+0x170/4:and;TDYN;RTdyn/8:mov;WF+0xa/8:add;JMP:rdi */
     vm->state = state0 - 0x1f34eac7u & 0x6ecd1861u - flags0 & 0x7d9408au - 0x41dbc7b8u & U16(vm->ip + 0x3u) ^ 0x1ffd618fu;
@@ -6317,6 +6461,7 @@ static VMOpResult op_entry_327(VMState *vm) {
     uint8_t byte0 = vm->byte;
     /* entry=327, native=0xbc320, class=unobserved_static, events=0, shape=-, delta=- */
     /* native IP reads: 0xbc34c:u16_2,0xbc360:u16_0,0xbc386:u16_6,0xbc3f7:u16_4 */
+    /* static-only queue: rank=70, tier=tier3_multi_function_shared_range, sidecar=vm_unobserved_handlers_retdec_batch00.c, funcs=function_bc320,function_bc468,function_bc46b, span=339, action=recover_shared_chunks_or split_by_entry */
     /* decode signature: IPADV+0x4;RIP+0x4/2:movzx;RF+0x170/4:sub;WF+0x170/4:add;TDYN;RTdyn/8:mov;WF+0xa/8:add */
     /* dispatch skeleton: RF+0x10f/8:mov;RF+0xa/8:mov;IPADV+0x4;RIP+0x4/2:movzx;RF+0x170/4:sub;WF+0x170/4:add;TDYN;RTdyn/8:mov;WF+0xa/8:add;JMP:rcx;RF+0x194/1:mov */
     vm->state = state0 + 0x2f9d0305u + U16(vm->ip + 0x4u) - state0 + 0x2f9d0305u ^ 0x323c963u;
@@ -6334,6 +6479,7 @@ static VMOpResult op_entry_328(VMState *vm) {
     uint8_t byte0 = vm->byte;
     /* entry=328, native=0xbc466, class=unobserved_static, events=0, shape=-, delta=- */
     /* native IP reads: 0xbc470:byte0,0xbc49b:u16_2,0xbc49f:u16_9,0xbc4d2:u16_4,0xbc518:u16_2,0xbc529:u16_9,0xbc57d:b8,0xbc5a9:u16_0,0xbc5f0:u16_6 */
+    /* static-only queue: rank=61, tier=tier2_small_shared_range_split, sidecar=vm_unobserved_handlers_retdec_batch01.c, funcs=function_bc466,function_bc678, span=541, action=split_overlapping_retdec_chunks_then_inline */
     /* decode signature: IPADV+0x6;RIP+0x6/2:movzx;RF+0x170/4:sub;WF+0x170/4:and;TDYN;RTdyn/8:mov;WF+0xa/8:add */
     /* dispatch skeleton: RF+0xa/8:mov;IPADV+0x6;RF+0x10f/8:mov;RIP+0x6/2:movzx;RF+0x170/4:sub;WF+0x170/4:and;TDYN;RTdyn/8:mov;WF+0xa/8:add;JMP:r11 */
     vm->state = state0 & U16(vm->ip + 0x6u) - state0 + 0x6640824au;
@@ -6351,6 +6497,7 @@ static VMOpResult op_entry_329(VMState *vm) {
     uint8_t byte0 = vm->byte;
     /* entry=329, native=0xbc676, class=unobserved_static, events=0, shape=-, delta=- */
     /* native IP reads: 0xbc762:u16_3,0xbc79b:byte0,0xbc854:b0,0xbc89b:u16_3,0xbc943:u16_1 */
+    /* static-only queue: rank=83, tier=tier3_multi_function_shared_range, sidecar=vm_unobserved_handlers_retdec_batch03.c, funcs=function_bc676,function_bc9bd, span=847, action=recover_shared_chunks_or split_by_entry */
     /* decode signature: IPADV+0x1;RIP+0x1/2:movzx;WF+0x170/4:sub;TDYN;RTdyn/8:mov;WF+0xa/8:add */
     /* dispatch skeleton: RF+0xa/8:mov;IPADV+0x1;RIP+0x1/2:movzx;RF+0x10f/8:mov;WF+0x170/4:sub;TDYN;RTdyn/8:mov;WF+0xa/8:add;JMP:rdx;RF+0x23/4:mov */
     vm->state = state0 ^ 0x54da429bu ^ 0x46ddc1b7u - U16(vm->ip + 0x1u) - 0x2a47c812u;
@@ -6470,6 +6617,7 @@ static VMOpResult op_entry_335(VMState *vm) {
     uint8_t byte0 = vm->byte;
     /* entry=335, native=0xbe648, class=unobserved_static, events=0, shape=-, delta=- */
     /* native IP reads: 0xbe65f:byte0,0xbe6be:u16_6,0xbe71e:u16_4,0xbe79a:u16_2,0xbe849:u16_0 */
+    /* static-only queue: rank=66, tier=tier2_small_shared_range_split, sidecar=vm_unobserved_handlers_retdec_batch01.c, funcs=function_be648,function_be8d2, span=658, action=split_overlapping_retdec_chunks_then_inline */
     /* decode signature: IPADV+0x0;RIP+0x0/2:movzx;RF+0x170/4:sub;TDYN;RTdyn/8:mov;WF+0xa/8:add */
     /* dispatch skeleton: RF+0x10f/8:mov;RF+0xa/8:mov;IPADV+0x0;RIP+0x0/2:movzx;RF+0x170/4:sub;TDYN;RTdyn/8:mov;WF+0xa/8:add;JMP:r11 */
     vm->state = state0 ^ flags0 ^ 0x6e6f5b3eu;
@@ -6547,6 +6695,7 @@ static VMOpResult op_entry_339(VMState *vm) {
     uint8_t byte0 = vm->byte;
     /* entry=339, native=0xbf2d5, class=unobserved_static, events=0, shape=-, delta=- */
     /* native IP reads: 0xbf2ec:byte0,0xbf32e:u16_6,0xbf33c:u16_4,0xbf365:u16_2,0xbf3c6:u16_0,0xbf3cd:u16_0 */
+    /* static-only queue: rank=6, tier=tier0_single_function_small_static_replay, sidecar=vm_unobserved_handlers_retdec_batch00.c, funcs=function_bf2d5, span=365, action=inline_retdec_function_into_handler_model */
     /* tier0 static model: rank=6, retdec=function_bf2d5, slot_status=decode_candidate_slot, ip_advance=8 */
     /* tier0 effects: state = state0 - flags0 + 0x2393cc37; dword copy through frame[s16(ip+4)] to frame[s16(ip+6)]; pointer step by frame[s16(ip+2)] sign; ip += 8 */
     /* decode signature: IPADV+0x0;RIP+0x0/2:movzx;TDYN;RTdyn/8:mov;WF+0xa/8:add */
@@ -6590,6 +6739,7 @@ static VMOpResult op_entry_341(VMState *vm) {
     uint8_t byte0 = vm->byte;
     /* entry=341, native=0xbf889, class=unobserved_static, events=0, shape=-, delta=- */
     /* native IP reads: 0xbf8f0:u16_0,0xbf90b:u16_4,0xbf978:u16_2,0xbfa2f:u16_0,0xbfa4a:u16_4,0xbfb1d:u16_7 */
+    /* static-only queue: rank=76, tier=tier3_multi_function_shared_range, sidecar=vm_unobserved_handlers_retdec_batch02.c, funcs=function_bf889,function_bfb9b, span=794, action=recover_shared_chunks_or split_by_entry */
     /* decode signature: IPADV+0x7;RIP+0x7/2:movzx;RF+0x170/4:xor;WF+0x170/4:or;TDYN;RTdyn/8:mov;WF+0xa/8:add */
     /* dispatch skeleton: RF+0x10f/8:mov;RF+0xa/8:mov;IPADV+0x7;RIP+0x7/2:movzx;RF+0x170/4:xor;WF+0x170/4:or;TDYN;RTdyn/8:mov;WF+0xa/8:add;JMP:r13 */
     vm->state = state0 | U16(vm->ip + 0x7u) ^ state0;
@@ -6608,6 +6758,7 @@ static VMOpResult op_entry_342(VMState *vm) {
     uint8_t byte0 = vm->byte;
     /* entry=342, native=0xbfb99, class=unobserved_static, events=0, shape=-, delta=- */
     /* native IP reads: 0xbfbb2:u16_2,0xbfbd7:u16_0,0xbfc50:u16_5,0xbfc7f:u16_3,0xbfcdf:u16_0,0xbfd69:u16_5,0xbfd7b:u16_3,0xbfe11:b2,0xbfe60:u16_9,0xbfefb:u16_7 */
+    /* static-only queue: rank=129, tier=tier4_native_call_or_ret_side_effect, sidecar=vm_unobserved_handlers_retdec_batch04.c, funcs=function_bfb99,function_bfc0d, span=990, action=audit_call_ret_side_effects_before_inlining */
     /* decode signature: IPADV+0x7;RIP+0x7/2:movzx;RF+0x170/4:sub;WF+0x170/4:sub;TDYN;RTdyn/8:mov;WF+0xa/8:add */
     /* dispatch skeleton: RF+0xa/8:mov;RF+0x10f/8:mov;IPADV+0x7;RIP+0x7/2:movzx;RF+0x170/4:sub;WF+0x170/4:sub;TDYN;RTdyn/8:mov;WF+0xa/8:add;JMP:rsi */
     vm->state = state0 ^ 0x37af3c05u & 0x6b4057cfu - U16(vm->ip + 0x7u) - state0 ^ 0x37af3c05u & 0x6b4057cfu + 0x4bf1ddd5u;
@@ -6625,6 +6776,7 @@ static VMOpResult op_entry_343(VMState *vm) {
     uint8_t byte0 = vm->byte;
     /* entry=343, native=0xbfc0d, class=unobserved_static, events=0, shape=-, delta=- */
     /* native IP reads: 0xbfc50:u16_5,0xbfc7f:u16_3,0xbfcdf:u16_0,0xbfd69:u16_5,0xbfd7b:u16_3,0xbfe11:b2,0xbfe60:u16_9,0xbfefb:u16_7 */
+    /* static-only queue: rank=87, tier=tier3_multi_function_shared_range, sidecar=vm_unobserved_handlers_retdec_batch03.c, funcs=function_bfc0d,function_bff6a, span=874, action=recover_shared_chunks_or split_by_entry */
     /* decode signature: IPADV+0x7;RIP+0x7/2:movzx;RF+0x170/4:sub;WF+0x170/4:sub;TDYN;RTdyn/8:mov;WF+0xa/8:add */
     /* dispatch skeleton: RF+0xa/8:mov;RF+0x10f/8:mov;IPADV+0x7;RIP+0x7/2:movzx;RF+0x170/4:sub;WF+0x170/4:sub;TDYN;RTdyn/8:mov;WF+0xa/8:add;JMP:rsi */
     vm->state = state0 ^ 0x37af3c05u & 0x6b4057cfu - U16(vm->ip + 0x7u) - state0 ^ 0x37af3c05u & 0x6b4057cfu + 0x4bf1ddd5u;
@@ -6642,6 +6794,7 @@ static VMOpResult op_entry_344(VMState *vm) {
     uint8_t byte0 = vm->byte;
     /* entry=344, native=0xbff6a, class=unobserved_static, events=0, shape=-, delta=- */
     /* native IP reads: 0xbff9f:u16_2,0xbffe1:b4,0xc0223:u16_0 */
+    /* static-only queue: rank=44, tier=tier1_single_function_medium_static_replay, sidecar=vm_unobserved_handlers_retdec_batch03.c, funcs=function_bff6a, span=902, action=inline_retdec_function_after_operand_rewrite */
     /* decode signature: IPADV+0x0;RIP+0x0/2:movzx;RF+0x170/4:xor;WF+0x170/4:and;TDYN;RTdyn/8:mov;WF+0xa/8:add */
     /* dispatch skeleton: RF+0x10f/8:mov;RF+0xa/8:mov;IPADV+0x0;RIP+0x0/2:movzx;RF+0x170/4:xor;WF+0x170/4:and;TDYN;RTdyn/8:mov;WF+0xa/8:add;JMP:rdi */
     vm->state = state0 & U16(vm->ip + 0x0u) ^ state0 - 0x6a74b67cu;
@@ -6822,6 +6975,7 @@ static VMOpResult op_entry_353(VMState *vm) {
     uint8_t byte0 = vm->byte;
     /* entry=353, native=0xc21c3, class=unobserved_static, events=0, shape=-, delta=- */
     /* native IP reads: 0xc21df:u32_2,0xc220b:u16_0,0xc2384:u16_0 */
+    /* static-only queue: rank=130, tier=tier4_native_call_or_ret_side_effect, sidecar=vm_unobserved_handlers_retdec_batch01.c, funcs=function_c21c3,function_c2241,function_c2414,function_c2417, span=601, action=audit_call_ret_side_effects_before_inlining */
     /* decode signature: IPADV+0x0;RIP+0x0/2:mov;TDYN;RTdyn/8:mov;WF+0xa/8:add */
     /* dispatch skeleton: RF+0xa/8:mov;IPADV+0x0;RIP+0x0/2:mov;RF+0x10f/8:mov;TDYN;RTdyn/8:mov;WF+0xa/8:add;JMP:rdx */
     vm->state = 0x0u;
@@ -6861,6 +7015,7 @@ static VMOpResult op_entry_355(VMState *vm) {
     uint8_t byte0 = vm->byte;
     /* entry=355, native=0xc240f, class=unobserved_static, events=0, shape=-, delta=- */
     /* native IP reads: 0xc2431:byte0,0xc24ce:byte0,0xc267c:byte0,0xc2752:b4,0xc277e:u16_2,0xc284a:u16_0 */
+    /* static-only queue: rank=114, tier=tier5_large_static_replay, sidecar=vm_unobserved_handlers_retdec_batch05.c, funcs=function_c240f, span=1301, action=defer_until_small_static_handlers_are_inlined */
     /* decode signature: IPADV+0x0;RIP+0x0/2:movzx;WF+0x170/4:or;TDYN;RTdyn/8:mov;WF+0xa/8:add */
     /* dispatch skeleton: RF+0x10f/8:mov;RF+0xa/8:mov;IPADV+0x0;RIP+0x0/2:movzx;WF+0x170/4:or;TDYN;RTdyn/8:mov;WF+0xa/8:add;JMP:r9 */
     vm->state = state0 ^ flags0 - flags0 ^ 0x7bdb3dc7u - 0x43e81f2au ^ 0x7b5fcef1u & 0x7536cf07u + 0x33b57421u - 0x2e36e0cbu | U16(vm->ip + 0x0u) - 0x25b87fbfu;

@@ -44,6 +44,12 @@ def load_tier0_models(path):
     return {row["entry"]: row for row in read_tsv(path) if row.get("entry")}
 
 
+def load_static_only_queue(path):
+    if not path or not Path(path).exists():
+        return {}
+    return {row["entry"]: row for row in read_tsv(path) if row.get("entry")}
+
+
 def counter_text(counter, limit=6):
     return ",".join(f"{key}:{value}" for key, value in counter.most_common(limit)) or "-"
 
@@ -299,7 +305,7 @@ def emit_preamble():
     print("")
 
 
-def emit_handler(row, transition, tail_ip_advances, ret_patch_summaries, tier0_models, args):
+def emit_handler(row, transition, tail_ip_advances, ret_patch_summaries, tier0_models, static_only_queue, args):
     entry = row["entry"]
     name = f"op_entry_{int(entry):03d}"
     klass = row.get("class", "")
@@ -327,6 +333,16 @@ def emit_handler(row, transition, tail_ip_advances, ret_patch_summaries, tier0_m
         print(f"    /* operands: {c_comment(clip(row['operand_layout'], args.max_comment_len))} */")
     if row.get("ip_reads"):
         print(f"    /* native IP reads: {c_comment(clip(row['ip_reads'], args.max_comment_len))} */")
+    queue_row = static_only_queue.get(entry, {})
+    if queue_row:
+        print(
+            f"    /* static-only queue: rank={c_comment(queue_row.get('rank', '-'))}, "
+            f"tier={c_comment(queue_row.get('priority_class', '-'))}, "
+            f"sidecar={c_comment(queue_row.get('sidecar', '-'))}, "
+            f"funcs={c_comment(clip(queue_row.get('function_names', '-'), args.max_comment_len))}, "
+            f"span={c_comment(queue_row.get('span_bytes', '-'))}, "
+            f"action={c_comment(queue_row.get('next_action', '-'))} */"
+        )
     tier0_model = tier0_models.get(entry, {})
     if tier0_model:
         print(
@@ -447,6 +463,7 @@ def main():
     parser.add_argument("--max-comment-len", type=int, default=260)
     parser.add_argument("--ret-patch-comment-items", type=int, default=6)
     parser.add_argument("--static-only-tier0-models", default="dumps/vmtail-wide-1m-w16/vm_static_only_tier0_handler_models.tsv")
+    parser.add_argument("--static-only-queue", default="dumps/vmtail-wide-1m-w16/vm_static_only_handler_queue.tsv")
     args = parser.parse_args()
 
     rows = list(read_tsv(args.microcode))
@@ -455,11 +472,12 @@ def main():
     tail_ip_advances = load_tail_ip_advances(args.handler_table, args.eac, args.tail_window)
     ret_patch_summaries = load_ret_patch_summaries(args.sampled_ret_patch_probe)
     tier0_models = load_tier0_models(args.static_only_tier0_models)
+    static_only_queue = load_static_only_queue(args.static_only_queue)
     chosen = selected_handlers(rows, args)
 
     emit_preamble()
     for row in chosen:
-        emit_handler(row, transition, tail_ip_advances, ret_patch_summaries, tier0_models, args)
+        emit_handler(row, transition, tail_ip_advances, ret_patch_summaries, tier0_models, static_only_queue, args)
     emit_dispatch_table(chosen)
 
     classes = Counter(row.get("class", "") for row in chosen)
