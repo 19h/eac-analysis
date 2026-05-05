@@ -714,6 +714,33 @@ def c_shape_metrics(rows):
     add(rows, "coverage", "native_handler_environment_coverage_status_mix",
         ",".join(f"{key}:{value}" for key, value in handler_environment_statuses.most_common()) or "-",
         "Status mix for handler-level environment coverage.")
+    add(rows, "coverage_frontier", "config_coverage_metric_rows",
+        len(config_coverage_metric_rows),
+        "C-carried coverage/config audit metric rows generated from trace/static coverage inputs.")
+    add(rows, "coverage_frontier", "config_coverage_frontier_rows",
+        len(config_coverage_frontier_rows),
+        "C-carried frontier rows for scenario/config-limited coverage gaps.")
+    add(rows, "coverage_frontier", "config_coverage_static_only_handler_rows",
+        config_coverage_frontier_kinds.get("static_only_handler", 0),
+        "Static-only handler frontier rows retained for targeted lifting or forced tracing.")
+    add(rows, "coverage_frontier", "config_coverage_target_only_handler_rows",
+        config_coverage_frontier_kinds.get("target_only_handler", 0),
+        "Concrete target-only handler frontier rows lacking concrete source execution.")
+    add(rows, "coverage_frontier", "config_coverage_path_unknown_target_rows",
+        config_coverage_frontier_kinds.get("path_microcode_unknown_target", 0),
+        "Path-specialized microcode rows whose target/IP validation remains incomplete.")
+    add(rows, "coverage_frontier", "config_coverage_no_real_network_rows",
+        config_coverage_frontier_kinds.get("no_real_network_allowed_trace", 0),
+        "Frontier rows documenting that no concrete real-network-allowed instruction trace exists.")
+    add(rows, "coverage_frontier", "config_coverage_synthetic_fill_only_rows",
+        config_coverage_frontier_kinds.get("synthetic_fill_only", 0),
+        "Derived synthetic-fill coverage rows that still need concrete trace or static proof.")
+    add(rows, "c_shape", "config_coverage_metric_c_rows",
+        count(r'^    \{ "(?:config_frontier|static_audit\.)', config_coverage_frontier),
+        "Syntax-checkable C metric rows in the config coverage frontier artifact.")
+    add(rows, "c_shape", "config_coverage_frontier_c_rows",
+        count(r'^    \{ \d+, 0x[0-9a-f]+ull, \d+ull, 0x[0-9a-f]+u, "(?:static_only_handler|target_only_handler|path_microcode_unknown_target|no_real_network_allowed_trace|synthetic_fill_only)",', config_coverage_frontier),
+        "Syntax-checkable C frontier rows in the config coverage frontier artifact.")
     add(rows, "data_surface", "binary_data_section_rows",
         sum(1 for row in binary_data_sections_index if row.get("kind", "") == "section"),
         "Allocatable ELF sections tracked by the binary data carrier.")
@@ -1301,6 +1328,15 @@ def c_shape_metrics(rows):
     add(rows, "c_shape", "all_evidence_bundle_prefixed_symbols",
         count(r"\beac_evidence_[A-Za-z0-9_]+__", all_evidence_bundle),
         "Prefixed symbols used to keep overlapping native sidecar C in one translation unit.")
+    add(rows, "coverage_frontier", "all_evidence_bundle_config_coverage_metric_rows",
+        count(r'^    \{ "(?:config_frontier|static_audit\.)', all_evidence_bundle),
+        "Config coverage audit metric rows retained in the all-evidence single C file.")
+    add(rows, "coverage_frontier", "all_evidence_bundle_config_coverage_frontier_rows",
+        count(r'^    \{ \d+, 0x[0-9a-f]+ull, \d+ull, 0x[0-9a-f]+u, "(?:static_only_handler|target_only_handler|path_microcode_unknown_target|no_real_network_allowed_trace|synthetic_fill_only)",', all_evidence_bundle),
+        "Config/path frontier rows retained in the all-evidence single C file.")
+    add(rows, "coverage_frontier", "all_evidence_bundle_config_coverage_frontier_symbols",
+        count(r"\beac_evidence_config_coverage_frontier__", all_evidence_bundle),
+        "Prefixed config coverage frontier symbols retained in the all-evidence single C file.")
     all_evidence_binary_data_section_arrays = count(
         r"^static const uint8_t eac_evidence_binary_data_sections__vm_eac_section_\d+_",
         all_evidence_bundle,
@@ -2831,6 +2867,8 @@ def native_acceleration_metrics(rows):
     ret_patch_hidden_bridge_binary = Path("vm_native_ret_patch_hidden_bridge_dump")
     handler_environment_coverage_source = read_text("vm_native_handler_environment_coverage_dump.c")
     handler_environment_coverage_binary = Path("vm_native_handler_environment_coverage_dump")
+    config_coverage_frontier_source = read_text("vm_config_coverage_frontier_dump.c")
+    config_coverage_frontier_binary = Path("vm_config_coverage_frontier_dump")
     binary_data_sections_source = read_text("vm_binary_data_sections_dump.c")
     binary_data_sections_binary = Path("vm_binary_data_sections_dump")
     static_only_handler_queue_source = read_text("vm_static_only_handler_queue_dump.c")
@@ -2984,6 +3022,13 @@ def native_acceleration_metrics(rows):
     add(rows, "native_acceleration", "native_handler_environment_coverage_uses_native_generator",
         "yes" if "./vm_native_handler_environment_coverage_dump --c" in makefile else "no",
         "Whether the handler environment coverage C/TSV/Markdown artifacts are generated by the native C tool.")
+    add(rows, "native_acceleration", "config_coverage_frontier_dump_source_lines", line_count(config_coverage_frontier_source),
+        "Native configuration coverage frontier generator source size.")
+    add(rows, "native_acceleration", "config_coverage_frontier_dump_binary_bytes", file_size(config_coverage_frontier_binary),
+        "Current compiled native configuration coverage frontier generator size.")
+    add(rows, "native_acceleration", "config_coverage_frontier_uses_native_generator",
+        "yes" if "./vm_config_coverage_frontier_dump --c" in makefile else "no",
+        "Whether the config coverage frontier C/TSV/Markdown artifacts are generated by the native C tool.")
     add(rows, "native_acceleration", "binary_data_sections_dump_source_lines", line_count(binary_data_sections_source),
         "Native ELF data-section carrier generator source size.")
     add(rows, "native_acceleration", "binary_data_sections_dump_binary_bytes", file_size(binary_data_sections_binary),
