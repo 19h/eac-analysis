@@ -22,6 +22,9 @@ Reproducible inventory of the current C-shaped reconstruction artifacts and gate
 | `artifact` | `source_bundle_path` | `dumps/vmtail-wide-1m-w16/vm_recovered_source_bundle.c` | Generated reconstruction artifact. |
 | `artifact` | `source_bundle_lines` | `303909` | Current line count. |
 | `artifact` | `source_bundle_bytes` | `20462022` | Current file size in bytes. |
+| `artifact` | `source_all_evidence_bundle_path` | `dumps/vmtail-wide-1m-w16/vm_recovered_source_all_evidence_bundle.c` | Generated reconstruction artifact. |
+| `artifact` | `source_all_evidence_bundle_lines` | `332910` | Current line count. |
+| `artifact` | `source_all_evidence_bundle_bytes` | `21833798` | Current file size in bytes. |
 | `artifact` | `synthetic_successor_gaps_tsv_path` | `dumps/vmtail-wide-1m-w16/vm_synthetic_successor_gaps.tsv` | Generated reconstruction artifact. |
 | `artifact` | `synthetic_successor_gaps_tsv_lines` | `22` | Current line count. |
 | `artifact` | `synthetic_successor_gaps_tsv_bytes` | `5197` | Current file size in bytes. |
@@ -633,6 +636,11 @@ Reproducible inventory of the current C-shaped reconstruction artifacts and gate
 | `c_shape` | `bundle_observed_chain_terminal_bridge_sites` | `0` | Disabled-by-default observed focused-chain terminal bridge snippets emitted beside unresolved synthetic successors inside the combined source bundle. |
 | `c_shape` | `bundle_observed_chain_terminal_bridge_macros` | `0` | Disabled focused-chain terminal bridge bodies guarded by VM_ENABLE_OBSERVED_CHAIN_BRIDGES inside the combined source bundle. |
 | `c_shape` | `bundle_observed_chain_replay_steps` | `0` | Observed focused-chain replay steps emitted inside disabled terminal bridge snippets in the combined source bundle. |
+| `c_shape` | `all_evidence_bundle_handler_functions` | `360` | All-entry handler/operator C functions present in the all-evidence single file. |
+| `c_shape` | `all_evidence_bundle_program_blocks` | `499` | Recovered VM bytecode block functions present in the all-evidence single file. |
+| `c_shape` | `all_evidence_bundle_sidecar_sections` | `32` | Renamed native RetDec/control sidecar files appended to the all-evidence single file. |
+| `c_shape` | `all_evidence_bundle_prefixed_retdec_functions` | `624` | RetDec native C functions carried in the all-evidence single file with per-sidecar symbol prefixes. |
+| `c_shape` | `all_evidence_bundle_prefixed_symbols` | `3359` | Prefixed symbols used to keep overlapping native sidecar C in one translation unit. |
 | `coverage` | `dynamic_primary_trace_source_handlers_seen` | `202` | Handlers directly executed as VM source entries by this scenario. |
 | `coverage` | `dynamic_primary_trace_target_handlers_seen` | `205` | Handlers reached as dispatch targets by this scenario. |
 | `coverage` | `dynamic_primary_trace_unique_vm_ip_starts` | `71522` | Distinct VM bytecode starts observed in this scenario. |
@@ -932,6 +940,7 @@ Reproducible inventory of the current C-shaped reconstruction artifacts and gate
 | `native_acceleration` | `primary_trace_refresh_target` | `make instruction-trace-refresh` | Explicit command to rebuild the primary raw instruction trace from run.stderr. |
 | `native_acceleration` | `pseudocode_syntax_check_uses_file_targets` | `yes` | Whether the C syntax gate depends on concrete generated files instead of phony pseudocode aggregates. |
 | `native_acceleration` | `pseudocode_object_link_checks_use_source_file_target` | `yes` | Whether object/link smoke checks avoid phony source-bundle regeneration when the bundle is unchanged. |
+| `native_acceleration` | `all_evidence_bundle_uses_file_target` | `yes` | Whether the single all-evidence C bundle is a concrete generated file target. |
 | `native_acceleration` | `c_reconstruction_manifest_uses_file_targets` | `yes` | Whether the manifest refresh depends on concrete generated artifacts instead of phony reconstruction aggregate targets. |
 | `native_acceleration` | `native_ret_patch_followups_dump_source_lines` | `559` | Native return-patch follow-up classifier/generator source size. |
 | `native_acceleration` | `native_ret_patch_followups_dump_binary_bytes` | `29792` | Current compiled native return-patch follow-up classifier/generator size. |
