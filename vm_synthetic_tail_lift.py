@@ -68,6 +68,39 @@ def target_offset_key(data, target_entry):
     return f"{target_entry}@{','.join(offsets)}"
 
 
+def signed_delta_from_u32(value):
+    if value & 0x80000000:
+        return -(value & 0x7fffffff)
+    return value
+
+
+def fmt_delta(value):
+    if value >= 0:
+        return f"+0x{value:x}"
+    return f"-0x{-value:x}"
+
+
+def decode_long_control_prefix(data, max_entry):
+    if len(data) < 8:
+        return None
+    target = int.from_bytes(data[0:4], "little")
+    if target > max_entry:
+        return None
+    raw_delta = int.from_bytes(data[4:8], "little")
+    delta = signed_delta_from_u32(raw_delta)
+    marker = ""
+    if len(data) >= 0x0B:
+        marker = f"u16_8=0x{int.from_bytes(data[8:10], 'little'):x},b10=0x{data[10]:x}"
+    return {
+        "target": str(target),
+        "delta": fmt_delta(delta),
+        "raw_target": f"0x{target:08x}",
+        "raw_delta": f"0x{raw_delta:08x}",
+        "marker": marker,
+        "label": f"prefix table[{target}], ip {fmt_delta(delta)}",
+    }
+
+
 def load_long_control_overlaps(path):
     overlaps = {}
     if not path:
@@ -141,6 +174,7 @@ def make_rows(args):
             "target_encoded_events": 0,
             "schema_events": 0,
             "long_control_overlap_events": 0,
+            "long_control_prefix_events": 0,
             "sources": Counter(),
             "targets": Counter(),
             "statuses": Counter(),
@@ -156,6 +190,9 @@ def make_rows(args):
             "long_control_overlaps": Counter(),
             "long_control_targets": Counter(),
             "long_control_deltas": Counter(),
+            "long_control_prefixes": Counter(),
+            "long_control_prefix_targets": Counter(),
+            "long_control_prefix_deltas": Counter(),
         })
         bucket["events"] += 1
         if source_entry:
@@ -177,6 +214,9 @@ def make_rows(args):
         if schema:
             bucket["tail_schemas"][schema] += 1
             bucket["schema_events"] += 1
+        prefix_decode = None
+        if footprint_source == "long_branch_operand":
+            prefix_decode = decode_long_control_prefix(data, args.max_table_entry)
         if offsets:
             bucket["target_offsets"][offsets] += 1
             bucket["target_encoded_events"] += 1
@@ -188,6 +228,12 @@ def make_rows(args):
                 bucket["long_control_overlaps"][overlap["label"]] += 1
                 bucket["long_control_targets"][overlap["target"]] += 1
                 bucket["long_control_deltas"][overlap["delta"]] += 1
+        elif prefix_decode:
+            bucket["long_control_prefix_events"] += 1
+            bucket["lift_classes"]["long_control_prefix"] += 1
+            bucket["long_control_prefixes"][prefix_decode["label"]] += 1
+            bucket["long_control_prefix_targets"][prefix_decode["target"]] += 1
+            bucket["long_control_prefix_deltas"][prefix_decode["delta"]] += 1
         elif schema:
             bucket["lift_classes"]["schema_without_target_match"] += 1
         elif target_entry:
@@ -205,6 +251,7 @@ def make_rows(args):
             "target_encoded_events": str(bucket["target_encoded_events"]),
             "schema_events": str(bucket["schema_events"]),
             "long_control_overlap_events": str(bucket["long_control_overlap_events"]),
+            "long_control_prefix_events": str(bucket["long_control_prefix_events"]),
             "source_entries": str(len(bucket["sources"])),
             "target_entries": str(len(bucket["targets"])),
             "top_sources": fmt_counter(bucket["sources"], args.max_items),
@@ -221,6 +268,9 @@ def make_rows(args):
             "long_control_overlaps": fmt_counter(bucket["long_control_overlaps"], args.max_items),
             "long_control_targets": fmt_counter(bucket["long_control_targets"], args.max_items),
             "long_control_deltas": fmt_counter(bucket["long_control_deltas"], args.max_items),
+            "long_control_prefixes": fmt_counter(bucket["long_control_prefixes"], args.max_items),
+            "long_control_prefix_targets": fmt_counter(bucket["long_control_prefix_targets"], args.max_items),
+            "long_control_prefix_deltas": fmt_counter(bucket["long_control_prefix_deltas"], args.max_items),
             "top_tail_hexes": short_hex(bucket["tails"], args.max_items, args.max_tail_hex),
         })
 
@@ -235,6 +285,7 @@ def emit_tsv(rows):
         "target_encoded_events",
         "schema_events",
         "long_control_overlap_events",
+        "long_control_prefix_events",
         "source_entries",
         "target_entries",
         "top_sources",
@@ -251,6 +302,9 @@ def emit_tsv(rows):
         "long_control_overlaps",
         "long_control_targets",
         "long_control_deltas",
+        "long_control_prefixes",
+        "long_control_prefix_targets",
+        "long_control_prefix_deltas",
         "top_tail_hexes",
     ]
     writer = csv.DictWriter(sys.stdout, fieldnames=fields, delimiter="\t", lineterminator="\n")
@@ -262,13 +316,14 @@ def emit_tsv(rows):
 def emit_markdown(rows, args):
     print("# VM Synthetic Tail Lift\n")
     print(f"Top {min(args.limit, len(rows))} synthetic VM IPs with unresolved suffix bytes.\n")
-    print("| Events | VM IP | Encoded | LongCtl | Schemas | Targets | Offsets | Classes | Tails |")
-    print("| ---: | ---: | ---: | ---: | --- | --- | --- | --- | --- |")
+    print("| Events | VM IP | Encoded | Overlap | Prefix | Schemas | Targets | Offsets | Classes | Tails |")
+    print("| ---: | ---: | ---: | ---: | ---: | --- | --- | --- | --- | --- |")
     for row in rows[:args.limit]:
         print(
             f"| {row['events']} | `{row['start_vm_ip']}` | "
             f"{row['target_encoded_events']}/{row['events']} | "
             f"{row['long_control_overlap_events']}/{row['events']} | "
+            f"{row['long_control_prefix_events']}/{row['events']} | "
             f"`{row['tail_schemas'] or '-'}` | `{row['top_targets'] or '-'}` | "
             f"`{row['target_match_offsets'] or '-'}` | `{row['lift_classes']}` | "
             f"`{row['top_tail_hexes']}` |"
@@ -288,6 +343,7 @@ def main():
     parser.add_argument("--handler-table", default="dumps/vmtail-wide-1m-w16/vm_handler_table.tsv")
     parser.add_argument("--long-branches", default="dumps/vmtail-wide-1m-w16/vm_long_branch_catalog.tsv")
     parser.add_argument("--eac", default="eac.elf")
+    parser.add_argument("--max-table-entry", type=lambda value: int(value, 0), default=359)
     parser.add_argument("--tail-window", type=lambda value: int(value, 0), default=0x80)
     parser.add_argument("--max-items", type=int, default=6)
     parser.add_argument("--max-tail-hex", type=int, default=48)
@@ -305,10 +361,11 @@ def main():
     encoded = sum(int(row["target_encoded_events"]) for row in rows)
     schemas = sum(int(row["schema_events"]) for row in rows)
     overlaps = sum(int(row["long_control_overlap_events"]) for row in rows)
+    prefixes = sum(int(row["long_control_prefix_events"]) for row in rows)
     print(
         f"synthetic_tail_lift_ips={len(rows)} events={events} "
         f"target_encoded_events={encoded} schema_events={schemas} "
-        f"long_control_overlap_events={overlaps}",
+        f"long_control_overlap_events={overlaps} long_control_prefix_events={prefixes}",
         file=sys.stderr,
     )
 

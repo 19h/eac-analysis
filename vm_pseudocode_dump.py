@@ -225,6 +225,7 @@ def emit_internal_tail_lift(row):
         f"    /* internal synthetic tail lift @ {row.get('start_vm_ip', '')}: "
         f"events={row.get('events', '0')}, encoded={row.get('target_encoded_events', '0')}/"
         f"{row.get('events', '0')}, longctl={row.get('long_control_overlap_events', '0')}/"
+        f"{row.get('events', '0')}, prefix={row.get('long_control_prefix_events', '0')}/"
         f"{row.get('events', '0')}, source={c_comment(row.get('top_sources', '') or '-')}, "
         f"target={c_comment(row.get('top_targets', '') or '-')}, "
         f"classes={c_comment(row.get('lift_classes', '') or '-')} */"
@@ -235,6 +236,13 @@ def emit_internal_tail_lift(row):
             f"{c_comment(row.get('long_control_overlaps', ''))}; "
             f"targets={c_comment(row.get('long_control_targets', '') or '-')}; "
             f"deltas={c_comment(row.get('long_control_deltas', '') or '-')} */"
+        )
+    if row.get("long_control_prefixes"):
+        print(
+            f"    /* internal decoded long-control prefix: "
+            f"{c_comment(row.get('long_control_prefixes', ''))}; "
+            f"targets={c_comment(row.get('long_control_prefix_targets', '') or '-')}; "
+            f"deltas={c_comment(row.get('long_control_prefix_deltas', '') or '-')} */"
         )
     elif row.get("tail_schemas") or row.get("top_tail_hexes"):
         print(
@@ -380,6 +388,13 @@ def emit_synthetic_edge(edge, synthetic_spans, args):
                 f"{c_comment(tail_lift.get('long_control_overlaps', ''))}; "
                 f"targets={c_comment(tail_lift.get('long_control_targets', '') or '-')}; "
                 f"deltas={c_comment(tail_lift.get('long_control_deltas', '') or '-')} */"
+            )
+        if tail_lift.get("long_control_prefixes"):
+            print(
+                f"    /* decoded long-control prefix: "
+                f"{c_comment(tail_lift.get('long_control_prefixes', ''))}; "
+                f"targets={c_comment(tail_lift.get('long_control_prefix_targets', '') or '-')}; "
+                f"deltas={c_comment(tail_lift.get('long_control_prefix_deltas', '') or '-')} */"
             )
     tail_expr = tail_target_load(tail_lift)
     if tail_expr:
