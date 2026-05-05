@@ -161,6 +161,7 @@ def coverage_metrics(rows):
         ("dynamic_cross_trace", "instruction_trace_scenarios"),
         ("dynamic_cross_trace", "concrete_instruction_trace_scenarios"),
         ("dynamic_cross_trace", "run_dirs_without_instruction_trace"),
+        ("dynamic_cross_trace", "run_dirs_with_tail_mem"),
         ("dynamic_cross_trace", "concrete_runtime_modes_seen"),
         ("dynamic_cross_trace", "max_concrete_source_handlers_seen"),
         ("dynamic_cross_trace", "max_concrete_target_handlers_seen"),
