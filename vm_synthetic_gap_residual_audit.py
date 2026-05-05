@@ -131,7 +131,7 @@ def gap_status_names(text):
 
 
 def span_key_candidates(gap):
-    source = gap.get("source_entry", "")
+    source = gap.get("source_entry", "") or gap.get("synthetic_sources", "").split(":", 1)[0]
     for name in gap_status_names(gap.get("synthetic_statuses", "")):
         yield source, name
 

@@ -25,6 +25,8 @@ ARTIFACTS = [
     ("synthetic_gap_dynamic_stitch_md", TRACE_DIR / "vm_synthetic_gap_dynamic_stitch.md"),
     ("synthetic_gap_chain_probe_tsv", TRACE_DIR / "vm_synthetic_gap_chain_probe.tsv"),
     ("synthetic_gap_chain_probe_md", TRACE_DIR / "vm_synthetic_gap_chain_probe.md"),
+    ("synthetic_gap_residual_audit_tsv", TRACE_DIR / "vm_synthetic_gap_residual_audit.tsv"),
+    ("synthetic_gap_residual_audit_md", TRACE_DIR / "vm_synthetic_gap_residual_audit.md"),
     ("synthetic_gap_symbolic_successors_tsv", TRACE_DIR / "vm_synthetic_gap_symbolic_successors.tsv"),
     ("synthetic_gap_symbolic_successors_md", TRACE_DIR / "vm_synthetic_gap_symbolic_successors.md"),
     ("synthetic_gap_live_in_roles_tsv", TRACE_DIR / "vm_synthetic_gap_live_in_roles.tsv"),
@@ -382,6 +384,51 @@ def synthetic_gap_chain_probe_metrics(rows):
         "Synthetic starts with only target-level hidden-chain evidence.")
 
 
+def synthetic_gap_residual_audit_metrics(rows):
+    residual_rows = read_tsv(TRACE_DIR / "vm_synthetic_gap_residual_audit.tsv")
+    reasons = Counter(row.get("residual_reason", "") for row in residual_rows)
+    promotions = Counter(row.get("promotion_state", "") for row in residual_rows)
+    chain_statuses = Counter()
+    dynamic_validated = 0
+    target_only_hints = 0
+    for row in residual_rows:
+        statuses = set()
+        for part in (row.get("chain_statuses", "") or "").split(";"):
+            if not part:
+                continue
+            status, _, count = part.partition(":")
+            count_int = int(count or "1")
+            statuses.add(status)
+            chain_statuses[status] += count_int
+        if "dynamic_next_hook_matches_static_transfer" in statuses:
+            dynamic_validated += 1
+        if "hidden_chain_target_only" in statuses:
+            target_only_hints += 1
+    starts = sorted({
+        row.get("synthetic_start_vm_ip", "")
+        for row in residual_rows
+        if row.get("synthetic_start_vm_ip", "")
+    }, key=lambda value: int(value, 16))
+
+    add(rows, "gap_residual", "synthetic_gap_residual_audit_rows", len(residual_rows),
+        "Remaining synthetic successor starts after hard hidden-chain promotions are removed.")
+    add(rows, "gap_residual", "synthetic_gap_residual_reason_mix",
+        ",".join(f"{key}:{value}" for key, value in reasons.most_common()) or "-",
+        "Why each residual start is still not emitted as a hard CFG edge.")
+    add(rows, "gap_residual", "synthetic_gap_residual_promotion_state_mix",
+        ",".join(f"{key}:{value}" for key, value in promotions.most_common()) or "-",
+        "Promotion state of each residual start after static, dynamic, and chain evidence is joined.")
+    add(rows, "gap_residual", "synthetic_gap_residual_chain_status_mix",
+        ",".join(f"{key}:{value}" for key, value in chain_statuses.most_common()) or "-",
+        "Hidden-chain/next-hook statuses represented among residual starts.")
+    add(rows, "gap_residual", "synthetic_gap_residual_dynamic_next_hook_validated", dynamic_validated,
+        "Residual starts whose inferred next hooked handler is independently validated by static transfer replay.")
+    add(rows, "gap_residual", "synthetic_gap_residual_target_only_hints", target_only_hints,
+        "Residual starts that also carry target-only hidden-chain evidence.")
+    add(rows, "gap_residual", "synthetic_gap_residual_starts", ",".join(starts) or "-",
+        "Synthetic starts that remain explicit unresolved-tail calls in the full C sketch.")
+
+
 def synthetic_gap_live_in_role_metrics(rows):
     role_rows = read_tsv(TRACE_DIR / "vm_synthetic_gap_live_in_roles.tsv")
     resolutions = Counter(row.get("resolution", "") for row in role_rows)
@@ -672,6 +719,7 @@ def build_rows():
     synthetic_gap_dynamic_stitch_metrics(rows)
     synthetic_gap_symbolic_successor_metrics(rows)
     synthetic_gap_chain_probe_metrics(rows)
+    synthetic_gap_residual_audit_metrics(rows)
     synthetic_gap_live_in_role_metrics(rows)
     synthetic_gap_final_tail_site_metrics(rows)
     synthetic_gap_live_in_reentry_metrics(rows)
