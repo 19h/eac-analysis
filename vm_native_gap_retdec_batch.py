@@ -460,6 +460,8 @@ def extract_functions(text):
     functions = re.sub(r"return &g(\d+)", r"return (int64_t)&g\1", functions)
     functions = re.sub(r"return &v(\d+)", r"return (int64_t)&v\1", functions)
     functions = re.sub(r"return &([A-Za-z_]\w*)", r"return (int64_t)&\1", functions)
+    for pointer_local in sorted(set(re.findall(r"\bint64_t\s*\*\s*(v\d+)\s*;", functions))):
+        functions = re.sub(rf"(\b{pointer_local}\s*=\s*)\(int64_t\)&", r"\1&", functions)
     return functions
 
 
@@ -548,10 +550,13 @@ def main():
     print("struct _TYPEDEF___mbstate_t;")
     print("struct _IO_FILE;")
     print("struct sockaddr;")
+    print("struct timespec;")
+    print("struct timeval;")
     print("struct utsname;")
     print("#define F_GETFL 3")
     print("#define F_SETFL 4")
     print("#define SO_DEBUG 1")
+    print("#define _SC_PAGESIZE 30")
     for index in referenced_globals(functions):
         print(f"extern int g{index};")
     print("unsigned char llvm_ctpop_i8(unsigned char value);")
@@ -628,7 +633,12 @@ def main():
     print("int64_t memset2(void *s, int c, size_t n);")
     print("int pthread_mutex_lock(void *mutex);")
     print("int pthread_mutex_unlock(void *mutex);")
+    print("int pthread_cond_wait(void *cond, void *mutex);")
+    print("int pthread_cond_timedwait(void *cond, void *mutex, const struct timespec *abstime);")
     print("int fcntl(int fd, int cmd, ...);")
+    print("int gettimeofday(struct timeval *tv, void *tz);")
+    print("int64_t sysconf(int name);")
+    print("int mprotect(void *addr, size_t len, int prot);")
     print("int32_t *__errno_location(void);")
     print("int connect(int sockfd, const struct sockaddr *addr, int32_t addrlen);")
     print("int getsockopt(int sockfd, int level, int optname, void *optval, int32_t *optlen);")
