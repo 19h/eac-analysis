@@ -12,6 +12,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/select.h>
 #include <sys/mman.h>
 #include <sys/socket.h>
 #include <sys/stat.h>
@@ -20,6 +21,19 @@
 #include <unistd.h>
 
 static __thread int g_in_hook;
+
+#define EAC_FAKE_FD_MAX 4096
+
+static pthread_mutex_t g_fake_fd_lock = PTHREAD_MUTEX_INITIALIZER;
+static uint8_t g_fake_fd_active[EAC_FAKE_FD_MAX];
+static int g_fake_fd_peer[EAC_FAKE_FD_MAX];
+static size_t g_fake_fd_read_off[EAC_FAKE_FD_MAX];
+
+static const char g_fake_net_payload[] =
+    "HTTP/1.1 204 No Content\r\n"
+    "Content-Length: 0\r\n"
+    "Connection: close\r\n"
+    "\r\n";
 
 static const char *safe_str(const char *s) {
     return s != NULL ? s : "(null)";
@@ -156,11 +170,85 @@ static int env_is_one(const char *name) {
 }
 
 static int block_network(void) {
-    return !env_is_one("EAC_TRACE_ALLOW_NETWORK");
+    return !env_is_one("EAC_TRACE_ALLOW_NETWORK") && !env_is_one("EAC_TRACE_FAKE_NETWORK");
+}
+
+static int fake_network(void) {
+    return env_is_one("EAC_TRACE_FAKE_NETWORK");
 }
 
 static int block_spawn(void) {
     return !env_is_one("EAC_TRACE_ALLOW_SPAWN");
+}
+
+static int fake_fd_is_active(int fd) {
+    int active = 0;
+    if (fd >= 0 && fd < EAC_FAKE_FD_MAX) {
+        pthread_mutex_lock(&g_fake_fd_lock);
+        active = g_fake_fd_active[fd] != 0;
+        pthread_mutex_unlock(&g_fake_fd_lock);
+    }
+    return active;
+}
+
+static void fake_fd_mark(int fd, int peer) {
+    if (fd < 0 || fd >= EAC_FAKE_FD_MAX) return;
+    pthread_mutex_lock(&g_fake_fd_lock);
+    g_fake_fd_active[fd] = 1;
+    g_fake_fd_peer[fd] = peer;
+    g_fake_fd_read_off[fd] = 0;
+    pthread_mutex_unlock(&g_fake_fd_lock);
+}
+
+static int fake_fd_unmark(int fd) {
+    int peer = -1;
+    if (fd < 0 || fd >= EAC_FAKE_FD_MAX) return -1;
+    pthread_mutex_lock(&g_fake_fd_lock);
+    if (g_fake_fd_active[fd]) {
+        peer = g_fake_fd_peer[fd];
+        g_fake_fd_active[fd] = 0;
+        g_fake_fd_peer[fd] = -1;
+        g_fake_fd_read_off[fd] = 0;
+    }
+    pthread_mutex_unlock(&g_fake_fd_lock);
+    return peer;
+}
+
+static ssize_t fake_fd_read(int fd, void *buf, size_t len) {
+    ssize_t ret = -2;
+    if (fd < 0 || fd >= EAC_FAKE_FD_MAX) return ret;
+    pthread_mutex_lock(&g_fake_fd_lock);
+    if (g_fake_fd_active[fd]) {
+        size_t payload_len = sizeof(g_fake_net_payload) - 1u;
+        size_t off = g_fake_fd_read_off[fd];
+        if (off >= payload_len) {
+            ret = 0;
+        } else {
+            size_t n = payload_len - off;
+            if (n > len) n = len;
+            memcpy(buf, g_fake_net_payload + off, n);
+            g_fake_fd_read_off[fd] = off + n;
+            ret = (ssize_t)n;
+        }
+    }
+    pthread_mutex_unlock(&g_fake_fd_lock);
+    return ret;
+}
+
+static int fake_socket_create(void) {
+    int (*real_socketpair_fn)(int, int, int, int[2]) = dlsym(RTLD_NEXT, "socketpair");
+    ssize_t (*real_write_fn)(int, const void *, size_t) = dlsym(RTLD_NEXT, "write");
+    int fds[2] = {-1, -1};
+    if (!real_socketpair_fn) {
+        errno = ENOSYS;
+        return -1;
+    }
+    if (real_socketpair_fn(AF_UNIX, SOCK_STREAM, 0, fds) != 0) return -1;
+    fake_fd_mark(fds[0], fds[1]);
+    if (real_write_fn) {
+        (void)real_write_fn(fds[1], g_fake_net_payload, sizeof(g_fake_net_payload) - 1u);
+    }
+    return fds[0];
 }
 
 int open(const char *pathname, int flags, ...) {
