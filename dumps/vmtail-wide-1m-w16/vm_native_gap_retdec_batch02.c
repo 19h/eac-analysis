@@ -57,7 +57,7 @@ extern int g12;
 unsigned char llvm_ctpop_i8(unsigned char value);
 uint16_t llvm_bswap_i16(uint16_t value);
 void __asm_int(int32_t interrupt);
-int64_t __asm_int1(int32_t interrupt);
+int64_t __asm_int1();
 int64_t __asm_int3(void);
 int32_t __asm_in(uint16_t port);
 int32_t __asm_in_134(uint16_t port);
@@ -140,6 +140,7 @@ char *__xpg_basename(char *path);
 int32_t eac_retdec_vsnprintf(char *str, int32_t size, char *format, int64_t ap);
 int64_t __wctype_l(const char *property, struct __locale_struct *locale);
 char *strdup(const char *s);
+int __sprintf_chk(char *str, int flag, size_t slen, const char *format, ...);
 struct _Unwind_Exception;
 void _Unwind_Resume(struct _Unwind_Exception *exception);
 

@@ -6,22 +6,22 @@
  * coverage -> queue -> RetDec batch -> coverage.
  *
  * Ranges:
- *   0x573140-0x573250 rank=11 name=fcn.00573140 kind=r2_discovered bytes=272 uncovered=272
- *   0x4cfb40-0x4cfc4e rank=12 name=fcn.004cfb40 kind=r2_discovered bytes=270 uncovered=270
- *   0x46e15-0x46f22 rank=13 name=fcn.00046e15 kind=r2_discovered bytes=269 uncovered=269
- *   0x4c19e0-0x4c1aed rank=14 name=fcn.004c19e0 kind=r2_discovered bytes=269 uncovered=269
- *   0x4c2a20-0x4c2b2d rank=15 name=fcn.004c2a20 kind=r2_discovered bytes=269 uncovered=269
- *   0x511b7f-0x511c8b rank=16 name=fcn.00511b7f kind=r2_discovered bytes=268 uncovered=268
- *   0x4e37c-0x4e487 rank=17 name=fcn.0004e37c kind=r2_discovered bytes=267 uncovered=267
- *   0x3a262e-0x3a2739 rank=18 name=fcn.003a262e kind=r2_discovered bytes=267 uncovered=267
- *   0x567c30-0x567d3a rank=19 name=fcn.00567c30 kind=r2_discovered bytes=266 uncovered=266
- *   0x41448-0x41551 rank=20 name=fcn.00041448 kind=r2_discovered bytes=265 uncovered=265
- *   0x4ad450-0x4ad559 rank=21 name=fcn.004ad450 kind=r2_discovered bytes=265 uncovered=265
- *   0x4a470-0x4a578 rank=22 name=fcn.0004a470 kind=r2_discovered bytes=264 uncovered=264
- *   0x569250-0x569358 rank=23 name=fcn.00569250 kind=r2_discovered bytes=264 uncovered=264
- *   0x573fe-0x57505 rank=24 name=fcn.000573fe kind=r2_discovered bytes=263 uncovered=263
- *   0x62350-0x62456 rank=25 name=fcn.00062350 kind=r2_discovered bytes=262 uncovered=262
- *   0x72178-0x7227e rank=26 name=fcn.00072178 kind=r2_discovered bytes=262 uncovered=262
+ *   0x573140-0x573250 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x4cfb40-0x4cfc4e rank=- name=- kind=- bytes=- uncovered=-
+ *   0x46e15-0x46f22 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x4c19e0-0x4c1aed rank=- name=- kind=- bytes=- uncovered=-
+ *   0x4c2a20-0x4c2b2d rank=- name=- kind=- bytes=- uncovered=-
+ *   0x511b7f-0x511c8b rank=- name=- kind=- bytes=- uncovered=-
+ *   0x4e37c-0x4e487 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x3a262e-0x3a2739 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x567c30-0x567d3a rank=- name=- kind=- bytes=- uncovered=-
+ *   0x41448-0x41551 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x4ad450-0x4ad559 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x4a470-0x4a578 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x569250-0x569358 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x573fe-0x57505 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x62350-0x62456 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x72178-0x7227e rank=- name=- kind=- bytes=- uncovered=-
  */
 #include <stdbool.h>
 #include <stdio.h>
@@ -66,7 +66,7 @@ extern int g19;
 unsigned char llvm_ctpop_i8(unsigned char value);
 uint16_t llvm_bswap_i16(uint16_t value);
 void __asm_int(int32_t interrupt);
-int64_t __asm_int1(int32_t interrupt);
+int64_t __asm_int1();
 int64_t __asm_int3(void);
 int32_t __asm_in(uint16_t port);
 int32_t __asm_in_134(uint16_t port);
@@ -149,6 +149,7 @@ char *__xpg_basename(char *path);
 int32_t eac_retdec_vsnprintf(char *str, int32_t size, char *format, int64_t ap);
 int64_t __wctype_l(const char *property, struct __locale_struct *locale);
 char *strdup(const char *s);
+int __sprintf_chk(char *str, int flag, size_t slen, const char *format, ...);
 struct _Unwind_Exception;
 void _Unwind_Resume(struct _Unwind_Exception *exception);
 
