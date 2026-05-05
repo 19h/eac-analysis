@@ -1441,7 +1441,7 @@ def native_acceleration_metrics(rows):
         "yes" if "./vm_bytecode_segments_fast dumps/vmtail-wide-1m-w16/vm_instruction_trace.tsv --include-sampled" in makefile else "no",
         "Whether sampled bytecode segment recovery uses the native reducer.")
     add(rows, "native_acceleration", "bytecode_segments_fast_check", "make bytecode-segments-fast-check",
-        "Byte-for-byte parity gate against vm_bytecode_recover.py exact and sampled segment modes.")
+        "Byte-for-byte parity gate against vm_bytecode_recover.py raw exact, raw sampled, and final augmented sampled segment modes.")
 
 
 def build_rows():
