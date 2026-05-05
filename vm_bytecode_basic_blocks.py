@@ -56,11 +56,33 @@ def load_coverage(path):
     return coverage
 
 
-def leader_reasons(rows):
+def load_synthetic_successor_leaders(path, rows):
+    row_starts = {row["start_i"] for row in rows}
+    if not path or not Path(path).exists():
+        return defaultdict(Counter)
+    reasons = defaultdict(Counter)
+    with Path(path).open(newline="", errors="replace") as handle:
+        for raw in csv.DictReader(handle, delimiter="\t"):
+            status = raw.get("byte_status", "")
+            if not status or status == "exact":
+                continue
+            try:
+                start = parse_hex(raw.get("start_vm_ip", ""))
+                end = parse_hex(raw.get("end_vm_ip", ""))
+            except ValueError:
+                continue
+            if end in row_starts and end != start:
+                reasons[end][f"synthetic_successor_target:{status}"] += 1
+    return reasons
+
+
+def leader_reasons(rows, extra_reasons=None):
     starts = {row["start_i"] for row in rows}
     reasons = defaultdict(Counter)
     if rows:
         reasons[rows[0]["start_i"]]["first_recovered_row"] += 1
+    for start, counter in (extra_reasons or {}).items():
+        reasons[start].update(counter)
 
     for idx, row in enumerate(rows):
         next_start = rows[idx + 1]["start_i"] if idx + 1 < len(rows) else None
@@ -83,8 +105,8 @@ def leader_reasons(rows):
     return reasons
 
 
-def build_blocks(rows):
-    reasons = leader_reasons(rows)
+def build_blocks(rows, extra_reasons=None):
+    reasons = leader_reasons(rows, extra_reasons)
     leaders = set(reasons)
     blocks = []
     current = None
@@ -430,7 +452,8 @@ def main():
     args = parser.parse_args()
 
     rows = read_ir(args.ir)
-    blocks = build_blocks(rows)
+    extra_reasons = load_synthetic_successor_leaders(args.coverage_trace, rows)
+    blocks = build_blocks(rows, extra_reasons)
     if args.loops and args.markdown:
         emit_loop_markdown(blocks, args)
     elif args.loops:
