@@ -131,6 +131,7 @@ def emit_exact_call(row):
     bytes_hex = row.get("bytes", "")
     kind = row.get("row_kind", "")
     target = row.get("target_entry", "")
+    delta_value = parse_delta(row.get("delta", "0"))
     delta = fmt_delta(row.get("delta", "0"))
     semantic = row.get("semantic_ir", "")
     print(
@@ -138,6 +139,14 @@ def emit_exact_call(row):
         f"expected_next={target}, ip {delta}; {c_comment(semantic)} */"
     )
     print(f"    r = {op_name(entry)}(vm);")
+    if target:
+        print(f"    next_entry = (r.next_entry >= 0) ? r.next_entry : {target};")
+    else:
+        print("    next_entry = r.next_entry;")
+    if delta_value > 0:
+        print(f"    vm_ip += 0x{delta_value:x};")
+    elif delta_value < 0:
+        print(f"    vm_ip -= 0x{-delta_value:x};")
 
 
 def emit_decoded_control(row):
