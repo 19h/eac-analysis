@@ -372,22 +372,25 @@ def main():
     parser.add_argument("--handler-table", default="dumps/vmtail-wide-1m-w16/vm_handler_table.tsv")
     parser.add_argument("--eac", default="eac.elf")
     parser.add_argument("--tail-window", type=lambda value: int(value, 0), default=0x80)
+    parser.add_argument("--source299-ret-patch-probe", default="dumps/vmtail-wide-1m-w16/vm_synthetic_gap_source299_ret_patch_probe.tsv")
     parser.add_argument("--limit", type=int, default=80)
     parser.add_argument("--entry", action="append", default=[])
     parser.add_argument("--all", action="store_true")
     parser.add_argument("--max-expr-len", type=int, default=360)
     parser.add_argument("--max-comment-len", type=int, default=260)
+    parser.add_argument("--ret-patch-comment-items", type=int, default=6)
     args = parser.parse_args()
 
     rows = list(read_tsv(args.microcode))
     rows.sort(key=lambda row: int(row["entry"]))
     transition = load_by(args.transition_model, "entry")
     tail_ip_advances = load_tail_ip_advances(args.handler_table, args.eac, args.tail_window)
+    ret_patch_summaries = load_ret_patch_summaries(args.source299_ret_patch_probe)
     chosen = selected_handlers(rows, args)
 
     emit_preamble()
     for row in chosen:
-        emit_handler(row, transition, tail_ip_advances, args)
+        emit_handler(row, transition, tail_ip_advances, ret_patch_summaries, args)
     emit_dispatch_table(chosen)
 
     classes = Counter(row.get("class", "") for row in chosen)

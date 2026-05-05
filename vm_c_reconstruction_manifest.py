@@ -147,6 +147,12 @@ def c_shape_metrics(rows):
     add(rows, "c_shape", "handler_next_entry_slot_index_normalizations",
         count(r"r\.next_entry = vm_entry_from_slot_index\(r\.slot\);", handlers),
         "Handler fall-through slots normalized as direct slot indices.")
+    add(rows, "c_shape", "handler_source299_ret_patch_functions",
+        count(r"native return-patch thunk", handlers),
+        "Handler/operator functions rendered as native return-patch thunks instead of normal dispatch-table handlers.")
+    add(rows, "c_shape", "handler_source299_ret_patch_evidence_comments",
+        count(r"ret-patch evidence: rows=", handlers),
+        "Handler-layer source-299 ret-patch evidence summaries.")
     add(rows, "c_shape", "path_specialized_functions", count(r"^static VMOpResult path_entry_\d{3}_[0-9a-f]+\(VMState \*vm\) \{", path_handlers),
         "Validated concrete branch-path C functions.")
     add(rows, "c_shape", "direct_top_block_defs", count(r"^static void bb_\d{4}\(VMState \*vm\) \{", direct_top),
@@ -273,6 +279,12 @@ def c_shape_metrics(rows):
         "Observed focused-chain replay steps emitted inside disabled terminal bridge snippets in the full program sketch.")
     add(rows, "c_shape", "bundle_block_defs", count(r"^static void prog_bb_\d{4}\(VMState \*vm, uint64_t vm_ip\) \{", bundle),
         "Full program block functions inside the combined source bundle.")
+    add(rows, "c_shape", "bundle_source299_ret_patch_handler_functions",
+        count(r"native return-patch thunk", bundle),
+        "Native return-patch handler/operator functions inside the combined source bundle.")
+    add(rows, "c_shape", "bundle_source299_ret_patch_handler_evidence_comments",
+        count(r"ret-patch evidence: rows=", bundle),
+        "Handler-layer source-299 ret-patch evidence summaries inside the combined source bundle.")
     add(rows, "c_shape", "bundle_block_calls", count(r"^    prog_bb_\d{4}\(vm, vm_ip\);$", bundle),
         "Concrete block-to-block calls inside the combined source bundle.")
     add(rows, "c_shape", "bundle_synthetic_gap_unresolved_calls", count(r"^    vm_unresolved_synthetic_tail\(vm, 0x[0-9a-f]+\);$", bundle),

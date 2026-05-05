@@ -318,7 +318,7 @@ pseudocode: bytecode-basic-blocks synthetic-tail-lift synthetic-gap-transfer-pro
 pseudocode-full: bytecode-basic-blocks synthetic-tail-lift synthetic-gap-transfer-probe synthetic-gap-dynamic-stitch synthetic-gap-chain-probe synthetic-gap-residual-audit synthetic-gap-concrete-state-audit synthetic-gap-live-context-audit synthetic-gap-table-read-diagnostic synthetic-gap-table-memory-probe synthetic-gap-runtime-table-memory-probe synthetic-gap-live-table-evidence synthetic-gap-source299-ret-patch-probe synthetic-gap-sampled-control-correlation synthetic-gap-focused-direct-trace-audit synthetic-gap-focused-sequence-audit synthetic-gap-observed-chain-bridge synthetic-gap-symbolic-successors synthetic-gap-live-in-roles final-tail-site-probe synthetic-gap-live-in-reentry-probe synthetic-gap-allstatic-reentry-probe
 	python3 vm_program_pseudocode_dump.py --limit-blocks 0 --rows-per-block 0 > dumps/vmtail-wide-1m-w16/vm_program_pseudocode_full.c
 
-handler-pseudocode:
+handler-pseudocode: synthetic-gap-source299-ret-patch-probe
 	python3 vm_handler_pseudocode_dump.py --all > dumps/vmtail-wide-1m-w16/vm_handlers_pseudocode.c
 	python3 vm_handler_pseudocode_dump.py --limit 80 > dumps/vmtail-wide-1m-w16/vm_handlers_hot_pseudocode.c
 
