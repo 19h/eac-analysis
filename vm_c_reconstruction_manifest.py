@@ -59,6 +59,8 @@ ARTIFACTS = [
     ("synthetic_gap_source299_context_probe_md", TRACE_DIR / "vm_synthetic_gap_source299_context_probe.md"),
     ("synthetic_gap_live_snapshot_transfer_probe_tsv", TRACE_DIR / "vm_synthetic_gap_live_snapshot_transfer_probe.tsv"),
     ("synthetic_gap_live_snapshot_transfer_probe_md", TRACE_DIR / "vm_synthetic_gap_live_snapshot_transfer_probe.md"),
+    ("synthetic_gap_live_table_evidence_tsv", TRACE_DIR / "vm_synthetic_gap_live_table_evidence.tsv"),
+    ("synthetic_gap_live_table_evidence_md", TRACE_DIR / "vm_synthetic_gap_live_table_evidence.md"),
     ("synthetic_gap_symbolic_successors_tsv", TRACE_DIR / "vm_synthetic_gap_symbolic_successors.tsv"),
     ("synthetic_gap_symbolic_successors_md", TRACE_DIR / "vm_synthetic_gap_symbolic_successors.md"),
     ("synthetic_gap_live_in_roles_tsv", TRACE_DIR / "vm_synthetic_gap_live_in_roles.tsv"),
@@ -1303,6 +1305,56 @@ def synthetic_gap_live_snapshot_transfer_probe_metrics(rows):
         "Rows where the live branch path differs from the zero-seed unresolved-family transfer path.")
 
 
+def synthetic_gap_live_table_evidence_metrics(rows):
+    evidence_rows = read_tsv(TRACE_DIR / "vm_synthetic_gap_live_table_evidence.tsv")
+    starts = Counter(row.get("synthetic_start_vm_ip", "") for row in evidence_rows)
+    evidence_mix = Counter(row.get("evidence_class", "") for row in evidence_rows)
+    seed_mix = Counter(row.get("seed_quality", "") for row in evidence_rows)
+    region_mix = Counter(row.get("region", "") for row in evidence_rows)
+    file_qword_mix = Counter(row.get("file_qword_class", "") for row in evidence_rows)
+    runtime_qword_mix = Counter(row.get("runtime_qword_class", "") for row in evidence_rows)
+    runtime_match_mix = Counter(row.get("runtime_matches_file", "") for row in evidence_rows)
+    dispatch_decodes = [
+        row.get("synthetic_start_vm_ip", "")
+        for row in evidence_rows
+        if row.get("file_qword_dispatch_entry", "") or row.get("runtime_qword_dispatch_entry", "")
+    ]
+    weak_rows = [
+        row.get("synthetic_start_vm_ip", "")
+        for row in evidence_rows
+        if row.get("seed_quality", "") == "frame_only_snapshot"
+    ]
+
+    add(rows, "gap_live_table_evidence", "synthetic_gap_live_table_evidence_rows", len(evidence_rows),
+        "Per-live-row file/runtime evidence for concrete table offsets reached by unresolved live-snapshot replay.")
+    add(rows, "gap_live_table_evidence", "synthetic_gap_live_table_evidence_starts", len(starts),
+        "Distinct unresolved starts represented by the live table evidence audit.")
+    add(rows, "gap_live_table_evidence", "synthetic_gap_live_table_evidence_class_mix",
+        ",".join(f"{key}:{value}" for key, value in evidence_mix.most_common()) or "-",
+        "Final evidence class for whether a rejected table offset can explain a direct dispatch edge.")
+    add(rows, "gap_live_table_evidence", "synthetic_gap_live_table_evidence_seed_mix",
+        ",".join(f"{key}:{value}" for key, value in seed_mix.most_common()) or "-",
+        "Snapshot strength preserved by the live table evidence audit.")
+    add(rows, "gap_live_table_evidence", "synthetic_gap_live_table_evidence_region_mix",
+        ",".join(f"{key}:{value}" for key, value in region_mix.most_common()) or "-",
+        "Where the concrete table offsets land relative to the dispatch table.")
+    add(rows, "gap_live_table_evidence", "synthetic_gap_live_table_evidence_file_qword_mix",
+        ",".join(f"{key}:{value}" for key, value in file_qword_mix.most_common()) or "-",
+        "File qword classification at each concrete table-derived file offset.")
+    add(rows, "gap_live_table_evidence", "synthetic_gap_live_table_evidence_runtime_qword_mix",
+        ",".join(f"{key}:{value}" for key, value in runtime_qword_mix.most_common()) or "-",
+        "Runtime qword classification at each concrete table-derived mapped offset.")
+    add(rows, "gap_live_table_evidence", "synthetic_gap_live_table_evidence_runtime_match_mix",
+        ",".join(f"{key}:{value}" for key, value in runtime_match_mix.most_common()) or "-",
+        "Whether runtime mapped bytes match eac.elf at the rejected offsets.")
+    add(rows, "gap_live_table_evidence", "synthetic_gap_live_table_evidence_dispatch_decode_starts",
+        ",".join(dispatch_decodes) or "-",
+        "Live table evidence rows where file/runtime bytes decode as dispatch-table targets.")
+    add(rows, "gap_live_table_evidence", "synthetic_gap_live_table_evidence_frame_only_starts",
+        ",".join(weak_rows) or "-",
+        "Frame-only alternate/config evidence rows kept separate from full-GPR rows.")
+
+
 def synthetic_gap_live_in_role_metrics(rows):
     role_rows = read_tsv(TRACE_DIR / "vm_synthetic_gap_live_in_roles.tsv")
     resolutions = Counter(row.get("resolution", "") for row in role_rows)
@@ -1660,6 +1712,7 @@ def build_rows():
     synthetic_gap_unresolved_family_metrics(rows)
     synthetic_gap_source299_context_probe_metrics(rows)
     synthetic_gap_live_snapshot_transfer_probe_metrics(rows)
+    synthetic_gap_live_table_evidence_metrics(rows)
     synthetic_gap_live_in_role_metrics(rows)
     synthetic_gap_final_tail_site_metrics(rows)
     synthetic_gap_live_in_reentry_metrics(rows)
