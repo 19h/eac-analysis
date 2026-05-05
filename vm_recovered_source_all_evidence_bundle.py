@@ -28,6 +28,7 @@ DEFAULT_SIDECARS = [
     TRACE_DIR / "vm_static_only_tier1_handler_models.c",
     TRACE_DIR / "vm_static_only_tier2_split_models.c",
     TRACE_DIR / "vm_static_only_tier3_shared_models.c",
+    TRACE_DIR / "vm_static_only_tier4_callret_models.c",
     TRACE_DIR / "vm_target_only_handlers_retdec.c",
     TRACE_DIR / "vm_unobserved_handlers_retdec_batch00.c",
     TRACE_DIR / "vm_unobserved_handlers_retdec_batch01.c",
