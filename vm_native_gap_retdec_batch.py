@@ -116,12 +116,12 @@ BATCHES = {
         "0x69802-0x699a6",
         "0x4b13e0-0x4b1584",
         "0x6bd8a-0x6bf2a",
-        "0x4ad2a0-0x4ad440",
         "0x568b50-0x568d00",
         "0x61082-0x61221",
         "0x4886f0-0x48888d",
         "0x55620-0x557b9",
         "0x4ae080-0x4ae218",
+        "0x4cd900-0x4cda96",
     ],
 }
 
@@ -254,6 +254,7 @@ def main():
     print("void __stack_chk_fail(void);")
     print("int __cxa_atexit(void (*func)(int64_t *), void *arg, void *dso);")
     print("int128_t __asm_movsd(int64_t value);")
+    print("int128_t __asm_movdqu(int128_t value);")
     print("int128_t __asm_movapd(int128_t value);")
     print("int128_t __asm_andpd(int128_t left, int128_t right);")
     print("int128_t __asm_andnpd(int128_t left, int128_t right);")
@@ -269,6 +270,8 @@ def main():
     print("char *__nl_langinfo_l(int32_t item, struct __locale_struct *locale);")
     print("struct __locale_struct *__uselocale(struct __locale_struct *locale);")
     print("char *dgettext(char *domain, char *msgid);")
+    print("char *gettext(char *msgid);")
+    print("char *bind_textdomain_codeset(char *domainname, char *codeset);")
     print("struct _IO_FILE *fopen(const char *path, const char *mode);")
     print("size_t fread(void *ptr, size_t size, size_t nmemb, struct _IO_FILE *stream);")
     print("int fclose(struct _IO_FILE *stream);")
@@ -276,6 +279,7 @@ def main():
     print("int32_t mbsnrtowcs(int32_t *dst, char **src, size_t nms, size_t len, struct _TYPEDEF___mbstate_t *ps);")
     print("int32_t *wmemcpy(int32_t *dest, const int32_t *src, size_t n);")
     print("int32_t *wmemset(int32_t *wcs, int32_t wc, size_t n);")
+    print("void *memset2(void *s, int c, size_t n);")
     print("int pthread_mutex_lock(int64_t *mutex);")
     print("int pthread_mutex_unlock(int64_t *mutex);")
     print("char *strdup(const char *s);")
