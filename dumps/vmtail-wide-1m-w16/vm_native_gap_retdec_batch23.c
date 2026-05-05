@@ -128,6 +128,7 @@ size_t mbstowcs(int32_t *dest, const char *src, size_t n);
 int32_t mbsnrtowcs(int32_t *dst, char **src, size_t nms, size_t len, struct _TYPEDEF___mbstate_t *ps);
 size_t wcslen(const int32_t *s);
 int wctob(int32_t wc);
+int32_t btowc(int c);
 int32_t towlower(int32_t wc);
 int32_t *wmemcpy(int32_t *dest, const int32_t *src, size_t n);
 int32_t *wmemmove(int32_t *dest, const int32_t *src, size_t n);
@@ -956,7 +957,7 @@ int64_t function_52bdc0(int64_t result, int64_t a2, int64_t a3, uint64_t a4, int
         *(char *)v9 = (char)a5;
     } else {
         // 0x52be4e
-        memset((int64_t *)v9, 0x1000000 * (int32_t)a5 >> 24, (int32_t)a4);
+        memset((void *)(int64_t)((int64_t *)v9), 0x1000000 * (int32_t)a5 >> 24, (int32_t)a4);
     }
     // 0x52be5d
     *v1 = v3;
