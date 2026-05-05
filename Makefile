@@ -71,6 +71,9 @@ NATIVE_RET_PATCH_HIDDEN_BRIDGE_MD := $(PRIMARY_DIR)/vm_native_ret_patch_hidden_b
 NATIVE_HANDLER_ENVIRONMENT_COVERAGE_C := $(PRIMARY_DIR)/vm_native_handler_environment_coverage.c
 NATIVE_HANDLER_ENVIRONMENT_COVERAGE_TSV := $(PRIMARY_DIR)/vm_native_handler_environment_coverage.tsv
 NATIVE_HANDLER_ENVIRONMENT_COVERAGE_MD := $(PRIMARY_DIR)/vm_native_handler_environment_coverage.md
+BINARY_DATA_SECTIONS_C := $(PRIMARY_DIR)/vm_binary_data_sections.c
+BINARY_DATA_SECTIONS_TSV := $(PRIMARY_DIR)/vm_binary_data_sections.tsv
+BINARY_DATA_SECTIONS_MD := $(PRIMARY_DIR)/vm_binary_data_sections.md
 STATIC_ONLY_HANDLER_QUEUE_C := $(PRIMARY_DIR)/vm_static_only_handler_queue.c
 STATIC_ONLY_HANDLER_QUEUE_TSV := $(PRIMARY_DIR)/vm_static_only_handler_queue.tsv
 STATIC_ONLY_HANDLER_QUEUE_MD := $(PRIMARY_DIR)/vm_static_only_handler_queue.md
@@ -90,9 +93,9 @@ STATIC_ONLY_TIER4_CALLRET_C := $(PRIMARY_DIR)/vm_static_only_tier4_callret_model
 STATIC_ONLY_TIER4_CALLRET_TSV := $(PRIMARY_DIR)/vm_static_only_tier4_callret_models.tsv
 STATIC_ONLY_TIER4_CALLRET_MD := $(PRIMARY_DIR)/vm_static_only_tier4_callret_models.md
 
-.PHONY: all clean fast-replay fast-state fast-gpr fast-predicates fast-state-predicates fast-gpr-predicates fast-transfer fast-state-transfer fast-gpr-transfer fast-validators fast-paths fast-gpr-paths instruction-trace instruction-trace-refresh instruction-unique instruction-unique-fast-check bytecode-segments-fast-check bytecode-blocks-fast-check instruction-lift sampled-recovery file-atlas file-fill long-branches hidden-transitions sampled-operands hidden-fill frontier-fill footprint-fill control-edges bytecode-ir bytecode-basic-blocks synthetic-spans synthetic-tails synthetic-tail-lift synthetic-successor-gaps synthetic-gap-transfer-probe synthetic-gap-dynamic-stitch synthetic-gap-chain-probe synthetic-gap-residual-audit synthetic-gap-concrete-state-audit synthetic-gap-state-trace-targets synthetic-gap-live-context-audit synthetic-gap-table-read-diagnostic synthetic-gap-table-memory-probe synthetic-gap-runtime-table-memory-probe synthetic-gap-sampled-control-correlation synthetic-gap-focused-direct-trace-audit synthetic-gap-focused-sequence-audit synthetic-gap-observed-chain-bridge synthetic-gap-observed-chain-replay synthetic-gap-chain-slot-reconciliation synthetic-gap-unresolved-family-audit synthetic-gap-source299-context-probe synthetic-gap-source299-ret-patch-probe synthetic-gap-sampled-ret-patch-probe synthetic-gap-ret-patch-native-target-atlas native-ret-patch-target-pseudocode native-ret-patch-epilogues-retdec native-ret-patch-source278-retdec native-ret-patch-followups native-ret-patch-followup-retdec native-obfuscated-islands native-obfuscated-second-stage native-obfuscated-second-stage-dynamic native-obfuscated-second-stage-slot-proof native-obfuscated-second-stage-stack-source native-obfuscated-second-stage-rbx-provenance native-obfuscated-second-stage-model native-obfuscated-control-model native-ret-patch-hidden-bridge native-handler-environment-coverage static-only-handler-queue static-only-tier0-models static-only-tier1-models static-only-tier2-split static-only-tier3-shared static-only-tier4-callret target-only-handlers-retdec unobserved-handlers-retdec unobserved-handlers-retdec-batch0 weak-handlers-retdec validated-handlers-retdec handler-retdec-index unresolved-family-chains synthetic-gap-live-snapshot-transfer-probe synthetic-gap-live-table-evidence synthetic-gap-symbolic-successors synthetic-gap-live-in-roles final-tail-site-probe synthetic-gap-live-in-reentry-probe synthetic-gap-allstatic-reentry-probe pseudocode pseudocode-full handler-pseudocode path-pseudocode source-bundle all-evidence-bundle pseudocode-syntax-check pseudocode-object-check pseudocode-link-check coverage-matrix coverage-audit c-reconstruction-manifest
+.PHONY: all clean fast-replay fast-state fast-gpr fast-predicates fast-state-predicates fast-gpr-predicates fast-transfer fast-state-transfer fast-gpr-transfer fast-validators fast-paths fast-gpr-paths instruction-trace instruction-trace-refresh instruction-unique instruction-unique-fast-check bytecode-segments-fast-check bytecode-blocks-fast-check instruction-lift sampled-recovery file-atlas file-fill long-branches hidden-transitions sampled-operands hidden-fill frontier-fill footprint-fill control-edges bytecode-ir bytecode-basic-blocks synthetic-spans synthetic-tails synthetic-tail-lift synthetic-successor-gaps synthetic-gap-transfer-probe synthetic-gap-dynamic-stitch synthetic-gap-chain-probe synthetic-gap-residual-audit synthetic-gap-concrete-state-audit synthetic-gap-state-trace-targets synthetic-gap-live-context-audit synthetic-gap-table-read-diagnostic synthetic-gap-table-memory-probe synthetic-gap-runtime-table-memory-probe synthetic-gap-sampled-control-correlation synthetic-gap-focused-direct-trace-audit synthetic-gap-focused-sequence-audit synthetic-gap-observed-chain-bridge synthetic-gap-observed-chain-replay synthetic-gap-chain-slot-reconciliation synthetic-gap-unresolved-family-audit synthetic-gap-source299-context-probe synthetic-gap-source299-ret-patch-probe synthetic-gap-sampled-ret-patch-probe synthetic-gap-ret-patch-native-target-atlas native-ret-patch-target-pseudocode native-ret-patch-epilogues-retdec native-ret-patch-source278-retdec native-ret-patch-followups native-ret-patch-followup-retdec native-obfuscated-islands native-obfuscated-second-stage native-obfuscated-second-stage-dynamic native-obfuscated-second-stage-slot-proof native-obfuscated-second-stage-stack-source native-obfuscated-second-stage-rbx-provenance native-obfuscated-second-stage-model native-obfuscated-control-model native-ret-patch-hidden-bridge native-handler-environment-coverage binary-data-sections static-only-handler-queue static-only-tier0-models static-only-tier1-models static-only-tier2-split static-only-tier3-shared static-only-tier4-callret target-only-handlers-retdec unobserved-handlers-retdec unobserved-handlers-retdec-batch0 weak-handlers-retdec validated-handlers-retdec handler-retdec-index unresolved-family-chains synthetic-gap-live-snapshot-transfer-probe synthetic-gap-live-table-evidence synthetic-gap-symbolic-successors synthetic-gap-live-in-roles final-tail-site-probe synthetic-gap-live-in-reentry-probe synthetic-gap-allstatic-reentry-probe pseudocode pseudocode-full handler-pseudocode path-pseudocode source-bundle all-evidence-bundle pseudocode-syntax-check pseudocode-object-check pseudocode-link-check coverage-matrix coverage-audit c-reconstruction-manifest
 
-all: driver trace_preload.so vm_fast_path_profile vm_instruction_unique_fast vm_bytecode_segments_fast vm_bytecode_blocks_fast vm_handler_retdec_index vm_unresolved_family_chains_dump vm_native_ret_patch_followups_dump vm_native_ret_patch_followup_retdec_dump vm_native_obfuscated_islands_dump vm_native_obfuscated_second_stage_dump vm_native_obfuscated_second_stage_dynamic_dump vm_native_obfuscated_second_stage_slot_proof_dump vm_native_obfuscated_second_stage_stack_source_dump vm_native_obfuscated_second_stage_rbx_provenance_dump vm_native_obfuscated_second_stage_model_dump vm_native_obfuscated_control_model_dump vm_native_ret_patch_hidden_bridge_dump vm_native_handler_environment_coverage_dump vm_static_only_handler_queue_dump vm_static_only_tier0_models_dump vm_static_only_tier1_models_dump vm_static_only_tier2_split_dump vm_static_only_tier3_shared_dump vm_static_only_tier4_callret_dump
+all: driver trace_preload.so vm_fast_path_profile vm_instruction_unique_fast vm_bytecode_segments_fast vm_bytecode_blocks_fast vm_handler_retdec_index vm_unresolved_family_chains_dump vm_native_ret_patch_followups_dump vm_native_ret_patch_followup_retdec_dump vm_native_obfuscated_islands_dump vm_native_obfuscated_second_stage_dump vm_native_obfuscated_second_stage_dynamic_dump vm_native_obfuscated_second_stage_slot_proof_dump vm_native_obfuscated_second_stage_stack_source_dump vm_native_obfuscated_second_stage_rbx_provenance_dump vm_native_obfuscated_second_stage_model_dump vm_native_obfuscated_control_model_dump vm_native_ret_patch_hidden_bridge_dump vm_native_handler_environment_coverage_dump vm_binary_data_sections_dump vm_static_only_handler_queue_dump vm_static_only_tier0_models_dump vm_static_only_tier1_models_dump vm_static_only_tier2_split_dump vm_static_only_tier3_shared_dump vm_static_only_tier4_callret_dump
 
 driver: driver.c
 	$(CC) $(CFLAGS) -o $@ $< -ldl
@@ -152,6 +155,9 @@ vm_native_ret_patch_hidden_bridge_dump: vm_native_ret_patch_hidden_bridge_dump.c
 	$(CC) $(CFLAGS) -O2 -o $@ $<
 
 vm_native_handler_environment_coverage_dump: vm_native_handler_environment_coverage_dump.c
+	$(CC) $(CFLAGS) -O2 -o $@ $<
+
+vm_binary_data_sections_dump: vm_binary_data_sections_dump.c
 	$(CC) $(CFLAGS) -O2 -o $@ $<
 
 vm_static_only_handler_queue_dump: vm_static_only_handler_queue_dump.c
@@ -566,6 +572,17 @@ $(NATIVE_HANDLER_ENVIRONMENT_COVERAGE_MD): vm_native_handler_environment_coverag
 	./vm_native_handler_environment_coverage_dump --markdown > $@
 
 native-handler-environment-coverage: $(NATIVE_HANDLER_ENVIRONMENT_COVERAGE_C) $(NATIVE_HANDLER_ENVIRONMENT_COVERAGE_TSV) $(NATIVE_HANDLER_ENVIRONMENT_COVERAGE_MD)
+
+$(BINARY_DATA_SECTIONS_C): vm_binary_data_sections_dump eac.elf
+	./vm_binary_data_sections_dump --c > $@
+
+$(BINARY_DATA_SECTIONS_TSV): vm_binary_data_sections_dump eac.elf
+	./vm_binary_data_sections_dump --tsv > $@
+
+$(BINARY_DATA_SECTIONS_MD): vm_binary_data_sections_dump eac.elf
+	./vm_binary_data_sections_dump --markdown > $@
+
+binary-data-sections: $(BINARY_DATA_SECTIONS_C) $(BINARY_DATA_SECTIONS_TSV) $(BINARY_DATA_SECTIONS_MD)
 
 $(STATIC_ONLY_HANDLER_QUEUE_C): vm_static_only_handler_queue_dump $(NATIVE_HANDLER_ENVIRONMENT_COVERAGE_TSV) $(HANDLER_RETDEC_INDEX_TSV) $(PRIMARY_DIR)/vm_handler_semantics.tsv
 	./vm_static_only_handler_queue_dump --c > $@
