@@ -283,13 +283,28 @@ def emit_synthetic_edge(edge, synthetic_spans, args):
         print(f"    vm_ip -= 0x{-delta:x};")
 
 
+def synthetic_successor(edge, synthetic_spans, block_by_start):
+    target_vm_ip = normalize_vm_ip(edge.get("target_vm_ip", ""))
+    info = synthetic_spans.get(target_vm_ip)
+    if not info:
+        return None, None
+    delta_text = top_key(info["deltas"])
+    if not delta_text:
+        return None, None
+    try:
+        dest = parse_hex(target_vm_ip) + parse_delta(delta_text)
+    except (TypeError, ValueError):
+        return None, None
+    return block_by_start.get(dest), dest
+
+
 def emit_block_prototypes(blocks):
     for block in blocks:
         print(f"static void prog_{c_block_name(block['block'])}(VMState *vm, uint64_t vm_ip);")
     print("")
 
 
-def emit_block(block, rows, edge, synthetic_spans, tail_lifts, args, known_blocks):
+def emit_block(block, rows, edge, synthetic_spans, tail_lifts, args, known_blocks, block_by_start):
     name = c_block_name(block["block"])
     print(f"static void prog_{name}(VMState *vm, uint64_t vm_ip) {{")
     print("    VMOpResult r = { .next_entry = -1, .slot = 0xffffffffu };")
@@ -330,6 +345,12 @@ def emit_block(block, rows, edge, synthetic_spans, tail_lifts, args, known_block
                 print("    /* target block is outside this selected sketch. */")
         elif edge_kind == "covered_synthetic_fallthrough":
             emit_synthetic_edge(edge, synthetic_spans, args)
+            target_block, target_vm_ip = synthetic_successor(edge, synthetic_spans, block_by_start)
+            if target_block is not None:
+                print(f"    /* synthetic successor after lifted delta: prog_{c_block_name(target_block)} @ 0x{target_vm_ip:x}; */")
+                print(f"    prog_{c_block_name(target_block)}(vm, vm_ip);")
+            elif target_vm_ip is not None:
+                print(f"    /* synthetic successor 0x{target_vm_ip:x} is outside this selected sketch. */")
     print("    (void)r;")
     print("    (void)next_entry;")
     print("    (void)vm_ip;")
@@ -396,8 +417,9 @@ def main():
     emit_preamble(collect_used_entries(chosen, rows_by_block, args.rows_per_block, edges, synthetic_spans))
     emit_block_prototypes(chosen)
     known_blocks = {block["block"] for block in chosen}
+    block_by_start = {parse_hex(block["start_vm_ip"]): block["block"] for block in chosen}
     for block in chosen:
-        emit_block(block, rows_by_block.get(block["block"], []), edges.get(block["block"]), synthetic_spans, tail_lifts, args, known_blocks)
+        emit_block(block, rows_by_block.get(block["block"], []), edges.get(block["block"]), synthetic_spans, tail_lifts, args, known_blocks, block_by_start)
     emit_dispatch(chosen)
     print(
         f"program_pseudocode_blocks={len(chosen)} rows_per_block={args.rows_per_block}",
