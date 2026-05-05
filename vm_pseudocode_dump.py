@@ -382,6 +382,12 @@ def emit_symbolic_successor_comments(target_vm_ip, symbolic_successors, args):
         dest_row = row.get("dest_row_kind", "") or "-"
         if row.get("dest_source_entry", ""):
             dest_row = f"{dest_row}/entry_{row.get('dest_source_entry')}"
+        dest_block = "-"
+        if row.get("dest_block", ""):
+            dest_block = f"{row.get('dest_block')}@{normalize_vm_ip(row.get('dest_block_start_vm_ip', ''))}"
+        dynamic = row.get("dynamic_resolution", "") or "-"
+        if row.get("dynamic_next_end_vm_ip", ""):
+            dynamic = f"{dynamic}@{normalize_vm_ip(row.get('dynamic_next_end_vm_ip', ''))}"
         print(
             f"    /* symbolic successor: source={row.get('source_entry', '?')}, "
             f"missing_successor={normalize_vm_ip(row.get('missing_successor_vm_ip', ''))}, "
@@ -389,12 +395,10 @@ def emit_symbolic_successor_comments(target_vm_ip, symbolic_successors, args):
             f"pred_delta={row.get('zero_seed_pred_delta', '-')}, "
             f"dest={normalize_vm_ip(row.get('concrete_dest_vm_ip', ''))}, "
             f"dest_row={c_comment(dest_row)}, "
-            f"dest_block={row.get('dest_block', '-') or '-'}"
-            f"@{normalize_vm_ip(row.get('dest_block_start_vm_ip', '')) or '-'}, "
+            f"dest_block={c_comment(dest_block)}, "
             f"slot={c_comment(clip(row.get('transfer_slot_expr', '') or '-', max_expr))}, "
             f"ip={c_comment(clip(row.get('transfer_ip_expr', '') or '-', max_expr))}, "
-            f"dynamic={c_comment(row.get('dynamic_resolution', '') or '-')}"
-            f"@{normalize_vm_ip(row.get('dynamic_next_end_vm_ip', '')) or '-'}, "
+            f"dynamic={c_comment(dynamic)}, "
             f"status={c_comment(row.get('status', '') or '-')} */"
         )
     omitted = len(rows) - len(shown)

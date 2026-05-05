@@ -133,6 +133,10 @@ def c_shape_metrics(rows):
         "Synthetic gap sites annotated with next-hooked-source dynamic stitch evidence.")
     add(rows, "c_shape", "program_full_dynamic_stitch_event_comments", count(r"dynamic stitch: event=", program_full),
         "Dynamic stitch event-instance comments carried into the full program sketch.")
+    add(rows, "c_shape", "program_full_symbolic_successor_audit_sites", count(r"symbolic successor audit @", program_full),
+        "Synthetic gap sites annotated with symbolic-slot successor audit evidence.")
+    add(rows, "c_shape", "program_full_symbolic_successor_comments", count(r"symbolic successor: source=", program_full),
+        "Symbolic-slot successor candidate comments carried into the full program sketch.")
     add(rows, "c_shape", "program_full_live_in_role_evidence_sites", count(r"live-in role evidence @", program_full),
         "Synthetic gap sites annotated with prioritized live-in register role evidence.")
     add(rows, "c_shape", "program_full_live_in_role_comments", count(r"live-in role: source=", program_full),
@@ -153,6 +157,10 @@ def c_shape_metrics(rows):
         "Synthetic gap sites annotated with dynamic stitch evidence inside the combined source bundle.")
     add(rows, "c_shape", "bundle_dynamic_stitch_event_comments", count(r"dynamic stitch: event=", bundle),
         "Dynamic stitch event-instance comments carried into the combined source bundle.")
+    add(rows, "c_shape", "bundle_symbolic_successor_audit_sites", count(r"symbolic successor audit @", bundle),
+        "Synthetic gap sites annotated with symbolic-slot successor audit evidence inside the combined source bundle.")
+    add(rows, "c_shape", "bundle_symbolic_successor_comments", count(r"symbolic successor: source=", bundle),
+        "Symbolic-slot successor candidate comments carried into the combined source bundle.")
     add(rows, "c_shape", "bundle_live_in_role_evidence_sites", count(r"live-in role evidence @", bundle),
         "Synthetic gap sites annotated with prioritized live-in register role evidence inside the combined source bundle.")
     add(rows, "c_shape", "bundle_live_in_role_comments", count(r"live-in role: source=", bundle),
