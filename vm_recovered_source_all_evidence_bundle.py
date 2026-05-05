@@ -212,6 +212,7 @@ def main():
     print("int iconv_close(void *cd);")
     print("void free(void *ptr);")
     print("void *memcpy(void *dest, const void *src, size_t n);")
+    print("int memcmp(const void *s1, const void *s2, size_t n);")
     print("void *memmove(void *dest, const void *src, size_t n);")
     print("void *memset(void *s, int c, size_t n);")
     print("size_t strlen(const char *s);")
