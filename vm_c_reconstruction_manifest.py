@@ -37,6 +37,7 @@ ARTIFACTS = [
     ("native_gap_retdec_batch06", TRACE_DIR / "vm_native_gap_retdec_batch06.c"),
     ("native_gap_retdec_batch07", TRACE_DIR / "vm_native_gap_retdec_batch07.c"),
     ("native_gap_retdec_batch08", TRACE_DIR / "vm_native_gap_retdec_batch08.c"),
+    ("native_gap_retdec_batch09", TRACE_DIR / "vm_native_gap_retdec_batch09.c"),
     ("direct_blocks_top", TRACE_DIR / "vm_pseudocode_top.c"),
     ("program_blocks_top", TRACE_DIR / "vm_program_pseudocode_top.c"),
     ("program_blocks_full", TRACE_DIR / "vm_program_pseudocode_full.c"),
@@ -303,6 +304,7 @@ def c_shape_metrics(rows):
     native_gap_retdec_batch06 = read_text(TRACE_DIR / "vm_native_gap_retdec_batch06.c")
     native_gap_retdec_batch07 = read_text(TRACE_DIR / "vm_native_gap_retdec_batch07.c")
     native_gap_retdec_batch08 = read_text(TRACE_DIR / "vm_native_gap_retdec_batch08.c")
+    native_gap_retdec_batch09 = read_text(TRACE_DIR / "vm_native_gap_retdec_batch09.c")
     binary_data_sections = read_text(TRACE_DIR / "vm_binary_data_sections.c")
     binary_data_sections_index = read_tsv(TRACE_DIR / "vm_binary_data_sections.tsv")
     binary_data_string_rows = [row for row in binary_data_sections_index if row.get("kind", "") == "string"]
@@ -961,6 +963,15 @@ def c_shape_metrics(rows):
     add(rows, "c_shape", "native_gap_retdec_batch08_address_ranges",
         count(r"^// Address range: 0x[0-9a-f]+ - 0x[0-9a-f]+$", native_gap_retdec_batch08),
         "RetDec address-range comments emitted for native gap batch 08.")
+    add(rows, "c_shape", "native_gap_retdec_batch09_selected_ranges",
+        count(r"^ \*   0x[0-9a-f]+-0x[0-9a-f]+ rank=", native_gap_retdec_batch09),
+        "Fixed top-ranked native gap queue ranges selected for RetDec batch 09.")
+    add(rows, "c_shape", "native_gap_retdec_batch09_functions",
+        count(r"^int64_t function_[0-9a-f]+\(.*\) \{", native_gap_retdec_batch09),
+        "RetDec native C function bodies emitted for native gap batch 09.")
+    add(rows, "c_shape", "native_gap_retdec_batch09_address_ranges",
+        count(r"^// Address range: 0x[0-9a-f]+ - 0x[0-9a-f]+$", native_gap_retdec_batch09),
+        "RetDec address-range comments emitted for native gap batch 09.")
     add(rows, "data_surface", "binary_data_section_rows",
         sum(1 for row in binary_data_sections_index if row.get("kind", "") == "section"),
         "Allocatable ELF sections tracked by the binary data carrier.")
@@ -1662,6 +1673,12 @@ def c_shape_metrics(rows):
     add(rows, "c_shape", "all_evidence_bundle_native_gap_retdec_batch08_symbols",
         count(r"\beac_evidence_native_gap_retdec_batch08__", all_evidence_bundle),
         "Prefixed native gap RetDec batch 08 symbols retained in the all-evidence single file.")
+    add(rows, "c_shape", "all_evidence_bundle_native_gap_retdec_batch09_functions",
+        count(r"^int64_t eac_evidence_native_gap_retdec_batch09__function_[0-9a-f]+\(.*\) \{", all_evidence_bundle),
+        "RetDec native C function bodies from native gap batch 09 retained in the all-evidence single file.")
+    add(rows, "c_shape", "all_evidence_bundle_native_gap_retdec_batch09_symbols",
+        count(r"\beac_evidence_native_gap_retdec_batch09__", all_evidence_bundle),
+        "Prefixed native gap RetDec batch 09 symbols retained in the all-evidence single file.")
     add(rows, "c_shape", "all_evidence_bundle_sidecar_sections",
         count(r"^/\* --- sidecar: ", all_evidence_bundle),
         "Renamed native RetDec/control sidecar files appended to the all-evidence single file.")
