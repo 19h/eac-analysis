@@ -191,6 +191,8 @@ def selected_rows(rows, args):
         rows = [row for row in rows if row["source_entry"] in wanted]
     if args.validated_only:
         rows = [row for row in rows if row.get("target_pct") == "100.0" and row.get("ip_pct") == "100.0"]
+    if args.unvalidated_only:
+        rows = [row for row in rows if row.get("target_pct") != "100.0" or row.get("ip_pct") != "100.0"]
     if args.limit:
         rows = rows[:args.limit]
     return rows
@@ -202,9 +204,12 @@ def main():
     parser.add_argument("--limit", type=int, default=0)
     parser.add_argument("--entry", action="append", default=[])
     parser.add_argument("--validated-only", action="store_true")
+    parser.add_argument("--unvalidated-only", action="store_true")
     parser.add_argument("--max-expr-len", type=int, default=480)
     parser.add_argument("--max-comment-len", type=int, default=360)
     args = parser.parse_args()
+    if args.validated_only and args.unvalidated_only:
+        raise SystemExit("--validated-only and --unvalidated-only are mutually exclusive")
 
     rows = selected_rows(list(read_tsv(args.paths)), args)
     emit_preamble()
