@@ -613,6 +613,74 @@ def synthetic_gap_live_context_audit_metrics(rows):
         "Starts still lacking live GPR/scratch seed rows.")
 
 
+def synthetic_gap_table_read_diagnostic_metrics(rows):
+    diagnostic_rows = read_tsv(TRACE_DIR / "vm_synthetic_gap_table_read_diagnostic.tsv")
+    diagnoses = Counter(row.get("diagnosis", "") for row in diagnostic_rows)
+    table_statuses = Counter()
+    table_sizes = Counter()
+    table_offsets = Counter()
+    table_entries = Counter()
+    table_sites = Counter()
+    starts = [row.get("synthetic_start_vm_ip", "") for row in diagnostic_rows if row.get("synthetic_start_vm_ip", "")]
+    oob_starts = [
+        row.get("synthetic_start_vm_ip", "")
+        for row in diagnostic_rows
+        if row.get("diagnosis", "") == "table_index_out_of_range"
+    ]
+    misaligned_starts = [
+        row.get("synthetic_start_vm_ip", "")
+        for row in diagnostic_rows
+        if row.get("diagnosis", "") == "misaligned_or_non_qword_table_read"
+    ]
+    replayed_variants = 0
+
+    def add_mix(counter, text):
+        for item in (text or "").split(","):
+            if item and ":" in item:
+                key, value = item.rsplit(":", 1)
+                counter[key] += int(value)
+
+    for row in diagnostic_rows:
+        replayed_variants += int(row.get("variants_replayed", "0") or 0)
+        add_mix(table_statuses, row.get("table_access_status_mix", ""))
+        add_mix(table_sizes, row.get("table_access_size_mix", ""))
+        add_mix(table_offsets, row.get("table_access_offset_mix", ""))
+        add_mix(table_entries, row.get("table_access_entry_mix", ""))
+        add_mix(table_sites, row.get("table_access_site_mix", ""))
+
+    add(rows, "gap_table_read", "synthetic_gap_table_read_diagnostic_rows", len(diagnostic_rows),
+        "Residual starts whose final live-context dispatch-table access was diagnosed.")
+    add(rows, "gap_table_read", "synthetic_gap_table_read_diagnostic_variants_replayed", replayed_variants,
+        "Live-context residual replay variants contributing table-access diagnostics.")
+    add(rows, "gap_table_read", "synthetic_gap_table_read_diagnostic_diagnosis_mix",
+        ",".join(f"{key}:{value}" for key, value in diagnoses.most_common()) or "-",
+        "Final residual table-access diagnosis mix.")
+    add(rows, "gap_table_read", "synthetic_gap_table_read_diagnostic_status_mix",
+        ",".join(f"{key}:{value}" for key, value in table_statuses.most_common()) or "-",
+        "Concrete table-access status mix across diagnostic variants.")
+    add(rows, "gap_table_read", "synthetic_gap_table_read_diagnostic_size_mix",
+        ",".join(f"{key}:{value}" for key, value in table_sizes.most_common()) or "-",
+        "Final table-access width mix.")
+    add(rows, "gap_table_read", "synthetic_gap_table_read_diagnostic_offset_mix",
+        ",".join(f"{key}:{value}" for key, value in table_offsets.most_common()) or "-",
+        "Final table byte-offset mix across residual diagnostics.")
+    add(rows, "gap_table_read", "synthetic_gap_table_read_diagnostic_entry_mix",
+        ",".join(f"{key}:{value}" for key, value in table_entries.most_common()) or "-",
+        "Final table entry-index mix when the offset maps to a normal qword slot.")
+    add(rows, "gap_table_read", "synthetic_gap_table_read_diagnostic_site_mix",
+        ",".join(f"{key}:{value}" for key, value in table_sites.most_common()) or "-",
+        "Native final-tail sites that perform the residual table reads.")
+    add(rows, "gap_table_read", "synthetic_gap_table_read_diagnostic_starts",
+        ",".join(starts) or "-",
+        "Residual synthetic starts covered by the table-read diagnostic.")
+    add(rows, "gap_table_read", "synthetic_gap_table_read_diagnostic_oob_starts",
+        ",".join(oob_starts) or "-",
+        "Residual starts ending in a dispatch-table index outside the 360-entry model.")
+    add(rows, "gap_table_read", "synthetic_gap_table_read_diagnostic_misaligned_starts",
+        ",".join(misaligned_starts) or "-",
+        "Residual starts ending in a concrete 8-byte table read at a non-qword-aligned offset.")
+
+
 def synthetic_gap_live_in_role_metrics(rows):
     role_rows = read_tsv(TRACE_DIR / "vm_synthetic_gap_live_in_roles.tsv")
     resolutions = Counter(row.get("resolution", "") for row in role_rows)
@@ -907,6 +975,7 @@ def build_rows():
     synthetic_gap_concrete_state_audit_metrics(rows)
     synthetic_gap_state_trace_target_metrics(rows)
     synthetic_gap_live_context_audit_metrics(rows)
+    synthetic_gap_table_read_diagnostic_metrics(rows)
     synthetic_gap_live_in_role_metrics(rows)
     synthetic_gap_final_tail_site_metrics(rows)
     synthetic_gap_live_in_reentry_metrics(rows)
