@@ -83,7 +83,7 @@ SHA-256: `0b44ad59697129534189efdb75cde2b96245f831438e9f6a53cb7725f190d739`
 - `dumps/vmtail-wide/vm_bytecode_block_edges.tsv`: aggregate control-flow edges between recovered bytecode segments.
 - `dumps/vmtail-wide-1m/*`: earlier longer `0x1200` wide-tail run using the old shorter lookahead. The harness reached about 767k VM tail events before fast exit and expanded exact bytecode recovery from `0x24948` to `0x41d31` bytes with no byte conflicts.
 - `dumps/vmtail-wide-w16/*`: current 250k comparison run with sixteen `ip_w*` words. It keeps the same direct graph shape as `dumps/vmtail-wide` but improves exact byte recovery to `0x24c51` bytes and reduces prefix-only instruction rows from 697 to 90.
-- `dumps/vmtail-wide-1m-w16/*`: current long `0x1200` wide-tail run with sixteen `ip_w*` words. It improves long-run exact recovery from `0x41d31` to `0x421d3` bytes, raises exact-covered handlers from 171 to 190, and leaves no byte conflicts.
+- `dumps/vmtail-wide-1m-w16/*`: current long `0x1200` wide-tail run with sixteen `ip_w*` words. It improves long-run exact recovery from `0x41d31` to `0x421f3` bytes, raises exact-covered handlers from 171 to 190, and leaves no byte conflicts.
 - `dumps/vmtail-wide-1m-w16/vm_isa_handlers.tsv`: exact-covered handler schema summary.
 - `dumps/vmtail-wide-1m-w16/vm_isa_patterns.tsv`: exact-covered `(source handler, byte length)` operand-layout summary.
 - `dumps/vmtail-wide-1m-w16/vm_isa_families.tsv`: operand-layout families grouped by byte length, shape, and constant byte positions.
@@ -156,7 +156,7 @@ SHA-256: `0b44ad59697129534189efdb75cde2b96245f831438e9f6a53cb7725f190d739`
 - `dumps/vmtail-wide-1m-w16/vm_synthetic_gap_chain_probe.md`: Markdown digest of the hidden-chain probe, distinguishing exact next-event matches from target-only hints.
 - `dumps/vmtail-wide-1m-w16/vm_synthetic_gap_symbolic_successors.tsv`: audit of the source-246 symbolic-slot successor candidates.
 - `dumps/vmtail-wide-1m-w16/vm_synthetic_gap_symbolic_successors.md`: Markdown digest of the symbolic successor audit, including recovered/mid-block/uncovered status.
-- `dumps/vmtail-wide-1m-w16/vm_synthetic_gap_live_in_roles.tsv`: live-register role join for the 21 live-in synthetic gap target expressions, now including final-tail hook site/register columns, `tail_event_site_match`, and dereference-read status columns.
+- `dumps/vmtail-wide-1m-w16/vm_synthetic_gap_live_in_roles.tsv`: live-register role join for the 20 remaining live-in synthetic gap target expressions, now including final-tail hook site/register columns, `tail_event_site_match`, and dereference-read status columns.
 - `dumps/vmtail-wide-1m-w16/vm_synthetic_gap_live_in_roles.md`: Markdown digest of found/missing GPR events, final-tail hook sites, exact-site memory matches, and remaining event-local qword dereference blockers.
 - `dumps/vmtail-wide-1m-w16/vm_live_in_final_tail_site_probe.tsv`: exact final-tail site memory probe summary for sources 175, 195, 278, 299, and 356.
 - `dumps/vmtail-wide-1m-w16/vm_live_in_final_tail_site_probe.md`: Markdown digest proving the exact-site jump-register and dereference-register matches.
@@ -165,8 +165,8 @@ SHA-256: `0b44ad59697129534189efdb75cde2b96245f831438e9f6a53cb7725f190d739`
 - `dumps/vmtail-wide-1m-w16/vm_synthetic_gap_allstatic_reentry_probe.tsv`: all-static VMTAIL immediate-next correlation for live-in reentry rows.
 - `dumps/vmtail-wide-1m-w16/vm_synthetic_gap_allstatic_reentry_probe.md`: Markdown digest of all-static live-in reentry matches, non-observed rows, and comment-only status.
 - `dumps/vmtail-mem-smoke/run.stderr`: bounded `EAC_VMTAIL_MEM=1` smoke run proving the driver emits `mem_<reg>` qword fields at the added final-tail sites; it is run-only evidence, not a bytecode instruction-trace coverage run.
-- `dumps/vmtail-mem-focus-starts/run.stderr`: focused `EAC_VMTAIL_MEM=1` run over the 21 live-in synthetic starts, stopped after 42 focused VMTAIL hits. It is memory-context evidence used by `vm_synthetic_gap_live_in_roles.tsv`, not an instruction-trace coverage run.
-- `dumps/vmtail-mem-focus-start-final-sites/run.stderr`: focused intersection run requiring both one of the 21 live-in synthetic starts and one of the five final native tail sites; it supplies the exact-site row for start `0x34556c` and three additional observed-site correlations at `0x33710f`, `0x33a6cc`, and `0x33d2d9`.
+- `dumps/vmtail-mem-focus-starts/run.stderr`: focused `EAC_VMTAIL_MEM=1` run over the original live-in synthetic start set, stopped after 42 focused VMTAIL hits. It is memory-context evidence used by `vm_synthetic_gap_live_in_roles.tsv`, not an instruction-trace coverage run.
+- `dumps/vmtail-mem-focus-start-final-sites/run.stderr`: focused intersection run requiring both a live-in synthetic start and a final native tail site; it supplies the exact-site row for start `0x34556c` and three additional observed-site correlations at `0x33710f`, `0x33a6cc`, and `0x33d2d9`.
 - `dumps/vmtail-mem-focus-final-sites/run.stderr`: focused exact-site memory run over all five live-in final native tail hooks; in the first 200 matching events it hits sites `0x9c3f4`, `0xa0068`, and `0xb708a`.
 - `dumps/vmtail-mem-focus-final-site-b265e/run.stderr`: single-site exact-tail run for the rarer source-278 final site `0xb265e`.
 - `dumps/vmtail-mem-focus-final-site-c2d35/run.stderr`: single-site exact-tail run for the rarer source-356 final site `0xc2d35`.
@@ -988,7 +988,7 @@ Exact fixed-width distribution:
 | 169 | 8 | `+0xd` |
 | 1 | 1 | `+0x20` |
 
-The family view groups those 190 exact handler schemas into 75 operand-layout families covering all 767566 exact events. The shape alphabet is event-weighted per byte position: `C` = constant, `E` = small enum, `V` = high-cardinality variable.
+The family view groups those 190 exact handler schemas into 75 operand-layout families covering all 767575 exact events. The shape alphabet is event-weighted per byte position: `C` = constant, `E` = small enum, `V` = high-cardinality variable.
 
 Top exact ISA families:
 
@@ -1034,7 +1034,7 @@ Current semantic-template coverage:
 
 - 360 per-handler semantic rows.
 - 150 ranked semantic templates.
-- 139 exact templates covering 190 source handlers and 767566 exact events.
+- 139 exact templates covering 190 source handlers and 767575 exact events.
 - 1 `central_or_long` template covering 1 non-exact event.
 - 6 `sampled_backedge` templates covering 1159 non-exact events.
 - 4 `sampled_long_or_sparse` templates covering 238 non-exact events.
@@ -1061,7 +1061,7 @@ Current decode-signature coverage:
 
 - 360 per-handler skeleton rows.
 - 186 observed decode groups covering 202 observed source handlers in the classified source profile.
-- 175 exact decode groups covering 190 exact handlers and 767566 exact events.
+- 175 exact decode groups covering 190 exact handlers and 767575 exact events.
 - 1 `central_or_long` decode group covering 1 event.
 - 6 `sampled_backedge` decode groups covering 1159 events.
 - 4 `sampled_long_or_sparse` decode groups covering 238 events.
@@ -1490,7 +1490,7 @@ Microcode catalog class distribution:
 | `unobserved_static` | 155 | 0 |
 | `target_only` | 3 | 0 |
 
-The catalog currently has state/flag pseudo-IR for 335 entries covering 766060 long-run events, dispatch-slot pseudo-IR or model tags for 179 entries covering 767546 events, long-control tail IR and 8/11-byte operand footprints for 10 sparse sampled/backedge source handlers, sampled-operand tail IR and 6/10-byte operand footprints for 6 sparse/exact source handlers covering 13 sampled events, state-only and GPR+scratch-seeded branch-predicate summaries for 163 entries covering 748543 events, and operand-layout summaries for the 190 exact-covered handlers covering 767566 events.
+The catalog currently has state/flag pseudo-IR for 335 entries covering 766060 long-run events, dispatch-slot pseudo-IR or model tags for 179 entries covering 767546 events, long-control tail IR and 8/11-byte operand footprints for 10 sparse sampled/backedge source handlers, sampled-operand tail IR and 6/10-byte operand footprints for 6 sparse/exact source handlers covering 13 sampled events, state-only and GPR+scratch-seeded branch-predicate summaries for 163 entries covering 748543 events, and operand-layout summaries for the 190 exact-covered handlers covering 767575 events.
 
 `vm_path_microcode_catalog.py` specializes that catalog by concrete handler branch path. It joins the full `vm_static_path_variants.tsv` state-trace path counts with the sampled `vm_static_path_transfer_expr.tsv` slot/IP formulas and the source-level microcode, including source branch-predicate and GPR+scratch-seeded predicate context. This is the closest current artifact to path-specialized devirtualized blocks:
 
@@ -1541,7 +1541,7 @@ Top register-role sites:
 | `0x859f9` | 7189 | `r8` | `r11` | `rdx` | `rbp` | 337,340,64,123 |
 | `0xa4a5e` | 7122 | `r14` | `r8` | `rcx` | `rbp` | 189,114,347,258 |
 
-Joining the site-role table back onto the long instruction trace gives 208 source-handler/tail-site rows covering 769216 instruction events and 202 unique source handlers. The 250k register trace plus central-dispatch traps covers 199 rows and 769199 long-run instruction events. In the joined long trace:
+Joining the site-role table back onto the long instruction trace gives 208 source-handler/tail-site rows covering 769225 instruction events and 202 unique source handlers. The 250k register trace plus central-dispatch traps covers 199 rows and 769199 long-run instruction events. In the joined long trace:
 
 - 175 source/site rows have a live dispatch-slot register, covering 747389 instruction events.
 - 168 rows have a byte-index register, covering 705637 events.
@@ -1593,12 +1593,12 @@ Coverage in the lift catalog:
 
 | Coverage | Rows | Events |
 | --- | ---: | ---: |
-| exact unique instructions | 71355 | 767566 |
-| with state-effect signature | 43154 | 684374 |
-| with tail target register/operand | 71345 | 767549 |
-| with live/static slot temp | 71345 | 767549 |
-| with byte/static index register | 65869 | 706851 |
-| from source with state-affine fit | 8074 | 86525 |
+| exact unique instructions | 71364 | 767575 |
+| with state-effect signature | 43156 | 684376 |
+| with tail target register/operand | 71354 | 767558 |
+| with live/static slot temp | 71364 | 767575 |
+| with byte/static index register | 65876 | 706858 |
+| from source with state-affine fit | 8077 | 86528 |
 | from source with robust state-affine CV | 5413 | 60256 |
 | from source with static state validation | 71343 | 767546 |
 | from source with 100% static state validation | 71339 | 767542 |
