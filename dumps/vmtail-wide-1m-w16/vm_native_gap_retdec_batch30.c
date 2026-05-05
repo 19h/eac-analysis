@@ -6,22 +6,22 @@
  * coverage -> queue -> RetDec batch -> coverage.
  *
  * Ranges:
- *   0x54f0e0-0x54f1b4 rank=11 name=fcn.0054f0e0 kind=r2_discovered bytes=212 uncovered=212
- *   0x24f44-0x25017 rank=12 name=fcn.00024f44 kind=r2_discovered bytes=211 uncovered=211
- *   0x51c60-0x51d33 rank=13 name=fcn.00051c60 kind=r2_discovered bytes=211 uncovered=211
- *   0x48e14d-0x48e220 rank=14 name=fcn.0048e14d kind=r2_discovered bytes=211 uncovered=211
- *   0x4b7730-0x4b7803 rank=15 name=fcn.004b7730 kind=r2_discovered bytes=211 uncovered=211
- *   0x4b7cd0-0x4b7da3 rank=16 name=fcn.004b7cd0 kind=r2_discovered bytes=211 uncovered=211
- *   0x52e467-0x52e53a rank=17 name=fcn.0052e467 kind=r2_discovered bytes=211 uncovered=211
- *   0x4b5940-0x4b5a12 rank=18 name=fcn.004b5940 kind=r2_discovered bytes=210 uncovered=210
- *   0x4e706-0x4e7d7 rank=19 name=fcn.0004e706 kind=r2_discovered bytes=209 uncovered=209
- *   0x56188-0x56259 rank=20 name=fcn.00056188 kind=r2_discovered bytes=209 uncovered=209
- *   0x3bc0e4-0x3bc1b5 rank=21 name=fcn.003bc0e4 kind=r2_discovered bytes=209 uncovered=209
- *   0x4b0ac0-0x4b0b91 rank=22 name=fcn.004b0ac0 kind=r2_discovered bytes=209 uncovered=209
- *   0x4c8fa0-0x4c9071 rank=23 name=fcn.004c8fa0 kind=r2_discovered bytes=209 uncovered=209
- *   0x27fbe-0x2808e rank=24 name=fcn.00027fbe kind=r2_discovered bytes=208 uncovered=208
- *   0x570190-0x570260 rank=25 name=fcn.00570190 kind=r2_discovered bytes=208 uncovered=208
- *   0x4b1220-0x4b12ef rank=26 name=fcn.004b1220 kind=r2_discovered bytes=207 uncovered=207
+ *   0x54f0e0-0x54f1b4 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x24f44-0x25017 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x51c60-0x51d33 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x48e14d-0x48e220 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x4b7730-0x4b7803 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x4b7cd0-0x4b7da3 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x52e467-0x52e53a rank=- name=- kind=- bytes=- uncovered=-
+ *   0x4b5940-0x4b5a12 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x4e706-0x4e7d7 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x56188-0x56259 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x3bc0e4-0x3bc1b5 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x4b0ac0-0x4b0b91 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x4c8fa0-0x4c9071 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x27fbe-0x2808e rank=- name=- kind=- bytes=- uncovered=-
+ *   0x570190-0x570260 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x4b1220-0x4b12ef rank=- name=- kind=- bytes=- uncovered=-
  */
 #include <stdbool.h>
 #include <stdio.h>
@@ -129,6 +129,7 @@ int fclose(struct _IO_FILE *stream);
 int uname(struct utsname *buf);
 int64_t __tls_get_addr(void *arg);
 int32_t mbrtowc(int32_t *pwc, const char *s, size_t n, struct _TYPEDEF___mbstate_t *ps);
+size_t mbstowcs(int32_t *dest, const char *src, size_t n);
 int32_t mbsnrtowcs(int32_t *dst, char **src, size_t nms, size_t len, struct _TYPEDEF___mbstate_t *ps);
 size_t wcslen(const int32_t *s);
 int wctob(int32_t wc);
