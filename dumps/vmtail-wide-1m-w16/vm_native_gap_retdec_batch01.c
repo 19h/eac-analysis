@@ -119,6 +119,11 @@ void __frontend_reg_store_fpr(int32_t reg, float80_t value);
 char *__nl_langinfo_l(int32_t item, struct __locale_struct *locale);
 struct __locale_struct *__uselocale(struct __locale_struct *locale);
 char *dgettext(char *domain, char *msgid);
+int pthread_mutex_lock(int64_t *mutex);
+int pthread_mutex_unlock(int64_t *mutex);
+char *strdup(const char *s);
+struct _Unwind_Exception;
+void _Unwind_Resume(struct _Unwind_Exception *exception);
 
 int64_t function_20210();
 int64_t function_203b0();

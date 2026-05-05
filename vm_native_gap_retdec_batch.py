@@ -187,6 +187,11 @@ def main():
     print("char *__nl_langinfo_l(int32_t item, struct __locale_struct *locale);")
     print("struct __locale_struct *__uselocale(struct __locale_struct *locale);")
     print("char *dgettext(char *domain, char *msgid);")
+    print("int pthread_mutex_lock(int64_t *mutex);")
+    print("int pthread_mutex_unlock(int64_t *mutex);")
+    print("char *strdup(const char *s);")
+    print("struct _Unwind_Exception;")
+    print("void _Unwind_Resume(struct _Unwind_Exception *exception);")
     print("")
     for proto in missing_function_prototypes(functions):
         print(proto)
