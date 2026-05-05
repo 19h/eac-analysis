@@ -264,7 +264,7 @@ def emit_transfer_probe_comments(target_vm_ip, transfer_probes, args):
         if ip_expr and ip_expr != "0x0":
             slot_ip = f"{slot_ip}; ip={ip_expr}"
         concrete = "-"
-        if row.get("zero_seed_pred_entry", "") or row.get("zero_seed_pred_delta", ""):
+        if row.get("zero_seed_pred_entry", ""):
             concrete = f"entry={row.get('zero_seed_pred_entry', '?')},delta={row.get('zero_seed_pred_delta', '?')}"
         roles = row.get("static_slot_roles", "") or row.get("tail_roles", "") or "-"
         print(
