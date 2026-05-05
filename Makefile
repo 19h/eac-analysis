@@ -64,10 +64,10 @@ fast-gpr-paths: fast-gpr
 instruction-trace:
 	python3 vm_trace_graph.py dumps/vmtail-wide-1m-w16 --eac eac.elf --window 0x1200 --instruction-trace > dumps/vmtail-wide-1m-w16/vm_instruction_trace.tsv
 
-instruction-unique: instruction-trace vm_instruction_unique_fast
+instruction-unique: vm_instruction_unique_fast
 	./vm_instruction_unique_fast dumps/vmtail-wide-1m-w16/vm_instruction_trace.tsv > dumps/vmtail-wide-1m-w16/vm_instruction_unique.tsv
 
-instruction-unique-fast-check: instruction-trace vm_instruction_unique_fast
+instruction-unique-fast-check: vm_instruction_unique_fast
 	python3 vm_bytecode_recover.py dumps/vmtail-wide-1m-w16/vm_instruction_trace.tsv --instructions > /tmp/eacsym-vm_instruction_unique_python.tsv
 	./vm_instruction_unique_fast dumps/vmtail-wide-1m-w16/vm_instruction_trace.tsv > /tmp/eacsym-vm_instruction_unique_fast.tsv
 	cmp /tmp/eacsym-vm_instruction_unique_python.tsv /tmp/eacsym-vm_instruction_unique_fast.tsv
