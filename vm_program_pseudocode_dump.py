@@ -18,6 +18,7 @@ from vm_pseudocode_dump import (
     emit_table_read_diagnostic_comments,
     emit_table_memory_probe_comments,
     emit_runtime_table_memory_probe_comments,
+    emit_live_table_evidence_comments,
     emit_sampled_control_correlation_comments,
     emit_focused_direct_trace_audit_comments,
     emit_focused_sequence_audit_comments,
@@ -40,6 +41,7 @@ from vm_pseudocode_dump import (
     load_table_read_diagnostics,
     load_table_memory_probes,
     load_runtime_table_memory_probes,
+    load_live_table_evidences,
     load_sampled_control_correlations,
     load_focused_direct_trace_audits,
     load_focused_sequence_audits,
@@ -260,7 +262,7 @@ def emit_decoded_control(row, args):
         print(f"    vm_ip -= 0x{-delta:x};")
 
 
-def emit_synthetic_edge(edge, synthetic_spans, dynamic_stitches, transfer_probes, symbolic_successors, hidden_chains, residual_audits, concrete_state_audits, live_context_audits, table_read_diagnostics, table_memory_probes, runtime_table_memory_probes, sampled_control_correlations, focused_direct_trace_audits, focused_sequence_audits, observed_chain_bridges, live_in_roles, live_in_reentries, allstatic_reentries, final_tail_site_probes, args, block_by_start):
+def emit_synthetic_edge(edge, synthetic_spans, dynamic_stitches, transfer_probes, symbolic_successors, hidden_chains, residual_audits, concrete_state_audits, live_context_audits, table_read_diagnostics, table_memory_probes, runtime_table_memory_probes, live_table_evidences, sampled_control_correlations, focused_direct_trace_audits, focused_sequence_audits, observed_chain_bridges, live_in_roles, live_in_reentries, allstatic_reentries, final_tail_site_probes, args, block_by_start):
     target_vm_ip = normalize_vm_ip(edge.get("target_vm_ip", ""))
     chain = resolved_hidden_chain(target_vm_ip, hidden_chains)
     info = synthetic_spans.get(target_vm_ip)
@@ -275,6 +277,7 @@ def emit_synthetic_edge(edge, synthetic_spans, dynamic_stitches, transfer_probes
         emit_table_read_diagnostic_comments(target_vm_ip, table_read_diagnostics, args)
         emit_table_memory_probe_comments(target_vm_ip, table_memory_probes, args)
         emit_runtime_table_memory_probe_comments(target_vm_ip, runtime_table_memory_probes, args)
+        emit_live_table_evidence_comments(target_vm_ip, live_table_evidences, args)
         emit_sampled_control_correlation_comments(target_vm_ip, sampled_control_correlations, args)
         emit_focused_direct_trace_audit_comments(target_vm_ip, focused_direct_trace_audits, args)
         emit_focused_sequence_audit_comments(target_vm_ip, focused_sequence_audits, args)
@@ -342,6 +345,7 @@ def emit_synthetic_edge(edge, synthetic_spans, dynamic_stitches, transfer_probes
     emit_table_read_diagnostic_comments(target_vm_ip, table_read_diagnostics, args)
     emit_table_memory_probe_comments(target_vm_ip, table_memory_probes, args)
     emit_runtime_table_memory_probe_comments(target_vm_ip, runtime_table_memory_probes, args)
+    emit_live_table_evidence_comments(target_vm_ip, live_table_evidences, args)
     emit_sampled_control_correlation_comments(target_vm_ip, sampled_control_correlations, args)
     emit_focused_direct_trace_audit_comments(target_vm_ip, focused_direct_trace_audits, args)
     emit_focused_sequence_audit_comments(target_vm_ip, focused_sequence_audits, args)
@@ -693,7 +697,7 @@ def emit_block_prototypes(blocks):
     print("")
 
 
-def emit_block(block, rows, edge, synthetic_spans, dynamic_stitches, transfer_probes, symbolic_successors, hidden_chains, residual_audits, concrete_state_audits, live_context_audits, table_read_diagnostics, table_memory_probes, runtime_table_memory_probes, sampled_control_correlations, focused_direct_trace_audits, focused_sequence_audits, observed_chain_bridges, live_in_roles, live_in_reentries, allstatic_reentries, final_tail_site_probes, tail_lifts, args, known_blocks, block_by_start):
+def emit_block(block, rows, edge, synthetic_spans, dynamic_stitches, transfer_probes, symbolic_successors, hidden_chains, residual_audits, concrete_state_audits, live_context_audits, table_read_diagnostics, table_memory_probes, runtime_table_memory_probes, live_table_evidences, sampled_control_correlations, focused_direct_trace_audits, focused_sequence_audits, observed_chain_bridges, live_in_roles, live_in_reentries, allstatic_reentries, final_tail_site_probes, tail_lifts, args, known_blocks, block_by_start):
     name = c_block_name(block["block"])
     print(f"static void prog_{name}(VMState *vm, uint64_t vm_ip) {{")
     print("    VMOpResult r = { .next_entry = -1, .slot = 0xffffffffu };")
@@ -733,7 +737,7 @@ def emit_block(block, rows, edge, synthetic_spans, dynamic_stitches, transfer_pr
             else:
                 print("    /* target block is outside this selected sketch. */")
         elif edge_kind == "covered_synthetic_fallthrough":
-            terminal_handled = emit_synthetic_edge(edge, synthetic_spans, dynamic_stitches, transfer_probes, symbolic_successors, hidden_chains, residual_audits, concrete_state_audits, live_context_audits, table_read_diagnostics, table_memory_probes, runtime_table_memory_probes, sampled_control_correlations, focused_direct_trace_audits, focused_sequence_audits, observed_chain_bridges, live_in_roles, live_in_reentries, allstatic_reentries, final_tail_site_probes, args, block_by_start)
+            terminal_handled = emit_synthetic_edge(edge, synthetic_spans, dynamic_stitches, transfer_probes, symbolic_successors, hidden_chains, residual_audits, concrete_state_audits, live_context_audits, table_read_diagnostics, table_memory_probes, runtime_table_memory_probes, live_table_evidences, sampled_control_correlations, focused_direct_trace_audits, focused_sequence_audits, observed_chain_bridges, live_in_roles, live_in_reentries, allstatic_reentries, final_tail_site_probes, args, block_by_start)
             if not terminal_handled:
                 target_block, target_vm_ip = synthetic_successor(edge, synthetic_spans, hidden_chains, block_by_start)
                 if target_block is not None:
