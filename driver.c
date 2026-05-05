@@ -21,7 +21,8 @@ enum {
     EAC_DISPATCH_CDAC7 = 0xcdac7,
     EAC_MAX_TAIL_SITES = 512,
     EAC_IP_WORD_COUNT = 16,
-    EAC_MAX_SCRATCH_OFFSETS = 64
+    EAC_MAX_SCRATCH_OFFSETS = 64,
+    EAC_MAX_READ_RANGES = 512
 };
 
 enum tail_reg {
@@ -49,6 +50,11 @@ struct tail_site {
     enum tail_reg reg;
 };
 
+struct read_range {
+    uintptr_t start;
+    uintptr_t end;
+};
+
 static uint8_t *g_eac_base;
 static uint64_t g_dispatch_counts[2];
 static uint64_t g_dispatch_limit = 4096;
@@ -58,10 +64,14 @@ static int g_dispatch_detail;
 static int g_tail_trace;
 static int g_tail_regs;
 static int g_tail_scratch;
+static int g_tail_mem;
+static uint32_t g_tail_mem_reg_mask;
 static struct tail_site g_tail_sites[EAC_MAX_TAIL_SITES];
 static size_t g_tail_site_count;
 static uint16_t g_scratch_offsets[EAC_MAX_SCRATCH_OFFSETS];
 static size_t g_scratch_offset_count;
+static struct read_range g_read_ranges[EAC_MAX_READ_RANGES];
+static size_t g_read_range_count;
 
 static const struct tail_site g_default_tail_sites[] = {
     {0x8173b, TAIL_REG_RAX},
@@ -73,6 +83,11 @@ static const struct tail_site g_default_tail_sites[] = {
     {0xbb8a8, TAIL_REG_RAX},
     {0xbba0c, TAIL_REG_R12},
     {0xc240d, TAIL_REG_RDX},
+    {0x9c3f4, TAIL_REG_R13},
+    {0xa0068, TAIL_REG_R10},
+    {0xb265e, TAIL_REG_R10},
+    {0xb708a, TAIL_REG_R12},
+    {0xc2d35, TAIL_REG_RBX},
 };
 
 static const uint16_t g_default_scratch_offsets[] = {
