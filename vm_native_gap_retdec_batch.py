@@ -808,6 +808,7 @@ def main():
     print("int uname(struct utsname *buf);")
     print("int64_t __tls_get_addr(void *arg);")
     print("int32_t mbrtowc(int32_t *pwc, const char *s, size_t n, struct _TYPEDEF___mbstate_t *ps);")
+    print("size_t mbstowcs(int32_t *dest, const char *src, size_t n);")
     print("int32_t mbsnrtowcs(int32_t *dst, char **src, size_t nms, size_t len, struct _TYPEDEF___mbstate_t *ps);")
     print("size_t wcslen(const int32_t *s);")
     print("int wctob(int32_t wc);")

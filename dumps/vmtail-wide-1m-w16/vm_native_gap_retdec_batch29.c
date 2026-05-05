@@ -6,22 +6,22 @@
  * coverage -> queue -> RetDec batch -> coverage.
  *
  * Ranges:
- *   0x6b492-0x6b56e rank=11 name=fcn.0006b492 kind=r2_discovered bytes=220 uncovered=220
- *   0x4b95a0-0x4b967c rank=12 name=fcn.004b95a0 kind=r2_discovered bytes=220 uncovered=220
- *   0x4c8242-0x4c831d rank=13 name=fcn.004c8242 kind=r2_discovered bytes=219 uncovered=219
- *   0x5088b0-0x50898b rank=14 name=fcn.005088b0 kind=r2_discovered bytes=219 uncovered=219
- *   0x4b00e0-0x4b01ba rank=15 name=fcn.004b00e0 kind=r2_discovered bytes=218 uncovered=218
- *   0x4bf9e0-0x4bfab9 rank=16 name=fcn.004bf9e0 kind=r2_discovered bytes=217 uncovered=217
- *   0x7742a-0x77502 rank=17 name=fcn.0007742a kind=r2_discovered bytes=216 uncovered=216
- *   0x289b2-0x28a89 rank=18 name=fcn.000289b2 kind=r2_discovered bytes=215 uncovered=215
- *   0x530e6-0x531bd rank=19 name=fcn.000530e6 kind=r2_discovered bytes=215 uncovered=215
- *   0x4b1590-0x4b1667 rank=20 name=fcn.004b1590 kind=r2_discovered bytes=215 uncovered=215
- *   0x6897e-0x68a54 rank=21 name=fcn.0006897e kind=r2_discovered bytes=214 uncovered=214
- *   0x3df27-0x3dffc rank=22 name=fcn.0003df27 kind=r2_discovered bytes=213 uncovered=213
- *   0x4e2a6-0x4e37b rank=23 name=fcn.0004e2a6 kind=r2_discovered bytes=213 uncovered=213
- *   0x4b09d0-0x4b0aa4 rank=24 name=fcn.004b09d0 kind=r2_discovered bytes=212 uncovered=212
- *   0x4b28b0-0x4b2984 rank=25 name=fcn.004b28b0 kind=r2_discovered bytes=212 uncovered=212
- *   0x4b8fd0-0x4b90a4 rank=26 name=fcn.004b8fd0 kind=r2_discovered bytes=212 uncovered=212
+ *   0x6b492-0x6b56e rank=- name=- kind=- bytes=- uncovered=-
+ *   0x4b95a0-0x4b967c rank=- name=- kind=- bytes=- uncovered=-
+ *   0x4c8242-0x4c831d rank=- name=- kind=- bytes=- uncovered=-
+ *   0x5088b0-0x50898b rank=- name=- kind=- bytes=- uncovered=-
+ *   0x4b00e0-0x4b01ba rank=- name=- kind=- bytes=- uncovered=-
+ *   0x4bf9e0-0x4bfab9 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x7742a-0x77502 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x289b2-0x28a89 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x530e6-0x531bd rank=- name=- kind=- bytes=- uncovered=-
+ *   0x4b1590-0x4b1667 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x6897e-0x68a54 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x3df27-0x3dffc rank=- name=- kind=- bytes=- uncovered=-
+ *   0x4e2a6-0x4e37b rank=- name=- kind=- bytes=- uncovered=-
+ *   0x4b09d0-0x4b0aa4 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x4b28b0-0x4b2984 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x4b8fd0-0x4b90a4 rank=- name=- kind=- bytes=- uncovered=-
  */
 #include <stdbool.h>
 #include <stdio.h>
@@ -35,6 +35,7 @@ typedef int32_t int3_t;
 typedef float float32_t;
 typedef double float64_t;
 typedef long double float80_t;
+static inline int128_t eac_retdec_i128(uint64_t hi, uint64_t lo) { return (int128_t)(((uint128_t)hi << 64) | (uint128_t)lo); }
 struct __locale_struct;
 struct _TYPEDEF_glob_t;
 struct _TYPEDEF___mbstate_t;
@@ -70,6 +71,7 @@ char __asm_in_136(uint16_t port);
 void __asm_out(uint16_t port, char value);
 void __asm_out_135(uint16_t port, int32_t value);
 void __asm_outsb(uint16_t port, char value);
+void __asm_outsd(uint16_t port, int32_t value);
 uint8_t __readfsbyte(int64_t offset);
 uint64_t __readfsqword(int64_t offset);
 int64_t __asm_iretd(void);
