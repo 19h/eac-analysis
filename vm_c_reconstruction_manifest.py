@@ -43,6 +43,8 @@ ARTIFACTS = [
     ("synthetic_gap_sampled_control_correlation_md", TRACE_DIR / "vm_synthetic_gap_sampled_control_correlation.md"),
     ("synthetic_gap_focused_direct_trace_audit_tsv", TRACE_DIR / "vm_synthetic_gap_focused_direct_trace_audit.tsv"),
     ("synthetic_gap_focused_direct_trace_audit_md", TRACE_DIR / "vm_synthetic_gap_focused_direct_trace_audit.md"),
+    ("synthetic_gap_focused_sequence_audit_tsv", TRACE_DIR / "vm_synthetic_gap_focused_sequence_audit.tsv"),
+    ("synthetic_gap_focused_sequence_audit_md", TRACE_DIR / "vm_synthetic_gap_focused_sequence_audit.md"),
     ("synthetic_gap_symbolic_successors_tsv", TRACE_DIR / "vm_synthetic_gap_symbolic_successors.tsv"),
     ("synthetic_gap_symbolic_successors_md", TRACE_DIR / "vm_synthetic_gap_symbolic_successors.md"),
     ("synthetic_gap_live_in_roles_tsv", TRACE_DIR / "vm_synthetic_gap_live_in_roles.tsv"),
@@ -205,6 +207,10 @@ def c_shape_metrics(rows):
         "Per-start focused direct-trace comments carried into the full program sketch.")
     add(rows, "c_shape", "program_full_focused_direct_bridge_sites", count(r"focused direct bridge @", program_full),
         "Focused residual-start direct trace rows promoted to concrete handler/block calls in the full program sketch.")
+    add(rows, "c_shape", "program_full_focused_sequence_audit_sites", count(r"focused sequence audit @", program_full),
+        "Residual focused raw-sequence audit sites carried into the full program sketch.")
+    add(rows, "c_shape", "program_full_focused_sequence_audit_comments", count(r"focused sequence: source=", program_full),
+        "Per-start focused raw-sequence comments carried into the full program sketch.")
     add(rows, "c_shape", "program_full_hidden_chain_resolved_calls", count(r"hidden source entry_\d+ replayed from", program_full),
         "Hidden-chain matches emitted as concrete handler calls before reentering a recovered block.")
     add(rows, "c_shape", "program_full_live_in_role_evidence_sites", count(r"live-in role evidence @", program_full),
@@ -277,6 +283,10 @@ def c_shape_metrics(rows):
         "Per-start focused direct-trace comments carried into the combined source bundle.")
     add(rows, "c_shape", "bundle_focused_direct_bridge_sites", count(r"focused direct bridge @", bundle),
         "Focused residual-start direct trace rows promoted to concrete handler/block calls inside the combined source bundle.")
+    add(rows, "c_shape", "bundle_focused_sequence_audit_sites", count(r"focused sequence audit @", bundle),
+        "Residual focused raw-sequence audit sites carried into the combined source bundle.")
+    add(rows, "c_shape", "bundle_focused_sequence_audit_comments", count(r"focused sequence: source=", bundle),
+        "Per-start focused raw-sequence comments carried into the combined source bundle.")
     add(rows, "c_shape", "bundle_hidden_chain_resolved_calls", count(r"hidden source entry_\d+ replayed from", bundle),
         "Hidden-chain matches emitted as concrete handler calls inside the combined source bundle.")
     add(rows, "c_shape", "bundle_live_in_role_evidence_sites", count(r"live-in role evidence @", bundle),
@@ -859,6 +869,48 @@ def synthetic_gap_focused_direct_trace_audit_metrics(rows):
         "Target entries represented by focused direct bridges.")
 
 
+def synthetic_gap_focused_sequence_audit_metrics(rows):
+    audit_rows = read_tsv(TRACE_DIR / "vm_synthetic_gap_focused_sequence_audit.tsv")
+    classes = Counter()
+    terminals = Counter(row.get("chain_terminal", "") for row in audit_rows)
+    candidates = Counter(row.get("sequence_promotion_candidate", "") for row in audit_rows)
+    linked = [
+        f"{row.get('synthetic_start_vm_ip')}->{row.get('example_following_residual_start')}"
+        for row in audit_rows
+        if row.get("example_following_residual_start", "")
+    ]
+    no_successor = [
+        row.get("synthetic_start_vm_ip", "")
+        for row in audit_rows
+        if row.get("chain_terminal", "") == "raw_sequence_no_residual_successor"
+    ]
+    for row in audit_rows:
+        for item in (row.get("raw_sequence_class_mix", "") or "").split(","):
+            if item and ":" in item:
+                key, value = item.rsplit(":", 1)
+                classes[key] += int(value)
+
+    add(rows, "gap_focused_sequence", "synthetic_gap_focused_sequence_audit_rows", len(audit_rows),
+        "Residual starts audited against raw focused VMTAIL order, including indirect tail-site hops.")
+    add(rows, "gap_focused_sequence", "synthetic_gap_focused_sequence_class_mix",
+        ",".join(f"{key}:{value}" for key, value in classes.most_common()) or "-",
+        "Raw focused sequence class mix across residual starts.")
+    add(rows, "gap_focused_sequence", "synthetic_gap_focused_sequence_chain_terminal_mix",
+        ",".join(f"{key}:{value}" for key, value in terminals.most_common()) or "-",
+        "Where residual-start chains terminate after following residual-to-residual raw links.")
+    add(rows, "gap_focused_sequence", "synthetic_gap_focused_sequence_candidate_mix",
+        ",".join(f"{key}:{value}" for key, value in candidates.most_common()) or "-",
+        "Promotion status of focused raw-sequence evidence.")
+    add(rows, "gap_focused_sequence", "synthetic_gap_focused_sequence_residual_links", len(linked),
+        "Residual starts whose next raw focused event is followed by another residual start.")
+    add(rows, "gap_focused_sequence", "synthetic_gap_focused_sequence_residual_link_paths",
+        ",".join(linked) or "-",
+        "Raw focused residual-to-residual links.")
+    add(rows, "gap_focused_sequence", "synthetic_gap_focused_sequence_no_successor_starts",
+        ",".join(no_successor) or "-",
+        "Residual starts whose chain does not reach a focused direct bridge in the current focused traces.")
+
+
 def synthetic_gap_live_in_role_metrics(rows):
     role_rows = read_tsv(TRACE_DIR / "vm_synthetic_gap_live_in_roles.tsv")
     resolutions = Counter(row.get("resolution", "") for row in role_rows)
@@ -1157,6 +1209,7 @@ def build_rows():
     synthetic_gap_table_memory_probe_metrics(rows)
     synthetic_gap_sampled_control_correlation_metrics(rows)
     synthetic_gap_focused_direct_trace_audit_metrics(rows)
+    synthetic_gap_focused_sequence_audit_metrics(rows)
     synthetic_gap_live_in_role_metrics(rows)
     synthetic_gap_final_tail_site_metrics(rows)
     synthetic_gap_live_in_reentry_metrics(rows)
