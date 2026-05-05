@@ -228,6 +228,7 @@ def main():
     print("int memcmp(const void *s1, const void *s2, size_t n);")
     print("void *memmove(void *dest, const void *src, size_t n);")
     print("void *memset(void *s, int c, size_t n);")
+    print("int snprintf(char *str, size_t size, const char *format, ...);")
     print("char *strchr(const char *s, int c);")
     print("int strcmp(const char *s1, const char *s2);")
     print("char *strstr(const char *haystack, const char *needle);")
