@@ -6,22 +6,22 @@
  * coverage -> queue -> RetDec batch -> coverage.
  *
  * Ranges:
- *   0x568cf0-0x568eea rank=1 name=method.std::__cxx11::messages_wchar_t_.virtual_24 kind=native_discovered bytes=506 uncovered=506
- *   0x56274-0x5646b rank=2 name=fcn.00056274 kind=r2_discovered bytes=503 uncovered=503
- *   0x4fed10-0x4fef07 rank=3 name=fcn.004fed10 kind=r2_discovered bytes=503 uncovered=503
- *   0x25a3e-0x25c34 rank=4 name=fcn.00025a3e kind=r2_discovered bytes=502 uncovered=502
- *   0x500b70-0x500d66 rank=5 name=fcn.00500b70 kind=r2_discovered bytes=502 uncovered=502
- *   0x498230-0x498422 rank=6 name=fcn.00498230 kind=r2_discovered bytes=498 uncovered=498
- *   0x4c98a0-0x4c9a91 rank=7 name=fcn.004c98a0 kind=r2_discovered bytes=497 uncovered=497
- *   0x2ceb0-0x2d09e rank=8 name=fcn.0002ceb0 kind=r2_discovered bytes=494 uncovered=494
- *   0x579d80-0x579f6e rank=9 name=fcn.00579d80 kind=r2_discovered bytes=494 uncovered=494
- *   0x4f75e-0x4f94a rank=10 name=fcn.0004f75e kind=r2_discovered bytes=492 uncovered=492
- *   0x4d3da0-0x4d3f8b rank=11 name=fcn.004d3da0 kind=r2_discovered bytes=491 uncovered=491
- *   0x4fbb00-0x4fbceb rank=12 name=fcn.004fbb00 kind=r2_discovered bytes=491 uncovered=491
- *   0x4b2990-0x4b2b79 rank=13 name=fcn.004b2990 kind=r2_discovered bytes=489 uncovered=489
- *   0x53f76-0x5415e rank=14 name=fcn.00053f76 kind=r2_discovered bytes=488 uncovered=488
- *   0x5534e-0x55536 rank=15 name=fcn.0005534e kind=r2_discovered bytes=488 uncovered=488
- *   0x568500-0x5686e7 rank=16 name=fcn.00568500 kind=r2_discovered bytes=487 uncovered=487
+ *   0x568cf0-0x568eea rank=- name=- kind=- bytes=- uncovered=-
+ *   0x56274-0x5646b rank=- name=- kind=- bytes=- uncovered=-
+ *   0x4fed10-0x4fef07 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x25a3e-0x25c34 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x500b70-0x500d66 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x498230-0x498422 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x4c98a0-0x4c9a91 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x2ceb0-0x2d09e rank=- name=- kind=- bytes=- uncovered=-
+ *   0x579d80-0x579f6e rank=- name=- kind=- bytes=- uncovered=-
+ *   0x4f75e-0x4f94a rank=- name=- kind=- bytes=- uncovered=-
+ *   0x4d3da0-0x4d3f8b rank=- name=- kind=- bytes=- uncovered=-
+ *   0x4fbb00-0x4fbceb rank=- name=- kind=- bytes=- uncovered=-
+ *   0x4b2990-0x4b2b79 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x53f76-0x5415e rank=- name=- kind=- bytes=- uncovered=-
+ *   0x5534e-0x55536 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x568500-0x5686e7 rank=- name=- kind=- bytes=- uncovered=-
  */
 #include <stdbool.h>
 #include <stdint.h>
@@ -29,6 +29,7 @@
 #include <string.h>
 
 typedef __int128 int128_t;
+typedef unsigned __int128 uint128_t;
 typedef int32_t int3_t;
 typedef float float32_t;
 typedef double float64_t;
@@ -79,6 +80,7 @@ uint8_t __readfsbyte(int64_t offset);
 uint64_t __readfsqword(int64_t offset);
 int64_t __asm_iretd(void);
 void __asm_rep_stosb_memset(char *dst, char value, int64_t count);
+void __asm_rep_stosd_memset(char *dst, int32_t value, int64_t count);
 void __stack_chk_fail(void);
 int __cxa_atexit(void (*func)(int64_t *), void *arg, void *dso);
 int128_t __asm_movsd(int64_t value);
@@ -97,6 +99,11 @@ void __frontend_reg_store_fpr(int32_t reg, float80_t value);
 char *__nl_langinfo_l(int32_t item, struct __locale_struct *locale);
 struct __locale_struct *__uselocale(struct __locale_struct *locale);
 char *dgettext(char *domain, char *msgid);
+int pthread_mutex_lock(int64_t *mutex);
+int pthread_mutex_unlock(int64_t *mutex);
+char *strdup(const char *s);
+struct _Unwind_Exception;
+void _Unwind_Resume(struct _Unwind_Exception *exception);
 
 int64_t function_1270cb();
 int64_t function_1ff50();

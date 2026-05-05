@@ -32,6 +32,7 @@ DEFAULT_SIDECARS = [
     TRACE_DIR / "vm_native_function_inventory.c",
     TRACE_DIR / "vm_native_retdec_gap_queue.c",
     TRACE_DIR / "vm_native_gap_retdec_batch00.c",
+    TRACE_DIR / "vm_native_gap_retdec_batch01.c",
     TRACE_DIR / "vm_static_only_handler_queue.c",
     TRACE_DIR / "vm_static_only_tier0_handler_models.c",
     TRACE_DIR / "vm_static_only_tier1_handler_models.c",
