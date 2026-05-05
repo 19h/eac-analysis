@@ -25,6 +25,8 @@ ARTIFACTS = [
     ("synthetic_gap_dynamic_stitch_md", TRACE_DIR / "vm_synthetic_gap_dynamic_stitch.md"),
     ("synthetic_gap_symbolic_successors_tsv", TRACE_DIR / "vm_synthetic_gap_symbolic_successors.tsv"),
     ("synthetic_gap_symbolic_successors_md", TRACE_DIR / "vm_synthetic_gap_symbolic_successors.md"),
+    ("synthetic_gap_live_in_roles_tsv", TRACE_DIR / "vm_synthetic_gap_live_in_roles.tsv"),
+    ("synthetic_gap_live_in_roles_md", TRACE_DIR / "vm_synthetic_gap_live_in_roles.md"),
     ("trace_coverage_matrix_tsv", TRACE_DIR / "vm_trace_coverage_matrix.tsv"),
     ("trace_coverage_matrix_md", TRACE_DIR / "vm_trace_coverage_matrix.md"),
     ("static_coverage_audit_tsv", TRACE_DIR / "vm_static_coverage_audit.tsv"),
