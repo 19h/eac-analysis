@@ -23,6 +23,8 @@ ARTIFACTS = [
     ("synthetic_gap_transfer_probe_md", TRACE_DIR / "vm_synthetic_gap_transfer_probe.md"),
     ("synthetic_gap_dynamic_stitch_tsv", TRACE_DIR / "vm_synthetic_gap_dynamic_stitch.tsv"),
     ("synthetic_gap_dynamic_stitch_md", TRACE_DIR / "vm_synthetic_gap_dynamic_stitch.md"),
+    ("synthetic_gap_chain_probe_tsv", TRACE_DIR / "vm_synthetic_gap_chain_probe.tsv"),
+    ("synthetic_gap_chain_probe_md", TRACE_DIR / "vm_synthetic_gap_chain_probe.md"),
     ("synthetic_gap_symbolic_successors_tsv", TRACE_DIR / "vm_synthetic_gap_symbolic_successors.tsv"),
     ("synthetic_gap_symbolic_successors_md", TRACE_DIR / "vm_synthetic_gap_symbolic_successors.md"),
     ("synthetic_gap_live_in_roles_tsv", TRACE_DIR / "vm_synthetic_gap_live_in_roles.tsv"),
@@ -137,6 +139,12 @@ def c_shape_metrics(rows):
         "Synthetic gap sites annotated with symbolic-slot successor audit evidence.")
     add(rows, "c_shape", "program_full_symbolic_successor_comments", count(r"symbolic successor: source=", program_full),
         "Symbolic-slot successor candidate comments carried into the full program sketch.")
+    add(rows, "c_shape", "program_full_hidden_chain_probe_sites", count(r"hidden chain probe @", program_full),
+        "Synthetic gap sites annotated with hidden-handler-chain probe evidence.")
+    add(rows, "c_shape", "program_full_hidden_chain_comments", count(r"hidden chain: source=", program_full),
+        "Hidden-handler-chain candidate comments carried into the full program sketch.")
+    add(rows, "c_shape", "program_full_hidden_chain_resolved_calls", count(r"hidden source entry_\d+ replayed from", program_full),
+        "Hidden-chain matches emitted as concrete handler calls before reentering a recovered block.")
     add(rows, "c_shape", "program_full_live_in_role_evidence_sites", count(r"live-in role evidence @", program_full),
         "Synthetic gap sites annotated with prioritized live-in register role evidence.")
     add(rows, "c_shape", "program_full_live_in_role_comments", count(r"live-in role: source=", program_full),
@@ -161,6 +169,12 @@ def c_shape_metrics(rows):
         "Synthetic gap sites annotated with symbolic-slot successor audit evidence inside the combined source bundle.")
     add(rows, "c_shape", "bundle_symbolic_successor_comments", count(r"symbolic successor: source=", bundle),
         "Symbolic-slot successor candidate comments carried into the combined source bundle.")
+    add(rows, "c_shape", "bundle_hidden_chain_probe_sites", count(r"hidden chain probe @", bundle),
+        "Synthetic gap sites annotated with hidden-handler-chain probe evidence inside the combined source bundle.")
+    add(rows, "c_shape", "bundle_hidden_chain_comments", count(r"hidden chain: source=", bundle),
+        "Hidden-handler-chain candidate comments carried into the combined source bundle.")
+    add(rows, "c_shape", "bundle_hidden_chain_resolved_calls", count(r"hidden source entry_\d+ replayed from", bundle),
+        "Hidden-chain matches emitted as concrete handler calls inside the combined source bundle.")
     add(rows, "c_shape", "bundle_live_in_role_evidence_sites", count(r"live-in role evidence @", bundle),
         "Synthetic gap sites annotated with prioritized live-in register role evidence inside the combined source bundle.")
     add(rows, "c_shape", "bundle_live_in_role_comments", count(r"live-in role: source=", bundle),
@@ -292,6 +306,33 @@ def synthetic_gap_symbolic_successor_metrics(rows):
         "Concrete symbolic-slot destinations already present in recovered IR.")
     add(rows, "gap_symbolic", "synthetic_gap_symbolic_uncovered_destinations", ",".join(uncovered) or "-",
         "Concrete symbolic-slot destinations not yet present in recovered IR.")
+
+
+def synthetic_gap_chain_probe_metrics(rows):
+    chain_rows = read_tsv(TRACE_DIR / "vm_synthetic_gap_chain_probe.tsv")
+    statuses = Counter(row.get("status", "") for row in chain_rows)
+    full_matches = [
+        f"{row.get('synthetic_start_vm_ip')}->{row.get('hidden_source_entry')}@{row.get('hidden_source_start_vm_ip')}->{row.get('hidden_pred_end_vm_ip')}"
+        for row in chain_rows
+        if row.get("status", "") == "hidden_chain_matches_next_event"
+    ]
+    target_only = [
+        row.get("synthetic_start_vm_ip", "")
+        for row in chain_rows
+        if row.get("status", "") == "hidden_chain_target_only"
+    ]
+    add(rows, "gap_chain", "synthetic_gap_chain_probe_rows", len(chain_rows),
+        "Ambiguous dynamic stitch rows replayed through candidate hidden-source handlers.")
+    add(rows, "gap_chain", "synthetic_gap_chain_full_matches",
+        statuses.get("hidden_chain_matches_next_event", 0),
+        "Hidden-chain probes whose predicted target entry and end VM IP both match the next hooked event.")
+    add(rows, "gap_chain", "synthetic_gap_chain_target_only",
+        statuses.get("hidden_chain_target_only", 0),
+        "Hidden-chain probes whose predicted target entry matches but the end VM IP still diverges.")
+    add(rows, "gap_chain", "synthetic_gap_chain_full_match_paths", ",".join(full_matches) or "-",
+        "Synthetic starts resolved through a hidden source and exact dynamic reentry match.")
+    add(rows, "gap_chain", "synthetic_gap_chain_target_only_starts", ",".join(target_only) or "-",
+        "Synthetic starts with only target-level hidden-chain evidence.")
 
 
 def synthetic_gap_live_in_role_metrics(rows):
@@ -439,6 +480,7 @@ def build_rows():
     synthetic_gap_probe_metrics(rows)
     synthetic_gap_dynamic_stitch_metrics(rows)
     synthetic_gap_symbolic_successor_metrics(rows)
+    synthetic_gap_chain_probe_metrics(rows)
     synthetic_gap_live_in_role_metrics(rows)
     synthetic_gap_final_tail_site_metrics(rows)
     gate_metrics(rows)
