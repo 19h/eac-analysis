@@ -175,6 +175,15 @@ Reproducible inventory of the current C-shaped reconstruction artifacts and gate
 | `artifact` | `native_ret_patch_followup_retdec_path` | `dumps/vmtail-wide-1m-w16/vm_native_ret_patch_followup_retdec.c` | Generated reconstruction artifact. |
 | `artifact` | `native_ret_patch_followup_retdec_lines` | `917` | Current line count. |
 | `artifact` | `native_ret_patch_followup_retdec_bytes` | `27963` | Current file size in bytes. |
+| `artifact` | `native_obfuscated_islands_c_path` | `dumps/vmtail-wide-1m-w16/vm_native_obfuscated_islands.c` | Generated reconstruction artifact. |
+| `artifact` | `native_obfuscated_islands_c_lines` | `151` | Current line count. |
+| `artifact` | `native_obfuscated_islands_c_bytes` | `9551` | Current file size in bytes. |
+| `artifact` | `native_obfuscated_islands_tsv_path` | `dumps/vmtail-wide-1m-w16/vm_native_obfuscated_islands.tsv` | Generated reconstruction artifact. |
+| `artifact` | `native_obfuscated_islands_tsv_lines` | `9` | Current line count. |
+| `artifact` | `native_obfuscated_islands_tsv_bytes` | `3422` | Current file size in bytes. |
+| `artifact` | `native_obfuscated_islands_md_path` | `dumps/vmtail-wide-1m-w16/vm_native_obfuscated_islands.md` | Generated reconstruction artifact. |
+| `artifact` | `native_obfuscated_islands_md_lines` | `18` | Current line count. |
+| `artifact` | `native_obfuscated_islands_md_bytes` | `1806` | Current file size in bytes. |
 | `artifact` | `target_only_handlers_retdec_path` | `dumps/vmtail-wide-1m-w16/vm_target_only_handlers_retdec.c` | Generated reconstruction artifact. |
 | `artifact` | `target_only_handlers_retdec_lines` | `317` | Current line count. |
 | `artifact` | `target_only_handlers_retdec_bytes` | `12635` | Current file size in bytes. |
@@ -323,6 +332,14 @@ Reproducible inventory of the current C-shaped reconstruction artifacts and gate
 | `c_shape` | `native_ret_patch_followup_retdec_functions` | `6` | Targeted RetDec C functions emitted for high-value native return-patch follow-up helpers. |
 | `c_shape` | `native_ret_patch_followup_retdec_ranges` | `6` | Narrow native helper ranges selected for return-patch follow-up RetDec. |
 | `c_shape` | `native_ret_patch_followup_retdec_tail_calls` | `3` | Recovered C-shaped tail calls/chains in the native return-patch follow-up helper artifact. |
+| `c_shape` | `native_obfuscated_island_rows` | `8` | First-stage native obfuscated helper/island rows reached from return-patch follow-up control. |
+| `c_shape` | `native_obfuscated_island_c_functions` | `8` | Syntax-checkable C helper functions for native obfuscated island collapse evidence. |
+| `c_shape` | `native_obfuscated_island_dispatch_cases` | `8` | Dispatcher cases in the native obfuscated island C artifact. |
+| `c_shape` | `native_obfuscated_island_downstream_status_mix` | `second_stage_obfuscated_thunk:5,source278_retdec_covered:2,first_stage_obfuscated_island:1` | Status mix for collapsed downstream targets from native obfuscated islands. |
+| `c_shape` | `native_obfuscated_island_next_action_mix` | `decode_downstream_stack_thunk:5,join_existing_source278_retdec:2,follow_downstream_island:1` | Next-action mix for native obfuscated island downstreams. |
+| `c_shape` | `native_obfuscated_island_source278_covered_downstreams` | `2` | Collapsed downstream targets already represented by the source278 targeted RetDec sidecar. |
+| `c_shape` | `native_obfuscated_island_second_stage_targets` | `5` | Collapsed downstream targets that remain second-stage stack/call obfuscation thunks. |
+| `c_shape` | `native_obfuscated_island_entry_helpers` | `1` | Normal-prologue helper rows that enter the first native obfuscation island. |
 | `c_shape` | `target_only_handler_retdec_selected_ranges` | `3` | Target-only VM handler native ranges selected for targeted RetDec. |
 | `c_shape` | `target_only_handler_retdec_functions` | `8` | Targeted RetDec C functions emitted from target-only VM handler native ranges. |
 | `c_shape` | `target_only_handler_retdec_ranges` | `8` | Native address ranges emitted by RetDec for target-only handler coverage. |
@@ -769,6 +786,9 @@ Reproducible inventory of the current C-shaped reconstruction artifacts and gate
 | `native_acceleration` | `native_ret_patch_followup_retdec_dump_source_lines` | `198` | Native wrapper/postprocessor source size for the targeted follow-up RetDec sidecar. |
 | `native_acceleration` | `native_ret_patch_followup_retdec_dump_binary_bytes` | `17512` | Current compiled native wrapper/postprocessor size for follow-up RetDec. |
 | `native_acceleration` | `native_ret_patch_followup_retdec_uses_native_wrapper` | `yes` | Whether the follow-up RetDec sidecar is generated through a native wrapper/postprocessor. |
+| `native_acceleration` | `native_obfuscated_islands_dump_source_lines` | `433` | Native obfuscated-island collapse classifier/generator source size. |
+| `native_acceleration` | `native_obfuscated_islands_dump_binary_bytes` | `25296` | Current compiled native obfuscated-island classifier/generator size. |
+| `native_acceleration` | `native_obfuscated_islands_uses_native_generator` | `yes` | Whether the native obfuscated-island C/TSV/Markdown artifacts are generated by the native C tool. |
 | `gate` | `syntax_check` | `make pseudocode-syntax-check` | Regenerates and warning-checks the generated C-like reconstruction artifacts with C11 -fsyntax-only. |
 | `gate` | `object_check` | `make pseudocode-object-check` | Codegen-compiles the combined source bundle to /tmp/eacsym-vm_recovered_source_bundle.o. |
 | `gate` | `link_smoke_check` | `make pseudocode-link-check` | Links the bundle with vm_recovered_source_harness.c and runs the smoke executable. |
