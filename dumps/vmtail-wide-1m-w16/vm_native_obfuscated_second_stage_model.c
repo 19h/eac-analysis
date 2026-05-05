@@ -9,6 +9,8 @@
 
 typedef struct VMState {
     uint64_t dispatch_table_base;
+    const uint64_t *dispatch_table;
+    uint32_t dispatch_table_entries;
 } VMState;
 
 typedef struct VMSecondStageNativeStack {
@@ -26,8 +28,10 @@ static uint64_t vm_second_stage_stack_qword(const VMSecondStageNativeStack *stac
 
 static uint64_t vm_second_stage_dispatch_target(const VMState *vm, uint64_t handler_entry) {
     uint64_t slot = (vm ? vm->dispatch_table_base : 0) + (handler_entry << 3);
-    (void)slot;
-    return 0;
+    if (vm && vm->dispatch_table && handler_entry < vm->dispatch_table_entries) {
+        return vm->dispatch_table[handler_entry];
+    }
+    return slot;
 }
 
 static void vm_note_second_stage_model(VMState *vm, const VMSecondStageNativeStack *stack,
