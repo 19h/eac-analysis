@@ -8,6 +8,7 @@ from vm_pseudocode_dump import (
     c_block_name,
     c_comment,
     emit_internal_tail_lift,
+    expr_to_c,
     is_decoded_long_control,
     load_edges,
     load_rows,
@@ -171,7 +172,7 @@ def emit_exact_call(row):
         print(f"    vm_ip -= 0x{-delta_value:x};")
 
 
-def emit_decoded_control(row):
+def emit_decoded_control(row, args):
     start = row.get("start_vm_ip", "")
     kind = row.get("row_kind", "")
     entry = row.get("source_entry", "")
@@ -180,12 +181,18 @@ def emit_decoded_control(row):
     bytes_hex = row.get("bytes", "")
     operand_shape = row.get("operand_shape", "")
     validation = row.get("validation", "")
+    state = row.get("state_effect_ir", "")
     delta = parse_delta(row.get("delta", "0"))
     print(
         f"    /* {start}: decoded {kind}, source entry={entry}, bytes={bytes_hex}, "
         f"shape={c_comment(operand_shape or '-')}, validation={c_comment(validation or '-')}; "
         f"{c_comment(semantic)} */"
     )
+    if state and state != "state0":
+        print(f"    vm->state = {expr_to_c(state, args.max_expr_len)};")
+        print("    /* source state effect joined from transition model */")
+    elif state == "state0":
+        print("    /* source state preserved */")
     if is_decoded_long_control(row):
         print("    next_entry = (int)U32(vm->ip + 0x0);")
         if target:
@@ -285,7 +292,7 @@ def emit_block(block, rows, edge, synthetic_spans, tail_lifts, args):
         if row.get("row_kind") == "exact_instruction":
             emit_exact_call(row)
         else:
-            emit_decoded_control(row)
+            emit_decoded_control(row, args)
     omitted = len(rows) - len(shown)
     if omitted > 0:
         print(f"    /* ... {omitted} bytecode operations omitted from this compact sketch ... */")
