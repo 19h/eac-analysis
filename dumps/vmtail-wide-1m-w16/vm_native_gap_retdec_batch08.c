@@ -40,10 +40,13 @@ struct _TYPEDEF_glob_t;
 struct _TYPEDEF___mbstate_t;
 struct _IO_FILE;
 struct sockaddr;
+struct timespec;
+struct timeval;
 struct utsname;
 #define F_GETFL 3
 #define F_SETFL 4
 #define SO_DEBUG 1
+#define _SC_PAGESIZE 30
 extern int g1;
 extern int g2;
 extern int g3;
@@ -150,7 +153,12 @@ int32_t *wmemset(int32_t *wcs, int32_t wc, size_t n);
 int64_t memset2(void *s, int c, size_t n);
 int pthread_mutex_lock(void *mutex);
 int pthread_mutex_unlock(void *mutex);
+int pthread_cond_wait(void *cond, void *mutex);
+int pthread_cond_timedwait(void *cond, void *mutex, const struct timespec *abstime);
 int fcntl(int fd, int cmd, ...);
+int gettimeofday(struct timeval *tv, void *tz);
+int64_t sysconf(int name);
+int mprotect(void *addr, size_t len, int prot);
 int32_t *__errno_location(void);
 int connect(int sockfd, const struct sockaddr *addr, int32_t addrlen);
 int getsockopt(int sockfd, int level, int optname, void *optval, int32_t *optlen);

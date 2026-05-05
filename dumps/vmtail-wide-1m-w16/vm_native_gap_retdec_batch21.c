@@ -6,22 +6,22 @@
  * coverage -> queue -> RetDec batch -> coverage.
  *
  * Ranges:
- *   0x4b01d0-0x4b02d6 rank=11 name=fcn.004b01d0 kind=r2_discovered bytes=262 uncovered=262
- *   0x5033d0-0x5034d6 rank=12 name=fcn.005033d0 kind=r2_discovered bytes=262 uncovered=262
- *   0x505ca0-0x505da6 rank=13 name=fcn.00505ca0 kind=r2_discovered bytes=262 uncovered=262
- *   0x2c438-0x2c53d rank=14 name=fcn.0002c438 kind=r2_discovered bytes=261 uncovered=261
- *   0x4aecc0-0x4aedc5 rank=15 name=fcn.004aecc0 kind=r2_discovered bytes=261 uncovered=261
- *   0x4d0c20-0x4d0d25 rank=16 name=fcn.004d0c20 kind=r2_discovered bytes=261 uncovered=261
- *   0x4afd30-0x4afe34 rank=17 name=fcn.004afd30 kind=r2_discovered bytes=260 uncovered=260
- *   0x4e9ae0-0x4e9be4 rank=18 name=sym.ZydisCalcAbsoluteAddress kind=symbol_named bytes=260 uncovered=260
- *   0x499ab0-0x499bb3 rank=19 name=fcn.00499ab0 kind=r2_discovered bytes=259 uncovered=259
- *   0x4a8c40-0x4a8d43 rank=20 name=fcn.004a8c40 kind=r2_discovered bytes=259 uncovered=259
- *   0x4bc9a0-0x4bcaa3 rank=21 name=fcn.004bc9a0 kind=r2_discovered bytes=259 uncovered=259
- *   0x4d2b80-0x4d2c83 rank=22 name=fcn.004d2b80 kind=r2_discovered bytes=259 uncovered=259
- *   0x54cf90-0x54d093 rank=23 name=fcn.0054cf90 kind=r2_discovered bytes=259 uncovered=259
- *   0x57a2b0-0x57a3b3 rank=24 name=fcn.0057a2b0 kind=r2_discovered bytes=259 uncovered=259
- *   0x4cdde0-0x4cdee1 rank=25 name=fcn.004cdde0 kind=r2_discovered bytes=257 uncovered=257
- *   0x32260-0x32405 rank=26 name=fcn.00032260 kind=r2_discovered bytes=421 uncovered=256
+ *   0x4b01d0-0x4b02d6 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x5033d0-0x5034d6 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x505ca0-0x505da6 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x2c438-0x2c53d rank=- name=- kind=- bytes=- uncovered=-
+ *   0x4aecc0-0x4aedc5 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x4d0c20-0x4d0d25 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x4afd30-0x4afe34 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x4e9ae0-0x4e9be4 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x499ab0-0x499bb3 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x4a8c40-0x4a8d43 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x4bc9a0-0x4bcaa3 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x4d2b80-0x4d2c83 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x54cf90-0x54d093 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x57a2b0-0x57a3b3 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x4cdde0-0x4cdee1 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x32260-0x32405 rank=- name=- kind=- bytes=- uncovered=-
  */
 #include <stdbool.h>
 #include <stdio.h>
@@ -40,10 +40,13 @@ struct _TYPEDEF_glob_t;
 struct _TYPEDEF___mbstate_t;
 struct _IO_FILE;
 struct sockaddr;
+struct timespec;
+struct timeval;
 struct utsname;
 #define F_GETFL 3
 #define F_SETFL 4
 #define SO_DEBUG 1
+#define _SC_PAGESIZE 30
 extern int g1;
 extern int g2;
 extern int g3;
@@ -125,7 +128,12 @@ int32_t *wmemset(int32_t *wcs, int32_t wc, size_t n);
 int64_t memset2(void *s, int c, size_t n);
 int pthread_mutex_lock(void *mutex);
 int pthread_mutex_unlock(void *mutex);
+int pthread_cond_wait(void *cond, void *mutex);
+int pthread_cond_timedwait(void *cond, void *mutex, const struct timespec *abstime);
 int fcntl(int fd, int cmd, ...);
+int gettimeofday(struct timeval *tv, void *tz);
+int64_t sysconf(int name);
+int mprotect(void *addr, size_t len, int prot);
 int32_t *__errno_location(void);
 int connect(int sockfd, const struct sockaddr *addr, int32_t addrlen);
 int getsockopt(int sockfd, int level, int optname, void *optval, int32_t *optlen);

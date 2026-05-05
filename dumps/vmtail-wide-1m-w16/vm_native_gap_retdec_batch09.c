@@ -40,10 +40,13 @@ struct _TYPEDEF_glob_t;
 struct _TYPEDEF___mbstate_t;
 struct _IO_FILE;
 struct sockaddr;
+struct timespec;
+struct timeval;
 struct utsname;
 #define F_GETFL 3
 #define F_SETFL 4
 #define SO_DEBUG 1
+#define _SC_PAGESIZE 30
 extern int g1;
 extern int g2;
 extern int g3;
@@ -125,7 +128,12 @@ int32_t *wmemset(int32_t *wcs, int32_t wc, size_t n);
 int64_t memset2(void *s, int c, size_t n);
 int pthread_mutex_lock(void *mutex);
 int pthread_mutex_unlock(void *mutex);
+int pthread_cond_wait(void *cond, void *mutex);
+int pthread_cond_timedwait(void *cond, void *mutex, const struct timespec *abstime);
 int fcntl(int fd, int cmd, ...);
+int gettimeofday(struct timeval *tv, void *tz);
+int64_t sysconf(int name);
+int mprotect(void *addr, size_t len, int prot);
 int32_t *__errno_location(void);
 int connect(int sockfd, const struct sockaddr *addr, int32_t addrlen);
 int getsockopt(int sockfd, int level, int optname, void *optval, int32_t *optlen);
@@ -1213,7 +1221,7 @@ int64_t function_48e480(int64_t a1, int64_t a2) {
             function_54b20(&v11, a1, function_36b3c(a1, 0, "basic_string::substr"), v6);
             v13 = (int64_t *)function_527fe(&v11, a2);
             v10 = *v13;
-            *v13 = (int64_t)&g6;
+            *v13 = &g6;
             function_48f5c8(&v8, &v10, &v9);
             function_36966(a1, &v8);
             function_29c3a(&v8);
@@ -1236,7 +1244,7 @@ int64_t function_48e480(int64_t a1, int64_t a2) {
                 function_54b20(&v11, a1, function_36b3c(a1, 0, "basic_string::substr"), v6);
                 v13 = (int64_t *)function_527fe(&v11, v16);
                 v10 = *v13;
-                *v13 = (int64_t)&g6;
+                *v13 = &g6;
                 function_48f5c8(&v8, &v10, &v9);
                 function_36966(a1, &v8);
                 function_29c3a(&v8);
