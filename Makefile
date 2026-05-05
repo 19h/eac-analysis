@@ -291,10 +291,10 @@ synthetic-gap-ret-patch-native-target-atlas: synthetic-gap-sampled-ret-patch-pro
 	python3 vm_synthetic_gap_ret_patch_native_target_atlas.py > dumps/vmtail-wide-1m-w16/vm_synthetic_gap_ret_patch_native_target_atlas.tsv
 	python3 vm_synthetic_gap_ret_patch_native_target_atlas.py --markdown > dumps/vmtail-wide-1m-w16/vm_synthetic_gap_ret_patch_native_target_atlas.md
 
-native-ret-patch-target-pseudocode: synthetic-gap-ret-patch-native-target-atlas
+native-ret-patch-target-pseudocode:
 	python3 vm_native_ret_patch_targets_pseudocode.py > dumps/vmtail-wide-1m-w16/vm_native_ret_patch_targets.c
 
-native-ret-patch-epilogues-retdec: synthetic-gap-ret-patch-native-target-atlas
+native-ret-patch-epilogues-retdec:
 	python3 vm_native_ret_patch_epilogues_retdec.py > dumps/vmtail-wide-1m-w16/vm_native_ret_patch_epilogues_retdec.c
 
 native-ret-patch-source278-retdec:
