@@ -11,6 +11,8 @@ DEFAULT_CONCRETE_AUDIT = TRACE_DIR / "vm_synthetic_gap_concrete_state_audit.tsv"
 DEFAULT_RESIDUAL_AUDIT = TRACE_DIR / "vm_synthetic_gap_residual_audit.tsv"
 DEFAULT_DYNAMIC_STITCH = TRACE_DIR / "vm_synthetic_gap_dynamic_stitch.tsv"
 DEFAULT_PRIMARY_TRACE = TRACE_DIR / "vm_instruction_trace.tsv"
+DEFAULT_BASELINE_STATE_TRACE = Path("dumps/vmtail-state-wide-w16/vm_instruction_trace.tsv")
+DEFAULT_SUPPLEMENTAL_STATE_TRACE = Path("dumps/vmtail-state-residual-targets/vm_instruction_trace.tsv")
 
 
 def read_tsv(path):
@@ -112,14 +114,18 @@ def build_rows(args):
     concrete_rows = read_tsv(args.concrete_audit)
     residual_rows = read_tsv(args.residual_audit)
     stitch_rows = read_tsv(args.dynamic_stitch)
+    concrete_by_start = {row.get("synthetic_start_vm_ip", ""): row for row in concrete_rows}
     residual_by_start = {row.get("synthetic_start_vm_ip", ""): row for row in residual_rows}
     stitch_by_start = rows_by_key(stitch_rows, "synthetic_start_vm_ip")
 
+    residual_starts = [row.get("synthetic_start_vm_ip", "") for row in residual_rows]
+    baseline_at_start = collect_primary_rows_ending_at(args.baseline_state_trace, residual_starts)
     missing = [
-        row for row in concrete_rows
-        if parse_int(row.get("state_trace_rows", "0")) == 0
+        row for row in residual_rows
+        if row.get("synthetic_start_vm_ip", "") and not baseline_at_start.get(row.get("synthetic_start_vm_ip", ""))
     ]
     starts = [row.get("synthetic_start_vm_ip", "") for row in missing]
+    supplemental_at_start = collect_primary_rows_ending_at(args.supplemental_state_trace, starts)
     primary_at_start = collect_primary_rows_ending_at(args.primary_trace, starts)
     predecessor_starts = []
     for start in starts:
@@ -128,12 +134,14 @@ def build_rows(args):
     primary_at_predecessor = collect_primary_rows_ending_at(args.primary_trace, predecessor_starts)
 
     rows = []
-    for audit in missing:
-        start = audit.get("synthetic_start_vm_ip", "")
-        residual = residual_by_start.get(start, {})
+    for residual in missing:
+        start = residual.get("synthetic_start_vm_ip", "")
+        audit = concrete_by_start.get(start, {})
         stitch = best_stitch(stitch_by_start.get(start, []))
         predecessor = (primary_at_start.get(start) or [{}])[0]
         predecessor_event = (primary_at_predecessor.get(predecessor.get("start_vm_ip", "")) or [{}])[0]
+        baseline_rows = baseline_at_start.get(start, [])
+        supplemental_rows = supplemental_at_start.get(start, [])
 
         pred_ip = predecessor.get("start_vm_ip", "")
         pred_site = predecessor_event.get("site", "")
@@ -147,12 +155,15 @@ def build_rows(args):
 
         row = {
             "rank": "0",
-            "source_entry": audit.get("source_entry", ""),
+            "source_entry": residual.get("source_entry", "") or audit.get("source_entry", ""),
             "synthetic_start_vm_ip": start,
-            "missing_successor_vm_ip": audit.get("missing_successor_vm_ip", ""),
-            "gap_bytes": audit.get("gap_bytes", ""),
-            "concrete_classification": audit.get("classification", ""),
-            "state_trace_rows": audit.get("state_trace_rows", "0"),
+            "missing_successor_vm_ip": residual.get("missing_successor_vm_ip", "") or audit.get("missing_successor_vm_ip", ""),
+            "gap_bytes": residual.get("gap_bytes", "") or audit.get("gap_bytes", ""),
+            "concrete_classification": audit.get("classification", "baseline_missing_state_trace"),
+            "state_trace_rows": audit.get("state_trace_rows", str(len(supplemental_rows))),
+            "baseline_state_trace_rows": str(len(baseline_rows)),
+            "supplemental_state_trace_rows": str(len(supplemental_rows)),
+            "capture_status": "captured_in_supplemental_trace" if supplemental_rows else "needs_supplemental_capture",
             "primary_predecessor_seq": predecessor.get("seq", ""),
             "primary_predecessor_source_entry": predecessor.get("source_entry", ""),
             "primary_predecessor_start_vm_ip": pred_ip,
@@ -200,6 +211,9 @@ FIELDS = [
     "gap_bytes",
     "concrete_classification",
     "state_trace_rows",
+    "baseline_state_trace_rows",
+    "supplemental_state_trace_rows",
+    "capture_status",
     "primary_predecessor_seq",
     "primary_predecessor_source_entry",
     "primary_predecessor_start_vm_ip",
@@ -244,15 +258,17 @@ def emit_markdown(rows):
     source_mix = Counter(row.get("source_entry", "") for row in rows)
     start_sites = Counter(row.get("synthetic_start_event_site", "") for row in rows)
     next_sites = Counter(row.get("dynamic_next_site", "") for row in rows)
+    captured = sum(1 for row in rows if row.get("capture_status") == "captured_in_supplemental_trace")
     print("# Synthetic Gap State-Trace Targets\n")
-    print("Focused targets for residual synthetic starts that still lack state-aware predecessor rows.\n")
-    print(f"- missing state rows: {len(rows)}")
+    print("Focused targets for residual synthetic starts that were missing from the baseline state-wide predecessor trace.\n")
+    print(f"- baseline-missing state rows: {len(rows)}")
+    print(f"- captured in supplemental focused trace: {captured}")
     print(f"- source mix: {', '.join(f'{key}:{value}' for key, value in source_mix.most_common()) or '-'}")
     print(f"- synthetic-start site mix: {', '.join(f'{key}:{value}' for key, value in start_sites.most_common()) or '-'}")
     print(f"- next-hook site mix: {', '.join(f'{key}:{value}' for key, value in next_sites.most_common()) or '-'}\n")
     print("Minimal capture logs the predecessor tail event plus the synthetic-start tail event, so `vm_trace_graph.py` can emit the missing state row with `end_vm_ip == synthetic_start_vm_ip`.\n")
-    print("| Rank | Start | Source | Primary Seq | Pred IP | Sites | Next Hook | Goal |")
-    print("| ---: | --- | ---: | ---: | --- | --- | --- | --- |")
+    print("| Rank | Start | Source | Capture | Primary Seq | Pred IP | Sites | Next Hook | Goal |")
+    print("| ---: | --- | ---: | --- | ---: | --- | --- | --- | --- |")
     for row in rows:
         sites = f"{row.get('primary_predecessor_event_site') or '-'} + {row.get('synthetic_start_event_site') or '-'}"
         next_hook = (
@@ -261,7 +277,8 @@ def emit_markdown(rows):
         )
         print(
             f"| {row['rank']} | `{row['synthetic_start_vm_ip']}` | {row['source_entry']} | "
-            f"{row.get('primary_predecessor_seq') or '-'} | `{row.get('primary_predecessor_start_vm_ip') or '-'}` | "
+            f"`{row.get('capture_status') or '-'}` | {row.get('primary_predecessor_seq') or '-'} | "
+            f"`{row.get('primary_predecessor_start_vm_ip') or '-'}` | "
             f"`{sites}` | `{next_hook}` | {row['state_capture_goal']} |"
         )
     print("\nThe `minimal_focus_env` TSV column gives a per-target focused VMTAIL environment. Set `ALL_TABLE_SPEC` from `python3 vm_tail_scan.py --all-table --eac eac.elf --window 0x1200 --limit 0` before using it. The `context_focus_env` variant also keeps the next hooked event, which is useful for sequence sanity checks but is not required for the concrete-state replay seed.")
@@ -273,6 +290,8 @@ def main():
     parser.add_argument("--residual-audit", default=str(DEFAULT_RESIDUAL_AUDIT))
     parser.add_argument("--dynamic-stitch", default=str(DEFAULT_DYNAMIC_STITCH))
     parser.add_argument("--primary-trace", default=str(DEFAULT_PRIMARY_TRACE))
+    parser.add_argument("--baseline-state-trace", default=str(DEFAULT_BASELINE_STATE_TRACE))
+    parser.add_argument("--supplemental-state-trace", default=str(DEFAULT_SUPPLEMENTAL_STATE_TRACE))
     parser.add_argument("--markdown", action="store_true")
     args = parser.parse_args()
 

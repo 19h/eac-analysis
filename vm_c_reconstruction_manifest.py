@@ -500,6 +500,7 @@ def synthetic_gap_state_trace_target_metrics(rows):
     source_mix = Counter(row.get("source_entry", "") for row in target_rows)
     start_site_mix = Counter(row.get("synthetic_start_event_site", "") for row in target_rows)
     next_site_mix = Counter(row.get("dynamic_next_site", "") for row in target_rows)
+    capture_mix = Counter(row.get("capture_status", "") for row in target_rows)
     starts = [row.get("synthetic_start_vm_ip", "") for row in target_rows if row.get("synthetic_start_vm_ip", "")]
     focus_pairs = [
         f"{row.get('synthetic_start_vm_ip')}={row.get('minimal_focus_ips')}@{row.get('minimal_focus_sites')}"
@@ -523,6 +524,9 @@ def synthetic_gap_state_trace_target_metrics(rows):
     add(rows, "gap_state_targets", "synthetic_gap_state_trace_target_next_site_mix",
         ",".join(f"{key}:{value}" for key, value in next_site_mix.most_common()) or "-",
         "Next-hook tail sites retained by the optional context capture.")
+    add(rows, "gap_state_targets", "synthetic_gap_state_trace_target_capture_status_mix",
+        ",".join(f"{key}:{value}" for key, value in capture_mix.most_common()) or "-",
+        "Whether each baseline-missing state row has been captured by the supplemental focused trace.")
     add(rows, "gap_state_targets", "synthetic_gap_state_trace_target_primary_seq_range",
         f"{min(seqs)}..{max(seqs)}" if seqs else "-",
         "Primary trace sequence span containing the missing predecessor-state pairs.")
