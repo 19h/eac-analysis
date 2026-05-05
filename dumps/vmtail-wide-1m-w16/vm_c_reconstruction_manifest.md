@@ -13,6 +13,15 @@ Reproducible inventory of the current C-shaped reconstruction artifacts and gate
 | `artifact` | `path_handlers_frontier_path` | `dumps/vmtail-wide-1m-w16/vm_path_handlers_frontier_pseudocode.c` | Generated reconstruction artifact. |
 | `artifact` | `path_handlers_frontier_lines` | `301` | Current line count. |
 | `artifact` | `path_handlers_frontier_bytes` | `15989` | Current file size in bytes. |
+| `artifact` | `path_frontier_slot_audit_c_path` | `dumps/vmtail-wide-1m-w16/vm_path_frontier_slot_audit.c` | Generated reconstruction artifact. |
+| `artifact` | `path_frontier_slot_audit_c_lines` | `43` | Current line count. |
+| `artifact` | `path_frontier_slot_audit_c_bytes` | `5697` | Current file size in bytes. |
+| `artifact` | `path_frontier_slot_audit_tsv_path` | `dumps/vmtail-wide-1m-w16/vm_path_frontier_slot_audit.tsv` | Generated reconstruction artifact. |
+| `artifact` | `path_frontier_slot_audit_tsv_lines` | `11` | Current line count. |
+| `artifact` | `path_frontier_slot_audit_tsv_bytes` | `4993` | Current file size in bytes. |
+| `artifact` | `path_frontier_slot_audit_md_path` | `dumps/vmtail-wide-1m-w16/vm_path_frontier_slot_audit.md` | Generated reconstruction artifact. |
+| `artifact` | `path_frontier_slot_audit_md_lines` | `24` | Current line count. |
+| `artifact` | `path_frontier_slot_audit_md_bytes` | `1264` | Current file size in bytes. |
 | `artifact` | `direct_blocks_top_path` | `dumps/vmtail-wide-1m-w16/vm_pseudocode_top.c` | Generated reconstruction artifact. |
 | `artifact` | `direct_blocks_top_lines` | `12619` | Current line count. |
 | `artifact` | `direct_blocks_top_bytes` | `1429721` | Current file size in bytes. |
@@ -26,8 +35,8 @@ Reproducible inventory of the current C-shaped reconstruction artifacts and gate
 | `artifact` | `source_bundle_lines` | `304448` | Current line count. |
 | `artifact` | `source_bundle_bytes` | `20567203` | Current file size in bytes. |
 | `artifact` | `source_all_evidence_bundle_path` | `dumps/vmtail-wide-1m-w16/vm_recovered_source_all_evidence_bundle.c` | Generated reconstruction artifact. |
-| `artifact` | `source_all_evidence_bundle_lines` | `431180` | Current line count. |
-| `artifact` | `source_all_evidence_bundle_bytes` | `29774296` | Current file size in bytes. |
+| `artifact` | `source_all_evidence_bundle_lines` | `431225` | Current line count. |
+| `artifact` | `source_all_evidence_bundle_bytes` | `29780491` | Current file size in bytes. |
 | `artifact` | `synthetic_successor_gaps_tsv_path` | `dumps/vmtail-wide-1m-w16/vm_synthetic_successor_gaps.tsv` | Generated reconstruction artifact. |
 | `artifact` | `synthetic_successor_gaps_tsv_lines` | `22` | Current line count. |
 | `artifact` | `synthetic_successor_gaps_tsv_bytes` | `5197` | Current file size in bytes. |
@@ -699,6 +708,11 @@ Reproducible inventory of the current C-shaped reconstruction artifacts and gate
 | `coverage_frontier` | `path_frontier_model_rows` | `10` | Unvalidated path-specialized metadata rows retained in the frontier artifact. |
 | `coverage_frontier` | `path_frontier_dispatch_cases` | `10` | Unvalidated path-specialized dispatcher cases keyed by entry/path hash. |
 | `coverage_frontier` | `path_frontier_zero_validation_comments` | `10` | Frontier path functions explicitly marked with zero target/IP validation. |
+| `coverage_frontier` | `path_frontier_slot_audit_rows` | `10` | Weak frontier path slot-expression audit rows. |
+| `coverage_frontier` | `path_frontier_slot_audit_c_rows` | `10` | Weak frontier path slot-expression audit rows retained in C form. |
+| `coverage_frontier` | `path_frontier_slot_audit_not_promotable_rows` | `10` | Weak frontier path rows whose sampled slot expressions still cannot be promoted to hard CFG. |
+| `coverage_frontier` | `path_frontier_slot_audit_direct_table_validated_rows` | `0` | Total direct dispatch-table matches found while auditing weak frontier slot expressions. |
+| `coverage_frontier` | `path_frontier_slot_audit_any_table_match_rows` | `0` | Weak frontier path rows with at least one direct dispatch-table match. |
 | `c_shape` | `direct_top_block_defs` | `60` | Direct compact block functions. |
 | `c_shape` | `direct_top_block_calls` | `92` | Concrete block calls in the compact direct sketch. |
 | `c_shape` | `program_top_block_defs` | `80` | Program-layer compact block functions. |
@@ -836,9 +850,11 @@ Reproducible inventory of the current C-shaped reconstruction artifacts and gate
 | `coverage_frontier` | `all_evidence_bundle_path_frontier_functions` | `10` | Unvalidated path-specialized frontier functions retained in the all-evidence single file. |
 | `coverage_frontier` | `all_evidence_bundle_path_frontier_model_rows` | `10` | Unvalidated path-specialized frontier metadata rows retained in the all-evidence single file. |
 | `coverage_frontier` | `all_evidence_bundle_path_frontier_dispatch_cases` | `10` | Unvalidated path-specialized frontier dispatcher cases retained in the all-evidence single file. |
-| `c_shape` | `all_evidence_bundle_sidecar_sections` | `43` | Renamed native RetDec/control sidecar files appended to the all-evidence single file. |
+| `coverage_frontier` | `all_evidence_bundle_path_frontier_slot_audit_rows` | `10` | Weak frontier slot-expression audit rows retained in the all-evidence single file. |
+| `coverage_frontier` | `all_evidence_bundle_path_frontier_slot_audit_symbols` | `6` | Prefixed path frontier slot-audit symbols retained in the all-evidence single file. |
+| `c_shape` | `all_evidence_bundle_sidecar_sections` | `44` | Renamed native RetDec/control sidecar files appended to the all-evidence single file. |
 | `c_shape` | `all_evidence_bundle_prefixed_retdec_functions` | `624` | RetDec native C functions carried in the all-evidence single file with per-sidecar symbol prefixes. |
-| `c_shape` | `all_evidence_bundle_prefixed_symbols` | `11335` | Prefixed symbols used to keep overlapping native sidecar C in one translation unit. |
+| `c_shape` | `all_evidence_bundle_prefixed_symbols` | `11341` | Prefixed symbols used to keep overlapping native sidecar C in one translation unit. |
 | `coverage_frontier` | `all_evidence_bundle_config_coverage_metric_rows` | `71` | Config coverage audit metric rows retained in the all-evidence single C file. |
 | `coverage_frontier` | `all_evidence_bundle_config_coverage_frontier_rows` | `173` | Config/path frontier rows retained in the all-evidence single C file. |
 | `coverage_frontier` | `all_evidence_bundle_config_coverage_frontier_symbols` | `8` | Prefixed config coverage frontier symbols retained in the all-evidence single C file. |
