@@ -1321,11 +1321,14 @@ def synthetic_gap_sampled_ret_patch_probe_metrics(rows):
     probe_rows = read_tsv(TRACE_DIR / "vm_synthetic_gap_sampled_ret_patch_probe.tsv")
     sources = Counter(row.get("source_entry", "") for row in probe_rows)
     starts = Counter(row.get("synthetic_start_vm_ip", "") for row in probe_rows)
+    kind_mix = Counter(row.get("ret_patch_kind", "") or "single_stack_return" for row in probe_rows)
     families = Counter(row.get("family_id", "") for row in probe_rows)
     seed_mix = Counter(row.get("seed_quality", "") for row in probe_rows)
     relation_mix = Counter(row.get("ret_patch_relation", "") for row in probe_rows)
+    relation2_mix = Counter(row.get("ret_patch2_relation", "") for row in probe_rows if row.get("ret_patch2_relation", ""))
     interpretation_mix = Counter(row.get("interpretation", "") for row in probe_rows)
     section_mix = Counter(row.get("patched_ret_section", "") for row in probe_rows)
+    section2_mix = Counter(row.get("patched_ret2_section", "") for row in probe_rows if row.get("patched_ret2_section", ""))
     base_source_mix = Counter(
         "mapped_frame_qword" if row.get("ret_patch_base_source", "").startswith("postcall_map_") else "inferred_image_base"
         for row in probe_rows
@@ -1352,6 +1355,9 @@ def synthetic_gap_sampled_ret_patch_probe_metrics(rows):
     add(rows, "gap_sampled_ret_patch", "synthetic_gap_sampled_ret_patch_probe_source_mix",
         ",".join(f"entry_{key}:{value}" for key, value in sources.most_common()) or "-",
         "Source-handler coverage in the sampled return-patch probe.")
+    add(rows, "gap_sampled_ret_patch", "synthetic_gap_sampled_ret_patch_probe_kind_mix",
+        ",".join(f"{key}:{value}" for key, value in kind_mix.most_common()) or "-",
+        "Single-stack versus double-stack native return-patch rows.")
     add(rows, "gap_sampled_ret_patch", "synthetic_gap_sampled_ret_patch_probe_starts", len(starts),
         "Distinct residual VM starts represented by the sampled return-patch probe.")
     add(rows, "gap_sampled_ret_patch", "synthetic_gap_sampled_ret_patch_probe_family_mix",
@@ -1366,9 +1372,15 @@ def synthetic_gap_sampled_ret_patch_probe_metrics(rows):
     add(rows, "gap_sampled_ret_patch", "synthetic_gap_sampled_ret_patch_probe_section_mix",
         ",".join(f"{key}:{value}" for key, value in section_mix.most_common()) or "-",
         "ELF sections reached by decoded native return-patch targets.")
+    add(rows, "gap_sampled_ret_patch", "synthetic_gap_sampled_ret_patch_probe_section2_mix",
+        ",".join(f"{key}:{value}" for key, value in section2_mix.most_common()) or "-",
+        "ELF sections reached by second stacked native return-patch targets.")
     add(rows, "gap_sampled_ret_patch", "synthetic_gap_sampled_ret_patch_probe_relation_mix",
         ",".join(f"{key}:{value}" for key, value in relation_mix.most_common()) or "-",
         "Relation between decoded native return-patch targets and VM-IP chain targets.")
+    add(rows, "gap_sampled_ret_patch", "synthetic_gap_sampled_ret_patch_probe_relation2_mix",
+        ",".join(f"{key}:{value}" for key, value in relation2_mix.most_common()) or "-",
+        "Relation between second stacked return-patch targets and VM-IP chain targets.")
     add(rows, "gap_sampled_ret_patch", "synthetic_gap_sampled_ret_patch_probe_interpretation_mix",
         ",".join(f"{key}:{value}" for key, value in interpretation_mix.most_common()) or "-",
         "Interpretation of sampled return-patch control rather than normal table dispatch.")
