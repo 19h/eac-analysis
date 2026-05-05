@@ -41,6 +41,8 @@ ARTIFACTS = [
     ("synthetic_gap_table_memory_probe_md", TRACE_DIR / "vm_synthetic_gap_table_memory_probe.md"),
     ("synthetic_gap_sampled_control_correlation_tsv", TRACE_DIR / "vm_synthetic_gap_sampled_control_correlation.tsv"),
     ("synthetic_gap_sampled_control_correlation_md", TRACE_DIR / "vm_synthetic_gap_sampled_control_correlation.md"),
+    ("synthetic_gap_focused_direct_trace_audit_tsv", TRACE_DIR / "vm_synthetic_gap_focused_direct_trace_audit.tsv"),
+    ("synthetic_gap_focused_direct_trace_audit_md", TRACE_DIR / "vm_synthetic_gap_focused_direct_trace_audit.md"),
     ("synthetic_gap_symbolic_successors_tsv", TRACE_DIR / "vm_synthetic_gap_symbolic_successors.tsv"),
     ("synthetic_gap_symbolic_successors_md", TRACE_DIR / "vm_synthetic_gap_symbolic_successors.md"),
     ("synthetic_gap_live_in_roles_tsv", TRACE_DIR / "vm_synthetic_gap_live_in_roles.tsv"),
@@ -197,6 +199,12 @@ def c_shape_metrics(rows):
         "Residual sampled-control correlation sites carried into the full program sketch.")
     add(rows, "c_shape", "program_full_sampled_control_correlation_comments", count(r"sampled-control correlation: source=", program_full),
         "Per-start sampled-control correlation comments carried into the full program sketch.")
+    add(rows, "c_shape", "program_full_focused_direct_trace_audit_sites", count(r"focused direct trace @", program_full),
+        "Residual focused direct-trace audit sites carried into the full program sketch.")
+    add(rows, "c_shape", "program_full_focused_direct_trace_audit_comments", count(r"focused direct trace: source=", program_full),
+        "Per-start focused direct-trace comments carried into the full program sketch.")
+    add(rows, "c_shape", "program_full_focused_direct_bridge_sites", count(r"focused direct bridge @", program_full),
+        "Focused residual-start direct trace rows promoted to concrete handler/block calls in the full program sketch.")
     add(rows, "c_shape", "program_full_hidden_chain_resolved_calls", count(r"hidden source entry_\d+ replayed from", program_full),
         "Hidden-chain matches emitted as concrete handler calls before reentering a recovered block.")
     add(rows, "c_shape", "program_full_live_in_role_evidence_sites", count(r"live-in role evidence @", program_full),
@@ -263,6 +271,12 @@ def c_shape_metrics(rows):
         "Residual sampled-control correlation sites carried into the combined source bundle.")
     add(rows, "c_shape", "bundle_sampled_control_correlation_comments", count(r"sampled-control correlation: source=", bundle),
         "Per-start sampled-control correlation comments carried into the combined source bundle.")
+    add(rows, "c_shape", "bundle_focused_direct_trace_audit_sites", count(r"focused direct trace @", bundle),
+        "Residual focused direct-trace audit sites carried into the combined source bundle.")
+    add(rows, "c_shape", "bundle_focused_direct_trace_audit_comments", count(r"focused direct trace: source=", bundle),
+        "Per-start focused direct-trace comments carried into the combined source bundle.")
+    add(rows, "c_shape", "bundle_focused_direct_bridge_sites", count(r"focused direct bridge @", bundle),
+        "Focused residual-start direct trace rows promoted to concrete handler/block calls inside the combined source bundle.")
     add(rows, "c_shape", "bundle_hidden_chain_resolved_calls", count(r"hidden source entry_\d+ replayed from", bundle),
         "Hidden-chain matches emitted as concrete handler calls inside the combined source bundle.")
     add(rows, "c_shape", "bundle_live_in_role_evidence_sites", count(r"live-in role evidence @", bundle),
@@ -796,6 +810,55 @@ def synthetic_gap_sampled_control_correlation_metrics(rows):
         "Residual starts whose exact footprint bytes appear in sampled-operand observations.")
 
 
+def synthetic_gap_focused_direct_trace_audit_metrics(rows):
+    audit_rows = read_tsv(TRACE_DIR / "vm_synthetic_gap_focused_direct_trace_audit.tsv")
+    classes = Counter(row.get("focused_direct_class", "") for row in audit_rows)
+    candidates = [
+        row.get("synthetic_start_vm_ip", "")
+        for row in audit_rows
+        if row.get("promotion_candidate", "") == "yes"
+    ]
+    direct_rows = [
+        row.get("synthetic_start_vm_ip", "")
+        for row in audit_rows
+        if int(row.get("focused_trace_rows", "0") or 0) > 0
+    ]
+    destinations = [
+        row.get("example_end_vm_ip", "")
+        for row in audit_rows
+        if row.get("promotion_candidate", "") == "yes" and row.get("example_end_vm_ip", "")
+    ]
+    targets = Counter()
+    sources = Counter()
+    for row in audit_rows:
+        if row.get("promotion_candidate", "") != "yes":
+            continue
+        targets[row.get("example_target_entry", "")] += 1
+        sources[row.get("example_source_entry", "")] += 1
+
+    add(rows, "gap_focused_direct", "synthetic_gap_focused_direct_trace_audit_rows", len(audit_rows),
+        "Residual starts audited against focused live/state traces for rows that start exactly at the residual VM IP.")
+    add(rows, "gap_focused_direct", "synthetic_gap_focused_direct_class_mix",
+        ",".join(f"{key}:{value}" for key, value in classes.most_common()) or "-",
+        "Direct focused trace class mix.")
+    add(rows, "gap_focused_direct", "synthetic_gap_focused_direct_starts_with_rows", len(direct_rows),
+        "Residual starts that have at least one focused trace row starting exactly at the synthetic start.")
+    add(rows, "gap_focused_direct", "synthetic_gap_focused_direct_bridge_candidates", len(candidates),
+        "Focused direct rows whose destination is a recovered block start and whose source/target/delta bytes are promotion-ready.")
+    add(rows, "gap_focused_direct", "synthetic_gap_focused_direct_candidate_starts",
+        ",".join(candidates) or "-",
+        "Residual starts promoted into focused direct handler/block bridges.")
+    add(rows, "gap_focused_direct", "synthetic_gap_focused_direct_candidate_destinations",
+        ",".join(destinations) or "-",
+        "Recovered block starts reached by focused direct bridges.")
+    add(rows, "gap_focused_direct", "synthetic_gap_focused_direct_candidate_sources",
+        ",".join(f"{key}:{value}" for key, value in sources.most_common()) or "-",
+        "Source entries represented by focused direct bridges.")
+    add(rows, "gap_focused_direct", "synthetic_gap_focused_direct_candidate_targets",
+        ",".join(f"{key}:{value}" for key, value in targets.most_common()) or "-",
+        "Target entries represented by focused direct bridges.")
+
+
 def synthetic_gap_live_in_role_metrics(rows):
     role_rows = read_tsv(TRACE_DIR / "vm_synthetic_gap_live_in_roles.tsv")
     resolutions = Counter(row.get("resolution", "") for row in role_rows)
@@ -1093,6 +1156,7 @@ def build_rows():
     synthetic_gap_table_read_diagnostic_metrics(rows)
     synthetic_gap_table_memory_probe_metrics(rows)
     synthetic_gap_sampled_control_correlation_metrics(rows)
+    synthetic_gap_focused_direct_trace_audit_metrics(rows)
     synthetic_gap_live_in_role_metrics(rows)
     synthetic_gap_final_tail_site_metrics(rows)
     synthetic_gap_live_in_reentry_metrics(rows)
