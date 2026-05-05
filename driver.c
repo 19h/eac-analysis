@@ -23,7 +23,8 @@ enum {
     EAC_IP_WORD_COUNT = 16,
     EAC_MAX_SCRATCH_OFFSETS = 64,
     EAC_MAX_READ_RANGES = 512,
-    EAC_MAX_FOCUS_IPS = 128
+    EAC_MAX_FOCUS_IPS = 128,
+    EAC_MAX_FOCUS_SITES = 128
 };
 
 enum tail_reg {
@@ -69,6 +70,8 @@ static int g_tail_mem;
 static uint32_t g_tail_mem_reg_mask;
 static uintptr_t g_tail_focus_ips[EAC_MAX_FOCUS_IPS];
 static size_t g_tail_focus_ip_count;
+static uintptr_t g_tail_focus_sites[EAC_MAX_FOCUS_SITES];
+static size_t g_tail_focus_site_count;
 static uint64_t g_tail_focus_hits;
 static uint64_t g_tail_stop_after_matches;
 static struct tail_site g_tail_sites[EAC_MAX_TAIL_SITES];
@@ -280,6 +283,15 @@ static int add_focus_ip(uintptr_t off) {
     return 0;
 }
 
+static int add_focus_site(uintptr_t off) {
+    for (size_t i = 0; i < g_tail_focus_site_count; ++i) {
+        if (g_tail_focus_sites[i] == off) return 0;
+    }
+    if (g_tail_focus_site_count >= EAC_MAX_FOCUS_SITES) return -1;
+    g_tail_focus_sites[g_tail_focus_site_count++] = off;
+    return 0;
+}
+
 static void parse_focus_ips(const char *spec) {
     if (spec == NULL || *spec == '\0') return;
     const char *p = spec;
@@ -297,6 +309,29 @@ static void parse_focus_ips(const char *spec) {
         }
         if (add_focus_ip((uintptr_t)off) != 0) {
             fprintf(stderr, "[DRIVER] ignoring focus VM IP 0x%lx\n", off);
+        }
+        p = end;
+        while (*p != '\0' && *p != ',') ++p;
+    }
+}
+
+static void parse_focus_sites(const char *spec) {
+    if (spec == NULL || *spec == '\0') return;
+    const char *p = spec;
+    while (*p != '\0') {
+        while (*p == ' ' || *p == '\t' || *p == ',') ++p;
+        if (*p == '\0') break;
+
+        errno = 0;
+        char *end = NULL;
+        unsigned long off = strtoul(p, &end, 0);
+        if (errno != 0 || end == p) {
+            fprintf(stderr, "[DRIVER] ignoring malformed focus tail site near '%s'\n", p);
+            while (*p != '\0' && *p != ',') ++p;
+            continue;
+        }
+        if (add_focus_site((uintptr_t)off) != 0) {
+            fprintf(stderr, "[DRIVER] ignoring focus tail site 0x%lx\n", off);
         }
         p = end;
         while (*p != '\0' && *p != ',') ++p;
@@ -558,16 +593,36 @@ static void dispatch_trace_write(size_t idx, uintptr_t site, uintptr_t slot,
     write(STDERR_FILENO, buf, (size_t)(p - buf));
 }
 
-static int tail_focus_match(uintptr_t vm_ip_off) {
-    if (g_tail_focus_ip_count == 0) return 1;
-    for (size_t i = 0; i < g_tail_focus_ip_count; ++i) {
-        if (g_tail_focus_ips[i] == vm_ip_off) return 1;
-    }
-    return 0;
+static int tail_focus_enabled(void) {
+    return g_tail_focus_ip_count != 0 || g_tail_focus_site_count != 0;
 }
 
-static void tail_focus_maybe_stop(uintptr_t vm_ip_off) {
-    if (g_tail_focus_ip_count == 0 || g_tail_stop_after_matches == 0) return;
+static int tail_focus_match(uintptr_t site, uintptr_t vm_ip_off) {
+    if (g_tail_focus_ip_count != 0) {
+        int match = 0;
+        for (size_t i = 0; i < g_tail_focus_ip_count; ++i) {
+            if (g_tail_focus_ips[i] == vm_ip_off) {
+                match = 1;
+                break;
+            }
+        }
+        if (!match) return 0;
+    }
+    if (g_tail_focus_site_count != 0) {
+        int match = 0;
+        for (size_t i = 0; i < g_tail_focus_site_count; ++i) {
+            if (g_tail_focus_sites[i] == site) {
+                match = 1;
+                break;
+            }
+        }
+        if (!match) return 0;
+    }
+    return 1;
+}
+
+static void tail_focus_maybe_stop(uintptr_t site, uintptr_t vm_ip_off) {
+    if (!tail_focus_enabled() || g_tail_stop_after_matches == 0) return;
     uint64_t hits = __atomic_add_fetch(&g_tail_focus_hits, 1, __ATOMIC_RELAXED);
     if (hits < g_tail_stop_after_matches) return;
 
@@ -578,6 +633,8 @@ static void tail_focus_maybe_stop(uintptr_t vm_ip_off) {
     p = append_dec(p, end, hits);
     p = append_lit(p, end, " vm_ip_off=");
     p = append_hex(p, end, vm_ip_off);
+    p = append_lit(p, end, " site=");
+    p = append_hex(p, end, site);
     p = append_lit(p, end, "\n");
     write(STDERR_FILENO, buf, (size_t)(p - buf));
     _exit(0);
@@ -591,7 +648,7 @@ static void tail_trace_write(uintptr_t site, uintptr_t target, uintptr_t frame,
 #endif
                              const uint16_t ip_words[EAC_IP_WORD_COUNT]) {
     uintptr_t vm_ip_off = vm_ip - (uintptr_t)g_eac_base;
-    if (!tail_focus_match(vm_ip_off)) return;
+    if (!tail_focus_match(site, vm_ip_off)) return;
 
     uint64_t count = __atomic_fetch_add(&g_tail_count, 1, __ATOMIC_RELAXED);
     if (count >= g_tail_limit) return;
@@ -639,7 +696,7 @@ static void tail_trace_write(uintptr_t site, uintptr_t target, uintptr_t frame,
     p = append_hex(p, end, target - (uintptr_t)g_eac_base);
     p = append_lit(p, end, "\n");
     write(STDERR_FILENO, buf, (size_t)(p - buf));
-    tail_focus_maybe_stop(vm_ip_off);
+    tail_focus_maybe_stop(site, vm_ip_off);
 }
 
 #if defined(__x86_64__)
@@ -754,8 +811,10 @@ static void install_dispatch_trace(void *sym) {
     g_tail_limit = parse_ul(getenv("EAC_VMTAIL_LIMIT"), 4096);
     if (g_tail_limit == 0) g_tail_limit = 1;
     g_tail_focus_ip_count = 0;
+    g_tail_focus_site_count = 0;
     g_tail_focus_hits = 0;
     parse_focus_ips(getenv("EAC_VMTAIL_FOCUS_IPS"));
+    parse_focus_sites(getenv("EAC_VMTAIL_FOCUS_SITES"));
     g_tail_stop_after_matches = parse_ul(getenv("EAC_VMTAIL_STOP_AFTER_MATCHES"), 0);
     g_tail_site_count = 0;
     g_scratch_offset_count = 0;
@@ -802,11 +861,11 @@ static void install_dispatch_trace(void *sym) {
             " detail=%d tail=%d tail_regs=%d tail_scratch=%d tail_mem=%d"
             " tail_limit=%" PRIu64
             " tail_sites=%zu scratch_offsets=%zu read_ranges=%zu focus_ips=%zu"
-            " stop_after_matches=%" PRIu64 "\n",
+            " focus_sites=%zu stop_after_matches=%" PRIu64 "\n",
             (void *)g_eac_base, EAC_DISPATCH_C80B9, EAC_DISPATCH_CDAC7, g_dispatch_limit,
             g_dispatch_detail, g_tail_trace, g_tail_regs, g_tail_scratch, g_tail_mem,
             g_tail_limit, g_tail_site_count, g_scratch_offset_count, g_read_range_count,
-            g_tail_focus_ip_count, g_tail_stop_after_matches);
+            g_tail_focus_ip_count, g_tail_focus_site_count, g_tail_stop_after_matches);
     for (size_t i = 0; g_tail_trace && i < g_tail_site_count; ++i) {
         fprintf(stderr, "[DRIVER] tail site +0x%lx -> %s\n",
                 (unsigned long)g_tail_sites[i].off, tail_reg_name(g_tail_sites[i].reg));
