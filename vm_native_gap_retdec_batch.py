@@ -267,6 +267,24 @@ BATCHES = {
         "0x713da-0x7151e",
         "0x4d30d0-0x4d3213",
     ],
+    14: [
+        "0x4d8cc0-0x4d8e02",
+        "0x4885ae-0x4886ef",
+        "0x57b2f0-0x57b431",
+        "0x59b19-0x59c57",
+        "0x4ea000-0x4ea13d",
+        "0x579bc0-0x579cfd",
+        "0x6bb54-0x6bc90",
+        "0x525bd0-0x525d0c",
+        "0x525d20-0x525e5c",
+        "0x54ed60-0x54ee9c",
+        "0x54eec0-0x54effc",
+        "0x55b740-0x55b87c",
+        "0x55b890-0x55b9cc",
+        "0x577a20-0x577b5c",
+        "0x577bc0-0x577cfc",
+        "0x56788-0x568c3",
+    ],
 }
 
 
@@ -434,6 +452,7 @@ def main():
     print("void __asm_ucomisd(int128_t left, int128_t right);")
     print("int128_t __asm_movups();")
     print("void __asm_movups_133();")
+    print("int128_t __asm_movaps(int128_t value);")
     print("float80_t __frontend_reg_load_fpr(int32_t reg);")
     print("void __frontend_reg_store_fpr(int32_t reg, float80_t value);")
     print("char *__nl_langinfo_l(int32_t item, struct __locale_struct *locale);")
