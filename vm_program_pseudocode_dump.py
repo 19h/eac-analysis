@@ -10,6 +10,7 @@ from vm_pseudocode_dump import (
     emit_dynamic_stitch_comments,
     emit_internal_tail_lift,
     emit_live_in_role_comments,
+    emit_symbolic_successor_comments,
     emit_transfer_probe_comments,
     expr_to_c,
     is_decoded_long_control,
@@ -19,6 +20,7 @@ from vm_pseudocode_dump import (
     load_final_tail_site_probes,
     load_live_in_roles,
     load_rows,
+    load_symbolic_successors,
     load_tail_lifts,
     load_transfer_probes,
     map_rows_to_blocks,
@@ -224,12 +226,13 @@ def emit_decoded_control(row, args):
         print(f"    vm_ip -= 0x{-delta:x};")
 
 
-def emit_synthetic_edge(edge, synthetic_spans, dynamic_stitches, transfer_probes, live_in_roles, final_tail_site_probes, args):
+def emit_synthetic_edge(edge, synthetic_spans, dynamic_stitches, transfer_probes, symbolic_successors, live_in_roles, final_tail_site_probes, args):
     target_vm_ip = normalize_vm_ip(edge.get("target_vm_ip", ""))
     info = synthetic_spans.get(target_vm_ip)
     if not info:
         emit_transfer_probe_comments(target_vm_ip, transfer_probes, args)
         emit_dynamic_stitch_comments(target_vm_ip, dynamic_stitches, args)
+        emit_symbolic_successor_comments(target_vm_ip, symbolic_successors, args)
         emit_live_in_role_comments(target_vm_ip, live_in_roles, final_tail_site_probes, args)
         print(f"    vm_unresolved_synthetic_tail(vm, 0x{parse_hex(target_vm_ip):x});")
         return
@@ -276,6 +279,7 @@ def emit_synthetic_edge(edge, synthetic_spans, dynamic_stitches, transfer_probes
             )
     emit_transfer_probe_comments(target_vm_ip, transfer_probes, args)
     emit_dynamic_stitch_comments(target_vm_ip, dynamic_stitches, args)
+    emit_symbolic_successor_comments(target_vm_ip, symbolic_successors, args)
     emit_live_in_role_comments(target_vm_ip, live_in_roles, final_tail_site_probes, args)
     if source is not None:
         print(f"    r = {op_name(source)}(vm);")
@@ -317,7 +321,7 @@ def emit_block_prototypes(blocks):
     print("")
 
 
-def emit_block(block, rows, edge, synthetic_spans, dynamic_stitches, transfer_probes, live_in_roles, final_tail_site_probes, tail_lifts, args, known_blocks, block_by_start):
+def emit_block(block, rows, edge, synthetic_spans, dynamic_stitches, transfer_probes, symbolic_successors, live_in_roles, final_tail_site_probes, tail_lifts, args, known_blocks, block_by_start):
     name = c_block_name(block["block"])
     print(f"static void prog_{name}(VMState *vm, uint64_t vm_ip) {{")
     print("    VMOpResult r = { .next_entry = -1, .slot = 0xffffffffu };")
@@ -357,7 +361,7 @@ def emit_block(block, rows, edge, synthetic_spans, dynamic_stitches, transfer_pr
             else:
                 print("    /* target block is outside this selected sketch. */")
         elif edge_kind == "covered_synthetic_fallthrough":
-            emit_synthetic_edge(edge, synthetic_spans, dynamic_stitches, transfer_probes, live_in_roles, final_tail_site_probes, args)
+            emit_synthetic_edge(edge, synthetic_spans, dynamic_stitches, transfer_probes, symbolic_successors, live_in_roles, final_tail_site_probes, args)
             target_block, target_vm_ip = synthetic_successor(edge, synthetic_spans, block_by_start)
             if target_block is not None:
                 print(f"    /* synthetic successor after lifted delta: prog_{c_block_name(target_block)} @ 0x{target_vm_ip:x}; */")
@@ -416,6 +420,7 @@ def main():
     parser.add_argument("--synthetic-tail-lift", default="dumps/vmtail-wide-1m-w16/vm_synthetic_tail_lift.tsv")
     parser.add_argument("--synthetic-gap-transfer-probe", default="dumps/vmtail-wide-1m-w16/vm_synthetic_gap_transfer_probe.tsv")
     parser.add_argument("--synthetic-gap-dynamic-stitch", default="dumps/vmtail-wide-1m-w16/vm_synthetic_gap_dynamic_stitch.tsv")
+    parser.add_argument("--synthetic-gap-symbolic-successors", default="dumps/vmtail-wide-1m-w16/vm_synthetic_gap_symbolic_successors.tsv")
     parser.add_argument("--synthetic-gap-live-in-roles", default="dumps/vmtail-wide-1m-w16/vm_synthetic_gap_live_in_roles.tsv")
     parser.add_argument("--live-in-final-tail-site-probe", default="dumps/vmtail-wide-1m-w16/vm_live_in_final_tail_site_probe.tsv")
     parser.add_argument("--synthetic-top-items", type=int, default=4)
@@ -424,6 +429,8 @@ def main():
     parser.add_argument("--transfer-probe-max-expr", type=int, default=180)
     parser.add_argument("--dynamic-stitch-top-items", type=int, default=4)
     parser.add_argument("--dynamic-stitch-max-candidates", type=int, default=180)
+    parser.add_argument("--symbolic-successor-top-items", type=int, default=4)
+    parser.add_argument("--symbolic-successor-max-expr", type=int, default=180)
     parser.add_argument("--live-in-role-top-items", type=int, default=4)
     parser.add_argument("--live-in-role-max-expr", type=int, default=220)
     parser.add_argument("--max-expr-len", type=int, default=220)
@@ -438,6 +445,7 @@ def main():
     synthetic_spans = load_synthetic_spans(args.synthetic_trace, args.synthetic_tail_lift)
     dynamic_stitches = load_dynamic_stitches(args.synthetic_gap_dynamic_stitch)
     transfer_probes = load_transfer_probes(args.synthetic_gap_transfer_probe)
+    symbolic_successors = load_symbolic_successors(args.synthetic_gap_symbolic_successors)
     live_in_roles = load_live_in_roles(args.synthetic_gap_live_in_roles)
     final_tail_site_probes = load_final_tail_site_probes(args.live_in_final_tail_site_probe)
     tail_lifts = load_tail_lifts(args.synthetic_tail_lift)
@@ -454,6 +462,7 @@ def main():
             synthetic_spans,
             dynamic_stitches,
             transfer_probes,
+            symbolic_successors,
             live_in_roles,
             final_tail_site_probes,
             tail_lifts,
