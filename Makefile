@@ -331,10 +331,10 @@ $(PRIMARY_DIR)/vm_validated_handlers_retdec_batch%.c: vm_validated_handlers_retd
 
 validated-handlers-retdec: $(VALIDATED_HANDLER_RETDEC_CS)
 
-$(HANDLER_RETDEC_INDEX_TSV): vm_handler_retdec_index target-only-handlers-retdec unobserved-handlers-retdec weak-handlers-retdec validated-handlers-retdec
+$(HANDLER_RETDEC_INDEX_TSV): vm_handler_retdec_index $(TARGET_ONLY_HANDLER_RETDEC_C) $(UNOBSERVED_HANDLER_RETDEC_CS) $(WEAK_HANDLER_RETDEC_C) $(VALIDATED_HANDLER_RETDEC_CS)
 	./vm_handler_retdec_index > $@
 
-$(HANDLER_RETDEC_INDEX_MD): vm_handler_retdec_index target-only-handlers-retdec unobserved-handlers-retdec weak-handlers-retdec validated-handlers-retdec
+$(HANDLER_RETDEC_INDEX_MD): vm_handler_retdec_index $(TARGET_ONLY_HANDLER_RETDEC_C) $(UNOBSERVED_HANDLER_RETDEC_CS) $(WEAK_HANDLER_RETDEC_C) $(VALIDATED_HANDLER_RETDEC_CS)
 	./vm_handler_retdec_index --markdown > $@
 
 handler-retdec-index: $(HANDLER_RETDEC_INDEX_TSV) $(HANDLER_RETDEC_INDEX_MD)
