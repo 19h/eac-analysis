@@ -469,6 +469,75 @@ def synthetic_gap_final_tail_site_metrics(rows):
         "Per-source exact-site dereference match counts.")
 
 
+def synthetic_gap_live_in_reentry_metrics(rows):
+    reentry_rows = read_tsv(TRACE_DIR / "vm_synthetic_gap_live_in_reentry_probe.tsv")
+    classes = Counter(row.get("reentry_class", "") for row in reentry_rows)
+    actions = Counter(row.get("hard_cfg_action", "") for row in reentry_rows)
+    dynamic_rows = [
+        row for row in reentry_rows
+        if row.get("dynamic_resolution", "") == "dynamic_stitch_to_next_hooked_source"
+    ]
+    dynamic_starts = sorted({
+        row.get("synthetic_start_vm_ip", "")
+        for row in dynamic_rows
+        if row.get("synthetic_start_vm_ip", "")
+    }, key=lambda value: int(value, 16))
+    all_starts = sorted({
+        row.get("synthetic_start_vm_ip", "")
+        for row in reentry_rows
+        if row.get("synthetic_start_vm_ip", "")
+    }, key=lambda value: int(value, 16))
+    ambiguous_starts = sorted({
+        row.get("synthetic_start_vm_ip", "")
+        for row in reentry_rows
+        if row.get("reentry_class", "") == "ambiguous_dynamic_reentry"
+    }, key=lambda value: int(value, 16))
+    exact_rows = [
+        row for row in reentry_rows
+        if row.get("reentry_class", "") == "exact_tail_dynamic_reentry_not_promoted"
+    ]
+    source_proof_rows = [
+        row for row in reentry_rows
+        if row.get("source_final_tail_proof_full", "") == "1"
+    ]
+    next_hooked_paths = [
+        f"{row.get('synthetic_start_vm_ip')}->{row.get('inferred_next_source_entry')}@"
+        f"{row.get('inferred_next_source_start_vm_ip')}->{row.get('next_end_vm_ip')}"
+        for row in dynamic_rows
+    ]
+
+    add(rows, "gap_live_in_reentry", "synthetic_gap_live_in_reentry_probe_rows", len(reentry_rows),
+        "Rows joining live-in gaps to dynamic next-hooked reentry and final-tail source proof.")
+    add(rows, "gap_live_in_reentry", "synthetic_gap_live_in_reentry_unique_starts", len(all_starts),
+        "Unique live-in synthetic starts represented by the reentry probe.")
+    add(rows, "gap_live_in_reentry", "synthetic_gap_live_in_reentry_dynamic_rows", len(dynamic_rows),
+        "Rows with byte-matched dynamic next-hooked-source evidence.")
+    add(rows, "gap_live_in_reentry", "synthetic_gap_live_in_reentry_dynamic_unique_starts", len(dynamic_starts),
+        "Unique live-in starts with byte-matched dynamic next-hooked-source evidence.")
+    add(rows, "gap_live_in_reentry", "synthetic_gap_live_in_reentry_source_tail_proof_rows", len(source_proof_rows),
+        "Rows whose source class has full exact-final-tail target-register and dereference proof.")
+    add(rows, "gap_live_in_reentry", "synthetic_gap_live_in_reentry_exact_tail_rows", len(exact_rows),
+        "Rows where the live-in start was also captured at the exact final native tail site.")
+    add(rows, "gap_live_in_reentry", "synthetic_gap_live_in_reentry_ambiguous_rows",
+        classes.get("ambiguous_dynamic_reentry", 0),
+        "Event rows without a unique byte-matched next hooked source.")
+    add(rows, "gap_live_in_reentry", "synthetic_gap_live_in_reentry_class_mix",
+        ",".join(f"{key}:{value}" for key, value in classes.most_common()) or "-",
+        "Conservative reentry evidence classes.")
+    add(rows, "gap_live_in_reentry", "synthetic_gap_live_in_reentry_action_mix",
+        ",".join(f"{key}:{value}" for key, value in actions.most_common()) or "-",
+        "Whether rows are hard CFG promotions or comment-only evidence.")
+    add(rows, "gap_live_in_reentry", "synthetic_gap_live_in_reentry_hard_promotions",
+        actions.get("hard_cfg", 0),
+        "Rows promoted to hard CFG edges by this probe; should remain zero without hidden-chain replay.")
+    add(rows, "gap_live_in_reentry", "synthetic_gap_live_in_reentry_ambiguous_starts",
+        ",".join(ambiguous_starts) or "-",
+        "Live-in starts that still have an ambiguous dynamic event row.")
+    add(rows, "gap_live_in_reentry", "synthetic_gap_live_in_reentry_next_hooked_paths",
+        ",".join(next_hooked_paths) or "-",
+        "Byte-matched next-hooked reentries retained as comment-only evidence.")
+
+
 def gate_metrics(rows):
     add(rows, "gate", "syntax_check", "make pseudocode-syntax-check",
         "Regenerates and warning-checks all six C-like source artifacts with C11 -fsyntax-only.")
@@ -493,6 +562,7 @@ def build_rows():
     synthetic_gap_chain_probe_metrics(rows)
     synthetic_gap_live_in_role_metrics(rows)
     synthetic_gap_final_tail_site_metrics(rows)
+    synthetic_gap_live_in_reentry_metrics(rows)
     gate_metrics(rows)
     add(rows, "caveat", "completion_status", "not_complete",
         "This is a mechanically checked C reconstruction of recovered layers, not proof that every VM bytecode path has been found.")
