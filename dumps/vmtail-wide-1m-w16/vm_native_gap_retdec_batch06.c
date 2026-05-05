@@ -6,22 +6,22 @@
  * coverage -> queue -> RetDec batch -> coverage.
  *
  * Ranges:
- *   0x4d3af0-0x4d3c86 rank=5 name=fcn.004d3af0 kind=r2_discovered bytes=406 uncovered=406
- *   0x54d830-0x54d9c6 rank=6 name=fcn.0054d830 kind=r2_discovered bytes=406 uncovered=406
- *   0x552760-0x5528f6 rank=7 name=method.std::collate_char_.virtual_24 kind=native_discovered bytes=406 uncovered=406
- *   0x29a64-0x29bf9 rank=8 name=fcn.00029a64 kind=r2_discovered bytes=405 uncovered=405
- *   0x4dfc2-0x4e155 rank=9 name=fcn.0004dfc2 kind=r2_discovered bytes=403 uncovered=403
- *   0x497ff0-0x498183 rank=10 name=fcn.00497ff0 kind=r2_discovered bytes=403 uncovered=403
- *   0x4ab380-0x4ab513 rank=11 name=fcn.004ab380 kind=r2_discovered bytes=403 uncovered=403
- *   0x4b53f0-0x4b5583 rank=12 name=fcn.004b53f0 kind=r2_discovered bytes=403 uncovered=403
- *   0x489630-0x4897c0 rank=13 name=fcn.00489630 kind=r2_discovered bytes=400 uncovered=400
- *   0x23344-0x234d2 rank=15 name=fcn.00023344 kind=r2_discovered bytes=398 uncovered=398
- *   0x4918e-0x4931c rank=16 name=fcn.0004918e kind=r2_discovered bytes=398 uncovered=398
- *   0x4d4560-0x4d46ec rank=17 name=fcn.004d4560 kind=r2_discovered bytes=396 uncovered=396
- *   0x565450-0x5655dc rank=18 name=fcn.00565450 kind=r2_discovered bytes=396 uncovered=396
- *   0x4985b0-0x49873b rank=19 name=fcn.004985b0 kind=r2_discovered bytes=395 uncovered=395
- *   0x5be1a-0x5bfa4 rank=20 name=fcn.0005be1a kind=r2_discovered bytes=394 uncovered=394
- *   0x67ede-0x68067 rank=21 name=fcn.00067ede kind=r2_discovered bytes=393 uncovered=393
+ *   0x4d3af0-0x4d3c86 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x54d830-0x54d9c6 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x552760-0x5528f6 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x29a64-0x29bf9 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x4dfc2-0x4e155 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x497ff0-0x498183 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x4ab380-0x4ab513 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x4b53f0-0x4b5583 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x489630-0x4897c0 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x23344-0x234d2 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x4918e-0x4931c rank=- name=- kind=- bytes=- uncovered=-
+ *   0x4d4560-0x4d46ec rank=- name=- kind=- bytes=- uncovered=-
+ *   0x565450-0x5655dc rank=- name=- kind=- bytes=- uncovered=-
+ *   0x4985b0-0x49873b rank=- name=- kind=- bytes=- uncovered=-
+ *   0x5be1a-0x5bfa4 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x67ede-0x68067 rank=- name=- kind=- bytes=- uncovered=-
  */
 #include <stdbool.h>
 #include <stdio.h>
@@ -38,6 +38,7 @@ typedef long double float80_t;
 struct __locale_struct;
 struct _TYPEDEF___mbstate_t;
 struct _IO_FILE;
+struct utsname;
 extern int g1;
 extern int g2;
 extern int g3;
@@ -91,12 +92,15 @@ int64_t __asm_iretd(void);
 void __asm_rep_stosb_memset(char *dst, char value, int64_t count);
 void __asm_rep_stosd_memset(char *dst, int32_t value, int64_t count);
 void __asm_rep_stosq_memset(char *dst, int64_t value, int64_t count);
+void __asm_rep_movsd_memcpy(char *dst, char *src, int64_t count);
 void __asm_rep_movsq_memcpy(char *dst, char *src, int64_t count);
 int64_t __asm_hlt(void);
 int64_t __asm_mfence(void);
 void __stack_chk_fail(void);
 int __cxa_atexit(void (*func)(int64_t *), void *arg, void *dso);
 int128_t __asm_movsd(int64_t value);
+int128_t __asm_movss(int32_t value);
+int64_t __asm_movss_133(int128_t value);
 int128_t __asm_movdqu(int128_t value);
 int128_t __asm_movapd(int128_t value);
 int128_t __asm_andpd(int128_t left, int128_t right);
@@ -118,6 +122,8 @@ char *bind_textdomain_codeset(char *domainname, char *codeset);
 struct _IO_FILE *fopen(const char *path, const char *mode);
 size_t fread(void *ptr, size_t size, size_t nmemb, struct _IO_FILE *stream);
 int fclose(struct _IO_FILE *stream);
+int uname(struct utsname *buf);
+int64_t __tls_get_addr(void *arg);
 int32_t mbrtowc(int32_t *pwc, const char *s, size_t n, struct _TYPEDEF___mbstate_t *ps);
 int32_t mbsnrtowcs(int32_t *dst, char **src, size_t nms, size_t len, struct _TYPEDEF___mbstate_t *ps);
 int32_t *wmemcpy(int32_t *dest, const int32_t *src, size_t n);
