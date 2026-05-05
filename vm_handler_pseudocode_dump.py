@@ -13,6 +13,7 @@ from vm_synthetic_span_catalog import load_tail_ip_advances
 U8_RE = re.compile(r"\bb([0-9]+)\b")
 U16_RE = re.compile(r"\bu16_([0-9]+)\b")
 U32_RE = re.compile(r"\bu32_([0-9]+)\b")
+HEX_RE = re.compile(r"(?<![A-Za-z0-9_])0x[0-9a-fA-F]+(?![A-Za-z0-9_])")
 
 
 def load_by(path, key):
@@ -35,6 +36,7 @@ def c_expr(expr):
     expr = U16_RE.sub(lambda match: f"U16(vm->ip + 0x{int(match.group(1)):x})", expr)
     expr = U8_RE.sub(lambda match: f"U8(vm->ip + 0x{int(match.group(1)):x})", expr)
     expr = re.sub(r"(?<!dispatch_)table\[", "dispatch_table[", expr)
+    expr = HEX_RE.sub(lambda match: f"{match.group(0)}u", expr)
     return expr
 
 
