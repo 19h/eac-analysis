@@ -9,6 +9,7 @@ from vm_pseudocode_dump import (
     c_comment,
     emit_dynamic_stitch_comments,
     emit_internal_tail_lift,
+    emit_transfer_probe_comments,
     expr_to_c,
     is_decoded_long_control,
     is_clipped_expr,
@@ -16,6 +17,7 @@ from vm_pseudocode_dump import (
     load_edges,
     load_rows,
     load_tail_lifts,
+    load_transfer_probes,
     map_rows_to_blocks,
     parse_delta,
     parse_hex,
@@ -219,10 +221,11 @@ def emit_decoded_control(row, args):
         print(f"    vm_ip -= 0x{-delta:x};")
 
 
-def emit_synthetic_edge(edge, synthetic_spans, dynamic_stitches, args):
+def emit_synthetic_edge(edge, synthetic_spans, dynamic_stitches, transfer_probes, args):
     target_vm_ip = normalize_vm_ip(edge.get("target_vm_ip", ""))
     info = synthetic_spans.get(target_vm_ip)
     if not info:
+        emit_transfer_probe_comments(target_vm_ip, transfer_probes, args)
         emit_dynamic_stitch_comments(target_vm_ip, dynamic_stitches, args)
         print(f"    vm_unresolved_synthetic_tail(vm, 0x{parse_hex(target_vm_ip):x});")
         return
@@ -267,6 +270,7 @@ def emit_synthetic_edge(edge, synthetic_spans, dynamic_stitches, args):
                 f"targets={c_comment(tail_lift.get('long_control_prefix_targets', '') or '-')}; "
                 f"deltas={c_comment(tail_lift.get('long_control_prefix_deltas', '') or '-')} */"
             )
+    emit_transfer_probe_comments(target_vm_ip, transfer_probes, args)
     emit_dynamic_stitch_comments(target_vm_ip, dynamic_stitches, args)
     if source is not None:
         print(f"    r = {op_name(source)}(vm);")
@@ -308,7 +312,7 @@ def emit_block_prototypes(blocks):
     print("")
 
 
-def emit_block(block, rows, edge, synthetic_spans, dynamic_stitches, tail_lifts, args, known_blocks, block_by_start):
+def emit_block(block, rows, edge, synthetic_spans, dynamic_stitches, transfer_probes, tail_lifts, args, known_blocks, block_by_start):
     name = c_block_name(block["block"])
     print(f"static void prog_{name}(VMState *vm, uint64_t vm_ip) {{")
     print("    VMOpResult r = { .next_entry = -1, .slot = 0xffffffffu };")
@@ -348,7 +352,7 @@ def emit_block(block, rows, edge, synthetic_spans, dynamic_stitches, tail_lifts,
             else:
                 print("    /* target block is outside this selected sketch. */")
         elif edge_kind == "covered_synthetic_fallthrough":
-            emit_synthetic_edge(edge, synthetic_spans, dynamic_stitches, args)
+            emit_synthetic_edge(edge, synthetic_spans, dynamic_stitches, transfer_probes, args)
             target_block, target_vm_ip = synthetic_successor(edge, synthetic_spans, block_by_start)
             if target_block is not None:
                 print(f"    /* synthetic successor after lifted delta: prog_{c_block_name(target_block)} @ 0x{target_vm_ip:x}; */")
@@ -405,9 +409,12 @@ def main():
     parser.add_argument("--rows-per-block", type=int, default=80)
     parser.add_argument("--synthetic-trace", default="dumps/vmtail-wide-1m-w16/vm_instruction_trace_filefill_hiddenfill_frontierfill_footprintfill.tsv")
     parser.add_argument("--synthetic-tail-lift", default="dumps/vmtail-wide-1m-w16/vm_synthetic_tail_lift.tsv")
+    parser.add_argument("--synthetic-gap-transfer-probe", default="dumps/vmtail-wide-1m-w16/vm_synthetic_gap_transfer_probe.tsv")
     parser.add_argument("--synthetic-gap-dynamic-stitch", default="dumps/vmtail-wide-1m-w16/vm_synthetic_gap_dynamic_stitch.tsv")
     parser.add_argument("--synthetic-top-items", type=int, default=4)
     parser.add_argument("--synthetic-max-bytes", type=int, default=48)
+    parser.add_argument("--transfer-probe-top-items", type=int, default=4)
+    parser.add_argument("--transfer-probe-max-expr", type=int, default=180)
     parser.add_argument("--dynamic-stitch-top-items", type=int, default=4)
     parser.add_argument("--dynamic-stitch-max-candidates", type=int, default=180)
     parser.add_argument("--max-expr-len", type=int, default=220)
@@ -421,6 +428,7 @@ def main():
     edges = load_edges(args.edges)
     synthetic_spans = load_synthetic_spans(args.synthetic_trace, args.synthetic_tail_lift)
     dynamic_stitches = load_dynamic_stitches(args.synthetic_gap_dynamic_stitch)
+    transfer_probes = load_transfer_probes(args.synthetic_gap_transfer_probe)
     tail_lifts = load_tail_lifts(args.synthetic_tail_lift)
 
     emit_preamble(collect_used_entries(chosen, rows_by_block, args.rows_per_block, edges, synthetic_spans))
@@ -428,7 +436,7 @@ def main():
     known_blocks = {block["block"] for block in chosen}
     block_by_start = {parse_hex(block["start_vm_ip"]): block["block"] for block in chosen}
     for block in chosen:
-        emit_block(block, rows_by_block.get(block["block"], []), edges.get(block["block"]), synthetic_spans, dynamic_stitches, tail_lifts, args, known_blocks, block_by_start)
+        emit_block(block, rows_by_block.get(block["block"], []), edges.get(block["block"]), synthetic_spans, dynamic_stitches, transfer_probes, tail_lifts, args, known_blocks, block_by_start)
     emit_dispatch(chosen)
     print(
         f"program_pseudocode_blocks={len(chosen)} rows_per_block={args.rows_per_block}",

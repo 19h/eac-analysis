@@ -140,11 +140,11 @@ synthetic-gap-dynamic-stitch: synthetic-successor-gaps
 	python3 vm_synthetic_gap_dynamic_stitch.py > dumps/vmtail-wide-1m-w16/vm_synthetic_gap_dynamic_stitch.tsv
 	python3 vm_synthetic_gap_dynamic_stitch.py --markdown > dumps/vmtail-wide-1m-w16/vm_synthetic_gap_dynamic_stitch.md
 
-pseudocode: bytecode-basic-blocks synthetic-tail-lift synthetic-gap-dynamic-stitch
+pseudocode: bytecode-basic-blocks synthetic-tail-lift synthetic-gap-transfer-probe synthetic-gap-dynamic-stitch
 	python3 vm_pseudocode_dump.py --limit-blocks 60 --rows-per-block 32 > dumps/vmtail-wide-1m-w16/vm_pseudocode_top.c
 	python3 vm_program_pseudocode_dump.py --limit-blocks 80 --rows-per-block 80 > dumps/vmtail-wide-1m-w16/vm_program_pseudocode_top.c
 
-pseudocode-full: bytecode-basic-blocks synthetic-tail-lift synthetic-gap-dynamic-stitch
+pseudocode-full: bytecode-basic-blocks synthetic-tail-lift synthetic-gap-transfer-probe synthetic-gap-dynamic-stitch
 	python3 vm_program_pseudocode_dump.py --limit-blocks 0 --rows-per-block 0 > dumps/vmtail-wide-1m-w16/vm_program_pseudocode_full.c
 
 handler-pseudocode:

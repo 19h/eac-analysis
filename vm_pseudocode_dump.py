@@ -233,6 +233,54 @@ def load_dynamic_stitches(path):
     return stitches
 
 
+def load_transfer_probes(path):
+    probes = defaultdict(list)
+    if not path or not Path(path).exists():
+        return probes
+    for row in read_tsv(path):
+        start = normalize_vm_ip(row.get("synthetic_start_vm_ip", ""))
+        if start:
+            probes[start].append(row)
+    for rows in probes.values():
+        rows.sort(key=lambda row: normalize_vm_ip(row.get("missing_successor_vm_ip", "")))
+    return probes
+
+
+def emit_transfer_probe_comments(target_vm_ip, transfer_probes, args):
+    start = normalize_vm_ip(target_vm_ip)
+    rows = transfer_probes.get(start, [])
+    if not rows:
+        return
+    limit = getattr(args, "transfer_probe_top_items", 4)
+    shown = rows if limit <= 0 else rows[:limit]
+    max_expr = getattr(args, "transfer_probe_max_expr", 180)
+    print(
+        f"    /* transfer probe evidence @ {start}: rows={len(rows)}; "
+        "static zero-seeded path; symbolic target/IP expressions are preserved. */"
+    )
+    for row in shown:
+        slot_ip = row.get("slot_expr", "") or "-"
+        ip_expr = row.get("ip_expr", "")
+        if ip_expr and ip_expr != "0x0":
+            slot_ip = f"{slot_ip}; ip={ip_expr}"
+        concrete = "-"
+        if row.get("zero_seed_pred_entry", "") or row.get("zero_seed_pred_delta", ""):
+            concrete = f"entry={row.get('zero_seed_pred_entry', '?')},delta={row.get('zero_seed_pred_delta', '?')}"
+        roles = row.get("static_slot_roles", "") or row.get("tail_roles", "") or "-"
+        print(
+            f"    /* transfer probe: missing_successor={normalize_vm_ip(row.get('missing_successor_vm_ip', ''))}, "
+            f"class={c_comment(row.get('classification', '') or '-')}, "
+            f"zero_seed={c_comment(row.get('zero_seed_status', '') or '-')}, "
+            f"concrete={c_comment(concrete)}, "
+            f"target={c_comment(clip(row.get('target_expr', '') or '-', max_expr))}, "
+            f"slot_ip={c_comment(clip(slot_ip, max_expr))}, "
+            f"roles={c_comment(clip(roles, max_expr))} */"
+        )
+    omitted = len(rows) - len(shown)
+    if omitted > 0:
+        print(f"    /* ... {omitted} additional transfer probe rows omitted ... */")
+
+
 def emit_dynamic_stitch_comments(target_vm_ip, dynamic_stitches, args):
     start = normalize_vm_ip(target_vm_ip)
     rows = dynamic_stitches.get(start, [])
@@ -458,10 +506,11 @@ def emit_preamble():
     print("")
 
 
-def emit_synthetic_edge(edge, synthetic_spans, dynamic_stitches, args):
+def emit_synthetic_edge(edge, synthetic_spans, dynamic_stitches, transfer_probes, args):
     target_vm_ip = normalize_vm_ip(edge.get("target_vm_ip", ""))
     info = synthetic_spans.get(target_vm_ip)
     if not info:
+        emit_transfer_probe_comments(target_vm_ip, transfer_probes, args)
         emit_dynamic_stitch_comments(target_vm_ip, dynamic_stitches, args)
         print(f"    vm_unresolved_synthetic_tail(vm, 0x{parse_hex(target_vm_ip):x});")
         return
@@ -505,6 +554,7 @@ def emit_synthetic_edge(edge, synthetic_spans, dynamic_stitches, args):
                 f"targets={c_comment(tail_lift.get('long_control_prefix_targets', '') or '-')}; "
                 f"deltas={c_comment(tail_lift.get('long_control_prefix_deltas', '') or '-')} */"
             )
+    emit_transfer_probe_comments(target_vm_ip, transfer_probes, args)
     emit_dynamic_stitch_comments(target_vm_ip, dynamic_stitches, args)
     tail_expr = tail_target_load(tail_lift)
     if tail_expr:
@@ -541,7 +591,7 @@ def emit_block_prototypes(blocks):
     print("")
 
 
-def emit_block(block, rows, edge, synthetic_spans, dynamic_stitches, tail_lifts, args, known_blocks, block_by_start):
+def emit_block(block, rows, edge, synthetic_spans, dynamic_stitches, transfer_probes, tail_lifts, args, known_blocks, block_by_start):
     name = c_block_name(block["block"])
     print(f"static void {name}(VMState *vm) {{")
     print("    int next_entry = -1;")
@@ -578,7 +628,7 @@ def emit_block(block, rows, edge, synthetic_spans, dynamic_stitches, tail_lifts,
             else:
                 print("    /* target block is outside this selected sketch. */")
         elif edge_kind == "covered_synthetic_fallthrough":
-            emit_synthetic_edge(edge, synthetic_spans, dynamic_stitches, args)
+            emit_synthetic_edge(edge, synthetic_spans, dynamic_stitches, transfer_probes, args)
             target_block, target_vm_ip = synthetic_successor(edge, synthetic_spans, block_by_start)
             if target_block is not None:
                 print(f"    /* synthetic successor after lifted delta: {c_block_name(target_block)} @ 0x{target_vm_ip:x}; */")
@@ -617,9 +667,12 @@ def main():
     parser.add_argument("--max-expr-len", type=int, default=220)
     parser.add_argument("--synthetic-trace", default="dumps/vmtail-wide-1m-w16/vm_instruction_trace_filefill_hiddenfill_frontierfill_footprintfill.tsv")
     parser.add_argument("--synthetic-tail-lift", default="dumps/vmtail-wide-1m-w16/vm_synthetic_tail_lift.tsv")
+    parser.add_argument("--synthetic-gap-transfer-probe", default="dumps/vmtail-wide-1m-w16/vm_synthetic_gap_transfer_probe.tsv")
     parser.add_argument("--synthetic-gap-dynamic-stitch", default="dumps/vmtail-wide-1m-w16/vm_synthetic_gap_dynamic_stitch.tsv")
     parser.add_argument("--synthetic-top-items", type=int, default=4)
     parser.add_argument("--synthetic-max-bytes", type=int, default=48)
+    parser.add_argument("--transfer-probe-top-items", type=int, default=4)
+    parser.add_argument("--transfer-probe-max-expr", type=int, default=180)
     parser.add_argument("--dynamic-stitch-top-items", type=int, default=4)
     parser.add_argument("--dynamic-stitch-max-candidates", type=int, default=180)
     parser.add_argument("--start", action="append", default=[])
@@ -632,6 +685,7 @@ def main():
     edges = load_edges(args.edges)
     synthetic_spans = load_synthetic_spans(args.synthetic_trace, args.synthetic_tail_lift)
     dynamic_stitches = load_dynamic_stitches(args.synthetic_gap_dynamic_stitch)
+    transfer_probes = load_transfer_probes(args.synthetic_gap_transfer_probe)
     tail_lifts = load_tail_lifts(args.synthetic_tail_lift)
 
     emit_preamble()
@@ -641,7 +695,7 @@ def main():
     known_blocks = {block["block"] for block in chosen}
     block_by_start = {parse_hex(block["start_vm_ip"]): block["block"] for block in chosen}
     for block in chosen:
-        emit_block(block, rows_by_block.get(block["block"], []), edges.get(block["block"]), synthetic_spans, dynamic_stitches, tail_lifts, args, known_blocks, block_by_start)
+        emit_block(block, rows_by_block.get(block["block"], []), edges.get(block["block"]), synthetic_spans, dynamic_stitches, transfer_probes, tail_lifts, args, known_blocks, block_by_start)
     emit_dispatch(chosen)
 
     print(
