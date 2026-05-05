@@ -252,7 +252,7 @@ static void emit_c(void) {
     puts("    uint8_t *ip = vm_tier0_ip(vm);");
     puts("    *vm_tier0_flags_cell(vm) = *vm_tier0_flags_cell(vm) + *vm_tier0_state_cell(vm);");
     puts("    int64_t *dst_ptr_cell = vm_tier0_qword_cell(vm, vm_tier0_s16(ip + 4));");
-    puts("    *(int32_t *)vm_tier0_ptr(*dst_ptr_cell) = (int32_t)*vm_tier0_qword_cell(vm, (int16_t)vm_tier0_u16(ip + 6));");
+    puts("    *(int32_t *)vm_tier0_ptr(*dst_ptr_cell) = (int32_t)*(int64_t *)vm_tier0_addr_u16(vm, vm_tier0_u16(ip + 6));");
     puts("    *dst_ptr_cell += vm_tier0_step(vm, *vm_tier0_qword_cell(vm, vm_tier0_s16(ip + 2)), 4);");
     puts("    uint32_t slot_source = (uint32_t)((int32_t)vm_tier0_s16(ip + 0) - 0x3010a5b9);");
     puts("    *vm_tier0_state_cell(vm) = slot_source;");

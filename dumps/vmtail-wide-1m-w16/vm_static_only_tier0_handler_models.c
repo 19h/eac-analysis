@@ -175,7 +175,7 @@ static VMTier0Result vm_tier0_entry_138(VMTier0Frame *vm) {
     uint8_t *ip = vm_tier0_ip(vm);
     *vm_tier0_flags_cell(vm) = *vm_tier0_flags_cell(vm) + *vm_tier0_state_cell(vm);
     int64_t *dst_ptr_cell = vm_tier0_qword_cell(vm, vm_tier0_s16(ip + 4));
-    *(int32_t *)vm_tier0_ptr(*dst_ptr_cell) = (int32_t)*vm_tier0_qword_cell(vm, (int16_t)vm_tier0_u16(ip + 6));
+    *(int32_t *)vm_tier0_ptr(*dst_ptr_cell) = (int32_t)*(int64_t *)vm_tier0_addr_u16(vm, vm_tier0_u16(ip + 6));
     *dst_ptr_cell += vm_tier0_step(vm, *vm_tier0_qword_cell(vm, vm_tier0_s16(ip + 2)), 4);
     uint32_t slot_source = (uint32_t)((int32_t)vm_tier0_s16(ip + 0) - 0x3010a5b9);
     *vm_tier0_state_cell(vm) = slot_source;
