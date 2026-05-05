@@ -465,7 +465,13 @@ def emit_synthetic_edge(edge, synthetic_spans, args):
         print(f"    {update}")
 
 
-def emit_block(block, rows, edge, synthetic_spans, tail_lifts, args):
+def emit_block_prototypes(blocks):
+    for block in blocks:
+        print(f"static void {c_block_name(block['block'])}(VMState *vm);")
+    print("")
+
+
+def emit_block(block, rows, edge, synthetic_spans, tail_lifts, args, known_blocks):
     name = c_block_name(block["block"])
     print(f"static void {name}(VMState *vm) {{")
     print("    int next_entry = -1;")
@@ -495,6 +501,10 @@ def emit_block(block, rows, edge, synthetic_spans, tail_lifts, args):
         )
         if target_block:
             print(f"    /* goto {c_block_name(target_block)}; */")
+            if target_block in known_blocks:
+                print(f"    {c_block_name(target_block)}(vm);")
+            else:
+                print("    /* target block is outside this selected sketch. */")
         elif edge_kind == "covered_synthetic_fallthrough":
             emit_synthetic_edge(edge, synthetic_spans, args)
     print("    (void)next_entry;")
@@ -544,8 +554,10 @@ def main():
     emit_preamble()
     print("extern void vm_unresolved_synthetic_tail(VMState *vm, uint64_t vm_ip);")
     print("")
+    emit_block_prototypes(chosen)
+    known_blocks = {block["block"] for block in chosen}
     for block in chosen:
-        emit_block(block, rows_by_block.get(block["block"], []), edges.get(block["block"]), synthetic_spans, tail_lifts, args)
+        emit_block(block, rows_by_block.get(block["block"], []), edges.get(block["block"]), synthetic_spans, tail_lifts, args, known_blocks)
     emit_dispatch(chosen)
 
     print(

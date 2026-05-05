@@ -283,7 +283,13 @@ def emit_synthetic_edge(edge, synthetic_spans, args):
         print(f"    vm_ip -= 0x{-delta:x};")
 
 
-def emit_block(block, rows, edge, synthetic_spans, tail_lifts, args):
+def emit_block_prototypes(blocks):
+    for block in blocks:
+        print(f"static void prog_{c_block_name(block['block'])}(VMState *vm, uint64_t vm_ip);")
+    print("")
+
+
+def emit_block(block, rows, edge, synthetic_spans, tail_lifts, args, known_blocks):
     name = c_block_name(block["block"])
     print(f"static void prog_{name}(VMState *vm, uint64_t vm_ip) {{")
     print("    VMOpResult r = { .next_entry = -1, .slot = 0xffffffffu };")
@@ -316,6 +322,10 @@ def emit_block(block, rows, edge, synthetic_spans, tail_lifts, args):
         )
         if target_block:
             print(f"    /* goto prog_{c_block_name(target_block)}; */")
+            if target_block in known_blocks:
+                print(f"    prog_{c_block_name(target_block)}(vm, vm_ip);")
+            else:
+                print("    /* target block is outside this selected sketch. */")
         elif edge_kind == "covered_synthetic_fallthrough":
             emit_synthetic_edge(edge, synthetic_spans, args)
     print("    (void)r;")
@@ -382,8 +392,10 @@ def main():
     tail_lifts = load_tail_lifts(args.synthetic_tail_lift)
 
     emit_preamble(collect_used_entries(chosen, rows_by_block, args.rows_per_block, edges, synthetic_spans))
+    emit_block_prototypes(chosen)
+    known_blocks = {block["block"] for block in chosen}
     for block in chosen:
-        emit_block(block, rows_by_block.get(block["block"], []), edges.get(block["block"]), synthetic_spans, tail_lifts, args)
+        emit_block(block, rows_by_block.get(block["block"], []), edges.get(block["block"]), synthetic_spans, tail_lifts, args, known_blocks)
     emit_dispatch(chosen)
     print(
         f"program_pseudocode_blocks={len(chosen)} rows_per_block={args.rows_per_block}",
