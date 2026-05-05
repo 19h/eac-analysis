@@ -84,6 +84,12 @@ def collect_symbols(text):
     ):
         names.add(match.group(1))
     for match in re.finditer(
+        r"^(?:extern\s+)?(?:static\s+)?(?:const\s+)?[A-Za-z_][A-Za-z0-9_\s\*]*?\*+\s*([A-Za-z_]\w*)\s*\([^;{}]*\)\s*(?:\{|;)",
+        text,
+        re.M,
+    ):
+        names.add(match.group(1))
+    for match in re.finditer(
         r"^(?:extern\s+)?(?:static\s+)?(?:const\s+)?[A-Za-z_][A-Za-z0-9_\s\*]*?\s+([A-Za-z_]\w*)\s*(?:\[[^\]]*\])?\s*(?:=|;)",
         text,
         re.M,
@@ -107,6 +113,37 @@ def token_replace(text, replacements):
     return pattern.sub(lambda match: replacements[match.group(1)], text)
 
 
+def token_replace_code_preserving_literals(text, replacements):
+    out = []
+    chunk = []
+    quote = None
+    escaped = False
+
+    def flush_chunk():
+        if chunk:
+            out.append(token_replace("".join(chunk), replacements))
+            chunk.clear()
+
+    for char in text:
+        if quote:
+            out.append(char)
+            if escaped:
+                escaped = False
+            elif char == "\\":
+                escaped = True
+            elif char == quote:
+                quote = None
+            continue
+        if char == '"' or char == "'":
+            flush_chunk()
+            quote = char
+            out.append(char)
+            continue
+        chunk.append(char)
+    flush_chunk()
+    return "".join(out)
+
+
 def sanitize_sidecar(path):
     path = Path(path)
     text = read_text(path)
@@ -122,7 +159,7 @@ def sanitize_sidecar(path):
         if line.startswith("#include "):
             out_lines.append(f"/* omitted sidecar include: {line} */")
             continue
-        out_lines.append(token_replace(line, replacements))
+        out_lines.append(token_replace_code_preserving_literals(line, replacements))
     return tag, out_lines, len(replacements)
 
 

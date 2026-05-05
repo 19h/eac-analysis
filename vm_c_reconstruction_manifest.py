@@ -101,6 +101,9 @@ ARTIFACTS = [
     ("native_handler_environment_coverage_c", TRACE_DIR / "vm_native_handler_environment_coverage.c"),
     ("native_handler_environment_coverage_tsv", TRACE_DIR / "vm_native_handler_environment_coverage.tsv"),
     ("native_handler_environment_coverage_md", TRACE_DIR / "vm_native_handler_environment_coverage.md"),
+    ("static_only_handler_queue_c", TRACE_DIR / "vm_static_only_handler_queue.c"),
+    ("static_only_handler_queue_tsv", TRACE_DIR / "vm_static_only_handler_queue.tsv"),
+    ("static_only_handler_queue_md", TRACE_DIR / "vm_static_only_handler_queue.md"),
     ("target_only_handlers_retdec", TRACE_DIR / "vm_target_only_handlers_retdec.c"),
     ("unobserved_handlers_retdec_batch00", TRACE_DIR / "vm_unobserved_handlers_retdec_batch00.c"),
     ("unobserved_handlers_retdec_batch01", TRACE_DIR / "vm_unobserved_handlers_retdec_batch01.c"),
@@ -226,6 +229,8 @@ def c_shape_metrics(rows):
     native_ret_patch_hidden_bridge_index = read_tsv(TRACE_DIR / "vm_native_ret_patch_hidden_bridge.tsv")
     native_handler_environment_coverage = read_text(TRACE_DIR / "vm_native_handler_environment_coverage.c")
     native_handler_environment_coverage_index = read_tsv(TRACE_DIR / "vm_native_handler_environment_coverage.tsv")
+    static_only_handler_queue = read_text(TRACE_DIR / "vm_static_only_handler_queue.c")
+    static_only_handler_queue_index = read_tsv(TRACE_DIR / "vm_static_only_handler_queue.tsv")
     target_only_handlers_retdec = read_text(TRACE_DIR / "vm_target_only_handlers_retdec.c")
     unobserved_handlers_retdec_batches = [
         read_text(TRACE_DIR / f"vm_unobserved_handlers_retdec_batch{index:02d}.c")
@@ -299,6 +304,9 @@ def c_shape_metrics(rows):
     )
     handler_environment_statuses = Counter(
         row.get("coverage_status", "") for row in native_handler_environment_coverage_index
+    )
+    static_only_queue_tiers = Counter(
+        row.get("priority_class", "") for row in static_only_handler_queue_index
     )
 
     add(rows, "c_shape", "handler_functions", count(r"^static VMOpResult op_entry_\d{3}\(VMState \*vm\) \{", handlers),
@@ -603,6 +611,40 @@ def c_shape_metrics(rows):
     add(rows, "coverage", "native_handler_environment_coverage_status_mix",
         ",".join(f"{key}:{value}" for key, value in handler_environment_statuses.most_common()) or "-",
         "Status mix for handler-level environment coverage.")
+    add(rows, "coverage", "static_only_handler_queue_rows",
+        len(static_only_handler_queue_index),
+        "Ranked static-only dispatch entries to convert from sidecar evidence into stronger handler C.")
+    add(rows, "c_shape", "static_only_handler_queue_c_entries",
+        count(r"^    \{ \d+, \d+, 0x[0-9a-f]+ull,", static_only_handler_queue),
+        "Syntax-checkable C queue entries for static-only handler closure work.")
+    add(rows, "coverage", "static_only_handler_queue_tier0_small_single_function",
+        static_only_queue_tiers.get("tier0_single_function_small_static_replay", 0),
+        "Small single-function static-only handlers ranked first for RetDec-to-handler inlining.")
+    add(rows, "coverage", "static_only_handler_queue_tier1_medium_single_function",
+        static_only_queue_tiers.get("tier1_single_function_medium_static_replay", 0),
+        "Medium single-function static-only handlers ranked after tier0.")
+    add(rows, "coverage", "static_only_handler_queue_tier2_small_shared_range",
+        static_only_queue_tiers.get("tier2_small_shared_range_split", 0),
+        "Small shared RetDec ranges that need chunk splitting before handler inlining.")
+    add(rows, "coverage", "static_only_handler_queue_tier3_multi_function_shared_range",
+        static_only_queue_tiers.get("tier3_multi_function_shared_range", 0),
+        "Multi-function shared static-only ranges ranked behind single-function rows.")
+    add(rows, "coverage", "static_only_handler_queue_tier4_call_ret_side_effect",
+        static_only_queue_tiers.get("tier4_native_call_or_ret_side_effect", 0),
+        "Static-only rows with native call/ret side effects requiring audit before inlining.")
+    add(rows, "coverage", "static_only_handler_queue_tier5_large_static_replay",
+        static_only_queue_tiers.get("tier5_large_static_replay", 0),
+        "Large static-only rows deferred until smaller handlers are closed.")
+    add(rows, "coverage", "static_only_handler_queue_single_function_rows",
+        sum(1 for row in static_only_handler_queue_index if row.get("function_count", "") == "1"),
+        "Static-only queue rows with one overlapping RetDec function.")
+    add(rows, "coverage", "static_only_handler_queue_call_or_ret_rows",
+        sum(1 for row in static_only_handler_queue_index
+            if int(row.get("calls") or "0") > 0 or int(row.get("rets") or "0") > 0),
+        "Static-only queue rows whose native skeleton has calls or rets.")
+    add(rows, "coverage", "static_only_handler_queue_top10_entries",
+        ",".join(row.get("entry", "") for row in static_only_handler_queue_index[:10]) or "-",
+        "Top-ranked dispatch entries for the next static RetDec-to-handler conversion pass.")
     add(rows, "c_shape", "target_only_handler_retdec_selected_ranges",
         count(r"^ \*   0x[0-9a-f]+-0x[0-9a-f]+ entry=\d+ ", target_only_handlers_retdec),
         "Target-only VM handler native ranges selected for targeted RetDec.")
@@ -2421,6 +2463,8 @@ def native_acceleration_metrics(rows):
     ret_patch_hidden_bridge_binary = Path("vm_native_ret_patch_hidden_bridge_dump")
     handler_environment_coverage_source = read_text("vm_native_handler_environment_coverage_dump.c")
     handler_environment_coverage_binary = Path("vm_native_handler_environment_coverage_dump")
+    static_only_handler_queue_source = read_text("vm_static_only_handler_queue_dump.c")
+    static_only_handler_queue_binary = Path("vm_static_only_handler_queue_dump")
     add(rows, "native_acceleration", "instruction_unique_fast_source_lines", line_count(unique_source),
         "Native exact-instruction reducer source size.")
     add(rows, "native_acceleration", "instruction_unique_fast_binary_bytes", file_size(unique_binary),
@@ -2558,6 +2602,13 @@ def native_acceleration_metrics(rows):
     add(rows, "native_acceleration", "native_handler_environment_coverage_uses_native_generator",
         "yes" if "./vm_native_handler_environment_coverage_dump --c" in makefile else "no",
         "Whether the handler environment coverage C/TSV/Markdown artifacts are generated by the native C tool.")
+    add(rows, "native_acceleration", "static_only_handler_queue_dump_source_lines", line_count(static_only_handler_queue_source),
+        "Native static-only handler closure queue generator source size.")
+    add(rows, "native_acceleration", "static_only_handler_queue_dump_binary_bytes", file_size(static_only_handler_queue_binary),
+        "Current compiled static-only handler closure queue generator size.")
+    add(rows, "native_acceleration", "static_only_handler_queue_uses_native_generator",
+        "yes" if "./vm_static_only_handler_queue_dump --c" in makefile else "no",
+        "Whether the static-only handler closure queue C/TSV/Markdown artifacts are generated by the native C tool.")
 
 
 def build_rows():
