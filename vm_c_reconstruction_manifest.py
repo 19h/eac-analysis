@@ -756,6 +756,43 @@ def c_shape_metrics(rows):
     add(rows, "c_shape", "config_coverage_frontier_c_rows",
         count(r'^    \{ \d+, 0x[0-9a-f]+ull, \d+ull, 0x[0-9a-f]+u, "(?:static_only_handler|target_only_handler|path_microcode_unknown_target|no_real_network_allowed_trace|synthetic_fill_only)",', config_coverage_frontier),
         "Syntax-checkable C frontier rows in the config coverage frontier artifact.")
+    native_exec_total_bytes = sum(int(row.get("bytes", "0") or "0") for row in native_executable_section_rows)
+    native_exec_covered_bytes = sum(int(row.get("covered_bytes", "0") or "0") for row in native_executable_section_rows)
+    native_exec_uncovered_bytes = sum(int(row.get("uncovered_bytes", "0") or "0") for row in native_executable_section_rows)
+    native_exec_text_row = next((row for row in native_executable_section_rows if row.get("section", "") == ".text"), {})
+    add(rows, "coverage_frontier", "native_executable_coverage_section_rows",
+        len(native_executable_section_rows),
+        "Executable ELF section rows audited against recovered native C sidecar ranges.")
+    add(rows, "coverage_frontier", "native_executable_coverage_range_rows",
+        len(native_executable_range_rows),
+        "Recovered native executable range rows included in the executable coverage audit.")
+    add(rows, "coverage_frontier", "native_executable_coverage_gap_rows",
+        len(native_executable_gap_rows),
+        "Uncovered executable gap rows retained as explicit native reconstruction frontier evidence.")
+    add(rows, "coverage_frontier", "native_executable_coverage_total_bytes",
+        native_exec_total_bytes,
+        "Total executable ELF bytes in allocatable executable sections.")
+    add(rows, "coverage_frontier", "native_executable_coverage_recovered_bytes",
+        native_exec_covered_bytes,
+        "Executable ELF bytes intersecting recovered native C sidecar ranges.")
+    add(rows, "coverage_frontier", "native_executable_coverage_uncovered_bytes",
+        native_exec_uncovered_bytes,
+        "Executable ELF bytes not yet represented by recovered native C sidecar ranges.")
+    add(rows, "coverage_frontier", "native_executable_coverage_percent_x100",
+        (native_exec_covered_bytes * 10000) // native_exec_total_bytes if native_exec_total_bytes else 0,
+        "Recovered executable-byte percentage scaled by 100.")
+    add(rows, "coverage_frontier", "native_executable_text_coverage_x100",
+        native_exec_text_row.get("coverage_x100", "0"),
+        "Recovered .text executable-byte percentage scaled by 100.")
+    add(rows, "c_shape", "native_executable_coverage_c_section_rows",
+        count(r'^    \{ "\.[A-Za-z0-9_.]+", 0x[0-9a-f]+ull, 0x[0-9a-f]+ull, \d+ull, \d+ull, \d+ull, \d+u, \d+u, \d+u \},', native_executable_coverage_audit),
+        "Executable section coverage rows retained in C form.")
+    add(rows, "c_shape", "native_executable_coverage_c_range_rows",
+        count(r'^    \{ "\.[A-Za-z0-9_.]+", 0x[0-9a-f]+ull, 0x[0-9a-f]+ull, \d+ull, "[^"]+", ', native_executable_coverage_audit),
+        "Recovered native executable range rows retained in C form.")
+    add(rows, "c_shape", "native_executable_coverage_c_gap_rows",
+        count(r'^    \{ "\.[A-Za-z0-9_.]+", 0x[0-9a-f]+ull, 0x[0-9a-f]+ull, \d+ull \},', native_executable_coverage_audit),
+        "Uncovered native executable gap rows retained in C form.")
     add(rows, "data_surface", "binary_data_section_rows",
         sum(1 for row in binary_data_sections_index if row.get("kind", "") == "section"),
         "Allocatable ELF sections tracked by the binary data carrier.")
