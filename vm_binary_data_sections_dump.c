@@ -311,6 +311,12 @@ static void emit_c(const Image *image) {
     puts("#include <stdint.h>");
     puts("#include <stddef.h>");
     puts("");
+    puts("#if defined(__GNUC__) || defined(__clang__)");
+    puts("#define VM_BINARY_DATA_USED __attribute__((used))");
+    puts("#else");
+    puts("#define VM_BINARY_DATA_USED");
+    puts("#endif");
+    puts("");
     puts("typedef struct VMBinaryDataSection {");
     puts("    const char *name;");
     puts("    uint16_t section_index;");
@@ -338,7 +344,7 @@ static void emit_c(const Image *image) {
         if (!emit_section_data(section)) {
             continue;
         }
-        printf("static const uint8_t %s[%llu] = {\n",
+        printf("static const uint8_t %s[%llu] VM_BINARY_DATA_USED = {\n",
                section->symbol, (unsigned long long)section->size);
         print_c_bytes(image->data + section->offset, section->size);
         puts("};");
@@ -348,11 +354,11 @@ static void emit_c(const Image *image) {
 
     if ((uint64_t)DISPATCH_TABLE_FILE_OFFSET + DISPATCH_TABLE_ENTRIES * DISPATCH_TABLE_ENTRY_SIZE <= image->size) {
         const unsigned char *table = image->data + DISPATCH_TABLE_FILE_OFFSET;
-        puts("static const uint8_t vm_eac_dispatch_table_raw_bytes[2880] = {");
+        puts("static const uint8_t vm_eac_dispatch_table_raw_bytes[2880] VM_BINARY_DATA_USED = {");
         print_c_bytes(table, DISPATCH_TABLE_ENTRIES * DISPATCH_TABLE_ENTRY_SIZE);
         puts("};");
         puts("");
-        puts("static const uint64_t vm_eac_dispatch_table_raw_offsets[360] = {");
+        puts("static const uint64_t vm_eac_dispatch_table_raw_offsets[360] VM_BINARY_DATA_USED = {");
         for (unsigned i = 0; i < DISPATCH_TABLE_ENTRIES; i++) {
             const unsigned char *p = table + i * DISPATCH_TABLE_ENTRY_SIZE;
             uint64_t value = 0;
@@ -383,7 +389,7 @@ static void emit_c(const Image *image) {
     printf("enum { VM_BINARY_STRING_BYTE_COUNT = %llu };\n", (unsigned long long)string_bytes);
     puts("");
 
-    puts("static const VMBinaryDataSection k_vm_binary_data_sections[] = {");
+    puts("static const VMBinaryDataSection k_vm_binary_data_sections[] VM_BINARY_DATA_USED = {");
     for (size_t i = 0; i < image->section_count; i++) {
         const SectionInfo *section = &image->sections[i];
         printf("    { ");
@@ -413,7 +419,7 @@ static void emit_c(const Image *image) {
     puts("static const size_t k_vm_binary_string_ref_count = VM_BINARY_STRING_REF_COUNT;");
     puts("static const size_t k_vm_binary_string_byte_count = VM_BINARY_STRING_BYTE_COUNT;");
     puts("");
-    puts("static const VMBinaryStringRef k_vm_binary_string_refs[] = {");
+    puts("static const VMBinaryStringRef k_vm_binary_string_refs[] VM_BINARY_DATA_USED = {");
     for (size_t i = 0; i < image->section_count; i++) {
         const SectionInfo *section = &image->sections[i];
         if (!emit_section_data(section) || !section_string_scan_enabled(section)) {
