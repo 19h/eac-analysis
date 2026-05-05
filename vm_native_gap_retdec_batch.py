@@ -113,13 +113,14 @@ def extract_functions(text):
     functions = functions.replace(" = &v", " = (int64_t)&v")
     functions = re.sub(r" = &g(\d+)", r" = (int64_t)&g\1", functions)
     functions = re.sub(r"return &g(\d+)", r"return (int64_t)&g\1", functions)
+    functions = re.sub(r"return &v(\d+)", r"return (int64_t)&v\1", functions)
     return functions
 
 
-def missing_function_prototypes(functions):
+def function_prototypes(functions):
     defined = set(FUNCTION_DEF_RE.findall(functions))
     called = set(FUNCTION_CALL_RE.findall(functions))
-    return [f"int64_t {name}();" for name in sorted(called - defined)]
+    return [f"int64_t {name}();" for name in sorted(called | defined)]
 
 
 def referenced_globals(functions):
@@ -202,7 +203,10 @@ def main():
     for index in referenced_globals(functions):
         print(f"extern int g{index};")
     print("unsigned char llvm_ctpop_i8(unsigned char value);")
+    print("void __asm_int(int32_t interrupt);")
+    print("int32_t __asm_in(uint16_t port);")
     print("void __asm_out(uint16_t port, char value);")
+    print("void __asm_outsb(uint16_t port, char value);")
     print("uint8_t __readfsbyte(int64_t offset);")
     print("uint64_t __readfsqword(int64_t offset);")
     print("int64_t __asm_iretd(void);")
@@ -238,7 +242,7 @@ def main():
     print("struct _Unwind_Exception;")
     print("void _Unwind_Resume(struct _Unwind_Exception *exception);")
     print("")
-    for proto in missing_function_prototypes(functions):
+    for proto in function_prototypes(functions):
         print(proto)
     print("")
     print(functions)

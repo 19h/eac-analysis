@@ -47,7 +47,8 @@ NATIVE_RETDEC_GAP_QUEUE_MD := $(PRIMARY_DIR)/vm_native_retdec_gap_queue.md
 NATIVE_GAP_RETDEC_BATCH00_C := $(PRIMARY_DIR)/vm_native_gap_retdec_batch00.c
 NATIVE_GAP_RETDEC_BATCH01_C := $(PRIMARY_DIR)/vm_native_gap_retdec_batch01.c
 NATIVE_GAP_RETDEC_BATCH02_C := $(PRIMARY_DIR)/vm_native_gap_retdec_batch02.c
-NATIVE_GAP_RETDEC_BATCH_CS := $(NATIVE_GAP_RETDEC_BATCH00_C) $(NATIVE_GAP_RETDEC_BATCH01_C) $(NATIVE_GAP_RETDEC_BATCH02_C)
+NATIVE_GAP_RETDEC_BATCH03_C := $(PRIMARY_DIR)/vm_native_gap_retdec_batch03.c
+NATIVE_GAP_RETDEC_BATCH_CS := $(NATIVE_GAP_RETDEC_BATCH00_C) $(NATIVE_GAP_RETDEC_BATCH01_C) $(NATIVE_GAP_RETDEC_BATCH02_C) $(NATIVE_GAP_RETDEC_BATCH03_C)
 SOURCE_BUNDLE_C := $(PRIMARY_DIR)/vm_recovered_source_bundle.c
 ALL_EVIDENCE_BUNDLE_C := $(PRIMARY_DIR)/vm_recovered_source_all_evidence_bundle.c
 NATIVE_RET_PATCH_TARGETS_C := $(PRIMARY_DIR)/vm_native_ret_patch_targets.c
@@ -837,9 +838,13 @@ $(NATIVE_GAP_RETDEC_BATCH01_C): vm_native_gap_retdec_batch.py eac.elf
 $(NATIVE_GAP_RETDEC_BATCH02_C): vm_native_gap_retdec_batch.py eac.elf
 	python3 vm_native_gap_retdec_batch.py --batch-index 2 > $@
 
+$(NATIVE_GAP_RETDEC_BATCH03_C): vm_native_gap_retdec_batch.py eac.elf
+	python3 vm_native_gap_retdec_batch.py --batch-index 3 > $@
+
 native-gap-retdec-batch0: $(NATIVE_GAP_RETDEC_BATCH00_C)
 native-gap-retdec-batch1: $(NATIVE_GAP_RETDEC_BATCH01_C)
 native-gap-retdec-batch2: $(NATIVE_GAP_RETDEC_BATCH02_C)
+native-gap-retdec-batch3: $(NATIVE_GAP_RETDEC_BATCH03_C)
 native-gap-retdec-batches: $(NATIVE_GAP_RETDEC_BATCH_CS)
 
 $(NATIVE_RETDEC_GAP_QUEUE_TSV): vm_native_retdec_gap_queue.py $(NATIVE_FUNCTION_INVENTORY_TSV) $(NATIVE_EXECUTABLE_COVERAGE_AUDIT_TSV)
