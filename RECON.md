@@ -19,7 +19,7 @@ SHA-256: `0b44ad59697129534189efdb75cde2b96245f831438e9f6a53cb7725f190d739`
 - `vm_bytecode_control_edges.py`: turns decoded long-branch and sampled-operand sidecars into explicit non-exact VM control-flow edges between recovered bytecode segments, with operand footprints and lifted target/IP-update pseudo-IR.
 - `vm_bytecode_ir.py`: merges exact instruction lifts and decoded non-exact sidecars into a VM-IP sorted recovered bytecode IR table with source/target blocks, operand footprints, compact state/dispatch/IP expressions, validation provenance, and pseudo-IR.
 - `vm_bytecode_basic_blocks.py`: splits the unified bytecode IR into recovered VM basic blocks, terminal edges with final-trace synthetic coverage status, Markdown block listings, and loop/backedge catalogs.
-- `vm_static_coverage_audit.py`: reports static/global handler coverage next to dynamic/path bytecode coverage so no-network trace limits are explicit.
+- `vm_static_coverage_audit.py`: reports static/global handler coverage next to dynamic/path bytecode coverage, including blocked/allowed network provenance, so no-network trace limits are explicit.
 - `vm_synthetic_span_catalog.py`: catalogs byte-covered synthetic VM spans that still lack direct semantic IR rows, separating known handler/operand prefixes, unresolved tails, target-only spans, and footprint-only coverage.
 - `vm_synthetic_tail_catalog.py`: aggregates unresolved suffix bytes from synthetic VM spans into exact tail variants, target-entry offsets, marker schemas, and recurring motifs.
 - `vm_synthetic_tail_lift.py`: lifts unresolved synthetic suffix bytes back to VM-IP rows, tagging embedded target-entry mini-forms and feeding those comments into the C-like program sketches.
@@ -146,7 +146,7 @@ SHA-256: `0b44ad59697129534189efdb75cde2b96245f831438e9f6a53cb7725f190d739`
 - `dumps/vmtail-wide-1m-w16/vm_program_pseudocode_full.c`: full C-like bytecode program sketch for all recovered VM basic blocks and all recovered VM IR rows, with synthetic terminal spans lifted into explicit transitions.
 - `dumps/vmtail-wide-1m-w16/vm_recovered_source_bundle.c`: single C-like reconstruction bundle combining the all-entry handler/operator layer with the full recovered VM bytecode program.
 - `vm_recovered_source_harness.c`: minimal C harness that defines the bundle's external dispatch-table and unresolved-tail hooks, links against `vm_recovered_source_bundle.c`, and smoke-invokes `vm_program_sketch` through the default unresolved path.
-- `dumps/vmtail-wide-1m-w16/vm_trace_coverage_matrix.tsv`: auto-discovered cross-run coverage/config matrix comparing source handlers, target handlers, VM-IP starts, byte ranges, driver mode, tail limits, register/scratch/memory flags, and run-only evidence directories.
+- `dumps/vmtail-wide-1m-w16/vm_trace_coverage_matrix.tsv`: auto-discovered cross-run coverage/config matrix comparing source handlers, target handlers, VM-IP starts, byte ranges, driver mode, tail limits, register/scratch/memory flags, network/spawn policy, attempted hosts/callers, and run-only evidence directories.
 - `dumps/vmtail-wide-1m-w16/vm_trace_coverage_matrix.md`: Markdown coverage summary that makes the scenario/path limitation explicit.
 - `dumps/vmtail-wide-1m-w16/vm_static_coverage_audit.tsv`: static/global versus dynamic/path coverage audit.
 - `dumps/vmtail-wide-1m-w16/vm_static_coverage_audit.md`: Markdown audit separating the all-entry handler layer from the scenario-specific bytecode program layer.
