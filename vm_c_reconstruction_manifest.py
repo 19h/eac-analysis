@@ -19,6 +19,7 @@ ARTIFACTS = [
     ("program_blocks_top", TRACE_DIR / "vm_program_pseudocode_top.c"),
     ("program_blocks_full", TRACE_DIR / "vm_program_pseudocode_full.c"),
     ("source_bundle", TRACE_DIR / "vm_recovered_source_bundle.c"),
+    ("source_all_evidence_bundle", TRACE_DIR / "vm_recovered_source_all_evidence_bundle.c"),
     ("synthetic_successor_gaps_tsv", TRACE_DIR / "vm_synthetic_successor_gaps.tsv"),
     ("synthetic_successor_gaps_md", TRACE_DIR / "vm_synthetic_successor_gaps.md"),
     ("synthetic_gap_transfer_probe_tsv", TRACE_DIR / "vm_synthetic_gap_transfer_probe.tsv"),
@@ -198,6 +199,7 @@ def c_shape_metrics(rows):
     program_top = read_text(TRACE_DIR / "vm_program_pseudocode_top.c")
     program_full = read_text(TRACE_DIR / "vm_program_pseudocode_full.c")
     bundle = read_text(TRACE_DIR / "vm_recovered_source_bundle.c")
+    all_evidence_bundle = read_text(TRACE_DIR / "vm_recovered_source_all_evidence_bundle.c")
     native_ret_patch_targets = read_text(TRACE_DIR / "vm_native_ret_patch_targets.c")
     native_ret_patch_epilogues_retdec = read_text(TRACE_DIR / "vm_native_ret_patch_epilogues_retdec.c")
     native_ret_patch_source278_retdec = read_text(TRACE_DIR / "vm_native_ret_patch_source278_retdec.c")
@@ -922,6 +924,21 @@ def c_shape_metrics(rows):
         "Disabled focused-chain terminal bridge bodies guarded by VM_ENABLE_OBSERVED_CHAIN_BRIDGES inside the combined source bundle.")
     add(rows, "c_shape", "bundle_observed_chain_replay_steps", count(r"observed-chain replay step:", bundle),
         "Observed focused-chain replay steps emitted inside disabled terminal bridge snippets in the combined source bundle.")
+    add(rows, "c_shape", "all_evidence_bundle_handler_functions",
+        count(r"^static VMOpResult op_entry_\d{3}\(VMState \*vm\) \{", all_evidence_bundle),
+        "All-entry handler/operator C functions present in the all-evidence single file.")
+    add(rows, "c_shape", "all_evidence_bundle_program_blocks",
+        count(r"^static void prog_bb_\d{4}\(VMState \*vm, uint64_t vm_ip\) \{", all_evidence_bundle),
+        "Recovered VM bytecode block functions present in the all-evidence single file.")
+    add(rows, "c_shape", "all_evidence_bundle_sidecar_sections",
+        count(r"^/\* --- sidecar: ", all_evidence_bundle),
+        "Renamed native RetDec/control sidecar files appended to the all-evidence single file.")
+    add(rows, "c_shape", "all_evidence_bundle_prefixed_retdec_functions",
+        count(r"^int64_t eac_evidence_[A-Za-z0-9_]+__function_[0-9a-f]+\(.*\) \{", all_evidence_bundle),
+        "RetDec native C functions carried in the all-evidence single file with per-sidecar symbol prefixes.")
+    add(rows, "c_shape", "all_evidence_bundle_prefixed_symbols",
+        count(r"\beac_evidence_[A-Za-z0-9_]+__", all_evidence_bundle),
+        "Prefixed symbols used to keep overlapping native sidecar C in one translation unit.")
 
 
 def coverage_metrics(rows):

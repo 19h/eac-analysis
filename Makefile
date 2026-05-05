@@ -628,13 +628,19 @@ $(SOURCE_BUNDLE_C): vm_recovered_source_bundle.py $(HANDLERS_PSEUDOCODE_C) $(PRO
 
 source-bundle: $(SOURCE_BUNDLE_C)
 
-pseudocode-syntax-check: $(PSEUDOCODE_TOP_C) $(PROGRAM_PSEUDOCODE_TOP_C) $(PROGRAM_PSEUDOCODE_FULL_C) $(HANDLERS_PSEUDOCODE_C) $(PATH_HANDLERS_PSEUDOCODE_C) $(SOURCE_BUNDLE_C) $(NATIVE_RET_PATCH_TARGETS_C) $(NATIVE_RET_PATCH_EPILOGUES_RETDEC_C) $(NATIVE_RET_PATCH_SOURCE278_RETDEC_C) $(RET_PATCH_FOLLOWUPS_C) $(RET_PATCH_FOLLOWUP_RETDEC_C) $(NATIVE_OBFUSCATED_ISLANDS_C) $(NATIVE_OBFUSCATED_SECOND_STAGE_C) $(NATIVE_OBFUSCATED_SECOND_STAGE_DYNAMIC_C) $(NATIVE_OBFUSCATED_SECOND_STAGE_SLOT_PROOF_C) $(NATIVE_OBFUSCATED_SECOND_STAGE_STACK_SOURCE_C) $(NATIVE_OBFUSCATED_SECOND_STAGE_RBX_PROVENANCE_C) $(NATIVE_OBFUSCATED_SECOND_STAGE_MODEL_C) $(NATIVE_OBFUSCATED_CONTROL_MODEL_C) $(NATIVE_RET_PATCH_HIDDEN_BRIDGE_C) $(NATIVE_HANDLER_ENVIRONMENT_COVERAGE_C) $(TARGET_ONLY_HANDLER_RETDEC_C) $(UNOBSERVED_HANDLER_RETDEC_CS) $(WEAK_HANDLER_RETDEC_C) $(VALIDATED_HANDLER_RETDEC_CS) $(UNRESOLVED_FAMILY_C)
+$(ALL_EVIDENCE_BUNDLE_C): vm_recovered_source_all_evidence_bundle.py $(SOURCE_BUNDLE_C) $(NATIVE_RET_PATCH_TARGETS_C) $(NATIVE_RET_PATCH_EPILOGUES_RETDEC_C) $(NATIVE_RET_PATCH_SOURCE278_RETDEC_C) $(RET_PATCH_FOLLOWUPS_C) $(RET_PATCH_FOLLOWUP_RETDEC_C) $(NATIVE_OBFUSCATED_ISLANDS_C) $(NATIVE_OBFUSCATED_SECOND_STAGE_C) $(NATIVE_OBFUSCATED_SECOND_STAGE_DYNAMIC_C) $(NATIVE_OBFUSCATED_SECOND_STAGE_SLOT_PROOF_C) $(NATIVE_OBFUSCATED_SECOND_STAGE_STACK_SOURCE_C) $(NATIVE_OBFUSCATED_SECOND_STAGE_RBX_PROVENANCE_C) $(NATIVE_OBFUSCATED_SECOND_STAGE_MODEL_C) $(NATIVE_OBFUSCATED_CONTROL_MODEL_C) $(NATIVE_RET_PATCH_HIDDEN_BRIDGE_C) $(NATIVE_HANDLER_ENVIRONMENT_COVERAGE_C) $(TARGET_ONLY_HANDLER_RETDEC_C) $(UNOBSERVED_HANDLER_RETDEC_CS) $(WEAK_HANDLER_RETDEC_C) $(VALIDATED_HANDLER_RETDEC_CS) $(UNRESOLVED_FAMILY_C)
+	python3 vm_recovered_source_all_evidence_bundle.py > $@
+
+all-evidence-bundle: $(ALL_EVIDENCE_BUNDLE_C)
+
+pseudocode-syntax-check: $(PSEUDOCODE_TOP_C) $(PROGRAM_PSEUDOCODE_TOP_C) $(PROGRAM_PSEUDOCODE_FULL_C) $(HANDLERS_PSEUDOCODE_C) $(PATH_HANDLERS_PSEUDOCODE_C) $(SOURCE_BUNDLE_C) $(ALL_EVIDENCE_BUNDLE_C) $(NATIVE_RET_PATCH_TARGETS_C) $(NATIVE_RET_PATCH_EPILOGUES_RETDEC_C) $(NATIVE_RET_PATCH_SOURCE278_RETDEC_C) $(RET_PATCH_FOLLOWUPS_C) $(RET_PATCH_FOLLOWUP_RETDEC_C) $(NATIVE_OBFUSCATED_ISLANDS_C) $(NATIVE_OBFUSCATED_SECOND_STAGE_C) $(NATIVE_OBFUSCATED_SECOND_STAGE_DYNAMIC_C) $(NATIVE_OBFUSCATED_SECOND_STAGE_SLOT_PROOF_C) $(NATIVE_OBFUSCATED_SECOND_STAGE_STACK_SOURCE_C) $(NATIVE_OBFUSCATED_SECOND_STAGE_RBX_PROVENANCE_C) $(NATIVE_OBFUSCATED_SECOND_STAGE_MODEL_C) $(NATIVE_OBFUSCATED_CONTROL_MODEL_C) $(NATIVE_RET_PATCH_HIDDEN_BRIDGE_C) $(NATIVE_HANDLER_ENVIRONMENT_COVERAGE_C) $(TARGET_ONLY_HANDLER_RETDEC_C) $(UNOBSERVED_HANDLER_RETDEC_CS) $(WEAK_HANDLER_RETDEC_C) $(VALIDATED_HANDLER_RETDEC_CS) $(UNRESOLVED_FAMILY_C)
 	$(CC) -std=c11 -fsyntax-only -Wall -Wextra -Wno-unused-variable -Wno-unused-function -Wno-parentheses dumps/vmtail-wide-1m-w16/vm_handlers_pseudocode.c
 	$(CC) -std=c11 -fsyntax-only -Wall -Wextra -Wno-unused-variable -Wno-unused-function -Wno-parentheses dumps/vmtail-wide-1m-w16/vm_path_handlers_pseudocode.c
 	$(CC) -std=c11 -fsyntax-only -Wall -Wextra -Wno-unused-variable -Wno-unused-function -Wno-parentheses dumps/vmtail-wide-1m-w16/vm_pseudocode_top.c
 	$(CC) -std=c11 -fsyntax-only -Wall -Wextra -Wno-unused-variable -Wno-unused-function -Wno-parentheses dumps/vmtail-wide-1m-w16/vm_program_pseudocode_top.c
 	$(CC) -std=c11 -fsyntax-only -Wall -Wextra -Wno-unused-variable -Wno-unused-function -Wno-parentheses dumps/vmtail-wide-1m-w16/vm_program_pseudocode_full.c
 	$(CC) -std=c11 -fsyntax-only -Wall -Wextra -Wno-unused-variable -Wno-unused-function -Wno-parentheses dumps/vmtail-wide-1m-w16/vm_recovered_source_bundle.c
+	$(CC) -std=c11 -fsyntax-only -Wall -Wextra -Wno-unused-variable -Wno-unused-function -Wno-unused-parameter -Wno-uninitialized -Wno-parentheses -Wno-sign-compare -Wno-pointer-to-int-cast -Wno-type-limits -Wno-incompatible-pointer-types dumps/vmtail-wide-1m-w16/vm_recovered_source_all_evidence_bundle.c
 	$(CC) -std=c11 -fsyntax-only -Wall -Wextra -Wno-unused-variable -Wno-unused-function -Wno-parentheses dumps/vmtail-wide-1m-w16/vm_native_ret_patch_targets.c
 	$(CC) -std=c11 -fsyntax-only -Wall -Wextra -Wno-unused-variable -Wno-unused-function -Wno-unused-parameter -Wno-uninitialized -Wno-parentheses dumps/vmtail-wide-1m-w16/vm_native_ret_patch_epilogues_retdec.c
 	$(CC) -std=c11 -fsyntax-only -Wall -Wextra -Wno-unused-variable -Wno-unused-function -Wno-unused-parameter -Wno-uninitialized -Wno-parentheses dumps/vmtail-wide-1m-w16/vm_native_ret_patch_source278_retdec.c
@@ -678,6 +684,7 @@ C_RECONSTRUCTION_MANIFEST_INPUTS := \
 	$(PROGRAM_PSEUDOCODE_TOP_C) \
 	$(PROGRAM_PSEUDOCODE_FULL_C) \
 	$(SOURCE_BUNDLE_C) \
+	$(ALL_EVIDENCE_BUNDLE_C) \
 	$(PRIMARY_DIR)/vm_synthetic_successor_gaps.tsv \
 	$(PRIMARY_DIR)/vm_synthetic_successor_gaps.md \
 	$(PRIMARY_DIR)/vm_synthetic_gap_transfer_probe.tsv \
