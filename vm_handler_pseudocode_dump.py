@@ -182,7 +182,7 @@ def emit_ret_patch_handler_body(row, ret_patch_rows, args):
     stack_offsets = Counter(item.get("stack_write_offset", "") for item in ret_patch_rows)
 
     print(
-        "    /* native return-patch thunk: the observed entry_299 body ends in a native ret; "
+        f"    /* native return-patch thunk: the observed entry_{row.get('entry', '?')} body ends in a native ret; "
         "the normal dispatch decode that follows belongs to the next native handler entry. */"
     )
     print(
@@ -372,7 +372,8 @@ def main():
     parser.add_argument("--handler-table", default="dumps/vmtail-wide-1m-w16/vm_handler_table.tsv")
     parser.add_argument("--eac", default="eac.elf")
     parser.add_argument("--tail-window", type=lambda value: int(value, 0), default=0x80)
-    parser.add_argument("--source299-ret-patch-probe", default="dumps/vmtail-wide-1m-w16/vm_synthetic_gap_source299_ret_patch_probe.tsv")
+    parser.add_argument("--sampled-ret-patch-probe", dest="sampled_ret_patch_probe", default="dumps/vmtail-wide-1m-w16/vm_synthetic_gap_sampled_ret_patch_probe.tsv")
+    parser.add_argument("--source299-ret-patch-probe", dest="sampled_ret_patch_probe", default=argparse.SUPPRESS)
     parser.add_argument("--limit", type=int, default=80)
     parser.add_argument("--entry", action="append", default=[])
     parser.add_argument("--all", action="store_true")
@@ -385,7 +386,7 @@ def main():
     rows.sort(key=lambda row: int(row["entry"]))
     transition = load_by(args.transition_model, "entry")
     tail_ip_advances = load_tail_ip_advances(args.handler_table, args.eac, args.tail_window)
-    ret_patch_summaries = load_ret_patch_summaries(args.source299_ret_patch_probe)
+    ret_patch_summaries = load_ret_patch_summaries(args.sampled_ret_patch_probe)
     chosen = selected_handlers(rows, args)
 
     emit_preamble()

@@ -59,6 +59,8 @@ ARTIFACTS = [
     ("synthetic_gap_source299_context_probe_md", TRACE_DIR / "vm_synthetic_gap_source299_context_probe.md"),
     ("synthetic_gap_source299_ret_patch_probe_tsv", TRACE_DIR / "vm_synthetic_gap_source299_ret_patch_probe.tsv"),
     ("synthetic_gap_source299_ret_patch_probe_md", TRACE_DIR / "vm_synthetic_gap_source299_ret_patch_probe.md"),
+    ("synthetic_gap_sampled_ret_patch_probe_tsv", TRACE_DIR / "vm_synthetic_gap_sampled_ret_patch_probe.tsv"),
+    ("synthetic_gap_sampled_ret_patch_probe_md", TRACE_DIR / "vm_synthetic_gap_sampled_ret_patch_probe.md"),
     ("synthetic_gap_live_snapshot_transfer_probe_tsv", TRACE_DIR / "vm_synthetic_gap_live_snapshot_transfer_probe.tsv"),
     ("synthetic_gap_live_snapshot_transfer_probe_md", TRACE_DIR / "vm_synthetic_gap_live_snapshot_transfer_probe.md"),
     ("synthetic_gap_live_table_evidence_tsv", TRACE_DIR / "vm_synthetic_gap_live_table_evidence.tsv"),
@@ -147,12 +149,12 @@ def c_shape_metrics(rows):
     add(rows, "c_shape", "handler_next_entry_slot_index_normalizations",
         count(r"r\.next_entry = vm_entry_from_slot_index\(r\.slot\);", handlers),
         "Handler fall-through slots normalized as direct slot indices.")
-    add(rows, "c_shape", "handler_source299_ret_patch_functions",
+    add(rows, "c_shape", "handler_sampled_ret_patch_functions",
         count(r"native return-patch thunk", handlers),
         "Handler/operator functions rendered as native return-patch thunks instead of normal dispatch-table handlers.")
-    add(rows, "c_shape", "handler_source299_ret_patch_evidence_comments",
+    add(rows, "c_shape", "handler_sampled_ret_patch_evidence_comments",
         count(r"ret-patch evidence: rows=", handlers),
-        "Handler-layer source-299 ret-patch evidence summaries.")
+        "Handler-layer sampled ret-patch evidence summaries.")
     add(rows, "c_shape", "path_specialized_functions", count(r"^static VMOpResult path_entry_\d{3}_[0-9a-f]+\(VMState \*vm\) \{", path_handlers),
         "Validated concrete branch-path C functions.")
     add(rows, "c_shape", "direct_top_block_defs", count(r"^static void bb_\d{4}\(VMState \*vm\) \{", direct_top),
@@ -229,10 +231,10 @@ def c_shape_metrics(rows):
         "Per-live-row table-offset file/runtime evidence sites carried into the full program sketch.")
     add(rows, "c_shape", "program_full_live_table_evidence_comments", count(r"live table evidence: source=", program_full),
         "Per-live-row table-offset evidence comments carried into the full program sketch.")
-    add(rows, "c_shape", "program_full_source299_ret_patch_probe_sites", count(r"source299 ret-patch probe @", program_full),
-        "Source-299 native return-patch evidence sites carried into the full program sketch.")
-    add(rows, "c_shape", "program_full_source299_ret_patch_probe_comments", count(r"source299 ret-patch: run=", program_full),
-        "Per-run source-299 native return-patch comments carried into the full program sketch.")
+    add(rows, "c_shape", "program_full_sampled_ret_patch_probe_sites", count(r"sampled ret-patch probe @", program_full),
+        "Sampled native return-patch evidence sites carried into the full program sketch.")
+    add(rows, "c_shape", "program_full_sampled_ret_patch_probe_comments", count(r"sampled ret-patch: source=", program_full),
+        "Per-run sampled native return-patch comments carried into the full program sketch.")
     add(rows, "c_shape", "program_full_sampled_control_correlation_sites", count(r"sampled-control correlation @", program_full),
         "Residual sampled-control correlation sites carried into the full program sketch.")
     add(rows, "c_shape", "program_full_sampled_control_correlation_comments", count(r"sampled-control correlation: source=", program_full),
@@ -279,12 +281,12 @@ def c_shape_metrics(rows):
         "Observed focused-chain replay steps emitted inside disabled terminal bridge snippets in the full program sketch.")
     add(rows, "c_shape", "bundle_block_defs", count(r"^static void prog_bb_\d{4}\(VMState \*vm, uint64_t vm_ip\) \{", bundle),
         "Full program block functions inside the combined source bundle.")
-    add(rows, "c_shape", "bundle_source299_ret_patch_handler_functions",
+    add(rows, "c_shape", "bundle_sampled_ret_patch_handler_functions",
         count(r"native return-patch thunk", bundle),
         "Native return-patch handler/operator functions inside the combined source bundle.")
-    add(rows, "c_shape", "bundle_source299_ret_patch_handler_evidence_comments",
+    add(rows, "c_shape", "bundle_sampled_ret_patch_handler_evidence_comments",
         count(r"ret-patch evidence: rows=", bundle),
-        "Handler-layer source-299 ret-patch evidence summaries inside the combined source bundle.")
+        "Handler-layer sampled ret-patch evidence summaries inside the combined source bundle.")
     add(rows, "c_shape", "bundle_block_calls", count(r"^    prog_bb_\d{4}\(vm, vm_ip\);$", bundle),
         "Concrete block-to-block calls inside the combined source bundle.")
     add(rows, "c_shape", "bundle_synthetic_gap_unresolved_calls", count(r"^    vm_unresolved_synthetic_tail\(vm, 0x[0-9a-f]+\);$", bundle),
@@ -333,10 +335,10 @@ def c_shape_metrics(rows):
         "Per-live-row table-offset file/runtime evidence sites carried into the combined source bundle.")
     add(rows, "c_shape", "bundle_live_table_evidence_comments", count(r"live table evidence: source=", bundle),
         "Per-live-row table-offset evidence comments carried into the combined source bundle.")
-    add(rows, "c_shape", "bundle_source299_ret_patch_probe_sites", count(r"source299 ret-patch probe @", bundle),
-        "Source-299 native return-patch evidence sites carried into the combined source bundle.")
-    add(rows, "c_shape", "bundle_source299_ret_patch_probe_comments", count(r"source299 ret-patch: run=", bundle),
-        "Per-run source-299 native return-patch comments carried into the combined source bundle.")
+    add(rows, "c_shape", "bundle_sampled_ret_patch_probe_sites", count(r"sampled ret-patch probe @", bundle),
+        "Sampled native return-patch evidence sites carried into the combined source bundle.")
+    add(rows, "c_shape", "bundle_sampled_ret_patch_probe_comments", count(r"sampled ret-patch: source=", bundle),
+        "Per-run sampled native return-patch comments carried into the combined source bundle.")
     add(rows, "c_shape", "bundle_sampled_control_correlation_sites", count(r"sampled-control correlation @", bundle),
         "Residual sampled-control correlation sites carried into the combined source bundle.")
     add(rows, "c_shape", "bundle_sampled_control_correlation_comments", count(r"sampled-control correlation: source=", bundle),
@@ -1311,6 +1313,69 @@ def synthetic_gap_source299_ret_patch_probe_metrics(rows):
         ",".join(patched_targets) or "-",
         "Unique source-299 residual starts and decoded native return-patch file offsets.")
     add(rows, "gap_source299_ret_patch", "synthetic_gap_source299_ret_patch_probe_direct_base_starts",
+        ",".join(direct_base_rows) or "-",
+        "Rows where frame+0xbb was directly read from the postcall mapped image.")
+
+
+def synthetic_gap_sampled_ret_patch_probe_metrics(rows):
+    probe_rows = read_tsv(TRACE_DIR / "vm_synthetic_gap_sampled_ret_patch_probe.tsv")
+    sources = Counter(row.get("source_entry", "") for row in probe_rows)
+    starts = Counter(row.get("synthetic_start_vm_ip", "") for row in probe_rows)
+    families = Counter(row.get("family_id", "") for row in probe_rows)
+    seed_mix = Counter(row.get("seed_quality", "") for row in probe_rows)
+    relation_mix = Counter(row.get("ret_patch_relation", "") for row in probe_rows)
+    interpretation_mix = Counter(row.get("interpretation", "") for row in probe_rows)
+    section_mix = Counter(row.get("patched_ret_section", "") for row in probe_rows)
+    base_source_mix = Counter(
+        "mapped_frame_qword" if row.get("ret_patch_base_source", "").startswith("postcall_map_") else "inferred_image_base"
+        for row in probe_rows
+    )
+    patched_targets = sorted({
+        f"entry_{row.get('source_entry')}:{row.get('synthetic_start_vm_ip')}:{row.get('patched_ret_eac_off')}"
+        for row in probe_rows
+        if row.get("patched_ret_eac_off", "")
+    }, key=lambda value: (
+        int(value.split(":", 2)[0].replace("entry_", "") or "0", 10),
+        int(value.split(":", 2)[1] or "0", 16),
+        value,
+    ))
+    direct_base_rows = [
+        f"entry_{row.get('source_entry')}:{row.get('synthetic_start_vm_ip')}"
+        for row in probe_rows
+        if row.get("ret_patch_base_source", "").startswith("postcall_map_")
+    ]
+
+    add(rows, "gap_sampled_ret_patch", "synthetic_gap_sampled_ret_patch_probe_rows", len(probe_rows),
+        "Live sampled residual events decoded as native return-patch control transfers.")
+    add(rows, "gap_sampled_ret_patch", "synthetic_gap_sampled_ret_patch_probe_sources", len(sources),
+        "Distinct source handlers represented by the sampled return-patch probe.")
+    add(rows, "gap_sampled_ret_patch", "synthetic_gap_sampled_ret_patch_probe_source_mix",
+        ",".join(f"entry_{key}:{value}" for key, value in sources.most_common()) or "-",
+        "Source-handler coverage in the sampled return-patch probe.")
+    add(rows, "gap_sampled_ret_patch", "synthetic_gap_sampled_ret_patch_probe_starts", len(starts),
+        "Distinct residual VM starts represented by the sampled return-patch probe.")
+    add(rows, "gap_sampled_ret_patch", "synthetic_gap_sampled_ret_patch_probe_family_mix",
+        ",".join(f"{key}:{value}" for key, value in families.most_common()) or "-",
+        "Unresolved-family coverage in the sampled return-patch probe.")
+    add(rows, "gap_sampled_ret_patch", "synthetic_gap_sampled_ret_patch_probe_seed_mix",
+        ",".join(f"{key}:{value}" for key, value in seed_mix.most_common()) or "-",
+        "Snapshot strength for sampled return-patch rows.")
+    add(rows, "gap_sampled_ret_patch", "synthetic_gap_sampled_ret_patch_probe_base_source_mix",
+        ",".join(f"{key}:{value}" for key, value in base_source_mix.most_common()) or "-",
+        "Whether the ret-patch base is directly read from a postcall map or inferred from event image-base crosschecks.")
+    add(rows, "gap_sampled_ret_patch", "synthetic_gap_sampled_ret_patch_probe_section_mix",
+        ",".join(f"{key}:{value}" for key, value in section_mix.most_common()) or "-",
+        "ELF sections reached by decoded native return-patch targets.")
+    add(rows, "gap_sampled_ret_patch", "synthetic_gap_sampled_ret_patch_probe_relation_mix",
+        ",".join(f"{key}:{value}" for key, value in relation_mix.most_common()) or "-",
+        "Relation between decoded native return-patch targets and VM-IP chain targets.")
+    add(rows, "gap_sampled_ret_patch", "synthetic_gap_sampled_ret_patch_probe_interpretation_mix",
+        ",".join(f"{key}:{value}" for key, value in interpretation_mix.most_common()) or "-",
+        "Interpretation of sampled return-patch control rather than normal table dispatch.")
+    add(rows, "gap_sampled_ret_patch", "synthetic_gap_sampled_ret_patch_probe_patched_targets",
+        ",".join(patched_targets) or "-",
+        "Unique sampled residual starts and decoded native return-patch file offsets.")
+    add(rows, "gap_sampled_ret_patch", "synthetic_gap_sampled_ret_patch_probe_direct_base_starts",
         ",".join(direct_base_rows) or "-",
         "Rows where frame+0xbb was directly read from the postcall mapped image.")
 
