@@ -6,29 +6,28 @@
  * coverage -> queue -> RetDec batch -> coverage.
  *
  * Ranges:
- *   0x4b60a0-0x4b6264 rank=4 name=fcn.004b60a0 kind=r2_discovered bytes=452 uncovered=452
- *   0x48bfc0-0x48c182 rank=5 name=fcn.0048bfc0 kind=r2_discovered bytes=450 uncovered=450
- *   0x4cf380-0x4cf540 rank=6 name=fcn.004cf380 kind=r2_discovered bytes=448 uncovered=448
- *   0x4d3930-0x4d3af0 rank=7 name=fcn.004d3930 kind=r2_discovered bytes=448 uncovered=448
- *   0x568c4-0x56a83 rank=8 name=fcn.000568c4 kind=r2_discovered bytes=447 uncovered=447
- *   0x69abc-0x69c7b rank=9 name=fcn.00069abc kind=r2_discovered bytes=447 uncovered=447
- *   0x37c20-0x37dde rank=10 name=fcn.00037c20 kind=r2_discovered bytes=446 uncovered=446
- *   0x66ea2-0x67060 rank=11 name=fcn.00066ea2 kind=r2_discovered bytes=446 uncovered=446
- *   0x4a3b70-0x4a3d2c rank=12 name=fcn.004a3b70 kind=r2_discovered bytes=444 uncovered=444
- *   0x56b7e0-0x56b99c rank=13 name=method.std::messages_wchar_t_.virtual_24 kind=native_discovered bytes=444 uncovered=444
- *   0x32360-0x3251a rank=14 name=fcn.00032360 kind=r2_discovered bytes=442 uncovered=442
- *   0x522540-0x5226f9 rank=15 name=method.std::__cxx11::time_get_char__std::istreambuf_iterator_char__std::char_traits_char_____.virtual_56 kind=native_discovered bytes=441 uncovered=441
- *   0x555240-0x5553f9 rank=16 name=method.std::time_get_char__std::istreambuf_iterator_char__std::char_traits_char_____.virtual_56 kind=native_discovered bytes=441 uncovered=441
- *   0x50dec0-0x50e078 rank=17 name=method.std::money_put_wchar_t__std::ostreambuf_iterator_wchar_t__std::char_traits_wchar_t_____.virtual_16 kind=native_discovered bytes=440 uncovered=440
- *   0x5580e0-0x558297 rank=18 name=method.std::money_put_char__std::ostreambuf_iterator_char__std::char_traits_char_____.virtual_16 kind=native_discovered bytes=439 uncovered=439
- *   0x59faa-0x5a160 rank=19 name=fcn.00059faa kind=r2_discovered bytes=438 uncovered=438
+ *   0x4b60a0-0x4b6264 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x48bfc0-0x48c182 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x4cf380-0x4cf540 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x4d3930-0x4d3af0 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x568c4-0x56a83 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x69abc-0x69c7b rank=- name=- kind=- bytes=- uncovered=-
+ *   0x37c20-0x37dde rank=- name=- kind=- bytes=- uncovered=-
+ *   0x66ea2-0x67060 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x4a3b70-0x4a3d2c rank=- name=- kind=- bytes=- uncovered=-
+ *   0x56b7e0-0x56b99c rank=- name=- kind=- bytes=- uncovered=-
+ *   0x32360-0x3251a rank=- name=- kind=- bytes=- uncovered=-
+ *   0x522540-0x5226f9 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x555240-0x5553f9 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x50dec0-0x50e078 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x5580e0-0x558297 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x59faa-0x5a160 rank=- name=- kind=- bytes=- uncovered=-
  */
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
-#include <wchar.h>
 
 typedef __int128 int128_t;
 typedef unsigned __int128 uint128_t;
@@ -37,6 +36,7 @@ typedef float float32_t;
 typedef double float64_t;
 typedef long double float80_t;
 struct __locale_struct;
+struct _TYPEDEF___mbstate_t;
 struct _IO_FILE;
 extern int g1;
 extern int g2;
@@ -85,6 +85,9 @@ char *dgettext(char *domain, char *msgid);
 struct _IO_FILE *fopen(const char *path, const char *mode);
 size_t fread(void *ptr, size_t size, size_t nmemb, struct _IO_FILE *stream);
 int fclose(struct _IO_FILE *stream);
+int32_t mbrtowc(int32_t *pwc, const char *s, size_t n, struct _TYPEDEF___mbstate_t *ps);
+int32_t mbsnrtowcs(int32_t *dst, char **src, size_t nms, size_t len, struct _TYPEDEF___mbstate_t *ps);
+int32_t *wmemcpy(int32_t *dest, const int32_t *src, size_t n);
 int32_t *wmemset(int32_t *wcs, int32_t wc, size_t n);
 int pthread_mutex_lock(int64_t *mutex);
 int pthread_mutex_unlock(int64_t *mutex);

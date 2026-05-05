@@ -28,7 +28,6 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
-#include <wchar.h>
 
 typedef __int128 int128_t;
 typedef unsigned __int128 uint128_t;
@@ -37,6 +36,7 @@ typedef float float32_t;
 typedef double float64_t;
 typedef long double float80_t;
 struct __locale_struct;
+struct _TYPEDEF___mbstate_t;
 struct _IO_FILE;
 extern int g1;
 extern int g2;
@@ -130,6 +130,9 @@ char *dgettext(char *domain, char *msgid);
 struct _IO_FILE *fopen(const char *path, const char *mode);
 size_t fread(void *ptr, size_t size, size_t nmemb, struct _IO_FILE *stream);
 int fclose(struct _IO_FILE *stream);
+int32_t mbrtowc(int32_t *pwc, const char *s, size_t n, struct _TYPEDEF___mbstate_t *ps);
+int32_t mbsnrtowcs(int32_t *dst, char **src, size_t nms, size_t len, struct _TYPEDEF___mbstate_t *ps);
+int32_t *wmemcpy(int32_t *dest, const int32_t *src, size_t n);
 int32_t *wmemset(int32_t *wcs, int32_t wc, size_t n);
 int pthread_mutex_lock(int64_t *mutex);
 int pthread_mutex_unlock(int64_t *mutex);
