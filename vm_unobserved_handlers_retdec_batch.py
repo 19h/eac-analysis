@@ -11,6 +11,7 @@ from pathlib import Path
 TRACE_DIR = Path("dumps/vmtail-wide-1m-w16")
 FUNCTION_DEF_RE = re.compile(r"^int64_t (function_[0-9a-f]+)\(.*\) \{", re.M)
 FUNCTION_CALL_RE = re.compile(r"\b(function_[0-9a-f]+)\(")
+GLOBAL_ADDR_RE = re.compile(r"&g(\d+)")
 
 
 def read_rows(path):
@@ -47,6 +48,8 @@ def extract_functions(text):
         raise SystemExit("retdec output did not contain the expected functions section")
     functions = text[start + len(start_marker):end].strip()
     functions = functions.replace(" = &v", " = (int64_t)&v")
+    functions = re.sub(r" = &g(\d+)", r" = (int64_t)&g\1", functions)
+    functions = re.sub(r"return &g(\d+)", r"return (int64_t)&g\1", functions)
     return functions
 
 
@@ -55,6 +58,10 @@ def missing_function_prototypes(functions):
     called = set(FUNCTION_CALL_RE.findall(functions))
     missing = sorted(called - defined)
     return [f"int64_t {name}();" for name in missing]
+
+
+def referenced_globals(functions):
+    return sorted({int(match) for match in GLOBAL_ADDR_RE.findall(functions)})
 
 
 def main():
@@ -115,12 +122,14 @@ def main():
     print("#include <stdbool.h>")
     print("#include <stdint.h>")
     print("")
-    print("extern int g1;")
-    print("extern int g2;")
-    print("extern int g3;")
-    print("unsigned char llvm_ctpop_i8(unsigned char value);")
-    print("")
     functions = extract_functions(source)
+    print("typedef __int128 int128_t;")
+    for index in referenced_globals(functions):
+        print(f"extern int g{index};")
+    print("unsigned char llvm_ctpop_i8(unsigned char value);")
+    print("void __asm_out(uint16_t port, char value);")
+    print("uint8_t __readfsbyte(int64_t offset);")
+    print("")
     for proto in missing_function_prototypes(functions):
         print(proto)
     print("")
