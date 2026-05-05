@@ -28,7 +28,10 @@ DEFAULT_STATE_TRACES = [
     Path("dumps/vmtail-state-residual-targets/vm_instruction_trace.tsv"),
     Path("dumps/vmtail-state-wide-w16/vm_instruction_trace.tsv"),
 ]
-DEFAULT_GPR_RUN = LIVE_DIR / "run.stderr"
+DEFAULT_GPR_RUNS = [
+    LIVE_DIR / "run.stderr",
+    Path("dumps/vmtail-state-residual-targets/run.stderr"),
+]
 
 REGS = [
     "rax", "rbx", "rcx", "rdx", "rsi", "rdi", "r8", "r9",
@@ -130,41 +133,44 @@ def normalize_seed(value, frame=None, frame_off=None, table=None, vm_ip=None, rs
     return value
 
 
-def load_live_seeds(path):
+def load_live_seeds(paths):
     seeds = defaultdict(list)
-    path = Path(path)
-    if not path.exists():
-        return seeds
-    with path.open(errors="replace") as handle:
-        for line in handle:
-            if not line.startswith("[VMTAIL]"):
-                continue
-            raw = parse_fields(line)
-            vm_ip_off = raw.get("vm_ip_off")
-            if vm_ip_off is None:
-                continue
-            frame = raw.get("frame")
-            frame_off = raw.get("frame_off")
-            table = raw.get("table")
-            vm_ip = raw.get("vm_ip")
-            rsp = raw.get("rsp")
-            regs = {}
-            for reg in REGS:
-                if reg in raw:
-                    regs[reg] = normalize_seed(raw[reg], frame, frame_off, table, vm_ip, rsp)
-            frame_mem = {}
-            for key, value in raw.items():
-                if not key.startswith("fs0x"):
+    if isinstance(paths, (str, Path)):
+        paths = [paths]
+    for path in paths:
+        path = Path(path)
+        if not path.exists():
+            continue
+        with path.open(errors="replace") as handle:
+            for line in handle:
+                if not line.startswith("[VMTAIL]"):
                     continue
-                off = int(key[4:], 16)
-                frame_mem[(off, 8)] = normalize_seed(value, frame, frame_off, table, vm_ip, rsp)
-            seeds[f"0x{vm_ip_off:x}"].append({
-                "count": str(raw.get("count", "")),
-                "site": f"0x{raw.get('site', 0):x}" if "site" in raw else "",
-                "target_off": f"0x{raw.get('target_off', 0):x}" if "target_off" in raw else "",
-                "regs": regs,
-                "frame_mem": frame_mem,
-            })
+                raw = parse_fields(line)
+                vm_ip_off = raw.get("vm_ip_off")
+                if vm_ip_off is None:
+                    continue
+                frame = raw.get("frame")
+                frame_off = raw.get("frame_off")
+                table = raw.get("table")
+                vm_ip = raw.get("vm_ip")
+                rsp = raw.get("rsp")
+                regs = {}
+                for reg in REGS:
+                    if reg in raw:
+                        regs[reg] = normalize_seed(raw[reg], frame, frame_off, table, vm_ip, rsp)
+                frame_mem = {}
+                for key, value in raw.items():
+                    if not key.startswith("fs0x"):
+                        continue
+                    off = int(key[4:], 16)
+                    frame_mem[(off, 8)] = normalize_seed(value, frame, frame_off, table, vm_ip, rsp)
+                seeds[f"0x{vm_ip_off:x}"].append({
+                    "count": str(raw.get("count", "")),
+                    "site": f"0x{raw.get('site', 0):x}" if "site" in raw else "",
+                    "target_off": f"0x{raw.get('target_off', 0):x}" if "target_off" in raw else "",
+                    "regs": regs,
+                    "frame_mem": frame_mem,
+                })
     return seeds
 
 
@@ -382,7 +388,8 @@ def main():
     parser.add_argument("--concrete-state-audit", default=str(TRACE_DIR / "vm_synthetic_gap_concrete_state_audit.tsv"))
     parser.add_argument("--state-trace", action="append",
         help="State-aware instruction trace; may be supplied multiple times. Defaults to live residual, residual supplement, then wide state traces.")
-    parser.add_argument("--gpr-run", default=str(DEFAULT_GPR_RUN))
+    parser.add_argument("--gpr-run", action="append",
+        help="Focused VMTAIL run.stderr with live GPR/scratch seeds; may be supplied multiple times. Defaults to all residual focused runs.")
     parser.add_argument("--skeletons", default=str(TRACE_DIR / "vm_handler_skeletons.tsv"))
     parser.add_argument("--eac", default="eac.elf")
     parser.add_argument("--window", type=lambda value: int(value, 0), default=0x1200)
@@ -394,6 +401,8 @@ def main():
     args = parser.parse_args()
     if not args.state_trace:
         args.state_trace = [str(path) for path in DEFAULT_STATE_TRACES]
+    if not args.gpr_run:
+        args.gpr_run = [str(path) for path in DEFAULT_GPR_RUNS]
 
     rows = build_rows(args)
     if args.markdown:
