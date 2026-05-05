@@ -476,6 +476,7 @@ def normalize_pointer_local_assignments(functions):
         body = functions[start:end]
         for pointer_local in sorted(set(re.findall(r"\bint64_t\s*\*\s*(v\d+)\s*;", body))):
             body = re.sub(rf"(\b{pointer_local}\s*=\s*)\(int64_t\)&", r"\1&", body)
+        body = re.sub(r"(\*\s*v\d+\s*=\s*)&g(\d+)", r"\1(int64_t)&g\2", body)
         chunks.append(body)
         cursor = end
     chunks.append(functions[cursor:])
