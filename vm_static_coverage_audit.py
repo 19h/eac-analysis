@@ -159,6 +159,10 @@ def validation_metrics(rows, trace_dir):
     state_events = 0
     dispatch_100 = 0
     dispatch_events = 0
+    dispatch_model_static_100 = 0
+    dispatch_model_static_events = 0
+    dispatch_model_100 = 0
+    dispatch_model_events = 0
     for row in transition_model:
         events = int(row.get("observed_events") or 0)
         if row.get("state_static_pct") == "100.0":
@@ -167,10 +171,20 @@ def validation_metrics(rows, trace_dir):
         if row.get("static_dispatch_pct") == "100.0" and row.get("static_ip_pct") == "100.0":
             dispatch_100 += 1
             dispatch_events += events
+        if row.get("dispatch_model") == "static_100":
+            dispatch_model_static_100 += 1
+            dispatch_model_static_events += events
+        if row.get("dispatch_model_pct") == "100.0":
+            dispatch_model_100 += 1
+            dispatch_model_events += events
     add(rows, "validated_static_model", "state_static_100pct_handlers", state_100,
         f"Handlers whose static state slice matched all validated state-trace rows; events={state_events}.")
     add(rows, "validated_static_model", "dispatch_ip_static_100pct_handlers", dispatch_100,
         f"Handlers whose static dispatch/IP slice matched all validated state-trace rows; events={dispatch_events}.")
+    add(rows, "validated_static_model", "dispatch_model_static_100_handlers", dispatch_model_static_100,
+        f"Handlers whose final dispatch model uses pure static validation; events={dispatch_model_static_events}.")
+    add(rows, "validated_static_model", "dispatch_model_100pct_handlers", dispatch_model_100,
+        f"Handlers whose static-plus-affine dispatch model matched all validated rows; events={dispatch_model_events}.")
 
 
 def build_rows(args):
