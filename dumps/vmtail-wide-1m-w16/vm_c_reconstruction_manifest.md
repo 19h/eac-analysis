@@ -23,14 +23,14 @@ Reproducible inventory of the current C-shaped reconstruction artifacts and gate
 | `artifact` | `path_frontier_slot_audit_md_lines` | `24` | Current line count. |
 | `artifact` | `path_frontier_slot_audit_md_bytes` | `1264` | Current file size in bytes. |
 | `artifact` | `native_executable_coverage_audit_c_path` | `dumps/vmtail-wide-1m-w16/vm_native_executable_coverage_audit.c` | Generated reconstruction artifact. |
-| `artifact` | `native_executable_coverage_audit_c_lines` | `2142` | Current line count. |
-| `artifact` | `native_executable_coverage_audit_c_bytes` | `279573` | Current file size in bytes. |
+| `artifact` | `native_executable_coverage_audit_c_lines` | `2198` | Current line count. |
+| `artifact` | `native_executable_coverage_audit_c_bytes` | `284693` | Current file size in bytes. |
 | `artifact` | `native_executable_coverage_audit_tsv_path` | `dumps/vmtail-wide-1m-w16/vm_native_executable_coverage_audit.tsv` | Generated reconstruction artifact. |
-| `artifact` | `native_executable_coverage_audit_tsv_lines` | `2081` | Current line count. |
-| `artifact` | `native_executable_coverage_audit_tsv_bytes` | `262860` | Current file size in bytes. |
+| `artifact` | `native_executable_coverage_audit_tsv_lines` | `2137` | Current line count. |
+| `artifact` | `native_executable_coverage_audit_tsv_bytes` | `267630` | Current file size in bytes. |
 | `artifact` | `native_executable_coverage_audit_md_path` | `dumps/vmtail-wide-1m-w16/vm_native_executable_coverage_audit.md` | Generated reconstruction artifact. |
 | `artifact` | `native_executable_coverage_audit_md_lines` | `63` | Current line count. |
-| `artifact` | `native_executable_coverage_audit_md_bytes` | `2431` | Current file size in bytes. |
+| `artifact` | `native_executable_coverage_audit_md_bytes` | `2468` | Current file size in bytes. |
 | `artifact` | `native_function_inventory_c_path` | `dumps/vmtail-wide-1m-w16/vm_native_function_inventory.c` | Generated reconstruction artifact. |
 | `artifact` | `native_function_inventory_c_lines` | `9969` | Current line count. |
 | `artifact` | `native_function_inventory_c_bytes` | `1177248` | Current file size in bytes. |
@@ -41,14 +41,17 @@ Reproducible inventory of the current C-shaped reconstruction artifacts and gate
 | `artifact` | `native_function_inventory_md_lines` | `52` | Current line count. |
 | `artifact` | `native_function_inventory_md_bytes` | `3767` | Current file size in bytes. |
 | `artifact` | `native_retdec_gap_queue_c_path` | `dumps/vmtail-wide-1m-w16/vm_native_retdec_gap_queue.c` | Generated reconstruction artifact. |
-| `artifact` | `native_retdec_gap_queue_c_lines` | `3088` | Current line count. |
-| `artifact` | `native_retdec_gap_queue_c_bytes` | `603381` | Current file size in bytes. |
+| `artifact` | `native_retdec_gap_queue_c_lines` | `3072` | Current line count. |
+| `artifact` | `native_retdec_gap_queue_c_bytes` | `600324` | Current file size in bytes. |
 | `artifact` | `native_retdec_gap_queue_tsv_path` | `dumps/vmtail-wide-1m-w16/vm_native_retdec_gap_queue.tsv` | Generated reconstruction artifact. |
-| `artifact` | `native_retdec_gap_queue_tsv_lines` | `3056` | Current line count. |
-| `artifact` | `native_retdec_gap_queue_tsv_bytes` | `458960` | Current file size in bytes. |
+| `artifact` | `native_retdec_gap_queue_tsv_lines` | `3040` | Current line count. |
+| `artifact` | `native_retdec_gap_queue_tsv_bytes` | `456655` | Current file size in bytes. |
 | `artifact` | `native_retdec_gap_queue_md_path` | `dumps/vmtail-wide-1m-w16/vm_native_retdec_gap_queue.md` | Generated reconstruction artifact. |
 | `artifact` | `native_retdec_gap_queue_md_lines` | `89` | Current line count. |
-| `artifact` | `native_retdec_gap_queue_md_bytes` | `11318` | Current file size in bytes. |
+| `artifact` | `native_retdec_gap_queue_md_bytes` | `11567` | Current file size in bytes. |
+| `artifact` | `native_gap_retdec_batch00_path` | `dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch00.c` | Generated reconstruction artifact. |
+| `artifact` | `native_gap_retdec_batch00_lines` | `1663` | Current line count. |
+| `artifact` | `native_gap_retdec_batch00_bytes` | `54104` | Current file size in bytes. |
 | `artifact` | `direct_blocks_top_path` | `dumps/vmtail-wide-1m-w16/vm_pseudocode_top.c` | Generated reconstruction artifact. |
 | `artifact` | `direct_blocks_top_lines` | `12619` | Current line count. |
 | `artifact` | `direct_blocks_top_bytes` | `1429721` | Current file size in bytes. |
@@ -62,8 +65,8 @@ Reproducible inventory of the current C-shaped reconstruction artifacts and gate
 | `artifact` | `source_bundle_lines` | `304448` | Current line count. |
 | `artifact` | `source_bundle_bytes` | `20567203` | Current file size in bytes. |
 | `artifact` | `source_all_evidence_bundle_path` | `dumps/vmtail-wide-1m-w16/vm_recovered_source_all_evidence_bundle.c` | Generated reconstruction artifact. |
-| `artifact` | `source_all_evidence_bundle_lines` | `446430` | Current line count. |
-| `artifact` | `source_all_evidence_bundle_bytes` | `32107879` | Current file size in bytes. |
+| `artifact` | `source_all_evidence_bundle_lines` | `448140` | Current line count. |
+| `artifact` | `source_all_evidence_bundle_bytes` | `32182772` | Current file size in bytes. |
 | `artifact` | `synthetic_successor_gaps_tsv_path` | `dumps/vmtail-wide-1m-w16/vm_synthetic_successor_gaps.tsv` | Generated reconstruction artifact. |
 | `artifact` | `synthetic_successor_gaps_tsv_lines` | `22` | Current line count. |
 | `artifact` | `synthetic_successor_gaps_tsv_bytes` | `5197` | Current file size in bytes. |
@@ -639,30 +642,33 @@ Reproducible inventory of the current C-shaped reconstruction artifacts and gate
 | `c_shape` | `config_coverage_metric_c_rows` | `71` | Syntax-checkable C metric rows in the config coverage frontier artifact. |
 | `c_shape` | `config_coverage_frontier_c_rows` | `173` | Syntax-checkable C frontier rows in the config coverage frontier artifact. |
 | `coverage_frontier` | `native_executable_coverage_section_rows` | `5` | Executable ELF section rows audited against recovered native C sidecar ranges. |
-| `coverage_frontier` | `native_executable_coverage_range_rows` | `2026` | Recovered native executable range rows included in the executable coverage audit. |
-| `coverage_frontier` | `native_executable_coverage_gap_rows` | `49` | Uncovered executable gap rows retained as explicit native reconstruction frontier evidence. |
+| `coverage_frontier` | `native_executable_coverage_range_rows` | `2066` | Recovered native executable range rows included in the executable coverage audit. |
+| `coverage_frontier` | `native_executable_coverage_gap_rows` | `65` | Uncovered executable gap rows retained as explicit native reconstruction frontier evidence. |
 | `coverage_frontier` | `native_executable_coverage_total_bytes` | `5651040` | Total executable ELF bytes in allocatable executable sections. |
-| `coverage_frontier` | `native_executable_coverage_recovered_bytes` | `338796` | Executable ELF bytes intersecting recovered native C sidecar ranges. |
-| `coverage_frontier` | `native_executable_coverage_uncovered_bytes` | `5312244` | Executable ELF bytes not yet represented by recovered native C sidecar ranges. |
-| `coverage_frontier` | `native_executable_coverage_percent_x100` | `599` | Recovered executable-byte percentage scaled by 100. |
-| `coverage_frontier` | `native_executable_text_coverage_x100` | `599` | Recovered .text executable-byte percentage scaled by 100. |
+| `coverage_frontier` | `native_executable_coverage_recovered_bytes` | `346721` | Executable ELF bytes intersecting recovered native C sidecar ranges. |
+| `coverage_frontier` | `native_executable_coverage_uncovered_bytes` | `5304319` | Executable ELF bytes not yet represented by recovered native C sidecar ranges. |
+| `coverage_frontier` | `native_executable_coverage_percent_x100` | `613` | Recovered executable-byte percentage scaled by 100. |
+| `coverage_frontier` | `native_executable_text_coverage_x100` | `613` | Recovered .text executable-byte percentage scaled by 100. |
 | `c_shape` | `native_executable_coverage_c_section_rows` | `5` | Executable section coverage rows retained in C form. |
-| `c_shape` | `native_executable_coverage_c_range_rows` | `2026` | Recovered native executable range rows retained in C form. |
-| `c_shape` | `native_executable_coverage_c_gap_rows` | `49` | Uncovered native executable gap rows retained in C form. |
+| `c_shape` | `native_executable_coverage_c_range_rows` | `2066` | Recovered native executable range rows retained in C form. |
+| `c_shape` | `native_executable_coverage_c_gap_rows` | `65` | Uncovered native executable gap rows retained in C form. |
 | `coverage_frontier` | `native_function_inventory_rows` | `3309` | Radare2 native function-boundary rows rendered as weak C skeleton metadata. |
 | `coverage_frontier` | `native_function_inventory_text_rows` | `3063` | Radare2 function-boundary rows inside the ELF .text section. |
 | `coverage_frontier` | `native_function_inventory_kind_mix` | `entrypoint:1,import_plt:244,native_discovered:591,r2_discovered:2412,symbol_named:61` | Kind mix for radare2 native function-boundary inventory rows. |
 | `coverage_frontier` | `native_function_inventory_text_merged_bytes` | `806070` | Merged .text bytes covered by radare2 native function-boundary inventory rows. |
 | `c_shape` | `native_function_inventory_c_stub_functions` | `3309` | Weak native function skeleton stubs retained in C form. |
 | `c_shape` | `native_function_inventory_c_metadata_rows` | `3309` | Weak native function inventory metadata rows retained in C form. |
-| `coverage_frontier` | `native_retdec_gap_queue_rows` | `3055` | Native function-boundary rows whose bytes are not yet covered by semantic RetDec/native C sidecars. |
-| `coverage_frontier` | `native_retdec_gap_queue_tier0_rows` | `2727` | Small uncovered native functions queued for targeted single-function RetDec. |
+| `coverage_frontier` | `native_retdec_gap_queue_rows` | `3039` | Native function-boundary rows whose bytes are not yet covered by semantic RetDec/native C sidecars. |
+| `coverage_frontier` | `native_retdec_gap_queue_tier0_rows` | `2711` | Small uncovered native functions queued for targeted single-function RetDec. |
 | `coverage_frontier` | `native_retdec_gap_queue_tier1_rows` | `247` | Medium uncovered native functions queued for targeted single-function RetDec. |
 | `coverage_frontier` | `native_retdec_gap_queue_tier2_rows` | `77` | Large uncovered native functions queued for timed RetDec or manual split. |
 | `coverage_frontier` | `native_retdec_gap_queue_tier3_rows` | `4` | Huge or noisy uncovered native functions that need splitting/modeling before broad RetDec. |
-| `coverage_frontier` | `native_retdec_gap_queue_total_uncovered_bytes` | `857753` | Function-boundary uncovered .text bytes represented by the native RetDec gap queue. |
-| `coverage_frontier` | `native_retdec_gap_queue_top10_ranges` | `0x568cf0-0x568eea,0x56274-0x5646b,0x4fed10-0x4fef07,0x25a3e-0x25c34,0x500b70-0x500d66,0x498230-0x498422,0x4c98a0-0x4c9a91,0x2ceb0-0x2d09e,0x579d80-0x579f6e,0x4f75e-0x4f94a` | Top ten ranked native function ranges to target next. |
-| `c_shape` | `native_retdec_gap_queue_c_rows` | `3055` | Native RetDec gap queue rows retained in C form. |
+| `coverage_frontier` | `native_retdec_gap_queue_total_uncovered_bytes` | `848913` | Function-boundary uncovered .text bytes represented by the native RetDec gap queue. |
+| `coverage_frontier` | `native_retdec_gap_queue_top10_ranges` | `0x56b2c0-0x56b4a7,0x4cd00-0x4cee6,0x268c9-0x26aae,0x4a6e6-0x4a8c5,0x57160-0x5733f,0x55c790-0x55c96f,0x55c9b0-0x55cb8f,0x5725b0-0x57278f,0x5727c0-0x57299f,0x4b8430-0x4b860e` | Top ten ranked native function ranges to target next. |
+| `c_shape` | `native_retdec_gap_queue_c_rows` | `3039` | Native RetDec gap queue rows retained in C form. |
+| `c_shape` | `native_gap_retdec_batch00_selected_ranges` | `16` | Fixed top-ranked native gap queue ranges selected for RetDec batch 00. |
+| `c_shape` | `native_gap_retdec_batch00_functions` | `24` | RetDec native C function bodies emitted for native gap batch 00. |
+| `c_shape` | `native_gap_retdec_batch00_address_ranges` | `24` | RetDec address-range comments emitted for native gap batch 00. |
 | `data_surface` | `binary_data_section_rows` | `29` | Allocatable ELF sections tracked by the binary data carrier. |
 | `data_surface` | `binary_data_emitted_section_rows` | `22` | Allocatable non-executable ELF sections emitted as exact C byte arrays. |
 | `data_surface` | `binary_data_emitted_bytes` | `0xe63f7` | Exact bytes carried for allocatable non-executable ELF data sections. |
@@ -905,17 +911,19 @@ Reproducible inventory of the current C-shaped reconstruction artifacts and gate
 | `coverage_frontier` | `all_evidence_bundle_path_frontier_slot_audit_rows` | `10` | Weak frontier slot-expression audit rows retained in the all-evidence single file. |
 | `coverage_frontier` | `all_evidence_bundle_path_frontier_slot_audit_symbols` | `6` | Prefixed path frontier slot-audit symbols retained in the all-evidence single file. |
 | `coverage_frontier` | `all_evidence_bundle_native_executable_coverage_section_rows` | `5` | Native executable section coverage rows retained in the all-evidence single file. |
-| `coverage_frontier` | `all_evidence_bundle_native_executable_coverage_range_rows` | `2026` | Recovered native executable range rows retained in the all-evidence single file. |
-| `coverage_frontier` | `all_evidence_bundle_native_executable_coverage_gap_rows` | `49` | Uncovered native executable gap rows retained in the all-evidence single file. |
+| `coverage_frontier` | `all_evidence_bundle_native_executable_coverage_range_rows` | `2066` | Recovered native executable range rows retained in the all-evidence single file. |
+| `coverage_frontier` | `all_evidence_bundle_native_executable_coverage_gap_rows` | `65` | Uncovered native executable gap rows retained in the all-evidence single file. |
 | `coverage_frontier` | `all_evidence_bundle_native_executable_coverage_symbols` | `18` | Prefixed native executable coverage audit symbols retained in the all-evidence single file. |
 | `coverage_frontier` | `all_evidence_bundle_native_function_inventory_stub_functions` | `3309` | Weak native function skeleton stubs retained in the all-evidence single file. |
 | `coverage_frontier` | `all_evidence_bundle_native_function_inventory_metadata_rows` | `3309` | Weak native function inventory metadata rows retained in the all-evidence single file. |
 | `coverage_frontier` | `all_evidence_bundle_native_function_inventory_symbols` | `6625` | Prefixed native function inventory symbols retained in the all-evidence single file. |
-| `coverage_frontier` | `all_evidence_bundle_native_retdec_gap_queue_rows` | `3055` | Native RetDec gap queue rows retained in the all-evidence single file. |
+| `coverage_frontier` | `all_evidence_bundle_native_retdec_gap_queue_rows` | `3039` | Native RetDec gap queue rows retained in the all-evidence single file. |
 | `coverage_frontier` | `all_evidence_bundle_native_retdec_gap_queue_symbols` | `6` | Prefixed native RetDec gap queue symbols retained in the all-evidence single file. |
-| `c_shape` | `all_evidence_bundle_sidecar_sections` | `47` | Renamed native RetDec/control sidecar files appended to the all-evidence single file. |
-| `c_shape` | `all_evidence_bundle_prefixed_retdec_functions` | `624` | RetDec native C functions carried in the all-evidence single file with per-sidecar symbol prefixes. |
-| `c_shape` | `all_evidence_bundle_prefixed_symbols` | `17990` | Prefixed symbols used to keep overlapping native sidecar C in one translation unit. |
+| `c_shape` | `all_evidence_bundle_native_gap_retdec_batch00_functions` | `24` | RetDec native C function bodies from native gap batch 00 retained in the all-evidence single file. |
+| `c_shape` | `all_evidence_bundle_native_gap_retdec_batch00_symbols` | `457` | Prefixed native gap RetDec batch 00 symbols retained in the all-evidence single file. |
+| `c_shape` | `all_evidence_bundle_sidecar_sections` | `48` | Renamed native RetDec/control sidecar files appended to the all-evidence single file. |
+| `c_shape` | `all_evidence_bundle_prefixed_retdec_functions` | `648` | RetDec native C functions carried in the all-evidence single file with per-sidecar symbol prefixes. |
+| `c_shape` | `all_evidence_bundle_prefixed_symbols` | `18447` | Prefixed symbols used to keep overlapping native sidecar C in one translation unit. |
 | `coverage_frontier` | `all_evidence_bundle_config_coverage_metric_rows` | `71` | Config coverage audit metric rows retained in the all-evidence single C file. |
 | `coverage_frontier` | `all_evidence_bundle_config_coverage_frontier_rows` | `173` | Config/path frontier rows retained in the all-evidence single C file. |
 | `coverage_frontier` | `all_evidence_bundle_config_coverage_frontier_symbols` | `8` | Prefixed config coverage frontier symbols retained in the all-evidence single C file. |
