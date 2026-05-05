@@ -13,7 +13,7 @@ TAIL_MEM_RUN_ARGS ?= --tail-mem-run $(TAIL_MEM_EXACT_RUN) --tail-mem-run $(TAIL_
 PRED_ROWS ?= 128
 XFER_ROWS ?= 128
 
-.PHONY: all clean fast-replay fast-state fast-gpr fast-predicates fast-state-predicates fast-gpr-predicates fast-transfer fast-state-transfer fast-gpr-transfer fast-validators fast-paths fast-gpr-paths instruction-trace instruction-unique instruction-lift sampled-recovery file-atlas file-fill long-branches hidden-transitions sampled-operands hidden-fill frontier-fill footprint-fill control-edges bytecode-ir bytecode-basic-blocks synthetic-spans synthetic-tails synthetic-tail-lift synthetic-successor-gaps synthetic-gap-transfer-probe synthetic-gap-dynamic-stitch synthetic-gap-chain-probe synthetic-gap-residual-audit synthetic-gap-concrete-state-audit synthetic-gap-state-trace-targets synthetic-gap-live-context-audit synthetic-gap-table-read-diagnostic synthetic-gap-table-memory-probe synthetic-gap-runtime-table-memory-probe synthetic-gap-sampled-control-correlation synthetic-gap-focused-direct-trace-audit synthetic-gap-focused-sequence-audit synthetic-gap-observed-chain-bridge synthetic-gap-observed-chain-replay synthetic-gap-chain-slot-reconciliation synthetic-gap-symbolic-successors synthetic-gap-live-in-roles final-tail-site-probe synthetic-gap-live-in-reentry-probe synthetic-gap-allstatic-reentry-probe pseudocode pseudocode-full handler-pseudocode path-pseudocode source-bundle pseudocode-syntax-check pseudocode-object-check pseudocode-link-check coverage-matrix coverage-audit c-reconstruction-manifest
+.PHONY: all clean fast-replay fast-state fast-gpr fast-predicates fast-state-predicates fast-gpr-predicates fast-transfer fast-state-transfer fast-gpr-transfer fast-validators fast-paths fast-gpr-paths instruction-trace instruction-unique instruction-unique-fast-check instruction-lift sampled-recovery file-atlas file-fill long-branches hidden-transitions sampled-operands hidden-fill frontier-fill footprint-fill control-edges bytecode-ir bytecode-basic-blocks synthetic-spans synthetic-tails synthetic-tail-lift synthetic-successor-gaps synthetic-gap-transfer-probe synthetic-gap-dynamic-stitch synthetic-gap-chain-probe synthetic-gap-residual-audit synthetic-gap-concrete-state-audit synthetic-gap-state-trace-targets synthetic-gap-live-context-audit synthetic-gap-table-read-diagnostic synthetic-gap-table-memory-probe synthetic-gap-runtime-table-memory-probe synthetic-gap-sampled-control-correlation synthetic-gap-focused-direct-trace-audit synthetic-gap-focused-sequence-audit synthetic-gap-observed-chain-bridge synthetic-gap-observed-chain-replay synthetic-gap-chain-slot-reconciliation synthetic-gap-symbolic-successors synthetic-gap-live-in-roles final-tail-site-probe synthetic-gap-live-in-reentry-probe synthetic-gap-allstatic-reentry-probe pseudocode pseudocode-full handler-pseudocode path-pseudocode source-bundle pseudocode-syntax-check pseudocode-object-check pseudocode-link-check coverage-matrix coverage-audit c-reconstruction-manifest
 
 all: driver trace_preload.so vm_fast_path_profile vm_instruction_unique_fast
 
@@ -66,6 +66,11 @@ instruction-trace:
 
 instruction-unique: instruction-trace vm_instruction_unique_fast
 	./vm_instruction_unique_fast dumps/vmtail-wide-1m-w16/vm_instruction_trace.tsv > dumps/vmtail-wide-1m-w16/vm_instruction_unique.tsv
+
+instruction-unique-fast-check: instruction-trace vm_instruction_unique_fast
+	python3 vm_bytecode_recover.py dumps/vmtail-wide-1m-w16/vm_instruction_trace.tsv --instructions > /tmp/eacsym-vm_instruction_unique_python.tsv
+	./vm_instruction_unique_fast dumps/vmtail-wide-1m-w16/vm_instruction_trace.tsv > /tmp/eacsym-vm_instruction_unique_fast.tsv
+	cmp /tmp/eacsym-vm_instruction_unique_python.tsv /tmp/eacsym-vm_instruction_unique_fast.tsv
 
 instruction-lift: instruction-unique
 	python3 vm_instruction_lift.py > dumps/vmtail-wide-1m-w16/vm_instruction_lift.tsv

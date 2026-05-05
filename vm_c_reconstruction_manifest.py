@@ -1418,6 +1418,21 @@ def gate_metrics(rows):
         "Size of the most recent linked smoke executable.")
 
 
+def native_acceleration_metrics(rows):
+    makefile = read_text("Makefile")
+    fast_source = read_text("vm_instruction_unique_fast.c")
+    fast_binary = Path("vm_instruction_unique_fast")
+    add(rows, "native_acceleration", "instruction_unique_fast_source_lines", line_count(fast_source),
+        "Native exact-instruction reducer source size.")
+    add(rows, "native_acceleration", "instruction_unique_fast_binary_bytes", file_size(fast_binary),
+        "Current compiled native exact-instruction reducer size.")
+    add(rows, "native_acceleration", "instruction_unique_uses_native_reducer",
+        "yes" if "./vm_instruction_unique_fast dumps/vmtail-wide-1m-w16/vm_instruction_trace.tsv" in makefile else "no",
+        "Whether the instruction-unique Make target uses the native reducer.")
+    add(rows, "native_acceleration", "instruction_unique_fast_check", "make instruction-unique-fast-check",
+        "Byte-for-byte parity gate against vm_bytecode_recover.py --instructions.")
+
+
 def build_rows():
     rows = []
     artifact_metrics(rows)
@@ -1444,6 +1459,7 @@ def build_rows():
     synthetic_gap_final_tail_site_metrics(rows)
     synthetic_gap_live_in_reentry_metrics(rows)
     synthetic_gap_allstatic_reentry_metrics(rows)
+    native_acceleration_metrics(rows)
     gate_metrics(rows)
     add(rows, "caveat", "completion_status", "not_complete",
         "This is a mechanically checked C reconstruction of recovered layers, not proof that every VM bytecode path has been found.")
