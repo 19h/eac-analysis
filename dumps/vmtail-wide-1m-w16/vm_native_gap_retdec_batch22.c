@@ -6,22 +6,22 @@
  * coverage -> queue -> RetDec batch -> coverage.
  *
  * Ranges:
- *   0x52a5a-0x52b5a rank=11 name=fcn.00052a5a kind=r2_discovered bytes=256 uncovered=256
- *   0x68d1a-0x68e1a rank=12 name=fcn.00068d1a kind=r2_discovered bytes=256 uncovered=256
- *   0x4d2e40-0x4d2f40 rank=13 name=fcn.004d2e40 kind=r2_discovered bytes=256 uncovered=256
- *   0x4c9fa-0x4caf9 rank=14 name=fcn.0004c9fa kind=r2_discovered bytes=255 uncovered=255
- *   0x72832-0x72931 rank=15 name=fcn.00072832 kind=r2_discovered bytes=255 uncovered=255
- *   0x4d3c90-0x4d3d8f rank=16 name=fcn.004d3c90 kind=r2_discovered bytes=255 uncovered=255
- *   0x5f4d0-0x5f5ce rank=17 name=fcn.0005f4d0 kind=r2_discovered bytes=254 uncovered=254
- *   0x548b0-0x549ac rank=18 name=fcn.000548b0 kind=r2_discovered bytes=252 uncovered=252
- *   0x488a10-0x488b0c rank=19 name=fcn.00488a10 kind=r2_discovered bytes=252 uncovered=252
- *   0x61fb0-0x620ab rank=20 name=fcn.00061fb0 kind=r2_discovered bytes=251 uncovered=251
- *   0x4977a0-0x49789b rank=21 name=fcn.004977a0 kind=r2_discovered bytes=251 uncovered=251
- *   0x4bd480-0x4bd57b rank=22 name=fcn.004bd480 kind=r2_discovered bytes=251 uncovered=251
- *   0x4d9090-0x4d918b rank=23 name=fcn.004d9090 kind=r2_discovered bytes=251 uncovered=251
- *   0x61698-0x61792 rank=24 name=fcn.00061698 kind=r2_discovered bytes=250 uncovered=250
- *   0x62460-0x6255a rank=25 name=fcn.00062460 kind=r2_discovered bytes=250 uncovered=250
- *   0x491110-0x49120a rank=26 name=fcn.00491110 kind=r2_discovered bytes=250 uncovered=250
+ *   0x52a5a-0x52b5a rank=- name=- kind=- bytes=- uncovered=-
+ *   0x68d1a-0x68e1a rank=- name=- kind=- bytes=- uncovered=-
+ *   0x4d2e40-0x4d2f40 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x4c9fa-0x4caf9 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x72832-0x72931 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x4d3c90-0x4d3d8f rank=- name=- kind=- bytes=- uncovered=-
+ *   0x5f4d0-0x5f5ce rank=- name=- kind=- bytes=- uncovered=-
+ *   0x548b0-0x549ac rank=- name=- kind=- bytes=- uncovered=-
+ *   0x488a10-0x488b0c rank=- name=- kind=- bytes=- uncovered=-
+ *   0x61fb0-0x620ab rank=- name=- kind=- bytes=- uncovered=-
+ *   0x4977a0-0x49789b rank=- name=- kind=- bytes=- uncovered=-
+ *   0x4bd480-0x4bd57b rank=- name=- kind=- bytes=- uncovered=-
+ *   0x4d9090-0x4d918b rank=- name=- kind=- bytes=- uncovered=-
+ *   0x61698-0x61792 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x62460-0x6255a rank=- name=- kind=- bytes=- uncovered=-
+ *   0x491110-0x49120a rank=- name=- kind=- bytes=- uncovered=-
  */
 #include <stdbool.h>
 #include <stdio.h>

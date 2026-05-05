@@ -680,7 +680,7 @@ int64_t function_58947(int64_t a1, int64_t a2, int64_t a3) {
             // 0x589ec
             *(int64_t *)v12 = v11;
             *v6 = v12 + 8;
-            v11 = &g7;
+            v11 = (int64_t)&g7;
         }
         // 0x58a1a
         v7++;
@@ -699,7 +699,7 @@ int64_t function_58947(int64_t a1, int64_t a2, int64_t a3) {
                 // 0x589ec
                 *(int64_t *)v12 = v11;
                 *v6 = v12 + 8;
-                v11 = &g7;
+                v11 = (int64_t)&g7;
             }
             // 0x58a1a
             v7++;

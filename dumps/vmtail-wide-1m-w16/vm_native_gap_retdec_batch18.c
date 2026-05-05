@@ -397,7 +397,7 @@ int64_t function_4abec(int64_t a1) {
             }
             // 0x4acab
             __stack_chk_fail();
-            v13 = &g10;
+            v13 = (int64_t)&g10;
             v15 = v14;
             goto lab_0x4acb0;
         } else {
@@ -1194,7 +1194,7 @@ int64_t function_573800(int64_t a1, int64_t a2, int64_t a3, uint64_t a4, int64_t
             int64_t v10 = *(int64_t *)a9; // 0x573844
             int64_t v11 = (int64_t)&v9; // 0x573861
             int64_t v12; // bp-88, 0x573800
-            int64_t v13 = &v12; // 0x573868
+            int64_t v13 = (int64_t)&v12; // 0x573868
             v9 = v13;
             function_54c860(&v9, v10, 4 * *(int64_t *)(a9 + 8) + v10, 0);
             int64_t v14 = a4 % 256; // 0x573875
