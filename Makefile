@@ -83,6 +83,9 @@ STATIC_ONLY_TIER1_MODELS_MD := $(PRIMARY_DIR)/vm_static_only_tier1_handler_model
 STATIC_ONLY_TIER2_SPLIT_C := $(PRIMARY_DIR)/vm_static_only_tier2_split_models.c
 STATIC_ONLY_TIER2_SPLIT_TSV := $(PRIMARY_DIR)/vm_static_only_tier2_split_models.tsv
 STATIC_ONLY_TIER2_SPLIT_MD := $(PRIMARY_DIR)/vm_static_only_tier2_split_models.md
+STATIC_ONLY_TIER3_SHARED_C := $(PRIMARY_DIR)/vm_static_only_tier3_shared_models.c
+STATIC_ONLY_TIER3_SHARED_TSV := $(PRIMARY_DIR)/vm_static_only_tier3_shared_models.tsv
+STATIC_ONLY_TIER3_SHARED_MD := $(PRIMARY_DIR)/vm_static_only_tier3_shared_models.md
 
 .PHONY: all clean fast-replay fast-state fast-gpr fast-predicates fast-state-predicates fast-gpr-predicates fast-transfer fast-state-transfer fast-gpr-transfer fast-validators fast-paths fast-gpr-paths instruction-trace instruction-trace-refresh instruction-unique instruction-unique-fast-check bytecode-segments-fast-check bytecode-blocks-fast-check instruction-lift sampled-recovery file-atlas file-fill long-branches hidden-transitions sampled-operands hidden-fill frontier-fill footprint-fill control-edges bytecode-ir bytecode-basic-blocks synthetic-spans synthetic-tails synthetic-tail-lift synthetic-successor-gaps synthetic-gap-transfer-probe synthetic-gap-dynamic-stitch synthetic-gap-chain-probe synthetic-gap-residual-audit synthetic-gap-concrete-state-audit synthetic-gap-state-trace-targets synthetic-gap-live-context-audit synthetic-gap-table-read-diagnostic synthetic-gap-table-memory-probe synthetic-gap-runtime-table-memory-probe synthetic-gap-sampled-control-correlation synthetic-gap-focused-direct-trace-audit synthetic-gap-focused-sequence-audit synthetic-gap-observed-chain-bridge synthetic-gap-observed-chain-replay synthetic-gap-chain-slot-reconciliation synthetic-gap-unresolved-family-audit synthetic-gap-source299-context-probe synthetic-gap-source299-ret-patch-probe synthetic-gap-sampled-ret-patch-probe synthetic-gap-ret-patch-native-target-atlas native-ret-patch-target-pseudocode native-ret-patch-epilogues-retdec native-ret-patch-source278-retdec native-ret-patch-followups native-ret-patch-followup-retdec native-obfuscated-islands native-obfuscated-second-stage native-obfuscated-second-stage-dynamic native-obfuscated-second-stage-slot-proof native-obfuscated-second-stage-stack-source native-obfuscated-second-stage-rbx-provenance native-obfuscated-second-stage-model native-obfuscated-control-model native-ret-patch-hidden-bridge native-handler-environment-coverage static-only-handler-queue static-only-tier0-models static-only-tier1-models static-only-tier2-split target-only-handlers-retdec unobserved-handlers-retdec unobserved-handlers-retdec-batch0 weak-handlers-retdec validated-handlers-retdec handler-retdec-index unresolved-family-chains synthetic-gap-live-snapshot-transfer-probe synthetic-gap-live-table-evidence synthetic-gap-symbolic-successors synthetic-gap-live-in-roles final-tail-site-probe synthetic-gap-live-in-reentry-probe synthetic-gap-allstatic-reentry-probe pseudocode pseudocode-full handler-pseudocode path-pseudocode source-bundle all-evidence-bundle pseudocode-syntax-check pseudocode-object-check pseudocode-link-check coverage-matrix coverage-audit c-reconstruction-manifest
 
@@ -158,6 +161,9 @@ vm_static_only_tier1_models_dump: vm_static_only_tier1_models_dump.c
 	$(CC) $(CFLAGS) -O2 -o $@ $<
 
 vm_static_only_tier2_split_dump: vm_static_only_tier2_split_dump.c
+	$(CC) $(CFLAGS) -O2 -o $@ $<
+
+vm_static_only_tier3_shared_dump: vm_static_only_tier3_shared_dump.c
 	$(CC) $(CFLAGS) -O2 -o $@ $<
 
 fast-replay: fast-state fast-gpr
@@ -598,6 +604,17 @@ $(STATIC_ONLY_TIER2_SPLIT_MD): vm_static_only_tier2_split_dump $(STATIC_ONLY_HAN
 	./vm_static_only_tier2_split_dump --markdown > $@
 
 static-only-tier2-split: $(STATIC_ONLY_TIER2_SPLIT_C) $(STATIC_ONLY_TIER2_SPLIT_TSV) $(STATIC_ONLY_TIER2_SPLIT_MD)
+
+$(STATIC_ONLY_TIER3_SHARED_C): vm_static_only_tier3_shared_dump $(STATIC_ONLY_HANDLER_QUEUE_TSV)
+	./vm_static_only_tier3_shared_dump --c > $@
+
+$(STATIC_ONLY_TIER3_SHARED_TSV): vm_static_only_tier3_shared_dump $(STATIC_ONLY_HANDLER_QUEUE_TSV)
+	./vm_static_only_tier3_shared_dump --tsv > $@
+
+$(STATIC_ONLY_TIER3_SHARED_MD): vm_static_only_tier3_shared_dump $(STATIC_ONLY_HANDLER_QUEUE_TSV)
+	./vm_static_only_tier3_shared_dump --markdown > $@
+
+static-only-tier3-shared: $(STATIC_ONLY_TIER3_SHARED_C) $(STATIC_ONLY_TIER3_SHARED_TSV) $(STATIC_ONLY_TIER3_SHARED_MD)
 
 $(TARGET_ONLY_HANDLER_RETDEC_C): vm_target_only_handlers_retdec.py $(PRIMARY_DIR)/vm_handler_semantics.tsv $(PRIMARY_DIR)/vm_handler_table.tsv eac.elf
 	python3 vm_target_only_handlers_retdec.py > $@
