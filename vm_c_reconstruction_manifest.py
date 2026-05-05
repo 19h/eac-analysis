@@ -25,6 +25,9 @@ ARTIFACTS = [
     ("native_function_inventory_c", TRACE_DIR / "vm_native_function_inventory.c"),
     ("native_function_inventory_tsv", TRACE_DIR / "vm_native_function_inventory.tsv"),
     ("native_function_inventory_md", TRACE_DIR / "vm_native_function_inventory.md"),
+    ("native_retdec_gap_queue_c", TRACE_DIR / "vm_native_retdec_gap_queue.c"),
+    ("native_retdec_gap_queue_tsv", TRACE_DIR / "vm_native_retdec_gap_queue.tsv"),
+    ("native_retdec_gap_queue_md", TRACE_DIR / "vm_native_retdec_gap_queue.md"),
     ("direct_blocks_top", TRACE_DIR / "vm_pseudocode_top.c"),
     ("program_blocks_top", TRACE_DIR / "vm_program_pseudocode_top.c"),
     ("program_blocks_full", TRACE_DIR / "vm_program_pseudocode_full.c"),
@@ -279,6 +282,9 @@ def c_shape_metrics(rows):
     native_function_inventory = read_text(TRACE_DIR / "vm_native_function_inventory.c")
     native_function_inventory_index = read_tsv(TRACE_DIR / "vm_native_function_inventory.tsv")
     native_function_kind_mix = Counter(row.get("kind", "") for row in native_function_inventory_index)
+    native_retdec_gap_queue = read_text(TRACE_DIR / "vm_native_retdec_gap_queue.c")
+    native_retdec_gap_queue_index = read_tsv(TRACE_DIR / "vm_native_retdec_gap_queue.tsv")
+    native_retdec_gap_queue_tiers = Counter(row.get("priority_class", "") for row in native_retdec_gap_queue_index)
     binary_data_sections = read_text(TRACE_DIR / "vm_binary_data_sections.c")
     binary_data_sections_index = read_tsv(TRACE_DIR / "vm_binary_data_sections.tsv")
     binary_data_string_rows = [row for row in binary_data_sections_index if row.get("kind", "") == "string"]
