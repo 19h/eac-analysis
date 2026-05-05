@@ -6,22 +6,22 @@
  * coverage -> queue -> RetDec batch -> coverage.
  *
  * Ranges:
- *   0x48e480-0x48e5f4 rank=6 name=fcn.0048e480 kind=r2_discovered bytes=372 uncovered=372
- *   0x4d2690-0x4d2804 rank=7 name=fcn.004d2690 kind=r2_discovered bytes=372 uncovered=372
- *   0x50cac0-0x50cc34 rank=8 name=fcn.0050cac0 kind=r2_discovered bytes=372 uncovered=372
- *   0x2d980-0x2daf3 rank=9 name=fcn.0002d980 kind=r2_discovered bytes=371 uncovered=371
- *   0x549ac-0x54b1f rank=10 name=fcn.000549ac kind=r2_discovered bytes=371 uncovered=371
- *   0x55c6e-0x55de1 rank=11 name=fcn.00055c6e kind=r2_discovered bytes=371 uncovered=371
- *   0x59cd2-0x59e45 rank=12 name=fcn.00059cd2 kind=r2_discovered bytes=371 uncovered=371
- *   0x50c440-0x50c5b3 rank=13 name=fcn.0050c440 kind=r2_discovered bytes=371 uncovered=371
- *   0x4fd550-0x4fd6c1 rank=14 name=method.std::basic_filebuf_char__std::char_traits_char___.virtual_88 kind=native_discovered bytes=369 uncovered=369
- *   0x4c87e-0x4c9ee rank=15 name=fcn.0004c87e kind=r2_discovered bytes=368 uncovered=368
- *   0x4d2270-0x4d23e0 rank=16 name=fcn.004d2270 kind=r2_discovered bytes=368 uncovered=368
- *   0x5001a-0x50189 rank=17 name=fcn.0005001a kind=r2_discovered bytes=367 uncovered=367
- *   0x6837a-0x684e8 rank=18 name=fcn.0006837a kind=r2_discovered bytes=366 uncovered=366
- *   0x4a578-0x4a6e5 rank=19 name=fcn.0004a578 kind=r2_discovered bytes=365 uncovered=365
- *   0x2808e-0x281fa rank=20 name=fcn.0002808e kind=r2_discovered bytes=364 uncovered=364
- *   0x4b9df0-0x4b9f5c rank=21 name=fcn.004b9df0 kind=r2_discovered bytes=364 uncovered=364
+ *   0x48e480-0x48e5f4 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x4d2690-0x4d2804 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x50cac0-0x50cc34 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x2d980-0x2daf3 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x549ac-0x54b1f rank=- name=- kind=- bytes=- uncovered=-
+ *   0x55c6e-0x55de1 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x59cd2-0x59e45 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x50c440-0x50c5b3 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x4fd550-0x4fd6c1 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x4c87e-0x4c9ee rank=- name=- kind=- bytes=- uncovered=-
+ *   0x4d2270-0x4d23e0 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x5001a-0x50189 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x6837a-0x684e8 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x4a578-0x4a6e5 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x2808e-0x281fa rank=- name=- kind=- bytes=- uncovered=-
+ *   0x4b9df0-0x4b9f5c rank=- name=- kind=- bytes=- uncovered=-
  */
 #include <stdbool.h>
 #include <stdio.h>
@@ -75,11 +75,18 @@ int128_t __asm_movss(int32_t value);
 int64_t __asm_movss_133(int128_t value);
 int128_t __asm_movdqa(int128_t value);
 int128_t __asm_movdqu(int128_t value);
+void __asm_movdqu_133();
 int128_t __asm_movapd(int128_t value);
 int128_t __asm_andpd(int128_t left, int128_t right);
 int128_t __asm_andnpd(int128_t left, int128_t right);
 int128_t __asm_divsd(int128_t left, int64_t right);
 int128_t __asm_divsd_133(int128_t left, int128_t right);
+int128_t __asm_pclmulqdq(int128_t left, int128_t right, int imm);
+int128_t __asm_psrldq(int128_t value, int count);
+int128_t __asm_pslldq(int128_t value, int count);
+int128_t __asm_psllq(int128_t value, int count);
+int128_t __asm_psrlq(int128_t value, int count);
+int128_t __asm_por(int128_t left, int128_t right);
 int128_t __asm_pxor(int128_t left, int128_t right);
 int128_t __asm_cmpnlesd(int128_t left, int128_t right);
 int128_t __asm_cvtsi2sd(int64_t value);
@@ -105,9 +112,11 @@ int32_t mbsnrtowcs(int32_t *dst, char **src, size_t nms, size_t len, struct _TYP
 size_t wcslen(const int32_t *s);
 int32_t *wmemcpy(int32_t *dest, const int32_t *src, size_t n);
 int32_t *wmemset(int32_t *wcs, int32_t wc, size_t n);
-void *memset2(void *s, int c, size_t n);
+int64_t memset2(void *s, int c, size_t n);
 int pthread_mutex_lock(void *mutex);
 int pthread_mutex_unlock(void *mutex);
+int64_t readlink(const char *path, char *buf, size_t bufsiz);
+char *realpath(const char *path, char *resolved_path);
 char *strdup(const char *s);
 struct _Unwind_Exception;
 void _Unwind_Resume(struct _Unwind_Exception *exception);
