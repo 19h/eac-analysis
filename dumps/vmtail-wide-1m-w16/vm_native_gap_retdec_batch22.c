@@ -48,7 +48,10 @@ struct timeval;
 struct utsname;
 struct iovec;
 struct epoll_event;
+#ifndef EAC_RETDEC_CPUID_REGS_DEFINED
+#define EAC_RETDEC_CPUID_REGS_DEFINED 1
 struct eac_retdec_cpuid_regs { uint32_t e0; uint32_t e1; uint32_t e2; uint32_t e3; };
+#endif
 #define F_GETFL 3
 #define F_SETFL 4
 #define SO_DEBUG 1
