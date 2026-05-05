@@ -220,6 +220,13 @@ def emit_synthetic_edge(edge, synthetic_spans, args):
                 f"targets={c_comment(tail_lift.get('long_control_targets', '') or '-')}; "
                 f"deltas={c_comment(tail_lift.get('long_control_deltas', '') or '-')} */"
             )
+        if tail_lift.get("long_control_prefixes"):
+            print(
+                f"    /* decoded long-control prefix: "
+                f"{c_comment(tail_lift.get('long_control_prefixes', ''))}; "
+                f"targets={c_comment(tail_lift.get('long_control_prefix_targets', '') or '-')}; "
+                f"deltas={c_comment(tail_lift.get('long_control_prefix_deltas', '') or '-')} */"
+            )
     if source is not None:
         print(f"    r = {op_name(source)}(vm);")
     tail_expr = tail_target_load(tail_lift, after_prefix=source is not None)
