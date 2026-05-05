@@ -642,6 +642,15 @@ def queue_by_range(path):
     return {row.get("selected_range", ""): row for row in read_tsv(path)}
 
 
+def read_ranges_file(path):
+    ranges = []
+    for line in Path(path).read_text(errors="replace").splitlines():
+        line = line.split("#", 1)[0].strip()
+        if line:
+            ranges.append(line)
+    return ranges
+
+
 def extract_functions(text):
     start_marker = "// ------------------------ Functions -------------------------"
     end_marker = "// --------------------- Meta-Information ---------------------"
@@ -712,13 +721,14 @@ def c_comment(value):
 def main():
     parser = argparse.ArgumentParser(description="Emit targeted RetDec C for a fixed native gap queue batch.")
     parser.add_argument("--batch-index", type=int, default=0)
+    parser.add_argument("--ranges-file")
     parser.add_argument("--queue", default=str(TRACE_DIR / "vm_native_retdec_gap_queue.tsv"))
     parser.add_argument("--eac", default="eac.elf")
     parser.add_argument("--retdec", default="retdec-decompiler")
     parser.add_argument("--timeout", type=int, default=90)
     args = parser.parse_args()
 
-    ranges = BATCHES.get(args.batch_index)
+    ranges = read_ranges_file(args.ranges_file) if args.ranges_file else BATCHES.get(args.batch_index)
     if not ranges:
         raise SystemExit(f"no fixed native gap RetDec batch {args.batch_index}")
 
