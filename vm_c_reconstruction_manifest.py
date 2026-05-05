@@ -22,6 +22,9 @@ ARTIFACTS = [
     ("native_executable_coverage_audit_c", TRACE_DIR / "vm_native_executable_coverage_audit.c"),
     ("native_executable_coverage_audit_tsv", TRACE_DIR / "vm_native_executable_coverage_audit.tsv"),
     ("native_executable_coverage_audit_md", TRACE_DIR / "vm_native_executable_coverage_audit.md"),
+    ("native_function_inventory_c", TRACE_DIR / "vm_native_function_inventory.c"),
+    ("native_function_inventory_tsv", TRACE_DIR / "vm_native_function_inventory.tsv"),
+    ("native_function_inventory_md", TRACE_DIR / "vm_native_function_inventory.md"),
     ("direct_blocks_top", TRACE_DIR / "vm_pseudocode_top.c"),
     ("program_blocks_top", TRACE_DIR / "vm_program_pseudocode_top.c"),
     ("program_blocks_full", TRACE_DIR / "vm_program_pseudocode_full.c"),
@@ -273,6 +276,9 @@ def c_shape_metrics(rows):
     native_executable_section_rows = [row for row in native_executable_coverage_audit_index if row.get("row_type", "") == "section"]
     native_executable_range_rows = [row for row in native_executable_coverage_audit_index if row.get("row_type", "") == "range"]
     native_executable_gap_rows = [row for row in native_executable_coverage_audit_index if row.get("row_type", "") == "gap"]
+    native_function_inventory = read_text(TRACE_DIR / "vm_native_function_inventory.c")
+    native_function_inventory_index = read_tsv(TRACE_DIR / "vm_native_function_inventory.tsv")
+    native_function_kind_mix = Counter(row.get("kind", "") for row in native_function_inventory_index)
     binary_data_sections = read_text(TRACE_DIR / "vm_binary_data_sections.c")
     binary_data_sections_index = read_tsv(TRACE_DIR / "vm_binary_data_sections.tsv")
     binary_data_string_rows = [row for row in binary_data_sections_index if row.get("kind", "") == "string"]
