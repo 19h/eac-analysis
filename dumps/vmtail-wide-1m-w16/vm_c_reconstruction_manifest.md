@@ -23,8 +23,8 @@ Reproducible inventory of the current C-shaped reconstruction artifacts and gate
 | `artifact` | `source_bundle_lines` | `304448` | Current line count. |
 | `artifact` | `source_bundle_bytes` | `20567203` | Current file size in bytes. |
 | `artifact` | `source_all_evidence_bundle_path` | `dumps/vmtail-wide-1m-w16/vm_recovered_source_all_evidence_bundle.c` | Generated reconstruction artifact. |
-| `artifact` | `source_all_evidence_bundle_lines` | `430583` | Current line count. |
-| `artifact` | `source_all_evidence_bundle_bytes` | `29699098` | Current file size in bytes. |
+| `artifact` | `source_all_evidence_bundle_lines` | `430877` | Current line count. |
+| `artifact` | `source_all_evidence_bundle_bytes` | `29753713` | Current file size in bytes. |
 | `artifact` | `synthetic_successor_gaps_tsv_path` | `dumps/vmtail-wide-1m-w16/vm_synthetic_successor_gaps.tsv` | Generated reconstruction artifact. |
 | `artifact` | `synthetic_successor_gaps_tsv_lines` | `22` | Current line count. |
 | `artifact` | `synthetic_successor_gaps_tsv_bytes` | `5197` | Current file size in bytes. |
@@ -268,6 +268,15 @@ Reproducible inventory of the current C-shaped reconstruction artifacts and gate
 | `artifact` | `native_handler_environment_coverage_md_path` | `dumps/vmtail-wide-1m-w16/vm_native_handler_environment_coverage.md` | Generated reconstruction artifact. |
 | `artifact` | `native_handler_environment_coverage_md_lines` | `15` | Current line count. |
 | `artifact` | `native_handler_environment_coverage_md_bytes` | `618` | Current file size in bytes. |
+| `artifact` | `config_coverage_frontier_c_path` | `dumps/vmtail-wide-1m-w16/vm_config_coverage_frontier.c` | Generated reconstruction artifact. |
+| `artifact` | `config_coverage_frontier_c_lines` | `292` | Current line count. |
+| `artifact` | `config_coverage_frontier_c_bytes` | `53893` | Current file size in bytes. |
+| `artifact` | `config_coverage_frontier_tsv_path` | `dumps/vmtail-wide-1m-w16/vm_config_coverage_frontier.tsv` | Generated reconstruction artifact. |
+| `artifact` | `config_coverage_frontier_tsv_lines` | `245` | Current line count. |
+| `artifact` | `config_coverage_frontier_tsv_bytes` | `49636` | Current file size in bytes. |
+| `artifact` | `config_coverage_frontier_md_path` | `dumps/vmtail-wide-1m-w16/vm_config_coverage_frontier.md` | Generated reconstruction artifact. |
+| `artifact` | `config_coverage_frontier_md_lines` | `189` | Current line count. |
+| `artifact` | `config_coverage_frontier_md_bytes` | `25575` | Current file size in bytes. |
 | `artifact` | `binary_data_sections_c_path` | `dumps/vmtail-wide-1m-w16/vm_binary_data_sections.c` | Generated reconstruction artifact. |
 | `artifact` | `binary_data_sections_c_lines` | `82008` | Current line count. |
 | `artifact` | `binary_data_sections_c_bytes` | `6389378` | Current file size in bytes. |
@@ -581,6 +590,15 @@ Reproducible inventory of the current C-shaped reconstruction artifacts and gate
 | `coverage` | `native_handler_environment_coverage_synthetic_target_rows` | `205` | Dispatch entries seen as a target only through synthetic fill sidecars or mixed synthetic evidence. |
 | `coverage` | `native_handler_environment_coverage_static_only_rows` | `155` | Dispatch entries present in the static handler table but not observed in the trace matrix. |
 | `coverage` | `native_handler_environment_coverage_status_mix` | `concrete_source_and_target_seen:202,static_only_unobserved_in_trace_matrix:155,concrete_target_only:3` | Status mix for handler-level environment coverage. |
+| `coverage_frontier` | `config_coverage_metric_rows` | `71` | C-carried coverage/config audit metric rows generated from trace/static coverage inputs. |
+| `coverage_frontier` | `config_coverage_frontier_rows` | `173` | C-carried frontier rows for scenario/config-limited coverage gaps. |
+| `coverage_frontier` | `config_coverage_static_only_handler_rows` | `155` | Static-only handler frontier rows retained for targeted lifting or forced tracing. |
+| `coverage_frontier` | `config_coverage_target_only_handler_rows` | `3` | Concrete target-only handler frontier rows lacking concrete source execution. |
+| `coverage_frontier` | `config_coverage_path_unknown_target_rows` | `10` | Path-specialized microcode rows whose target/IP validation remains incomplete. |
+| `coverage_frontier` | `config_coverage_no_real_network_rows` | `1` | Frontier rows documenting that no concrete real-network-allowed instruction trace exists. |
+| `coverage_frontier` | `config_coverage_synthetic_fill_only_rows` | `4` | Derived synthetic-fill coverage rows that still need concrete trace or static proof. |
+| `c_shape` | `config_coverage_metric_c_rows` | `71` | Syntax-checkable C metric rows in the config coverage frontier artifact. |
+| `c_shape` | `config_coverage_frontier_c_rows` | `173` | Syntax-checkable C frontier rows in the config coverage frontier artifact. |
 | `data_surface` | `binary_data_section_rows` | `29` | Allocatable ELF sections tracked by the binary data carrier. |
 | `data_surface` | `binary_data_emitted_section_rows` | `22` | Allocatable non-executable ELF sections emitted as exact C byte arrays. |
 | `data_surface` | `binary_data_emitted_bytes` | `0xe63f7` | Exact bytes carried for allocatable non-executable ELF data sections. |
@@ -808,9 +826,12 @@ Reproducible inventory of the current C-shaped reconstruction artifacts and gate
 | `c_shape` | `all_evidence_bundle_path_specialized_model_rows` | `560` | Validated path-specialized handler metadata rows retained in the all-evidence single file. |
 | `c_shape` | `all_evidence_bundle_path_specialized_dispatch_cases` | `560` | Validated path-specialized handler dispatcher cases retained in the all-evidence single file. |
 | `c_shape` | `all_evidence_bundle_path_specialized_dispatchers` | `1` | Validated path-specialized handler dispatcher functions retained in the all-evidence single file. |
-| `c_shape` | `all_evidence_bundle_sidecar_sections` | `41` | Renamed native RetDec/control sidecar files appended to the all-evidence single file. |
+| `c_shape` | `all_evidence_bundle_sidecar_sections` | `42` | Renamed native RetDec/control sidecar files appended to the all-evidence single file. |
 | `c_shape` | `all_evidence_bundle_prefixed_retdec_functions` | `624` | RetDec native C functions carried in the all-evidence single file with per-sidecar symbol prefixes. |
-| `c_shape` | `all_evidence_bundle_prefixed_symbols` | `11255` | Prefixed symbols used to keep overlapping native sidecar C in one translation unit. |
+| `c_shape` | `all_evidence_bundle_prefixed_symbols` | `11263` | Prefixed symbols used to keep overlapping native sidecar C in one translation unit. |
+| `coverage_frontier` | `all_evidence_bundle_config_coverage_metric_rows` | `71` | Config coverage audit metric rows retained in the all-evidence single C file. |
+| `coverage_frontier` | `all_evidence_bundle_config_coverage_frontier_rows` | `173` | Config/path frontier rows retained in the all-evidence single C file. |
+| `coverage_frontier` | `all_evidence_bundle_config_coverage_frontier_symbols` | `8` | Prefixed config coverage frontier symbols retained in the all-evidence single C file. |
 | `data_surface` | `all_evidence_bundle_binary_data_section_arrays` | `22` | Exact binary data section arrays retained in the all-evidence single C file. |
 | `data_surface` | `all_evidence_bundle_binary_data_string_refs` | `2917` | Full runtime string-reference rows retained in the all-evidence single C file. |
 | `data_surface` | `all_evidence_bundle_binary_data_string_row_static_asserts` | `1` | C11 static assertion retained for all-evidence runtime string-reference count. |
@@ -1160,6 +1181,9 @@ Reproducible inventory of the current C-shaped reconstruction artifacts and gate
 | `native_acceleration` | `native_handler_environment_coverage_dump_source_lines` | `507` | Native handler environment coverage generator source size. |
 | `native_acceleration` | `native_handler_environment_coverage_dump_binary_bytes` | `64448` | Current compiled native handler environment coverage generator size. |
 | `native_acceleration` | `native_handler_environment_coverage_uses_native_generator` | `yes` | Whether the handler environment coverage C/TSV/Markdown artifacts are generated by the native C tool. |
+| `native_acceleration` | `config_coverage_frontier_dump_source_lines` | `740` | Native configuration coverage frontier generator source size. |
+| `native_acceleration` | `config_coverage_frontier_dump_binary_bytes` | `38400` | Current compiled native configuration coverage frontier generator size. |
+| `native_acceleration` | `config_coverage_frontier_uses_native_generator` | `yes` | Whether the config coverage frontier C/TSV/Markdown artifacts are generated by the native C tool. |
 | `native_acceleration` | `binary_data_sections_dump_source_lines` | `560` | Native ELF data-section carrier generator source size. |
 | `native_acceleration` | `binary_data_sections_dump_binary_bytes` | `25280` | Current compiled native ELF data-section carrier generator size. |
 | `native_acceleration` | `binary_data_sections_uses_native_generator` | `yes` | Whether binary data section C/TSV/Markdown artifacts are generated by the native C tool. |
