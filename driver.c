@@ -22,7 +22,8 @@ enum {
     EAC_MAX_TAIL_SITES = 512,
     EAC_IP_WORD_COUNT = 16,
     EAC_MAX_SCRATCH_OFFSETS = 64,
-    EAC_MAX_READ_RANGES = 512
+    EAC_MAX_READ_RANGES = 512,
+    EAC_MAX_FOCUS_IPS = 128
 };
 
 enum tail_reg {
@@ -66,6 +67,10 @@ static int g_tail_regs;
 static int g_tail_scratch;
 static int g_tail_mem;
 static uint32_t g_tail_mem_reg_mask;
+static uintptr_t g_tail_focus_ips[EAC_MAX_FOCUS_IPS];
+static size_t g_tail_focus_ip_count;
+static uint64_t g_tail_focus_hits;
+static uint64_t g_tail_stop_after_matches;
 static struct tail_site g_tail_sites[EAC_MAX_TAIL_SITES];
 static size_t g_tail_site_count;
 static uint16_t g_scratch_offsets[EAC_MAX_SCRATCH_OFFSETS];
@@ -264,6 +269,38 @@ static uint32_t parse_tail_reg_mask(const char *spec) {
         while (*p != '\0' && *p != ',') ++p;
     }
     return mask != 0 ? mask : all_tail_reg_bits();
+}
+
+static int add_focus_ip(uintptr_t off) {
+    for (size_t i = 0; i < g_tail_focus_ip_count; ++i) {
+        if (g_tail_focus_ips[i] == off) return 0;
+    }
+    if (g_tail_focus_ip_count >= EAC_MAX_FOCUS_IPS) return -1;
+    g_tail_focus_ips[g_tail_focus_ip_count++] = off;
+    return 0;
+}
+
+static void parse_focus_ips(const char *spec) {
+    if (spec == NULL || *spec == '\0') return;
+    const char *p = spec;
+    while (*p != '\0') {
+        while (*p == ' ' || *p == '\t' || *p == ',') ++p;
+        if (*p == '\0') break;
+
+        errno = 0;
+        char *end = NULL;
+        unsigned long off = strtoul(p, &end, 0);
+        if (errno != 0 || end == p) {
+            fprintf(stderr, "[DRIVER] ignoring malformed focus VM IP near '%s'\n", p);
+            while (*p != '\0' && *p != ',') ++p;
+            continue;
+        }
+        if (add_focus_ip((uintptr_t)off) != 0) {
+            fprintf(stderr, "[DRIVER] ignoring focus VM IP 0x%lx\n", off);
+        }
+        p = end;
+        while (*p != '\0' && *p != ',') ++p;
+    }
 }
 
 static int add_scratch_offset(uint16_t off) {
