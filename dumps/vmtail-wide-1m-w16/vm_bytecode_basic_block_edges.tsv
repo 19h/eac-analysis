@@ -1,0 +1,500 @@
+source_block	source_start_vm_ip	source_terminal_vm_ip	target_block	target_vm_ip	edge_kind	target_coverage_statuses	events	terminal_kind	source_entry	target_entry	delta	semantic_ir
+0	0xd0ac0	0xd0c5d	1	0xd0c5f	fallthrough		1	exact_instruction	144	354	+0x2	next = 354@0xc2241:1, ip += +0x2; dispatch_model=static_100; state=state_mixed
+1	0xd0c5f	0xd0c75	4	0xd0eb3	decoded_control		1	long_branch_forward	246	354	+0x23e	next = table[354], ip += 0x23e
+2	0xd0c86	0xd0d3f		0xd0d43	covered_synthetic_fallthrough	hidden_span_of_14:4	4	exact_instruction	174	264	+0x4	next = 264@0xaf4cf:4, ip += +0x4; dispatch_model=static_100; state=state_add_const
+3	0xd0d51	0xd0eab	1	0xd0c5f	decoded_control		4	long_branch_backedge	302	354	-0x24c	next = table[354], ip -= 0x24c
+4	0xd0eb3	0xd0ffe		0xd1002	covered_synthetic_fallthrough	frontier_span_of_14:1	1	exact_instruction	174	95	+0x4	next = 95@0x8c41c:1, ip += +0x4; dispatch_model=static_100; state=state_add_const
+5	0xd1010	0xd1280		0xd1284	covered_synthetic_fallthrough	frontier_span_of_14:1	1	exact_instruction	176	356	+0x4	next = 356@0xc291a:1, ip += +0x4; dispatch_model=static_100; state=state_add_const
+6	0xd1292	0xd1441		0xd1445	covered_synthetic_fallthrough	target_footprint_of_6:1	1	exact_instruction	158	175	+0x4	next = 175@0x9c08f:1, ip += +0x4; dispatch_model=static_100; state=state_add_const
+7	0xd3fac	0xd4207		0xd420b	covered_synthetic_fallthrough	hidden_span_of_17:1	1	exact_instruction	174	321	+0x4	next = 321@0xbb1dd:1, ip += +0x4; dispatch_model=static_100; state=state_add_const
+8	0xd421c	0xd43cb		0xd43cf	covered_synthetic_fallthrough	hidden_span_of_17:1	1	exact_instruction	176	80	+0x4	next = 80@0x88a58:1, ip += +0x4; dispatch_model=static_100; state=state_add_const
+9	0xd43e0	0xd4561	10	0xd476e	decoded_control		1	long_branch_forward	334	354	+0x20d	next = table[354], ip += 0x20d
+10	0xd476e	0xd4885		0xd4889	covered_synthetic_fallthrough	frontier_span_of_14:1	1	exact_instruction	161	264	+0x4	next = 264@0xaf4cf:1, ip += +0x4; dispatch_model=static_100; state=state_add_const
+11	0xd4897	0xd4a7f		0xd4a83	covered_synthetic_fallthrough	hidden_span_of_14:1	1	exact_instruction	158	278	+0x4	next = 278@0xb2342:1, ip += +0x4; dispatch_model=static_100; state=state_add_const
+12	0xd4a91	0xd4be6		0xd4beb	covered_synthetic_fallthrough	hidden_span_of_17:1	1	exact_instruction	125	316	+0x5	next = 316@0xb987b:1, ip += +0x5; dispatch_model=static_100; state=state_add_const
+13	0xd4bfc	0xd4cb5		0xd4cb9	covered_synthetic_fallthrough	hidden_span_of_14:1	1	exact_instruction	174	311	+0x4	next = 311@0xb86f8:1, ip += +0x4; dispatch_model=static_100; state=state_add_const
+14	0xd4cc7	0xd5040		0xd5044	covered_synthetic_fallthrough	hidden_span_of_17:1	1	exact_instruction	158	69	+0x4	next = 69@0x85f24:1, ip += +0x4; dispatch_model=static_100; state=state_add_const
+15	0xd5055	0xd521a		0xd521e	covered_synthetic_fallthrough	hidden_span_of_17:1	1	exact_instruction	158	321	+0x4	next = 321@0xbb1dd:1, ip += +0x4; dispatch_model=static_100; state=state_add_const
+16	0xd522f	0xd563d		0xd5641	covered_synthetic_fallthrough	hidden_span_of_14:1	1	exact_instruction	123	95	+0x4	next = 95@0x8c41c:1, ip += +0x4; dispatch_model=static_100; state=state_add_const
+17	0xd564f	0xd57d4	18	0xd5a12	decoded_control		1	long_branch_forward	75	354	+0x23e	next = table[354], ip += 0x23e
+18	0xd5a12	0xd5b13		0xd5b17	covered_synthetic_fallthrough	hidden_span_of_14:1	1	exact_instruction	176	264	+0x4	next = 264@0xaf4cf:1, ip += +0x4; dispatch_model=static_100; state=state_add_const
+19	0xd5b25	0xd5cf7		0xd5cfb	covered_synthetic_fallthrough	hidden_span_of_14:1	1	exact_instruction	123	356	+0x4	next = 356@0xc291a:1, ip += +0x4; dispatch_model=static_100; state=state_add_const
+20	0xd5d09	0xd5eb8		0xd5ebc	covered_synthetic_fallthrough	target_footprint_of_6:1	1	exact_instruction	123	195	+0x4	next = 195@0x9fb50:1, ip += +0x4; dispatch_model=static_100; state=state_add_const
+21	0xd718e	0xd73aa		0xd73ae	covered_synthetic_fallthrough	hidden_span_of_14:1	1	exact_instruction	174	278	+0x4	next = 278@0xb2342:1, ip += +0x4; dispatch_model=static_100; state=state_add_const
+22	0xd73bc	0xd75ed		0xd75f1	covered_synthetic_fallthrough	hidden_span_of_14:1	1	exact_instruction	158	264	+0x4	next = 264@0xaf4cf:1, ip += +0x4; dispatch_model=static_100; state=state_add_const
+23	0xd75ff	0xd77c4		0xd77c8	covered_synthetic_fallthrough	hidden_span_of_17:1	1	exact_instruction	158	69	+0x4	next = 69@0x85f24:1, ip += +0x4; dispatch_model=static_100; state=state_add_const
+24	0xd77d9	0xd78ea	25	0xda38f	decoded_control		1	long_branch_forward	75	171	+0x2aa5	next = table[171], ip += 0x2aa5
+25	0xda38f	0xda4ac		0xda4b0	covered_synthetic_fallthrough	hidden_span_of_14:1	1	exact_instruction	184	264	+0x4	next = 264@0xaf4cf:1, ip += +0x4; dispatch_model=static_100; state=state_add_const
+26	0xda4be	0xda5e7	27	0xdac57	decoded_control		1	long_branch_forward	210	165	+0x670	next = table[165], ip += 0x670
+27	0xdac57	0xdad74		0xdad78	covered_synthetic_fallthrough	hidden_span_of_14:1	1	exact_instruction	176	264	+0x4	next = 264@0xaf4cf:1, ip += +0x4; dispatch_model=static_100; state=state_add_const
+28	0xdad86	0xdaf35		0xdaf39	covered_synthetic_fallthrough	target_footprint_of_6:1	1	exact_instruction	184	195	+0x4	next = 195@0x9fb50:1, ip += +0x4; dispatch_model=static_100; state=state_add_const
+29	0x11ac5e	0x11aedc		0x11aee0	covered_synthetic_fallthrough	hidden_span_of_14:1	1	exact_instruction	20	311	+0x4	next = 311@0xb86f8:1, ip += +0x4; dispatch_model=static_100; state=state_mixed
+30	0x11aeee	0x11b11e		0x11b122	covered_synthetic_fallthrough	hidden_span_of_14:1	1	exact_instruction	176	278	+0x4	next = 278@0xb2342:1, ip += +0x4; dispatch_model=static_100; state=state_add_const
+31	0x11b130	0x11b360		0x11b364	covered_synthetic_fallthrough	hidden_span_of_14:1	1	exact_instruction	174	311	+0x4	next = 311@0xb86f8:1, ip += +0x4; dispatch_model=static_100; state=state_add_const
+32	0x11b372	0x11b5a2		0x11b5a6	covered_synthetic_fallthrough	hidden_span_of_14:1	1	exact_instruction	176	356	+0x4	next = 356@0xc291a:1, ip += +0x4; dispatch_model=static_100; state=state_add_const
+33	0x11b5b4	0x11b7e4		0x11b7e8	covered_synthetic_fallthrough	hidden_span_of_14:1	1	exact_instruction	174	311	+0x4	next = 311@0xb86f8:1, ip += +0x4; dispatch_model=static_100; state=state_add_const
+34	0x11b7f6	0x11ba26		0x11ba2a	covered_synthetic_fallthrough	hidden_span_of_14:1	1	exact_instruction	176	356	+0x4	next = 356@0xc291a:1, ip += +0x4; dispatch_model=static_100; state=state_add_const
+35	0x11ba38	0x11bb79		0x11bb7e	covered_synthetic_fallthrough	hidden_span_of_17:1	1	exact_instruction	52	145	+0x5	next = 145@0x95b5c:1, ip += +0x5; dispatch_model=static_100; state=state_add_const
+36	0x11bb8f	0x11bbd4	37	0x11bc28	decoded_control		1	long_branch_forward	308	171	+0x54	next = table[171], ip += 0x54
+37	0x11bc28	0x11bd5b		0x11bd5f	covered_synthetic_fallthrough	hidden_span_of_14:1	1	exact_instruction	123	278	+0x4	next = 278@0xb2342:1, ip += +0x4; dispatch_model=static_100; state=state_add_const
+38	0x11bd6d	0x11beae		0x11beb3	covered_synthetic_fallthrough	hidden_span_of_17:1	1	exact_instruction	52	334	+0x5	next = 334@0xbdd18:1, ip += +0x5; dispatch_model=static_100; state=state_add_const
+39	0x11bec4	0x11bf09	40	0x11bf5d	decoded_control		1	long_branch_forward	266	354	+0x54	next = table[354], ip += 0x54
+40	0x11bf5d	0x11c0a8		0x11c0ac	covered_synthetic_fallthrough	hidden_span_of_14:1	1	exact_instruction	20	278	+0x4	next = 278@0xb2342:1, ip += +0x4; dispatch_model=static_100; state=state_add_const
+41	0x11c0ba	0x11c1fb		0x11c200	covered_synthetic_fallthrough	hidden_span_of_17:1	1	exact_instruction	122	334	+0x5	next = 334@0xbdd18:1, ip += +0x5; dispatch_model=static_100; state=state_add_const
+42	0x11c211	0x11c256	43	0x11c2aa	decoded_control		1	long_branch_forward	117	165	+0x54	next = table[165], ip += 0x54
+43	0x11c2aa	0x11c3f5		0x11c3f9	covered_synthetic_fallthrough	hidden_span_of_14:1	1	exact_instruction	20	278	+0x4	next = 278@0xb2342:1, ip += +0x4; dispatch_model=static_100; state=state_add_const
+44	0x11c407	0x11c67e		0x11c682	covered_synthetic_fallthrough	hidden_span_of_14:1	1	exact_instruction	174	216	+0x4	next = 216@0xa4a61:1, ip += +0x4; dispatch_model=static_100; state=state_mixed
+45	0x11c690	0x11ca26		0x11ca2a	covered_synthetic_fallthrough	hidden_span_of_14:1	1	exact_instruction	174	95	+0x4	next = 95@0x8c41c:1, ip += +0x4; dispatch_model=static_100; state=state_add_const
+46	0x11ca38	0x11ccf3		0x11ccf7	covered_synthetic_fallthrough	hidden_span_of_14:1	1	exact_instruction	161	216	+0x4	next = 216@0xa4a61:1, ip += +0x4; dispatch_model=static_100; state=state_add_const
+47	0x11cd05	0x11cf1d		0x11cf21	covered_synthetic_fallthrough	hidden_span_of_14:1	1	exact_instruction	174	356	+0x4	next = 356@0xc291a:1, ip += +0x4; dispatch_model=static_100; state=state_add_const
+48	0x11cf2f	0x11d203		0x11d207	covered_synthetic_fallthrough	hidden_span_of_14:1	1	exact_instruction	161	278	+0x4	next = 278@0xb2342:1, ip += +0x4; dispatch_model=static_100; state=state_add_const
+49	0x11d215	0x11d3cf		0x11d3d3	covered_synthetic_fallthrough	hidden_span_of_14:1	1	exact_instruction	158	264	+0x4	next = 264@0xaf4cf:1, ip += +0x4; dispatch_model=static_100; state=state_add_const
+50	0x11d3e1	0x11d69e		0x11d6a2	covered_synthetic_fallthrough	frontier_span_of_14:1	1	exact_instruction	176	95	+0x4	next = 95@0x8c41c:1, ip += +0x4; dispatch_model=static_100; state=state_add_const
+51	0x11d6b0	0x11d917		0x11d91b	covered_synthetic_fallthrough	frontier_span_of_14:1	1	exact_instruction	123	264	+0x4	next = 264@0xaf4cf:1, ip += +0x4; dispatch_model=static_100; state=state_add_const
+52	0x11d929	0x11da35		0x11da3a	covered_synthetic_fallthrough	hidden_span_of_17:1	1	exact_instruction	245	145	+0x5	next = 145@0x95b5c:1, ip += +0x5; dispatch_model=static_100; state=state_add_const
+53	0x11da4b	0x11db08	340	0x33f278	decoded_control		1	sampled_operand_forward	278	323	+0x221770	sampled operand footprint 0xa; observed target table[323], delta +0x221770
+54	0x11db16	0x11dc22		0x11dc27	covered_synthetic_fallthrough	hidden_span_of_16:1	1	exact_instruction	245	210	+0x5	next = 210@0xa2da3:1, ip += +0x5; dispatch_model=static_100
+55	0x11dc37	0x11dcf5	385	0x3603af	decoded_control		1	sampled_operand_forward	278	86	+0x2426ba	sampled operand footprint 0xa; observed target table[86], delta +0x2426ba
+56	0x11dd03	0x11de0f		0x11de14	covered_synthetic_fallthrough	hidden_span_of_19:1	1	exact_instruction	245	210	+0x5	next = 210@0xa2da3:1, ip += +0x5; dispatch_model=static_100
+57	0x11de27	0x11de39	58	0x11de9f	decoded_control		1	long_branch_forward	266	171	+0x66	next = table[171], ip += 0x66
+58	0x11de9f	0x11e029		0x11e02d	covered_synthetic_fallthrough	hidden_span_of_17:1	1	exact_instruction	161	78	+0x4	next = 78@0x883c0:1, ip += +0x4; dispatch_model=static_100
+59	0x11e03e	0x11e14a		0x11e14f	covered_synthetic_fallthrough	hidden_span_of_16:1	1	exact_instruction	125	316	+0x5	next = 316@0xb987b:1, ip += +0x5; dispatch_model=static_100
+60	0x11e15f	0x11e278		0x11e27c	covered_synthetic_fallthrough	hidden_span_of_14:1	1	exact_instruction	176	95	+0x4	next = 95@0x8c41c:1, ip += +0x4; dispatch_model=static_100
+61	0x11e28a	0x11e39b	62	0x11e574	decoded_control		1	long_branch_forward	75	165	+0x1d9	next = table[165], ip += 0x1d9
+62	0x11e574	0x11e691		0x11e695	covered_synthetic_fallthrough	hidden_span_of_14:1	1	exact_instruction	20	95	+0x4	next = 95@0x8c41c:1, ip += +0x4; dispatch_model=static_100
+63	0x11e6a3	0x11e95e		0x11e962	covered_synthetic_fallthrough	hidden_span_of_14:1	1	exact_instruction	184	95	+0x4	next = 95@0x8c41c:1, ip += +0x4; dispatch_model=static_100
+64	0x11e970	0x11eb88		0x11eb8c	covered_synthetic_fallthrough	hidden_span_of_14:1	1	exact_instruction	123	264	+0x4	next = 264@0xaf4cf:1, ip += +0x4; dispatch_model=static_100
+65	0x11eb9a	0x11edcb		0x11edcf	covered_synthetic_fallthrough	hidden_span_of_14:1	1	exact_instruction	161	356	+0x4	next = 356@0xc291a:1, ip += +0x4; dispatch_model=static_100
+66	0x11eddd	0x11eeee	67	0x11ef65	decoded_control		1	long_branch_forward	210	171	+0x77	next = table[171], ip += 0x77
+67	0x11ef65	0x11f1b5		0x11f1b9	covered_synthetic_fallthrough	hidden_span_of_12:1	1	exact_instruction	123	5	+0x4	next = 5@0x79675:1, ip += +0x4; dispatch_model=static_100
+68	0x11f1c5	0x11f397		0x11f39b	covered_synthetic_fallthrough	hidden_span_of_14:1	1	exact_instruction	176	356	+0x4	next = 356@0xc291a:1, ip += +0x4; dispatch_model=static_100
+69	0x11f3a9	0x11f4ba	70	0x1209d2	decoded_control		1	long_branch_forward	334	354	+0x1518	next = table[354], ip += 0x1518
+70	0x1209d2	0x120af0		0x120af4	covered_synthetic_fallthrough	frontier_span_of_14:1	1	exact_instruction	174	264	+0x4	next = 264@0xaf4cf:1, ip += +0x4; dispatch_model=static_100
+71	0x120b02	0x120d63		0x120d67	covered_synthetic_fallthrough	hidden_span_of_14:1	1	exact_instruction	123	356	+0x4	next = 356@0xc291a:1, ip += +0x4; dispatch_model=static_100
+72	0x120d75	0x120e9e	73	0x1210d6	decoded_control		1	long_branch_forward	334	165	+0x238	next = table[165], ip += 0x238
+73	0x1210d6	0x121195		0x121199	covered_synthetic_fallthrough	hidden_span_of_14:1	1	exact_instruction	161	278	+0x4	next = 278@0xb2342:1, ip += +0x4; dispatch_model=static_100
+74	0x1211a7	0x121431		0x121435	covered_synthetic_fallthrough	hidden_span_of_14:1	1	exact_instruction	123	311	+0x4	next = 311@0xb86f8:1, ip += +0x4; dispatch_model=static_100
+75	0x121443	0x12168c		0x121690	covered_synthetic_fallthrough	hidden_span_of_14:1	1	exact_instruction	176	278	+0x4	next = 278@0xb2342:1, ip += +0x4; dispatch_model=static_100
+76	0x12169e	0x1217c2		0x1217c7	covered_synthetic_fallthrough	hidden_span_of_17:1	1	exact_instruction	125	316	+0x5	next = 316@0xb987b:1, ip += +0x5; dispatch_model=static_100
+77	0x1217d8	0x121920		0x121924	covered_synthetic_fallthrough	frontier_span_of_14:1	1	exact_instruction	123	278	+0x4	next = 278@0xb2342:1, ip += +0x4; dispatch_model=static_100
+78	0x121932	0x121a5b	79	0x121a8a	decoded_control		1	long_branch_forward	334	171	+0x2f	next = table[171], ip += 0x2f
+79	0x121a8a	0x121aba	80	0x121b31	decoded_control		1	long_branch_forward	145	171	+0x77	next = table[171], ip += 0x77
+80	0x121b31	0x121c7f		0x121c83	covered_synthetic_fallthrough	frontier_span_of_14:1	1	exact_instruction	184	95	+0x4	next = 95@0x8c41c:1, ip += +0x4; dispatch_model=static_100
+81	0x121c91	0x121ec2		0x121ec6	covered_synthetic_fallthrough	frontier_span_of_14:1	1	exact_instruction	176	278	+0x4	next = 278@0xb2342:1, ip += +0x4; dispatch_model=static_100
+82	0x121ed4	0x121ffd	83	0x122074	decoded_control		1	long_branch_forward	334	354	+0x77	next = table[354], ip += 0x77
+83	0x122074	0x122192		0x122196	covered_synthetic_fallthrough	frontier_span_of_14:1	1	exact_instruction	174	356	+0x4	next = 356@0xc291a:1, ip += +0x4; dispatch_model=static_100
+84	0x1221a4	0x1222cd	85	0x122344	decoded_control		1	long_branch_forward	145	171	+0x77	next = table[171], ip += 0x77
+85	0x122344	0x122462		0x122466	covered_synthetic_fallthrough	frontier_span_of_14:1	1	exact_instruction	20	264	+0x4	next = 264@0xaf4cf:1, ip += +0x4; dispatch_model=static_100
+86	0x122474	0x122610		0x122615	covered_synthetic_fallthrough	hidden_span_of_17:1	1	exact_instruction	52	75	+0x5	next = 75@0x873fc:1, ip += +0x5; dispatch_model=static_100
+87	0x122626	0x1226c6	88	0x122a46	decoded_control		1	long_branch_forward	334	171	+0x380	next = table[171], ip += 0x380
+88	0x122a46	0x122c77		0x122c7b	covered_synthetic_fallthrough	frontier_span_of_14:1	1	exact_instruction	184	278	+0x4	next = 278@0xb2342:1, ip += +0x4; dispatch_model=static_100
+89	0x122c89	0x122e38		0x122e3c	covered_synthetic_fallthrough	target_footprint_of_6:1	1	exact_instruction	174	299	+0x4	next = 299@0xb6bba:1, ip += +0x4; dispatch_model=static_100
+90	0x128952	0x128b6e		0x128b72	covered_synthetic_fallthrough	frontier_span_of_14:1	1	exact_instruction	123	278	+0x4	next = 278@0xb2342:1, ip += +0x4; dispatch_model=static_100
+91	0x128b80	0x128de3		0x128de7	covered_synthetic_fallthrough	frontier_span_of_14:1	1	exact_instruction	161	95	+0x4	next = 95@0x8c41c:1, ip += +0x4; dispatch_model=static_100
+92	0x128df5	0x12906b		0x12906f	covered_synthetic_fallthrough	target_footprint_of_10:1	1	exact_instruction	174	278	+0x4	next = 278@0xb2342:1, ip += +0x4; dispatch_model=static_100
+93	0x1705a9	0x170852		0x170856	covered_synthetic_fallthrough	hidden_span_of_14:1	1	exact_instruction	176	311	+0x4	next = 311@0xb86f8:1, ip += +0x4; dispatch_model=static_100
+94	0x170864	0x170b3d		0x170b41	covered_synthetic_fallthrough	hidden_span_of_14:1	1	exact_instruction	174	95	+0x4	next = 95@0x8c41c:1, ip += +0x4; dispatch_model=static_100
+95	0x170b4f	0x170dad		0x170db1	covered_synthetic_fallthrough	hidden_span_of_14:1	1	exact_instruction	161	95	+0x4	next = 95@0x8c41c:1, ip += +0x4; dispatch_model=static_100
+96	0x170dbf	0x170fd7		0x170fdb	covered_synthetic_fallthrough	hidden_span_of_14:1	1	exact_instruction	20	264	+0x4	next = 264@0xaf4cf:1, ip += +0x4; dispatch_model=static_100
+97	0x170fe9	0x171201		0x171205	covered_synthetic_fallthrough	hidden_span_of_14:1	1	exact_instruction	158	216	+0x4	next = 216@0xa4a61:1, ip += +0x4; dispatch_model=static_100
+98	0x171213	0x1714b8		0x1714bc	covered_synthetic_fallthrough	hidden_span_of_14:1	1	exact_instruction	20	264	+0x4	next = 264@0xaf4cf:1, ip += +0x4; dispatch_model=static_100
+99	0x1714ca	0x1717a3		0x1717a7	covered_synthetic_fallthrough	hidden_span_of_14:1	1	exact_instruction	174	264	+0x4	next = 264@0xaf4cf:1, ip += +0x4; dispatch_model=static_100
+100	0x1717b5	0x171a13		0x171a17	covered_synthetic_fallthrough	hidden_span_of_14:1	1	exact_instruction	174	216	+0x4	next = 216@0xa4a61:1, ip += +0x4; dispatch_model=static_100
+101	0x171a25	0x171c3d		0x171c41	covered_synthetic_fallthrough	hidden_span_of_14:1	1	exact_instruction	20	278	+0x4	next = 278@0xb2342:1, ip += +0x4; dispatch_model=static_100
+102	0x171c4f	0x171e67		0x171e6b	covered_synthetic_fallthrough	hidden_span_of_14:1	1	exact_instruction	174	95	+0x4	next = 95@0x8c41c:1, ip += +0x4; dispatch_model=static_100
+103	0x171e79	0x17211e		0x172122	covered_synthetic_fallthrough	hidden_span_of_14:1	1	exact_instruction	174	278	+0x4	next = 278@0xb2342:1, ip += +0x4; dispatch_model=static_100
+104	0x172130	0x172409		0x17240d	covered_synthetic_fallthrough	hidden_span_of_14:1	1	exact_instruction	20	216	+0x4	next = 216@0xa4a61:1, ip += +0x4; dispatch_model=static_100
+105	0x17241b	0x172649		0x17264d	covered_synthetic_fallthrough	hidden_span_of_14:1	1	exact_instruction	184	278	+0x4	next = 278@0xb2342:1, ip += +0x4; dispatch_model=static_100
+106	0x17265b	0x172873		0x172877	covered_synthetic_fallthrough	frontier_span_of_14:1	1	exact_instruction	174	311	+0x4	next = 311@0xb86f8:1, ip += +0x4; dispatch_model=static_100
+107	0x172885	0x172a9d		0x172aa1	covered_synthetic_fallthrough	frontier_span_of_14:1	1	exact_instruction	174	356	+0x4	next = 356@0xc291a:1, ip += +0x4; dispatch_model=static_100
+108	0x172aaf	0x172d54		0x172d58	covered_synthetic_fallthrough	frontier_span_of_14:1	1	exact_instruction	161	356	+0x4	next = 356@0xc291a:1, ip += +0x4; dispatch_model=static_100
+109	0x172d66	0x17303f		0x173043	covered_synthetic_fallthrough	frontier_span_of_14:1	1	exact_instruction	158	95	+0x4	next = 95@0x8c41c:1, ip += +0x4; dispatch_model=static_100
+110	0x173051	0x1732af		0x1732b3	covered_synthetic_fallthrough	frontier_span_of_14:1	1	exact_instruction	174	216	+0x4	next = 216@0xa4a61:1, ip += +0x4; dispatch_model=static_100
+111	0x1732c1	0x1734d9		0x1734dd	covered_synthetic_fallthrough	frontier_span_of_14:1	1	exact_instruction	174	311	+0x4	next = 311@0xb86f8:1, ip += +0x4; dispatch_model=static_100
+112	0x1734eb	0x173703		0x173707	covered_synthetic_fallthrough	frontier_span_of_14:1	1	exact_instruction	20	278	+0x4	next = 278@0xb2342:1, ip += +0x4; dispatch_model=static_100
+113	0x173715	0x1739ba		0x1739be	covered_synthetic_fallthrough	frontier_span_of_14:1	1	exact_instruction	161	95	+0x4	next = 95@0x8c41c:1, ip += +0x4; dispatch_model=static_100
+114	0x1739cc	0x173ca5		0x173ca9	covered_synthetic_fallthrough	frontier_span_of_14:1	1	exact_instruction	20	311	+0x4	next = 311@0xb86f8:1, ip += +0x4; dispatch_model=static_100
+115	0x173cb7	0x173f15		0x173f19	covered_synthetic_fallthrough	frontier_span_of_14:1	1	exact_instruction	20	216	+0x4	next = 216@0xa4a61:1, ip += +0x4; dispatch_model=static_100
+116	0x173f27	0x17413f		0x174143	covered_synthetic_fallthrough	frontier_span_of_14:1	1	exact_instruction	176	278	+0x4	next = 278@0xb2342:1, ip += +0x4; dispatch_model=static_100
+117	0x174151	0x174369		0x17436d	covered_synthetic_fallthrough	frontier_span_of_14:1	1	exact_instruction	184	264	+0x4	next = 264@0xaf4cf:1, ip += +0x4; dispatch_model=static_100
+118	0x17437b	0x17452a		0x17452e	covered_synthetic_fallthrough	target_footprint_of_6:1	1	exact_instruction	123	299	+0x4	next = 299@0xb6bba:1, ip += +0x4; dispatch_model=static_100
+119	0x176883	0x176aa1		0x176aa5	covered_synthetic_fallthrough	hidden_span_of_14:1	1	exact_instruction	174	264	+0x4	next = 264@0xaf4cf:1, ip += +0x4; dispatch_model=static_100
+120	0x176ab3	0x176c83		0x176c87	covered_synthetic_fallthrough	hidden_span_of_14:1	1	exact_instruction	158	95	+0x4	next = 95@0x8c41c:1, ip += +0x4; dispatch_model=static_100
+121	0x176c95	0x176e93		0x176e97	covered_synthetic_fallthrough	hidden_span_of_14:1	1	exact_instruction	123	216	+0x4	next = 216@0xa4a61:1, ip += +0x4; dispatch_model=static_100
+122	0x176ea5	0x1770e5		0x1770e9	covered_synthetic_fallthrough	hidden_span_of_14:1	1	exact_instruction	161	95	+0x4	next = 95@0x8c41c:1, ip += +0x4; dispatch_model=static_100
+123	0x1770f7	0x1772fc	124	0x177353	decoded_control		1	long_branch_forward	246	354	+0x57	next = table[354], ip += 0x57
+124	0x177353	0x1774b4		0x1774b8	covered_synthetic_fallthrough	hidden_span_of_14:1	1	exact_instruction	20	216	+0x4	next = 216@0xa4a61:1, ip += +0x4; dispatch_model=static_100
+125	0x1774c6	0x17776b		0x17776f	covered_synthetic_fallthrough	hidden_span_of_14:1	1	exact_instruction	176	356	+0x4	next = 356@0xc291a:1, ip += +0x4; dispatch_model=static_100
+126	0x17777d	0x17792b		0x177930	covered_synthetic_fallthrough	hidden_span_of_16:1	1	exact_instruction	122	334	+0x5	next = 334@0xbdd18:1, ip += +0x5; dispatch_model=static_100
+127	0x177940	0x177ae7		0x177aeb	covered_synthetic_fallthrough	hidden_span_of_14:1	1	exact_instruction	161	264	+0x4	next = 264@0xaf4cf:1, ip += +0x4; dispatch_model=static_100
+128	0x177af9	0x177c82	129	0x179f43	decoded_control		1	long_branch_forward	308	354	+0x22c1	next = table[354], ip += 0x22c1
+129	0x179f43	0x17a04b		0x17a04f	covered_synthetic_fallthrough	hidden_span_of_14:1	1	exact_instruction	184	278	+0x4	next = 278@0xb2342:1, ip += +0x4; dispatch_model=static_100
+130	0x17a05d	0x17a25b		0x17a25f	covered_synthetic_fallthrough	hidden_span_of_14:1	1	exact_instruction	176	264	+0x4	next = 264@0xaf4cf:1, ip += +0x4; dispatch_model=static_100
+131	0x17a26d	0x17a41c		0x17a420	covered_synthetic_fallthrough	target_footprint_of_6:1	1	exact_instruction	161	175	+0x4	next = 175@0x9c08f:1, ip += +0x4; dispatch_model=static_100
+132	0x18b66f	0x18b88b		0x18b88f	covered_synthetic_fallthrough	hidden_span_of_14:1	1	exact_instruction	20	264	+0x4	next = 264@0xaf4cf:1, ip += +0x4; dispatch_model=static_100; state=state_add_const
+133	0x18b89d	0x18ba57		0x18ba5b	covered_synthetic_fallthrough	hidden_span_of_14:1	1	exact_instruction	158	95	+0x4	next = 95@0x8c41c:1, ip += +0x4; dispatch_model=static_100; state=state_add_const
+134	0x18ba69	0x18bd88		0x18bd8c	covered_synthetic_fallthrough	frontier_span_of_14:1	1	exact_instruction	184	216	+0x4	next = 216@0xa4a61:1, ip += +0x4; dispatch_model=static_100; state=state_add_const
+135	0x18bd9a	0x18bea6		0x18beab	covered_synthetic_fallthrough	hidden_span_of_17:1	1	exact_instruction	245	75	+0x5	next = 75@0x873fc:1, ip += +0x5; dispatch_model=static_100; state=state_add_const
+136	0x18bebc	0x18c076		0x18c07a	covered_synthetic_fallthrough	frontier_span_of_14:1	1	exact_instruction	20	311	+0x4	next = 311@0xb86f8:1, ip += +0x4; dispatch_model=static_100; state=state_add_const
+137	0x18c088	0x18c2a2		0x18c2a6	covered_synthetic_fallthrough	hidden_span_of_14:1	1	exact_instruction	174	311	+0x4	next = 311@0xb86f8:1, ip += +0x4; dispatch_model=static_100; state=state_add_const
+138	0x18c2b4	0x18c463		0x18c467	covered_synthetic_fallthrough	target_footprint_of_6:1	1	exact_instruction	184	195	+0x4	next = 195@0x9fb50:1, ip += +0x4; dispatch_model=static_100; state=state_add_const
+139	0x1a480d	0x1a4a8d		0x1a4a91	covered_synthetic_fallthrough	hidden_span_of_14:1	1	exact_instruction	123	311	+0x4	next = 311@0xb86f8:1, ip += +0x4; dispatch_model=static_100
+140	0x1a4a9f	0x1a4c6f		0x1a4c73	covered_synthetic_fallthrough	hidden_span_of_14:1	1	exact_instruction	174	356	+0x4	next = 356@0xc291a:1, ip += +0x4; dispatch_model=static_100
+141	0x1a4c81	0x1a4da5		0x1a4daa	covered_synthetic_fallthrough	hidden_span_of_17:1	1	exact_instruction	125	334	+0x5	next = 334@0xbdd18:1, ip += +0x5; dispatch_model=static_100
+142	0x1a4dbb	0x1a4fc5		0x1a4fc9	covered_synthetic_fallthrough	hidden_span_of_14:1	1	exact_instruction	161	356	+0x4	next = 356@0xc291a:1, ip += +0x4; dispatch_model=static_100
+143	0x1a4fd7	0x1a519a		0x1a519e	covered_synthetic_fallthrough	hidden_span_of_17:1	1	exact_instruction	176	80	+0x4	next = 80@0x88a58:1, ip += +0x4; dispatch_model=static_100
+144	0x1a51af	0x1a52bb		0x1a52c0	covered_synthetic_fallthrough	hidden_span_of_16:1	1	exact_instruction	245	75	+0x5	next = 75@0x873fc:1, ip += +0x5; dispatch_model=static_100
+145	0x1a52d0	0x1a5434		0x1a5438	covered_synthetic_fallthrough	hidden_span_of_14:1	1	exact_instruction	176	278	+0x4	next = 278@0xb2342:1, ip += +0x4; dispatch_model=static_100
+146	0x1a5446	0x1a55ea		0x1a55ef	covered_synthetic_fallthrough	hidden_span_of_17:1	1	exact_instruction	122	145	+0x5	next = 145@0x95b5c:1, ip += +0x5; dispatch_model=static_100
+147	0x1a5600	0x1a578f		0x1a5793	covered_synthetic_fallthrough	hidden_span_of_14:1	1	exact_instruction	176	278	+0x4	next = 278@0xb2342:1, ip += +0x4; dispatch_model=static_100
+148	0x1a57a1	0x1a5964		0x1a5968	covered_synthetic_fallthrough	hidden_span_of_17:1	1	exact_instruction	161	321	+0x4	next = 321@0xbb1dd:1, ip += +0x4; dispatch_model=static_100
+149	0x1a5979	0x1a5a85		0x1a5a8a	covered_synthetic_fallthrough	hidden_span_of_16:1	1	exact_instruction	245	316	+0x5	next = 316@0xb987b:1, ip += +0x5; dispatch_model=static_100
+150	0x1a5a9a	0x1a5d7a		0x1a5d7e	covered_synthetic_fallthrough	hidden_span_of_14:1	1	exact_instruction	184	311	+0x4	next = 311@0xb86f8:1, ip += +0x4; dispatch_model=static_100
+151	0x1a5d8c	0x1a5ee8	152	0x1a5f3d	decoded_control		1	long_branch_forward	117	165	+0x55	next = table[165], ip += 0x55
+152	0x1a5f3d	0x1a603d		0x1a6041	covered_synthetic_fallthrough	target_footprint_of_6:1	1	exact_instruction	174	175	+0x4	next = 175@0x9c08f:1, ip += +0x4; dispatch_model=static_100
+153	0x1ec0ab	0x1ec343		0x1ec347	covered_synthetic_fallthrough	hidden_span_of_14:1	1	exact_instruction	20	356	+0x4	next = 356@0xc291a:1, ip += +0x4; dispatch_model=static_100
+154	0x1ec355	0x1ec461		0x1ec466	covered_synthetic_fallthrough	hidden_span_of_17:1	1	exact_instruction	245	316	+0x5	next = 316@0xb987b:1, ip += +0x5; dispatch_model=static_100
+155	0x1ec477	0x1ec5bf		0x1ec5c3	covered_synthetic_fallthrough	hidden_span_of_14:1	1	exact_instruction	161	278	+0x4	next = 278@0xb2342:1, ip += +0x4; dispatch_model=static_100; state=state_add_const
+156	0x1ec5d1	0x1ec876		0x1ec87a	covered_synthetic_fallthrough	hidden_span_of_14:1	1	exact_instruction	176	216	+0x4	next = 216@0xa4a61:1, ip += +0x4; dispatch_model=static_100
+157	0x1ec888	0x1ecb61		0x1ecb65	covered_synthetic_fallthrough	hidden_span_of_14:1	1	exact_instruction	123	264	+0x4	next = 264@0xaf4cf:1, ip += +0x4; dispatch_model=static_100
+158	0x1ecb73	0x1ecdd1		0x1ecdd5	covered_synthetic_fallthrough	hidden_span_of_14:1	1	exact_instruction	174	278	+0x4	next = 278@0xb2342:1, ip += +0x4; dispatch_model=static_100
+159	0x1ecde3	0x1ecffb		0x1ecfff	covered_synthetic_fallthrough	hidden_span_of_14:1	1	exact_instruction	184	311	+0x4	next = 311@0xb86f8:1, ip += +0x4; dispatch_model=static_100
+160	0x1ed00d	0x1ed225		0x1ed229	covered_synthetic_fallthrough	hidden_span_of_14:1	1	exact_instruction	123	278	+0x4	next = 278@0xb2342:1, ip += +0x4; dispatch_model=static_100
+161	0x1ed237	0x1ed47f		0x1ed483	covered_synthetic_fallthrough	target_footprint_of_6:1	1	exact_instruction	161	195	+0x4	next = 195@0x9fb50:1, ip += +0x4; dispatch_model=static_100
+162	0x22fe2d	0x22ff42	163	0x22ff44	fallthrough		1	exact_instruction	160	171	+0x2	next = 171@0x9b4b3:1, ip += +0x2; dispatch_model=static_100; state=state_add_const
+163	0x22ff44	0x22ffb1	163	0x22ff44	decoded_control		255	long_branch_backedge	75	171	-0x6d	next = table[171], ip -= 0x6d
+164	0x22ffc2	0x22ffe8	165	0x22ffea	fallthrough		1	exact_instruction	173	165	+0x2	next = 165@0x9a24c:1, ip += +0x2; dispatch_model=static_100; state=state_add_const
+165	0x22ffea	0x23010d		0x230111	covered_synthetic_fallthrough	hidden_span_of_17:256	256	exact_instruction	123	50	+0x4	next = 50@0x82e76:256, ip += +0x4; dispatch_model=static_100; state=state_add_const
+166	0x230122	0x2303ae	165	0x22ffea	decoded_control		255	long_branch_backedge	316	165	-0x3c4	next = table[165], ip -= 0x3c4
+167	0x2303be	0x2304b4		0x2304b8	covered_synthetic_fallthrough	target_footprint_of_6:1	1	exact_instruction	184	195	+0x4	next = 195@0x9fb50:1, ip += +0x4; dispatch_model=static_100; state=state_add_const
+168	0x230722	0x230837	169	0x230839	fallthrough		1	exact_instruction	352	171	+0x2	next = 171@0x9b4b3:1, ip += +0x2; dispatch_model=static_100; state=state_add_const
+169	0x230839	0x230b17		0x230b1b	covered_synthetic_fallthrough	hidden_span_of_17:64	64	exact_instruction	123	50	+0x4	next = 50@0x82e76:64, ip += +0x4; dispatch_model=static_100; state=state_add_const
+170	0x230b2c	0x230e03		0x230e07	covered_synthetic_fallthrough	hidden_span_of_17:64	64	exact_instruction	176	321	+0x4	next = 321@0xbb1dd:64, ip += +0x4; dispatch_model=static_100; state=state_add_const
+171	0x230e18	0x231217	169	0x230839	decoded_control		64	long_branch_backedge	308	171	-0x9de	next = table[171], ip -= 0x9de
+172	0x2316bf	0x2319af		0x2319b3	covered_synthetic_fallthrough	frontier_span_of_14:1	1	exact_instruction	174	278	+0x4	next = 278@0xb2342:1, ip += +0x4; dispatch_model=static_100
+173	0x2319c1	0x231b70		0x231b74	covered_synthetic_fallthrough	target_footprint_of_6:1	1	exact_instruction	174	195	+0x4	next = 195@0x9fb50:1, ip += +0x4; dispatch_model=static_100
+174	0x249468	0x249727		0x24972b	covered_synthetic_fallthrough	hidden_span_of_14:2	2	exact_instruction	184	264	+0x4	next = 264@0xaf4cf:2, ip += +0x4; dispatch_model=static_100; state=state_add_const
+175	0x249739	0x249956	190	0x26cd71	decoded_control		2	sampled_operand_forward	95	86	+0x2341b	sampled operand footprint 0xa; observed target table[86], delta +0x2341b
+176	0x249964	0x249b95		0x249b99	covered_synthetic_fallthrough	hidden_span_of_14:2	2	exact_instruction	176	278	+0x4	next = 278@0xb2342:2, ip += +0x4; dispatch_model=static_100; state=state_add_const
+177	0x249ba7	0x249dd8		0x249ddc	covered_synthetic_fallthrough	hidden_span_of_14:2	2	exact_instruction	176	95	+0x4	next = 95@0x8c41c:2, ip += +0x4; dispatch_model=static_100; state=state_add_const
+178	0x249dea	0x24a01b		0x24a01f	covered_synthetic_fallthrough	hidden_span_of_14:2	2	exact_instruction	174	95	+0x4	next = 95@0x8c41c:2, ip += +0x4; dispatch_model=static_100; state=state_add_const
+179	0x24a02d	0x24a28e		0x24a292	covered_synthetic_fallthrough	hidden_span_of_14:2	2	exact_instruction	184	95	+0x4	next = 95@0x8c41c:2, ip += +0x4; dispatch_model=static_100; state=state_add_const
+180	0x24a2a0	0x24a4d1		0x24a4d5	covered_synthetic_fallthrough	hidden_span_of_14:2	2	exact_instruction	176	311	+0x4	next = 311@0xb86f8:2, ip += +0x4; dispatch_model=static_100; state=state_add_const
+181	0x24a4e3	0x24a8c1		0x24a8c5	covered_synthetic_fallthrough	hidden_span_of_14:2	2	exact_instruction	184	216	+0x4	next = 216@0xa4a61:2, ip += +0x4; dispatch_model=static_100; state=state_const_post
+182	0x24a8d3	0x24ab66		0x24ab6a	covered_synthetic_fallthrough	hidden_span_of_14:2	2	exact_instruction	161	95	+0x4	next = 95@0x8c41c:2, ip += +0x4; dispatch_model=static_100; state=state_mixed
+183	0x24ab78	0x24ae0b		0x24ae0f	covered_synthetic_fallthrough	hidden_span_of_14:2	2	exact_instruction	123	216	+0x4	next = 216@0xa4a61:2, ip += +0x4; dispatch_model=static_100; state=state_add_const
+184	0x24ae1d	0x24b04e		0x24b052	covered_synthetic_fallthrough	hidden_span_of_14:2	2	exact_instruction	174	356	+0x4	next = 356@0xc291a:2, ip += +0x4; dispatch_model=static_100; state=state_add_const
+185	0x24b060	0x24b397		0x24b39b	covered_synthetic_fallthrough	hidden_span_of_14:2	2	exact_instruction	184	278	+0x4	next = 278@0xb2342:2, ip += +0x4; dispatch_model=static_100; state=state_add_const
+186	0x24b3a9	0x24b63c		0x24b640	covered_synthetic_fallthrough	hidden_span_of_14:2	2	exact_instruction	123	95	+0x4	next = 95@0x8c41c:2, ip += +0x4; dispatch_model=static_100; state=state_add_const
+187	0x24b64e	0x24b87f		0x24b883	covered_synthetic_fallthrough	hidden_span_of_14:2	2	exact_instruction	176	278	+0x4	next = 278@0xb2342:2, ip += +0x4; dispatch_model=static_100; state=state_add_const
+188	0x24b891	0x24bb65		0x24bb69	covered_synthetic_fallthrough	hidden_span_of_14:2	2	exact_instruction	174	95	+0x4	next = 95@0x8c41c:2, ip += +0x4; dispatch_model=static_100; state=state_add_const
+189	0x24bb77	0x24bd26		0x24bd2a	covered_synthetic_fallthrough	target_footprint_of_6:2	2	exact_instruction	20	299	+0x4	next = 299@0xb6bba:2, ip += +0x4; dispatch_model=static_100; state=state_add_const
+190	0x26cd71	0x26cf1b	191	0x26db07	decoded_control		4	long_branch_forward	145	165	+0xbec	next = table[165], ip += 0xbec
+191	0x26db07	0x26f077	190	0x26cd71	decoded_control		1	sampled_operand_backedge	195	86	-0x2306	sampled operand footprint 0x6; observed target table[86], delta -0x2306
+192	0x292986	0x292b44		0x292b48	covered_synthetic_fallthrough	frontier_span_of_14:1	1	exact_instruction	174	95	+0x4	next = 95@0x8c41c:1, ip += +0x4; dispatch_model=static_100
+193	0x292b56	0x292de4		0x292de8	covered_synthetic_fallthrough	frontier_span_of_14:1	1	exact_instruction	20	278	+0x4	next = 278@0xb2342:1, ip += +0x4; dispatch_model=static_100
+194	0x292df6	0x292f3c	195	0x292f3e	fallthrough		1	exact_instruction	160	171	+0x2	next = 171@0x9b4b3:1, ip += +0x2; dispatch_model=static_100; state=state_const_post
+195	0x292f3e	0x292ffd		0x293001	covered_synthetic_fallthrough	hidden_span_of_14:1	2	exact_instruction	158	264	+0x4	next = 264@0xaf4cf:2, ip += +0x4; dispatch_model=static_100
+196	0x29300f	0x29321e		0x293222	covered_synthetic_fallthrough	hidden_span_of_17:1	2	exact_instruction	123	78	+0x4	next = 78@0x883c0:2, ip += +0x4; dispatch_model=static_100
+197	0x293233	0x29333f		0x293344	covered_synthetic_fallthrough	hidden_span_of_17:2	2	exact_instruction	125	334	+0x5	next = 334@0xbdd18:2, ip += +0x5; dispatch_model=static_100
+198	0x293355	0x29346c		0x293470	covered_synthetic_fallthrough	frontier_span_of_14:1	1	exact_instruction	123	216	+0x4	next = 216@0xa4a61:1, ip += +0x4; dispatch_model=static_100
+199	0x29347e	0x2935d5		0x2935da	covered_synthetic_fallthrough	hidden_span_of_17:1	1	exact_instruction	122	210	+0x5	next = 210@0xa2da3:1, ip += +0x5; dispatch_model=static_100
+200	0x2935eb	0x2935f8		0x2935fd	covered_synthetic_fallthrough	hidden_span_of_17:1	1	exact_instruction	52	75	+0x5	next = 75@0x873fc:1, ip += +0x5; dispatch_model=static_100
+201	0x29360e	0x29361b		0x293620	covered_synthetic_fallthrough	hidden_span_of_16:1	1	exact_instruction	52	145	+0x5	next = 145@0x95b5c:1, ip += +0x5; dispatch_model=static_100
+202	0x293630	0x29363e		0x293643	covered_synthetic_fallthrough	hidden_span_of_17:1	1	exact_instruction	52	75	+0x5	next = 75@0x873fc:1, ip += +0x5; dispatch_model=static_100
+203	0x293654	0x293661		0x293666	covered_synthetic_fallthrough	hidden_span_of_17:1	1	exact_instruction	52	316	+0x5	next = 316@0xb987b:1, ip += +0x5; dispatch_model=static_100
+204	0x293677	0x293684		0x293689	covered_synthetic_fallthrough	target_footprint_of_11:1	1	exact_instruction	122	246	+0x5	next = 246@0xab427:1, ip += +0x5; dispatch_model=static_100
+205	0x2bec2e	0x2bed4b		0x2bed4f	covered_synthetic_fallthrough	frontier_span_of_14:1	1	exact_instruction	184	264	+0x4	next = 264@0xaf4cf:1, ip += +0x4; dispatch_model=static_100
+206	0x2bed5d	0x2bef22		0x2bef26	covered_synthetic_fallthrough	frontier_span_of_17:1	1	exact_instruction	176	80	+0x4	next = 80@0x88a58:1, ip += +0x4; dispatch_model=static_100
+207	0x2bef37	0x2bf048	208	0x2bf297	decoded_control		1	long_branch_forward	75	165	+0x24f	next = table[165], ip += 0x24f
+208	0x2bf297	0x2bf3b4		0x2bf3b8	covered_synthetic_fallthrough	frontier_span_of_14:1	1	exact_instruction	123	216	+0x4	next = 216@0xa4a61:1, ip += +0x4; dispatch_model=static_100
+209	0x2bf3c6	0x2bf4ef	210	0x2bf97c	decoded_control		1	long_branch_forward	334	165	+0x48d	next = table[165], ip += 0x48d
+210	0x2bf97c	0x2bf9ac	211	0x2bfe6f	decoded_control		1	long_branch_forward	316	354	+0x4c3	next = table[354], ip += 0x4c3
+211	0x2bfe6f	0x2bff8c		0x2bff90	covered_synthetic_fallthrough	frontier_span_of_14:1	1	exact_instruction	176	216	+0x4	next = 216@0xa4a61:1, ip += +0x4; dispatch_model=static_100
+212	0x2bff9e	0x2c022c		0x2c0230	covered_synthetic_fallthrough	frontier_span_of_14:1	1	exact_instruction	158	264	+0x4	next = 264@0xaf4cf:1, ip += +0x4; dispatch_model=static_100
+213	0x2c023e	0x2c0456		0x2c045a	covered_synthetic_fallthrough	frontier_span_of_14:1	1	exact_instruction	123	356	+0x4	next = 356@0xc291a:1, ip += +0x4; dispatch_model=static_100
+214	0x2c0468	0x2c0591	215	0x2c1156	decoded_control		1	long_branch_forward	334	171	+0xbc5	next = table[171], ip += 0xbc5
+215	0x2c1156	0x2c1273		0x2c1277	covered_synthetic_fallthrough	hidden_span_of_14:1	1	exact_instruction	158	264	+0x4	next = 264@0xaf4cf:1, ip += +0x4; dispatch_model=static_100
+216	0x2c1285	0x2c13cd	195	0x292f3e	decoded_control		1	long_branch_backedge	266	171	-0x2e48f	next = table[171], ip -= 0x2e48f
+217	0x30e872	0x30eea0	218	0x30eea2	fallthrough		1	exact_instruction	257	165	+0x2	next = 165@0x9a24c:1, ip += +0x2; dispatch_model=static_100; state=state_add_const
+218	0x30eea2	0x30eeba	220	0x30eeea	decoded_control		1	long_branch_forward	210	165	+0x30	next = table[165], ip += 0x30
+219	0x30eed0	0x30eee2	218	0x30eea2	decoded_control		13	long_branch_backedge	117	165	-0x40	next = table[165], ip -= 0x40
+220	0x30eeea	0x30f0ec	221	0x30f0ee	fallthrough		1	exact_instruction	144	354	+0x2	next = 354@0xc2241:1, ip += +0x2; dispatch_model=static_100; state=state_mixed
+221	0x30f0ee	0x30f3c5	223	0x30f64d	decoded_control		1	long_branch_forward	316	171	+0x288	next = table[171], ip += 0x288
+222	0x30f3d6	0x30f645	221	0x30f0ee	decoded_control		3	long_branch_backedge	266	354	-0x557	next = table[354], ip -= 0x557
+223	0x30f64d	0x30fd7f		0x30fd84	covered_synthetic_fallthrough	hidden_span_of_17:1	1	exact_instruction	242	210	+0x5	next = 210@0xa2da3:1, ip += +0x5; dispatch_model=static_100; state=state_add_const
+224	0x30fd95	0x310b1a	225	0x310b1c	fallthrough		1	exact_instruction	144	171	+0x2	next = 171@0x9b4b3:1, ip += +0x2; dispatch_model=static_100; state=state_add_const
+225	0x310b1c	0x310dba	229	0x315cc8	decoded_control		1	long_branch_forward	75	354	+0x4f0e	next = table[354], ip += 0x4f0e
+226	0x310dca	0x31297d	227	0x3129aa	decoded_control		91	long_branch_forward	316	354	+0x2d	next = table[354], ip += 0x2d
+227	0x3129aa	0x3157e1	228	0x31580e	decoded_control		91	long_branch_forward	316	171	+0x2d	next = table[171], ip += 0x2d
+228	0x31580e	0x315cc0	225	0x310b1c	decoded_control		91	long_branch_backedge	308	171	-0x51a4	next = table[171], ip -= 0x51a4
+229	0x315cc8	0x316672	380	0x343569	decoded_control		1	sampled_operand_forward	175	310	+0x2cef7	sampled operand footprint 0x6; observed target table[310], delta +0x2cef7
+230	0x31aa27	0x31aebf		0x31aec3	covered_synthetic_fallthrough	hidden_span_of_17:1	1	exact_instruction	158	321	+0x4	next = 321@0xbb1dd:1, ip += +0x4; dispatch_model=static_100; state=state_add_const
+231	0x31aed4	0x31b301	232	0x31b303	fallthrough		1	exact_instruction	160	171	+0x2	next = 171@0x9b4b3:1, ip += +0x2; dispatch_model=static_100; state=state_const_post
+232	0x31b303	0x31b31b	234	0x31b34b	decoded_control		1	long_branch_forward	316	165	+0x30	next = table[165], ip += 0x30
+233	0x31b331	0x31b343	232	0x31b303	decoded_control		7	long_branch_backedge	308	171	-0x40	next = table[171], ip -= 0x40
+234	0x31b34b	0x31b54d	235	0x31b54f	fallthrough		1	exact_instruction	160	354	+0x2	next = 354@0xc2241:1, ip += +0x2; dispatch_model=static_100; state=state_add_const
+235	0x31b54f	0x31b82c	237	0x31ba3d	decoded_control		1	long_branch_forward	75	354	+0x211	next = table[354], ip += 0x211
+236	0x31b83d	0x31ba35	235	0x31b54f	decoded_control		1	long_branch_backedge	308	354	-0x4e6	next = table[354], ip -= 0x4e6
+237	0x31ba3d	0x31bbac	238	0x31bbae	fallthrough		1	exact_instruction	256	165	+0x2	next = 165@0x9a24c:1, ip += +0x2; dispatch_model=static_100; state=state_add_const
+238	0x31bbae	0x31bbf9	240	0x31be84	decoded_control		1	long_branch_forward	145	354	+0x28b	next = table[354], ip += 0x28b
+239	0x31bc0a	0x31be7c	238	0x31bbae	decoded_control		3	long_branch_backedge	302	165	-0x2ce	next = table[165], ip -= 0x2ce
+240	0x31be84	0x31bfeb	241	0x31bfed	fallthrough		1	exact_instruction	256	171	+0x2	next = 171@0x9b4b3:1, ip += +0x2; dispatch_model=static_100; state=state_add_const
+241	0x31bfed	0x31c005	243	0x31c035	decoded_control		1	long_branch_forward	75	165	+0x30	next = table[165], ip += 0x30
+242	0x31c01b	0x31c02d	241	0x31bfed	decoded_control		7	long_branch_backedge	266	171	-0x40	next = table[171], ip -= 0x40
+243	0x31c035	0x31c237	244	0x31c239	fallthrough		1	exact_instruction	198	165	+0x2	next = 165@0x9a24c:1, ip += +0x2; dispatch_model=static_100; state=state_add_const
+244	0x31c239	0x31c336		0x31c33a	covered_synthetic_fallthrough	hidden_span_of_17:2	2	exact_instruction	176	69	+0x4	next = 69@0x85f24:2, ip += +0x4; dispatch_model=static_100; state=state_add_const
+245	0x31c34b	0x31c596	247	0x31c7a7	decoded_control		1	long_branch_forward	210	354	+0x211	next = table[354], ip += 0x211
+246	0x31c5a7	0x31c79f	244	0x31c239	decoded_control		1	long_branch_backedge	266	165	-0x566	next = table[165], ip -= 0x566
+247	0x31c7a7	0x31c916	248	0x31c918	fallthrough		1	exact_instruction	173	171	+0x2	next = 171@0x9b4b3:1, ip += +0x2; dispatch_model=static_100; state=state_add_const
+248	0x31c918	0x31c963	250	0x31cbee	decoded_control		1	long_branch_forward	210	354	+0x28b	next = table[354], ip += 0x28b
+249	0x31c974	0x31cbe6	248	0x31c918	decoded_control		3	long_branch_backedge	117	171	-0x2ce	next = table[171], ip -= 0x2ce
+250	0x31cbee	0x31cd88		0x31cd8c	covered_synthetic_fallthrough	hidden_span_of_14:1	1	exact_instruction	174	278	+0x4	next = 278@0xb2342:1, ip += +0x4; dispatch_model=static_100; state=state_add_const
+251	0x31cd9a	0x31cfb2		0x31cfb6	covered_synthetic_fallthrough	hidden_span_of_14:1	1	exact_instruction	174	95	+0x4	next = 95@0x8c41c:1, ip += +0x4; dispatch_model=static_100; state=state_add_const
+252	0x31cfc4	0x31d26f		0x31d273	covered_synthetic_fallthrough	hidden_span_of_14:1	1	exact_instruction	184	278	+0x4	next = 278@0xb2342:1, ip += +0x4; dispatch_model=static_100; state=state_add_const
+253	0x31d281	0x31d499		0x31d49d	covered_synthetic_fallthrough	hidden_span_of_14:1	1	exact_instruction	158	264	+0x4	next = 264@0xaf4cf:1, ip += +0x4; dispatch_model=static_100; state=state_add_const
+254	0x31d4ab	0x31d756		0x31d75a	covered_synthetic_fallthrough	hidden_span_of_14:1	1	exact_instruction	161	311	+0x4	next = 311@0xb86f8:1, ip += +0x4; dispatch_model=static_100; state=state_add_const
+255	0x31d768	0x31d980		0x31d984	covered_synthetic_fallthrough	hidden_span_of_14:1	1	exact_instruction	158	216	+0x4	next = 216@0xa4a61:1, ip += +0x4; dispatch_model=static_100; state=state_add_const
+256	0x31d992	0x31dc3d		0x31dc41	covered_synthetic_fallthrough	hidden_span_of_14:1	1	exact_instruction	158	356	+0x4	next = 356@0xc291a:1, ip += +0x4; dispatch_model=static_100; state=state_add_const
+257	0x31dc4f	0x31dd95	258	0x31df8f	decoded_control		1	long_branch_forward	334	171	+0x1fa	next = table[171], ip += 0x1fa
+258	0x31df8f	0x31e052	293	0x334a3d	decoded_control		1	sampled_operand_forward	311	42	+0x169eb	sampled operand footprint 0xa; observed target table[42], delta +0x169eb
+259	0x31e060	0x31e16c		0x31e171	covered_synthetic_fallthrough	hidden_span_of_17:1	1	exact_instruction	125	145	+0x5	next = 145@0x95b5c:1, ip += +0x5; dispatch_model=static_100; state=state_add_const
+260	0x31e182	0x31e23b		0x31e23f	covered_synthetic_fallthrough	frontier_span_of_14:1	1	exact_instruction	123	216	+0x4	next = 216@0xa4a61:1, ip += +0x4; dispatch_model=static_100; state=state_add_const
+261	0x31e24d	0x31e359		0x31e35e	covered_synthetic_fallthrough	hidden_span_of_17:1	1	exact_instruction	125	316	+0x5	next = 316@0xb987b:1, ip += +0x5; dispatch_model=static_100; state=state_add_const
+262	0x31e36f	0x31e428		0x31e42c	covered_synthetic_fallthrough	frontier_span_of_14:1	1	exact_instruction	161	356	+0x4	next = 356@0xc291a:1, ip += +0x4; dispatch_model=static_100; state=state_add_const
+263	0x31e43a	0x31e546		0x31e54b	covered_synthetic_fallthrough	hidden_span_of_17:1	1	exact_instruction	245	75	+0x5	next = 75@0x873fc:1, ip += +0x5; dispatch_model=static_100; state=state_add_const
+264	0x31e55c	0x31e619	324	0x33b647	decoded_control		1	sampled_operand_forward	95	42	+0x1d02e	sampled operand footprint 0xa; observed target table[42], delta +0x1d02e
+265	0x31e627	0x31e733		0x31e738	covered_synthetic_fallthrough	hidden_span_of_17:1	1	exact_instruction	125	246	+0x5	next = 246@0xab427:1, ip += +0x5; dispatch_model=static_100; state=state_add_const
+266	0x31e749	0x31e75d	267	0x31e77f	decoded_control		1	long_branch_forward	117	354	+0x22	next = table[354], ip += 0x22
+267	0x31e77f	0x31e842	268	0x31ea5c	decoded_control		1	long_branch_forward	246	354	+0x21a	next = table[354], ip += 0x21a
+268	0x31ea5c	0x31ea8c	269	0x31eae4	decoded_control		1	long_branch_forward	316	354	+0x58	next = table[354], ip += 0x58
+269	0x31eae4	0x31ec66		0x31ec6a	covered_synthetic_fallthrough	hidden_span_of_14:1	1	exact_instruction	184	311	+0x4	next = 311@0xb86f8:1, ip += +0x4; dispatch_model=static_100; state=state_const_post
+270	0x31ec78	0x31eea9		0x31eead	covered_synthetic_fallthrough	hidden_span_of_14:1	1	exact_instruction	161	264	+0x4	next = 264@0xaf4cf:1, ip += +0x4; dispatch_model=static_100; state=state_add_const
+271	0x31eebb	0x31f0ec		0x31f0f0	covered_synthetic_fallthrough	hidden_span_of_14:1	1	exact_instruction	184	264	+0x4	next = 264@0xaf4cf:1, ip += +0x4; dispatch_model=static_100; state=state_add_const
+272	0x31f0fe	0x31f2ad		0x31f2b1	covered_synthetic_fallthrough	target_footprint_of_6:1	1	exact_instruction	184	195	+0x4	next = 195@0x9fb50:1, ip += +0x4; dispatch_model=static_100; state=state_add_const
+273	0x33170b	0x33192b	274	0x33192d	fallthrough		1	exact_instruction	108	171	+0x2	next = 171@0x9b4b3:1, ip += +0x2; dispatch_model=static_100; state=state_add_const
+274	0x33192d	0x331945	276	0x331975	decoded_control		1	long_branch_forward	210	171	+0x30	next = table[171], ip += 0x30
+275	0x33195b	0x33196d	274	0x33192d	decoded_control		17	long_branch_backedge	308	171	-0x40	next = table[171], ip -= 0x40
+276	0x331975	0x331b77	277	0x331b79	fallthrough		1	exact_instruction	352	354	+0x2	next = 354@0xc2241:1, ip += +0x2; dispatch_model=static_100; state=state_add_const
+277	0x331b79	0x331c76		0x331c7a	covered_synthetic_fallthrough	hidden_span_of_17:5	5	exact_instruction	158	78	+0x4	next = 78@0x883c0:5, ip += +0x4; dispatch_model=static_100; state=state_add_const
+278	0x331c8b	0x331e7d	280	0x332105	decoded_control		1	long_branch_forward	334	354	+0x288	next = table[354], ip += 0x288
+279	0x331e8e	0x3320fd	277	0x331b79	decoded_control		4	long_branch_backedge	117	354	-0x584	next = table[354], ip -= 0x584
+280	0x332105	0x332465		0x332469	covered_synthetic_fallthrough	hidden_span_of_14:1	1	exact_instruction	174	356	+0x4	next = 356@0xc291a:1, ip += +0x4; dispatch_model=static_100; state=state_add_const
+281	0x332477	0x3326a5		0x3326a9	covered_synthetic_fallthrough	hidden_span_of_14:1	1	exact_instruction	123	216	+0x4	next = 216@0xa4a61:1, ip += +0x4; dispatch_model=static_100; state=state_add_const
+282	0x3326b7	0x33292b		0x33292f	covered_synthetic_fallthrough	hidden_span_of_14:1	1	exact_instruction	158	356	+0x4	next = 356@0xc291a:1, ip += +0x4; dispatch_model=static_100; state=state_add_const
+283	0x33293d	0x332b6d		0x332b71	covered_synthetic_fallthrough	hidden_span_of_14:1	1	exact_instruction	176	95	+0x4	next = 95@0x8c41c:1, ip += +0x4; dispatch_model=static_100; state=state_add_const
+284	0x332b7f	0x332ddf		0x332de3	covered_synthetic_fallthrough	hidden_span_of_14:1	1	exact_instruction	161	278	+0x4	next = 278@0xb2342:1, ip += +0x4; dispatch_model=static_100; state=state_add_const
+285	0x332df1	0x332f7b		0x332f80	covered_synthetic_fallthrough	hidden_span_of_16:1	1	exact_instruction	122	210	+0x5	next = 210@0xa2da3:1, ip += +0x5; dispatch_model=static_100; state=state_add_const
+286	0x332f90	0x33311f		0x333123	covered_synthetic_fallthrough	hidden_span_of_14:1	1	exact_instruction	174	95	+0x4	next = 95@0x8c41c:1, ip += +0x4; dispatch_model=static_100; state=state_add_const
+287	0x333131	0x3332bb		0x3332c0	covered_synthetic_fallthrough	hidden_span_of_17:1	1	exact_instruction	122	246	+0x5	next = 246@0xab427:1, ip += +0x5; dispatch_model=static_100; state=state_add_const
+288	0x3332d1	0x3334a8		0x3334ac	covered_synthetic_fallthrough	frontier_span_of_14:1	1	exact_instruction	123	356	+0x4	next = 356@0xc291a:1, ip += +0x4; dispatch_model=static_100; state=state_add_const
+289	0x3334ba	0x33371e		0x333722	covered_synthetic_fallthrough	hidden_span_of_14:1	1	exact_instruction	176	311	+0x4	next = 311@0xb86f8:1, ip += +0x4; dispatch_model=static_100; state=state_add_const
+290	0x333730	0x33382d	291	0x333882	decoded_control		1	long_branch_forward	302	171	+0x55	next = table[171], ip += 0x55
+291	0x333882	0x333a04		0x333a08	covered_synthetic_fallthrough	hidden_span_of_14:1	1	exact_instruction	184	216	+0x4	next = 216@0xa4a61:1, ip += +0x4; dispatch_model=static_100; state=state_add_const
+292	0x333a16	0x333bc5		0x333bc9	covered_synthetic_fallthrough	target_footprint_of_6:1	1	exact_instruction	174	195	+0x4	next = 195@0x9fb50:1, ip += +0x4; dispatch_model=static_100; state=state_add_const
+293	0x334a3d	0x334c61	294	0x334c63	fallthrough		1	exact_instruction	256	165	+0x2	next = 165@0x9a24c:1, ip += +0x2; dispatch_model=static_100; state=state_add_const
+294	0x334c63	0x334c7b	296	0x334cab	decoded_control		1	long_branch_forward	145	354	+0x30	next = table[354], ip += 0x30
+295	0x334c91	0x334ca3	294	0x334c63	decoded_control		14	long_branch_backedge	117	165	-0x40	next = table[165], ip -= 0x40
+296	0x334cab	0x334ead	297	0x334eaf	fallthrough		1	exact_instruction	257	171	+0x2	next = 171@0x9b4b3:1, ip += +0x2; dispatch_model=static_100; state=state_add_const
+297	0x334eaf	0x33518c	299	0x335414	decoded_control		1	long_branch_forward	75	165	+0x288	next = table[165], ip += 0x288
+298	0x33519c	0x33540c	297	0x334eaf	decoded_control		3	long_branch_backedge	266	171	-0x55d	next = table[171], ip -= 0x55d
+299	0x335414	0x335583	300	0x335585	fallthrough		1	exact_instruction	256	354	+0x2	next = 354@0xc2241:1, ip += +0x2; dispatch_model=static_100; state=state_add_const
+300	0x335585	0x3355d0	302	0x33585b	decoded_control		1	long_branch_forward	210	171	+0x28b	next = table[171], ip += 0x28b
+301	0x3355e0	0x335853	300	0x335585	decoded_control		2	long_branch_backedge	308	354	-0x2ce	next = table[354], ip -= 0x2ce
+302	0x33585b	0x3364c1		0x3364c6	covered_synthetic_fallthrough	hidden_span_of_17:1	1	exact_instruction	52	334	+0x5	next = 334@0xbdd18:1, ip += +0x5; dispatch_model=static_100; state=state_add_const
+303	0x3364d7	0x336801		0x336806	covered_synthetic_fallthrough	hidden_span_of_17:1	1	exact_instruction	122	145	+0x5	next = 145@0x95b5c:1, ip += +0x5; dispatch_model=static_100; state=state_add_const
+304	0x336817	0x3369ee		0x3369f2	covered_synthetic_fallthrough	frontier_span_of_10:1	1	exact_instruction	20	95	+0x4	next = 95@0x8c41c:1, ip += +0x4; dispatch_model=static_100; state=state_mixed
+305	0x3369fc	0x336d73	306	0x336dc8	decoded_control		1	long_branch_forward	302	165	+0x55	next = table[165], ip += 0x55
+306	0x336dc8	0x33710b		0x33710f	covered_synthetic_fallthrough	target_footprint_of_6:1	1	exact_instruction	176	299	+0x4	next = 299@0xb6bba:1, ip += +0x4; dispatch_model=static_100; state=state_add_const
+307	0x337e84	0x338680	308	0x338682	fallthrough		1	exact_instruction	257	354	+0x2	next = 354@0xc2241:1, ip += +0x2; dispatch_model=static_100; state=state_add_const
+308	0x338682	0x3386cd	311	0x338e18	decoded_control		1	long_branch_forward	145	165	+0x74b	next = table[165], ip += 0x74b
+309	0x3386de	0x3387d5		0x3387d9	covered_synthetic_fallthrough	hidden_span_of_17:4	4	exact_instruction	158	69	+0x4	next = 69@0x85f24:4, ip += +0x4; dispatch_model=static_100; state=state_add_const
+310	0x3387ea	0x338e10	308	0x338682	decoded_control		4	long_branch_backedge	266	354	-0x78e	next = table[354], ip -= 0x78e
+311	0x338e18	0x338f68		0x338f6c	covered_synthetic_fallthrough	hidden_span_of_14:1	1	exact_instruction	176	95	+0x4	next = 95@0x8c41c:1, ip += +0x4; dispatch_model=static_100; state=state_add_const
+312	0x338f7a	0x3391a8		0x3391ac	covered_synthetic_fallthrough	hidden_span_of_14:1	1	exact_instruction	123	278	+0x4	next = 278@0xb2342:1, ip += +0x4; dispatch_model=static_100; state=state_add_const
+313	0x3391ba	0x33942e		0x339432	covered_synthetic_fallthrough	hidden_span_of_14:1	1	exact_instruction	184	95	+0x4	next = 95@0x8c41c:1, ip += +0x4; dispatch_model=static_100; state=state_add_const
+314	0x339440	0x339670		0x339674	covered_synthetic_fallthrough	hidden_span_of_14:1	1	exact_instruction	161	356	+0x4	next = 356@0xc291a:1, ip += +0x4; dispatch_model=static_100; state=state_mixed
+315	0x339682	0x3398e2		0x3398e6	covered_synthetic_fallthrough	hidden_span_of_14:1	1	exact_instruction	184	356	+0x4	next = 356@0xc291a:1, ip += +0x4; dispatch_model=static_100; state=state_add_const
+316	0x3398f4	0x339a7e		0x339a83	covered_synthetic_fallthrough	hidden_span_of_17:1	1	exact_instruction	122	316	+0x5	next = 316@0xb987b:1, ip += +0x5; dispatch_model=static_100; state=state_add_const
+317	0x339a94	0x339c22		0x339c26	covered_synthetic_fallthrough	hidden_span_of_14:1	1	exact_instruction	158	264	+0x4	next = 264@0xaf4cf:1, ip += +0x4; dispatch_model=static_100; state=state_add_const
+318	0x339c34	0x339dbe		0x339dc3	covered_synthetic_fallthrough	hidden_span_of_17:1	1	exact_instruction	122	246	+0x5	next = 246@0xab427:1, ip += +0x5; dispatch_model=static_100; state=state_add_const
+319	0x339dd4	0x339fab		0x339faf	covered_synthetic_fallthrough	frontier_span_of_14:1	1	exact_instruction	20	216	+0x4	next = 216@0xa4a61:1, ip += +0x4; dispatch_model=static_100; state=state_add_const
+320	0x339fbd	0x33a221		0x33a225	covered_synthetic_fallthrough	hidden_span_of_14:1	1	exact_instruction	174	356	+0x4	next = 356@0xc291a:1, ip += +0x4; dispatch_model=static_100; state=state_add_const
+321	0x33a233	0x33a330	322	0x33a385	decoded_control		1	long_branch_forward	308	354	+0x55	next = table[354], ip += 0x55
+322	0x33a385	0x33a507		0x33a50b	covered_synthetic_fallthrough	hidden_span_of_14:1	1	exact_instruction	123	264	+0x4	next = 264@0xaf4cf:1, ip += +0x4; dispatch_model=static_100; state=state_add_const
+323	0x33a519	0x33a6c8		0x33a6cc	covered_synthetic_fallthrough	target_footprint_of_6:1	1	exact_instruction	176	299	+0x4	next = 299@0xb6bba:1, ip += +0x4; dispatch_model=static_100; state=state_add_const
+324	0x33b647	0x33be47	325	0x33be49	fallthrough		1	exact_instruction	198	354	+0x2	next = 354@0xc2241:1, ip += +0x2; dispatch_model=static_100; state=state_add_const
+325	0x33be49	0x33be94	327	0x33c5b8	decoded_control		1	long_branch_forward	246	171	+0x724	next = table[171], ip += 0x724
+326	0x33bea5	0x33c5b0	325	0x33be49	decoded_control		4	long_branch_backedge	117	354	-0x767	next = table[354], ip -= 0x767
+327	0x33c5b8	0x33cd0a		0x33cd0f	covered_synthetic_fallthrough	hidden_span_of_16:1	1	exact_instruction	52	316	+0x5	next = 316@0xb987b:1, ip += +0x5; dispatch_model=static_100; state=state_add_const
+328	0x33cd1f	0x33d2d5		0x33d2d9	covered_synthetic_fallthrough	target_footprint_of_6:1	1	exact_instruction	176	195	+0x4	next = 195@0x9fb50:1, ip += +0x4; dispatch_model=static_100; state=state_add_const
+329	0x33db28	0x33dcb8		0x33dcbd	covered_synthetic_fallthrough	hidden_span_of_17:3	3	exact_instruction	52	210	+0x5	next = 210@0xa2da3:3, ip += +0x5; dispatch_model=static_100; state=state_add_const
+330	0x33dcce	0x33dd13	331	0x33dd15	fallthrough		3	exact_instruction	160	165	+0x2	next = 165@0x9a24c:3, ip += +0x2; dispatch_model=static_100; state=state_add_const
+331	0x33dd15	0x33de1e		0x33de22	covered_synthetic_fallthrough	hidden_span_of_14:12	12	exact_instruction	123	264	+0x4	next = 264@0xaf4cf:12, ip += +0x4; dispatch_model=static_100; state=state_add_const
+332	0x33de30	0x33e026		0x33e02a	covered_synthetic_fallthrough	hidden_span_of_17:12	12	exact_instruction	20	80	+0x4	next = 80@0x88a58:12, ip += +0x4; dispatch_model=static_100; state=state_add_const
+333	0x33e03b	0x33e14c	339	0x33e8de	decoded_control		3	long_branch_forward	246	165	+0x792	next = table[165], ip += 0x792
+334	0x33e15d	0x33e2d6		0x33e2da	covered_synthetic_fallthrough	hidden_span_of_14:9	9	exact_instruction	161	311	+0x4	next = 311@0xb86f8:9, ip += +0x4; dispatch_model=static_100; state=state_mixed
+335	0x33e2e8	0x33e52e		0x33e532	covered_synthetic_fallthrough	hidden_span_of_14:9	9	exact_instruction	161	264	+0x4	next = 264@0xaf4cf:9, ip += +0x4; dispatch_model=static_100; state=state_add_const
+336	0x33e540	0x33e703		0x33e707	covered_synthetic_fallthrough	hidden_span_of_17:9	9	exact_instruction	123	69	+0x4	next = 69@0x85f24:9, ip += +0x4; dispatch_model=static_100; state=state_add_const
+337	0x33e718	0x33e829	338	0x33e889	decoded_control		9	long_branch_forward	75	165	+0x60	next = table[165], ip += 0x60
+338	0x33e889	0x33e8d6	331	0x33dd15	decoded_control		9	long_branch_backedge	117	165	-0xbc1	next = table[165], ip -= 0xbc1
+339	0x33e8de	0x33e9e2	305	0x3369fc	decoded_control		1	sampled_operand_backedge	299	169	-0x7fe6	sampled operand footprint 0x6; observed target table[169], delta -0x7fe6
+340	0x33f278	0x33f6c6	341	0x33f6c8	fallthrough		1	exact_instruction	160	354	+0x2	next = 354@0xc2241:1, ip += +0x2; dispatch_model=static_100; state=state_const_post
+341	0x33f6c8	0x33f6e0	343	0x33f710	decoded_control		1	long_branch_forward	334	171	+0x30	next = table[171], ip += 0x30
+342	0x33f6f6	0x33f708	341	0x33f6c8	decoded_control		5	long_branch_backedge	117	354	-0x40	next = table[354], ip -= 0x40
+343	0x33f710	0x33f912	344	0x33f914	fallthrough		1	exact_instruction	160	171	+0x2	next = 171@0x9b4b3:1, ip += +0x2; dispatch_model=static_100; state=state_const_post
+344	0x33f914	0x33fbf1	346	0x33fe02	decoded_control		1	long_branch_forward	246	165	+0x211	next = table[165], ip += 0x211
+345	0x33fc02	0x33fdfa	344	0x33f914	decoded_control		1	long_branch_backedge	308	171	-0x4e6	next = table[171], ip -= 0x4e6
+346	0x33fe02	0x340179	347	0x34017b	fallthrough		1	exact_instruction	256	354	+0x2	next = 354@0xc2241:1, ip += +0x2; dispatch_model=static_100; state=state_add_const
+347	0x34017b	0x340193	349	0x3401c3	decoded_control		1	long_branch_forward	210	171	+0x30	next = table[171], ip += 0x30
+348	0x3401a9	0x3401bb	347	0x34017b	decoded_control		10	long_branch_backedge	308	354	-0x40	next = table[354], ip -= 0x40
+349	0x3401c3	0x3403c5	350	0x3403c7	fallthrough		1	exact_instruction	108	354	+0x2	next = 354@0xc2241:1, ip += +0x2; dispatch_model=static_100; state=state_add_const
+350	0x3403c7	0x3406cb	352	0x340953	decoded_control		1	long_branch_forward	316	354	+0x288	next = table[354], ip += 0x288
+351	0x3406dc	0x34094b	350	0x3403c7	decoded_control		2	long_branch_backedge	117	354	-0x584	next = table[354], ip -= 0x584
+352	0x340953	0x340ac2	353	0x340ac4	fallthrough		1	exact_instruction	160	354	+0x2	next = 354@0xc2241:1, ip += +0x2; dispatch_model=static_100; state=state_const_post
+353	0x340ac4	0x340b0f	355	0x340d9a	decoded_control		1	long_branch_forward	210	171	+0x28b	next = table[171], ip += 0x28b
+354	0x340b20	0x340d92	353	0x340ac4	decoded_control		2	long_branch_backedge	266	354	-0x2ce	next = table[354], ip -= 0x2ce
+355	0x340d9a	0x340f01	356	0x340f03	fallthrough		1	exact_instruction	108	171	+0x2	next = 171@0x9b4b3:1, ip += +0x2; dispatch_model=static_100; state=state_add_const
+356	0x340f03	0x340f1b	358	0x340f4b	decoded_control		1	long_branch_forward	75	165	+0x30	next = table[165], ip += 0x30
+357	0x340f31	0x340f43	356	0x340f03	decoded_control		17	long_branch_backedge	266	171	-0x40	next = table[171], ip -= 0x40
+358	0x340f4b	0x34114d	359	0x34114f	fallthrough		1	exact_instruction	108	165	+0x2	next = 165@0x9a24c:1, ip += +0x2; dispatch_model=static_100; state=state_add_const
+359	0x34114f	0x34142c	361	0x3416b4	decoded_control		1	long_branch_forward	334	165	+0x288	next = table[165], ip += 0x288
+360	0x34143d	0x3416ac	359	0x34114f	decoded_control		4	long_branch_backedge	266	165	-0x55d	next = table[165], ip -= 0x55d
+361	0x3416b4	0x341a2b	362	0x341a2d	fallthrough		1	exact_instruction	257	171	+0x2	next = 171@0x9b4b3:1, ip += +0x2; dispatch_model=static_100; state=state_add_const
+362	0x341a2d	0x341a45	364	0x341a75	decoded_control		1	long_branch_forward	145	354	+0x30	next = table[354], ip += 0x30
+363	0x341a5b	0x341a6d	362	0x341a2d	decoded_control		10	long_branch_backedge	266	171	-0x40	next = table[171], ip -= 0x40
+364	0x341a75	0x341c77	365	0x341c79	fallthrough		1	exact_instruction	108	354	+0x2	next = 354@0xc2241:1, ip += +0x2; dispatch_model=static_100; state=state_add_const
+365	0x341c79	0x341f7d	367	0x342205	decoded_control		1	long_branch_forward	246	171	+0x288	next = table[171], ip += 0x288
+366	0x341f8e	0x3421fd	365	0x341c79	decoded_control		2	long_branch_backedge	308	354	-0x584	next = table[354], ip -= 0x584
+367	0x342205	0x342374	368	0x342376	fallthrough		1	exact_instruction	198	165	+0x2	next = 165@0x9a24c:1, ip += +0x2; dispatch_model=static_100; state=state_add_const
+368	0x342376	0x3423c1	370	0x34264c	decoded_control		1	long_branch_forward	246	354	+0x28b	next = table[354], ip += 0x28b
+369	0x3423d2	0x342644	368	0x342376	decoded_control		2	long_branch_backedge	117	165	-0x2ce	next = table[165], ip -= 0x2ce
+370	0x34264c	0x3427b3	371	0x3427b5	fallthrough		1	exact_instruction	198	171	+0x2	next = 171@0x9b4b3:1, ip += +0x2; dispatch_model=static_100; state=state_add_const
+371	0x3427b5	0x3427cd	373	0x3427fd	decoded_control		1	long_branch_forward	210	171	+0x30	next = table[171], ip += 0x30
+372	0x3427e3	0x3427f5	371	0x3427b5	decoded_control		18	long_branch_backedge	266	171	-0x40	next = table[171], ip -= 0x40
+373	0x3427fd	0x3429ff	374	0x342a01	fallthrough		1	exact_instruction	108	171	+0x2	next = 171@0x9b4b3:1, ip += +0x2; dispatch_model=static_100; state=state_add_const
+374	0x342a01	0x342cde	376	0x342f66	decoded_control		1	long_branch_forward	145	165	+0x288	next = table[165], ip += 0x288
+375	0x342cef	0x342f5e	374	0x342a01	decoded_control		4	long_branch_backedge	308	171	-0x55d	next = table[171], ip -= 0x55d
+376	0x342f66	0x3430d5	377	0x3430d7	fallthrough		1	exact_instruction	160	171	+0x2	next = 171@0x9b4b3:1, ip += +0x2; dispatch_model=static_100; state=state_const_post
+377	0x3430d7	0x343122	379	0x3433ad	decoded_control		1	long_branch_forward	75	354	+0x28b	next = table[354], ip += 0x28b
+378	0x343132	0x3433a5	377	0x3430d7	decoded_control		2	long_branch_backedge	302	171	-0x2ce	next = table[171], ip -= 0x2ce
+379	0x3433ad	0x34355f	217	0x30e872	decoded_control		1	sampled_operand_backedge	311	42	-0x34ced	sampled operand footprint 0xa; observed target table[42], delta -0x34ced
+380	0x343569	0x343679		0x34367e	covered_synthetic_fallthrough	hidden_span_of_17:1	1	exact_instruction	125	145	+0x5	next = 145@0x95b5c:1, ip += +0x5; dispatch_model=static_100
+381	0x34368f	0x343ef2	382	0x343ef4	fallthrough		1	exact_instruction	352	354	+0x2	next = 354@0xc2241:1, ip += +0x2; dispatch_model=static_100
+382	0x343ef4	0x343f0c	384	0x343f3c	decoded_control		1	long_branch_forward	316	354	+0x30	next = table[354], ip += 0x30
+383	0x343f22	0x343f34	382	0x343ef4	decoded_control		10	long_branch_backedge	117	354	-0x40	next = table[354], ip -= 0x40
+384	0x343f3c	0x345568		0x34556c	covered_synthetic_fallthrough	target_footprint_of_6:1	1	exact_instruction	176	175	+0x4	next = 175@0x9c08f:1, ip += +0x4; dispatch_model=static_100
+385	0x3603af	0x360dfb	386	0x360dfd	fallthrough		1	exact_instruction	352	171	+0x2	next = 171@0x9b4b3:1, ip += +0x2; dispatch_model=static_100; state=state_add_const
+386	0x360dfd	0x361133	388	0x3613bb	decoded_control		1	long_branch_forward	75	165	+0x288	next = table[165], ip += 0x288
+387	0x361143	0x3613b3	386	0x360dfd	decoded_control		2	long_branch_backedge	308	171	-0x5b6	next = table[171], ip -= 0x5b6
+388	0x3613bb	0x36152a	389	0x36152c	fallthrough		1	exact_instruction	198	171	+0x2	next = 171@0x9b4b3:1, ip += +0x2; dispatch_model=static_100
+389	0x36152c	0x361577	391	0x361802	decoded_control		1	long_branch_forward	246	354	+0x28b	next = table[354], ip += 0x28b
+390	0x361587	0x3617fa	389	0x36152c	decoded_control		3	long_branch_backedge	308	171	-0x2ce	next = table[171], ip -= 0x2ce
+391	0x361802	0x362613	392	0x362615	fallthrough		1	exact_instruction	108	354	+0x2	next = 354@0xc2241:1, ip += +0x2; dispatch_model=static_100
+392	0x362615	0x362919	394	0x362b2a	decoded_control		1	long_branch_forward	316	171	+0x211	next = table[171], ip += 0x211
+393	0x36292a	0x362b22	392	0x362615	decoded_control		1	long_branch_backedge	117	354	-0x50d	next = table[354], ip -= 0x50d
+394	0x362b2a	0x362c99	395	0x362c9b	fallthrough		1	exact_instruction	256	171	+0x2	next = 171@0x9b4b3:1, ip += +0x2; dispatch_model=static_100
+395	0x362c9b	0x362ce6	397	0x362f71	decoded_control		1	long_branch_forward	334	354	+0x28b	next = table[354], ip += 0x28b
+396	0x362cf7	0x362f69	395	0x362c9b	decoded_control		3	long_branch_backedge	302	171	-0x2ce	next = table[171], ip -= 0x2ce
+397	0x362f71	0x363d82	398	0x363d84	fallthrough		1	exact_instruction	256	165	+0x2	next = 165@0x9a24c:1, ip += +0x2; dispatch_model=static_100; state=state_add_const
+398	0x363d84	0x36405b	400	0x36426c	decoded_control		1	long_branch_forward	316	165	+0x211	next = table[165], ip += 0x211
+399	0x36406b	0x364264	398	0x363d84	decoded_control		1	long_branch_backedge	266	165	-0x4e0	next = table[165], ip -= 0x4e0
+400	0x36426c	0x364c64		0x364c68	covered_synthetic_fallthrough	frontier_span_of_10:1	1	exact_instruction	158	264	+0x4	next = 264@0xaf4cf:1, ip += +0x4; dispatch_model=static_100
+401	0x364c72	0x364d82		0x364d87	covered_synthetic_fallthrough	hidden_span_of_17:1	1	exact_instruction	125	316	+0x5	next = 316@0xb987b:1, ip += +0x5; dispatch_model=static_100
+402	0x364d98	0x364e51		0x364e55	covered_synthetic_fallthrough	frontier_span_of_10:1	1	exact_instruction	158	216	+0x4	next = 216@0xa4a61:1, ip += +0x4; dispatch_model=static_100
+403	0x364e5f	0x364f6f		0x364f74	covered_synthetic_fallthrough	hidden_span_of_16:1	1	exact_instruction	242	334	+0x5	next = 334@0xbdd18:1, ip += +0x5; dispatch_model=static_100
+404	0x364f84	0x36503e		0x365042	covered_synthetic_fallthrough	frontier_span_of_10:1	1	exact_instruction	20	264	+0x4	next = 264@0xaf4cf:1, ip += +0x4; dispatch_model=static_100
+405	0x36504c	0x365161	406	0x365190	decoded_control		1	long_branch_forward	334	165	+0x2f	next = table[165], ip += 0x2f
+406	0x365190	0x36523e	407	0x365458	decoded_control		1	long_branch_forward	246	165	+0x21a	next = table[165], ip += 0x21a
+407	0x365458	0x365488	408	0x3654e0	decoded_control		1	long_branch_forward	334	354	+0x58	next = table[354], ip += 0x58
+408	0x3654e0	0x3655e0		0x3655e4	covered_synthetic_fallthrough	target_footprint_of_6:1	1	exact_instruction	158	195	+0x4	next = 195@0x9fb50:1, ip += +0x4; dispatch_model=static_100
+409	0x3674c3	0x3676e3	410	0x3676e5	fallthrough		1	exact_instruction	173	171	+0x2	next = 171@0x9b4b3:1, ip += +0x2; dispatch_model=static_100
+410	0x3676e5	0x3676fd	412	0x36772d	decoded_control		1	long_branch_forward	334	354	+0x30	next = table[354], ip += 0x30
+411	0x367713	0x367725	410	0x3676e5	decoded_control		39	long_branch_backedge	302	171	-0x40	next = table[171], ip -= 0x40
+412	0x36772d	0x36792f	413	0x367931	fallthrough		1	exact_instruction	198	165	+0x2	next = 165@0x9a24c:1, ip += +0x2; dispatch_model=static_100
+413	0x367931	0x367c0e	415	0x367e96	decoded_control		1	long_branch_forward	210	354	+0x288	next = table[354], ip += 0x288
+414	0x367c1f	0x367e8e	413	0x367931	decoded_control		9	long_branch_backedge	302	165	-0x55d	next = table[165], ip -= 0x55d
+415	0x367e96	0x368005	416	0x368007	fallthrough		1	exact_instruction	144	354	+0x2	next = 354@0xc2241:1, ip += +0x2; dispatch_model=static_100; state=state_mixed
+416	0x368007	0x368052	418	0x3682dd	decoded_control		1	long_branch_forward	75	165	+0x28b	next = table[165], ip += 0x28b
+417	0x368063	0x3682d5	416	0x368007	decoded_control		3	long_branch_backedge	308	354	-0x2ce	next = table[354], ip -= 0x2ce
+418	0x3682dd	0x36848b		0x36848f	covered_synthetic_fallthrough	hidden_span_of_14:1	1	exact_instruction	123	311	+0x4	next = 311@0xb86f8:1, ip += +0x4; dispatch_model=static_100
+419	0x36849d	0x3686b5		0x3686b9	covered_synthetic_fallthrough	hidden_span_of_14:1	1	exact_instruction	123	311	+0x4	next = 311@0xb86f8:1, ip += +0x4; dispatch_model=static_100
+420	0x3686c7	0x368940		0x368944	covered_synthetic_fallthrough	hidden_span_of_14:1	1	exact_instruction	184	356	+0x4	next = 356@0xc291a:1, ip += +0x4; dispatch_model=static_100
+421	0x368952	0x368a93		0x368a98	covered_synthetic_fallthrough	hidden_span_of_17:1	1	exact_instruction	122	75	+0x5	next = 75@0x873fc:1, ip += +0x5; dispatch_model=static_100
+422	0x368aa9	0x368c37		0x368c3b	covered_synthetic_fallthrough	hidden_span_of_14:1	1	exact_instruction	174	356	+0x4	next = 356@0xc291a:1, ip += +0x4; dispatch_model=static_100
+423	0x368c49	0x368dd3		0x368dd8	covered_synthetic_fallthrough	hidden_span_of_17:1	1	exact_instruction	122	334	+0x5	next = 334@0xbdd18:1, ip += +0x5; dispatch_model=static_100
+424	0x368de9	0x368e43		0x368e48	covered_synthetic_fallthrough	hidden_span_of_16:1	1	exact_instruction	52	334	+0x5	next = 334@0xbdd18:1, ip += +0x5; dispatch_model=static_100
+425	0x368e58	0x368f5e	426	0x368f60	fallthrough		1	exact_instruction	198	165	+0x2	next = 165@0x9a24c:1, ip += +0x2; dispatch_model=static_100
+426	0x368f60	0x369069		0x36906d	covered_synthetic_fallthrough	hidden_span_of_14:4	4	exact_instruction	174	216	+0x4	next = 216@0xa4a61:4, ip += +0x4; dispatch_model=static_100
+427	0x36907b	0x369271		0x369275	covered_synthetic_fallthrough	hidden_span_of_17:4	4	exact_instruction	174	321	+0x4	next = 321@0xbb1dd:4, ip += +0x4; dispatch_model=static_100
+428	0x369286	0x369397	434	0x369b28	decoded_control		1	long_branch_forward	246	354	+0x791	next = table[354], ip += 0x791
+429	0x3693a8	0x369521		0x369525	covered_synthetic_fallthrough	hidden_span_of_14:3	3	exact_instruction	174	356	+0x4	next = 356@0xc291a:3, ip += +0x4; dispatch_model=static_100
+430	0x369533	0x369778		0x36977c	covered_synthetic_fallthrough	hidden_span_of_14:3	3	exact_instruction	174	278	+0x4	next = 278@0xb2342:3, ip += +0x4; dispatch_model=static_100
+431	0x36978a	0x36994d		0x369951	covered_synthetic_fallthrough	hidden_span_of_17:3	3	exact_instruction	176	69	+0x4	next = 69@0x85f24:3, ip += +0x4; dispatch_model=static_100
+432	0x369962	0x369a73	433	0x369ad3	decoded_control		3	long_branch_forward	145	354	+0x60	next = table[354], ip += 0x60
+433	0x369ad3	0x369b20	426	0x368f60	decoded_control		3	long_branch_backedge	117	165	-0xbc0	next = table[165], ip -= 0xbc0
+434	0x369b28	0x369c46		0x369c4a	covered_synthetic_fallthrough	hidden_span_of_14:1	1	exact_instruction	184	95	+0x4	next = 95@0x8c41c:1, ip += +0x4; dispatch_model=static_100
+435	0x369c58	0x369ed7		0x369edb	covered_synthetic_fallthrough	hidden_span_of_14:1	1	exact_instruction	20	278	+0x4	next = 278@0xb2342:1, ip += +0x4; dispatch_model=static_100
+436	0x369ee9	0x36a09c	401	0x364c72	decoded_control		1	sampled_operand_backedge	195	310	-0x542a	sampled operand footprint 0x6; observed target table[310], delta -0x542a
+437	0x36b124	0x36b344	438	0x36b346	fallthrough		1	exact_instruction	144	354	+0x2	next = 354@0xc2241:1, ip += +0x2; dispatch_model=static_100; state=state_mixed
+438	0x36b346	0x36b35e	440	0x36b38e	decoded_control		1	long_branch_forward	316	171	+0x30	next = table[171], ip += 0x30
+439	0x36b374	0x36b386	438	0x36b346	decoded_control		41	long_branch_backedge	117	354	-0x40	next = table[354], ip -= 0x40
+440	0x36b38e	0x36b590	441	0x36b592	fallthrough		1	exact_instruction	144	171	+0x2	next = 171@0x9b4b3:1, ip += +0x2; dispatch_model=static_100; state=state_add_const
+441	0x36b592	0x36b68f		0x36b693	covered_synthetic_fallthrough	hidden_span_of_17:11	11	exact_instruction	123	78	+0x4	next = 78@0x883c0:11, ip += +0x4; dispatch_model=static_100
+442	0x36b6a4	0x36b896	444	0x36bb1e	decoded_control		1	long_branch_forward	210	354	+0x288	next = table[354], ip += 0x288
+443	0x36b8a7	0x36bb16	441	0x36b592	decoded_control		10	long_branch_backedge	308	171	-0x584	next = table[171], ip -= 0x584
+444	0x36bb1e	0x36bedc		0x36bee0	covered_synthetic_fallthrough	hidden_span_of_14:1	1	exact_instruction	158	95	+0x4	next = 95@0x8c41c:1, ip += +0x4; dispatch_model=static_100
+445	0x36beee	0x36c106		0x36c10a	covered_synthetic_fallthrough	hidden_span_of_14:1	1	exact_instruction	174	216	+0x4	next = 216@0xa4a61:1, ip += +0x4; dispatch_model=static_100
+446	0x36c118	0x36c391		0x36c395	covered_synthetic_fallthrough	hidden_span_of_14:1	1	exact_instruction	184	95	+0x4	next = 95@0x8c41c:1, ip += +0x4; dispatch_model=static_100
+447	0x36c3a3	0x36c4e4		0x36c4e9	covered_synthetic_fallthrough	hidden_span_of_17:1	1	exact_instruction	52	145	+0x5	next = 145@0x95b5c:1, ip += +0x5; dispatch_model=static_100
+448	0x36c4fa	0x36c688		0x36c68c	covered_synthetic_fallthrough	hidden_span_of_14:1	1	exact_instruction	161	216	+0x4	next = 216@0xa4a61:1, ip += +0x4; dispatch_model=static_100
+449	0x36c69a	0x36c824		0x36c829	covered_synthetic_fallthrough	hidden_span_of_16:1	1	exact_instruction	52	210	+0x5	next = 210@0xa2da3:1, ip += +0x5; dispatch_model=static_100
+450	0x36c839	0x36c894		0x36c899	covered_synthetic_fallthrough	hidden_span_of_17:1	1	exact_instruction	52	75	+0x5	next = 75@0x873fc:1, ip += +0x5; dispatch_model=static_100
+451	0x36c8aa	0x36c9af	452	0x36c9b1	fallthrough		1	exact_instruction	108	354	+0x2	next = 354@0xc2241:1, ip += +0x2; dispatch_model=static_100
+452	0x36c9b1	0x36caba		0x36cabe	covered_synthetic_fallthrough	hidden_span_of_14:4	4	exact_instruction	174	216	+0x4	next = 216@0xa4a61:4, ip += +0x4; dispatch_model=static_100; state=state_add_const
+453	0x36cacc	0x36ccc2		0x36ccc6	covered_synthetic_fallthrough	hidden_span_of_17:4	4	exact_instruction	174	50	+0x4	next = 50@0x82e76:4, ip += +0x4; dispatch_model=static_100; state=state_add_const
+454	0x36ccd7	0x36cde8	460	0x36d579	decoded_control		1	long_branch_forward	334	354	+0x791	next = table[354], ip += 0x791
+455	0x36cdf9	0x36cf72		0x36cf76	covered_synthetic_fallthrough	hidden_span_of_14:3	3	exact_instruction	184	356	+0x4	next = 356@0xc291a:3, ip += +0x4; dispatch_model=static_100
+456	0x36cf84	0x36d1c9		0x36d1cd	covered_synthetic_fallthrough	hidden_span_of_14:3	3	exact_instruction	161	216	+0x4	next = 216@0xa4a61:3, ip += +0x4; dispatch_model=static_100
+457	0x36d1db	0x36d39e		0x36d3a2	covered_synthetic_fallthrough	hidden_span_of_17:3	3	exact_instruction	20	80	+0x4	next = 80@0x88a58:3, ip += +0x4; dispatch_model=static_100
+458	0x36d3b3	0x36d4c4	459	0x36d524	decoded_control		3	long_branch_forward	210	354	+0x60	next = table[354], ip += 0x60
+459	0x36d524	0x36d571	452	0x36c9b1	decoded_control		3	long_branch_backedge	117	354	-0xbc0	next = table[354], ip -= 0xbc0
+460	0x36d579	0x36d697		0x36d69b	covered_synthetic_fallthrough	hidden_span_of_14:1	1	exact_instruction	123	264	+0x4	next = 264@0xaf4cf:1, ip += +0x4; dispatch_model=static_100
+461	0x36d6a9	0x36d928		0x36d92c	covered_synthetic_fallthrough	hidden_span_of_14:1	1	exact_instruction	158	264	+0x4	next = 264@0xaf4cf:1, ip += +0x4; dispatch_model=static_100
+462	0x36d93a	0x36daed	403	0x364e5f	decoded_control		1	sampled_operand_backedge	195	310	-0x8c8e	sampled operand footprint 0x6; observed target table[310], delta -0x8c8e
+463	0x36ecdc	0x36eefc	464	0x36eefe	fallthrough		1	exact_instruction	160	165	+0x2	next = 165@0x9a24c:1, ip += +0x2; dispatch_model=static_100; state=state_add_const
+464	0x36eefe	0x36ef16	466	0x36ef46	decoded_control		1	long_branch_forward	145	171	+0x30	next = table[171], ip += 0x30
+465	0x36ef2c	0x36ef3e	464	0x36eefe	decoded_control		22	long_branch_backedge	302	165	-0x40	next = table[165], ip -= 0x40
+466	0x36ef46	0x36f148	467	0x36f14a	fallthrough		1	exact_instruction	144	165	+0x2	next = 165@0x9a24c:1, ip += +0x2; dispatch_model=static_100; state=state_mixed
+467	0x36f14a	0x36f427	469	0x36f6af	decoded_control		1	long_branch_forward	246	165	+0x288	next = table[165], ip += 0x288
+468	0x36f438	0x36f6a7	467	0x36f14a	decoded_control		5	long_branch_backedge	117	165	-0x55d	next = table[165], ip -= 0x55d
+469	0x36f6af	0x36f81e	470	0x36f820	fallthrough		1	exact_instruction	198	165	+0x2	next = 165@0x9a24c:1, ip += +0x2; dispatch_model=static_100
+470	0x36f820	0x36f86b	472	0x36faf6	decoded_control		1	long_branch_forward	145	171	+0x28b	next = table[171], ip += 0x28b
+471	0x36f87c	0x36faee	470	0x36f820	decoded_control		2	long_branch_backedge	266	165	-0x2ce	next = table[165], ip -= 0x2ce
+472	0x36faf6	0x36fca4		0x36fca8	covered_synthetic_fallthrough	hidden_span_of_14:1	1	exact_instruction	184	264	+0x4	next = 264@0xaf4cf:1, ip += +0x4; dispatch_model=static_100
+473	0x36fcb6	0x36fed0		0x36fed4	covered_synthetic_fallthrough	hidden_span_of_14:1	1	exact_instruction	158	356	+0x4	next = 356@0xc291a:1, ip += +0x4; dispatch_model=static_100
+474	0x36fee2	0x370123		0x370127	covered_synthetic_fallthrough	hidden_span_of_17:1	1	exact_instruction	20	69	+0x4	next = 69@0x85f24:1, ip += +0x4; dispatch_model=static_100
+475	0x370138	0x370244		0x370249	covered_synthetic_fallthrough	hidden_span_of_15:1	1	exact_instruction	242	246	+0x5	next = 246@0xab427:1, ip += +0x5; dispatch_model=static_100
+476	0x370256	0x370256	477	0x370258	fallthrough		25	exact_instruction	171	340	+0x2	next = 340@0xbf435:25, ip += +0x2; dispatch_model=static_100; state=state_const_post
+477	0x370258	0x3703d4		0x3703d8	covered_synthetic_fallthrough	hidden_span_of_14:26	26	exact_instruction	161	311	+0x4	next = 311@0xb86f8:26, ip += +0x4; dispatch_model=static_100
+478	0x3703e6	0x3704f7	482	0x370770	decoded_control		1	long_branch_forward	145	354	+0x279	next = table[354], ip += 0x279
+479	0x370508	0x370620		0x370624	covered_synthetic_fallthrough	hidden_span_of_14:25	25	exact_instruction	184	95	+0x4	next = 95@0x8c41c:25, ip += +0x4; dispatch_model=static_100
+480	0x370632	0x37073e		0x370743	covered_synthetic_fallthrough	hidden_span_of_19:25	25	exact_instruction	245	145	+0x5	next = 145@0x95b5c:25, ip += +0x5; dispatch_model=static_100
+481	0x370756	0x370768	483	0x37078a	decoded_control		25	long_branch_forward	302	171	+0x22	next = table[171], ip += 0x22
+482	0x370770	0x370788	483	0x37078a	fallthrough		1	exact_instruction	173	171	+0x2	next = 171@0x9b4b3:1, ip += +0x2; dispatch_model=static_100
+483	0x37078a	0x3707a0	496	0x371a63	decoded_control		1	long_branch_forward	316	165	+0x12c3	next = table[165], ip += 0x12c3
+484	0x3707b1	0x3708e0		0x3708e4	covered_synthetic_fallthrough	hidden_span_of_14:25	25	exact_instruction	161	264	+0x4	next = 264@0xaf4cf:25, ip += +0x4; dispatch_model=static_100
+485	0x3708f2	0x370a7c		0x370a81	covered_synthetic_fallthrough	hidden_span_of_16:25	25	exact_instruction	52	246	+0x5	next = 246@0xab427:25, ip += +0x5; dispatch_model=static_100
+486	0x370a91	0x370cac		0x370cb0	covered_synthetic_fallthrough	hidden_span_of_14:25	25	exact_instruction	20	356	+0x4	next = 356@0xc291a:25, ip += +0x4; dispatch_model=static_100
+487	0x370cbe	0x370f06		0x370f0a	covered_synthetic_fallthrough	hidden_span_of_14:25	25	exact_instruction	176	264	+0x4	next = 264@0xaf4cf:25, ip += +0x4; dispatch_model=static_100
+488	0x370f18	0x37142a	489	0x37142c	fallthrough		25	exact_instruction	173	354	+0x2	next = 354@0xc2241:25, ip += +0x2; dispatch_model=static_100
+489	0x37142c	0x371477	492	0x37171c	decoded_control		25	long_branch_forward	334	354	+0x2a5	next = table[354], ip += 0x2a5
+490	0x371488	0x37158e	491	0x3716c7	decoded_control		125	long_branch_forward	145	354	+0x139	next = table[354], ip += 0x139
+491	0x3716c7	0x371714	489	0x37142c	decoded_control		125	long_branch_backedge	266	354	-0x2e8	next = table[354], ip -= 0x2e8
+492	0x37171c	0x37174c	493	0x3717c4	decoded_control		25	long_branch_forward	246	165	+0x78	next = table[165], ip += 0x78
+493	0x3717c4	0x3718fb		0x3718ff	covered_synthetic_fallthrough	hidden_span_of_14:25	25	exact_instruction	161	311	+0x4	next = 311@0xb86f8:25, ip += +0x4; dispatch_model=static_100
+494	0x37190d	0x371a1b		0x371a20	covered_synthetic_fallthrough	hidden_span_of_16:25	25	exact_instruction	52	316	+0x5	next = 316@0xb987b:25, ip += +0x5; dispatch_model=static_100
+495	0x371a30	0x371a43	476	0x370256	decoded_control		25	long_branch_backedge	308	171	-0x17ed	next = table[171], ip -= 0x17ed
+496	0x371a63	0x371b81		0x371b85	covered_synthetic_fallthrough	hidden_span_of_14:1	1	exact_instruction	123	95	+0x4	next = 95@0x8c41c:1, ip += +0x4; dispatch_model=static_100
+497	0x371b93	0x371e12		0x371e16	covered_synthetic_fallthrough	hidden_span_of_14:1	1	exact_instruction	123	311	+0x4	next = 311@0xb86f8:1, ip += +0x4; dispatch_model=static_100
+498	0x371e24	0x371fd7	405	0x36504c	decoded_control		1	sampled_operand_backedge	299	310	-0xcf8b	sampled operand footprint 0x6; observed target table[310], delta -0xcf8b

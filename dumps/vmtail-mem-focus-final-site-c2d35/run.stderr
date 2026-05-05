@@ -1,0 +1,174 @@
+[DRIVER] dlopen path=./eac.elf
+[TRACE] caller=driver+0x1608 dlopen file=./eac.elf flags=0x2
+[DRIVER] dlsym x=0x7efe04a380dc
+[TRACE] caller=driver+0x2355 getenv name=EAC_DISPATCH_TRACE -> set
+[TRACE] caller=driver+0x1a7a getenv name=EAC_DISPATCH_LIMIT -> set
+[TRACE] caller=driver+0x2355 getenv name=EAC_DISPATCH_DETAIL -> null
+[TRACE] caller=driver+0x2355 getenv name=EAC_VMTAIL_TRACE -> set
+[TRACE] caller=driver+0x2355 getenv name=EAC_VMTAIL_REGS -> set
+[TRACE] caller=driver+0x2355 getenv name=EAC_VMTAIL_SCRATCH -> null
+[TRACE] caller=driver+0x2355 getenv name=EAC_VMTAIL_MEM -> set
+[TRACE] caller=driver+0x1b09 getenv name=EAC_VMTAIL_MEM_REGS -> set
+[TRACE] caller=driver+0x1b23 getenv name=EAC_VMTAIL_LIMIT -> set
+[TRACE] caller=driver+0x1b79 getenv name=EAC_VMTAIL_FOCUS_IPS -> null
+[TRACE] caller=driver+0x1b8d getenv name=EAC_VMTAIL_FOCUS_SITES -> set
+[TRACE] caller=driver+0x1ba1 getenv name=EAC_VMTAIL_STOP_AFTER_MATCHES -> set
+[TRACE] caller=driver+0x1be4 getenv name=EAC_VMTAIL_SITES -> null
+[TRACE] caller=driver+0x2d99 fopen path=/proc/self/maps mode=r
+[TRACE] caller=driver+0x3272 mprotect addr=0x7efe04ac8000 len=0x1000 prot=0x7
+[TRACE] caller=driver+0x3272 mprotect addr=0x7efe04acd000 len=0x1000 prot=0x7
+[TRACE] caller=driver+0x3272 mprotect addr=0x7efe04a81000 len=0x1000 prot=0x7
+[TRACE] caller=driver+0x3272 mprotect addr=0x7efe04a8a000 len=0x1000 prot=0x7
+[TRACE] caller=driver+0x3272 mprotect addr=0x7efe04a9a000 len=0x1000 prot=0x7
+[TRACE] caller=driver+0x3272 mprotect addr=0x7efe04a9b000 len=0x1000 prot=0x7
+[TRACE] caller=driver+0x3272 mprotect addr=0x7efe04a9b000 len=0x1000 prot=0x7
+[TRACE] caller=driver+0x3272 mprotect addr=0x7efe04ab8000 len=0x1000 prot=0x7
+[TRACE] caller=driver+0x3272 mprotect addr=0x7efe04abb000 len=0x1000 prot=0x7
+[TRACE] caller=driver+0x3272 mprotect addr=0x7efe04abb000 len=0x1000 prot=0x7
+[TRACE] caller=driver+0x3272 mprotect addr=0x7efe04ac2000 len=0x1000 prot=0x7
+[TRACE] caller=driver+0x3272 mprotect addr=0x7efe04a9c000 len=0x1000 prot=0x7
+[TRACE] caller=driver+0x3272 mprotect addr=0x7efe04aa0000 len=0x1000 prot=0x7
+[TRACE] caller=driver+0x3272 mprotect addr=0x7efe04ab2000 len=0x1000 prot=0x7
+[TRACE] caller=driver+0x3272 mprotect addr=0x7efe04ab7000 len=0x1000 prot=0x7
+[TRACE] caller=driver+0x3272 mprotect addr=0x7efe04ac2000 len=0x1000 prot=0x7
+[DRIVER] dispatch trace enabled base=0x7efe04a00000 sites=+0xc80b9,+0xcdac7 limit=1 detail=0 tail=1 tail_regs=1 tail_scratch=0 tail_mem=1 tail_limit=100 tail_sites=14 scratch_offsets=0 read_ranges=54 focus_ips=0 focus_sites=1 stop_after_matches=20
+[DRIVER] tail site +0x8173b -> rax
+[DRIVER] tail site +0x8a49b -> r8
+[DRIVER] tail site +0x9a46b -> r9
+[DRIVER] tail site +0x9b0c5 -> r10
+[DRIVER] tail site +0x9b687 -> r14
+[DRIVER] tail site +0xb86f5 -> r13
+[DRIVER] tail site +0xbb8a8 -> rax
+[DRIVER] tail site +0xbba0c -> r12
+[DRIVER] tail site +0xc240d -> rdx
+[DRIVER] tail site +0x9c3f4 -> r13
+[DRIVER] tail site +0xa0068 -> r10
+[DRIVER] tail site +0xb265e -> r10
+[DRIVER] tail site +0xb708a -> r12
+[DRIVER] tail site +0xc2d35 -> rbx
+[DRIVER] call x(buf=0x575d9369d010,len=0x800,mode=1,out=0x575d9369d820)
+[DISPATCH] site=0xc80b9 count=1 slot=0x7efe04ac39c8 slot_off=0xc39c8 idx=0x2b0 frame=0x7efe04a7836d frame_off=0x7836d vm_ip=0x7efe04c6cd71 vm_ip_off=0x26cd71 vm_flags=0x0 vm_state=0x0 vm_byte=0x0 target=0x7efe04a8a37f target_off=0x8a37f
+[TRACE] caller=eac.elf+0x4c000b fopen path=/dev/urandom mode=rb
+[TRACE] caller=eac.elf+0x4c000b fopen path=/dev/urandom mode=rb
+[TRACE] caller=eac.elf+0x3376ac open path=/proc/3993262/comm flags=0x0
+[TRACE] caller=eac.elf+0x334271 open path=/proc/3993262/cmdline flags=0x0
+[TRACE] caller=eac.elf+0x33ae27 open path=/proc/3993262/status flags=0x0
+[TRACE] caller=eac.elf+0x33d5f1 open path=/proc/self/maps flags=0x0
+[DISPATCH] site=0xcdac7 count=1 slot=0x7efe04ac4130 slot_off=0xc4130 idx=0xa18 frame=0x7efe04a7836d frame_off=0x7836d vm_ip=0x7efe04d3f278 vm_ip_off=0x33f278 vm_flags=0xd56bbddf vm_state=0xbffcd2b0 vm_byte=0x3a target=0x7efe04abb6e6 target_off=0xbb6e6
+[VMTAIL] site=0xc2d35 count=1 frame=0x7efe04a7836d frame_off=0x7836d vm_ip=0x7efe04d40680 vm_ip_off=0x340680 vm_flags=0xe73e07f3 vm_state=0xae94cba9 vm_byte=0x50 table=0x7efe04ac3718 table_off=0xc3718 rax=0x7efe04a78377 rbx=0x7efe04ac1ec4 rcx=0x257 rdx=0x7efe04a784aa rsi=0x200 rdi=0xcfa06e30 r8=0xe73e0750 r9=0xb00 r10=0x7efe04ac4218 r11=0x7efed447f26e r12=0x4a006d7 r13=0x7efe04a783de r14=0xffff8101fb0bf351 r15=0xfffffffffffffffe rbp=0x7efe04a7836d rsp=0x7ffc6f1c4610 mem_rbx=0x170c18148e98948 mem_rdi=? mem_r9=? mem_r10=0x7efe04ac1ec4 mem_r12=? mem_r13=0xcfa06e30 mem_r14=? ip_w0=0x46a ip_w1=0x4397 ip_w2=0x8fd8 ip_w3=0x90c ip_w4=0x72f0 ip_w5=0xf8d ip_w6=0xb143 ip_w7=0x68b ip_w8=0x1e8 ip_w9=0xd38 ip_w10=0xe12e ip_w11=0xc0 ip_w12=0x13d ip_w13=0xa97 ip_w14=0x4987 ip_w15=0x68 target=0x7efe04ac1ec4 target_off=0xc1ec4
+[VMTAIL] site=0xc2d35 count=2 frame=0x7efe04a7836d frame_off=0x7836d vm_ip=0x7efe04d40680 vm_ip_off=0x340680 vm_flags=0xe73e07f3 vm_state=0xae94cba9 vm_byte=0x50 table=0x7efe04ac3718 table_off=0xc3718 rax=0x7efe04a78377 rbx=0x7efe04ac1ec4 rcx=0x2d2 rdx=0x7efe04a784aa rsi=0x200 rdi=0x42d05c25 r8=0xe73e0750 r9=0xb00 r10=0x7efe04ac4218 r11=0x7efe4777e063 r12=0x8006d7 r13=0x7efe04a783de r14=0xffff8101fb2bf251 r15=0xfffffffffffffffe rbp=0x7efe04a7836d rsp=0x7ffc6f1c4610 mem_rbx=0x170c18148e98948 mem_rdi=? mem_r9=? mem_r10=0x7efe04ac1ec4 mem_r12=? mem_r13=0x42d05c25 mem_r14=? ip_w0=0x46a ip_w1=0x4397 ip_w2=0x8fd8 ip_w3=0x90c ip_w4=0x72f0 ip_w5=0xf8d ip_w6=0xb143 ip_w7=0x68b ip_w8=0x1e8 ip_w9=0xd38 ip_w10=0xe12e ip_w11=0xc0 ip_w12=0x13d ip_w13=0xa97 ip_w14=0x4987 ip_w15=0x68 target=0x7efe04ac1ec4 target_off=0xc1ec4
+[VMTAIL] site=0xc2d35 count=3 frame=0x7efe04a7836d frame_off=0x7836d vm_ip=0x7efe04d40680 vm_ip_off=0x340680 vm_flags=0xe73e07f3 vm_state=0xae94cba9 vm_byte=0x50 table=0x7efe04ac3718 table_off=0xc3718 rax=0x7efe04a78377 rbx=0x7efe04ac1ec4 rcx=0xad3 rdx=0x7efe04a784aa rsi=0x200 rdi=0x760816ac r8=0xe73e0750 r9=0xb00 r10=0x7efe04ac4218 r11=0x7efe7aaf9aea r12=0x4000edf r13=0x7efe04a783de r14=0xffff8101fb2bf249 r15=0xfffffffffffffffe rbp=0x7efe04a7836d rsp=0x7ffc6f1c4610 mem_rbx=0x170c18148e98948 mem_rdi=? mem_r9=? mem_r10=0x7efe04ac1ec4 mem_r12=? mem_r13=0x760816ac mem_r14=? ip_w0=0x46a ip_w1=0x4397 ip_w2=0x8fd8 ip_w3=0x90c ip_w4=0x72f0 ip_w5=0xf8d ip_w6=0xb143 ip_w7=0x68b ip_w8=0x1e8 ip_w9=0xd38 ip_w10=0xe12e ip_w11=0xc0 ip_w12=0x13d ip_w13=0xa97 ip_w14=0x4987 ip_w15=0x68 target=0x7efe04ac1ec4 target_off=0xc1ec4
+[VMTAIL] site=0xc2d35 count=4 frame=0x7efe04a7836d frame_off=0x7836d vm_ip=0x7efe04d41f32 vm_ip_off=0x341f32 vm_flags=0x4a577ef1 vm_state=0x40b545c8 vm_byte=0x50 table=0x7efe04ac3718 table_off=0xc3718 rax=0x7efe04a78377 rbx=0x7efe04a95887 rcx=0x256 rdx=0x7efe04a784aa rsi=0x200 rdi=0x9c16b0ef r8=0x4a577e50 r9=0x480 r10=0x7efe04ac3b98 r11=0x7efea0be34ed r12=0x40686df r13=0x7efe04a783de r14=0xffff8101fb295a49 r15=0xfffffffffffffffe rbp=0x7efe04a7836d rsp=0x7ffc6f1c4610 mem_rbx=0x81c38149eb8949 mem_rdi=? mem_r9=? mem_r10=0x7efe04a95887 mem_r12=? mem_r13=0x9c16b0ef mem_r14=? ip_w0=0x90e7 ip_w1=0x3b90 ip_w2=0xc0d2 ip_w3=0xeb96 ip_w4=0x6314 ip_w5=0xe810 ip_w6=0xcf01 ip_w7=0x68fa ip_w8=0x5d00 ip_w9=0x3f8e ip_w10=0xae03 ip_w11=0x3d26 ip_w12=0x1 ip_w13=0xcbc4 ip_w14=0x5bfb ip_w15=0x68 target=0x7efe04a95887 target_off=0x95887
+[VMTAIL] site=0xc2d35 count=5 frame=0x7efe04a7836d frame_off=0x7836d vm_ip=0x7efe04d41f32 vm_ip_off=0x341f32 vm_flags=0x4a577ef1 vm_state=0x40b545c8 vm_byte=0x50 table=0x7efe04ac3718 table_off=0xc3718 rax=0x7efe04a78377 rbx=0x7efe04a95887 rcx=0x2c7 rdx=0x7efe04a784aa rsi=0x200 rdi=0xc205a88e r8=0x4a577e50 r9=0x480 r10=0x7efe04ac3b98 r11=0x7efec6ad2c4c r12=0x586df r13=0x7efe04a783de r14=0xffff8101fb2a5a69 r15=0xfffffffffffffffe rbp=0x7efe04a7836d rsp=0x7ffc6f1c4610 mem_rbx=0x81c38149eb8949 mem_rdi=? mem_r9=? mem_r10=0x7efe04a95887 mem_r12=? mem_r13=0xc205a88e mem_r14=? ip_w0=0x90e7 ip_w1=0x3b90 ip_w2=0xc0d2 ip_w3=0xeb96 ip_w4=0x6314 ip_w5=0xe810 ip_w6=0xcf01 ip_w7=0x68fa ip_w8=0x5d00 ip_w9=0x3f8e ip_w10=0xae03 ip_w11=0x3d26 ip_w12=0x1 ip_w13=0xcbc4 ip_w14=0x5bfb ip_w15=0x68 target=0x7efe04a95887 target_off=0x95887
+[VMTAIL] site=0xc2d35 count=6 frame=0x7efe04a7836d frame_off=0x7836d vm_ip=0x7efe04d41f32 vm_ip_off=0x341f32 vm_flags=0x4a577ef1 vm_state=0x40b545c8 vm_byte=0x50 table=0x7efe04ac3718 table_off=0xc3718 rax=0x7efe04a78377 rbx=0x7efe04a95887 rcx=0x2c3 rdx=0x7efe04a784aa rsi=0x200 rdi=0x64c3b3bc r8=0x4a577e50 r9=0x480 r10=0x7efe04ac3b98 r11=0x7efe696b37fa r12=0x48386df r13=0x7efe04a783de r14=0xffff8101fb285a69 r15=0xfffffffffffffffe rbp=0x7efe04a7836d rsp=0x7ffc6f1c4610 mem_rbx=0x81c38149eb8949 mem_rdi=? mem_r9=? mem_r10=0x7efe04a95887 mem_r12=? mem_r13=0x64c3b3bc mem_r14=? ip_w0=0x90e7 ip_w1=0x3b90 ip_w2=0xc0d2 ip_w3=0xeb96 ip_w4=0x6314 ip_w5=0xe810 ip_w6=0xcf01 ip_w7=0x68fa ip_w8=0x5d00 ip_w9=0x3f8e ip_w10=0xae03 ip_w11=0x3d26 ip_w12=0x1 ip_w13=0xcbc4 ip_w14=0x5bfb ip_w15=0x68 target=0x7efe04a95887 target_off=0x95887
+[TRACE] caller=eac.elf+0x58b24 open path=/proc/mounts flags=0x0
+[TRACE] caller=eac.elf+0x36a519 open path=/sys/devices/virtual/dmi/id/board_name flags=0x0
+[TRACE] caller=eac.elf+0x36e0cf open path=/sys/devices/virtual/dmi/id/product_name flags=0x0
+[TRACE] caller=eac.elf+0x3722d8 fopen path=/proc/bus/pci/devices mode=r
+[TRACE] caller=eac.elf+0x2d6ae getenv name=EAC_LAUNCHERDIR -> set
+[TRACE] caller=eac.elf+0x72b70 pthread_create caller=eac.elf+0x729fe arg=0x575d936b8a20
+[TRACE] caller=eac.elf+0x72b70 pthread_create caller=eac.elf+0x729fe arg=0x575d936b8bc0
+[TRACE] caller=eac.elf+0x6b74f getaddrinfo node=api.epicgames.dev service=443 DENY
+[TRACE] caller=eac.elf+0x6b7f7 popen command=host -4 api.epicgames.dev type=r DENY
+[TRACE] caller=eac.elf+0x6b74f getaddrinfo node=datarouter.ol.epicgames.com service=443 DENY
+[TRACE] caller=eac.elf+0x72b70 pthread_create caller=eac.elf+0x729fe arg=0x575d936b8868
+[TRACE] caller=eac.elf+0x6b7f7 popen command=host -4 datarouter.ol.epicgames.com type=r DENY
+[TRACE] caller=eac.elf+0x1a689b mprotect addr=0x7efe04a00000 len=0x1000 prot=0x3
+[TRACE] caller=eac.elf+0x1a6a09 mprotect addr=0x7efe04a00000 len=0x1000 prot=0x1
+[DRIVER] x returned 0x0
+[DRIVER] out[0..31]=0100000000000000000000000000000000000000000000000000000000000000
+[TRACE] caller=driver+0x53f4 getenv name=EAC_DUMP_DIR -> set
+[TRACE] caller=driver+0x5454 fopen path=dumps/vmtail-mem-focus-final-site-c2d35/postcall_out.bin mode=wb
+[DRIVER] dump postcall base=0x7efe04a00000 ctx_slot=+0x84cd20 ctx=0x575d936b6df0
+[TRACE] caller=driver+0x5454 fopen path=dumps/vmtail-mem-focus-final-site-c2d35/postcall_ctx_0x575d936b6df0.bin mode=wb
+[TRACE] caller=driver+0x212b fopen path=/proc/self/maps mode=r
+[TRACE] caller=driver+0x21ab fopen path=dumps/vmtail-mem-focus-final-site-c2d35/postcall_maps.txt mode=w
+[TRACE] caller=driver+0x5454 fopen path=dumps/vmtail-mem-focus-final-site-c2d35/postcall_map_7efe04a00000_7efe04a01000_r--p_off_0.bin mode=wb
+[TRACE] caller=driver+0x5454 fopen path=dumps/vmtail-mem-focus-final-site-c2d35/postcall_map_7efe04a01000_7efe0503d000_rwxp_off_1000.bin mode=wb
+[TRACE] caller=eac.elf+0x30d25c open path=/sys/class/dmi/id/bios_vendor flags=0x0
+[VMTAIL] site=0xc2d35 count=7 frame=0x7efe04a7836d frame_off=0x7836d vm_ip=0x7efe04c9552c vm_ip_off=0x29552c vm_flags=0x2620210 vm_state=0x342df6c8 vm_byte=0x50 table=0x7efe04ac3718 table_off=0xc3718 rax=0x7efe04a78377 rbx=0x7efe04a994cf rcx=0x242 rdx=0x7efe04a784aa rsi=0x200 rdi=0x1c800cdb r8=0x2620250 r9=0x500 r10=0x7efe04ac3c18 r11=0x7efe212790d9 r12=0x48006db r13=0x7efe04a783de r14=0xffff8101fb36aa69 r15=0xfffffffffffffffe rbp=0x7efe04a7836d rsp=0x7efe049fdfc0 mem_rbx=0x810548e88948 mem_rdi=? mem_r9=? mem_r10=0x7efe04a994cf mem_r12=? mem_r13=0x1c800cdb mem_r14=? ip_w0=0x2219 ip_w1=0x8d77 ip_w2=0x74e0 ip_w3=0xb8cf ip_w4=0x68 ip_w5=0x4e90 ip_w6=0xc096 ip_w7=0xf3e6 ip_w8=0xe8a4 ip_w9=0xce01 ip_w10=0x629e ip_w11=0x3dc9 ip_w12=0x1 ip_w13=0xb387 ip_w14=0x1aef ip_w15=0x5108 target=0x7efe04a994cf target_off=0x994cf
+[VMTAIL] site=0xc2d35 count=8 frame=0x7efe04a7836d frame_off=0x7836d vm_ip=0x7efe04c9552c vm_ip_off=0x29552c vm_flags=0x2620210 vm_state=0x342df6c8 vm_byte=0x50 table=0x7efe04ac3718 table_off=0xc3718 rax=0x7efe04a78377 rbx=0x7efe04a994cf rcx=0x2c7 rdx=0x7efe04a784aa rsi=0x200 rdi=0xbde840ee r8=0x2620250 r9=0x500 r10=0x7efe04ac3c18 r11=0x7efec28fc4ec r12=0x4a006df r13=0x7efe04a783de r14=0xffff8101fb16aa69 r15=0xfffffffffffffffe rbp=0x7efe04a7836d rsp=0x7efe049fdfc0 mem_rbx=0x810548e88948 mem_rdi=? mem_r9=? mem_r10=0x7efe04a994cf mem_r12=? mem_r13=0xbde840ee mem_r14=? ip_w0=0x2219 ip_w1=0x8d77 ip_w2=0x74e0 ip_w3=0xb8cf ip_w4=0x68 ip_w5=0x4e90 ip_w6=0xc096 ip_w7=0xf3e6 ip_w8=0xe8a4 ip_w9=0xce01 ip_w10=0x629e ip_w11=0x3dc9 ip_w12=0x1 ip_w13=0xb387 ip_w14=0x1aef ip_w15=0x5108 target=0x7efe04a994cf target_off=0x994cf
+[VMTAIL] site=0xc2d35 count=9 frame=0x7efe04a7836d frame_off=0x7836d vm_ip=0x7efe04c9552c vm_ip_off=0x29552c vm_flags=0x2620210 vm_state=0x342df6c8 vm_byte=0x50 table=0x7efe04ac3718 table_off=0xc3718 rax=0x7efe04a78377 rbx=0x7efe04a994cf rcx=0xa46 rdx=0x7efe04a784aa rsi=0x200 rdi=0xa3760007 r8=0x2620250 r9=0x500 r10=0x7efe04ac3c18 r11=0x7efea81d83c5 r12=0x260ed7 r13=0x7efe04a783de r14=0xffff8101fb10a269 r15=0xfffffffffffffffe rbp=0x7efe04a7836d rsp=0x7efe049fdfc0 mem_rbx=0x810548e88948 mem_rdi=? mem_r9=? mem_r10=0x7efe04a994cf mem_r12=? mem_r13=0xa3760007 mem_r14=? ip_w0=0x2219 ip_w1=0x8d77 ip_w2=0x74e0 ip_w3=0xb8cf ip_w4=0x68 ip_w5=0x4e90 ip_w6=0xc096 ip_w7=0xf3e6 ip_w8=0xe8a4 ip_w9=0xce01 ip_w10=0x629e ip_w11=0x3dc9 ip_w12=0x1 ip_w13=0xb387 ip_w14=0x1aef ip_w15=0x5108 target=0x7efe04a994cf target_off=0x994cf
+[VMTAIL] site=0xc2d35 count=10 frame=0x7efe04a7836d frame_off=0x7836d vm_ip=0x7efe04c9552c vm_ip_off=0x29552c vm_flags=0x2620210 vm_state=0x342df6c8 vm_byte=0x50 table=0x7efe04ac3718 table_off=0xc3718 rax=0x7efe04a78377 rbx=0x7efe04a994cf rcx=0x247 rdx=0x7efe04a784aa rsi=0x200 rdi=0x116af9adc r8=0x2620250 r9=0x500 r10=0x7efe04ac3c18 r11=0x7eff1b571eda r12=0x4a786df r13=0x7efe04a783de r14=0xffff8101fb102269 r15=0xfffffffffffffffe rbp=0x7efe04a7836d rsp=0x7efe049fdfc0 mem_rbx=0x810548e88948 mem_rdi=? mem_r9=? mem_r10=0x7efe04a994cf mem_r12=? mem_r13=0x116af9adc mem_r14=? ip_w0=0x2219 ip_w1=0x8d77 ip_w2=0x74e0 ip_w3=0xb8cf ip_w4=0x68 ip_w5=0x4e90 ip_w6=0xc096 ip_w7=0xf3e6 ip_w8=0xe8a4 ip_w9=0xce01 ip_w10=0x629e ip_w11=0x3dc9 ip_w12=0x1 ip_w13=0xb387 ip_w14=0x1aef ip_w15=0x5108 target=0x7efe04a994cf target_off=0x994cf
+[VMTAIL] site=0xc2d35 count=11 frame=0x7efe04a7836d frame_off=0x7836d vm_ip=0x7efe04c9552c vm_ip_off=0x29552c vm_flags=0x2620210 vm_state=0x342df6c8 vm_byte=0x50 table=0x7efe04ac3718 table_off=0xc3718 rax=0x7efe04a78377 rbx=0x7efe04a994cf rcx=0xa46 rdx=0x7efe04a784aa rsi=0x200 rdi=0xf282a8df r8=0x2620250 r9=0x500 r10=0x7efe04ac3c18 r11=0x7efef72a2cdd r12=0x828edf r13=0x7efe04a783de r14=0xffff8101fb342269 r15=0xfffffffffffffffe rbp=0x7efe04a7836d rsp=0x7efe049fdfc0 mem_rbx=0x810548e88948 mem_rdi=? mem_r9=? mem_r10=0x7efe04a994cf mem_r12=? mem_r13=0xf282a8df mem_r14=? ip_w0=0x2219 ip_w1=0x8d77 ip_w2=0x74e0 ip_w3=0xb8cf ip_w4=0x68 ip_w5=0x4e90 ip_w6=0xc096 ip_w7=0xf3e6 ip_w8=0xe8a4 ip_w9=0xce01 ip_w10=0x629e ip_w11=0x3dc9 ip_w12=0x1 ip_w13=0xb387 ip_w14=0x1aef ip_w15=0x5108 target=0x7efe04a994cf target_off=0x994cf
+[VMTAIL] site=0xc2d35 count=12 frame=0x7efe04a7836d frame_off=0x7836d vm_ip=0x7efe04c9552c vm_ip_off=0x29552c vm_flags=0x2620210 vm_state=0x342df6c8 vm_byte=0x50 table=0x7efe04ac3718 table_off=0xc3718 rax=0x7efe04a78377 rbx=0x7efe04a994cf rcx=0xa47 rdx=0x7efe04a784aa rsi=0x200 rdi=0x6b5d30bc r8=0x2620250 r9=0x500 r10=0x7efe04ac3c18 r11=0x7efe7004b4fa r12=0x50edf r13=0x7efe04a783de r14=0xffff8101fb32a269 r15=0xfffffffffffffffe rbp=0x7efe04a7836d rsp=0x7efe049fdfc0 mem_rbx=0x810548e88948 mem_rdi=? mem_r9=? mem_r10=0x7efe04a994cf mem_r12=? mem_r13=0x6b5d30bc mem_r14=? ip_w0=0x2219 ip_w1=0x8d77 ip_w2=0x74e0 ip_w3=0xb8cf ip_w4=0x68 ip_w5=0x4e90 ip_w6=0xc096 ip_w7=0xf3e6 ip_w8=0xe8a4 ip_w9=0xce01 ip_w10=0x629e ip_w11=0x3dc9 ip_w12=0x1 ip_w13=0xb387 ip_w14=0x1aef ip_w15=0x5108 target=0x7efe04a994cf target_off=0x994cf
+[VMTAIL] site=0xc2d35 count=13 frame=0x7efe04a7836d frame_off=0x7836d vm_ip=0x7efe04c9552c vm_ip_off=0x29552c vm_flags=0x2620210 vm_state=0x342df6c8 vm_byte=0x50 table=0x7efe04ac3718 table_off=0xc3718 rax=0x7efe04a78377 rbx=0x7efe04a994cf rcx=0x246 rdx=0x7efe04a784aa rsi=0x200 rdi=0x631da25f r8=0x2620250 r9=0x500 r10=0x7efe04ac3c18 r11=0x7efe67c5265d r12=0x586df r13=0x7efe04a783de r14=0xffff8101fb322269 r15=0xfffffffffffffffe rbp=0x7efe04a7836d rsp=0x7efe049fdfc0 mem_rbx=0x810548e88948 mem_rdi=? mem_r9=? mem_r10=0x7efe04a994cf mem_r12=? mem_r13=0x631da25f mem_r14=? ip_w0=0x2219 ip_w1=0x8d77 ip_w2=0x74e0 ip_w3=0xb8cf ip_w4=0x68 ip_w5=0x4e90 ip_w6=0xc096 ip_w7=0xf3e6 ip_w8=0xe8a4 ip_w9=0xce01 ip_w10=0x629e ip_w11=0x3dc9 ip_w12=0x1 ip_w13=0xb387 ip_w14=0x1aef ip_w15=0x5108 target=0x7efe04a994cf target_off=0x994cf
+[TRACE] caller=eac.elf+0x30d25c open path=/sys/class/dmi/id/bios_date flags=0x0
+[TRACE] caller=eac.elf+0x30d25c open path=/sys/class/dmi/id/sys_vendor flags=0x0
+[TRACE] caller=driver+0x5454 fopen path=dumps/vmtail-mem-focus-final-site-c2d35/postcall_map_7efe0523c000_7efe05249000_r--p_off_63c000.bin mode=wb
+[TRACE] caller=driver+0x5454 fopen path=dumps/vmtail-mem-focus-final-site-c2d35/postcall_map_7efe05249000_7efe0524b000_rw-p_off_649000.bin mode=wb
+[DRIVER] sleeping 5 second(s) for worker threads
+[TRACE] caller=eac.elf+0x30d25c open path=/sys/class/dmi/id/product_name flags=0x0
+[TRACE] caller=eac.elf+0x2dc86c open path=/etc/mtab flags=0x0
+[TRACE] caller=eac.elf+0x30d25c open path=/sys/class/block/nvme1n1p/device/model flags=0x0
+[TRACE] caller=eac.elf+0x2dc86c open path=/etc/mtab flags=0x0
+[TRACE] caller=eac.elf+0x2ef009 opendir path=/dev/disk/by-id/
+[TRACE] caller=eac.elf+0x2efed1 readlink path=/dev/disk/by-id/wwn-0x5000c500e5ee7ff3-part1 size=4096
+[TRACE] caller=eac.elf+0x2f0707 realpath path=/dev/disk/by-id/../../sda1
+[TRACE] caller=eac.elf+0x2efed1 readlink path=/dev/disk/by-id/ata-ST2000DM008-2UB102_ZFL6L34T-part1 size=10
+[TRACE] caller=eac.elf+0x2f0707 realpath path=/dev/disk/by-id/../../sda1
+[TRACE] caller=eac.elf+0x2efed1 readlink path=/dev/disk/by-id/ata-ST2000DM008-2UB102_ZFL6L34T size=10
+[TRACE] caller=eac.elf+0x2f0707 realpath path=/dev/disk/by-id/../../sda
+[TRACE] caller=eac.elf+0x2efed1 readlink path=/dev/disk/by-id/wwn-0x5000c500e5ee7ff3 size=9
+[TRACE] caller=eac.elf+0x2f0707 realpath path=/dev/disk/by-id/../../sda
+[TRACE] caller=eac.elf+0x2efed1 readlink path=/dev/disk/by-id/nvme-Micron_3400_MTFDKBA1T0TFH_22403BB5D67C_1-part1 size=9
+[TRACE] caller=eac.elf+0x2f0707 realpath path=/dev/disk/by-id/../../nvm
+[TRACE] caller=eac.elf+0x2efed1 readlink path=/dev/disk/by-id/nvme-Micron_3400_MTFDKBA1T0TFH_22403BB5D67C-part1 size=9
+[TRACE] caller=eac.elf+0x2f0707 realpath path=/dev/disk/by-id/../../nvm
+[TRACE] caller=eac.elf+0x2efed1 readlink path=/dev/disk/by-id/nvme-Micron_3400_MTFDKBA1T0TFH_22403BB5D7B2-part3 size=9
+[TRACE] caller=eac.elf+0x2f0707 realpath path=/dev/disk/by-id/../../nvm
+[TRACE] caller=eac.elf+0x2efed1 readlink path=/dev/disk/by-id/nvme-Micron_3400_MTFDKBA1T0TFH_22403BB5D7B2-part1 size=9
+[TRACE] caller=eac.elf+0x2f0707 realpath path=/dev/disk/by-id/../../nvm
+[TRACE] caller=eac.elf+0x2efed1 readlink path=/dev/disk/by-id/nvme-eui.000000000000000100a075223bb5d7b2-part2 size=9
+[TRACE] caller=eac.elf+0x2f0707 realpath path=/dev/disk/by-id/../../nvm
+[TRACE] caller=eac.elf+0x2efed1 readlink path=/dev/disk/by-id/nvme-eui.000000000000000100a075223bb5d7b2-part3 size=9
+[TRACE] caller=eac.elf+0x2f0707 realpath path=/dev/disk/by-id/../../nvm
+[TRACE] caller=eac.elf+0x2efed1 readlink path=/dev/disk/by-id/nvme-eui.000000000000000100a075223bb5d67c-part1 size=9
+[TRACE] caller=eac.elf+0x2f0707 realpath path=/dev/disk/by-id/../../nvm
+[TRACE] caller=eac.elf+0x2efed1 readlink path=/dev/disk/by-id/nvme-Micron_3400_MTFDKBA1T0TFH_22403BB5D7B2_1-part1 size=9
+[TRACE] caller=eac.elf+0x2f0707 realpath path=/dev/disk/by-id/../../nvm
+[TRACE] caller=eac.elf+0x2efed1 readlink path=/dev/disk/by-id/nvme-Micron_3400_MTFDKBA1T0TFH_22403BB5D7B2-part2 size=9
+[TRACE] caller=eac.elf+0x2f0707 realpath path=/dev/disk/by-id/../../nvm
+[TRACE] caller=eac.elf+0x2efed1 readlink path=/dev/disk/by-id/nvme-eui.000000000000000100a075223bb5d7b2-part1 size=9
+[TRACE] caller=eac.elf+0x2f0707 realpath path=/dev/disk/by-id/../../nvm
+[TRACE] caller=eac.elf+0x2efed1 readlink path=/dev/disk/by-id/nvme-Micron_3400_MTFDKBA1T0TFH_22403BB5D7B2_1-part3 size=9
+[TRACE] caller=eac.elf+0x2f0707 realpath path=/dev/disk/by-id/../../nvm
+[TRACE] caller=eac.elf+0x2efed1 readlink path=/dev/disk/by-id/nvme-Micron_3400_MTFDKBA1T0TFH_22403BB5D7B2_1-part2 size=9
+[TRACE] caller=eac.elf+0x2f0707 realpath path=/dev/disk/by-id/../../nvm
+[TRACE] caller=eac.elf+0x2efed1 readlink path=/dev/disk/by-id/nvme-Micron_3400_MTFDKBA1T0TFH_22403BB5D7B2 size=9
+[TRACE] caller=eac.elf+0x2f0707 realpath path=/dev/disk/by-id/../../nvm
+[TRACE] caller=eac.elf+0x2efed1 readlink path=/dev/disk/by-id/nvme-Micron_3400_MTFDKBA1T0TFH_22403BB5D7B2_1 size=9
+[TRACE] caller=eac.elf+0x2f0707 realpath path=/dev/disk/by-id/../../nvm
+[TRACE] caller=eac.elf+0x2efed1 readlink path=/dev/disk/by-id/nvme-eui.000000000000000100a075223bb5d7b2 size=9
+[TRACE] caller=eac.elf+0x2f0707 realpath path=/dev/disk/by-id/../../nvm
+[TRACE] caller=eac.elf+0x2efed1 readlink path=/dev/disk/by-id/nvme-Micron_3400_MTFDKBA1T0TFH_22403BB5D67C_1 size=9
+[TRACE] caller=eac.elf+0x2f0707 realpath path=/dev/disk/by-id/../../nvm
+[TRACE] caller=eac.elf+0x2efed1 readlink path=/dev/disk/by-id/nvme-eui.000000000000000100a075223bb5d67c size=9
+[TRACE] caller=eac.elf+0x2f0707 realpath path=/dev/disk/by-id/../../nvm
+[TRACE] caller=eac.elf+0x2efed1 readlink path=/dev/disk/by-id/nvme-Micron_3400_MTFDKBA1T0TFH_22403BB5D67C size=9
+[TRACE] caller=eac.elf+0x2f0707 realpath path=/dev/disk/by-id/../../nvm
+[TRACE] caller=eac.elf+0x2efed1 readlink path=/dev/disk/by-id/usb-ASMT_2235_00000000000000000000-0:0 size=9
+[TRACE] caller=eac.elf+0x2f0707 realpath path=/dev/disk/by-id/../../sdb
+[TRACE] caller=eac.elf+0x30d25c open path=/proc/cpuinfo flags=0x0
+[TRACE] caller=eac.elf+0x2cb09b popen command=lshw -C display 2>/dev/null type=r DENY
+[TRACE] caller=eac.elf+0x30d25c open path=/etc/machine-id flags=0x0
+[VMTAIL] site=0xc2d35 count=14 frame=0x7efe04a7836d frame_off=0x7836d vm_ip=0x7efe04cb675c vm_ip_off=0x2b675c vm_flags=0x5f746dd3 vm_state=0x6f0f2e0d vm_byte=0x50 table=0x7efe04ac3718 table_off=0xc3718 rax=0x7efe04a78377 rbx=0x7efe04aa037e rcx=0xa47 rdx=0x7efe04a784aa rsi=0x200 rdi=0xb4d5e9c6 r8=0x5f746d50 r9=0x630 r10=0x7efe04ac3d48 r11=0x7efeb97d6dc4 r12=0x4858ed7 r13=0x7efe04a783de r14=0xffff8101fb300249 r15=0xfffffffffffffffe rbp=0x7efe04a7836d rsp=0x7efe049fdfc0 mem_rbx=0x81c78149ef8949 mem_rdi=? mem_r9=? mem_r10=0x7efe04aa037e mem_r12=? mem_r13=0xb4d5e9c6 mem_r14=? ip_w0=0x1ea3 ip_w1=0xb2f0 ip_w2=0xd97e ip_w3=0x7a30 ip_w4=0x60 ip_w5=0x990 ip_w6=0xb0da ip_w7=0x1030 ip_w8=0x786d ip_w9=0xe86a ip_w10=0xbd01 ip_w11=0xa8 ip_w12=0x13d ip_w13=0x8c93 ip_w14=0xc903 ip_w15=0x68 target=0x7efe04aa037e target_off=0xa037e
+[VMTAIL] site=0xc2d35 count=15 frame=0x7efe04a7836d frame_off=0x7836d vm_ip=0x7efe04cb675c vm_ip_off=0x2b675c vm_flags=0x5f746dd3 vm_state=0x6f0f2e0d vm_byte=0x50 table=0x7efe04ac3718 table_off=0xc3718 rax=0x7efe04a78377 rbx=0x7efe04aa037e rcx=0x2c3 rdx=0x7efe04a784aa rsi=0x200 rdi=0x59353e1c r8=0x5f746d50 r9=0x630 r10=0x7efe04ac3d48 r11=0x7efe5ddcc1da r12=0x2506df r13=0x7efe04a783de r14=0xffff8101fb109249 r15=0xfffffffffffffffe rbp=0x7efe04a7836d rsp=0x7efe049fdfc0 mem_rbx=0x81c78149ef8949 mem_rdi=? mem_r9=? mem_r10=0x7efe04aa037e mem_r12=? mem_r13=0x59353e1c mem_r14=? ip_w0=0x1ea3 ip_w1=0xb2f0 ip_w2=0xd97e ip_w3=0x7a30 ip_w4=0x60 ip_w5=0x990 ip_w6=0xb0da ip_w7=0x1030 ip_w8=0x786d ip_w9=0xe86a ip_w10=0xbd01 ip_w11=0xa8 ip_w12=0x13d ip_w13=0x8c93 ip_w14=0xc903 ip_w15=0x68 target=0x7efe04aa037e target_off=0xa037e
+[VMTAIL] site=0xc2d35 count=16 frame=0x7efe04a7836d frame_off=0x7836d vm_ip=0x7efe04cb675c vm_ip_off=0x2b675c vm_flags=0x5f746dd3 vm_state=0x6f0f2e0d vm_byte=0x50 table=0x7efe04ac3718 table_off=0xc3718 rax=0x7efe04a78377 rbx=0x7efe04aa037e rcx=0x242 rdx=0x7efe04a784aa rsi=0x200 rdi=0x7a3f6ba1 r8=0x5f746d50 r9=0x630 r10=0x7efe04ac3d48 r11=0x7efe7ee6ef5f r12=0x2706d3 r13=0x7efe04a783de r14=0xffff8101fb109249 r15=0xfffffffffffffffe rbp=0x7efe04a7836d rsp=0x7efe049fdfc0 mem_rbx=0x81c78149ef8949 mem_rdi=? mem_r9=? mem_r10=0x7efe04aa037e mem_r12=? mem_r13=0x7a3f6ba1 mem_r14=? ip_w0=0x1ea3 ip_w1=0xb2f0 ip_w2=0xd97e ip_w3=0x7a30 ip_w4=0x60 ip_w5=0x990 ip_w6=0xb0da ip_w7=0x1030 ip_w8=0x786d ip_w9=0xe86a ip_w10=0xbd01 ip_w11=0xa8 ip_w12=0x13d ip_w13=0x8c93 ip_w14=0xc903 ip_w15=0x68 target=0x7efe04aa037e target_off=0xa037e
+[VMTAIL] site=0xc2d35 count=17 frame=0x7efe04a7836d frame_off=0x7836d vm_ip=0x7efe04cb675c vm_ip_off=0x2b675c vm_flags=0x5f746dd3 vm_state=0x6f0f2e0d vm_byte=0x50 table=0x7efe04ac3718 table_off=0xc3718 rax=0x7efe04a78377 rbx=0x7efe04aa037e rcx=0x2c7 rdx=0x7efe04a784aa rsi=0x200 rdi=0x748eefec r8=0x5f746d50 r9=0x630 r10=0x7efe04ac3d48 r11=0x7efe793673ea r12=0x48686df r13=0x7efe04a783de r14=0xffff8101fb301249 r15=0xfffffffffffffffe rbp=0x7efe04a7836d rsp=0x7efe049fdfc0 mem_rbx=0x81c78149ef8949 mem_rdi=? mem_r9=? mem_r10=0x7efe04aa037e mem_r12=? mem_r13=0x748eefec mem_r14=? ip_w0=0x1ea3 ip_w1=0xb2f0 ip_w2=0xd97e ip_w3=0x7a30 ip_w4=0x60 ip_w5=0x990 ip_w6=0xb0da ip_w7=0x1030 ip_w8=0x786d ip_w9=0xe86a ip_w10=0xbd01 ip_w11=0xa8 ip_w12=0x13d ip_w13=0x8c93 ip_w14=0xc903 ip_w15=0x68 target=0x7efe04aa037e target_off=0xa037e
+[TRACE] caller=eac.elf+0x30d25c open path=/etc/hostname flags=0x0
+[TRACE] caller=eac.elf+0x30ac70 open path=/etc/os-release flags=0x0
+[TRACE] caller=eac.elf+0x2f9551 open path=/proc/net/route flags=0x0
+[TRACE] caller=eac.elf+0x305069 opendir path=/sys/class/net
+[TRACE] caller=eac.elf+0x305d88 readlink path=/sys/class/net/enxce0c6f149a89 size=4096
+[TRACE] caller=eac.elf+0x306735 realpath path=/sys/class/net/../../devices/pci0000:00/0000:00:14.0/usb1/1-7/1-7:1.0/net/enxce0c6f149a89
+[TRACE] caller=eac.elf+0x30d25c open path=/sys/devices/pci0000:00/0000:00:14.0/usb1/1-7/1-7:1.0/net/enxce0c6f149a89/address flags=0x0
+[TRACE] caller=eac.elf+0x350c8d getenv name=LD_PRELOAD -> set
+[TRACE] caller=eac.elf+0x35284b getenv name=LD_AUDIT -> null
+[TRACE] caller=eac.elf+0x3909b readlink path=/proc/self/exe size=4096
+[TRACE] caller=eac.elf+0x3909b readlink path=/proc/self/exe size=4096
+[TRACE] caller=eac.elf+0x2042b6 fopen path=/models/dev/sc-rev/eac/eacsym/driver mode=rb
+[VMTAIL] site=0xc2d35 count=18 frame=0x7efe04a7836d frame_off=0x7836d vm_ip=0x7efe04b3a346 vm_ip_off=0x13a346 vm_flags=0x7f7fbddf vm_state=0x7bd7bb3f vm_byte=0x50 table=0x7efe04ac3718 table_off=0xc3718 rax=0x7efe04a78377 rbx=0x7efe04a95887 rcx=0xad3 rdx=0x7efe04a784aa rsi=0x200 rdi=0x7a5436a2 r8=0x7f7fbd50 r9=0x480 r10=0x7efe04ac3b98 r11=0x7efe7efbbae0 r12=0x40ed3 r13=0x7efe04a783de r14=0xffff8101fb48524d r15=0xfffffffffffffffe rbp=0x7efe04a7836d rsp=0x7efe049fe680 mem_rbx=0x81c38149eb8949 mem_rdi=? mem_r9=? mem_r10=0x7efe04a95887 mem_r12=? mem_r13=0x7a5436a2 mem_r14=? ip_w0=0x98f7 ip_w1=0xe75 ip_w2=0xf1e7 ip_w3=0xae3 ip_w4=0x1e8 ip_w5=0xcafb ip_w6=0x68 ip_w7=0x828 ip_w8=0x1fba ip_w9=0xca1 ip_w10=0x669f ip_w11=0xc8 ip_w12=0x13d ip_w13=0xd5b2 ip_w14=0x472a ip_w15=0xe30 target=0x7efe04a95887 target_off=0x95887
+[VMTAIL] site=0xc2d35 count=19 frame=0x7efe04a7836d frame_off=0x7836d vm_ip=0x7efe04b3a346 vm_ip_off=0x13a346 vm_flags=0x7f7fbddf vm_state=0x7bd7bb3f vm_byte=0x50 table=0x7efe04ac3718 table_off=0xc3718 rax=0x7efe04a78377 rbx=0x7efe04a95887 rcx=0x2d7 rdx=0x7efe04a784aa rsi=0x200 rdi=0xdcea50c0 r8=0x7f7fbd50 r9=0x480 r10=0x7efe04ac3b98 r11=0x7efee191d4fe r12=0x4a206d7 r13=0x7efe04a783de r14=0xffff8101fb4c5a49 r15=0xfffffffffffffffe rbp=0x7efe04a7836d rsp=0x7efe049fe680 mem_rbx=0x81c38149eb8949 mem_rdi=? mem_r9=? mem_r10=0x7efe04a95887 mem_r12=? mem_r13=0xdcea50c0 mem_r14=? ip_w0=0x98f7 ip_w1=0xe75 ip_w2=0xf1e7 ip_w3=0xae3 ip_w4=0x1e8 ip_w5=0xcafb ip_w6=0x68 ip_w7=0x828 ip_w8=0x1fba ip_w9=0xca1 ip_w10=0x669f ip_w11=0xc8 ip_w12=0x13d ip_w13=0xd5b2 ip_w14=0x472a ip_w15=0xe30 target=0x7efe04a95887 target_off=0x95887
+[VMTAIL] site=0xc2d35 count=20 frame=0x7efe04a7836d frame_off=0x7836d vm_ip=0x7efe04b3a346 vm_ip_off=0x13a346 vm_flags=0x7f7fbddf vm_state=0x7bd7bb3f vm_byte=0x50 table=0x7efe04ac3718 table_off=0xc3718 rax=0x7efe04a78377 rbx=0x7efe04a95887 rcx=0x242 rdx=0x7efe04a784aa rsi=0x200 rdi=0x22b8a677 r8=0x7f7fbd50 r9=0x480 r10=0x7efe04ac3b98 r11=0x7efe27602a75 r12=0xa086d7 r13=0x7efe04a783de r14=0xffff8101fb4c5a49 r15=0xfffffffffffffffe rbp=0x7efe04a7836d rsp=0x7efe049fe680 mem_rbx=0x81c38149eb8949 mem_rdi=? mem_r9=? mem_r10=0x7efe04a95887 mem_r12=? mem_r13=0x22b8a677 mem_r14=? ip_w0=0x98f7 ip_w1=0xe75 ip_w2=0xf1e7 ip_w3=0xae3 ip_w4=0x1e8 ip_w5=0xcafb ip_w6=0x68 ip_w7=0x828 ip_w8=0x1fba ip_w9=0xca1 ip_w10=0x669f ip_w11=0xc8 ip_w12=0x13d ip_w13=0xd5b2 ip_w14=0x472a ip_w15=0xe30 target=0x7efe04a95887 target_off=0x95887
+[DRIVER] VMTAIL focus stop hits=20 vm_ip_off=0x13a346 site=0xc2d35

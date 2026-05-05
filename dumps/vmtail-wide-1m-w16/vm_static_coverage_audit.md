@@ -1,0 +1,60 @@
+# Static Vs Dynamic Coverage Audit
+
+This separates the global/static handler reconstruction from scenario-specific dynamic bytecode coverage.
+
+| Scope | Metric | Value | Note |
+| --- | --- | ---: | --- |
+| `dynamic_primary_trace` | `instruction_rows` | `769225` | Executed VM instruction rows in the primary run. |
+| `dynamic_primary_trace` | `source_handlers_seen` | `202` | Handlers directly executed as VM source entries by this scenario. |
+| `dynamic_primary_trace` | `target_handlers_seen` | `205` | Handlers reached as dispatch targets by this scenario. |
+| `dynamic_primary_trace` | `unique_vm_ip_starts` | `71522` | Distinct VM bytecode starts observed in this scenario. |
+| `dynamic_primary_trace` | `covered_byte_ranges` | `81` | Merged dynamic bytecode intervals from start/end VM IP. |
+| `dynamic_primary_trace` | `covered_bytes` | `0x259425` | Scenario-specific byte coverage; not a full-program proof. |
+| `dynamic_cross_trace` | `coverage_matrix_rows` | `36` | Run directories inventoried by the coverage matrix, including run-only register/scratch/memory traces. |
+| `dynamic_cross_trace` | `instruction_trace_scenarios` | `16` | Directories with vm_instruction_trace.tsv rows contributing bytecode path coverage. |
+| `dynamic_cross_trace` | `concrete_instruction_trace_scenarios` | `12` | Instruction-trace scenarios before synthetic file/hidden/frontier/footprint fill sidecars. |
+| `dynamic_cross_trace` | `run_dirs_without_instruction_trace` | `20` | Run directories with driver logs but no vm_instruction_trace.tsv; useful for context/register evidence, not bytecode path coverage. |
+| `dynamic_cross_trace` | `run_dirs_with_tail_mem` | `6` | Run directories whose driver logs include event-local qword reads from live GPR pointers. |
+| `dynamic_cross_trace` | `trace_class_mix` | `run_without_instruction_trace:9, memory_context_trace:6, raw_dynamic_trace:6, register_context_trace:5, synthetic_filled_trace:4, state_trace:3, alternate_mode_trace:2, fake_network_trace:1` | Trace inventory classes; synthetic rows are derived coverage, not independent runtime configs. |
+| `dynamic_cross_trace` | `network_policy_mix` | `blocked_observed:34, fake_observed:1, not_observed:1` | Observed preload network policy across all run directories; blocked rows denied live network calls. |
+| `dynamic_cross_trace` | `concrete_network_policy_mix` | `blocked_observed:11, fake_observed:1` | Network provenance among concrete instruction traces before synthetic fill sidecars. |
+| `dynamic_cross_trace` | `spawn_policy_mix` | `blocked_observed:34, not_observed:2` | Observed preload process-spawn policy across all run directories. |
+| `dynamic_cross_trace` | `concrete_runtime_modes_seen` | `0,1,2` | x() mode values among concrete instruction traces. |
+| `dynamic_cross_trace` | `concrete_instruction_traces_with_network_events` | `12` | Concrete instruction traces where the log reached network calls. |
+| `dynamic_cross_trace` | `concrete_instruction_traces_with_network_denied` | `11` | Concrete instruction traces whose network calls were denied by trace_preload. |
+| `dynamic_cross_trace` | `concrete_instruction_traces_with_network_fake` | `1` | Concrete instruction traces whose network calls were satisfied by trace_preload's local fake-network mode. |
+| `dynamic_cross_trace` | `concrete_instruction_traces_with_network_allowed` | `0` | Concrete instruction traces with real/non-fake network calls that were not denied in the preload log. |
+| `dynamic_cross_trace` | `concrete_instruction_traces_without_network_events` | `0` | Concrete instruction traces that did not reach preload-logged network calls. |
+| `dynamic_cross_trace` | `concrete_network_host_mix` | `api.epicgames.dev:12, datarouter.ol.epicgames.com:12` | Hostnames reached by concrete instruction traces before network denial or allowance. |
+| `dynamic_cross_trace` | `max_concrete_source_handlers_seen` | `202` | Largest source-handler count in any concrete runtime trace; separate from synthetic fill sidecars. |
+| `dynamic_cross_trace` | `max_concrete_target_handlers_seen` | `205` | Largest target-handler count in any concrete runtime trace; separate from synthetic fill sidecars. |
+| `dynamic_cross_trace` | `max_concrete_vm_ip_starts_seen` | `71522` | Largest VM-IP-start count in any concrete runtime trace; separate from synthetic fill sidecars. |
+| `dynamic_cross_trace` | `union_source_handlers_seen` | `205` | Union of source handlers across instruction traces in the matrix, including derived synthetic fill rows. |
+| `dynamic_cross_trace` | `union_target_handlers_seen` | `205` | Union of target handlers across instruction traces in the matrix, including derived synthetic fill rows. |
+| `dynamic_cross_trace` | `union_vm_ip_starts_seen` | `71809` | Union of VM-IP starts across instruction traces in the matrix, including derived synthetic fill rows. |
+| `dynamic_cross_trace` | `concrete_traces_adding_sources_vs_primary` | `0` | Concrete instruction traces that add source handlers beyond the primary long trace. |
+| `dynamic_cross_trace` | `concrete_traces_missing_primary_sources` | `10` | Concrete instruction traces that miss one or more primary long-trace source handlers. |
+| `dynamic_cross_trace` | `synthetic_fill_trace_rows` | `4` | Derived trace rows used to widen bytecode coverage without claiming a new runtime config. |
+| `static_handler_inventory` | `dispatch_entries` | `360` | Rows in the dispatch-table handler inventory. |
+| `static_handler_inventory` | `entries_with_dynamic_source_events` | `202` | Subset of dispatch entries directly executed as sources in the primary trace. |
+| `static_handler_inventory` | `entries_seen_as_targets` | `205` | Dispatch entries reached as targets by the primary trace. |
+| `static_handler_inventory` | `entries_not_seen_as_targets` | `155` | Entries still inventoried statically despite no target hit in the primary trace. |
+| `static_handler_inventory` | `handler_observation_mix` | `exact:190, unobserved:155, sampled_backedge:7, sampled_long_or_sparse:4, target_only:3, central_or_long:1` | Dynamic observation class joined with static handler features. |
+| `static_handler_inventory` | `static_state_slice_entries` | `360` | Static state/flag slices over native handler code. |
+| `static_handler_inventory` | `transition_model_entries` | `360` | One consolidated reconstruction row per dispatch entry. |
+| `static_handler_inventory` | `microcode_entries` | `360` | One compact pseudo-IR row per dispatch entry. |
+| `static_handler_inventory` | `handler_pseudocode_functions` | `360` | C-like op_entry_NNN functions emitted for dispatch entries. |
+| `static_handler_inventory` | `handler_pseudocode_classes` | `static_validated:166, unobserved_static:155, affine_dispatch_fallback:13, partial:11, sampled_only:9, target_only:3, sampled_operand_lifted:3` | Recovery class mix in the all-entry handler pseudocode. |
+| `bytecode_program_layer` | `vm_ir_rows` | `71522` | Recovered VM program rows used by the block/program pseudocode layer. |
+| `bytecode_program_layer` | `vm_ir_row_kinds` | `exact_instruction:71364, long_branch_forward:93, long_branch_backedge:53, sampled_operand_forward:6, sampled_operand_backedge:6` | Exact rows plus decoded sampled/control sidecars. |
+| `bytecode_program_layer` | `basic_blocks` | `499` | Recovered VM basic blocks from the available bytecode slice. |
+| `bytecode_program_layer` | `program_pseudocode_blocks` | `998` | C-like prog_bb_NNNN functions in the full program sketch. |
+| `bytecode_program_layer` | `block_terminal_kinds` | `exact_instruction:341, long_branch_forward:93, long_branch_backedge:53, sampled_operand_forward:6, sampled_operand_backedge:6` | How recovered blocks terminate. |
+| `bytecode_program_layer` | `block_edge_kinds` | `covered_synthetic_fallthrough:287, decoded_control:158, fallthrough:54` | Decoded, direct fallthrough, and covered synthetic fallthrough edges. |
+| `validated_static_model` | `state_static_100pct_handlers` | `171` | Handlers whose static state slice matched all validated state-trace rows; events=764177. |
+| `validated_static_model` | `dispatch_ip_static_100pct_handlers` | `171` | Handlers whose static dispatch/IP slice matched all validated state-trace rows; events=764177. |
+| `validated_static_model` | `dispatch_model_static_100_handlers` | `166` | Handlers whose final dispatch model uses pure static validation; events=764108. |
+| `validated_static_model` | `dispatch_model_100pct_handlers` | `179` | Handlers whose static-plus-affine dispatch model matched all validated rows; events=767546. |
+| `caveat` | `dynamic_bytecode_globality` | `not_proven` | The handler layer is global over the dispatch table; the bytecode/CFG layer remains scenario/path coverage plus file-backed and decoded sidecars. |
+
+Bottom line: the all-entry handler/operator layer is not limited to the blocked-network run. The recovered VM bytecode program layer still is not a proof of every possible program path.
