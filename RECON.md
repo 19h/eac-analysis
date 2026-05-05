@@ -122,6 +122,7 @@ SHA-256: `0b44ad59697129534189efdb75cde2b96245f831438e9f6a53cb7725f190d739`
 - `dumps/vmtail-wide-1m-w16/vm_pseudocode_top.c`: C-like decompiler sketch for the hottest recovered VM basic blocks, with `VMState`, `U8/U16/U32` accessors, state assignments, dispatch/IP updates, terminal edges, and recovered synthetic terminal spans.
 - `dumps/vmtail-wide-1m-w16/vm_program_pseudocode_top.c`: compact C-like bytecode program sketch where recovered VM basic blocks call `op_entry_NNN(vm)` handler functions.
 - `dumps/vmtail-wide-1m-w16/vm_program_pseudocode_full.c`: full C-like bytecode program sketch for all recovered VM basic blocks and all recovered VM IR rows, with synthetic terminal spans lifted into explicit transitions.
+- `dumps/vmtail-wide-1m-w16/vm_recovered_source_bundle.c`: single C-like reconstruction bundle combining the all-entry handler/operator layer with the full recovered VM bytecode program.
 - `dumps/vmtail-wide-1m-w16/vm_trace_coverage_matrix.tsv`: cross-run dynamic coverage matrix comparing source handlers, target handlers, VM-IP starts, byte ranges, and segment bytes for the available trace scenarios.
 - `dumps/vmtail-wide-1m-w16/vm_trace_coverage_matrix.md`: Markdown coverage summary that makes the scenario/path limitation explicit.
 - `dumps/vmtail-wide-1m-w16/vm_state_static_slice.tsv`: static symbolic state/flag update chains for all dispatch entries.
