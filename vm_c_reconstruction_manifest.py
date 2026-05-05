@@ -178,6 +178,7 @@ def synthetic_gap_dynamic_stitch_metrics(rows):
         for row in stitch_rows
         if row.get("resolution", "") == "ambiguous_next_source" and row.get("synthetic_start_vm_ip", "")
     }
+    only_ambiguous_starts = sorted(ambiguous_starts - stitched_starts)
     add(rows, "gap_stitch", "synthetic_gap_dynamic_stitch_rows", len(stitch_rows),
         "Event-instance rows stitched from raw VMTAIL order for the remaining synthetic successor gaps.")
     add(rows, "gap_stitch", "synthetic_gap_dynamic_stitch_to_next_hooked_source",
@@ -190,6 +191,10 @@ def synthetic_gap_dynamic_stitch_metrics(rows):
         "Unique synthetic starts with at least one dynamically stitched next-hooked-source row.")
     add(rows, "gap_stitch", "synthetic_gap_dynamic_ambiguous_unique_starts", len(ambiguous_starts),
         "Unique synthetic starts that still have an ambiguous dynamic stitch row.")
+    add(rows, "gap_stitch", "synthetic_gap_dynamic_only_ambiguous_unique_starts", len(only_ambiguous_starts),
+        "Unique synthetic starts with no dynamically stitched next-hooked-source row.")
+    add(rows, "gap_stitch", "synthetic_gap_dynamic_only_ambiguous_starts", ",".join(only_ambiguous_starts) or "-",
+        "Synthetic start IPs that remain only ambiguous in the dynamic stitch report.")
 
 
 def gate_metrics(rows):
