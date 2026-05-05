@@ -75,6 +75,13 @@ ARTIFACTS = [
     ("unobserved_handlers_retdec_batch05", TRACE_DIR / "vm_unobserved_handlers_retdec_batch05.c"),
     ("unobserved_handlers_retdec_batch06", TRACE_DIR / "vm_unobserved_handlers_retdec_batch06.c"),
     ("weak_handlers_retdec", TRACE_DIR / "vm_weak_handlers_retdec.c"),
+    ("validated_handlers_retdec_batch00", TRACE_DIR / "vm_validated_handlers_retdec_batch00.c"),
+    ("validated_handlers_retdec_batch01", TRACE_DIR / "vm_validated_handlers_retdec_batch01.c"),
+    ("validated_handlers_retdec_batch02", TRACE_DIR / "vm_validated_handlers_retdec_batch02.c"),
+    ("validated_handlers_retdec_batch03", TRACE_DIR / "vm_validated_handlers_retdec_batch03.c"),
+    ("validated_handlers_retdec_batch04", TRACE_DIR / "vm_validated_handlers_retdec_batch04.c"),
+    ("validated_handlers_retdec_batch05", TRACE_DIR / "vm_validated_handlers_retdec_batch05.c"),
+    ("validated_handlers_retdec_batch06", TRACE_DIR / "vm_validated_handlers_retdec_batch06.c"),
     ("synthetic_gap_live_snapshot_transfer_probe_tsv", TRACE_DIR / "vm_synthetic_gap_live_snapshot_transfer_probe.tsv"),
     ("synthetic_gap_live_snapshot_transfer_probe_md", TRACE_DIR / "vm_synthetic_gap_live_snapshot_transfer_probe.md"),
     ("synthetic_gap_live_table_evidence_tsv", TRACE_DIR / "vm_synthetic_gap_live_table_evidence.tsv"),
@@ -164,6 +171,18 @@ def c_shape_metrics(rows):
     ]
     unobserved_handlers_retdec_all = "\n".join(unobserved_handlers_retdec_batches)
     weak_handlers_retdec = read_text(TRACE_DIR / "vm_weak_handlers_retdec.c")
+    validated_handlers_retdec_batches = [
+        read_text(TRACE_DIR / f"vm_validated_handlers_retdec_batch{index:02d}.c")
+        for index in range(7)
+    ]
+    validated_handlers_retdec_all = "\n".join(validated_handlers_retdec_batches)
+    handler_retdec_sidecars = [
+        target_only_handlers_retdec,
+        unobserved_handlers_retdec_all,
+        weak_handlers_retdec,
+        validated_handlers_retdec_all,
+    ]
+    handler_retdec_sidecars_all = "\n".join(handler_retdec_sidecars)
 
     add(rows, "c_shape", "handler_functions", count(r"^static VMOpResult op_entry_\d{3}\(VMState \*vm\) \{", handlers),
         "All-entry handler/operator C functions.")
@@ -231,7 +250,7 @@ def c_shape_metrics(rows):
         count(r"^// Address range: 0x[0-9a-f]+ - 0x[0-9a-f]+$", unobserved_handlers_retdec_all),
         "Native address ranges emitted by RetDec for all unobserved handler batches.")
     add(rows, "c_shape", "unobserved_handler_retdec_external_helpers",
-        count(r"^int64_t function_[0-9a-f]+\(\);$", unobserved_handlers_retdec_all),
+        count(r"^int64_t (?:function|unknown)_[0-9a-f]+\(\);$", unobserved_handlers_retdec_all),
         "External helper prototypes referenced by the unobserved RetDec batches.")
     add(rows, "c_shape", "weak_handler_retdec_selected_ranges",
         count(r"^ \*   0x[0-9a-f]+-0x[0-9a-f]+ entry=\d+ ", weak_handlers_retdec),
@@ -243,8 +262,36 @@ def c_shape_metrics(rows):
         count(r"^// Address range: 0x[0-9a-f]+ - 0x[0-9a-f]+$", weak_handlers_retdec),
         "Native address ranges emitted by RetDec for observed weak-recovery handlers.")
     add(rows, "c_shape", "weak_handler_retdec_external_helpers",
-        count(r"^int64_t function_[0-9a-f]+\(\);$", weak_handlers_retdec),
+        count(r"^int64_t (?:function|unknown)_[0-9a-f]+\(\);$", weak_handlers_retdec),
         "External helper prototypes referenced by the weak-handler RetDec artifact.")
+    add(rows, "c_shape", "validated_handler_retdec_batches",
+        sum(1 for text in validated_handlers_retdec_batches if text),
+        "Generated targeted RetDec C batches for static-validated VM handler native ranges.")
+    add(rows, "c_shape", "validated_handler_retdec_selected_ranges",
+        count(r"^ \*   0x[0-9a-f]+-0x[0-9a-f]+ entry=\d+ ", validated_handlers_retdec_all),
+        "Static-validated VM handler native ranges selected across targeted RetDec batches.")
+    add(rows, "c_shape", "validated_handler_retdec_functions",
+        count(r"^int64_t function_[0-9a-f]+\(.*\) \{", validated_handlers_retdec_all),
+        "Targeted RetDec C functions emitted from all static-validated handler batches.")
+    add(rows, "c_shape", "validated_handler_retdec_ranges",
+        count(r"^// Address range: 0x[0-9a-f]+ - 0x[0-9a-f]+$", validated_handlers_retdec_all),
+        "Native address ranges emitted by RetDec for all static-validated handler batches.")
+    add(rows, "c_shape", "validated_handler_retdec_external_helpers",
+        count(r"^int64_t (?:function|unknown)_[0-9a-f]+\(\);$", validated_handlers_retdec_all),
+        "External helper prototypes referenced by the static-validated RetDec batches.")
+    add(rows, "c_shape", "handler_retdec_sidecar_files",
+        1 + sum(1 for text in unobserved_handlers_retdec_batches if text) + 1 +
+        sum(1 for text in validated_handlers_retdec_batches if text),
+        "Target-only, unobserved, weak, and static-validated native handler RetDec C sidecar files.")
+    add(rows, "c_shape", "handler_retdec_sidecar_selected_ranges",
+        count(r"^ \*   0x[0-9a-f]+-0x[0-9a-f]+ entry=\d+ ", handler_retdec_sidecars_all),
+        "All VM dispatch-entry native handler ranges selected for targeted RetDec sidecars.")
+    add(rows, "c_shape", "handler_retdec_sidecar_functions",
+        count(r"^int64_t function_[0-9a-f]+\(.*\) \{", handler_retdec_sidecars_all),
+        "All native C functions emitted across target-only, unobserved, weak, and static-validated handler RetDec sidecars.")
+    add(rows, "c_shape", "handler_retdec_sidecar_ranges",
+        count(r"^// Address range: 0x[0-9a-f]+ - 0x[0-9a-f]+$", handler_retdec_sidecars_all),
+        "All native address ranges emitted by RetDec across handler sidecars.")
     add(rows, "c_shape", "path_specialized_functions", count(r"^static VMOpResult path_entry_\d{3}_[0-9a-f]+\(VMState \*vm\) \{", path_handlers),
         "Validated concrete branch-path C functions.")
     add(rows, "c_shape", "direct_top_block_defs", count(r"^static void bb_\d{4}\(VMState \*vm\) \{", direct_top),
