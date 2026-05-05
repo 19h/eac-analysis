@@ -1068,6 +1068,12 @@ def emit_sampled_ret_patch_exit(target_vm_ip, sampled_ret_patch_probes):
         f"    vm_native_ret_patch_tail(vm, 0x{start_value:x}, "
         f"0x{ret0_value:x}u, 0x{ret1_value:x}u, (uint16_t)0x{stack_value:x}u, {flags}u);"
     )
+    print("#if VM_ENABLE_NATIVE_RET_PATCH_HIDDEN_BRIDGE")
+    print(
+        f"    vm_native_ret_patch_hidden_bridge(vm, 0x{start_value:x}, "
+        f"0x{ret0_value:x}u, 0x{ret1_value:x}u, (uint16_t)0x{stack_value:x}u, {flags}u);"
+    )
+    print("#endif")
     return True
 
 
@@ -1596,6 +1602,12 @@ def emit_preamble():
     print("")
     print("extern uintptr_t dispatch_table[360];")
     print("extern void vm_native_ret_patch_tail(VMState *vm, uint64_t vm_ip, uint32_t ret0, uint32_t ret1, uint16_t stack_off, uint32_t flags);")
+    print("#ifndef VM_ENABLE_NATIVE_RET_PATCH_HIDDEN_BRIDGE")
+    print("#define VM_ENABLE_NATIVE_RET_PATCH_HIDDEN_BRIDGE 0")
+    print("#endif")
+    print("#if VM_ENABLE_NATIVE_RET_PATCH_HIDDEN_BRIDGE")
+    print("extern void vm_native_ret_patch_hidden_bridge(VMState *vm, uint64_t vm_ip, uint32_t ret0, uint32_t ret1, uint16_t stack_off, uint32_t flags);")
+    print("#endif")
     print("")
 
 

@@ -37,6 +37,12 @@ def main():
     print("/* Recovered full VM bytecode program. */")
     print("extern void vm_unresolved_synthetic_tail(VMState *vm, uint64_t vm_ip);")
     print("extern void vm_native_ret_patch_tail(VMState *vm, uint64_t vm_ip, uint32_t ret0, uint32_t ret1, uint16_t stack_off, uint32_t flags);")
+    print("#ifndef VM_ENABLE_NATIVE_RET_PATCH_HIDDEN_BRIDGE")
+    print("#define VM_ENABLE_NATIVE_RET_PATCH_HIDDEN_BRIDGE 0")
+    print("#endif")
+    print("#if VM_ENABLE_NATIVE_RET_PATCH_HIDDEN_BRIDGE")
+    print("extern void vm_native_ret_patch_hidden_bridge(VMState *vm, uint64_t vm_ip, uint32_t ret0, uint32_t ret1, uint16_t stack_off, uint32_t flags);")
+    print("#endif")
     if not any("signed_vm_delta_u32" in line for line in handlers):
         print("static int64_t signed_vm_delta_u32(uint32_t raw) {")
         print("    return (raw & 0x80000000u) ? -(int64_t)(raw & 0x7fffffffu) : (int64_t)raw;")
