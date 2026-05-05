@@ -292,7 +292,7 @@ def build_rows(args):
             blocker = "-"
         elif chain_terminal == "focused_direct_promoted":
             blocker = "chains into a focused direct bridge but the first hop is an indirect tail-site sequence"
-        elif start_seen[start] and not raw_rows:
+        elif start_seen[start] and not any(row.get("next_event_vm_ip", "") for row in raw_rows):
             blocker = "focused run stopped before a following event for this residual start"
 
         rows.append({
