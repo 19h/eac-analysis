@@ -931,6 +931,9 @@ C_RECONSTRUCTION_MANIFEST_INPUTS := \
 	$(STATIC_ONLY_TIER4_CALLRET_C) \
 	$(STATIC_ONLY_TIER4_CALLRET_TSV) \
 	$(STATIC_ONLY_TIER4_CALLRET_MD) \
+	$(STATIC_ONLY_TIER5_LARGE_C) \
+	$(STATIC_ONLY_TIER5_LARGE_TSV) \
+	$(STATIC_ONLY_TIER5_LARGE_MD) \
 	$(TARGET_ONLY_HANDLER_RETDEC_C) \
 	$(UNOBSERVED_HANDLER_RETDEC_CS) \
 	$(WEAK_HANDLER_RETDEC_C) \
@@ -985,7 +988,8 @@ C_RECONSTRUCTION_NATIVE_ACCELERATION_INPUTS := \
 	vm_static_only_tier1_models_dump.c vm_static_only_tier1_models_dump \
 	vm_static_only_tier2_split_dump.c vm_static_only_tier2_split_dump \
 	vm_static_only_tier3_shared_dump.c vm_static_only_tier3_shared_dump \
-	vm_static_only_tier4_callret_dump.c vm_static_only_tier4_callret_dump
+	vm_static_only_tier4_callret_dump.c vm_static_only_tier4_callret_dump \
+	vm_static_only_tier5_large_dump.c vm_static_only_tier5_large_dump
 
 c-reconstruction-manifest: pseudocode-syntax-check pseudocode-object-check pseudocode-link-check $(C_RECONSTRUCTION_MANIFEST_INPUTS) $(C_RECONSTRUCTION_NATIVE_ACCELERATION_INPUTS)
 	python3 vm_c_reconstruction_manifest.py > dumps/vmtail-wide-1m-w16/vm_c_reconstruction_manifest.tsv

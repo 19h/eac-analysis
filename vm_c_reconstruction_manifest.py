@@ -122,6 +122,9 @@ ARTIFACTS = [
     ("static_only_tier4_callret_c", TRACE_DIR / "vm_static_only_tier4_callret_models.c"),
     ("static_only_tier4_callret_tsv", TRACE_DIR / "vm_static_only_tier4_callret_models.tsv"),
     ("static_only_tier4_callret_md", TRACE_DIR / "vm_static_only_tier4_callret_models.md"),
+    ("static_only_tier5_large_c", TRACE_DIR / "vm_static_only_tier5_large_models.c"),
+    ("static_only_tier5_large_tsv", TRACE_DIR / "vm_static_only_tier5_large_models.tsv"),
+    ("static_only_tier5_large_md", TRACE_DIR / "vm_static_only_tier5_large_models.md"),
     ("target_only_handlers_retdec", TRACE_DIR / "vm_target_only_handlers_retdec.c"),
     ("unobserved_handlers_retdec_batch00", TRACE_DIR / "vm_unobserved_handlers_retdec_batch00.c"),
     ("unobserved_handlers_retdec_batch01", TRACE_DIR / "vm_unobserved_handlers_retdec_batch01.c"),
@@ -261,6 +264,8 @@ def c_shape_metrics(rows):
     static_only_tier3_shared_index = read_tsv(TRACE_DIR / "vm_static_only_tier3_shared_models.tsv")
     static_only_tier4_callret = read_text(TRACE_DIR / "vm_static_only_tier4_callret_models.c")
     static_only_tier4_callret_index = read_tsv(TRACE_DIR / "vm_static_only_tier4_callret_models.tsv")
+    static_only_tier5_large = read_text(TRACE_DIR / "vm_static_only_tier5_large_models.c")
+    static_only_tier5_large_index = read_tsv(TRACE_DIR / "vm_static_only_tier5_large_models.tsv")
     target_only_handlers_retdec = read_text(TRACE_DIR / "vm_target_only_handlers_retdec.c")
     unobserved_handlers_retdec_batches = [
         read_text(TRACE_DIR / f"vm_unobserved_handlers_retdec_batch{index:02d}.c")
@@ -843,6 +848,31 @@ def c_shape_metrics(rows):
     add(rows, "coverage", "static_only_tier4_callret_entries",
         ",".join(row.get("entry", "") for row in static_only_tier4_callret_index) or "-",
         "Dispatch entries covered by the tier4 static-only call/ret model artifact.")
+    add(rows, "coverage", "static_only_tier5_large_rows",
+        len(static_only_tier5_large_index),
+        "Tier5 large static-only rows converted into conservative primary handler model evidence.")
+    add(rows, "c_shape", "static_only_tier5_large_functions",
+        count(r"^static VMTier5Result vm_tier5_entry_\d{3}\(VMTier5Frame \*vm\) \{", static_only_tier5_large),
+        "Syntax-checkable C functions for tier5 large static-only models.")
+    add(rows, "c_shape", "static_only_tier5_large_dispatch_cases",
+        count(r"^    case \d+: return vm_tier5_entry_\d{3}\(vm\);", static_only_tier5_large),
+        "Dispatcher cases for the tier5 large static-only model artifact.")
+    add(rows, "coverage", "static_only_tier5_large_candidate_slot_rows",
+        sum(1 for row in static_only_tier5_large_index if row.get("slot_expr", "")),
+        "Tier5 large rows with RetDec-derived candidate slot expressions.")
+    add(rows, "coverage", "static_only_tier5_large_executable_slot_rows",
+        sum(1 for row in static_only_tier5_large_index
+            if row.get("slot_status", "") == "retdec_dispatch_table_slot"),
+        "Tier5 large rows whose primary RetDec tail exposes a clean dispatch-table slot.")
+    add(rows, "coverage", "static_only_tier5_large_total_span_bytes",
+        sum(int(row.get("span_bytes") or "0") for row in static_only_tier5_large_index),
+        "Total selected native span bytes for tier5 large static-only model rows.")
+    add(rows, "coverage", "static_only_tier5_large_total_insns",
+        sum(int(row.get("insns") or "0") for row in static_only_tier5_large_index),
+        "Total selected native instructions for tier5 large static-only model rows.")
+    add(rows, "coverage", "static_only_tier5_large_entries",
+        ",".join(row.get("entry", "") for row in static_only_tier5_large_index) or "-",
+        "Dispatch entries covered by the tier5 large static-only model artifact.")
     add(rows, "c_shape", "target_only_handler_retdec_selected_ranges",
         count(r"^ \*   0x[0-9a-f]+-0x[0-9a-f]+ entry=\d+ ", target_only_handlers_retdec),
         "Target-only VM handler native ranges selected for targeted RetDec.")
