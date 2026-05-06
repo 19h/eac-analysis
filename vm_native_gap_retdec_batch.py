@@ -917,6 +917,7 @@ def main():
     print("int32_t *__errno_location(void);")
     print("int connect(int sockfd, const struct sockaddr *addr, int32_t addrlen);")
     print("int getsockopt(int sockfd, int level, int optname, void *optval, int32_t *optlen);")
+    print("int setsockopt(int sockfd, int level, int optname, const void *optval, int32_t optlen);")
     print("int getaddrinfo(const char *node, const char *service, const struct addrinfo *hints, struct addrinfo **res);")
     print("void freeaddrinfo(struct addrinfo *res);")
     print("int64_t readlink(const char *path, char *buf, size_t bufsiz);")
