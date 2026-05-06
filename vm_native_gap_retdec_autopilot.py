@@ -71,18 +71,64 @@ def metric_int(manifest, key):
         return 0
 
 
-def print_manifest_delta(before, after):
+def read_queue_metrics():
+    metrics = {}
+    if QUEUE.exists() and QUEUE.stat().st_size:
+        rows = []
+        with QUEUE.open(newline="", errors="replace") as handle:
+            rows = list(csv.DictReader(handle, delimiter="\t"))
+        metrics["native_retdec_gap_queue_rows"] = str(len(rows))
+        metrics["native_retdec_gap_queue_total_uncovered_bytes"] = str(
+            sum(int(row.get("semantic_uncovered_bytes") or 0) for row in rows)
+        )
+    return metrics
+
+
+def read_coverage_metrics():
+    path = TRACE_DIR / "vm_native_executable_coverage_audit.tsv"
+    metrics = {}
+    if not path.exists() or not path.stat().st_size:
+        return metrics
+    recovered = 0
+    uncovered = 0
+    ranges = 0
+    gaps = 0
+    with path.open(newline="", errors="replace") as handle:
+        for row in csv.DictReader(handle, delimiter="\t"):
+            if row.get("row_type") != "section":
+                continue
+            recovered += int(row.get("covered_bytes") or 0)
+            uncovered += int(row.get("uncovered_bytes") or 0)
+            ranges += int(row.get("range_count") or 0)
+            gaps += int(row.get("merged_range_count") or 0)
+    metrics["native_executable_coverage_range_rows"] = str(ranges)
+    metrics["native_executable_coverage_gap_rows"] = str(gaps)
+    metrics["native_executable_coverage_recovered_bytes"] = str(recovered)
+    metrics["native_executable_coverage_uncovered_bytes"] = str(uncovered)
+    return metrics
+
+
+def read_fast_metrics():
+    metrics = {}
+    metrics.update(read_coverage_metrics())
+    metrics.update(read_queue_metrics())
+    return metrics
+
+
+def print_delta(label, before, after):
     fields = [
         "source_all_evidence_bundle_lines",
         "all_evidence_bundle_sidecar_sections",
         "all_evidence_bundle_prefixed_retdec_functions",
+        "native_executable_coverage_range_rows",
+        "native_executable_coverage_gap_rows",
         "native_retdec_gap_queue_rows",
         "native_retdec_gap_queue_total_uncovered_bytes",
         "native_executable_coverage_recovered_bytes",
         "native_executable_coverage_uncovered_bytes",
         "completion_status",
     ]
-    print("manifest_delta", flush=True)
+    print(label, flush=True)
     for key in fields:
         old = before.get(key, "?")
         new = after.get(key, "?")
@@ -150,20 +196,14 @@ def build_and_check(indices, args):
         run(["cc", "-std=c11", "-fsyntax-only", "-w", sidecar_path(index)], dry_run=args.dry_run)
 
 
-def refresh_aggregate(*, syntax, dry_run):
+def refresh_aggregate(*, bundle, manifest, syntax, dry_run):
     if not dry_run:
         touch_existing_sidecars()
     run(["make", "-s", "native-executable-coverage-audit", "native-retdec-gap-queue"], dry_run=dry_run)
-    run(["make", "-s", "all-evidence-bundle"], dry_run=dry_run)
-    run(
-        [
-            "python3",
-            "vm_c_reconstruction_manifest.py",
-            "--output",
-            MANIFEST,
-        ],
-        dry_run=dry_run,
-    )
+    if bundle or manifest or syntax:
+        run(["make", "-s", "all-evidence-bundle"], dry_run=dry_run)
+    if manifest:
+        run(["python3", "vm_c_reconstruction_manifest.py", "--output", MANIFEST], dry_run=dry_run)
     if syntax:
         run(["gcc", "-std=c11", "-fsyntax-only", "-w", ALL_EVIDENCE_BUNDLE], dry_run=dry_run)
 
@@ -186,13 +226,15 @@ def main():
     parser.add_argument("--jobs", type=int, default=min(os.cpu_count() or 1, 8))
     parser.add_argument("--start-index", type=int)
     parser.add_argument("--aggregate-syntax", choices=["every", "final", "never"], default="final")
+    parser.add_argument("--bundle-frequency", choices=["every", "final", "never"], default="final")
+    parser.add_argument("--manifest-frequency", choices=["every", "final", "never"], default="final")
     parser.add_argument("--dry-run", action="store_true")
     args = parser.parse_args()
 
     if args.rounds <= 0:
         raise SystemExit("--rounds must be positive")
 
-    baseline = read_manifest()
+    baseline = read_fast_metrics()
     total_created = []
     for round_index in range(1, args.rounds + 1):
         print(f"round_start\t{round_index}", flush=True)
@@ -217,11 +259,27 @@ def main():
         build_and_check(created, args)
         total_created.extend(created)
 
-        refresh_aggregate(syntax=args.aggregate_syntax == "every", dry_run=args.dry_run)
-        print_manifest_delta(baseline, read_manifest())
+        refresh_aggregate(
+            bundle=args.bundle_frequency == "every",
+            manifest=args.manifest_frequency == "every",
+            syntax=args.aggregate_syntax == "every",
+            dry_run=args.dry_run,
+        )
+        print_delta("fast_delta", baseline, read_fast_metrics())
 
-    if total_created and args.aggregate_syntax == "final":
-        run(["gcc", "-std=c11", "-fsyntax-only", "-w", ALL_EVIDENCE_BUNDLE], dry_run=args.dry_run)
+    if total_created and (
+        args.bundle_frequency == "final"
+        or args.manifest_frequency == "final"
+        or args.aggregate_syntax == "final"
+    ):
+        refresh_aggregate(
+            bundle=args.bundle_frequency == "final",
+            manifest=args.manifest_frequency == "final",
+            syntax=args.aggregate_syntax == "final",
+            dry_run=args.dry_run,
+        )
+        if args.manifest_frequency == "final":
+            print_delta("manifest_delta", read_manifest(), read_manifest())
 
     print("autopilot_created_batches\t" + ",".join(str(index) for index in sorted(set(total_created))), flush=True)
 
