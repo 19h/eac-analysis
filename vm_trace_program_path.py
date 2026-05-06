@@ -28,7 +28,10 @@ def parse_int(text: str | int | None) -> int:
     value = (text or "").strip()
     if not value:
         return 0
-    return int(value, 16 if value.startswith("0x") else 10)
+    try:
+        return int(value, 16 if value.startswith("0x") else 10)
+    except ValueError:
+        return 0
 
 
 def format_hex(value: int | None) -> str:

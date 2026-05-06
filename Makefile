@@ -50,6 +50,10 @@ PROGRAM_BEHAVIOR_HYPOTHESES_MD := $(PRIMARY_DIR)/vm_program_behavior_hypotheses.
 PROGRAM_CONTROL_GRAPH_EDGES_TSV := $(PRIMARY_DIR)/vm_program_control_graph_edges.tsv
 PROGRAM_CONTROL_GRAPH_SUMMARY_TSV := $(PRIMARY_DIR)/vm_program_control_graph_summary.tsv
 PROGRAM_CONTROL_GRAPH_MD := $(PRIMARY_DIR)/vm_program_control_graph.md
+TRACE_PROGRAM_PATH_SUMMARY_TSV := $(PRIMARY_DIR)/vm_trace_program_path_summary.tsv
+TRACE_PROGRAM_PATH_PROGRAMS_TSV := $(PRIMARY_DIR)/vm_trace_program_path_programs.tsv
+TRACE_PROGRAM_PATH_EDGES_TSV := $(PRIMARY_DIR)/vm_trace_program_path_edges.tsv
+TRACE_PROGRAM_PATH_MD := $(PRIMARY_DIR)/vm_trace_program_path.md
 PROGRAM_MBA_010_PREFIX := $(PRIMARY_DIR)/vm_program_atlas_010_mba
 PROGRAM_MBA_010_CASES_TSV := $(PROGRAM_MBA_010_PREFIX)_cases.tsv
 PROGRAM_MBA_010_OBSERVATIONS_TSV := $(PROGRAM_MBA_010_PREFIX)_observations.tsv
@@ -1057,8 +1061,15 @@ program-control-graph: vm_program_control_graph.py $(PROGRAM_DECOMPILED_FOLDED_M
 program-control-graph-audit: program-control-graph
 	python3 vm_program_control_graph_audit.py --root $(PRIMARY_DIR)
 
+.PHONY: trace-program-path trace-program-path-audit
+trace-program-path: vm_trace_program_path.py $(PROGRAM_DECOMPILED_FOLDED_MANIFEST) $(PRIMARY_DIR)/vm_trace_coverage_matrix.tsv program-behavior-hypotheses
+	python3 vm_trace_program_path.py --root $(PRIMARY_DIR)
+
+trace-program-path-audit: trace-program-path
+	python3 vm_trace_program_path_audit.py --root $(PRIMARY_DIR)
+
 .PHONY: behavior-understanding-audit
-behavior-understanding-audit: behavior-inventory-audit semantic-opcode-catalog-audit string-reference-context-audit program-behavior-hypotheses-audit program-control-graph-audit
+behavior-understanding-audit: behavior-inventory-audit semantic-opcode-catalog-audit string-reference-context-audit program-behavior-hypotheses-audit program-control-graph-audit trace-program-path-audit
 
 $(HANDLERS_PSEUDOCODE_C): vm_handler_pseudocode_dump.py $(PRIMARY_DIR)/vm_handler_semantics.tsv $(PRIMARY_DIR)/vm_handler_table.tsv $(STATIC_ONLY_HANDLER_QUEUE_TSV) $(STATIC_ONLY_TIER0_MODELS_TSV) $(STATIC_ONLY_TIER1_MODELS_TSV) $(STATIC_ONLY_TIER2_SPLIT_TSV) $(STATIC_ONLY_TIER3_SHARED_TSV) $(STATIC_ONLY_TIER4_CALLRET_TSV) $(STATIC_ONLY_TIER5_LARGE_TSV)
 	python3 vm_handler_pseudocode_dump.py --all > $@
