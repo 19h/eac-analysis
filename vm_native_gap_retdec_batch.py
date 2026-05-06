@@ -989,6 +989,7 @@ def main():
     print("void __asm_rep_movsd_memcpy(char *dst, char *src, int64_t count);")
     print("void __asm_rep_movsq_memcpy(char *dst, char *src, int64_t count);")
     print("int64_t __asm_hlt();")
+    print("void __asm_clts(void);")
     print("int64_t __asm_mfence();")
     print("void __asm_pause(void);")
     print("int64_t __asm_rsm(void);")
