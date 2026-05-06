@@ -6,22 +6,22 @@
  * coverage -> queue -> RetDec batch -> coverage.
  *
  * Ranges:
- *   0x54e320-0x54e3d4 rank=13 name=method.std::__codecvt_utf8_base_char16_t_.virtual_16 kind=native_discovered bytes=180 uncovered=180
- *   0x27bbe-0x27c71 rank=14 name=fcn.00027bbe kind=r2_discovered bytes=179 uncovered=179
- *   0x4b466-0x4b519 rank=15 name=fcn.0004b466 kind=r2_discovered bytes=179 uncovered=179
- *   0x68ee4-0x68f97 rank=16 name=fcn.00068ee4 kind=r2_discovered bytes=179 uncovered=179
- *   0x4f4e50-0x4f4f03 rank=17 name=fcn.004f4e50 kind=r2_discovered bytes=179 uncovered=179
- *   0x4f4f50-0x4f5003 rank=18 name=fcn.004f4f50 kind=r2_discovered bytes=179 uncovered=179
- *   0x56adb0-0x56ae63 rank=19 name=fcn.0056adb0 kind=r2_discovered bytes=179 uncovered=179
- *   0x56aeb0-0x56af63 rank=20 name=fcn.0056aeb0 kind=r2_discovered bytes=179 uncovered=179
- *   0x576860-0x576913 rank=21 name=fcn.00576860 kind=r2_discovered bytes=179 uncovered=179
- *   0x576940-0x5769f3 rank=22 name=fcn.00576940 kind=r2_discovered bytes=179 uncovered=179
- *   0x36712-0x367c4 rank=23 name=fcn.00036712 kind=r2_discovered bytes=178 uncovered=178
- *   0x531be-0x53270 rank=24 name=fcn.000531be kind=r2_discovered bytes=178 uncovered=178
- *   0x4b55b0-0x4b5662 rank=25 name=fcn.004b55b0 kind=r2_discovered bytes=178 uncovered=178
- *   0x4f7430-0x4f74e2 rank=26 name=fcn.004f7430 kind=r2_discovered bytes=178 uncovered=178
- *   0x4c2b6-0x4c367 rank=27 name=fcn.0004c2b6 kind=r2_discovered bytes=177 uncovered=177
- *   0x584db-0x5858c rank=28 name=fcn.000584db kind=r2_discovered bytes=177 uncovered=177
+ *   0x54e320-0x54e3d4 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x27bbe-0x27c71 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x4b466-0x4b519 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x68ee4-0x68f97 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x4f4e50-0x4f4f03 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x4f4f50-0x4f5003 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x56adb0-0x56ae63 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x56aeb0-0x56af63 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x576860-0x576913 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x576940-0x5769f3 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x36712-0x367c4 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x531be-0x53270 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x4b55b0-0x4b5662 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x4f7430-0x4f74e2 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x4c2b6-0x4c367 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x584db-0x5858c rank=- name=- kind=- bytes=- uncovered=-
  */
 #include <stdbool.h>
 #include <stdio.h>
@@ -145,6 +145,7 @@ int32_t iconv(void *cd, char **inbuf, int32_t *inbytesleft, char **outbuf, int32
 int iconv_close(void *cd);
 struct _IO_FILE *fopen(const char *path, const char *mode);
 size_t fread(void *ptr, size_t size, size_t nmemb, struct _IO_FILE *stream);
+void rewind(struct _IO_FILE *stream);
 int fclose(struct _IO_FILE *stream);
 int uname(struct utsname *buf);
 int64_t __tls_get_addr(void *arg);

@@ -879,6 +879,7 @@ def main():
     print("int iconv_close(void *cd);")
     print("struct _IO_FILE *fopen(const char *path, const char *mode);")
     print("size_t fread(void *ptr, size_t size, size_t nmemb, struct _IO_FILE *stream);")
+    print("void rewind(struct _IO_FILE *stream);")
     print("int fclose(struct _IO_FILE *stream);")
     print("int uname(struct utsname *buf);")
     print("int64_t __tls_get_addr(void *arg);")
