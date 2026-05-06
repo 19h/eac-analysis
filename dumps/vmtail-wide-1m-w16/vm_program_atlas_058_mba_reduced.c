@@ -22,7 +22,7 @@ typedef struct VMProgramAtlasMBAReducedCase {
 } VMProgramAtlasMBAReducedCase;
 
 static const VMProgramAtlasMBAReducedCase vm_program_atlas_058_mba_reduced_cases[] = {
-    {0x3654e0u, 0x3655e4u, 195, "needs_more_evidence", "covered_synthetic_fallthrough", "next = 195@0x9fb50:1, ip += +0x4; dispatch_model=static_100", 0x14du, 0xa301u, 0xe5a3u, 0x68u, 0x0u, 0x0u, "state_trace_pre_state,state_trace_pre_flags,state_trace_pre_byte"},
+    {0x3654e0u, 0x3655e4u, 195, "ready_for_mba_reduction", "covered_synthetic_fallthrough", "next = 195@0x9fb50:1, ip += +0x4; dispatch_model=static_100", 0x14du, 0xa301u, 0xe5a3u, 0x68u, 0xa3ff0af0u, 0xc653bf94u, ""},
 };
 
 enum { VM_PROGRAM_ATLAS_058_MBA_REDUCED_CASE_COUNT = sizeof(vm_program_atlas_058_mba_reduced_cases) / sizeof(vm_program_atlas_058_mba_reduced_cases[0]) };

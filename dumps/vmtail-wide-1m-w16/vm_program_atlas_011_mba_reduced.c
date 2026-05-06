@@ -22,10 +22,10 @@ typedef struct VMProgramAtlasMBAReducedCase {
 } VMProgramAtlasMBAReducedCase;
 
 static const VMProgramAtlasMBAReducedCase vm_program_atlas_011_mba_reduced_cases[] = {
-    {0x11de9fu, 0x11e02du, 78, "needs_more_evidence", "covered_synthetic_fallthrough", "next = 78@0x883c0:1, ip += +0x4; dispatch_model=static_100", 0x129u, 0x3101u, 0xd631u, 0x17e6u, 0x0u, 0x0u, "state_trace_pre_state,state_trace_pre_flags,state_trace_pre_byte"},
-    {0x11e03eu, 0x11e14fu, 316, "needs_more_evidence", "covered_synthetic_fallthrough", "next = 316@0xb987b:1, ip += +0x5; dispatch_model=static_100", 0x154u, 0xac01u, 0x12acu, 0x99u, 0x0u, 0x0u, "state_trace_pre_state,state_trace_pre_flags,state_trace_pre_byte"},
-    {0x11e15fu, 0x11e27cu, 95, "needs_more_evidence", "covered_synthetic_fallthrough", "next = 95@0x8c41c:1, ip += +0x4; dispatch_model=static_100", 0x6fdcu, 0x686fu, 0x68u, 0x887u, 0x0u, 0x0u, "state_trace_pre_state,state_trace_pre_flags,state_trace_pre_byte"},
-    {0x11e28au, 0x11e574u, 165, "needs_more_evidence", "decoded_control", "next = table[165], ip += 0x1d9", 0xbdu, 0x9900u, 0x99u, 0xefa4u, 0x0u, 0x0u, "state_trace_pre_state,state_trace_pre_flags,state_trace_pre_byte"},
+    {0x11de9fu, 0x11e02du, 78, "ready_for_mba_reduction", "covered_synthetic_fallthrough", "next = 78@0x883c0:1, ip += +0x4; dispatch_model=static_100", 0x129u, 0x3101u, 0xd631u, 0x17e6u, 0x82000010u, 0x5decfc86u, ""},
+    {0x11e03eu, 0x11e14fu, 316, "ready_for_mba_reduction", "covered_synthetic_fallthrough", "next = 316@0xb987b:1, ip += +0x5; dispatch_model=static_100", 0x154u, 0xac01u, 0x12acu, 0x99u, 0xff3d5e52u, 0x124e8db5u, ""},
+    {0x11e15fu, 0x11e27cu, 95, "ready_for_mba_reduction", "covered_synthetic_fallthrough", "next = 95@0x8c41c:1, ip += +0x4; dispatch_model=static_100", 0x6fdcu, 0x686fu, 0x68u, 0x887u, 0x1d60u, 0x7ad7bf7fu, ""},
+    {0x11e28au, 0x11e574u, 165, "ready_for_mba_reduction", "decoded_control", "next = table[165], ip += 0x1d9", 0xbdu, 0x9900u, 0x99u, 0xefa4u, 0x41103848u, 0x41103848u, ""},
 };
 
 enum { VM_PROGRAM_ATLAS_011_MBA_REDUCED_CASE_COUNT = sizeof(vm_program_atlas_011_mba_reduced_cases) / sizeof(vm_program_atlas_011_mba_reduced_cases[0]) };

@@ -4,10 +4,10 @@ This artifact reduces each collected dispatcher/MBA case to the concrete success
 
 | Case | Status | Successor | Entry | Edge | Missing |
 | --- | --- | --- | ---: | --- | --- |
-| `0x122344` | `needs_more_evidence` | `0x122466` | 264 | `covered_synthetic_fallthrough` | `state_trace_pre_state,state_trace_pre_flags,state_trace_pre_byte` |
-| `0x122474` | `needs_more_evidence` | `0x122615` | 75 | `covered_synthetic_fallthrough` | `state_trace_pre_state,state_trace_pre_flags,state_trace_pre_byte` |
-| `0x122626` | `needs_more_evidence` | `0x122a46` | 171 | `decoded_control` | `state_trace_pre_state,state_trace_pre_flags,state_trace_pre_byte` |
+| `0x122344` | `ready_for_mba_reduction` | `0x122466` | 264 | `covered_synthetic_fallthrough` | `` |
+| `0x122474` | `ready_for_mba_reduction` | `0x122615` | 75 | `covered_synthetic_fallthrough` | `` |
+| `0x122626` | `ready_for_mba_reduction` | `0x122a46` | 171 | `decoded_control` | `` |
 
 - Concrete successor reductions emitted: `3` / `3` cases
-- Cases with complete stateful formula inputs: `0` / `3` cases
+- Cases with complete stateful formula inputs: `3` / `3` cases
 - Remaining work is expression-level simplification of the native MBA formulas for cases whose input state is absent, not successor discovery.

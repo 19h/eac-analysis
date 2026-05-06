@@ -45,11 +45,11 @@ This artifact reduces each collected dispatcher/MBA case to the concrete success
 | `0x343132` | `ready_for_mba_reduction` | `0x3430d7` | 171 | `decoded_control` | `` |
 | `0x3433ad` | `ready_for_mba_reduction` | `0x30e872` | 42 | `decoded_control` | `` |
 | `0x343569` | `ready_for_mba_reduction` | `0x34367e` | 145 | `covered_synthetic_fallthrough` | `` |
-| `0x34368f` | `needs_more_evidence` | `0x343ef4` | 354 | `fallthrough` | `state_trace_pre_state,state_trace_pre_flags,state_trace_pre_byte` |
-| `0x343ef4` | `needs_more_evidence` | `0x343f3c` | 354 | `decoded_control` | `state_trace_pre_state,state_trace_pre_flags,state_trace_pre_byte` |
-| `0x343f22` | `needs_more_evidence` | `0x343ef4` | 354 | `decoded_control` | `state_trace_pre_state,state_trace_pre_flags,state_trace_pre_byte` |
-| `0x343f3c` | `needs_more_evidence` | `0x34556c` | 175 | `covered_synthetic_fallthrough` | `state_trace_pre_state,state_trace_pre_flags,state_trace_pre_byte` |
+| `0x34368f` | `ready_for_mba_reduction` | `0x343ef4` | 354 | `fallthrough` | `` |
+| `0x343ef4` | `ready_for_mba_reduction` | `0x343f3c` | 354 | `decoded_control` | `` |
+| `0x343f22` | `ready_for_mba_reduction` | `0x343ef4` | 354 | `decoded_control` | `` |
+| `0x343f3c` | `ready_for_mba_reduction` | `0x34556c` | 175 | `covered_synthetic_fallthrough` | `` |
 
 - Concrete successor reductions emitted: `45` / `45` cases
-- Cases with complete stateful formula inputs: `41` / `45` cases
+- Cases with complete stateful formula inputs: `45` / `45` cases
 - Remaining work is expression-level simplification of the native MBA formulas for cases whose input state is absent, not successor discovery.

@@ -34,7 +34,7 @@ static const VMProgramAtlasMBAReducedCase vm_program_atlas_041_mba_reduced_cases
     {0x310dcau, 0x3129aau, 354, "ready_for_mba_reduction", "decoded_control", "next = table[354], ip += 0x2d", 0xf9du, 0x390fu, 0x5139u, 0x1e8u, 0x283b02u, 0xd7f67ddbu, ""},
     {0x3129aau, 0x31580eu, 171, "ready_for_mba_reduction", "decoded_control", "next = table[171], ip += 0x2d", 0x2bu, 0xa400u, 0x7ba4u, 0x68u, 0x430108c0u, 0xc75bd0c4u, ""},
     {0x31580eu, 0x310b1cu, 171, "ready_for_mba_reduction", "decoded_control", "next = table[171], ip -= 0x51a4", 0x151u, 0xf401u, 0x97f4u, 0xb3u, 0xe505a30bu, 0x262680abu, ""},
-    {0x315cc8u, 0x343569u, 310, "needs_more_evidence", "decoded_control", "sampled operand footprint 0x6; observed target table[310], delta +0x2cef7", 0x151u, 0xaf01u, 0x92afu, 0x68u, 0x0u, 0x0u, "state_trace_pre_state,state_trace_pre_flags,state_trace_pre_byte"},
+    {0x315cc8u, 0x343569u, 310, "ready_for_mba_reduction", "decoded_control", "sampled operand footprint 0x6; observed target table[310], delta +0x2cef7", 0x151u, 0xaf01u, 0x92afu, 0x68u, 0xfbfb525au, 0x8345d1e7u, ""},
 };
 
 enum { VM_PROGRAM_ATLAS_041_MBA_REDUCED_CASE_COUNT = sizeof(vm_program_atlas_041_mba_reduced_cases) / sizeof(vm_program_atlas_041_mba_reduced_cases[0]) };

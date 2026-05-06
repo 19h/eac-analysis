@@ -22,11 +22,11 @@ typedef struct VMProgramAtlasMBAReducedCase {
 } VMProgramAtlasMBAReducedCase;
 
 static const VMProgramAtlasMBAReducedCase vm_program_atlas_022_mba_reduced_cases[] = {
-    {0x176883u, 0x176aa5u, 264, "needs_more_evidence", "covered_synthetic_fallthrough", "next = 264@0xaf4cf:1, ip += +0x4; dispatch_model=static_100", 0xabu, 0xe800u, 0x1e8u, 0x15bu, 0x0u, 0x0u, "state_trace_pre_state,state_trace_pre_flags,state_trace_pre_byte"},
-    {0x176ab3u, 0x176c87u, 95, "needs_more_evidence", "covered_synthetic_fallthrough", "next = 95@0x8c41c:1, ip += +0x4; dispatch_model=static_100", 0xc7u, 0x5700u, 0x4957u, 0xfb3au, 0x0u, 0x0u, "state_trace_pre_state,state_trace_pre_flags,state_trace_pre_byte"},
-    {0x176c95u, 0x176e97u, 216, "needs_more_evidence", "covered_synthetic_fallthrough", "next = 216@0xa4a61:1, ip += +0x4; dispatch_model=static_100", 0x151u, 0xb801u, 0x97b8u, 0x99u, 0x0u, 0x0u, "state_trace_pre_state,state_trace_pre_flags,state_trace_pre_byte"},
-    {0x176ea5u, 0x1770e9u, 95, "needs_more_evidence", "covered_synthetic_fallthrough", "next = 95@0x8c41c:1, ip += +0x4; dispatch_model=static_100", 0x151u, 0x6001u, 0x9c60u, 0x99u, 0x0u, 0x0u, "state_trace_pre_state,state_trace_pre_flags,state_trace_pre_byte"},
-    {0x1770f7u, 0x177353u, 354, "needs_more_evidence", "decoded_control", "next = table[354], ip += 0x57", 0xc7u, 0xf700u, 0x4ef7u, 0xfc3au, 0x0u, 0x0u, "state_trace_pre_state,state_trace_pre_flags,state_trace_pre_byte"},
+    {0x176883u, 0x176aa5u, 264, "ready_for_mba_reduction", "covered_synthetic_fallthrough", "next = 264@0xaf4cf:1, ip += +0x4; dispatch_model=static_100", 0xabu, 0xe800u, 0x1e8u, 0x15bu, 0xdeab6bf9u, 0x108a6bc4u, ""},
+    {0x176ab3u, 0x176c87u, 95, "ready_for_mba_reduction", "covered_synthetic_fallthrough", "next = 95@0x8c41c:1, ip += +0x4; dispatch_model=static_100", 0xc7u, 0x5700u, 0x4957u, 0xfb3au, 0xa0fdfbb1u, 0x37d4ec9cu, ""},
+    {0x176c95u, 0x176e97u, 216, "ready_for_mba_reduction", "covered_synthetic_fallthrough", "next = 216@0xa4a61:1, ip += +0x4; dispatch_model=static_100", 0x151u, 0xb801u, 0x97b8u, 0x99u, 0xc000c077u, 0xd25f080u, ""},
+    {0x176ea5u, 0x1770e9u, 95, "ready_for_mba_reduction", "covered_synthetic_fallthrough", "next = 95@0x8c41c:1, ip += +0x4; dispatch_model=static_100", 0x151u, 0x6001u, 0x9c60u, 0x99u, 0x573ce88cu, 0xc400080u, ""},
+    {0x1770f7u, 0x177353u, 354, "ready_for_mba_reduction", "decoded_control", "next = table[354], ip += 0x57", 0xc7u, 0xf700u, 0x4ef7u, 0xfc3au, 0xcca3e037u, 0xb09c5dedu, ""},
 };
 
 enum { VM_PROGRAM_ATLAS_022_MBA_REDUCED_CASE_COUNT = sizeof(vm_program_atlas_022_mba_reduced_cases) / sizeof(vm_program_atlas_022_mba_reduced_cases[0]) };

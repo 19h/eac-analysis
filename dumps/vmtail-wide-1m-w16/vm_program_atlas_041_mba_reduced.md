@@ -16,8 +16,8 @@ This artifact reduces each collected dispatcher/MBA case to the concrete success
 | `0x310dca` | `ready_for_mba_reduction` | `0x3129aa` | 354 | `decoded_control` | `` |
 | `0x3129aa` | `ready_for_mba_reduction` | `0x31580e` | 171 | `decoded_control` | `` |
 | `0x31580e` | `ready_for_mba_reduction` | `0x310b1c` | 171 | `decoded_control` | `` |
-| `0x315cc8` | `needs_more_evidence` | `0x343569` | 310 | `decoded_control` | `state_trace_pre_state,state_trace_pre_flags,state_trace_pre_byte` |
+| `0x315cc8` | `ready_for_mba_reduction` | `0x343569` | 310 | `decoded_control` | `` |
 
 - Concrete successor reductions emitted: `13` / `13` cases
-- Cases with complete stateful formula inputs: `12` / `13` cases
+- Cases with complete stateful formula inputs: `13` / `13` cases
 - Remaining work is expression-level simplification of the native MBA formulas for cases whose input state is absent, not successor discovery.

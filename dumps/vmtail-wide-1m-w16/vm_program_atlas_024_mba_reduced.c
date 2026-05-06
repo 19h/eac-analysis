@@ -22,9 +22,9 @@ typedef struct VMProgramAtlasMBAReducedCase {
 } VMProgramAtlasMBAReducedCase;
 
 static const VMProgramAtlasMBAReducedCase vm_program_atlas_024_mba_reduced_cases[] = {
-    {0x179f43u, 0x17a04fu, 278, "needs_more_evidence", "covered_synthetic_fallthrough", "next = 278@0xb2342:1, ip += +0x4; dispatch_model=static_100", 0x14cu, 0x1c01u, 0xd71cu, 0xcf7fu, 0x0u, 0x0u, "state_trace_pre_state,state_trace_pre_flags,state_trace_pre_byte"},
-    {0x17a05du, 0x17a25fu, 264, "needs_more_evidence", "covered_synthetic_fallthrough", "next = 264@0xaf4cf:1, ip += +0x4; dispatch_model=static_100", 0x133u, 0x3a01u, 0x9d3au, 0xffaeu, 0x0u, 0x0u, "state_trace_pre_state,state_trace_pre_flags,state_trace_pre_byte"},
-    {0x17a26du, 0x17a420u, 175, "needs_more_evidence", "covered_synthetic_fallthrough", "next = 175@0x9c08f:1, ip += +0x4; dispatch_model=static_100", 0x12u, 0x1000u, 0x810u, 0xec3au, 0x0u, 0x0u, "state_trace_pre_state,state_trace_pre_flags,state_trace_pre_byte"},
+    {0x179f43u, 0x17a04fu, 278, "ready_for_mba_reduction", "covered_synthetic_fallthrough", "next = 278@0xb2342:1, ip += +0x4; dispatch_model=static_100", 0x14cu, 0x1c01u, 0xd71cu, 0xcf7fu, 0x224501a0u, 0x633b5978u, ""},
+    {0x17a05du, 0x17a25fu, 264, "ready_for_mba_reduction", "covered_synthetic_fallthrough", "next = 264@0xaf4cf:1, ip += +0x4; dispatch_model=static_100", 0x133u, 0x3a01u, 0x9d3au, 0xffaeu, 0x1054de2au, 0x3fd05caau, ""},
+    {0x17a26du, 0x17a420u, 175, "ready_for_mba_reduction", "covered_synthetic_fallthrough", "next = 175@0x9c08f:1, ip += +0x4; dispatch_model=static_100", 0x12u, 0x1000u, 0x810u, 0xec3au, 0xe20f3370u, 0x2f10fe30u, ""},
 };
 
 enum { VM_PROGRAM_ATLAS_024_MBA_REDUCED_CASE_COUNT = sizeof(vm_program_atlas_024_mba_reduced_cases) / sizeof(vm_program_atlas_024_mba_reduced_cases[0]) };

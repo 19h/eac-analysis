@@ -22,10 +22,10 @@ typedef struct VMProgramAtlasMBAReducedCase {
 } VMProgramAtlasMBAReducedCase;
 
 static const VMProgramAtlasMBAReducedCase vm_program_atlas_062_mba_reduced_cases[] = {
-    {0x36d524u, 0x36c9b1u, 354, "needs_more_evidence", "decoded_control", "next = table[354], ip -= 0xbc0", 0x72u, 0xca00u, 0x66cau, 0xac5bu, 0x0u, 0x0u, "state_trace_pre_state,state_trace_pre_flags,state_trace_pre_byte"},
-    {0x36d579u, 0x36d69bu, 264, "needs_more_evidence", "covered_synthetic_fallthrough", "next = 264@0xaf4cf:1, ip += +0x4; dispatch_model=static_100", 0xd7u, 0x6800u, 0xa68u, 0x7388u, 0x0u, 0x0u, "state_trace_pre_state,state_trace_pre_flags,state_trace_pre_byte"},
-    {0x36d6a9u, 0x36d92cu, 264, "needs_more_evidence", "covered_synthetic_fallthrough", "next = 264@0xaf4cf:1, ip += +0x4; dispatch_model=static_100", 0x102u, 0x4e01u, 0xc54eu, 0x7607u, 0x0u, 0x0u, "state_trace_pre_state,state_trace_pre_flags,state_trace_pre_byte"},
-    {0x36d93au, 0x364e5fu, 310, "needs_more_evidence", "decoded_control", "sampled operand footprint 0x6; observed target table[310], delta -0x8c8e", 0x40u, 0x9d00u, 0xa79du, 0x99u, 0x0u, 0x0u, "state_trace_pre_state,state_trace_pre_flags,state_trace_pre_byte"},
+    {0x36d524u, 0x36c9b1u, 354, "ready_for_mba_reduction", "decoded_control", "next = table[354], ip -= 0xbc0", 0x72u, 0xca00u, 0x66cau, 0xac5bu, 0xd00290u, 0xc00b004u, ""},
+    {0x36d579u, 0x36d69bu, 264, "ready_for_mba_reduction", "covered_synthetic_fallthrough", "next = 264@0xaf4cf:1, ip += +0x4; dispatch_model=static_100", 0xd7u, 0x6800u, 0xa68u, 0x7388u, 0x70010260u, 0x64e09f3u, ""},
+    {0x36d6a9u, 0x36d92cu, 264, "ready_for_mba_reduction", "covered_synthetic_fallthrough", "next = 264@0xaf4cf:1, ip += +0x4; dispatch_model=static_100", 0x102u, 0x4e01u, 0xc54eu, 0x7607u, 0x388b30b9u, 0xb0053f08u, ""},
+    {0x36d93au, 0x364e5fu, 310, "ready_for_mba_reduction", "decoded_control", "sampled operand footprint 0x6; observed target table[310], delta -0x8c8e", 0x40u, 0x9d00u, 0xa79du, 0x99u, 0xc00169ddu, 0x5802c44u, ""},
 };
 
 enum { VM_PROGRAM_ATLAS_062_MBA_REDUCED_CASE_COUNT = sizeof(vm_program_atlas_062_mba_reduced_cases) / sizeof(vm_program_atlas_062_mba_reduced_cases[0]) };
