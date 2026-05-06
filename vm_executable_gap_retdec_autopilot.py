@@ -59,12 +59,12 @@ def read_batch_ranges(path):
 
 
 def unique_quarantine_path(path):
-    candidate = path.with_name(f"{path.stem}.failed{path.suffix}")
+    candidate = path.with_name(f"{path.name}.failed")
     if not candidate.exists():
         return candidate
     counter = 1
     while True:
-        candidate = path.with_name(f"{path.stem}.failed{counter}{path.suffix}")
+        candidate = path.with_name(f"{path.name}.failed{counter}")
         if not candidate.exists():
             return candidate
         counter += 1
