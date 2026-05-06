@@ -8,6 +8,12 @@ import sys
 import time
 from pathlib import Path
 
+from vm_executable_gap_retdec_probe import (
+    DEFAULT_REJECT_CACHE,
+    append_reject_cache,
+    generator_fingerprint,
+)
+
 
 TRACE_DIR = Path("dumps/vmtail-wide-1m-w16")
 COVERAGE = TRACE_DIR / "vm_native_executable_coverage_audit.tsv"
@@ -36,6 +42,48 @@ def existing_range_indices(root):
 
 def sidecar_path(index):
     return TRACE_DIR / f"vm_native_gap_retdec_batch{index:02d}.c"
+
+
+def range_file_path(root, index):
+    return root / f"native_gap_retdec_batch{index:02d}.ranges"
+
+
+def read_batch_ranges(path):
+    ranges = []
+    with path.open(errors="replace") as handle:
+        for line in handle:
+            selected = line.strip()
+            if selected:
+                ranges.append(selected)
+    return ranges
+
+
+def unique_quarantine_path(path):
+    candidate = path.with_name(f"{path.stem}.failed{path.suffix}")
+    if not candidate.exists():
+        return candidate
+    counter = 1
+    while True:
+        candidate = path.with_name(f"{path.stem}.failed{counter}{path.suffix}")
+        if not candidate.exists():
+            return candidate
+        counter += 1
+
+
+def quarantine_range_file(path):
+    if not path.exists():
+        return None
+    target = unique_quarantine_path(path)
+    path.replace(target)
+    print(f"quarantined_range_file\t{path}\t{target}", flush=True)
+    return target
+
+
+def remove_sidecar(index):
+    path = sidecar_path(index)
+    if path.exists():
+        path.unlink()
+        print(f"removed_failed_sidecar\t{path}", flush=True)
 
 
 def read_coverage_metrics():
@@ -112,6 +160,82 @@ def checkpoint(*, aggregate_syntax):
         )
 
 
+def build_and_syntax_check(index, jobs, *, allow_failure):
+    build_rc = run(["make", "-j", jobs, f"native-gap-retdec-batch{index}"], allow_failure=allow_failure)
+    if build_rc:
+        return False
+    syntax_rc = run(["cc", "-std=c11", "-fsyntax-only", "-w", sidecar_path(index)], allow_failure=allow_failure)
+    return syntax_rc == 0
+
+
+def next_free_batch_index(root):
+    index = max(existing_range_indices(root), default=-1) + 1
+    while range_file_path(root, index).exists():
+        index += 1
+    return index
+
+
+def salvage_failed_batch(index, args):
+    original = range_file_path(args.root, index)
+    ranges = read_batch_ranges(original) if original.exists() else []
+    quarantine_range_file(original)
+    remove_sidecar(index)
+    if not ranges:
+        return []
+
+    print(f"salvage_batch_start\t{index}\t{len(ranges)}", flush=True)
+    salvaged = []
+    rejected = []
+    for selected in ranges:
+        salvage_index = next_free_batch_index(args.root)
+        salvage_path = range_file_path(args.root, salvage_index)
+        salvage_path.write_text(f"{selected}\n")
+        print(f"salvage_try\t{selected}\tbatch={salvage_index}", flush=True)
+        if build_and_syntax_check(salvage_index, args.jobs, allow_failure=True):
+            salvaged.append(salvage_index)
+            continue
+        rejected.append(selected)
+        quarantine_range_file(salvage_path)
+        remove_sidecar(salvage_index)
+
+    append_reject_cache(args.reject_cache, generator_fingerprint(), rejected, False)
+    print(
+        "salvage_batch_done\t"
+        f"{index}\tsalvaged={','.join(str(item) for item in salvaged)}\t"
+        f"rejected={len(rejected)}",
+        flush=True,
+    )
+    return salvaged
+
+
+def build_created_batches(created, args):
+    rc = run(
+        ["make", "-j", args.jobs, *[f"native-gap-retdec-batch{index}" for index in created]],
+        allow_failure=args.salvage_failed_batches,
+    )
+    accepted = []
+    failed = []
+    for index in created:
+        if rc and not build_and_syntax_check(index, args.jobs, allow_failure=True):
+            failed.append(index)
+            continue
+        syntax_rc = run(
+            ["cc", "-std=c11", "-fsyntax-only", "-w", sidecar_path(index)],
+            allow_failure=args.salvage_failed_batches,
+        )
+        if syntax_rc == 0:
+            accepted.append(index)
+        else:
+            failed.append(index)
+    if failed and not args.salvage_failed_batches:
+        raise subprocess.CalledProcessError(1, ["cc", "-std=c11", "-fsyntax-only"])
+
+    salvaged = []
+    for index in failed:
+        salvaged.extend(salvage_failed_batch(index, args))
+    return accepted + salvaged
+
+
 def main():
     parser = argparse.ArgumentParser(
         description="Loop executable-gap RetDec probing, sidecar build, syntax check, and coverage refresh."
@@ -127,17 +251,26 @@ def main():
     parser.add_argument("--checkpoint-frequency", type=int, default=0)
     parser.add_argument("--final-checkpoint", action="store_true")
     parser.add_argument("--aggregate-syntax", action="store_true")
+    parser.add_argument("--root", type=Path, default=Path("."))
+    parser.add_argument("--reject-cache", type=Path, default=DEFAULT_REJECT_CACHE)
+    parser.add_argument(
+        "--salvage-failed-batches",
+        action="store_true",
+        help="Quarantine failed multi-range batches, retry their ranges one at a time, cache rejects, and continue.",
+    )
     args = parser.parse_args()
 
     baseline = read_coverage_metrics()
     created_total = []
     for round_index in range(1, args.rounds + 1):
         print(f"round_start\t{round_index}", flush=True)
-        before = existing_range_indices(Path("."))
+        before = existing_range_indices(args.root)
         rc = run(
             [
                 "python3",
                 "vm_executable_gap_retdec_probe.py",
+                "--root",
+                args.root,
                 "--chunk-bytes",
                 hex(args.chunk_bytes),
                 "--max-gap-chunks",
@@ -150,24 +283,27 @@ def main():
                 args.probe_jobs,
                 "--timeout",
                 args.timeout,
+                "--reject-cache",
+                args.reject_cache,
             ],
             allow_failure=True,
         )
         if rc:
             print("executable_gap_probe_no_progress", flush=True)
             break
-        created = sorted(existing_range_indices(Path(".")) - before)
+        created = sorted(existing_range_indices(args.root) - before)
         if not created:
             print("executable_gap_probe_no_created_batches", flush=True)
             break
         print("created_batches\t" + ",".join(str(index) for index in created), flush=True)
-        run(["make", "-j", args.jobs, *[f"native-gap-retdec-batch{index}" for index in created]])
-        for index in created:
-            run(["cc", "-std=c11", "-fsyntax-only", "-w", sidecar_path(index)])
+        built = build_created_batches(created, args)
+        if not built:
+            print("executable_gap_no_syntax_clean_batches", flush=True)
+            break
         touch_existing_sidecars()
         run(["make", "-s", "native-executable-coverage-audit", "native-retdec-gap-queue"])
         print_delta(baseline, read_coverage_metrics())
-        created_total.extend(created)
+        created_total.extend(built)
         if args.checkpoint_frequency > 0 and round_index % args.checkpoint_frequency == 0:
             checkpoint(aggregate_syntax=args.aggregate_syntax)
     if args.final_checkpoint and created_total:
