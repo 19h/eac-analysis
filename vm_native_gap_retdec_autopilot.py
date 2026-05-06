@@ -272,6 +272,7 @@ def main():
         or args.manifest_frequency == "final"
         or args.aggregate_syntax == "final"
     ):
+        manifest_before = read_manifest()
         refresh_aggregate(
             bundle=args.bundle_frequency == "final",
             manifest=args.manifest_frequency == "final",
@@ -279,7 +280,7 @@ def main():
             dry_run=args.dry_run,
         )
         if args.manifest_frequency == "final":
-            print_delta("manifest_delta", read_manifest(), read_manifest())
+            print_delta("manifest_delta", manifest_before, read_manifest())
 
     print("autopilot_created_batches\t" + ",".join(str(index) for index in sorted(set(total_created))), flush=True)
 
