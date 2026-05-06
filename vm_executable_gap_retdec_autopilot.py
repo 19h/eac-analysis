@@ -135,7 +135,12 @@ def touch_existing_sidecars():
         path.touch()
 
 
-def checkpoint(*, aggregate_syntax, skip_manifest):
+def refresh_uncovered_carrier():
+    run(["make", "-s", "uncovered-executable-gaps"])
+
+
+def checkpoint(*, aggregate_syntax, skip_manifest, completion_audit):
+    refresh_uncovered_carrier()
     touch_existing_sidecars()
     run(["make", "-s", "all-evidence-bundle"])
     if skip_manifest:
@@ -161,6 +166,8 @@ def checkpoint(*, aggregate_syntax, skip_manifest):
                 TRACE_DIR / "vm_recovered_source_all_evidence_bundle.c",
             ]
         )
+    if completion_audit:
+        run(["make", "-s", "reconstruction-completion-audit"])
 
 
 def build_and_syntax_check(index, jobs, *, allow_failure):
@@ -255,6 +262,13 @@ def main():
     parser.add_argument("--final-checkpoint", action="store_true")
     parser.add_argument("--skip-manifest", action="store_true")
     parser.add_argument("--aggregate-syntax", action="store_true")
+    parser.add_argument("--completion-audit", action="store_true")
+    parser.add_argument(
+        "--refresh-uncovered-carrier",
+        action=argparse.BooleanOptionalAction,
+        default=True,
+        help="Refresh exact C carriers for uncovered executable gaps after coverage changes.",
+    )
     parser.add_argument("--root", type=Path, default=Path("."))
     parser.add_argument("--reject-cache", type=Path, default=DEFAULT_REJECT_CACHE)
     parser.add_argument(
@@ -306,12 +320,22 @@ def main():
             break
         touch_existing_sidecars()
         run(["make", "-s", "native-executable-coverage-audit", "native-retdec-gap-queue"])
+        if args.refresh_uncovered_carrier:
+            refresh_uncovered_carrier()
         print_delta(baseline, read_coverage_metrics())
         created_total.extend(built)
         if args.checkpoint_frequency > 0 and round_index % args.checkpoint_frequency == 0:
-            checkpoint(aggregate_syntax=args.aggregate_syntax, skip_manifest=args.skip_manifest)
+            checkpoint(
+                aggregate_syntax=args.aggregate_syntax,
+                skip_manifest=args.skip_manifest,
+                completion_audit=args.completion_audit,
+            )
     if args.final_checkpoint and created_total:
-        checkpoint(aggregate_syntax=args.aggregate_syntax, skip_manifest=args.skip_manifest)
+        checkpoint(
+            aggregate_syntax=args.aggregate_syntax,
+            skip_manifest=args.skip_manifest,
+            completion_audit=args.completion_audit,
+        )
     print("executable_gap_autopilot_created_batches\t" + ",".join(str(index) for index in created_total), flush=True)
 
 
