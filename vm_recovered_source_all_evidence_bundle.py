@@ -7,6 +7,22 @@ from pathlib import Path
 
 TRACE_DIR = Path("dumps/vmtail-wide-1m-w16")
 
+
+def native_gap_batch_key(path: Path) -> int:
+    match = re.search(r"vm_native_gap_retdec_batch([0-9]+)\.c$", path.name)
+    return int(match.group(1)) if match else 0
+
+
+def default_sidecars():
+    seen = set()
+    sidecars = []
+    for path in DEFAULT_SIDECARS + sorted(TRACE_DIR.glob("vm_native_gap_retdec_batch*.c"), key=native_gap_batch_key):
+        if path in seen:
+            continue
+        seen.add(path)
+        sidecars.append(path)
+    return sidecars
+
 DEFAULT_SIDECARS = [
     TRACE_DIR / "vm_native_ret_patch_targets.c",
     TRACE_DIR / "vm_native_ret_patch_epilogues_retdec.c",
@@ -272,7 +288,7 @@ def main():
     args = parser.parse_args()
 
     source_bundle = read_text(args.source_bundle)
-    sidecars = list(DEFAULT_SIDECARS) + [Path(item) for item in args.sidecar]
+    sidecars = default_sidecars() + [Path(item) for item in args.sidecar]
 
     print("/*")
     print(" * All-evidence VM reconstruction bundle.")

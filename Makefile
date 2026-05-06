@@ -166,6 +166,8 @@ NATIVE_GAP_RETDEC_BATCH_CS += $(NATIVE_GAP_RETDEC_BATCH80_C)
 NATIVE_GAP_RETDEC_BATCH_CS += $(NATIVE_GAP_RETDEC_BATCH81_C)
 NATIVE_GAP_RETDEC_BATCH_CS += $(NATIVE_GAP_RETDEC_BATCH82_C)
 NATIVE_GAP_RETDEC_BATCH_CS += $(NATIVE_GAP_RETDEC_BATCH83_C)
+NATIVE_GAP_RETDEC_BATCH_RANGE_FILES := $(sort $(wildcard native_gap_retdec_batch*.ranges))
+NATIVE_GAP_RETDEC_BATCH_CS := $(patsubst native_gap_retdec_batch%.ranges,$(PRIMARY_DIR)/vm_native_gap_retdec_batch%.c,$(NATIVE_GAP_RETDEC_BATCH_RANGE_FILES))
 SOURCE_BUNDLE_C := $(PRIMARY_DIR)/vm_recovered_source_bundle.c
 ALL_EVIDENCE_BUNDLE_C := $(PRIMARY_DIR)/vm_recovered_source_all_evidence_bundle.c
 NATIVE_RET_PATCH_TARGETS_C := $(PRIMARY_DIR)/vm_native_ret_patch_targets.c
@@ -1235,6 +1237,13 @@ $(NATIVE_GAP_RETDEC_BATCH82_C): vm_native_gap_retdec_batch.py native_gap_retdec_
 $(NATIVE_GAP_RETDEC_BATCH83_C): vm_native_gap_retdec_batch.py native_gap_retdec_batch83.ranges eac.elf
 	python3 vm_native_gap_retdec_batch.py --batch-index 83 --ranges-file native_gap_retdec_batch83.ranges > $@
 
+$(PRIMARY_DIR)/vm_native_gap_retdec_batch%.c: vm_native_gap_retdec_batch.py native_gap_retdec_batch%.ranges eac.elf
+	python3 vm_native_gap_retdec_batch.py --batch-index $* --ranges-file native_gap_retdec_batch$*.ranges > $@
+
+.PHONY: native-gap-retdec-plan
+native-gap-retdec-plan: $(NATIVE_RETDEC_GAP_QUEUE_TSV)
+	python3 vm_native_gap_retdec_ranges_from_queue.py --batches 4 --batch-size 16
+
 native-gap-retdec-batch0: $(NATIVE_GAP_RETDEC_BATCH00_C)
 native-gap-retdec-batch1: $(NATIVE_GAP_RETDEC_BATCH01_C)
 native-gap-retdec-batch2: $(NATIVE_GAP_RETDEC_BATCH02_C)
@@ -1319,6 +1328,7 @@ native-gap-retdec-batch80: $(NATIVE_GAP_RETDEC_BATCH80_C)
 native-gap-retdec-batch81: $(NATIVE_GAP_RETDEC_BATCH81_C)
 native-gap-retdec-batch82: $(NATIVE_GAP_RETDEC_BATCH82_C)
 native-gap-retdec-batch83: $(NATIVE_GAP_RETDEC_BATCH83_C)
+native-gap-retdec-batch%: $(PRIMARY_DIR)/vm_native_gap_retdec_batch%.c
 native-gap-retdec-batches: $(NATIVE_GAP_RETDEC_BATCH_CS)
 
 $(NATIVE_RETDEC_GAP_QUEUE_TSV): vm_native_retdec_gap_queue.py $(NATIVE_FUNCTION_INVENTORY_TSV) $(NATIVE_EXECUTABLE_COVERAGE_AUDIT_TSV)
@@ -1436,6 +1446,7 @@ pseudocode-syntax-check: $(PSEUDOCODE_TOP_C) $(PROGRAM_PSEUDOCODE_TOP_C) $(PROGR
 	$(CC) -std=c11 -fsyntax-only -w dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch81.c
 	$(CC) -std=c11 -fsyntax-only -w dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch82.c
 	$(CC) -std=c11 -fsyntax-only -w dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch83.c
+	@for c in $(NATIVE_GAP_RETDEC_BATCH_CS); do $(CC) -std=c11 -fsyntax-only -w $$c || exit $$?; done
 	$(CC) -std=c11 -fsyntax-only -Wall -Wextra -Wno-unused-variable -Wno-unused-function -Wno-parentheses dumps/vmtail-wide-1m-w16/vm_pseudocode_top.c
 	$(CC) -std=c11 -fsyntax-only -Wall -Wextra -Wno-unused-variable -Wno-unused-function -Wno-parentheses dumps/vmtail-wide-1m-w16/vm_program_pseudocode_top.c
 	$(CC) -std=c11 -fsyntax-only -Wall -Wextra -Wno-unused-variable -Wno-unused-function -Wno-parentheses dumps/vmtail-wide-1m-w16/vm_program_pseudocode_full.c
