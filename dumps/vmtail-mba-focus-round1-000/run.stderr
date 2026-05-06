@@ -1,0 +1,11 @@
+[TRACE] caller=libselinux.so.1+0xee1d fopen64 path=/proc/filesystems mode=re
+[TRACE] caller=timeout+0x324f7b mprotect addr=0x7c8dc49ae000 len=0x1000 prot=0x0
+[TRACE] caller=timeout+0x319b3f getenv name=LANG -> set
+[TRACE] caller=timeout+0x33547e open64 path=/usr/share/coreutils/locales/uucore/en-US.ftl flags=0x80000
+[TRACE] caller=timeout+0x33547e open64 path=/usr/share/coreutils/locales/timeout/en-US.ftl flags=0x80000
+[TRACE] caller=timeout+0x319b3f getenv name=NO_COLOR -> set
+[TRACE] caller=timeout+0x3124be recv fd=3 len=8 flags=0x0 ret=0 data=
+[DRIVER] dlopen path=eac.elf
+[TRACE] caller=driver+0x1608 dlopen file=eac.elf flags=0x2
+[DRIVER] dlopen failed: eac.elf: cannot open shared object file: No such file or directory
+[TRACE] caller=timeout+0x32543c munmap addr=0x7c8dc49ae000 len=0x3000

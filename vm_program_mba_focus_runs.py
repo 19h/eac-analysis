@@ -52,6 +52,13 @@ def all_table_spec(eac: Path, window: int) -> str:
     raise SystemExit("vm_tail_scan.py did not emit EAC_VMTAIL_SITES")
 
 
+def executable_relative(path: Path) -> str:
+    text = str(path)
+    if path.is_absolute() or "/" in text:
+        return text
+    return f"./{text}"
+
+
 def captured_states(stderr_path: Path) -> set[str]:
     states: set[str] = set()
     if not stderr_path.exists():
@@ -167,7 +174,7 @@ def main() -> int:
             "timeout",
             str(args.timeout),
             "./driver",
-            str(args.eac),
+            executable_relative(args.eac),
             "1",
             "x",
             "0x800",
