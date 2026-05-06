@@ -1117,3 +1117,23 @@ native_executable_coverage_uncovered_bytes	3146474	3051498	delta=-94976
 # elapsed 0.09s
 + make -s all-evidence-bundle
 uncovered_executable_gaps=2829 bytes=3051498
+all_evidence_bundle_sidecars=714 symbol_rewrites=247933
+# elapsed 96.13s
+checkpoint_manifest_skipped
++ make -s reconstruction-completion-audit
+uncovered_executable_gaps=2829 bytes=3051498
+objective=reconstruct the binary back to C/C++ in full, including executable semantics and referenced static data
+success_criteria=single C/C++ evidence artifact, all referenced static data present, all executable bytes covered by decompiled/manual semantics or exact byte carriers, no uncovered executable semantics
+bundle_exists=ok	dumps/vmtail-wide-1m-w16/vm_recovered_source_all_evidence_bundle.c
+coverage_exists=ok	dumps/vmtail-wide-1m-w16/vm_native_executable_coverage_audit.tsv
+uncovered_carrier_exists=ok	dumps/vmtail-wide-1m-w16/vm_uncovered_executable_gaps.tsv
+uncovered_carrier_matches_coverage=ok	coverage_gaps=2829 carrier_gaps=2829 coverage_bytes=3051498 carrier_bytes=3051498
+text_semantic_coverage=2595430/5646928 bytes (45.96%)
+bundle_includes_expected_sidecars=ok	expected=714 present=714 missing=0
+bundle_includes_binary_data_sidecar=ok	static ELF section/string/data carrier sidecar marker
+bundle_includes_uncovered_executable_carrier=ok	exact byte carrier sidecar marker and byte-count enum
+aggregate_c_syntax=ok	command=cc -std=c11 -fsyntax-only -w dumps/vmtail-wide-1m-w16/vm_recovered_source_all_evidence_bundle.c
+incomplete_reason=remaining executable semantics: text_uncovered_bytes=3051498 audit_gap_bytes=3051498
+completion_status=not_complete
+# elapsed 3.74s
+executable_gap_autopilot_created_batches	634,635,636,637,638,639,640,641,642,643,644,645,646,647,648,649,650,651,652,653,654,655,656,657,658,659,660,661,662,663,664
