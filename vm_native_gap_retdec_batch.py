@@ -1001,6 +1001,7 @@ def main():
     print("struct _Unwind_Exception;")
     print("int64_t _Unwind_DeleteException(int64_t exception);")
     print("int64_t _Unwind_GetRegionStart();")
+    print("int64_t _Unwind_RaiseException(int64_t exception);")
     print("void _Unwind_Resume(struct _Unwind_Exception *exception);")
     print("void _Unwind_Resume_or_Rethrow(int64_t exception);")
     print("")
