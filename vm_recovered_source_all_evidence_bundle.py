@@ -272,6 +272,7 @@ def main():
     print("void *iconv_open(const char *tocode, const char *fromcode);")
     print("size_t iconv(void *cd, char **inbuf, size_t *inbytesleft, char **outbuf, size_t *outbytesleft);")
     print("int iconv_close(void *cd);")
+    print("void *malloc(size_t size);")
     print("void *calloc(size_t nmemb, size_t size);")
     print("char *getenv(const char *name);")
     print("char *fgets();")
