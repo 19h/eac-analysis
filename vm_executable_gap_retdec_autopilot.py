@@ -135,19 +135,22 @@ def touch_existing_sidecars():
         path.touch()
 
 
-def checkpoint(*, aggregate_syntax):
+def checkpoint(*, aggregate_syntax, skip_manifest):
     touch_existing_sidecars()
     run(["make", "-s", "all-evidence-bundle"])
-    run(
-        [
-            "python3",
-            "vm_c_reconstruction_manifest.py",
-            "--output",
-            TRACE_DIR / "vm_c_reconstruction_manifest.tsv",
-            "--markdown-output",
-            TRACE_DIR / "vm_c_reconstruction_manifest.md",
-        ]
-    )
+    if skip_manifest:
+        print("checkpoint_manifest_skipped", flush=True)
+    else:
+        run(
+            [
+                "python3",
+                "vm_c_reconstruction_manifest.py",
+                "--output",
+                TRACE_DIR / "vm_c_reconstruction_manifest.tsv",
+                "--markdown-output",
+                TRACE_DIR / "vm_c_reconstruction_manifest.md",
+            ]
+        )
     if aggregate_syntax:
         run(
             [
@@ -250,6 +253,7 @@ def main():
     parser.add_argument("--timeout", type=int, default=30)
     parser.add_argument("--checkpoint-frequency", type=int, default=0)
     parser.add_argument("--final-checkpoint", action="store_true")
+    parser.add_argument("--skip-manifest", action="store_true")
     parser.add_argument("--aggregate-syntax", action="store_true")
     parser.add_argument("--root", type=Path, default=Path("."))
     parser.add_argument("--reject-cache", type=Path, default=DEFAULT_REJECT_CACHE)
@@ -305,9 +309,9 @@ def main():
         print_delta(baseline, read_coverage_metrics())
         created_total.extend(built)
         if args.checkpoint_frequency > 0 and round_index % args.checkpoint_frequency == 0:
-            checkpoint(aggregate_syntax=args.aggregate_syntax)
+            checkpoint(aggregate_syntax=args.aggregate_syntax, skip_manifest=args.skip_manifest)
     if args.final_checkpoint and created_total:
-        checkpoint(aggregate_syntax=args.aggregate_syntax)
+        checkpoint(aggregate_syntax=args.aggregate_syntax, skip_manifest=args.skip_manifest)
     print("executable_gap_autopilot_created_batches\t" + ",".join(str(index) for index in created_total), flush=True)
 
 
