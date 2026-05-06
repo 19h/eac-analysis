@@ -35,20 +35,24 @@ def bundle_counts(path: Path) -> tuple[int, int, int]:
 def coverage_counts(path: Path) -> dict[str, int | str]:
     text_row: dict[str, str] | None = None
     rows = 0
-    gaps = 0
+    audit_gaps = 0
+    text_gaps = 0
     with path.open(newline="") as handle:
         reader = csv.DictReader(handle, delimiter="\t")
         for row in reader:
             rows += 1
             if row.get("row_type") == "gap":
-                gaps += 1
+                audit_gaps += 1
+                if row.get("section") == ".text":
+                    text_gaps += 1
             if row.get("row_type") == "section" and row.get("section") == ".text":
                 text_row = row
     if text_row is None:
         raise SystemExit(f"missing .text section row in {path}")
     return {
         "audit_rows": rows,
-        "gap_rows": gaps,
+        "audit_gap_rows": audit_gaps,
+        "text_gap_rows": text_gaps,
         "covered_bytes": int(text_row["covered_bytes"]),
         "uncovered_bytes": int(text_row["uncovered_bytes"]),
         "range_count": int(text_row["range_count"]),
@@ -73,6 +77,19 @@ def latest_batch(primary: Path) -> int:
     return latest
 
 
+def uncovered_carrier_counts(path: Path) -> tuple[int, int]:
+    if not path.exists():
+        return 0, 0
+    gaps = 0
+    bytes_total = 0
+    with path.open(newline="") as handle:
+        reader = csv.DictReader(handle, delimiter="\t")
+        for row in reader:
+            gaps += 1
+            bytes_total += int(row["bytes"])
+    return gaps, bytes_total
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--root", type=Path, default=Path("dumps/vmtail-wide-1m-w16"))
@@ -82,10 +99,12 @@ def main() -> int:
     bundle = root / "vm_recovered_source_all_evidence_bundle.c"
     coverage = root / "vm_native_executable_coverage_audit.tsv"
     reject_cache = root / "vm_executable_gap_retdec_reject_cache.tsv"
+    uncovered_carrier = root / "vm_uncovered_executable_gaps.tsv"
 
     bundle_lines, bundle_bytes = line_byte_count(bundle)
     sidecars, functions, symbols = bundle_counts(bundle)
     cov = coverage_counts(coverage)
+    carrier_gaps, carrier_bytes = uncovered_carrier_counts(uncovered_carrier)
 
     print(f"root={root}")
     print(f"latest_batch={latest_batch(root)}")
@@ -95,10 +114,13 @@ def main() -> int:
     print(f"prefixed_functions={functions}")
     print(f"prefixed_symbols={symbols}")
     print(f"text_recovered_range_rows={cov['range_count']}")
-    print(f"text_gap_rows={cov['gap_rows']}")
+    print(f"text_gap_rows={cov['text_gap_rows']}")
+    print(f"audit_gap_rows={cov['audit_gap_rows']}")
     print(f"text_covered_bytes={cov['covered_bytes']}")
     print(f"text_uncovered_bytes={cov['uncovered_bytes']}")
     print(f"text_coverage_x100={cov['coverage_x100']}")
+    print(f"uncovered_carrier_gaps={carrier_gaps}")
+    print(f"uncovered_carrier_bytes={carrier_bytes}")
     print(f"reject_cache_rejects={reject_count(reject_cache)}")
     print("completion_status=not_complete")
     return 0
