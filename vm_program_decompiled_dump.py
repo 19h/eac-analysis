@@ -21,8 +21,8 @@ from vm_pseudocode_dump import (
 )
 
 
-def dec_block_name(block: str) -> str:
-    return f"vmdec_{c_block_name(block)}"
+def dec_block_name(block: str, prefix: str = "vmdec") -> str:
+    return f"{prefix}_{c_block_name(block)}"
 
 
 def emit_preamble() -> None:
@@ -54,9 +54,9 @@ def emit_preamble() -> None:
     print("")
 
 
-def emit_prototypes(blocks: list[dict[str, str]]) -> None:
+def emit_prototypes(blocks: list[dict[str, str]], prefix: str = "vmdec") -> None:
     for block in blocks:
-        print(f"static void {dec_block_name(block['block'])}(VMState *vm, uint64_t vm_ip);")
+        print(f"static void {dec_block_name(block['block'], prefix)}(VMState *vm, uint64_t vm_ip);")
     print("")
 
 
@@ -123,7 +123,7 @@ def emit_row(row: dict[str, str], args: argparse.Namespace, stats: Counter[str])
     emit_next_and_ip(row, args, stats)
 
 
-def emit_edge(edge: dict[str, str] | None, known_blocks: set[str]) -> None:
+def emit_edge(edge: dict[str, str] | None, known_blocks: set[str], prefix: str = "vmdec") -> None:
     if not edge:
         return
     edge_kind = edge.get("edge_kind", "")
@@ -135,7 +135,7 @@ def emit_edge(edge: dict[str, str] | None, known_blocks: set[str]) -> None:
         f"coverage={c_comment(coverage or '-')} */"
     )
     if target_block and target_block in known_blocks:
-        print(f"    {dec_block_name(target_block)}(vm, vm_ip);")
+        print(f"    {dec_block_name(target_block, prefix)}(vm, vm_ip);")
     elif target_vm_ip:
         print(f"    vm_unresolved_synthetic_tail(vm, {target_vm_ip});")
 
@@ -147,8 +147,9 @@ def emit_block(
     args: argparse.Namespace,
     known_blocks: set[str],
     stats: Counter[str],
+    prefix: str = "vmdec",
 ) -> None:
-    print(f"static void {dec_block_name(block['block'])}(VMState *vm, uint64_t vm_ip) {{")
+    print(f"static void {dec_block_name(block['block'], prefix)}(VMState *vm, uint64_t vm_ip) {{")
     print("    uint32_t state0 = vm->state;")
     print("    uint32_t flags0 = vm->flags;")
     print("    uint8_t byte0 = vm->byte;")
@@ -164,7 +165,7 @@ def emit_block(
     if omitted:
         stats["omitted_rows"] += omitted
         print(f"    /* {omitted} rows omitted by --rows-per-block. */")
-    emit_edge(edge, known_blocks)
+    emit_edge(edge, known_blocks, prefix)
     print("    (void)state0;")
     print("    (void)flags0;")
     print("    (void)byte0;")
@@ -174,11 +175,11 @@ def emit_block(
     print("")
 
 
-def emit_dispatch(blocks: list[dict[str, str]]) -> None:
-    print("void vm_program_decompiled(VMState *vm, uint64_t vm_ip) {")
+def emit_dispatch(blocks: list[dict[str, str]], prefix: str = "vmdec", entrypoint: str = "vm_program_decompiled") -> None:
+    print(f"void {entrypoint}(VMState *vm, uint64_t vm_ip) {{")
     print("    switch (vm_ip) {")
     for block in blocks:
-        print(f"    case {block['start_vm_ip']}: {dec_block_name(block['block'])}(vm, vm_ip); return;")
+        print(f"    case {block['start_vm_ip']}: {dec_block_name(block['block'], prefix)}(vm, vm_ip); return;")
     print("    default: vm_unresolved_synthetic_tail(vm, vm_ip); return;")
     print("    }")
     print("}")
@@ -192,6 +193,8 @@ def main() -> int:
     parser.add_argument("--limit-blocks", type=int, default=0)
     parser.add_argument("--rows-per-block", type=int, default=0)
     parser.add_argument("--max-expr-len", type=int, default=260)
+    parser.add_argument("--name-prefix", default="vmdec")
+    parser.add_argument("--entrypoint", default="vm_program_decompiled")
     parser.add_argument("--start", action="append", default=[])
     parser.add_argument("--keep-order", action="store_true")
     args = parser.parse_args()
@@ -204,10 +207,10 @@ def main() -> int:
     stats: Counter[str] = Counter()
 
     emit_preamble()
-    emit_prototypes(chosen)
+    emit_prototypes(chosen, args.name_prefix)
     for block in chosen:
-        emit_block(block, rows_by_block.get(block["block"], []), edges.get(block["block"]), args, known_blocks, stats)
-    emit_dispatch(chosen)
+        emit_block(block, rows_by_block.get(block["block"], []), edges.get(block["block"]), args, known_blocks, stats, args.name_prefix)
+    emit_dispatch(chosen, args.name_prefix, args.entrypoint)
     print(
         "program_decompiled_blocks="
         f"{len(chosen)} rows={stats['rows']} state_inlined={stats['state_inlined']} "
