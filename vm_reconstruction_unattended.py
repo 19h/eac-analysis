@@ -206,6 +206,7 @@ def main() -> int:
         print(f"pass_start\t{pass_index}\tlog={log_path}", flush=True)
         with log_path.open("w", encoding="utf-8") as log:
             log.write("+ " + " ".join(cmd) + "\n")
+            log.flush()
             proc = subprocess.run(cmd, stdout=log, stderr=subprocess.STDOUT, text=True)
         print(f"pass_exit\t{pass_index}\trc={proc.returncode}", flush=True)
         if proc.returncode and not args.keep_going_on_failure:
