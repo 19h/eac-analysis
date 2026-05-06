@@ -285,11 +285,14 @@ def main() -> int:
             trace_targets[program][row.get("target_entry", "")] += 1
 
     string_texts: dict[str, list[str]] = defaultdict(list)
+    string_ref_counts: Counter[str] = Counter()
     for row in read_tsv(strings_path):
         program = row.get("program", "")
         text = row.get("text", "")
-        if program in program_rows and text not in string_texts[program]:
-            string_texts[program].append(text)
+        if program in program_rows:
+            string_ref_counts[program] += 1
+            if text not in string_texts[program]:
+                string_texts[program].append(text)
 
     for reduced_path in sorted(root.glob("vm_program_atlas_*_mba_reduced.tsv")):
         match = re.search(r"vm_program_atlas_([0-9]{3})_mba_reduced\.tsv$", reduced_path.name)
@@ -323,7 +326,7 @@ def main() -> int:
         row["primary_trace_kind_mix"] = counter_text(trace_kinds[program])
         row["top_primary_trace_sources"] = counter_text(trace_sources[program])
         row["top_primary_trace_targets"] = counter_text(trace_targets[program])
-        row["string_ref_count"] = len(string_texts[program])
+        row["string_ref_count"] = string_ref_counts[program]
         row["strings"] = "; ".join(string_texts[program][:10])
         status, gap, next_action = classify_program(row)
         row["status"] = status

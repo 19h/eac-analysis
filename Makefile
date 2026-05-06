@@ -1004,10 +1004,8 @@ program-decompiled-folded-audit: program-decompiled-folded
 	python3 vm_program_decompiled_fold_mba_audit.py --syntax --jobs 8
 
 .PHONY: behavior-inventory behavior-inventory-audit
-$(BEHAVIOR_INVENTORY_TSV) $(BEHAVIOR_GAP_REGISTER_TSV) $(BEHAVIOR_INVENTORY_MD): vm_behavior_inventory.py program-decompiled-folded $(PRIMARY_DIR)/vm_bytecode_basic_blocks.tsv $(BYTECODE_IR_DECOMPILE_TSV) $(PRIMARY_TRACE) $(PRIMARY_DIR)/vm_trace_coverage_matrix.tsv $(PRIMARY_DIR)/vm_isa_handlers.tsv $(PRIMARY_DIR)/vm_native_linkage_stubs.tsv
+behavior-inventory: vm_behavior_inventory.py program-decompiled-folded $(PRIMARY_DIR)/vm_bytecode_basic_blocks.tsv $(BYTECODE_IR_DECOMPILE_TSV) $(PRIMARY_TRACE) $(PRIMARY_DIR)/vm_trace_coverage_matrix.tsv $(PRIMARY_DIR)/vm_isa_handlers.tsv $(PRIMARY_DIR)/vm_native_linkage_stubs.tsv
 	python3 vm_behavior_inventory.py --root $(PRIMARY_DIR)
-
-behavior-inventory: $(BEHAVIOR_INVENTORY_TSV) $(BEHAVIOR_GAP_REGISTER_TSV) $(BEHAVIOR_INVENTORY_MD)
 
 behavior-inventory-audit: behavior-inventory
 	python3 vm_behavior_inventory_audit.py --root $(PRIMARY_DIR)
