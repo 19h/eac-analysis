@@ -2,7 +2,7 @@ row_type	section	start	stop	bytes	covered_bytes	uncovered_bytes	coverage_x100	ra
 section	.init	0x1fbd0	0x1fbe7	23	0	23	0	0	0		
 section	.plt	0x1fbf0	0x20bd0	4064	0	4064	0	0	0		
 section	.plt.got	0x20bd0	0x20be0	16	0	16	0	0	0		
-section	.text	0x20c00	0x583650	5646928	1141223	4505705	2020	9255	2372		
+section	.text	0x20c00	0x583650	5646928	1142494	4504434	2023	9271	2370		
 section	.fini	0x583650	0x583659	9	0	9	0	0	0		
 gap	.text	0x17c085	0x1a1fa3	155422	0	155422	0	0	0		
 gap	.text	0x2e301e	0x307093	147573	0	147573	0	0	0		
@@ -264,7 +264,6 @@ gap	.text	0x550d9f	0x5512a0	1281	0	1281	0	0	0
 gap	.text	0x55b9cc	0x55bec0	1268	0	1268	0	0	0		
 gap	.text	0x6771a	0x67c0c	1266	0	1266	0	0	0		
 gap	.text	0x51a12b	0x51a610	1253	0	1253	0	0	0		
-gap	.text	0x3f3c0	0x3f89f	1247	0	1247	0	0	0		
 gap	.text	0x37459	0x37930	1239	0	1239	0	0	0		
 gap	.text	0x4c2b91	0x4c3060	1231	0	1231	0	0	0		
 gap	.text	0x77502	0x779bd	1211	0	1211	0	0	0		
@@ -1306,13 +1305,11 @@ gap	.text	0x57a03f	0x57a050	17	0	17	0	0	0
 gap	.text	0x57b46f	0x57b480	17	0	17	0	0	0		
 gap	.plt.got	0x20bd0	0x20be0	16	0	16	0	0	0		
 gap	.text	0x4da72	0x4da82	16	0	16	0	0	0		
-gap	.text	0x6b7f0	0x6b800	16	0	16	0	0	0		
 gap	.text	0x49a380	0x49a390	16	0	16	0	0	0		
 gap	.text	0x4a48e0	0x4a48f0	16	0	16	0	0	0		
 gap	.text	0x4a98a0	0x4a98b0	16	0	16	0	0	0		
 gap	.text	0x4ad290	0x4ad2a0	16	0	16	0	0	0		
 gap	.text	0x4ad440	0x4ad450	16	0	16	0	0	0		
-gap	.text	0x4b3af0	0x4b3b00	16	0	16	0	0	0		
 gap	.text	0x4bbb00	0x4bbb10	16	0	16	0	0	0		
 gap	.text	0x4bbfe0	0x4bbff0	16	0	16	0	0	0		
 gap	.text	0x4c1bb0	0x4c1bc0	16	0	16	0	0	0		
@@ -1792,6 +1789,7 @@ gap	.text	0x212e8	0x212f0	8	0	8	0	0	0
 gap	.text	0x2569a	0x256a2	8	0	8	0	0	0		
 gap	.text	0x2c928	0x2c930	8	0	8	0	0	0		
 gap	.text	0x67c6a	0x67c72	8	0	8	0	0	0		
+gap	.text	0x6b7f0	0x6b7f8	8	0	8	0	0	0		
 gap	.text	0x6c008	0x6c010	8	0	8	0	0	0		
 gap	.text	0x49a818	0x49a820	8	0	8	0	0	0		
 gap	.text	0x4ae218	0x4ae220	8	0	8	0	0	0		
@@ -3584,6 +3582,12 @@ range	.text	0x3f230	0x3f300	208	208	0	10000	1	1	retdec_address_range	vm_native_g
 range	.text	0x3f230	0x3f300	208	208	0	10000	1	1	retdec_header_range	vm_native_gap_retdec_batch202.c
 range	.text	0x3f300	0x3f3bf	191	191	0	10000	1	1	retdec_address_range	vm_native_gap_retdec_batch203.c
 range	.text	0x3f300	0x3f3c0	192	192	0	10000	1	1	retdec_header_range	vm_native_gap_retdec_batch203.c
+range	.text	0x3f3c0	0x3f40e	78	78	0	10000	1	1	retdec_address_range	vm_native_gap_retdec_batch204.c
+range	.text	0x3f3c0	0x3f410	80	80	0	10000	1	1	retdec_header_range	vm_native_gap_retdec_batch204.c
+range	.text	0x3f410	0x3f41b	11	11	0	10000	1	1	retdec_address_range	vm_native_gap_retdec_batch205.c
+range	.text	0x3f410	0x3f420	16	16	0	10000	1	1	retdec_header_range	vm_native_gap_retdec_batch205.c
+range	.text	0x3f420	0x3f89f	1151	1151	0	10000	1	1	retdec_address_range	vm_native_gap_retdec_batch206.c
+range	.text	0x3f420	0x3f89f	1151	1151	0	10000	1	1	retdec_header_range	vm_native_gap_retdec_batch206.c
 range	.text	0x3f89f	0x3fba8	777	777	0	10000	1	1	retdec_address_range	vm_native_gap_retdec_batch175.c
 range	.text	0x3f89f	0x3fba8	777	777	0	10000	1	1	retdec_header_range	vm_native_gap_retdec_batch175.c
 range	.text	0x3ff6e	0x4096a	2556	2556	0	10000	1	1	retdec_address_range	vm_native_gap_retdec_batch185.c
@@ -4919,6 +4923,12 @@ range	.text	0x6b6e6	0x6b79f	185	185	0	10000	1	1	retdec_address_range	vm_native_g
 range	.text	0x6b6e6	0x6b79f	185	185	0	10000	1	1	retdec_header_range	vm_native_gap_retdec_batch36.c
 range	.text	0x6b7a0	0x6b7ef	79	79	0	10000	1	1	retdec_address_range	vm_native_gap_retdec_batch192.c
 range	.text	0x6b7a0	0x6b7f0	80	80	0	10000	1	1	retdec_header_range	vm_native_gap_retdec_batch192.c
+range	.text	0x6b7f8	0x6b7f9	1	1	0	10000	1	1	retdec_address_range	vm_native_gap_retdec_batch205.c
+range	.text	0x6b7f8	0x6b7f9	1	1	0	10000	1	1	retdec_header_range	vm_native_gap_retdec_batch205.c
+range	.text	0x6b7f9	0x6b7fa	1	1	0	10000	1	1	retdec_address_range	vm_native_gap_retdec_batch204.c
+range	.text	0x6b7f9	0x6b7fa	1	1	0	10000	1	1	retdec_header_range	vm_native_gap_retdec_batch204.c
+range	.text	0x6b7fa	0x6b7fd	3	3	0	10000	1	1	retdec_address_range	vm_native_gap_retdec_batch206.c
+range	.text	0x6b7fa	0x6b800	6	6	0	10000	1	1	retdec_header_range	vm_native_gap_retdec_batch206.c
 range	.text	0x6b800	0x6b805	5	5	0	10000	1	1	retdec_address_range	vm_native_gap_retdec_batch194.c
 range	.text	0x6b800	0x6b810	16	16	0	10000	1	1	retdec_header_range	vm_native_gap_retdec_batch194.c
 range	.text	0x6b810	0x6b82f	31	31	0	10000	1	1	retdec_address_range	vm_native_gap_retdec_batch193.c
@@ -8219,6 +8229,10 @@ range	.text	0x4b38b0	0x4b3910	96	96	0	10000	1	1	retdec_address_range	vm_native_g
 range	.text	0x4b38b0	0x4b3910	96	96	0	10000	1	1	retdec_header_range	vm_native_gap_retdec_batch71.c
 range	.text	0x4b3910	0x4b3aec	476	476	0	10000	1	1	retdec_address_range	vm_native_gap_retdec_batch198.c
 range	.text	0x4b3910	0x4b3af0	480	480	0	10000	1	1	retdec_header_range	vm_native_gap_retdec_batch198.c
+range	.text	0x4b3af0	0x4b3af8	8	8	0	10000	1	1	retdec_address_range	vm_native_gap_retdec_batch204.c
+range	.text	0x4b3af0	0x4b3afb	11	11	0	10000	1	1	retdec_header_range	vm_native_gap_retdec_batch204.c
+range	.text	0x4b3afb	0x4b3afc	1	1	0	10000	1	1	retdec_address_range	vm_native_gap_retdec_batch205.c
+range	.text	0x4b3afb	0x4b3b00	5	5	0	10000	1	1	retdec_header_range	vm_native_gap_retdec_batch205.c
 range	.text	0x4b3b00	0x4b3b0f	15	15	0	10000	1	1	retdec_address_range	vm_native_gap_retdec_batch199.c
 range	.text	0x4b3b00	0x4b3b10	16	16	0	10000	1	1	retdec_header_range	vm_native_gap_retdec_batch199.c
 range	.text	0x4b3b10	0x4b3bf0	224	224	0	10000	1	1	retdec_address_range	vm_native_gap_retdec_batch200.c
