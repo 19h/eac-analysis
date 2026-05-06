@@ -1335,6 +1335,9 @@ native-gap-retdec-checkpoint: $(NATIVE_RETDEC_GAP_QUEUE_TSV)
 	python3 vm_native_gap_retdec_checkpoint.py
 native-gap-retdec-autopilot: $(NATIVE_RETDEC_GAP_QUEUE_TSV)
 	python3 vm_native_gap_retdec_autopilot.py
+.PHONY: executable-gap-retdec-probe
+executable-gap-retdec-probe: $(NATIVE_EXECUTABLE_COVERAGE_AUDIT_TSV)
+	python3 vm_executable_gap_retdec_probe.py
 
 $(NATIVE_RETDEC_GAP_QUEUE_TSV): vm_native_retdec_gap_queue.py $(NATIVE_FUNCTION_INVENTORY_TSV) $(NATIVE_EXECUTABLE_COVERAGE_AUDIT_TSV)
 	python3 vm_native_retdec_gap_queue.py --inventory $(NATIVE_FUNCTION_INVENTORY_TSV) --coverage $(NATIVE_EXECUTABLE_COVERAGE_AUDIT_TSV) > $@
