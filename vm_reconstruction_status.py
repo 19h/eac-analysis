@@ -134,7 +134,15 @@ def main() -> int:
     print(f"uncovered_carrier_gaps={carrier_gaps}")
     print(f"uncovered_carrier_bytes={carrier_bytes}")
     print(f"reject_cache_rejects={reject_count(reject_cache)}")
-    print("completion_status=not_complete")
+    complete = (
+        bundle.exists()
+        and cov["uncovered_bytes"] == 0
+        and cov["text_gap_rows"] == 0
+        and cov["audit_gap_rows"] == 0
+        and carrier_gaps == 0
+        and carrier_bytes == 0
+    )
+    print(f"completion_status={'complete' if complete else 'not_complete'}")
     return 0
 
 
