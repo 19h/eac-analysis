@@ -3,13 +3,13 @@
 - Program range: `0x11c2aa`..`0x11de59`
 - Case states / blocks: `15`
 - IR rows captured: `1823`
-- Runtime observations captured: `335` from `21` trace files
-- Case-start observations with concrete pre-state: `52`
+- Runtime observations captured: `339` from `22` trace TSV files and `1` raw VMTAIL runs
+- Case-start observations with concrete pre-state: `56`
 
 ## Reduction Readiness
 
-- Ready for MBA reduction from collected evidence: `11` / `15` cases
-- Missing additional stateful observations: `4` cases
+- Ready for MBA reduction from collected evidence: `15` / `15` cases
+- Missing additional stateful observations: `0` cases
 
 | State | Status | Trace obs | Pre-state obs | Edge | Target | Needs |
 | --- | --- | ---: | ---: | --- | --- | --- |
@@ -24,10 +24,10 @@
 | `0x11d6b0` | `ready_for_mba_reduction` | 17 | 4 | `covered_synthetic_fallthrough` | `0x11d91b` | `` |
 | `0x11d929` | `ready_for_mba_reduction` | 17 | 4 | `covered_synthetic_fallthrough` | `0x11da3a` | `` |
 | `0x11da4b` | `ready_for_mba_reduction` | 17 | 4 | `decoded_control` | `0x33f278` | `` |
-| `0x11db16` | `needs_more_evidence` | 11 | 0 | `covered_synthetic_fallthrough` | `0x11dc27` | `state_trace_pre_state,state_trace_pre_flags,state_trace_pre_byte` |
-| `0x11dc37` | `needs_more_evidence` | 11 | 0 | `decoded_control` | `0x3603af` | `state_trace_pre_state,state_trace_pre_flags,state_trace_pre_byte` |
-| `0x11dd03` | `needs_more_evidence` | 11 | 0 | `covered_synthetic_fallthrough` | `0x11de14` | `state_trace_pre_state,state_trace_pre_flags,state_trace_pre_byte` |
-| `0x11de27` | `needs_more_evidence` | 11 | 0 | `decoded_control` | `0x11de9f` | `state_trace_pre_state,state_trace_pre_flags,state_trace_pre_byte` |
+| `0x11db16` | `ready_for_mba_reduction` | 12 | 1 | `covered_synthetic_fallthrough` | `0x11dc27` | `` |
+| `0x11dc37` | `ready_for_mba_reduction` | 12 | 1 | `decoded_control` | `0x3603af` | `` |
+| `0x11dd03` | `ready_for_mba_reduction` | 12 | 1 | `covered_synthetic_fallthrough` | `0x11de14` | `` |
+| `0x11de27` | `ready_for_mba_reduction` | 12 | 1 | `decoded_control` | `0x11de9f` | `` |
 
 ## Files
 
@@ -42,7 +42,6 @@
 
 ## Missing For Full MBA Reduction
 
-- Concrete state/flags/byte observations are still missing for: `0x11db16`, `0x11dc37`, `0x11dd03`, `0x11de27`.
 - Native function entry address if using the generated Frida direct-dispatch logger.
 - Runtime pointer value for `ctx->ip`, so alias checks against `&ctx->next` can be proven directly.
 - Additional diverse observations if any MBA helper is not uniquely determined by the existing state traces.

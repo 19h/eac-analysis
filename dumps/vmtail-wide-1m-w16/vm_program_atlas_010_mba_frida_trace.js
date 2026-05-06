@@ -9,7 +9,7 @@ if (FN_ADDRESS.indexOf("PUT_") === 0) {
     throw new Error("Set FN_ADDRESS to the native dispatcher/function address before loading this script");
 }
 const FN = ptr(FN_ADDRESS);
-const STATES = new Set(["0x11db16", "0x11dc37", "0x11dd03", "0x11de27"]);
+const STATES = new Set(["0x11c2aa", "0x11c407", "0x11c690", "0x11ca38", "0x11cd05", "0x11cf2f", "0x11d215", "0x11d3e1", "0x11d6b0", "0x11d929", "0x11da4b", "0x11db16", "0x11dc37", "0x11dd03", "0x11de27"]);
 
 function hx(v) {
     return "0x" + v.toString(16);
