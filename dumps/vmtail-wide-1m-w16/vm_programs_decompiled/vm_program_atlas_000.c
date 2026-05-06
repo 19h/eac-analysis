@@ -22,7 +22,31 @@ typedef struct VMState {
 static int64_t signed_vm_delta_u32(uint32_t raw) {
     return (raw & 0x80000000u) ? -(int64_t)(raw & 0x7fffffffu) : (int64_t)raw;
 }
-extern void vm_unresolved_synthetic_tail(VMState *vm, uint64_t vm_ip);
+
+typedef struct VMSyntheticTailEvidence {
+    uint64_t source_vm_ip;
+    uint64_t target_vm_ip;
+    uint32_t source_entry;
+    uint32_t target_entry;
+    const char *edge_kind;
+    const char *coverage;
+    const char *semantic;
+} VMSyntheticTailEvidence;
+
+static void vm_program_external_edge(VMState *vm, uint64_t target_vm_ip) {
+    (void)vm;
+    (void)target_vm_ip;
+}
+
+static void vm_program_unknown_entry(VMState *vm, uint64_t vm_ip) {
+    (void)vm;
+    (void)vm_ip;
+}
+
+static void vm_program_synthetic_tail_evidence(VMState *vm, const VMSyntheticTailEvidence *edge) {
+    (void)vm;
+    (void)edge;
+}
 
 /* VM program atlas 0: 0xd0ac0..0xd1445 */
 
@@ -743,7 +767,18 @@ static void vmdec_p000_bb_0002(VMState *vm, uint64_t vm_ip) {
     next_entry = 264;
     vm_ip += 0x4;
     /* terminal CFG edge: covered_synthetic_fallthrough, target_vm_ip=0xd0d43, coverage=hidden_span_of_14:4 */
-    vm_unresolved_synthetic_tail(vm, 0xd0d43);
+    {
+        static const VMSyntheticTailEvidence tail = {
+            UINT64_C(0xd0d3f),
+            UINT64_C(0xd0d43),
+            174u,
+            264u,
+            "covered_synthetic_fallthrough",
+            "hidden_span_of_14:4",
+            "next = 264@0xaf4cf:4, ip += +0x4; dispatch_model=static_100; state=state_add_const",
+        };
+        vm_program_synthetic_tail_evidence(vm, &tail);
+    }
     (void)state0;
     (void)flags0;
     (void)byte0;
@@ -1501,7 +1536,18 @@ static void vmdec_p000_bb_0004(VMState *vm, uint64_t vm_ip) {
     next_entry = 95;
     vm_ip += 0x4;
     /* terminal CFG edge: covered_synthetic_fallthrough, target_vm_ip=0xd1002, coverage=frontier_span_of_14:1 */
-    vm_unresolved_synthetic_tail(vm, 0xd1002);
+    {
+        static const VMSyntheticTailEvidence tail = {
+            UINT64_C(0xd0ffe),
+            UINT64_C(0xd1002),
+            174u,
+            95u,
+            "covered_synthetic_fallthrough",
+            "frontier_span_of_14:1",
+            "next = 95@0x8c41c:1, ip += +0x4; dispatch_model=static_100; state=state_add_const",
+        };
+        vm_program_synthetic_tail_evidence(vm, &tail);
+    }
     (void)state0;
     (void)flags0;
     (void)byte0;
@@ -2184,7 +2230,18 @@ static void vmdec_p000_bb_0005(VMState *vm, uint64_t vm_ip) {
     next_entry = 356;
     vm_ip += 0x4;
     /* terminal CFG edge: covered_synthetic_fallthrough, target_vm_ip=0xd1284, coverage=frontier_span_of_14:1 */
-    vm_unresolved_synthetic_tail(vm, 0xd1284);
+    {
+        static const VMSyntheticTailEvidence tail = {
+            UINT64_C(0xd1280),
+            UINT64_C(0xd1284),
+            176u,
+            356u,
+            "covered_synthetic_fallthrough",
+            "frontier_span_of_14:1",
+            "next = 356@0xc291a:1, ip += +0x4; dispatch_model=static_100; state=state_add_const",
+        };
+        vm_program_synthetic_tail_evidence(vm, &tail);
+    }
     (void)state0;
     (void)flags0;
     (void)byte0;
@@ -2663,7 +2720,18 @@ static void vmdec_p000_bb_0006(VMState *vm, uint64_t vm_ip) {
     next_entry = 175;
     vm_ip += 0x4;
     /* terminal CFG edge: covered_synthetic_fallthrough, target_vm_ip=0xd1445, coverage=target_footprint_of_6:1 */
-    vm_unresolved_synthetic_tail(vm, 0xd1445);
+    {
+        static const VMSyntheticTailEvidence tail = {
+            UINT64_C(0xd1441),
+            UINT64_C(0xd1445),
+            158u,
+            175u,
+            "covered_synthetic_fallthrough",
+            "target_footprint_of_6:1",
+            "next = 175@0x9c08f:1, ip += +0x4; dispatch_model=static_100; state=state_add_const",
+        };
+        vm_program_synthetic_tail_evidence(vm, &tail);
+    }
     (void)state0;
     (void)flags0;
     (void)byte0;
@@ -2680,6 +2748,6 @@ void vm_program_atlas_000_decompiled(VMState *vm, uint64_t vm_ip) {
     case 0xd0eb3: vmdec_p000_bb_0004(vm, vm_ip); return;
     case 0xd1010: vmdec_p000_bb_0005(vm, vm_ip); return;
     case 0xd1292: vmdec_p000_bb_0006(vm, vm_ip); return;
-    default: vm_unresolved_synthetic_tail(vm, vm_ip); return;
+    default: vm_program_unknown_entry(vm, vm_ip); return;
     }
 }

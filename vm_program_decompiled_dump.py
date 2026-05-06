@@ -25,6 +25,28 @@ def dec_block_name(block: str, prefix: str = "vmdec") -> str:
     return f"{prefix}_{c_block_name(block)}"
 
 
+def c_string(text: str) -> str:
+    out = ['"']
+    for ch in text or "":
+        code = ord(ch)
+        if ch == "\\":
+            out.append("\\\\")
+        elif ch == '"':
+            out.append('\\"')
+        elif ch == "\n":
+            out.append("\\n")
+        elif ch == "\r":
+            out.append("\\r")
+        elif ch == "\t":
+            out.append("\\t")
+        elif 32 <= code < 127:
+            out.append(ch)
+        else:
+            out.append(f"\\x{code:02x}")
+    out.append('"')
+    return "".join(out)
+
+
 def emit_preamble() -> None:
     print("/*")
     print(" * Decompiled VM bytecode programs.")
@@ -50,7 +72,31 @@ def emit_preamble() -> None:
     print("static int64_t signed_vm_delta_u32(uint32_t raw) {")
     print("    return (raw & 0x80000000u) ? -(int64_t)(raw & 0x7fffffffu) : (int64_t)raw;")
     print("}")
-    print("extern void vm_unresolved_synthetic_tail(VMState *vm, uint64_t vm_ip);")
+    print("")
+    print("typedef struct VMSyntheticTailEvidence {")
+    print("    uint64_t source_vm_ip;")
+    print("    uint64_t target_vm_ip;")
+    print("    uint32_t source_entry;")
+    print("    uint32_t target_entry;")
+    print("    const char *edge_kind;")
+    print("    const char *coverage;")
+    print("    const char *semantic;")
+    print("} VMSyntheticTailEvidence;")
+    print("")
+    print("static void vm_program_external_edge(VMState *vm, uint64_t target_vm_ip) {")
+    print("    (void)vm;")
+    print("    (void)target_vm_ip;")
+    print("}")
+    print("")
+    print("static void vm_program_unknown_entry(VMState *vm, uint64_t vm_ip) {")
+    print("    (void)vm;")
+    print("    (void)vm_ip;")
+    print("}")
+    print("")
+    print("static void vm_program_synthetic_tail_evidence(VMState *vm, const VMSyntheticTailEvidence *edge) {")
+    print("    (void)vm;")
+    print("    (void)edge;")
+    print("}")
     print("")
 
 
@@ -130,14 +176,31 @@ def emit_edge(edge: dict[str, str] | None, known_blocks: set[str], prefix: str =
     target_block = edge.get("target_block", "")
     target_vm_ip = edge.get("target_vm_ip", "")
     coverage = edge.get("target_coverage_statuses", "")
+    source_vm_ip = edge.get("source_terminal_vm_ip", edge.get("source_start_vm_ip", "0"))
+    source_entry = edge.get("source_entry", "0") or "0"
+    target_entry = edge.get("target_entry", "0") or "0"
+    semantic = edge.get("semantic_ir", "")
     print(
         f"    /* terminal CFG edge: {edge_kind}, target_vm_ip={target_vm_ip}, "
         f"coverage={c_comment(coverage or '-')} */"
     )
     if target_block and target_block in known_blocks:
         print(f"    {dec_block_name(target_block, prefix)}(vm, vm_ip);")
+    elif edge_kind == "covered_synthetic_fallthrough" and target_vm_ip:
+        print("    {")
+        print("        static const VMSyntheticTailEvidence tail = {")
+        print(f"            UINT64_C({source_vm_ip}),")
+        print(f"            UINT64_C({target_vm_ip}),")
+        print(f"            {int(source_entry, 0)}u,")
+        print(f"            {int(target_entry, 0)}u,")
+        print(f"            {c_string(edge_kind)},")
+        print(f"            {c_string(coverage)},")
+        print(f"            {c_string(semantic)},")
+        print("        };")
+        print("        vm_program_synthetic_tail_evidence(vm, &tail);")
+        print("    }")
     elif target_vm_ip:
-        print(f"    vm_unresolved_synthetic_tail(vm, {target_vm_ip});")
+        print(f"    vm_program_external_edge(vm, {target_vm_ip});")
 
 
 def emit_block(
@@ -180,7 +243,7 @@ def emit_dispatch(blocks: list[dict[str, str]], prefix: str = "vmdec", entrypoin
     print("    switch (vm_ip) {")
     for block in blocks:
         print(f"    case {block['start_vm_ip']}: {dec_block_name(block['block'], prefix)}(vm, vm_ip); return;")
-    print("    default: vm_unresolved_synthetic_tail(vm, vm_ip); return;")
+    print("    default: vm_program_unknown_entry(vm, vm_ip); return;")
     print("    }")
     print("}")
 

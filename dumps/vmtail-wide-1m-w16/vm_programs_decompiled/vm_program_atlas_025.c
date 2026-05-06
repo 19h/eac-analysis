@@ -22,7 +22,31 @@ typedef struct VMState {
 static int64_t signed_vm_delta_u32(uint32_t raw) {
     return (raw & 0x80000000u) ? -(int64_t)(raw & 0x7fffffffu) : (int64_t)raw;
 }
-extern void vm_unresolved_synthetic_tail(VMState *vm, uint64_t vm_ip);
+
+typedef struct VMSyntheticTailEvidence {
+    uint64_t source_vm_ip;
+    uint64_t target_vm_ip;
+    uint32_t source_entry;
+    uint32_t target_entry;
+    const char *edge_kind;
+    const char *coverage;
+    const char *semantic;
+} VMSyntheticTailEvidence;
+
+static void vm_program_external_edge(VMState *vm, uint64_t target_vm_ip) {
+    (void)vm;
+    (void)target_vm_ip;
+}
+
+static void vm_program_unknown_entry(VMState *vm, uint64_t vm_ip) {
+    (void)vm;
+    (void)vm_ip;
+}
+
+static void vm_program_synthetic_tail_evidence(VMState *vm, const VMSyntheticTailEvidence *edge) {
+    (void)vm;
+    (void)edge;
+}
 
 /* VM program atlas 25: 0x18b66f..0x18c467 */
 
@@ -621,7 +645,18 @@ static void vmdec_p025_bb_0132(VMState *vm, uint64_t vm_ip) {
     next_entry = 264;
     vm_ip += 0x4;
     /* terminal CFG edge: covered_synthetic_fallthrough, target_vm_ip=0x18b88f, coverage=hidden_span_of_14:1 */
-    vm_unresolved_synthetic_tail(vm, 0x18b88f);
+    {
+        static const VMSyntheticTailEvidence tail = {
+            UINT64_C(0x18b88b),
+            UINT64_C(0x18b88f),
+            20u,
+            264u,
+            "covered_synthetic_fallthrough",
+            "hidden_span_of_14:1",
+            "next = 264@0xaf4cf:1, ip += +0x4; dispatch_model=static_100; state=state_add_const",
+        };
+        vm_program_synthetic_tail_evidence(vm, &tail);
+    }
     (void)state0;
     (void)flags0;
     (void)byte0;
@@ -1112,7 +1147,18 @@ static void vmdec_p025_bb_0133(VMState *vm, uint64_t vm_ip) {
     next_entry = 95;
     vm_ip += 0x4;
     /* terminal CFG edge: covered_synthetic_fallthrough, target_vm_ip=0x18ba5b, coverage=hidden_span_of_14:1 */
-    vm_unresolved_synthetic_tail(vm, 0x18ba5b);
+    {
+        static const VMSyntheticTailEvidence tail = {
+            UINT64_C(0x18ba57),
+            UINT64_C(0x18ba5b),
+            158u,
+            95u,
+            "covered_synthetic_fallthrough",
+            "hidden_span_of_14:1",
+            "next = 95@0x8c41c:1, ip += +0x4; dispatch_model=static_100; state=state_add_const",
+        };
+        vm_program_synthetic_tail_evidence(vm, &tail);
+    }
     (void)state0;
     (void)flags0;
     (void)byte0;
@@ -1979,7 +2025,18 @@ static void vmdec_p025_bb_0134(VMState *vm, uint64_t vm_ip) {
     next_entry = 216;
     vm_ip += 0x4;
     /* terminal CFG edge: covered_synthetic_fallthrough, target_vm_ip=0x18bd8c, coverage=frontier_span_of_14:1 */
-    vm_unresolved_synthetic_tail(vm, 0x18bd8c);
+    {
+        static const VMSyntheticTailEvidence tail = {
+            UINT64_C(0x18bd88),
+            UINT64_C(0x18bd8c),
+            184u,
+            216u,
+            "covered_synthetic_fallthrough",
+            "frontier_span_of_14:1",
+            "next = 216@0xa4a61:1, ip += +0x4; dispatch_model=static_100; state=state_add_const",
+        };
+        vm_program_synthetic_tail_evidence(vm, &tail);
+    }
     (void)state0;
     (void)flags0;
     (void)byte0;
@@ -2282,7 +2339,18 @@ static void vmdec_p025_bb_0135(VMState *vm, uint64_t vm_ip) {
     next_entry = 75;
     vm_ip += 0x5;
     /* terminal CFG edge: covered_synthetic_fallthrough, target_vm_ip=0x18beab, coverage=hidden_span_of_17:1 */
-    vm_unresolved_synthetic_tail(vm, 0x18beab);
+    {
+        static const VMSyntheticTailEvidence tail = {
+            UINT64_C(0x18bea6),
+            UINT64_C(0x18beab),
+            245u,
+            75u,
+            "covered_synthetic_fallthrough",
+            "hidden_span_of_17:1",
+            "next = 75@0x873fc:1, ip += +0x5; dispatch_model=static_100; state=state_add_const",
+        };
+        vm_program_synthetic_tail_evidence(vm, &tail);
+    }
     (void)state0;
     (void)flags0;
     (void)byte0;
@@ -2773,7 +2841,18 @@ static void vmdec_p025_bb_0136(VMState *vm, uint64_t vm_ip) {
     next_entry = 311;
     vm_ip += 0x4;
     /* terminal CFG edge: covered_synthetic_fallthrough, target_vm_ip=0x18c07a, coverage=frontier_span_of_14:1 */
-    vm_unresolved_synthetic_tail(vm, 0x18c07a);
+    {
+        static const VMSyntheticTailEvidence tail = {
+            UINT64_C(0x18c076),
+            UINT64_C(0x18c07a),
+            20u,
+            311u,
+            "covered_synthetic_fallthrough",
+            "frontier_span_of_14:1",
+            "next = 311@0xb86f8:1, ip += +0x4; dispatch_model=static_100; state=state_add_const",
+        };
+        vm_program_synthetic_tail_evidence(vm, &tail);
+    }
     (void)state0;
     (void)flags0;
     (void)byte0;
@@ -3368,7 +3447,18 @@ static void vmdec_p025_bb_0137(VMState *vm, uint64_t vm_ip) {
     next_entry = 311;
     vm_ip += 0x4;
     /* terminal CFG edge: covered_synthetic_fallthrough, target_vm_ip=0x18c2a6, coverage=hidden_span_of_14:1 */
-    vm_unresolved_synthetic_tail(vm, 0x18c2a6);
+    {
+        static const VMSyntheticTailEvidence tail = {
+            UINT64_C(0x18c2a2),
+            UINT64_C(0x18c2a6),
+            174u,
+            311u,
+            "covered_synthetic_fallthrough",
+            "hidden_span_of_14:1",
+            "next = 311@0xb86f8:1, ip += +0x4; dispatch_model=static_100; state=state_add_const",
+        };
+        vm_program_synthetic_tail_evidence(vm, &tail);
+    }
     (void)state0;
     (void)flags0;
     (void)byte0;
@@ -3847,7 +3937,18 @@ static void vmdec_p025_bb_0138(VMState *vm, uint64_t vm_ip) {
     next_entry = 195;
     vm_ip += 0x4;
     /* terminal CFG edge: covered_synthetic_fallthrough, target_vm_ip=0x18c467, coverage=target_footprint_of_6:1 */
-    vm_unresolved_synthetic_tail(vm, 0x18c467);
+    {
+        static const VMSyntheticTailEvidence tail = {
+            UINT64_C(0x18c463),
+            UINT64_C(0x18c467),
+            184u,
+            195u,
+            "covered_synthetic_fallthrough",
+            "target_footprint_of_6:1",
+            "next = 195@0x9fb50:1, ip += +0x4; dispatch_model=static_100; state=state_add_const",
+        };
+        vm_program_synthetic_tail_evidence(vm, &tail);
+    }
     (void)state0;
     (void)flags0;
     (void)byte0;
@@ -3864,6 +3965,6 @@ void vm_program_atlas_025_decompiled(VMState *vm, uint64_t vm_ip) {
     case 0x18bebc: vmdec_p025_bb_0136(vm, vm_ip); return;
     case 0x18c088: vmdec_p025_bb_0137(vm, vm_ip); return;
     case 0x18c2b4: vmdec_p025_bb_0138(vm, vm_ip); return;
-    default: vm_unresolved_synthetic_tail(vm, vm_ip); return;
+    default: vm_program_unknown_entry(vm, vm_ip); return;
     }
 }

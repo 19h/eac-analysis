@@ -22,7 +22,31 @@ typedef struct VMState {
 static int64_t signed_vm_delta_u32(uint32_t raw) {
     return (raw & 0x80000000u) ? -(int64_t)(raw & 0x7fffffffu) : (int64_t)raw;
 }
-extern void vm_unresolved_synthetic_tail(VMState *vm, uint64_t vm_ip);
+
+typedef struct VMSyntheticTailEvidence {
+    uint64_t source_vm_ip;
+    uint64_t target_vm_ip;
+    uint32_t source_entry;
+    uint32_t target_entry;
+    const char *edge_kind;
+    const char *coverage;
+    const char *semantic;
+} VMSyntheticTailEvidence;
+
+static void vm_program_external_edge(VMState *vm, uint64_t target_vm_ip) {
+    (void)vm;
+    (void)target_vm_ip;
+}
+
+static void vm_program_unknown_entry(VMState *vm, uint64_t vm_ip) {
+    (void)vm;
+    (void)vm_ip;
+}
+
+static void vm_program_synthetic_tail_evidence(VMState *vm, const VMSyntheticTailEvidence *edge) {
+    (void)vm;
+    (void)edge;
+}
 
 /* VM program atlas 38: 0x2bf97c..0x2bf9cc */
 
@@ -91,7 +115,7 @@ static void vmdec_p038_bb_0210(VMState *vm, uint64_t vm_ip) {
     next_entry = (int)U32(vm->ip + 0x0);
     vm_ip += signed_vm_delta_u32(U32(vm->ip + 0x4));
     /* terminal CFG edge: decoded_control, target_vm_ip=0x2bfe6f, coverage=- */
-    vm_unresolved_synthetic_tail(vm, 0x2bfe6f);
+    vm_program_external_edge(vm, 0x2bfe6f);
     (void)state0;
     (void)flags0;
     (void)byte0;
@@ -102,6 +126,6 @@ static void vmdec_p038_bb_0210(VMState *vm, uint64_t vm_ip) {
 void vm_program_atlas_038_decompiled(VMState *vm, uint64_t vm_ip) {
     switch (vm_ip) {
     case 0x2bf97c: vmdec_p038_bb_0210(vm, vm_ip); return;
-    default: vm_unresolved_synthetic_tail(vm, vm_ip); return;
+    default: vm_program_unknown_entry(vm, vm_ip); return;
     }
 }

@@ -22,7 +22,31 @@ typedef struct VMState {
 static int64_t signed_vm_delta_u32(uint32_t raw) {
     return (raw & 0x80000000u) ? -(int64_t)(raw & 0x7fffffffu) : (int64_t)raw;
 }
-extern void vm_unresolved_synthetic_tail(VMState *vm, uint64_t vm_ip);
+
+typedef struct VMSyntheticTailEvidence {
+    uint64_t source_vm_ip;
+    uint64_t target_vm_ip;
+    uint32_t source_entry;
+    uint32_t target_entry;
+    const char *edge_kind;
+    const char *coverage;
+    const char *semantic;
+} VMSyntheticTailEvidence;
+
+static void vm_program_external_edge(VMState *vm, uint64_t target_vm_ip) {
+    (void)vm;
+    (void)target_vm_ip;
+}
+
+static void vm_program_unknown_entry(VMState *vm, uint64_t vm_ip) {
+    (void)vm;
+    (void)vm_ip;
+}
+
+static void vm_program_synthetic_tail_evidence(VMState *vm, const VMSyntheticTailEvidence *edge) {
+    (void)vm;
+    (void)edge;
+}
 
 /* VM program atlas 41: 0x30e872..0x316692 */
 
@@ -5745,7 +5769,18 @@ static void vmdec_p041_bb_0223(VMState *vm, uint64_t vm_ip) {
     next_entry = 210;
     vm_ip += 0x5;
     /* terminal CFG edge: covered_synthetic_fallthrough, target_vm_ip=0x30fd84, coverage=hidden_span_of_17:1 */
-    vm_unresolved_synthetic_tail(vm, 0x30fd84);
+    {
+        static const VMSyntheticTailEvidence tail = {
+            UINT64_C(0x30fd7f),
+            UINT64_C(0x30fd84),
+            242u,
+            210u,
+            "covered_synthetic_fallthrough",
+            "hidden_span_of_17:1",
+            "next = 210@0xa2da3:1, ip += +0x5; dispatch_model=static_100; state=state_add_const",
+        };
+        vm_program_synthetic_tail_evidence(vm, &tail);
+    }
     (void)state0;
     (void)flags0;
     (void)byte0;
@@ -34003,7 +34038,7 @@ static void vmdec_p041_bb_0229(VMState *vm, uint64_t vm_ip) {
     next_entry = 310;
     vm_ip += 0x2cef7;
     /* terminal CFG edge: decoded_control, target_vm_ip=0x343569, coverage=- */
-    vm_unresolved_synthetic_tail(vm, 0x343569);
+    vm_program_external_edge(vm, 0x343569);
     (void)state0;
     (void)flags0;
     (void)byte0;
@@ -34026,6 +34061,6 @@ void vm_program_atlas_041_decompiled(VMState *vm, uint64_t vm_ip) {
     case 0x3129aa: vmdec_p041_bb_0227(vm, vm_ip); return;
     case 0x31580e: vmdec_p041_bb_0228(vm, vm_ip); return;
     case 0x315cc8: vmdec_p041_bb_0229(vm, vm_ip); return;
-    default: vm_unresolved_synthetic_tail(vm, vm_ip); return;
+    default: vm_program_unknown_entry(vm, vm_ip); return;
     }
 }
