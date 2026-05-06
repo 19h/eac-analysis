@@ -208,6 +208,33 @@ def string_ref_counts(manifest: Path, output_dir: Path) -> dict[str, int | bool]
     }
 
 
+def mba_reduction_counts(root: Path) -> dict[str, int | bool]:
+    requirement_files = sorted(root.glob("vm_program_atlas_*_mba_requirements.tsv"))
+    reduced_files = sorted(root.glob("vm_program_atlas_*_mba_reduced.c"))
+    total_cases = 0
+    ready_cases = 0
+    missing_cases = 0
+    programs = set()
+    for path in requirement_files:
+        name = path.name
+        program = name.removeprefix("vm_program_atlas_").split("_", 1)[0]
+        programs.add(program)
+        with path.open(newline="") as handle:
+            for row in csv.DictReader(handle, delimiter="\t"):
+                total_cases += 1
+                if row.get("status") == "ready_for_mba_reduction":
+                    ready_cases += 1
+                else:
+                    missing_cases += 1
+    return {
+        "programs_with_requirements": len(programs),
+        "reduced_c_files": len(reduced_files),
+        "total_cases": total_cases,
+        "ready_cases": ready_cases,
+        "missing_cases": missing_cases,
+    }
+
+
 def check(name: str, ok: bool, detail: str) -> bool:
     print(f"{name}={'ok' if ok else 'missing'}\t{detail}")
     return ok
@@ -231,6 +258,7 @@ def main() -> int:
     program_split_manifest = root / "vm_programs_decompiled_manifest.tsv"
     program_split_dir = root / "vm_programs_decompiled"
     program_string_refs = root / "vm_program_string_refs.tsv"
+    program_mba_atlas010_reduced_c = root / "vm_program_atlas_010_mba_reduced.c"
     bytecode_ir_decompile = root / "vm_bytecode_ir_decompile.tsv"
     bytecode_blocks = root / "vm_bytecode_basic_blocks.tsv"
 
@@ -247,6 +275,7 @@ def main() -> int:
     ok &= check("program_split_manifest_exists", program_split_manifest.exists(), str(program_split_manifest))
     ok &= check("program_split_dir_exists", program_split_dir.exists(), str(program_split_dir))
     ok &= check("program_string_refs_exists", program_string_refs.exists(), str(program_string_refs))
+    ok &= check("program_mba_atlas010_reduced_exists", program_mba_atlas010_reduced_c.exists(), str(program_mba_atlas010_reduced_c))
     ok &= check("bytecode_ir_decompile_exists", bytecode_ir_decompile.exists(), str(bytecode_ir_decompile))
     ok &= check("bytecode_blocks_exists", bytecode_blocks.exists(), str(bytecode_blocks))
 
@@ -424,6 +453,18 @@ def main() -> int:
             f"rows={ref_counts['rows']} programs_with_refs={ref_counts['programs_with_refs']} count_mismatches={ref_counts['count_mismatches']} invalid_sources={ref_counts['invalid_sources']}",
         )
 
+    mba_counts = mba_reduction_counts(root)
+    ok &= check(
+        "program_mba_reduction_artifacts_present",
+        mba_counts["programs_with_requirements"] > 0 and mba_counts["reduced_c_files"] > 0,
+        f"programs_with_requirements={mba_counts['programs_with_requirements']} reduced_c_files={mba_counts['reduced_c_files']}",
+    )
+    ok &= check(
+        "program_mba_reduction_has_no_missing_cases",
+        mba_counts["missing_cases"] == 0 and mba_counts["total_cases"] > 0,
+        f"ready_cases={mba_counts['ready_cases']} total_cases={mba_counts['total_cases']} missing_cases={mba_counts['missing_cases']}",
+    )
+
     if args.syntax:
         result = subprocess.run(
             [args.cc, "-std=c11", "-fsyntax-only", "-w", str(bundle)],
@@ -438,6 +479,8 @@ def main() -> int:
     complete = ok and text_uncovered == 0 and gap_bytes == 0
     if text_uncovered != 0 or gap_bytes != 0:
         print(f"incomplete_reason=remaining executable semantics: text_uncovered_bytes={text_uncovered} audit_gap_bytes={gap_bytes}")
+    if mba_counts["missing_cases"] != 0:
+        print(f"incomplete_reason=remaining VM program MBA reduction cases: missing_cases={mba_counts['missing_cases']} ready_cases={mba_counts['ready_cases']} total_cases={mba_counts['total_cases']}")
     print(f"completion_status={'complete' if complete else 'not_complete'}")
     if args.fail_if_incomplete and not complete:
         return 1
