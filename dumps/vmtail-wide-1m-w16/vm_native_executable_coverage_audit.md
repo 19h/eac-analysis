@@ -4,33 +4,23 @@ Compares executable ELF sections against native ranges already represented by re
 
 - executable sections: 5
 - executable bytes: 5651040
-- recovered executable bytes: 5642427
-- uncovered executable bytes: 8613
-- recovered range rows: 88612
-- uncovered gaps: 599
+- recovered executable bytes: 5642985
+- uncovered executable bytes: 8055
+- recovered range rows: 88868
+- uncovered gaps: 570
 
 | section | range | bytes | covered | uncovered | coverage | ranges |
 | --- | --- | ---: | ---: | ---: | ---: | ---: |
 | `.init` | `0x1fbd0-0x1fbe7` | 23 | 23 | 0 | 100.00% | 1 |
 | `.plt` | `0x1fbf0-0x20bd0` | 4064 | 4064 | 0 | 100.00% | 254 |
 | `.plt.got` | `0x20bd0-0x20be0` | 16 | 16 | 0 | 100.00% | 2 |
-| `.text` | `0x20c00-0x583650` | 5646928 | 5638315 | 8613 | 99.84% | 88352 |
+| `.text` | `0x20c00-0x583650` | 5646928 | 5638873 | 8055 | 99.85% | 88608 |
 | `.fini` | `0x583650-0x583659` | 9 | 9 | 0 | 100.00% | 3 |
 
 ## Largest Uncovered Gaps
 
 | section | range | bytes |
 | --- | --- | ---: |
-| `.text` | `0x4e6b79-0x4e6b8e` | 21 |
-| `.text` | `0x4db80d-0x4db821` | 20 |
-| `.text` | `0x4dc269-0x4dc27d` | 20 |
-| `.text` | `0x4e62f9-0x4e630d` | 20 |
-| `.text` | `0x4e78ed-0x4e7901` | 20 |
-| `.text` | `0x4e790b-0x4e791f` | 20 |
-| `.text` | `0x4e8553-0x4e8567` | 20 |
-| `.text` | `0x4dd534-0x4dd546` | 18 |
-| `.text` | `0x4e89c9-0x4e89db` | 18 |
-| `.text` | `0x48ddf3-0x48de04` | 17 |
 | `.text` | `0x30b29-0x30b39` | 16 |
 | `.text` | `0x31f83-0x31f93` | 16 |
 | `.text` | `0x32dd7-0x32de7` | 16 |
@@ -61,3 +51,13 @@ Compares executable ELF sections against native ranges already represented by re
 | `.text` | `0x105a78-0x105a88` | 16 |
 | `.text` | `0x10f7bf-0x10f7cf` | 16 |
 | `.text` | `0x11253f-0x11254f` | 16 |
+| `.text` | `0x120926-0x120936` | 16 |
+| `.text` | `0x1227d6-0x1227e6` | 16 |
+| `.text` | `0x1273ac-0x1273bc` | 16 |
+| `.text` | `0x12901c-0x12902c` | 16 |
+| `.text` | `0x12a90c-0x12a91c` | 16 |
+| `.text` | `0x12cf3c-0x12cf4c` | 16 |
+| `.text` | `0x130d5e-0x130d6e` | 16 |
+| `.text` | `0x138df4-0x138e04` | 16 |
+| `.text` | `0x13a5e4-0x13a5f4` | 16 |
+| `.text` | `0x13d0d8-0x13d0e8` | 16 |
