@@ -4,17 +4,17 @@ Compares executable ELF sections against native ranges already represented by re
 
 - executable sections: 5
 - executable bytes: 5651040
-- recovered executable bytes: 586393
-- uncovered executable bytes: 5064647
-- recovered range rows: 4421
-- uncovered gaps: 1021
+- recovered executable bytes: 588039
+- uncovered executable bytes: 5063001
+- recovered range rows: 4454
+- uncovered gaps: 1033
 
 | section | range | bytes | covered | uncovered | coverage | ranges |
 | --- | --- | ---: | ---: | ---: | ---: | ---: |
 | `.init` | `0x1fbd0-0x1fbe7` | 23 | 0 | 23 | 0.00% | 0 |
 | `.plt` | `0x1fbf0-0x20bd0` | 4064 | 0 | 4064 | 0.00% | 0 |
 | `.plt.got` | `0x20bd0-0x20be0` | 16 | 0 | 16 | 0.00% | 0 |
-| `.text` | `0x20c00-0x583650` | 5646928 | 586393 | 5060535 | 10.38% | 4421 |
+| `.text` | `0x20c00-0x583650` | 5646928 | 588039 | 5058889 | 10.41% | 4454 |
 | `.fini` | `0x583650-0x583659` | 9 | 0 | 9 | 0.00% | 0 |
 
 ## Largest Uncovered Gaps
@@ -23,7 +23,7 @@ Compares executable ELF sections against native ranges already represented by re
 | --- | --- | ---: |
 | `.text` | `0x3ddc80-0x4353f8` | 358264 |
 | `.text` | `0x435467-0x488452` | 339947 |
-| `.text` | `0x24db08-0x28cb6f` | 258151 |
+| `.text` | `0x24db08-0x286264` | 231260 |
 | `.text` | `0x1268dc-0x15b5b2` | 216278 |
 | `.text` | `0x2da780-0x30d540` | 208320 |
 | `.text` | `0x36b11b-0x392b45` | 162346 |
@@ -36,10 +36,10 @@ Compares executable ELF sections against native ranges already represented by re
 | `.text` | `0x30d658-0x3275b6` | 106334 |
 | `.text` | `0xe519c-0xfeebc` | 105760 |
 | `.text` | `0x35148a-0x36afd2` | 105288 |
-| `.text` | `0x3a2739-0x3bc0e4` | 104875 |
 | `.text` | `0x218066-0x231586` | 103712 |
 | `.text` | `0x1cc001-0x1e15fc` | 87547 |
 | `.text` | `0x1e16e8-0x1f5d10` | 83496 |
+| `.text` | `0x3a9474-0x3bc0e4` | 76912 |
 | `.text` | `0x33f273-0x3513ff` | 74124 |
 | `.text` | `0x1f5e08-0x20792d` | 72485 |
 | `.text` | `0x3cc9ff-0x3ddb5d` | 69982 |
@@ -56,8 +56,8 @@ Compares executable ELF sections against native ranges already represented by re
 | `.text` | `0x330223-0x337d35` | 31506 |
 | `.text` | `0x2d2e69-0x2da6fc` | 30867 |
 | `.text` | `0xfefee-0x1060ab` | 28861 |
+| `.text` | `0x3a2739-0x3a940e` | 27861 |
+| `.text` | `0x2862cb-0x28cb6f` | 26788 |
 | `.text` | `0x15beec-0x161df6` | 24330 |
 | `.text` | `0x212547-0x217fac` | 23141 |
 | `.text` | `0xe0166-0xe50f4` | 20366 |
-| `.text` | `0x6c090-0x70f00` | 20080 |
-| `.text` | `0x530e56-0x535930` | 19162 |
