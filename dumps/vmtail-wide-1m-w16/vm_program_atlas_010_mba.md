@@ -2,7 +2,7 @@
 
 - Program range: `0x11c2aa`..`0x11de59`
 - Case states / blocks: `15`
-- IR rows captured: `0`
+- IR rows captured: `1823`
 - Runtime observations captured: `335` from `21` trace files
 - Case-start observations with concrete pre-state: `52`
 
