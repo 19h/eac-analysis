@@ -23,27 +23,22 @@ typedef struct VMNativeRetdecGapQueueRow {
 } VMNativeRetdecGapQueueRow;
 
 static const VMNativeRetdecGapQueueRow k_vm_native_retdec_gap_queue[] = {
-    { 1u, 0x62b92ull, 0x62d6dull, 475u, 238u, 237u, 5010u, "r2_discovered", "fcn.00062b92", 19u, 123u, 9u, "tier0_small_native_gap", "targeted_retdec_single_function", "0x62b92-0x62d6d" },
-    { 2u, 0x4b1ca0ull, 0x4b1e79ull, 473u, 240u, 233u, 5073u, "r2_discovered", "fcn.004b1ca0", 30u, 135u, 11u, "tier0_small_native_gap", "targeted_retdec_single_function", "0x4b1ca0-0x4b1e79" },
-    { 3u, 0x4ad2a0ull, 0x4ad440ull, 416u, 272u, 144u, 6538u, "r2_discovered", "fcn.004ad2a0", 27u, 119u, 5u, "tier0_small_native_gap", "targeted_retdec_single_function", "0x4ad2a0-0x4ad440" },
-    { 4u, 0x6b7a0ull, 0x6b8bbull, 283u, 267u, 16u, 9434u, "r2_discovered", "fcn.0006b7a0", 15u, 78u, 8u, "tier0_small_native_gap", "targeted_retdec_single_function", "0x6b7a0-0x6b8bb" },
-    { 5u, 0x57cf40ull, 0x57d4d7ull, 1431u, 0u, 1431u, 0u, "r2_discovered", "fcn.0057cf40", 99u, 399u, 29u, "tier1_medium_native_gap", "targeted_retdec_single_function", "0x57cf40-0x57d4d7" },
-    { 6u, 0x4d1510ull, 0x4d19b5ull, 1189u, 0u, 1189u, 0u, "r2_discovered", "fcn.004d1510", 50u, 294u, 15u, "tier1_medium_native_gap", "targeted_retdec_single_function", "0x4d1510-0x4d19b5" },
-    { 7u, 0x4b3910ull, 0x4b3cceull, 958u, 0u, 958u, 0u, "r2_discovered", "fcn.004b3910", 40u, 220u, 35u, "tier1_medium_native_gap", "targeted_retdec_single_function", "0x4b3910-0x4b3cce" },
-    { 8u, 0x4aa830ull, 0x4aab60ull, 816u, 0u, 816u, 0u, "r2_discovered", "fcn.004aa830", 32u, 194u, 13u, "tier1_medium_native_gap", "targeted_retdec_single_function", "0x4aa830-0x4aab60" },
-    { 9u, 0x415aeull, 0x418c6ull, 792u, 0u, 792u, 0u, "r2_discovered", "fcn.000415ae", 71u, 235u, 2u, "tier1_medium_native_gap", "targeted_retdec_single_function", "0x415ae-0x418c6" },
-    { 10u, 0x554b00ull, 0x554de0ull, 736u, 0u, 736u, 0u, "r2_discovered", "fcn.00554b00", 37u, 197u, 7u, "tier1_medium_native_gap", "targeted_retdec_single_function", "0x554b00-0x554de0" },
-    { 11u, 0x57c770ull, 0x57c987ull, 535u, 0u, 535u, 0u, "r2_discovered", "fcn.0057c770", 36u, 146u, 5u, "tier1_medium_native_gap", "targeted_retdec_single_function", "0x57c770-0x57c987" },
-    { 12u, 0x5790b0ull, 0x5792c3ull, 531u, 0u, 531u, 0u, "r2_discovered", "fcn.005790b0", 36u, 135u, 7u, "tier1_medium_native_gap", "targeted_retdec_single_function", "0x5790b0-0x5792c3" },
-    { 13u, 0x5bb9cull, 0x5bda0ull, 516u, 0u, 516u, 0u, "r2_discovered", "fcn.0005bb9c", 27u, 136u, 15u, "tier1_medium_native_gap", "targeted_retdec_single_function", "0x5bb9c-0x5bda0" },
-    { 14u, 0x4926daull, 0x49295cull, 642u, 429u, 213u, 6682u, "r2_discovered", "fcn.004926da", 27u, 153u, 12u, "tier1_medium_native_gap", "targeted_retdec_single_function", "0x4926da-0x49295c" },
-    { 15u, 0x4a4be0ull, 0x4a6a5eull, 7806u, 0u, 7806u, 0u, "r2_discovered", "fcn.004a4be0", 324u, 1681u, 95u, "tier2_large_native_gap", "targeted_retdec_with_timeout", "0x4a4be0-0x4a6a5e" },
-    { 16u, 0x3e19cull, 0x3f89full, 5891u, 207u, 5684u, 351u, "r2_discovered", "fcn.0003e19c", 468u, 1574u, 1u, "tier2_large_native_gap", "targeted_retdec_with_timeout", "0x3e19c-0x3f89f" },
+    { 1u, 0x6b7a0ull, 0x6b8bbull, 283u, 267u, 16u, 9434u, "r2_discovered", "fcn.0006b7a0", 15u, 78u, 8u, "tier0_small_native_gap", "targeted_retdec_single_function", "0x6b7a0-0x6b8bb" },
+    { 2u, 0x57cf40ull, 0x57d4d7ull, 1431u, 0u, 1431u, 0u, "r2_discovered", "fcn.0057cf40", 99u, 399u, 29u, "tier1_medium_native_gap", "targeted_retdec_single_function", "0x57cf40-0x57d4d7" },
+    { 3u, 0x4d1510ull, 0x4d19b5ull, 1189u, 0u, 1189u, 0u, "r2_discovered", "fcn.004d1510", 50u, 294u, 15u, "tier1_medium_native_gap", "targeted_retdec_single_function", "0x4d1510-0x4d19b5" },
+    { 4u, 0x4b3910ull, 0x4b3cceull, 958u, 0u, 958u, 0u, "r2_discovered", "fcn.004b3910", 40u, 220u, 35u, "tier1_medium_native_gap", "targeted_retdec_single_function", "0x4b3910-0x4b3cce" },
+    { 5u, 0x4aa830ull, 0x4aab60ull, 816u, 416u, 400u, 5098u, "r2_discovered", "fcn.004aa830", 32u, 194u, 13u, "tier1_medium_native_gap", "targeted_retdec_single_function", "0x4aa830-0x4aab60" },
+    { 6u, 0x415aeull, 0x418c6ull, 792u, 402u, 390u, 5075u, "r2_discovered", "fcn.000415ae", 71u, 235u, 2u, "tier1_medium_native_gap", "targeted_retdec_single_function", "0x415ae-0x418c6" },
+    { 7u, 0x554b00ull, 0x554de0ull, 736u, 368u, 368u, 5000u, "r2_discovered", "fcn.00554b00", 37u, 197u, 7u, "tier1_medium_native_gap", "targeted_retdec_single_function", "0x554b00-0x554de0" },
+    { 8u, 0x57c770ull, 0x57c987ull, 535u, 416u, 119u, 7775u, "r2_discovered", "fcn.0057c770", 36u, 146u, 5u, "tier1_medium_native_gap", "targeted_retdec_single_function", "0x57c770-0x57c987" },
+    { 9u, 0x4926daull, 0x49295cull, 642u, 641u, 1u, 9984u, "r2_discovered", "fcn.004926da", 27u, 153u, 12u, "tier1_medium_native_gap", "targeted_retdec_single_function", "0x4926da-0x49295c" },
+    { 10u, 0x4a4be0ull, 0x4a6a5eull, 7806u, 0u, 7806u, 0u, "r2_discovered", "fcn.004a4be0", 324u, 1681u, 95u, "tier2_large_native_gap", "targeted_retdec_with_timeout", "0x4a4be0-0x4a6a5e" },
+    { 11u, 0x3e19cull, 0x3f89full, 5891u, 207u, 5684u, 351u, "r2_discovered", "fcn.0003e19c", 468u, 1574u, 1u, "tier2_large_native_gap", "targeted_retdec_with_timeout", "0x3e19c-0x3f89f" },
 };
 
 static unsigned vm_native_retdec_gap_queue_count(void) {
     return (unsigned)(sizeof(k_vm_native_retdec_gap_queue) / sizeof(k_vm_native_retdec_gap_queue[0]));
 }
 
-_Static_assert(sizeof(k_vm_native_retdec_gap_queue) / sizeof(k_vm_native_retdec_gap_queue[0]) == 16u,
+_Static_assert(sizeof(k_vm_native_retdec_gap_queue) / sizeof(k_vm_native_retdec_gap_queue[0]) == 11u,
                "native RetDec gap queue count changed");
