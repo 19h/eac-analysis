@@ -328,6 +328,7 @@ def main():
     print("int feof();")
     print("int fseek(void *stream, long offset, int whence);")
     print("long ftell(void *stream);")
+    print("int putc(int c, void *stream);")
     print("int ungetc(int c, void *stream);")
     print("int fflush(void *stream);")
     print("int setvbuf(void *stream, char *buf, int mode, size_t size);")
