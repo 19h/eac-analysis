@@ -133,13 +133,21 @@ def main() -> int:
         for row in read_tsv(args.root / "vm_bytecode_basic_block_edges.tsv")
         if row.get("source_block") in block_by_id
     }
+    def block_for_ip(ip_text: str) -> str:
+        ip = parse_int(ip_text)
+        for block in blocks:
+            if parse_int(block["start_vm_ip"]) <= ip < parse_int(block["byte_end_min"]):
+                return block["block"]
+        return ""
+
     ir_rows = [
-        row for row in read_tsv(args.root / "vm_bytecode_ir_decompile.tsv")
-        if row.get("source_block", "").split("@", 1)[0] in block_by_id
+        {**row, "_block": block_for_ip(row.get("start_vm_ip", "0"))}
+        for row in read_tsv(args.root / "vm_bytecode_ir_decompile.tsv")
+        if start <= parse_int(row.get("start_vm_ip", "0")) < end
     ]
     ir_by_block: dict[str, list[dict[str, str]]] = defaultdict(list)
     for row in ir_rows:
-        ir_by_block[row["source_block"].split("@", 1)[0]].append(row)
+        ir_by_block[row["_block"]].append(row)
 
     elf = args.elf.read_bytes()
     observations = collect_trace_observations(trace_paths(), case_starts)
@@ -230,7 +238,7 @@ def main() -> int:
     ]
     ir_out = []
     for row in ir_rows:
-        block = row.get("source_block", "").split("@", 1)[0]
+        block = row.get("_block", "")
         ir_out.append({"block": block, **{field: row.get(field, "") for field in ir_fields if field != "block"}})
 
     observation_fields = [
