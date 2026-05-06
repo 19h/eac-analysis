@@ -208,9 +208,14 @@ def string_ref_counts(manifest: Path, output_dir: Path) -> dict[str, int | bool]
     }
 
 
-def mba_reduction_counts(root: Path) -> dict[str, int | bool]:
+def mba_reduction_counts(root: Path, split_manifest: Path) -> dict[str, int | bool]:
     requirement_files = sorted(root.glob("vm_program_atlas_*_mba_requirements.tsv"))
     reduced_files = sorted(root.glob("vm_program_atlas_*_mba_reduced.c"))
+    expected_programs = set()
+    if split_manifest.exists():
+        with split_manifest.open(newline="") as handle:
+            for row in csv.DictReader(handle, delimiter="\t"):
+                expected_programs.add(f"{int(row.get('program', '0')):03d}")
     total_cases = 0
     ready_cases = 0
     missing_cases = 0
@@ -227,8 +232,10 @@ def mba_reduction_counts(root: Path) -> dict[str, int | bool]:
                 else:
                     missing_cases += 1
     return {
+        "expected_programs": len(expected_programs),
         "programs_with_requirements": len(programs),
         "reduced_c_files": len(reduced_files),
+        "missing_programs": len(expected_programs - programs),
         "total_cases": total_cases,
         "ready_cases": ready_cases,
         "missing_cases": missing_cases,
@@ -453,11 +460,18 @@ def main() -> int:
             f"rows={ref_counts['rows']} programs_with_refs={ref_counts['programs_with_refs']} count_mismatches={ref_counts['count_mismatches']} invalid_sources={ref_counts['invalid_sources']}",
         )
 
-    mba_counts = mba_reduction_counts(root)
+    mba_counts = mba_reduction_counts(root, program_split_manifest)
     ok &= check(
         "program_mba_reduction_artifacts_present",
         mba_counts["programs_with_requirements"] > 0 and mba_counts["reduced_c_files"] > 0,
-        f"programs_with_requirements={mba_counts['programs_with_requirements']} reduced_c_files={mba_counts['reduced_c_files']}",
+        f"programs_with_requirements={mba_counts['programs_with_requirements']} reduced_c_files={mba_counts['reduced_c_files']} expected_programs={mba_counts['expected_programs']}",
+    )
+    ok &= check(
+        "program_mba_reduction_covers_all_split_programs",
+        mba_counts["expected_programs"] > 0
+        and mba_counts["programs_with_requirements"] == mba_counts["expected_programs"]
+        and mba_counts["reduced_c_files"] == mba_counts["expected_programs"],
+        f"programs_with_requirements={mba_counts['programs_with_requirements']} reduced_c_files={mba_counts['reduced_c_files']} expected_programs={mba_counts['expected_programs']} missing_programs={mba_counts['missing_programs']}",
     )
     ok &= check(
         "program_mba_reduction_has_no_missing_cases",
@@ -481,6 +495,8 @@ def main() -> int:
         print(f"incomplete_reason=remaining executable semantics: text_uncovered_bytes={text_uncovered} audit_gap_bytes={gap_bytes}")
     if mba_counts["missing_cases"] != 0:
         print(f"incomplete_reason=remaining VM program MBA reduction cases: missing_cases={mba_counts['missing_cases']} ready_cases={mba_counts['ready_cases']} total_cases={mba_counts['total_cases']}")
+    if mba_counts["missing_programs"] != 0:
+        print(f"incomplete_reason=remaining VM programs without MBA/readability reduction artifacts: missing_programs={mba_counts['missing_programs']} expected_programs={mba_counts['expected_programs']} programs_with_requirements={mba_counts['programs_with_requirements']}")
     print(f"completion_status={'complete' if complete else 'not_complete'}")
     if args.fail_if_incomplete and not complete:
         return 1
