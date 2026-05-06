@@ -4,31 +4,23 @@ Compares executable ELF sections against native ranges already represented by re
 
 - executable sections: 5
 - executable bytes: 5651040
-- recovered executable bytes: 2584438
-- uncovered executable bytes: 3066602
-- recovered range rows: 30347
-- uncovered gaps: 2823
+- recovered executable bytes: 2599542
+- uncovered executable bytes: 3051498
+- recovered range rows: 30537
+- uncovered gaps: 2829
 
 | section | range | bytes | covered | uncovered | coverage | ranges |
 | --- | --- | ---: | ---: | ---: | ---: | ---: |
 | `.init` | `0x1fbd0-0x1fbe7` | 23 | 23 | 0 | 100.00% | 1 |
 | `.plt` | `0x1fbf0-0x20bd0` | 4064 | 4064 | 0 | 100.00% | 254 |
 | `.plt.got` | `0x20bd0-0x20be0` | 16 | 16 | 0 | 100.00% | 2 |
-| `.text` | `0x20c00-0x583650` | 5646928 | 2580326 | 3066602 | 45.69% | 30087 |
+| `.text` | `0x20c00-0x583650` | 5646928 | 2595430 | 3051498 | 45.96% | 30277 |
 | `.fini` | `0x583650-0x583659` | 9 | 9 | 0 | 100.00% | 3 |
 
 ## Largest Uncovered Gaps
 
 | section | range | bytes |
 | --- | --- | ---: |
-| `.text` | `0x449925-0x44f040` | 22299 |
-| `.text` | `0x400ed1-0x4065ad` | 22236 |
-| `.text` | `0x42361f-0x428ce3` | 22212 |
-| `.text` | `0x27f2ee-0x28494c` | 22110 |
-| `.text` | `0x1f06e8-0x1f5d10` | 22056 |
-| `.text` | `0x3455d8-0x34abc6` | 21998 |
-| `.text` | `0x1145bf-0x119b8e` | 21967 |
-| `.text` | `0x51cbc0-0x522120` | 21856 |
 | `.text` | `0x277641-0x27cb8e` | 21837 |
 | `.text` | `0x243218-0x248752` | 21818 |
 | `.text` | `0x3e9496-0x3ee99a` | 21764 |
@@ -61,3 +53,11 @@ Compares executable ELF sections against native ranges already represented by re
 | `.text` | `0x121746-0x126851` | 20747 |
 | `.text` | `0x35ffbe-0x3650ab` | 20717 |
 | `.text` | `0x156513-0x15b5b2` | 20639 |
+| `.text` | `0x2d2e69-0x2d7efd` | 20628 |
+| `.text` | `0x2dc10e-0x2e117a` | 20588 |
+| `.text` | `0x381330-0x386394` | 20580 |
+| `.text` | `0x27f8ee-0x28494c` | 20574 |
+| `.text` | `0x467434-0x46c45b` | 20519 |
+| `.text` | `0x36fd1b-0x374d29` | 20494 |
+| `.text` | `0x4df9f9-0x4e49f9` | 20480 |
+| `.text` | `0x38d0a0-0x392091` | 20465 |
