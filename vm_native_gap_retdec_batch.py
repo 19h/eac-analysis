@@ -933,6 +933,7 @@ def main():
     print("uint64_t __readgsqword(int64_t offset);")
     print("void __writefsbyte(int64_t offset, uint8_t value);")
     print("void __writegsbyte(int64_t offset, uint8_t value);")
+    print("void __writegsdword(int64_t offset, uint32_t value);")
     print("int64_t __asm_iretd();")
     print("int64_t __asm_sti();")
     print("int64_t unknown_34e4aca1(int64_t value);")
