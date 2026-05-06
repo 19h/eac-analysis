@@ -72,6 +72,7 @@ ARTIFACTS = [
     ("native_gap_retdec_batch41", TRACE_DIR / "vm_native_gap_retdec_batch41.c"),
     ("native_gap_retdec_batch42", TRACE_DIR / "vm_native_gap_retdec_batch42.c"),
     ("native_gap_retdec_batch43", TRACE_DIR / "vm_native_gap_retdec_batch43.c"),
+    ("native_gap_retdec_batch44", TRACE_DIR / "vm_native_gap_retdec_batch44.c"),
     ("direct_blocks_top", TRACE_DIR / "vm_pseudocode_top.c"),
     ("program_blocks_top", TRACE_DIR / "vm_program_pseudocode_top.c"),
     ("program_blocks_full", TRACE_DIR / "vm_program_pseudocode_full.c"),
@@ -373,6 +374,7 @@ def c_shape_metrics(rows):
     native_gap_retdec_batch41 = read_text(TRACE_DIR / "vm_native_gap_retdec_batch41.c")
     native_gap_retdec_batch42 = read_text(TRACE_DIR / "vm_native_gap_retdec_batch42.c")
     native_gap_retdec_batch43 = read_text(TRACE_DIR / "vm_native_gap_retdec_batch43.c")
+    native_gap_retdec_batch44 = read_text(TRACE_DIR / "vm_native_gap_retdec_batch44.c")
     binary_data_sections = read_text(TRACE_DIR / "vm_binary_data_sections.c")
     binary_data_sections_index = read_tsv(TRACE_DIR / "vm_binary_data_sections.tsv")
     binary_data_string_rows = [row for row in binary_data_sections_index if row.get("kind", "") == "string"]
