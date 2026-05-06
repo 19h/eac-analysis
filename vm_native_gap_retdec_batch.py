@@ -935,6 +935,8 @@ def main():
     print("int64_t syscall(int64_t number, ...);")
     print("int mprotect(void *addr, size_t len, int prot);")
     print("int __fxstat64(int ver, int fd, struct stat64 *buf);")
+    print("int fseeko64(struct _IO_FILE *stream, int64_t offset, int whence);")
+    print("int64_t ftello64(struct _IO_FILE *stream);")
     print("int64_t lseek64(int fd, int64_t offset, int whence);")
     print("int32_t *__errno_location(void);")
     print("int connect(int sockfd, const struct sockaddr *addr, int32_t addrlen);")
