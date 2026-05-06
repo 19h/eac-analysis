@@ -356,6 +356,7 @@ int64_t signal(int signum, int64_t handler);
 unsigned int alarm(unsigned int seconds);
 int fcntl(int fd, int cmd, ...);
 int32_t write(int fd, const void *buf, size_t nbyte);
+int ftruncate(int fd, int64_t length);
 int writev(int fd, const struct iovec *iov, int iovcnt);
 int epoll_create(int size);
 int epoll_ctl(int epfd, int op, int fd, struct epoll_event *event);
@@ -369,6 +370,7 @@ int clock_gettime(int clk_id, struct timespec *tp);
 int64_t sysconf(int name);
 int64_t syscall(int64_t number, ...);
 int mprotect(void *addr, size_t len, int prot);
+int memfd_create(void *name, unsigned int flags);
 void *mmap(void *addr, size_t len, int prot, int flags, int fd, int64_t offset);
 int munmap(void *addr, size_t len);
 int __xstat(int ver, const char *path, struct stat *buf);
@@ -712,14 +714,14 @@ int64_t function_3c371(uint64_t a1, int64_t a2) {
                 v10 = v12;
             }
             while (v7 != 0 && v6 - v7 <= (int64_t)&g2) {
-                int64_t v13 = v7 != (int64_t)&g92 ? v7 - (int64_t)&g92 : 0;
-                int64_t v14 = v6 - v13; // 0x3c3d6
-                if (v14 < (int64_t)&g1) {
+                // 0x3c957
+                v7 -= (int64_t)&g92;
+                int64_t v13 = v6 - v7; // 0x3c3d6
+                if (v13 < (int64_t)&g1) {
                     // break -> 0x3c974
                     break;
                 }
-                v7 = v13;
-                v8 = v14;
+                v8 = v13;
                 v9 = v8 < (int64_t)&g1 ? v8 : (int64_t)&g1;
                 v10 = 0x100000000 * v9 - 0x400000000 >> 32;
                 while (v10 >= 0) {

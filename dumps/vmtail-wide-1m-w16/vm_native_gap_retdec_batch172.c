@@ -320,6 +320,7 @@ int64_t signal(int signum, int64_t handler);
 unsigned int alarm(unsigned int seconds);
 int fcntl(int fd, int cmd, ...);
 int32_t write(int fd, const void *buf, size_t nbyte);
+int ftruncate(int fd, int64_t length);
 int writev(int fd, const struct iovec *iov, int iovcnt);
 int epoll_create(int size);
 int epoll_ctl(int epfd, int op, int fd, struct epoll_event *event);
@@ -333,6 +334,7 @@ int clock_gettime(int clk_id, struct timespec *tp);
 int64_t sysconf(int name);
 int64_t syscall(int64_t number, ...);
 int mprotect(void *addr, size_t len, int prot);
+int memfd_create(void *name, unsigned int flags);
 void *mmap(void *addr, size_t len, int prot, int flags, int fd, int64_t offset);
 int munmap(void *addr, size_t len);
 int __xstat(int ver, const char *path, struct stat *buf);
@@ -1519,7 +1521,7 @@ int64_t function_4d3530(int64_t a1, uint64_t a2, int64_t a3, uint64_t a4, int64_
     uint64_t v7 = function_4c1d00(v2) % 256; // 0x4d35e0
     int64_t v8 = v7 < 33 ? 64 : 128; // 0x4d35fe
     int64_t v9; // bp-568, 0x4d3530
-    memset2((void *)(int64_t)(&v9), (int32_t, 0)a8, (int32_t)v8);
+    memset((void *)(int64_t)(&v9), (int32_t)a8, (int32_t)v8);
     int64_t v10; // bp-440, 0x4d3530
     int64_t v11 = (int64_t)&v10; // 0x4d3619
     int64_t v12 = v11; // 0x4d362d
