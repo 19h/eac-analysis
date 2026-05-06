@@ -178,6 +178,7 @@ int64_t lseek64(int fd, int64_t offset, int whence);
 int32_t *__errno_location(void);
 int connect(int sockfd, const struct sockaddr *addr, int32_t addrlen);
 int getsockopt(int sockfd, int level, int optname, void *optval, int32_t *optlen);
+int setsockopt(int sockfd, int level, int optname, const void *optval, int32_t optlen);
 int getaddrinfo(const char *node, const char *service, const struct addrinfo *hints, struct addrinfo **res);
 void freeaddrinfo(struct addrinfo *res);
 int64_t readlink(const char *path, char *buf, size_t bufsiz);
