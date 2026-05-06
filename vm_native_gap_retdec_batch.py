@@ -988,6 +988,7 @@ def main():
     print("int64_t __asm_mfence();")
     print("void __asm_pause(void);")
     print("int64_t __asm_rsm(void);")
+    print("int64_t __asm_sldt(void);")
     print("int64_t __asm_wait(...);")
     print("void __asm_fbld(float80_t value);")
     print("float80_t __asm_fbstp(float80_t value);")
