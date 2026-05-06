@@ -944,6 +944,7 @@ def main():
     print("void __frontend_reg_store_fpr(int32_t reg, float80_t value);")
     print("char *__nl_langinfo_l(int32_t item, struct __locale_struct *locale);")
     print("struct __locale_struct *__newlocale(int category_mask, const char *locale, struct __locale_struct *base);")
+    print("void __freelocale(struct __locale_struct *locale);")
     print("struct __locale_struct *__uselocale(struct __locale_struct *locale);")
     print("float32_t __strtof_l(const char *nptr, char **endptr, struct __locale_struct *locale);")
     print("float64_t __strtod_l(const char *nptr, char **endptr, struct __locale_struct *locale);")
