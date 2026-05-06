@@ -1,12 +1,12 @@
 /*
- * Targeted RetDec C for native executable gap queue batch 3865.
+ * Targeted RetDec C for native executable gap queue batch 3877.
  *
  * This batch is fixed from the ranked native gap queue so it can feed the
  * executable coverage audit without creating a Make dependency cycle:
  * coverage -> queue -> RetDec batch -> coverage.
  *
  * Ranges:
- *   0x581ef8-0x581fa0 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x2abe75-0x2abef5 rank=- name=- kind=- bytes=- uncovered=-
  */
 #include <stdbool.h>
 #include <stdio.h>
@@ -52,6 +52,7 @@ struct eac_retdec_cpuid_regs { uint32_t e0; uint32_t e1; uint32_t e2; uint32_t e
 #define SIGALARM 14
 #define SYS_getegid32 50
 #define PTHREAD_MUTEX_RECURSIVE 1
+extern int g2;
 int64_t entry_point();
 unsigned char llvm_ctpop_i8(unsigned char value);
 uint16_t llvm_bswap_i16(uint16_t value);
@@ -364,53 +365,46 @@ void _Unwind_SetIP(int64_t context, int64_t value);
 void _Unwind_Resume(struct _Unwind_Exception *exception);
 void _Unwind_Resume_or_Rethrow(int64_t exception);
 
-int64_t function_581610();
-int64_t function_581ef8(int64_t a1, int64_t a2, int64_t a3, int64_t a4, int64_t a5, int64_t a6, int64_t a7, int64_t a8, int64_t a9, int64_t a10);
-int64_t function_581f88(void);
-int64_t function_581f90(void);
+int64_t function_2abe75(int64_t a1, int64_t a2, int64_t a3, int64_t a4, int64_t a5, int64_t a6);
+int64_t function_2abecf(void);
+int64_t function_2abed6(int64_t a1, int64_t a2, int64_t a3);
+int64_t unknown_ffffffffbb614796();
 
-// Address range: 0x581ef8 - 0x581f84
-int64_t function_581ef8(int64_t a1, int64_t a2, int64_t a3, int64_t a4, int64_t a5, int64_t a6, int64_t a7, int64_t a8, int64_t a9, int64_t a10) {
-    // 0x581ef8
-    int64_t v1; // 0x581ef8
-    int64_t v2 = v1;
-    *(int32_t *)v2 = 2 * (int32_t)v2;
-    int64_t v3; // 0x581ef8
-    *(char *)a4 = *(char *)&v3 + (char)v2;
-    int64_t * v4 = (int64_t *)(v1 + 256); // 0x581f08
-    *v4 = 1;
-    *(char *)v1 = 40;
-    char * v5 = (char *)(v1 + 264); // 0x581f13
-    *v5 = 40;
-    function_581610(v1, v1 & 0xffffffff, *(int64_t *)(v1 + 16));
-    int64_t v6 = *v4; // 0x581f25
-    int64_t result = v6; // 0x581f36
-    int64_t v7 = v6 + 1; // 0x581f36
-    if (v6 == 255) {
-        // 0x581f38
-        *(char *)(v1 + 255) = 0;
-        int64_t * v8 = (int64_t *)(v1 + 320); // 0x581f54
-        *v8 = *v8 + 1;
-        result = 0;
-        v7 = 1;
-    }
-    // 0x581f63
-    *v4 = v7;
-    *(char *)(result + v1) = 41;
-    *v5 = 41;
+// Address range: 0x2abe75 - 0x2abeaa
+int64_t function_2abe75(int64_t a1, int64_t a2, int64_t a3, int64_t a4, int64_t a5, int64_t a6) {
+    // 0x2abe75
+    int64_t v1; // 0x2abe75
+    bool v2; // 0x2abe75
+    int64_t v3 = a3 - v1 + (int64_t)v2; // 0x2abe75
+    int64_t v4 = v1 + 0x16665e0f; // 0x2abe78
+    int32_t * v5 = (int32_t *)((256 * v4 & 0xff00 | a4) + 121 + (v3 & 0xffffffff)); // 0x2abe82
+    *v5 = *v5 + (int32_t)v4;
+    char * v6 = (char *)(a1 - 0x3125f96f); // 0x2abe86
+    *v6 = *v6 + (char)v1;
+    int64_t v7 = unknown_ffffffffbb614796(); // 0x2abe90
+    int32_t v8 = a1; // 0x2abea2
+    *(int32_t *)-0x177cc457 = *(int32_t *)-0x177cc457 + v8;
+    int32_t * v9 = (int32_t *)(v3 & 0xffff00ff | (int64_t)&g2); // 0x2abea8
+    *v9 = *v9 + v8;
+    return (int32_t)v7 / 2 + (int32_t)v1;
+}
+
+// Address range: 0x2abecf - 0x2abed2
+int64_t function_2abecf(void) {
+    // 0x2abecf
+    int64_t result; // 0x2abecf
     return result;
 }
 
-// Address range: 0x581f88 - 0x581f8e
-int64_t function_581f88(void) {
-    // 0x581f88
-    int64_t result; // 0x581f88
-    return result;
-}
-
-// Address range: 0x581f90 - 0x581f95
-int64_t function_581f90(void) {
-    // 0x581f90
-    int64_t v1; // 0x581f90
-    return function_581610(v1, v1, v1);
+// Address range: 0x2abed6 - 0x2abef3
+int64_t function_2abed6(int64_t a1, int64_t a2, int64_t a3) {
+    int64_t v1 = a3;
+    unsigned char v2 = (char)a2;
+    int64_t v3; // 0x2abed6
+    unsigned char v4 = (char)v3; // 0x2abedd
+    *(char *)a2 = v2 - v4;
+    int32_t v5 = *(int32_t *)(v3 - 0x5222a207); // 0x2abee6
+    unsigned char v6 = *(char *)(int64_t)((int32_t)(v2 < v4) + (int32_t)a2 - v5); // 0x2abeec
+    *(int32_t *)v1 = *(int32_t *)&v1 + 0x50fec300;
+    return v3 & -256 | (int64_t)v6;
 }

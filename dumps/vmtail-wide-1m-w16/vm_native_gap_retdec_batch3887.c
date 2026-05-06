@@ -1,12 +1,12 @@
 /*
- * Targeted RetDec C for native executable gap queue batch 3865.
+ * Targeted RetDec C for native executable gap queue batch 3887.
  *
  * This batch is fixed from the ranked native gap queue so it can feed the
  * executable coverage audit without creating a Make dependency cycle:
  * coverage -> queue -> RetDec batch -> coverage.
  *
  * Ranges:
- *   0x581ef8-0x581fa0 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x4191c0-0x419240 rank=- name=- kind=- bytes=- uncovered=-
  */
 #include <stdbool.h>
 #include <stdio.h>
@@ -364,53 +364,61 @@ void _Unwind_SetIP(int64_t context, int64_t value);
 void _Unwind_Resume(struct _Unwind_Exception *exception);
 void _Unwind_Resume_or_Rethrow(int64_t exception);
 
-int64_t function_581610();
-int64_t function_581ef8(int64_t a1, int64_t a2, int64_t a3, int64_t a4, int64_t a5, int64_t a6, int64_t a7, int64_t a8, int64_t a9, int64_t a10);
-int64_t function_581f88(void);
-int64_t function_581f90(void);
+int64_t function_4191b3();
+int64_t function_4191c0(int64_t a1, int64_t a2, int64_t a3, int64_t a4, int64_t a5, int64_t a6, int64_t a7);
+int64_t function_419204(void);
+int64_t function_419209(int64_t a1, int64_t a2, int64_t a3, int64_t a4, int64_t a5, int64_t a6, int64_t a7);
 
-// Address range: 0x581ef8 - 0x581f84
-int64_t function_581ef8(int64_t a1, int64_t a2, int64_t a3, int64_t a4, int64_t a5, int64_t a6, int64_t a7, int64_t a8, int64_t a9, int64_t a10) {
-    // 0x581ef8
-    int64_t v1; // 0x581ef8
-    int64_t v2 = v1;
-    *(int32_t *)v2 = 2 * (int32_t)v2;
-    int64_t v3; // 0x581ef8
-    *(char *)a4 = *(char *)&v3 + (char)v2;
-    int64_t * v4 = (int64_t *)(v1 + 256); // 0x581f08
-    *v4 = 1;
-    *(char *)v1 = 40;
-    char * v5 = (char *)(v1 + 264); // 0x581f13
-    *v5 = 40;
-    function_581610(v1, v1 & 0xffffffff, *(int64_t *)(v1 + 16));
-    int64_t v6 = *v4; // 0x581f25
-    int64_t result = v6; // 0x581f36
-    int64_t v7 = v6 + 1; // 0x581f36
-    if (v6 == 255) {
-        // 0x581f38
-        *(char *)(v1 + 255) = 0;
-        int64_t * v8 = (int64_t *)(v1 + 320); // 0x581f54
-        *v8 = *v8 + 1;
-        result = 0;
-        v7 = 1;
+// Address range: 0x4191c0 - 0x4191f1
+int64_t function_4191c0(int64_t a1, int64_t a2, int64_t a3, int64_t a4, int64_t a5, int64_t a6, int64_t a7) {
+    // 0x4191c0
+    int64_t v1; // 0x4191c0
+    unsigned char v2 = (char)v1; // 0x4191c5
+    unsigned char v3 = *(char *)(a1 + 0xcf40451); // 0x4191c5
+    int64_t v4; // 0x4191c0
+    if (llvm_ctpop_i8(v2 - v3) % 2 == 0) {
+        v4 = function_4191b3();
     }
-    // 0x581f63
-    *v4 = v7;
-    *(char *)(result + v1) = 41;
-    *v5 = 41;
+    int64_t result = v4; // 0x4191d2
+    if ((int32_t)(v3 > v2) + (int32_t)a3 + (int32_t)v4 < 0) {
+        // 0x4191d4
+        result = __asm_iretd() & -0x7201;
+    }
+    // 0x4191ec
     return result;
 }
 
-// Address range: 0x581f88 - 0x581f8e
-int64_t function_581f88(void) {
-    // 0x581f88
-    int64_t result; // 0x581f88
+// Address range: 0x419204 - 0x419205
+int64_t function_419204(void) {
+    // 0x419204
+    int64_t result; // 0x419204
     return result;
 }
 
-// Address range: 0x581f90 - 0x581f95
-int64_t function_581f90(void) {
-    // 0x581f90
-    int64_t v1; // 0x581f90
-    return function_581610(v1, v1, v1);
+// Address range: 0x419209 - 0x41922b
+int64_t function_419209(int64_t a1, int64_t a2, int64_t a3, int64_t a4, int64_t a5, int64_t a6, int64_t a7) {
+    // 0x419209
+    int64_t v1; // 0x419209
+    int64_t result = v1 & -256 | (uint64_t)v1 % 256; // 0x419209
+    bool v2; // 0x419209
+    if (v2) {
+        // 0x41925b
+        return result;
+    }
+    int64_t v3 = (v2 ? -1 : 1) + a2; // 0x419209
+    char v4 = v1 / 256 | a3; // 0x41920c
+    int16_t v5 = a3; // 0x41920e
+    __asm_outsd(v5, *(int32_t *)v3);
+    if (v4 >= 0 == (v4 != 0)) {
+        // 0x41925b
+        return result;
+    }
+    // 0x419212
+    __asm_outsb(v5, *(char *)v3);
+    if ((*(char *)(4 * v1 + 0x143a5dd3) || v4) < 0) {
+        // 0x41924b
+        return result + 0xef79887b & 0xffffffff;
+    }
+    // 0x419223
+    return function_419204();
 }

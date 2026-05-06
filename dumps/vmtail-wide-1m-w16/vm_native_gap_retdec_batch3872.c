@@ -1,12 +1,12 @@
 /*
- * Targeted RetDec C for native executable gap queue batch 3865.
+ * Targeted RetDec C for native executable gap queue batch 3872.
  *
  * This batch is fixed from the ranked native gap queue so it can feed the
  * executable coverage audit without creating a Make dependency cycle:
  * coverage -> queue -> RetDec batch -> coverage.
  *
  * Ranges:
- *   0x581ef8-0x581fa0 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x121d46-0x121dc6 rank=- name=- kind=- bytes=- uncovered=-
  */
 #include <stdbool.h>
 #include <stdio.h>
@@ -364,53 +364,82 @@ void _Unwind_SetIP(int64_t context, int64_t value);
 void _Unwind_Resume(struct _Unwind_Exception *exception);
 void _Unwind_Resume_or_Rethrow(int64_t exception);
 
-int64_t function_581610();
-int64_t function_581ef8(int64_t a1, int64_t a2, int64_t a3, int64_t a4, int64_t a5, int64_t a6, int64_t a7, int64_t a8, int64_t a9, int64_t a10);
-int64_t function_581f88(void);
-int64_t function_581f90(void);
+int64_t function_121d46(int64_t a1, int64_t a2, int64_t a3, int64_t a4, int64_t a5);
+int64_t function_121d56(int64_t a1, int64_t a2, int64_t a3, int64_t a4);
+int64_t function_121d82(void);
+int64_t function_121d9f(void);
+int64_t function_121da7(int64_t a1, int64_t a2, uint64_t a3, int64_t a4);
 
-// Address range: 0x581ef8 - 0x581f84
-int64_t function_581ef8(int64_t a1, int64_t a2, int64_t a3, int64_t a4, int64_t a5, int64_t a6, int64_t a7, int64_t a8, int64_t a9, int64_t a10) {
-    // 0x581ef8
-    int64_t v1; // 0x581ef8
-    int64_t v2 = v1;
-    *(int32_t *)v2 = 2 * (int32_t)v2;
-    int64_t v3; // 0x581ef8
-    *(char *)a4 = *(char *)&v3 + (char)v2;
-    int64_t * v4 = (int64_t *)(v1 + 256); // 0x581f08
-    *v4 = 1;
-    *(char *)v1 = 40;
-    char * v5 = (char *)(v1 + 264); // 0x581f13
-    *v5 = 40;
-    function_581610(v1, v1 & 0xffffffff, *(int64_t *)(v1 + 16));
-    int64_t v6 = *v4; // 0x581f25
-    int64_t result = v6; // 0x581f36
-    int64_t v7 = v6 + 1; // 0x581f36
-    if (v6 == 255) {
-        // 0x581f38
-        *(char *)(v1 + 255) = 0;
-        int64_t * v8 = (int64_t *)(v1 + 320); // 0x581f54
-        *v8 = *v8 + 1;
-        result = 0;
-        v7 = 1;
+// Address range: 0x121d46 - 0x121d51
+int64_t function_121d46(int64_t a1, int64_t a2, int64_t a3, int64_t a4, int64_t a5) {
+    // 0x121d46
+    int64_t result; // 0x121d46
+    int32_t * v1 = (int32_t *)(result - 0x22c0c559); // 0x121d46
+    *v1 = *v1 + (int32_t)result;
+    return result;
+}
+
+// Address range: 0x121d56 - 0x121d6b
+int64_t function_121d56(int64_t a1, int64_t a2, int64_t a3, int64_t a4) {
+    int64_t v1 = a1;
+    uint32_t v2 = (int32_t)a4; // 0x121d5b
+    uint32_t v3 = v2 % 32; // 0x121d5b
+    int64_t v4; // 0x121d56
+    int32_t v5; // 0x121d56
+    int64_t result; // 0x121d56
+    if (v3 == 0) {
+        // 0x121d56
+        v4 = a1;
+        v5 = a1;
+    } else {
+        uint32_t v6 = (int32_t)result;
+        *(int32_t *)result = v6 >> 32 - v3 | v6 << v3;
+        v4 = v1;
+        v5 = *(int32_t *)&v1;
     }
-    // 0x581f63
-    *v4 = v7;
-    *(char *)(result + v1) = 41;
-    *v5 = 41;
+    *(int32_t *)v4 = v5 + v2;
     return result;
 }
 
-// Address range: 0x581f88 - 0x581f8e
-int64_t function_581f88(void) {
-    // 0x581f88
-    int64_t result; // 0x581f88
+// Address range: 0x121d82 - 0x121d83
+int64_t function_121d82(void) {
+    // 0x121d82
+    int64_t result; // 0x121d82
     return result;
 }
 
-// Address range: 0x581f90 - 0x581f95
-int64_t function_581f90(void) {
-    // 0x581f90
-    int64_t v1; // 0x581f90
-    return function_581610(v1, v1, v1);
+// Address range: 0x121d9f - 0x121da0
+int64_t function_121d9f(void) {
+    // 0x121d9f
+    int64_t result; // 0x121d9f
+    return result;
+}
+
+// Address range: 0x121da7 - 0x121dbb
+int64_t function_121da7(int64_t a1, int64_t a2, uint64_t a3, int64_t a4) {
+    int64_t v1 = a4;
+    int32_t * v2 = (int32_t *)(a3 + 23); // 0x121da7
+    int32_t v3 = *v2; // 0x121da7
+    int32_t v4 = a4; // 0x121da7
+    int32_t v5 = v3 - v4; // 0x121da7
+    *v2 = v5;
+    int64_t v6; // 0x121da7
+    if (((v5 ^ v3) & (v3 ^ v4)) < 0) {
+        v6 = function_121d9f();
+    }
+    int16_t v7 = a3; // 0x121dac
+    __asm_out(v7, (int32_t)v6);
+    *(int32_t *)a1 = __asm_insd(v7);
+    int64_t result = v6; // 0x121db2
+    if (((v5 ^ v3) & (v3 ^ v4)) >= 0) {
+        result = function_121d82();
+    }
+    // 0x121db4
+    if ((int64_t)v3 >= a4) {
+        // 0x121e20
+        return result;
+    }
+    // 0x121db8
+    *(char *)v1 = *(char *)&v1 + (char)(a3 / 256);
+    return result;
 }
