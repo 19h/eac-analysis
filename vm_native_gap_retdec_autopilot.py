@@ -57,7 +57,9 @@ def read_manifest():
     data = {}
     with MANIFEST.open(newline="", errors="replace") as handle:
         for row in csv.reader(handle, delimiter="\t"):
-            if len(row) >= 2:
+            if len(row) >= 3:
+                data[row[1]] = row[2]
+            elif len(row) >= 2:
                 data[row[0]] = row[1]
     return data
 
@@ -152,7 +154,16 @@ def refresh_aggregate(*, syntax, dry_run):
     if not dry_run:
         touch_existing_sidecars()
     run(["make", "-s", "native-executable-coverage-audit", "native-retdec-gap-queue"], dry_run=dry_run)
-    run(["make", "-s", "all-evidence-bundle", "c-reconstruction-manifest"], dry_run=dry_run)
+    run(["make", "-s", "all-evidence-bundle"], dry_run=dry_run)
+    run(
+        [
+            "python3",
+            "vm_c_reconstruction_manifest.py",
+            "--output",
+            MANIFEST,
+        ],
+        dry_run=dry_run,
+    )
     if syntax:
         run(["gcc", "-std=c11", "-fsyntax-only", "-w", ALL_EVIDENCE_BUNDLE], dry_run=dry_run)
 
