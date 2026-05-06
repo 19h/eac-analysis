@@ -1039,6 +1039,7 @@ def main():
     print("int128_t __asm_psadbw(int128_t left, int128_t right);")
     print("int128_t __asm_psrldq(int128_t value, int count);")
     print("int128_t __asm_pslldq(int128_t value, int count);")
+    print("int128_t __asm_vpunpckhdq(int128_t left, int128_t right);")
     print("int128_t __asm_punpckldq(int128_t left, int128_t right);")
     print("int128_t __asm_punpcklqdq(int128_t left, int128_t right);")
     print("int128_t __asm_psllq(int128_t value, int count);")
