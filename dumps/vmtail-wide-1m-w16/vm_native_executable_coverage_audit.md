@@ -4,27 +4,27 @@ Compares executable ELF sections against native ranges already represented by re
 
 - executable sections: 5
 - executable bytes: 5651040
-- recovered executable bytes: 1193702
-- uncovered executable bytes: 4457338
-- recovered range rows: 9988
-- uncovered gaps: 2388
+- recovered executable bytes: 1201894
+- uncovered executable bytes: 4449146
+- recovered range rows: 10134
+- uncovered gaps: 2391
 
 | section | range | bytes | covered | uncovered | coverage | ranges |
 | --- | --- | ---: | ---: | ---: | ---: | ---: |
 | `.init` | `0x1fbd0-0x1fbe7` | 23 | 0 | 23 | 0.00% | 0 |
 | `.plt` | `0x1fbf0-0x20bd0` | 4064 | 0 | 4064 | 0.00% | 0 |
 | `.plt.got` | `0x20bd0-0x20be0` | 16 | 0 | 16 | 0.00% | 0 |
-| `.text` | `0x20c00-0x583650` | 5646928 | 1193702 | 4453226 | 21.13% | 9988 |
+| `.text` | `0x20c00-0x583650` | 5646928 | 1201894 | 4445034 | 21.28% | 10134 |
 | `.fini` | `0x583650-0x583659` | 9 | 0 | 9 | 0.00% | 0 |
 
 ## Largest Uncovered Gaps
 
 | section | range | bytes |
 | --- | --- | ---: |
-| `.text` | `0x181e85-0x1a1fa3` | 131358 |
-| `.text` | `0x2e981e-0x307093` | 120949 |
-| `.text` | `0x1626aa-0x17bf1f` | 104565 |
+| `.text` | `0x183285-0x1a1fa3` | 126238 |
+| `.text` | `0x2eac1e-0x307093` | 115829 |
 | `.text` | `0x141f13-0x15b5b2` | 104095 |
+| `.text` | `0x1628aa-0x17bf1f` | 104053 |
 | `.text` | `0xe599c-0xfeebc` | 103712 |
 | `.text` | `0x218066-0x231586` | 103712 |
 | `.text` | `0x30eabb-0x3275b6` | 101115 |
