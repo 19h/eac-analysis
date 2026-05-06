@@ -1,12 +1,12 @@
 /*
- * Targeted RetDec C for native executable gap queue batch 1699.
+ * Targeted RetDec C for native executable gap queue batch 1722.
  *
  * This batch is fixed from the ranked native gap queue so it can feed the
  * executable coverage audit without creating a Make dependency cycle:
  * coverage -> queue -> RetDec batch -> coverage.
  *
  * Ranges:
- *   0x15bcf2-0x15be73 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x521fc0-0x522120 rank=- name=- kind=- bytes=- uncovered=-
  */
 #include <stdbool.h>
 #include <stdio.h>
@@ -52,6 +52,9 @@ struct eac_retdec_cpuid_regs { uint32_t e0; uint32_t e1; uint32_t e2; uint32_t e
 #define SIGALARM 14
 #define SYS_getegid32 50
 #define PTHREAD_MUTEX_RECURSIVE 1
+extern int g1;
+extern int g2;
+extern int g3;
 int64_t entry_point();
 unsigned char llvm_ctpop_i8(unsigned char value);
 uint16_t llvm_bswap_i16(uint16_t value);
@@ -364,74 +367,134 @@ void _Unwind_SetIP(int64_t context, int64_t value);
 void _Unwind_Resume(struct _Unwind_Exception *exception);
 void _Unwind_Resume_or_Rethrow(int64_t exception);
 
-int64_t function_15bcf2(int64_t a1, int64_t a2, int64_t a3, int64_t a4, int64_t a5, int64_t a6, int32_t a7);
-int64_t function_15bdd7(void);
-int64_t function_15be0c(void);
-int64_t function_15be26(void);
-int64_t function_15be5c(void);
-int64_t function_15be60(void);
-int64_t function_cdc60();
+int64_t function_1fd40();
+int64_t function_20540();
+int64_t function_20a50();
+int64_t function_4eeb50();
+int64_t function_5212e0();
+int64_t function_521423();
+int64_t function_521782();
+int64_t function_521fc0(void);
+int64_t function_521fc7(int64_t a1);
+int64_t function_52200f(void);
+int64_t function_52203c(int64_t a1, int64_t a2, int64_t a3, int64_t a4, int64_t a5);
+int64_t function_522052(int64_t a1, int64_t a2, int64_t a3, int64_t a4, int64_t a5);
+int64_t function_52206d(int64_t a1, int64_t a2);
+int64_t function_522080(int64_t a1, int64_t a2, int64_t a3);
+int64_t function_5220a0(int64_t a1, int64_t a2);
+int64_t function_5220c0(int64_t result);
+int64_t function_5220d0(int64_t result);
+int64_t function_5220e0(int64_t result);
+int64_t function_5220f0(int64_t result);
+int64_t function_522100(int64_t result);
+int64_t function_522110(int64_t result);
 
-// Address range: 0x15bcf2 - 0x15bdcf
-int64_t function_15bcf2(int64_t a1, int64_t a2, int64_t a3, int64_t a4, int64_t a5, int64_t a6, int32_t a7) {
-    // 0x15bcf2
-    int64_t v1; // 0x15bcf2
-    int64_t v2 = 0x100000000 * v1 >> 32; // 0x15bcf5
-    int64_t * v3 = (int64_t *)(v2 + 16); // 0x15bcf9
-    int64_t v4 = *v3; // 0x15bcf9
-    *(int64_t *)(v2 - 8) = v4;
-    int64_t v5 = v2 - 16; // 0x15bd01
-    int64_t * v6 = (int64_t *)v5; // 0x15bd06
-    *v6 = a4;
-    int64_t * v7 = (int64_t *)(v2 - 24); // 0x15bd11
-    int64_t * v8 = (int64_t *)(v2 - 32); // 0x15bd2f
-    *v8 = v4;
-    int64_t v9 = *v7; // 0x15bd41
-    *v6 = 0x37dd17bd;
-    *v8 = v9;
-    *v7 = v9;
-    *(int64_t *)v2 = *v6;
-    *v6 = 0x14b1ef9e;
-    *v8 = a1;
-    *v7 = v4;
-    *v3 = *v6;
-    *v8 = v9;
-    *v7 = v5;
-    *v6 = v2;
-    return function_cdc60(*v8);
+// Address range: 0x521fc0 - 0x521fc7
+int64_t function_521fc0(void) {
+    // 0x521fc0
+    int64_t v1; // 0x521fc0
+    int64_t v2 = v1;
+    *(char *)v2 = 2 * (char)v2;
+    return function_521423();
 }
 
-// Address range: 0x15bdd7 - 0x15bddb
-int64_t function_15bdd7(void) {
-    // 0x15bdd7
-    int64_t result; // 0x15bdd7
+// Address range: 0x521fc7 - 0x52200f
+int64_t function_521fc7(int64_t a1) {
+    // 0x521fc7
+    __stack_chk_fail();
+    int64_t v1; // 0x521fc7
+    if (v1 != a1 + 16) {
+        // 0x521fe2
+        function_4eeb50(v1);
+    }
+    // 0x521fe7
+    _Unwind_Resume((struct _Unwind_Exception *)&g3);
+    function_1fd40((int64_t)&g3);
+    while (true) {
+        // 0x522000
+        function_1fd40(function_20a50());
+    }
+}
+
+// Address range: 0x52200f - 0x52203c
+int64_t function_52200f(void) {
+    // 0x52200f
+    function_20540();
+    int64_t v1; // 0x52200f
+    _Unwind_Resume((struct _Unwind_Exception *)v1);
+    return function_5212e0();
+}
+
+// Address range: 0x52203c - 0x522052
+int64_t function_52203c(int64_t a1, int64_t a2, int64_t a3, int64_t a4, int64_t a5) {
+    // 0x52203c
+    return function_5212e0();
+}
+
+// Address range: 0x522052 - 0x52206d
+int64_t function_522052(int64_t a1, int64_t a2, int64_t a3, int64_t a4, int64_t a5) {
+    // 0x522052
+    return function_5212e0();
+}
+
+// Address range: 0x52206d - 0x52207f
+int64_t function_52206d(int64_t a1, int64_t a2) {
+    // 0x52206d
+    return function_521782(a1);
+}
+
+// Address range: 0x522080 - 0x52209a
+// From class:    std::time_put_byname<char, std::ostreambuf_iterator<char, std::char_traits<char> > >
+// Type:          constructor
+int64_t function_522080(int64_t a1, int64_t a2, int64_t a3) {
+    // 0x522080
+    *(int32_t *)(a1 + 8) = (int32_t)(bool)(a3 != 0);
+    *(int64_t *)a1 = (int64_t)&g2;
+    return (int64_t)&g2;
+}
+
+// Address range: 0x5220a0 - 0x5220ba
+// From class:    std::__cxx11::time_get<char, std::istreambuf_iterator<char, std::char_traits<char> > >
+// Type:          constructor
+int64_t function_5220a0(int64_t a1, int64_t a2) {
+    // 0x5220a0
+    *(int32_t *)(a1 + 8) = (int32_t)(bool)(a2 != 0);
+    *(int64_t *)a1 = (int64_t)&g1;
+    return (int64_t)&g1;
+}
+
+// Address range: 0x5220c0 - 0x5220c6
+int64_t function_5220c0(int64_t result) {
+    // 0x5220c0
     return result;
 }
 
-// Address range: 0x15be0c - 0x15be0f
-int64_t function_15be0c(void) {
-    // 0x15be0c
-    int64_t result; // 0x15be0c
+// Address range: 0x5220d0 - 0x5220d6
+int64_t function_5220d0(int64_t result) {
+    // 0x5220d0
     return result;
 }
 
-// Address range: 0x15be26 - 0x15be29
-int64_t function_15be26(void) {
-    // 0x15be26
-    int64_t result; // 0x15be26
+// Address range: 0x5220e0 - 0x5220e6
+int64_t function_5220e0(int64_t result) {
+    // 0x5220e0
     return result;
 }
 
-// Address range: 0x15be5c - 0x15be5f
-int64_t function_15be5c(void) {
-    // 0x15be5c
-    int64_t result; // 0x15be5c
+// Address range: 0x5220f0 - 0x5220f6
+int64_t function_5220f0(int64_t result) {
+    // 0x5220f0
     return result;
 }
 
-// Address range: 0x15be60 - 0x15be63
-int64_t function_15be60(void) {
-    // 0x15be60
-    int64_t result; // 0x15be60
+// Address range: 0x522100 - 0x522106
+int64_t function_522100(int64_t result) {
+    // 0x522100
+    return result;
+}
+
+// Address range: 0x522110 - 0x522116
+int64_t function_522110(int64_t result) {
+    // 0x522110
     return result;
 }
