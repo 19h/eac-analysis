@@ -912,6 +912,7 @@ def main():
     print("int64_t memset2(void *s, int c, size_t n);")
     print("int pthread_mutex_lock(void *mutex);")
     print("int pthread_mutex_unlock(void *mutex);")
+    print("int pthread_once(int32_t *once_control, int64_t init_routine);")
     print("int pthread_cond_wait(void *cond, void *mutex);")
     print("int pthread_cond_timedwait(void *cond, void *mutex, const struct timespec *abstime);")
     print("int fcntl(int fd, int cmd, ...);")
