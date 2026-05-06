@@ -1,12 +1,12 @@
 /*
- * Targeted RetDec C for native executable gap queue batch 10110.
+ * Targeted RetDec C for native executable gap queue batch 10116.
  *
  * This batch is fixed from the ranked native gap queue so it can feed the
  * executable coverage audit without creating a Make dependency cycle:
  * coverage -> queue -> RetDec batch -> coverage.
  *
  * Ranges:
- *   0xd73df-0xd73e0 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x33202c-0x33202d rank=- name=- kind=- bytes=- uncovered=-
  */
 #include <stdbool.h>
 #include <stdio.h>
@@ -364,11 +364,11 @@ void _Unwind_SetIP(int64_t context, int64_t value);
 void _Unwind_Resume(struct _Unwind_Exception *exception);
 void _Unwind_Resume_or_Rethrow(int64_t exception);
 
-int64_t function_d73df(void);
+int64_t function_33202c(void);
 
-// Address range: 0xd73df - 0xd73e0
-int64_t function_d73df(void) {
-    // 0xd73df
-    int64_t result; // 0xd73df
+// Address range: 0x33202c - 0x33202d
+int64_t function_33202c(void) {
+    // 0x33202c
+    int64_t result; // 0x33202c
     return result;
 }
