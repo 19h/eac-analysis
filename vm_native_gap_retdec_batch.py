@@ -983,7 +983,7 @@ def main():
     print("int pthread_mutexattr_init(void *attr);")
     print("int pthread_mutexattr_settype(void *attr, int type);")
     print("int pthread_create(int32_t *thread, const void *attr, int64_t *(*start_routine)(int64_t *), int64_t *arg);")
-    print("int pthread_once(int32_t *once_control, int64_t init_routine);")
+    print("int pthread_once(int32_t *once_control, ...);")
     print("int pthread_cond_wait(void *cond, void *mutex);")
     print("int pthread_cond_timedwait(void *cond, void *mutex, const struct timespec *abstime);")
     print("int pthread_cond_broadcast(void *cond);")
