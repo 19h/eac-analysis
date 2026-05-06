@@ -161,7 +161,7 @@ def main() -> int:
             "program": f"{args.program:03d}",
             "block": block["block"],
             "state": state,
-            "block_end": block["end_vm_ip"],
+            "block_end": block.get("byte_end_min", ""),
             "byte_end_min": block.get("byte_end_min", ""),
             "rows": block.get("row_count", ""),
             "terminal_kind": block.get("terminal_kind", ""),
