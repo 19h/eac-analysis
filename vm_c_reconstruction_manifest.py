@@ -1352,6 +1352,15 @@ def c_shape_metrics(rows):
     add(rows, "c_shape", "native_gap_retdec_batch43_address_ranges",
         count(r"^// Address range: 0x[0-9a-f]+ - 0x[0-9a-f]+$", native_gap_retdec_batch43),
         "RetDec address-range comments emitted for native gap batch 43.")
+    add(rows, "c_shape", "native_gap_retdec_batch44_selected_ranges",
+        count(r"^ \*   0x[0-9a-f]+-0x[0-9a-f]+ rank=", native_gap_retdec_batch44),
+        "Fixed top-ranked native gap queue ranges selected for RetDec batch 44.")
+    add(rows, "c_shape", "native_gap_retdec_batch44_functions",
+        count(r"^int64_t [A-Za-z_][A-Za-z0-9_]*\(.*\) \{", native_gap_retdec_batch44),
+        "RetDec native C function bodies emitted for native gap batch 44.")
+    add(rows, "c_shape", "native_gap_retdec_batch44_address_ranges",
+        count(r"^// Address range: 0x[0-9a-f]+ - 0x[0-9a-f]+$", native_gap_retdec_batch44),
+        "RetDec address-range comments emitted for native gap batch 44.")
     add(rows, "data_surface", "binary_data_section_rows",
         sum(1 for row in binary_data_sections_index if row.get("kind", "") == "section"),
         "Allocatable ELF sections tracked by the binary data carrier.")
@@ -2280,6 +2289,12 @@ def c_shape_metrics(rows):
     add(rows, "c_shape", "all_evidence_bundle_native_gap_retdec_batch43_symbols",
         count(r"\beac_evidence_native_gap_retdec_batch43__", all_evidence_bundle),
         "Prefixed native gap RetDec batch 43 symbols retained in the all-evidence single file.")
+    add(rows, "c_shape", "all_evidence_bundle_native_gap_retdec_batch44_functions",
+        count(r"^int64_t eac_evidence_native_gap_retdec_batch44__[A-Za-z_][A-Za-z0-9_]*\(.*\) \{", all_evidence_bundle),
+        "RetDec native C function bodies from native gap batch 44 retained in the all-evidence single file.")
+    add(rows, "c_shape", "all_evidence_bundle_native_gap_retdec_batch44_symbols",
+        count(r"\beac_evidence_native_gap_retdec_batch44__", all_evidence_bundle),
+        "Prefixed native gap RetDec batch 44 symbols retained in the all-evidence single file.")
     add(rows, "c_shape", "all_evidence_bundle_sidecar_sections",
         count(r"^/\* --- sidecar: ", all_evidence_bundle),
         "Renamed native RetDec/control sidecar files appended to the all-evidence single file.")

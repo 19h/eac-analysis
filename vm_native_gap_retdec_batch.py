@@ -9,7 +9,7 @@ from pathlib import Path
 
 
 TRACE_DIR = Path("dumps/vmtail-wide-1m-w16")
-FUNCTION_DEF_RE = re.compile(r"^int64_t (function_[0-9a-f]+)\(.*\) \{", re.M)
+FUNCTION_DEF_RE = re.compile(r"^int64_t (function_[0-9a-f]+)\(([^)]*)\) \{", re.M)
 FUNCTION_CALL_RE = re.compile(r"\b(function_[0-9a-f]+)\(")
 GLOBAL_RE = re.compile(r"\bg(\d+)\b")
 
@@ -705,9 +705,15 @@ def normalize_pointer_local_assignments(functions):
 
 
 def function_prototypes(functions):
-    defined = set(FUNCTION_DEF_RE.findall(functions))
+    defined = {match.group(1): match.group(2) for match in FUNCTION_DEF_RE.finditer(functions)}
     called = set(FUNCTION_CALL_RE.findall(functions))
-    return [f"int64_t {name}();" for name in sorted(called | defined)]
+    prototypes = []
+    for name in sorted(called | set(defined)):
+        if name in defined:
+            prototypes.append(f"int64_t {name}({defined[name]});")
+        else:
+            prototypes.append(f"int64_t {name}();")
+    return prototypes
 
 
 def referenced_globals(functions):
@@ -932,6 +938,7 @@ def main():
     print("char *__xpg_basename(char *path);")
     print("int32_t eac_retdec_vsnprintf(char *str, int32_t size, char *format, int64_t ap);")
     print("int64_t __wctype_l(const char *property, struct __locale_struct *locale);")
+    print("int __iswctype_l(int32_t wc, int32_t desc, struct __locale_struct *locale);")
     print("char *strdup(const char *s);")
     print("int __sprintf_chk(char *str, int flag, size_t slen, const char *format, ...);")
     print("struct _Unwind_Exception;")
