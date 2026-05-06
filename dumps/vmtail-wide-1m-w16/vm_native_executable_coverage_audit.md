@@ -4,17 +4,17 @@ Compares executable ELF sections against native ranges already represented by re
 
 - executable sections: 5
 - executable bytes: 5651040
-- recovered executable bytes: 4759015
-- uncovered executable bytes: 892025
-- recovered range rows: 60994
-- uncovered gaps: 3241
+- recovered executable bytes: 4792010
+- uncovered executable bytes: 859030
+- recovered range rows: 61418
+- uncovered gaps: 3228
 
 | section | range | bytes | covered | uncovered | coverage | ranges |
 | --- | --- | ---: | ---: | ---: | ---: | ---: |
 | `.init` | `0x1fbd0-0x1fbe7` | 23 | 23 | 0 | 100.00% | 1 |
 | `.plt` | `0x1fbf0-0x20bd0` | 4064 | 4064 | 0 | 100.00% | 254 |
 | `.plt.got` | `0x20bd0-0x20be0` | 16 | 16 | 0 | 100.00% | 2 |
-| `.text` | `0x20c00-0x583650` | 5646928 | 4754903 | 892025 | 84.20% | 60734 |
+| `.text` | `0x20c00-0x583650` | 5646928 | 4787898 | 859030 | 84.78% | 61158 |
 | `.fini` | `0x583650-0x583659` | 9 | 9 | 0 | 100.00% | 3 |
 
 ## Largest Uncovered Gaps
@@ -22,27 +22,8 @@ Compares executable ELF sections against native ranges already represented by re
 | section | range | bytes |
 | --- | --- | ---: |
 | `.text` | `0x4dd8f9-0x4debf9` | 4864 |
-| `.text` | `0x4cad5d-0x4cb410` | 1715 |
-| `.text` | `0x52a8b6-0x52af50` | 1690 |
-| `.text` | `0x2d7869-0x2d7efd` | 1684 |
-| `.text` | `0x1a3fa9-0x1a4638` | 1679 |
 | `.text` | `0x4e07f9-0x4e0e79` | 1664 |
 | `.text` | `0x4e59f9-0x4e6079` | 1664 |
-| `.text` | `0x52c360-0x52c9e0` | 1664 |
-| `.text` | `0x17b8aa-0x17bf1f` | 1653 |
-| `.text` | `0x2d8f16-0x2d9584` | 1646 |
-| `.text` | `0x34cbe6-0x34d253` | 1645 |
-| `.text` | `0x70890-0x70ef4` | 1636 |
-| `.text` | `0xdf9c7-0xe0017` | 1616 |
-| `.text` | `0x4d0eca-0x4d1510` | 1606 |
-| `.text` | `0x33cb79-0x33d1ae` | 1589 |
-| `.text` | `0x30db8-0x313eb` | 1587 |
-| `.text` | `0x105a78-0x1060ab` | 1587 |
-| `.text` | `0x30e458-0x30ea80` | 1576 |
-| `.text` | `0x1aa4bb-0x1aaadd` | 1570 |
-| `.text` | `0x4897c0-0x489dce` | 1550 |
-| `.text` | `0x6524a-0x65850` | 1542 |
-| `.text` | `0x2544bc-0x254abd` | 1537 |
 | `.text` | `0x65ce3-0x662e3` | 1536 |
 | `.text` | `0xd0dc7-0xd13c7` | 1536 |
 | `.text` | `0xe2966-0xe2f66` | 1536 |
@@ -61,3 +42,22 @@ Compares executable ELF sections against native ranges already represented by re
 | `.text` | `0x311cbb-0x3122bb` | 1536 |
 | `.text` | `0x3144bb-0x314abb` | 1536 |
 | `.text` | `0x359445-0x359a45` | 1536 |
+| `.text` | `0x384a30-0x385030` | 1536 |
+| `.text` | `0x3b5ec9-0x3b64c9` | 1536 |
+| `.text` | `0x3b85b0-0x3b8bb0` | 1536 |
+| `.text` | `0x3bac59-0x3bb259` | 1536 |
+| `.text` | `0x41f81f-0x41fe1f` | 1536 |
+| `.text` | `0x469a34-0x46a034` | 1536 |
+| `.text` | `0x1cb955-0x1cbf51` | 1532 |
+| `.text` | `0x50a506-0x50ab00` | 1530 |
+| `.text` | `0x554506-0x554b00` | 1530 |
+| `.text` | `0x72e5d-0x7343e` | 1505 |
+| `.text` | `0x53fda4-0x540380` | 1500 |
+| `.text` | `0x505298-0x505870` | 1496 |
+| `.text` | `0x3d8bd6-0x3d91ad` | 1495 |
+| `.text` | `0x3a750-0x3ad24` | 1492 |
+| `.text` | `0x41c64-0x4221c` | 1464 |
+| `.text` | `0x4d4948-0x4d4f00` | 1464 |
+| `.text` | `0x5348f-0x53a3e` | 1455 |
+| `.text` | `0x29bcc9-0x29c26e` | 1445 |
+| `.text` | `0x3d44ff-0x3d4a95` | 1430 |
