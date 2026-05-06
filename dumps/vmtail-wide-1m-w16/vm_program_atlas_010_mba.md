@@ -37,6 +37,7 @@
 
 - `vm_program_atlas_010_mba_requirements.tsv`: reduction-readiness checklist for each case.
 - `vm_program_atlas_010_mba_missing.tsv`: focused list of cases still missing mandatory reduction inputs.
+- `vm_program_atlas_010_mba_trace_targets.tsv`: focused VMTAIL capture env for cases still missing state/flags/byte.
 - `vm_program_atlas_010_mba_frida_trace.js`: focused direct-instrumentation template for missing runtime fields.
 
 ## Missing For Full MBA Reduction

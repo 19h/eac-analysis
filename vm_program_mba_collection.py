@@ -296,6 +296,11 @@ def focus_env(focus_ips: list[str], focus_sites: list[str], stop_after: int) -> 
     return " ".join(parts)
 
 
+def numeric_site(site: str) -> str:
+    site = site or ""
+    return site if site.startswith("0x") else ""
+
+
 def build_trace_targets(program: int, missing_rows: list[dict[str, str]], observations: list[dict[str, str]]) -> list[dict[str, str]]:
     by_case: dict[str, list[dict[str, str]]] = defaultdict(list)
     for row in observations:
@@ -311,9 +316,9 @@ def build_trace_targets(program: int, missing_rows: list[dict[str, str]], observ
         focus_sites = []
         if pred:
             focus_ips.append(pred.get("start_vm_ip", ""))
-            focus_sites.append(pred.get("site", ""))
+            focus_sites.append(numeric_site(pred.get("site", "")))
         focus_ips.append(state)
-        focus_sites.append(case.get("site", ""))
+        focus_sites.append(numeric_site(case.get("site", "")))
         focus_ips = [value for value in focus_ips if value]
         focus_sites = [value for value in focus_sites if value]
         stop_after = 2 if pred else 1
