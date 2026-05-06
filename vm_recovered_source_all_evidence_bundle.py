@@ -52,6 +52,7 @@ DEFAULT_SIDECARS = [
     TRACE_DIR / "vm_native_linkage_stubs.c",
     TRACE_DIR / "vm_binary_data_sections.c",
     TRACE_DIR / "vm_uncovered_executable_gaps.c",
+    TRACE_DIR / "vm_program_decompiled_full.c",
     TRACE_DIR / "vm_path_handlers_pseudocode.c",
     TRACE_DIR / "vm_path_handlers_frontier_pseudocode.c",
     TRACE_DIR / "vm_path_frontier_slot_audit.c",
