@@ -58,6 +58,7 @@ struct eac_retdec_cpuid_regs { uint32_t e0; uint32_t e1; uint32_t e2; uint32_t e
 #define F_SETFL 4
 #define SO_DEBUG 1
 #define _SC_PAGESIZE 30
+#define SIGALARM 14
 #define SYS_getegid32 50
 #define PTHREAD_MUTEX_RECURSIVE 1
 extern int g1;
@@ -224,6 +225,8 @@ int sem_init(int64_t *sem, int pshared, unsigned int value);
 int sem_post(int64_t *sem);
 int sem_wait(int64_t *sem);
 int sem_destroy(int64_t *sem);
+int64_t signal(int signum, int64_t handler);
+unsigned int alarm(unsigned int seconds);
 int fcntl(int fd, int cmd, ...);
 int32_t write(int fd, const void *buf, size_t nbyte);
 int writev(int fd, const struct iovec *iov, int iovcnt);

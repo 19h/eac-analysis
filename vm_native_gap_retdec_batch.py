@@ -827,6 +827,7 @@ def main():
     print("#define F_SETFL 4")
     print("#define SO_DEBUG 1")
     print("#define _SC_PAGESIZE 30")
+    print("#define SIGALARM 14")
     print("#define SYS_getegid32 50")
     print("#define PTHREAD_MUTEX_RECURSIVE 1")
     for index in referenced_globals(functions):
@@ -990,6 +991,8 @@ def main():
     print("int sem_post(int64_t *sem);")
     print("int sem_wait(int64_t *sem);")
     print("int sem_destroy(int64_t *sem);")
+    print("int64_t signal(int signum, int64_t handler);")
+    print("unsigned int alarm(unsigned int seconds);")
     print("int fcntl(int fd, int cmd, ...);")
     print("int32_t write(int fd, const void *buf, size_t nbyte);")
     print("int writev(int fd, const struct iovec *iov, int iovcnt);")
