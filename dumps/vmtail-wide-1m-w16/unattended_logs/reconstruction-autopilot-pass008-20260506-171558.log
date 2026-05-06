@@ -2493,3 +2493,14 @@ make[1]: Leaving directory '/models/dev/sc-rev/eac/eacsym'
 + make -s uncovered-executable-gaps
 uncovered_executable_gaps=3190 bytes=784806
 uncovered_executable_gaps=3190 bytes=784806
+uncovered_executable_gaps=3190 bytes=784806
+# elapsed 0.88s
+coverage_delta
+native_executable_coverage_range_rows	60056	62481	delta=+2425
+native_executable_coverage_gap_rows	3258	3195	delta=-63
+native_executable_coverage_recovered_bytes	4694080	4866234	delta=+172154
+native_executable_coverage_uncovered_bytes	956960	784806	delta=-172154
++ make -s uncovered-executable-gaps
+# elapsed 0.24s
++ make -s all-evidence-bundle
+uncovered_executable_gaps=3190 bytes=784806
