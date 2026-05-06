@@ -175,6 +175,7 @@ FIXED_TYPE_NAMES = {
     "VMHandlerEnvironmentCoverage",
     "VMUnresolvedFamilyEvent",
     "int128_t",
+    "int256_t",
     "int864_t",
 }
 
