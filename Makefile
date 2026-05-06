@@ -47,6 +47,9 @@ STRING_REFERENCE_CONTEXT_TSV := $(PRIMARY_DIR)/vm_string_reference_context.tsv
 STRING_REFERENCE_CONTEXT_MD := $(PRIMARY_DIR)/vm_string_reference_context.md
 PROGRAM_BEHAVIOR_HYPOTHESES_TSV := $(PRIMARY_DIR)/vm_program_behavior_hypotheses.tsv
 PROGRAM_BEHAVIOR_HYPOTHESES_MD := $(PRIMARY_DIR)/vm_program_behavior_hypotheses.md
+PROGRAM_CONTROL_GRAPH_EDGES_TSV := $(PRIMARY_DIR)/vm_program_control_graph_edges.tsv
+PROGRAM_CONTROL_GRAPH_SUMMARY_TSV := $(PRIMARY_DIR)/vm_program_control_graph_summary.tsv
+PROGRAM_CONTROL_GRAPH_MD := $(PRIMARY_DIR)/vm_program_control_graph.md
 PROGRAM_MBA_010_PREFIX := $(PRIMARY_DIR)/vm_program_atlas_010_mba
 PROGRAM_MBA_010_CASES_TSV := $(PROGRAM_MBA_010_PREFIX)_cases.tsv
 PROGRAM_MBA_010_OBSERVATIONS_TSV := $(PROGRAM_MBA_010_PREFIX)_observations.tsv
@@ -1047,8 +1050,15 @@ program-behavior-hypotheses: vm_program_behavior_hypotheses.py behavior-inventor
 program-behavior-hypotheses-audit: program-behavior-hypotheses
 	python3 vm_program_behavior_hypotheses_audit.py --root $(PRIMARY_DIR)
 
+.PHONY: program-control-graph program-control-graph-audit
+program-control-graph: vm_program_control_graph.py $(PROGRAM_DECOMPILED_FOLDED_MANIFEST) $(PROGRAM_MBA_REDUCED_TSVS)
+	python3 vm_program_control_graph.py --root $(PRIMARY_DIR)
+
+program-control-graph-audit: program-control-graph
+	python3 vm_program_control_graph_audit.py --root $(PRIMARY_DIR)
+
 .PHONY: behavior-understanding-audit
-behavior-understanding-audit: behavior-inventory-audit semantic-opcode-catalog-audit string-reference-context-audit program-behavior-hypotheses-audit
+behavior-understanding-audit: behavior-inventory-audit semantic-opcode-catalog-audit string-reference-context-audit program-behavior-hypotheses-audit program-control-graph-audit
 
 $(HANDLERS_PSEUDOCODE_C): vm_handler_pseudocode_dump.py $(PRIMARY_DIR)/vm_handler_semantics.tsv $(PRIMARY_DIR)/vm_handler_table.tsv $(STATIC_ONLY_HANDLER_QUEUE_TSV) $(STATIC_ONLY_TIER0_MODELS_TSV) $(STATIC_ONLY_TIER1_MODELS_TSV) $(STATIC_ONLY_TIER2_SPLIT_TSV) $(STATIC_ONLY_TIER3_SHARED_TSV) $(STATIC_ONLY_TIER4_CALLRET_TSV) $(STATIC_ONLY_TIER5_LARGE_TSV)
 	python3 vm_handler_pseudocode_dump.py --all > $@
