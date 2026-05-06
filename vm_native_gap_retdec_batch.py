@@ -975,6 +975,7 @@ def main():
     print("int64_t _ZGTtnam(int64_t size);")
     print("int64_t _ITM_memcpyRtWn(int64_t dst, int64_t src, int64_t size);")
     print("void __asm_rcl(int32_t value);")
+    print("void __asm_rcl_133(int32_t value);")
     print("void __asm_rep_movsb_memcpy(char *dst, char *src, int64_t count);")
     print("void __asm_rep_stosb_memset(char *dst, char value, int64_t count);")
     print("void __asm_rep_stosd_memset(char *dst, int32_t value, int64_t count);")
