@@ -661,6 +661,7 @@ def extract_functions(text):
     functions = text[start + len(start_marker):end].strip()
     functions = functions.replace(" = &v", " = (int64_t)&v")
     functions = functions.replace("vsnprintf(", "eac_retdec_vsnprintf(")
+    functions = normalize_time_struct_accesses(functions)
     functions = re.sub(r"\bmemset\(([^,\n]+),", r"memset((void *)(int64_t)(\1),", functions)
     functions = re.sub(r"(int64_t\s+v\d+\s*=\s*)&([A-Za-z_]\w*)", r"\1(int64_t)&\2", functions)
     functions = re.sub(r"((?:u?int(?:8|16|32|64)_t|char)\s*\*\s+v\d+\s*=\s*)g(\d+)", r"\1(void *)(int64_t)g\2", functions)
@@ -671,6 +672,14 @@ def extract_functions(text):
     functions = re.sub(r"\bstruct struct\d+\b", "struct eac_retdec_cpuid_regs", functions)
     functions = normalize_wide_movdqa_immediates(functions)
     return normalize_pointer_local_assignments(functions)
+
+
+def normalize_time_struct_accesses(functions):
+    for name in sorted(set(re.findall(r"\bstruct\s+tm\s*\*\s*([A-Za-z_]\w*)\s*=\s*gmtime\(", functions))):
+        functions = re.sub(rf"\b{name}->e0\b", f"*(int32_t *){name}", functions)
+    functions = functions.replace("gmtime((int32_t *)&", "gmtime((const time_t *)&")
+    functions = functions.replace("gmtime_r((int32_t *)&", "gmtime_r((const time_t *)&")
+    return functions
 
 
 def normalize_wide_movdqa_immediates(functions):
@@ -868,6 +877,7 @@ def main():
     print("int64_t __asm_movss_133(int128_t value);")
     print("int128_t __asm_movdqa(int128_t value);")
     print("int128_t __asm_aesimc(int128_t value);")
+    print("int128_t __asm_aeskeygenassist(int128_t value, int imm);")
     print("int128_t __asm_movdqu(int128_t value);")
     print("int128_t __asm_movdqu_133(int128_t value);")
     print("int128_t __asm_movapd(int128_t value);")
@@ -876,6 +886,7 @@ def main():
     print("int128_t __asm_divsd(int128_t left, int64_t right);")
     print("int128_t __asm_divsd_133(int128_t left, int128_t right);")
     print("int128_t __asm_pclmulqdq(int128_t left, int128_t right, int imm);")
+    print("int128_t __asm_pshufd(int128_t value, int imm);")
     print("int128_t __asm_psrldq(int128_t value, int count);")
     print("int128_t __asm_pslldq(int128_t value, int count);")
     print("int128_t __asm_psllq(int128_t value, int count);")
@@ -970,7 +981,7 @@ def main():
     print("int __iswctype_l(int32_t wc, int32_t desc, struct __locale_struct *locale);")
     print("char *strdup(const char *s);")
     print("int __sprintf_chk(char *str, int flag, size_t slen, const char *format, ...);")
-    print("struct tm *gmtime_r(const int32_t *timep, struct tm *result);")
+    print("struct tm *gmtime_r(const time_t *timep, struct tm *result);")
     print("struct _Unwind_Exception;")
     print("int64_t _Unwind_DeleteException(int64_t exception);")
     print("int64_t _Unwind_GetRegionStart();")

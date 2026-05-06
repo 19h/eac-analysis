@@ -119,6 +119,7 @@ int128_t __asm_movss(int32_t value);
 int64_t __asm_movss_133(int128_t value);
 int128_t __asm_movdqa(int128_t value);
 int128_t __asm_aesimc(int128_t value);
+int128_t __asm_aeskeygenassist(int128_t value, int imm);
 int128_t __asm_movdqu(int128_t value);
 int128_t __asm_movdqu_133(int128_t value);
 int128_t __asm_movapd(int128_t value);
@@ -127,6 +128,7 @@ int128_t __asm_andnpd(int128_t left, int128_t right);
 int128_t __asm_divsd(int128_t left, int64_t right);
 int128_t __asm_divsd_133(int128_t left, int128_t right);
 int128_t __asm_pclmulqdq(int128_t left, int128_t right, int imm);
+int128_t __asm_pshufd(int128_t value, int imm);
 int128_t __asm_psrldq(int128_t value, int count);
 int128_t __asm_pslldq(int128_t value, int count);
 int128_t __asm_psllq(int128_t value, int count);
@@ -221,7 +223,7 @@ int64_t __wctype_l(const char *property, struct __locale_struct *locale);
 int __iswctype_l(int32_t wc, int32_t desc, struct __locale_struct *locale);
 char *strdup(const char *s);
 int __sprintf_chk(char *str, int flag, size_t slen, const char *format, ...);
-struct tm *gmtime_r(const int32_t *timep, struct tm *result);
+struct tm *gmtime_r(const time_t *timep, struct tm *result);
 struct _Unwind_Exception;
 int64_t _Unwind_DeleteException(int64_t exception);
 int64_t _Unwind_GetRegionStart();
@@ -462,7 +464,7 @@ int64_t function_6a73c(int64_t a1, int64_t a2) {
 // Address range: 0x4ac510 - 0x4ac56d
 int64_t function_4ac510(int64_t a1) {
     int64_t time_val = time(NULL); // bp-16, 0x4ac524
-    struct tm * time_info = gmtime((int32_t *)&time_val); // 0x4ac529
+    struct tm * time_info = gmtime((const time_t *)&time_val); // 0x4ac529
     int64_t result = 0xffffffff; // 0x4ac531
     if (time_info != NULL) {
         int64_t v1 = (int64_t)time_info; // 0x4ac529
@@ -471,7 +473,7 @@ int64_t function_4ac510(int64_t a1) {
         *(int32_t *)(a1 + 8) = *(int32_t *)(v1 + 12);
         *(int32_t *)(a1 + 12) = *(int32_t *)(v1 + 8);
         *(int32_t *)(a1 + 16) = *(int32_t *)(v1 + 4);
-        *(int32_t *)(a1 + 20) = time_info->e0;
+        *(int32_t *)(a1 + 20) = *(int32_t *)time_info;
         result = 0;
     }
     // 0x4ac560
