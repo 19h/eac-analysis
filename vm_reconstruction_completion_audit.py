@@ -8,6 +8,8 @@ import csv
 import subprocess
 from pathlib import Path
 
+from vm_recovered_source_all_evidence_bundle import default_sidecars
+
 
 def read_coverage_gaps(path: Path) -> list[tuple[str, str, str, int]]:
     gaps: list[tuple[str, str, str, int]] = []
@@ -39,6 +41,20 @@ def text_section_row(path: Path) -> dict[str, str]:
 
 def has_text(path: Path, needle: str) -> bool:
     return needle in path.read_text(encoding="utf-8", errors="replace")
+
+
+def bundle_sidecar_markers(path: Path) -> set[str]:
+    markers: set[str] = set()
+    if not path.exists():
+        return markers
+    with path.open(encoding="utf-8", errors="replace") as handle:
+        for line in handle:
+            if not line.startswith("/* --- sidecar: "):
+                continue
+            rest = line.removeprefix("/* --- sidecar: ")
+            marker = rest.split(" tag=", 1)[0]
+            markers.add(marker)
+    return markers
 
 
 def check(name: str, ok: bool, detail: str) -> bool:
@@ -85,6 +101,15 @@ def main() -> int:
     print(f"text_semantic_coverage={text_covered}/{text_total} bytes ({int(text_row['coverage_x100']) / 100:.2f}%)")
 
     if bundle.exists():
+        markers = bundle_sidecar_markers(bundle)
+        expected = {str(path) for path in default_sidecars() if path.exists()}
+        missing_sidecars = sorted(expected - markers)
+        ok &= check(
+            "bundle_includes_expected_sidecars",
+            not missing_sidecars,
+            f"expected={len(expected)} present={len(markers)} missing={len(missing_sidecars)}"
+            + (f" first_missing={missing_sidecars[:5]}" if missing_sidecars else ""),
+        )
         ok &= check(
             "bundle_includes_binary_data_sidecar",
             has_text(bundle, "vm_binary_data_sections.c"),
