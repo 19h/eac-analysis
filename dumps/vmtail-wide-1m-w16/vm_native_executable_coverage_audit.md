@@ -4,30 +4,23 @@ Compares executable ELF sections against native ranges already represented by re
 
 - executable sections: 5
 - executable bytes: 5651040
-- recovered executable bytes: 2078438
-- uncovered executable bytes: 3572602
-- recovered range rows: 22758
-- uncovered gaps: 2677
+- recovered executable bytes: 2090726
+- uncovered executable bytes: 3560314
+- recovered range rows: 22918
+- uncovered gaps: 2680
 
 | section | range | bytes | covered | uncovered | coverage | ranges |
 | --- | --- | ---: | ---: | ---: | ---: | ---: |
 | `.init` | `0x1fbd0-0x1fbe7` | 23 | 0 | 23 | 0.00% | 0 |
 | `.plt` | `0x1fbf0-0x20bd0` | 4064 | 0 | 4064 | 0.00% | 0 |
 | `.plt.got` | `0x20bd0-0x20be0` | 16 | 0 | 16 | 0.00% | 0 |
-| `.text` | `0x20c00-0x583650` | 5646928 | 2078438 | 3568490 | 36.80% | 22758 |
+| `.text` | `0x20c00-0x583650` | 5646928 | 2090726 | 3556202 | 37.02% | 22918 |
 | `.fini` | `0x583650-0x583659` | 9 | 0 | 9 | 0.00% | 0 |
 
 ## Largest Uncovered Gaps
 
 | section | range | bytes |
 | --- | --- | ---: |
-| `.text` | `0x1d785a-0x1e05a8` | 36174 |
-| `.text` | `0x31e8bb-0x3275b6` | 36091 |
-| `.text` | `0x42001f-0x428ce3` | 36036 |
-| `.text` | `0x43ec67-0x4478f4` | 35981 |
-| `.text` | `0x1ed0e8-0x1f5d10` | 35880 |
-| `.text` | `0x110fbf-0x119b8e` | 35791 |
-| `.text` | `0x42c893-0x4353f8` | 35685 |
 | `.text` | `0x261cc2-0x26a821` | 35679 |
 | `.text` | `0xf639c-0xfeebc` | 35616 |
 | `.text` | `0x228a66-0x231586` | 35616 |
@@ -44,15 +37,22 @@ Compares executable ELF sections against native ranges already represented by re
 | `.text` | `0x1b83ce-0x1c0b59` | 34699 |
 | `.text` | `0x274441-0x27cb8e` | 34637 |
 | `.text` | `0x3e6296-0x3ee99a` | 34564 |
+| `.text` | `0x31eebb-0x3275b6` | 34555 |
 | `.text` | `0x1ff234-0x20792d` | 34553 |
 | `.text` | `0x2fea1e-0x307093` | 34421 |
+| `.text` | `0x1ed6e8-0x1f5d10` | 34344 |
 | `.text` | `0x127adc-0x1300d5` | 34297 |
+| `.text` | `0x42ce93-0x4353f8` | 34149 |
 | `.text` | `0x11e346-0x126851` | 34059 |
 | `.text` | `0x410342-0x41883d` | 34043 |
+| `.text` | `0x42081f-0x428ce3` | 33988 |
 | `.text` | `0x3aa015-0x3b24aa` | 33941 |
 | `.text` | `0x173aaa-0x17bf1f` | 33909 |
 | `.text` | `0xd7bc7-0xe0017` | 33872 |
 | `.text` | `0x2354b6-0x23d8b8` | 33794 |
+| `.text` | `0x1d825a-0x1e05a8` | 33614 |
+| `.text` | `0x43f667-0x4478f4` | 33421 |
+| `.text` | `0x1119bf-0x119b8e` | 33231 |
 | `.text` | `0x3cc9ff-0x3d4a95` | 32918 |
 | `.text` | `0x240a18-0x248752` | 32058 |
 | `.text` | `0x3431d8-0x34abc6` | 31214 |
