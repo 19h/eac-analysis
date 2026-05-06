@@ -65,6 +65,9 @@ NATIVE_SIDE_EFFECT_VM_REFS_TSV := $(PRIMARY_DIR)/vm_native_side_effect_vm_refs.t
 NATIVE_SIDE_EFFECT_RUNTIME_TSV := $(PRIMARY_DIR)/vm_native_side_effect_runtime.tsv
 NATIVE_SIDE_EFFECT_PROGRAMS_TSV := $(PRIMARY_DIR)/vm_native_side_effect_programs.tsv
 NATIVE_SIDE_EFFECT_MD := $(PRIMARY_DIR)/vm_native_side_effect_map.md
+PROGRAM_BEHAVIOR_DOSSIERS_TSV := $(PRIMARY_DIR)/vm_program_behavior_dossiers.tsv
+PROGRAM_BEHAVIOR_DOSSIERS_MD := $(PRIMARY_DIR)/vm_program_behavior_dossiers.md
+PROGRAM_BEHAVIOR_DOSSIERS_DIR := $(PRIMARY_DIR)/vm_program_behavior_dossiers
 PROGRAM_MBA_010_PREFIX := $(PRIMARY_DIR)/vm_program_atlas_010_mba
 PROGRAM_MBA_010_CASES_TSV := $(PROGRAM_MBA_010_PREFIX)_cases.tsv
 PROGRAM_MBA_010_OBSERVATIONS_TSV := $(PROGRAM_MBA_010_PREFIX)_observations.tsv
@@ -1118,8 +1121,17 @@ native-side-effect-map: $(NATIVE_SIDE_EFFECT_IMPORTS_TSV) $(NATIVE_SIDE_EFFECT_V
 native-side-effect-map-audit: $(NATIVE_SIDE_EFFECT_IMPORTS_TSV) $(NATIVE_SIDE_EFFECT_VM_REFS_TSV) $(NATIVE_SIDE_EFFECT_RUNTIME_TSV) $(NATIVE_SIDE_EFFECT_PROGRAMS_TSV) $(NATIVE_SIDE_EFFECT_MD)
 	python3 vm_native_side_effect_map_audit.py --root $(PRIMARY_DIR)
 
+.PHONY: program-behavior-dossiers program-behavior-dossiers-audit
+$(PROGRAM_BEHAVIOR_DOSSIERS_TSV) $(PROGRAM_BEHAVIOR_DOSSIERS_MD) &: vm_program_behavior_dossiers.py $(BEHAVIOR_INVENTORY_TSV) $(PROGRAM_BEHAVIOR_HYPOTHESES_TSV) $(PROGRAM_CONTROL_GRAPH_SUMMARY_TSV) $(X_PROGRAM_FIRST_SEEN_TSV) $(STRING_ROLE_ANNOTATIONS_TSV) $(NATIVE_SIDE_EFFECT_PROGRAMS_TSV) $(PROGRAM_OPCODE_PSEUDOCODE_TSV) $(PROGRAM_OPCODE_PSEUDOCODE_MANIFEST)
+	python3 vm_program_behavior_dossiers.py --root $(PRIMARY_DIR)
+
+program-behavior-dossiers: $(PROGRAM_BEHAVIOR_DOSSIERS_TSV) $(PROGRAM_BEHAVIOR_DOSSIERS_MD)
+
+program-behavior-dossiers-audit: $(PROGRAM_BEHAVIOR_DOSSIERS_TSV) $(PROGRAM_BEHAVIOR_DOSSIERS_MD)
+	python3 vm_program_behavior_dossiers_audit.py --root $(PRIMARY_DIR)
+
 .PHONY: behavior-understanding-audit
-behavior-understanding-audit: behavior-inventory-audit semantic-opcode-catalog-audit string-reference-context-audit program-behavior-hypotheses-audit program-control-graph-audit trace-program-path-audit x-program-timeline-audit string-role-annotations-audit native-side-effect-map-audit
+behavior-understanding-audit: behavior-inventory-audit semantic-opcode-catalog-audit string-reference-context-audit program-behavior-hypotheses-audit program-control-graph-audit trace-program-path-audit x-program-timeline-audit string-role-annotations-audit native-side-effect-map-audit program-behavior-dossiers-audit
 
 $(HANDLERS_PSEUDOCODE_C): vm_handler_pseudocode_dump.py $(PRIMARY_DIR)/vm_handler_semantics.tsv $(PRIMARY_DIR)/vm_handler_table.tsv $(STATIC_ONLY_HANDLER_QUEUE_TSV) $(STATIC_ONLY_TIER0_MODELS_TSV) $(STATIC_ONLY_TIER1_MODELS_TSV) $(STATIC_ONLY_TIER2_SPLIT_TSV) $(STATIC_ONLY_TIER3_SHARED_TSV) $(STATIC_ONLY_TIER4_CALLRET_TSV) $(STATIC_ONLY_TIER5_LARGE_TSV)
 	python3 vm_handler_pseudocode_dump.py --all > $@
