@@ -285,6 +285,8 @@ def main():
     print("int feof();")
     print("int fseek(void *stream, long offset, int whence);")
     print("long ftell(void *stream);")
+    print("int fflush(void *stream);")
+    print("int setvbuf(void *stream, char *buf, int mode, size_t size);")
     print("size_t fwrite(const void *ptr, size_t size, size_t nmemb, void *stream);")
     print("void free(void *ptr);")
     print("void *realloc(void *ptr, size_t size);")
