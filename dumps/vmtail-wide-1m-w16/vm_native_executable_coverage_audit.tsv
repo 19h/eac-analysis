@@ -1,9 +1,9 @@
 row_type	section	start	stop	bytes	covered_bytes	uncovered_bytes	coverage_x100	range_count	merged_range_count	source	detail
-section	.init	0x1fbd0	0x1fbe7	23	0	23	0	0	0		
-section	.plt	0x1fbf0	0x20bd0	4064	0	4064	0	0	0		
-section	.plt.got	0x20bd0	0x20be0	16	0	16	0	0	0		
+section	.init	0x1fbd0	0x1fbe7	23	23	0	10000	1	1		
+section	.plt	0x1fbf0	0x20bd0	4064	4064	0	10000	254	1		
+section	.plt.got	0x20bd0	0x20be0	16	16	0	10000	2	1		
 section	.text	0x20c00	0x583650	5646928	2205414	3441514	3905	24630	2717		
-section	.fini	0x583650	0x583659	9	9	0	10000	2	1		
+section	.fini	0x583650	0x583659	9	9	0	10000	3	1		
 gap	.text	0x1744aa	0x17bf1f	31349	0	31349	0	0	0		
 gap	.text	0xd85c7	0xe0017	31312	0	31312	0	0	0		
 gap	.text	0x36d31b	0x374d29	31246	0	31246	0	0	0		
@@ -173,7 +173,6 @@ gap	.text	0x75dc4	0x76e22	4190	0	4190	0	0	0
 gap	.text	0x1e05ab	0x1e15fc	4177	0	4177	0	0	0		
 gap	.text	0x483a20	0x484a4f	4143	0	4143	0	0	0		
 gap	.text	0x46f0cb	0x4700ec	4129	0	4129	0	0	0		
-gap	.plt	0x1fbf0	0x20bd0	4064	0	4064	0	0	0		
 gap	.text	0x23fa34	0x240a05	4049	0	4049	0	0	0		
 gap	.text	0x540f3d	0x541ef0	4019	0	4019	0	0	0		
 gap	.text	0x44f045	0x44ffd8	3987	0	3987	0	0	0		
@@ -1471,7 +1470,6 @@ gap	.text	0x54e9b8	0x54e9d0	24	0	24	0	0	0
 gap	.text	0x551c88	0x551ca0	24	0	24	0	0	0		
 gap	.text	0x565188	0x5651a0	24	0	24	0	0	0		
 gap	.text	0x569358	0x569370	24	0	24	0	0	0		
-gap	.init	0x1fbd0	0x1fbe7	23	0	23	0	0	0		
 gap	.text	0x68c2a	0x68c41	23	0	23	0	0	0		
 gap	.text	0x496c69	0x496c80	23	0	23	0	0	0		
 gap	.text	0x4aa639	0x4aa650	23	0	23	0	0	0		
@@ -1651,7 +1649,6 @@ gap	.text	0x57208f	0x5720a0	17	0	17	0	0	0
 gap	.text	0x579baf	0x579bc0	17	0	17	0	0	0		
 gap	.text	0x57a03f	0x57a050	17	0	17	0	0	0		
 gap	.text	0x57b46f	0x57b480	17	0	17	0	0	0		
-gap	.plt.got	0x20bd0	0x20be0	16	0	16	0	0	0		
 gap	.text	0x4da72	0x4da82	16	0	16	0	0	0		
 gap	.text	0x49a380	0x49a390	16	0	16	0	0	0		
 gap	.text	0x4a48e0	0x4a48f0	16	0	16	0	0	0		
@@ -2724,7 +2721,265 @@ gap	.text	0x54f64f	0x54f650	1	0	1	0	0	0
 gap	.text	0x55720f	0x557210	1	0	1	0	0	0		
 gap	.text	0x56ff2f	0x56ff30	1	0	1	0	0	0		
 range	.fini	0x583650	0x583659	9	9	0	10000	1	1	retdec_address_range	vm_native_gap_retdec_batch524.c
+range	.fini	0x583650	0x583659	9	9	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
 range	.fini	0x583650	0x583659	9	9	0	10000	1	1	retdec_header_range	vm_native_gap_retdec_batch524.c
+range	.init	0x1fbd0	0x1fbe7	23	23	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x1fbf0	0x1fc00	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x1fc00	0x1fc10	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x1fc10	0x1fc20	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x1fc20	0x1fc30	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x1fc30	0x1fc40	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x1fc40	0x1fc50	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x1fc50	0x1fc60	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x1fc60	0x1fc70	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x1fc70	0x1fc80	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x1fc80	0x1fc90	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x1fc90	0x1fca0	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x1fca0	0x1fcb0	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x1fcb0	0x1fcc0	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x1fcc0	0x1fcd0	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x1fcd0	0x1fce0	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x1fce0	0x1fcf0	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x1fcf0	0x1fd00	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x1fd00	0x1fd10	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x1fd10	0x1fd20	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x1fd20	0x1fd30	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x1fd30	0x1fd40	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x1fd40	0x1fd50	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x1fd50	0x1fd60	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x1fd60	0x1fd70	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x1fd70	0x1fd80	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x1fd80	0x1fd90	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x1fd90	0x1fda0	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x1fda0	0x1fdb0	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x1fdb0	0x1fdc0	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x1fdc0	0x1fdd0	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x1fdd0	0x1fde0	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x1fde0	0x1fdf0	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x1fdf0	0x1fe00	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x1fe00	0x1fe10	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x1fe10	0x1fe20	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x1fe20	0x1fe30	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x1fe30	0x1fe40	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x1fe40	0x1fe50	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x1fe50	0x1fe60	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x1fe60	0x1fe70	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x1fe70	0x1fe80	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x1fe80	0x1fe90	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x1fe90	0x1fea0	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x1fea0	0x1feb0	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x1feb0	0x1fec0	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x1fec0	0x1fed0	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x1fed0	0x1fee0	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x1fee0	0x1fef0	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x1fef0	0x1ff00	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x1ff00	0x1ff10	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x1ff10	0x1ff20	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x1ff20	0x1ff30	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x1ff30	0x1ff40	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x1ff40	0x1ff50	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x1ff50	0x1ff60	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x1ff60	0x1ff70	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x1ff70	0x1ff80	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x1ff80	0x1ff90	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x1ff90	0x1ffa0	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x1ffa0	0x1ffb0	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x1ffb0	0x1ffc0	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x1ffc0	0x1ffd0	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x1ffd0	0x1ffe0	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x1ffe0	0x1fff0	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x1fff0	0x20000	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x20000	0x20010	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x20010	0x20020	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x20020	0x20030	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x20030	0x20040	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x20040	0x20050	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x20050	0x20060	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x20060	0x20070	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x20070	0x20080	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x20080	0x20090	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x20090	0x200a0	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x200a0	0x200b0	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x200b0	0x200c0	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x200c0	0x200d0	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x200d0	0x200e0	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x200e0	0x200f0	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x200f0	0x20100	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x20100	0x20110	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x20110	0x20120	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x20120	0x20130	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x20130	0x20140	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x20140	0x20150	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x20150	0x20160	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x20160	0x20170	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x20170	0x20180	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x20180	0x20190	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x20190	0x201a0	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x201a0	0x201b0	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x201b0	0x201c0	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x201c0	0x201d0	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x201d0	0x201e0	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x201e0	0x201f0	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x201f0	0x20200	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x20200	0x20210	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x20210	0x20220	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x20220	0x20230	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x20230	0x20240	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x20240	0x20250	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x20250	0x20260	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x20260	0x20270	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x20270	0x20280	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x20280	0x20290	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x20290	0x202a0	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x202a0	0x202b0	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x202b0	0x202c0	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x202c0	0x202d0	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x202d0	0x202e0	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x202e0	0x202f0	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x202f0	0x20300	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x20300	0x20310	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x20310	0x20320	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x20320	0x20330	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x20330	0x20340	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x20340	0x20350	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x20350	0x20360	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x20360	0x20370	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x20370	0x20380	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x20380	0x20390	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x20390	0x203a0	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x203a0	0x203b0	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x203b0	0x203c0	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x203c0	0x203d0	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x203d0	0x203e0	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x203e0	0x203f0	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x203f0	0x20400	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x20400	0x20410	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x20410	0x20420	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x20420	0x20430	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x20430	0x20440	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x20440	0x20450	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x20450	0x20460	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x20460	0x20470	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x20470	0x20480	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x20480	0x20490	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x20490	0x204a0	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x204a0	0x204b0	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x204b0	0x204c0	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x204c0	0x204d0	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x204d0	0x204e0	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x204e0	0x204f0	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x204f0	0x20500	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x20500	0x20510	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x20510	0x20520	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x20520	0x20530	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x20530	0x20540	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x20540	0x20550	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x20550	0x20560	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x20560	0x20570	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x20570	0x20580	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x20580	0x20590	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x20590	0x205a0	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x205a0	0x205b0	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x205b0	0x205c0	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x205c0	0x205d0	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x205d0	0x205e0	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x205e0	0x205f0	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x205f0	0x20600	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x20600	0x20610	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x20610	0x20620	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x20620	0x20630	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x20630	0x20640	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x20640	0x20650	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x20650	0x20660	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x20660	0x20670	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x20670	0x20680	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x20680	0x20690	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x20690	0x206a0	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x206a0	0x206b0	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x206b0	0x206c0	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x206c0	0x206d0	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x206d0	0x206e0	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x206e0	0x206f0	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x206f0	0x20700	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x20700	0x20710	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x20710	0x20720	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x20720	0x20730	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x20730	0x20740	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x20740	0x20750	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x20750	0x20760	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x20760	0x20770	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x20770	0x20780	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x20780	0x20790	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x20790	0x207a0	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x207a0	0x207b0	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x207b0	0x207c0	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x207c0	0x207d0	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x207d0	0x207e0	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x207e0	0x207f0	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x207f0	0x20800	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x20800	0x20810	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x20810	0x20820	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x20820	0x20830	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x20830	0x20840	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x20840	0x20850	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x20850	0x20860	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x20860	0x20870	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x20870	0x20880	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x20880	0x20890	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x20890	0x208a0	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x208a0	0x208b0	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x208b0	0x208c0	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x208c0	0x208d0	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x208d0	0x208e0	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x208e0	0x208f0	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x208f0	0x20900	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x20900	0x20910	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x20910	0x20920	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x20920	0x20930	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x20930	0x20940	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x20940	0x20950	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x20950	0x20960	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x20960	0x20970	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x20970	0x20980	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x20980	0x20990	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x20990	0x209a0	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x209a0	0x209b0	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x209b0	0x209c0	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x209c0	0x209d0	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x209d0	0x209e0	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x209e0	0x209f0	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x209f0	0x20a00	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x20a00	0x20a10	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x20a10	0x20a20	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x20a20	0x20a30	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x20a30	0x20a40	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x20a40	0x20a50	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x20a50	0x20a60	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x20a60	0x20a70	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x20a70	0x20a80	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x20a80	0x20a90	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x20a90	0x20aa0	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x20aa0	0x20ab0	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x20ab0	0x20ac0	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x20ac0	0x20ad0	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x20ad0	0x20ae0	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x20ae0	0x20af0	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x20af0	0x20b00	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x20b00	0x20b10	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x20b10	0x20b20	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x20b20	0x20b30	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x20b30	0x20b40	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x20b40	0x20b50	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x20b50	0x20b60	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x20b60	0x20b70	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x20b70	0x20b80	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x20b80	0x20b90	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x20b90	0x20ba0	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x20ba0	0x20bb0	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x20bb0	0x20bc0	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt	0x20bc0	0x20bd0	16	16	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt.got	0x20bd0	0x20bd8	8	8	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
+range	.plt.got	0x20bd8	0x20be0	8	8	0	10000	1	1	retdec_address_range	vm_native_linkage_stubs.c
 range	.text	0x20c00	0x20c63	99	99	0	10000	1	1	retdec_address_range	vm_native_gap_retdec_batch69.c
 range	.text	0x20c00	0x20c63	99	99	0	10000	1	1	retdec_header_range	vm_native_gap_retdec_batch69.c
 range	.text	0x20c63	0x20d1e	187	187	0	10000	1	1	retdec_address_range	vm_native_gap_retdec_batch35.c
