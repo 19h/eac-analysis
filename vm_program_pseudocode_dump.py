@@ -86,7 +86,6 @@ def emit_preamble(used_entries):
     print("    uint32_t slot;")
     print("} VMOpResult;")
     print("")
-    print("extern void vm_unresolved_synthetic_tail(VMState *vm, uint64_t vm_ip);")
     print("extern void vm_native_ret_patch_tail(VMState *vm, uint64_t vm_ip, uint32_t ret0, uint32_t ret1, uint16_t stack_off, uint32_t flags);")
     print("#ifndef VM_ENABLE_NATIVE_RET_PATCH_HIDDEN_BRIDGE")
     print("#define VM_ENABLE_NATIVE_RET_PATCH_HIDDEN_BRIDGE 0")
@@ -104,6 +103,14 @@ def emit_preamble(used_entries):
     print("#define U32(p) (*(const uint32_t *)(p))")
     print("static int64_t signed_vm_delta_u32(uint32_t raw) {")
     print("    return (raw & 0x80000000u) ? -(int64_t)(raw & 0x7fffffffu) : (int64_t)raw;")
+    print("}")
+    print("static void vm_program_external_edge(VMState *vm, uint64_t target_vm_ip) {")
+    print("    (void)vm;")
+    print("    (void)target_vm_ip;")
+    print("}")
+    print("static void vm_program_unknown_entry(VMState *vm, uint64_t vm_ip) {")
+    print("    (void)vm;")
+    print("    (void)vm_ip;")
     print("}")
     for entry in sorted(used_entries):
         print(f"extern VMOpResult op_entry_{entry:03d}(VMState *vm);")
@@ -305,7 +312,7 @@ def emit_synthetic_edge(edge, synthetic_spans, dynamic_stitches, transfer_probes
         if chain:
             print(f"    /* hidden chain resolves synthetic reentry at {normalize_vm_ip(chain.get('hidden_pred_end_vm_ip', ''))}. */")
             return
-        print(f"    vm_unresolved_synthetic_tail(vm, 0x{parse_hex(target_vm_ip):x});")
+    print(f"    vm_program_external_edge(vm, 0x{parse_hex(target_vm_ip):x});")
         return
 
     source = top_int(info["sources"])
@@ -778,7 +785,7 @@ def emit_block(block, rows, edge, synthetic_spans, dynamic_stitches, transfer_pr
                     )
                     if chain_bridge:
                         emit_observed_chain_terminal_bridge(chain_bridge)
-                    print(f"    vm_unresolved_synthetic_tail(vm, 0x{target_vm_ip:x});")
+                    print(f"    vm_program_external_edge(vm, 0x{target_vm_ip:x});")
     print("    (void)r;")
     print("    (void)next_entry;")
     print("    (void)vm_ip;")
@@ -791,7 +798,7 @@ def emit_dispatch(blocks):
     print("    switch (vm_ip) {")
     for block in blocks:
         print(f"    case {block['start_vm_ip']}: prog_{c_block_name(block['block'])}(vm, vm_ip); return;")
-    print("    default: vm_unresolved_synthetic_tail(vm, vm_ip); return;")
+    print("    default: vm_program_unknown_entry(vm, vm_ip); return;")
     print("    }")
     print("}")
 
