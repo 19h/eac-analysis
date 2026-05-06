@@ -77,11 +77,13 @@ def main():
     ]
     if args.start_index is not None:
         planner += ["--start-index", str(args.start_index)]
-    run(planner, dry_run=args.dry_run)
 
     if args.dry_run:
-        run(["make", "-n", "native-gap-retdec-batches"], dry_run=True)
+        run([*planner, "--dry-run"])
+        run(["make", "-n", "native-gap-retdec-batches"])
         return
+
+    run(planner)
 
     indices = planned_indices(before, existing_range_indices(Path(".")))
     batch_targets = [f"native-gap-retdec-batch{index}" for index in indices]
