@@ -4,17 +4,17 @@ Compares executable ELF sections against native ranges already represented by re
 
 - executable sections: 5
 - executable bytes: 5651040
-- recovered executable bytes: 5324611
-- uncovered executable bytes: 326429
-- recovered range rows: 70945
-- uncovered gaps: 2794
+- recovered executable bytes: 5351491
+- uncovered executable bytes: 299549
+- recovered range rows: 71449
+- uncovered gaps: 2764
 
 | section | range | bytes | covered | uncovered | coverage | ranges |
 | --- | --- | ---: | ---: | ---: | ---: | ---: |
 | `.init` | `0x1fbd0-0x1fbe7` | 23 | 23 | 0 | 100.00% | 1 |
 | `.plt` | `0x1fbf0-0x20bd0` | 4064 | 4064 | 0 | 100.00% | 254 |
 | `.plt.got` | `0x20bd0-0x20be0` | 16 | 16 | 0 | 100.00% | 2 |
-| `.text` | `0x20c00-0x583650` | 5646928 | 5320499 | 326429 | 94.21% | 70685 |
+| `.text` | `0x20c00-0x583650` | 5646928 | 5347379 | 299549 | 94.69% | 71189 |
 | `.fini` | `0x583650-0x583659` | 9 | 9 | 0 | 100.00% | 3 |
 
 ## Largest Uncovered Gaps
@@ -47,17 +47,17 @@ Compares executable ELF sections against native ranges already represented by re
 | `.text` | `0x381c6-0x383c6` | 512 |
 | `.text` | `0x42e3c-0x4303c` | 512 |
 | `.text` | `0x604a5-0x606a5` | 512 |
-| `.text` | `0x6354a-0x6374a` | 512 |
-| `.text` | `0x6564a-0x6584a` | 512 |
-| `.text` | `0x66c54-0x66e54` | 512 |
 | `.text` | `0x6e490-0x6e690` | 512 |
-| `.text` | `0x70490-0x70690` | 512 |
-| `.text` | `0x70890-0x70a90` | 512 |
 | `.text` | `0x75008-0x75208` | 512 |
-| `.text` | `0x767c4-0x769c4` | 512 |
-| `.text` | `0x77a3d-0x77c3d` | 512 |
-| `.text` | `0x7803d-0x7823d` | 512 |
-| `.text` | `0xc92bb-0xc94bb` | 512 |
-| `.text` | `0xd0fc7-0xd11c7` | 512 |
-| `.text` | `0xd1bc7-0xd1dc7` | 512 |
-| `.text` | `0xd5bc7-0xd5dc7` | 512 |
+| `.text` | `0x4daff9-0x4db1f9` | 512 |
+| `.text` | `0x4db7f9-0x4db9f9` | 512 |
+| `.text` | `0x4e03f9-0x4e05f9` | 512 |
+| `.text` | `0x4e1479-0x4e1679` | 512 |
+| `.text` | `0x4e19f9-0x4e1bf9` | 512 |
+| `.text` | `0x4e1f79-0x4e2179` | 512 |
+| `.text` | `0x4e3ef9-0x4e40f9` | 512 |
+| `.text` | `0x4e47f9-0x4e49f9` | 512 |
+| `.text` | `0x4e6af9-0x4e6cf9` | 512 |
+| `.text` | `0x4e8cf9-0x4e8ef9` | 512 |
+| `.text` | `0x746db-0x748d8` | 509 |
+| `.text` | `0x1cbd55-0x1cbf51` | 508 |
