@@ -31,7 +31,11 @@ PROGRAM_PSEUDOCODE_FULL_C := $(PRIMARY_DIR)/vm_program_pseudocode_full.c
 PROGRAM_DECOMPILED_FULL_C := $(PRIMARY_DIR)/vm_program_decompiled_full.c
 PROGRAM_DECOMPILED_SPLIT_DIR := $(PRIMARY_DIR)/vm_programs_decompiled
 PROGRAM_DECOMPILED_SPLIT_MANIFEST := $(PRIMARY_DIR)/vm_programs_decompiled_manifest.tsv
+PROGRAM_DECOMPILED_FOLDED_DIR := $(PRIMARY_DIR)/vm_programs_decompiled_folded
+PROGRAM_DECOMPILED_FOLDED_MANIFEST := $(PRIMARY_DIR)/vm_programs_decompiled_folded_manifest.tsv
 PROGRAM_STRING_REFS_TSV := $(PRIMARY_DIR)/vm_program_string_refs.tsv
+PROGRAM_FOLDED_STRING_REFS_TSV := $(PRIMARY_DIR)/vm_program_folded_string_refs.tsv
+PROGRAM_MBA_REDUCED_TSVS := $(wildcard $(PRIMARY_DIR)/vm_program_atlas_*_mba_reduced.tsv)
 BEHAVIOR_INVENTORY_TSV := $(PRIMARY_DIR)/vm_behavior_inventory.tsv
 BEHAVIOR_GAP_REGISTER_TSV := $(PRIMARY_DIR)/vm_behavior_gap_register.tsv
 BEHAVIOR_INVENTORY_MD := $(PRIMARY_DIR)/vm_behavior_inventory.md
@@ -996,15 +1000,19 @@ program-mba-all:
 program-mba-focus-runs:
 	python3 vm_program_mba_focus_runs.py --rereduce
 
-program-decompiled-folded:
+$(PROGRAM_DECOMPILED_FOLDED_MANIFEST): vm_program_decompiled_fold_mba.py $(PROGRAM_DECOMPILED_SPLIT_MANIFEST) $(PRIMARY_DIR)/vm_bytecode_basic_blocks.tsv $(BYTECODE_IR_DECOMPILE_TSV) $(PRIMARY_DIR)/vm_bytecode_file_atlas.tsv $(PROGRAM_MBA_REDUCED_TSVS)
 	python3 vm_program_decompiled_fold_mba.py
-	python3 vm_program_string_refs.py --program-manifest $(PRIMARY_DIR)/vm_programs_decompiled_folded_manifest.tsv --output $(PRIMARY_DIR)/vm_program_folded_string_refs.tsv
+
+$(PROGRAM_FOLDED_STRING_REFS_TSV): vm_program_string_refs.py $(PROGRAM_DECOMPILED_FOLDED_MANIFEST) $(BINARY_DATA_SECTIONS_TSV) eac.elf
+	python3 vm_program_string_refs.py --program-manifest $(PROGRAM_DECOMPILED_FOLDED_MANIFEST) --output $(PROGRAM_FOLDED_STRING_REFS_TSV)
+
+program-decompiled-folded: $(PROGRAM_DECOMPILED_FOLDED_MANIFEST) $(PROGRAM_FOLDED_STRING_REFS_TSV)
 
 program-decompiled-folded-audit: program-decompiled-folded
 	python3 vm_program_decompiled_fold_mba_audit.py --syntax --jobs 8
 
 .PHONY: behavior-inventory behavior-inventory-audit
-behavior-inventory: vm_behavior_inventory.py program-decompiled-folded $(PRIMARY_DIR)/vm_bytecode_basic_blocks.tsv $(BYTECODE_IR_DECOMPILE_TSV) $(PRIMARY_TRACE) $(PRIMARY_DIR)/vm_trace_coverage_matrix.tsv $(PRIMARY_DIR)/vm_isa_handlers.tsv $(PRIMARY_DIR)/vm_native_linkage_stubs.tsv
+behavior-inventory: vm_behavior_inventory.py $(PROGRAM_DECOMPILED_FOLDED_MANIFEST) $(PROGRAM_FOLDED_STRING_REFS_TSV) $(PRIMARY_DIR)/vm_bytecode_basic_blocks.tsv $(BYTECODE_IR_DECOMPILE_TSV) $(PRIMARY_TRACE) $(PRIMARY_DIR)/vm_trace_coverage_matrix.tsv $(PRIMARY_DIR)/vm_isa_handlers.tsv $(PRIMARY_DIR)/vm_native_linkage_stubs.tsv
 	python3 vm_behavior_inventory.py --root $(PRIMARY_DIR)
 
 behavior-inventory-audit: behavior-inventory
