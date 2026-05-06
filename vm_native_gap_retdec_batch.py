@@ -856,6 +856,7 @@ def main():
         "RawDES_sbox5_at_594e60",
         "RawDES_sbox3_at_594f60",
         "RawDES_sbox1_at_595060",
+        "unlzx_table_three_at_584640",
     ]:
         if data_symbol in functions:
             print(f"extern int32_t {data_symbol};")

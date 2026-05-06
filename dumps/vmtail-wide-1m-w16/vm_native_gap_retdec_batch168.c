@@ -42,6 +42,8 @@ struct __locale_struct;
 struct _TYPEDEF_glob_t;
 struct _TYPEDEF___mbstate_t;
 struct _IO_FILE;
+struct __dirstream;
+struct dirent;
 struct pollfd;
 struct sockaddr;
 struct addrinfo;
@@ -362,6 +364,9 @@ int epoll_create(int size);
 int epoll_ctl(int epfd, int op, int fd, struct epoll_event *event);
 int epoll_wait(int epfd, struct epoll_event *events, int maxevents, int timeout);
 int close(int fd);
+struct __dirstream *opendir(const char *name);
+struct dirent *readdir(struct __dirstream *dirp);
+int closedir(struct __dirstream *dirp);
 int64_t blake3_hasher_finalize_seek();
 int ioctl(int fd, unsigned long request, ...);
 int poll(struct pollfd *fds, unsigned long nfds, int timeout);
@@ -714,14 +719,14 @@ int64_t function_3c371(uint64_t a1, int64_t a2) {
                 v10 = v12;
             }
             while (v7 != 0 && v6 - v7 <= (int64_t)&g2) {
-                // 0x3c957
-                v7 -= (int64_t)&g92;
-                int64_t v13 = v6 - v7; // 0x3c3d6
-                if (v13 < (int64_t)&g1) {
+                int64_t v13 = v7 != (int64_t)&g92 ? v7 - (int64_t)&g92 : 0;
+                int64_t v14 = v6 - v13; // 0x3c3d6
+                if (v14 < (int64_t)&g1) {
                     // break -> 0x3c974
                     break;
                 }
-                v8 = v13;
+                v7 = v13;
+                v8 = v14;
                 v9 = v8 < (int64_t)&g1 ? v8 : (int64_t)&g1;
                 v10 = 0x100000000 * v9 - 0x400000000 >> 32;
                 while (v10 >= 0) {
