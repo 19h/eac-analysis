@@ -96,6 +96,7 @@ int64_t unknown_6ae5a3c4(void);
 int64_t unknown_3d2a4ac0(void);
 int64_t unknown_ffffffffd3dfe90d(void);
 int64_t unknown_ffffffff8d401ab3(void);
+int64_t unknown_ffffffffc304842d(int64_t value);
 int64_t unknown_ffffffffd64cfc2a(int64_t dst, int64_t src);
 int64_t unknown_ffffffffe8914fc1(void);
 int64_t _ITM_RU1(int64_t src);

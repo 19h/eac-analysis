@@ -841,6 +841,7 @@ def main():
     print("int64_t unknown_3d2a4ac0(void);")
     print("int64_t unknown_ffffffffd3dfe90d(void);")
     print("int64_t unknown_ffffffff8d401ab3(void);")
+    print("int64_t unknown_ffffffffc304842d(int64_t value);")
     print("int64_t unknown_ffffffffd64cfc2a(int64_t dst, int64_t src);")
     print("int64_t unknown_ffffffffe8914fc1(void);")
     print("int64_t _ITM_RU1(int64_t src);")
