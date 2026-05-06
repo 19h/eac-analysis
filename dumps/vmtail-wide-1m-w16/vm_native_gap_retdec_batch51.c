@@ -79,6 +79,8 @@ void __asm_outsd(uint16_t port, int32_t value);
 uint8_t __readfsbyte(int64_t offset);
 uint64_t __readfsqword(int64_t offset);
 int64_t __asm_iretd(void);
+int64_t unknown_34e4aca1(int64_t value);
+int64_t unknown_6ae5a3c4(void);
 void __asm_rcl(int32_t value);
 void __asm_rep_movsb_memcpy(char *dst, char *src, int64_t count);
 void __asm_rep_stosb_memset(char *dst, char value, int64_t count);

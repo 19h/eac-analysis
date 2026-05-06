@@ -832,6 +832,8 @@ def main():
     print("uint8_t __readfsbyte(int64_t offset);")
     print("uint64_t __readfsqword(int64_t offset);")
     print("int64_t __asm_iretd(void);")
+    print("int64_t unknown_34e4aca1(int64_t value);")
+    print("int64_t unknown_6ae5a3c4(void);")
     print("void __asm_rcl(int32_t value);")
     print("void __asm_rep_movsb_memcpy(char *dst, char *src, int64_t count);")
     print("void __asm_rep_stosb_memset(char *dst, char value, int64_t count);")
