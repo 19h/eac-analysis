@@ -676,6 +676,7 @@ def extract_functions(text):
     )
     functions = re.sub(r"(int64_t\s+[A-Za-z_]\w+\s*=\s*)&([A-Za-z_]\w*)", r"\1(int64_t)&\2", functions)
     functions = re.sub(r"(int64_t\s+v\d+\s*=\s*)&([A-Za-z_]\w*)", r"\1(int64_t)&\2", functions)
+    functions = re.sub(r"(unsigned char\s+v\d+\s*=\s*)\*g(\d+)", r"\1*(unsigned char *)&g\2", functions)
     functions = re.sub(r"(\bv\d+\s*=\s*)&([A-Za-z_]\w*)", r"\1(int64_t)&\2", functions)
     functions = re.sub(r"((?:u?int(?:8|16|32|64)_t|char)\s*\*\s+v\d+\s*=\s*)g(\d+)", r"\1(void *)(int64_t)g\2", functions)
     functions = re.sub(r" = &g(\d+)", r" = (int64_t)&g\1", functions)
@@ -865,6 +866,7 @@ def main():
         "RawDES_sbox3_at_594f60",
         "RawDES_sbox1_at_595060",
         "unlzx_table_three_at_584640",
+        "SHA256_Hash_constant_words_K__0x428a2f98__at_598520",
     ]:
         if data_symbol in functions:
             print(f"extern int32_t {data_symbol};")

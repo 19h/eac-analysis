@@ -200,6 +200,7 @@ int64_t entry_point();
 unsigned char llvm_ctpop_i8(unsigned char value);
 uint16_t llvm_bswap_i16(uint16_t value);
 uint32_t llvm_bswap_i32(uint32_t value);
+uint64_t llvm_ctlz_i64(uint64_t value, bool is_zero_undef);
 void __asm_int(int32_t interrupt);
 int64_t __asm_int1();
 int64_t __asm_int3();
@@ -302,7 +303,7 @@ int128_t __asm_movd(int32_t value);
 int128_t __asm_movss(int32_t value);
 int64_t __asm_movss_133(int128_t value);
 int128_t __asm_movdqa(int128_t value);
-void __asm_movq(int64_t value, int128_t dst);
+int128_t __asm_movq();
 int128_t __asm_aesimc(int128_t value);
 int128_t __asm_aeskeygenassist(int128_t value, int imm);
 int128_t __asm_movdqu(int128_t value);
@@ -319,8 +320,10 @@ int128_t __asm_pshufd(int128_t value, int imm);
 int128_t __asm_psrldq(int128_t value, int count);
 int128_t __asm_pslldq(int128_t value, int count);
 int128_t __asm_punpckldq(int128_t left, int128_t right);
+int128_t __asm_punpcklqdq(int128_t left, int128_t right);
 int128_t __asm_psllq(int128_t value, int count);
 int128_t __asm_psrlq(int128_t value, int count);
+int128_t __asm_paddq(int128_t left, int128_t right);
 int128_t __asm_por(int128_t left, int128_t right);
 int128_t __asm_pxor(int128_t left, int128_t right);
 int128_t __asm_xorps(int128_t left, int128_t right);
@@ -336,7 +339,7 @@ void __asm_ucomisd(int128_t left, int128_t right);
 void __asm_ucomiss(int128_t left, int64_t right);
 void __asm_ucomiss_134(int128_t left, int128_t right);
 int128_t __asm_movups();
-void __asm_movups_133();
+int128_t __asm_movups_133();
 void __asm_movups_134();
 int128_t __asm_movaps(int128_t value);
 float80_t __frontend_reg_load_fpr(int32_t reg);
@@ -3774,7 +3777,7 @@ int64_t ZydisDecoderDecodeInstruction(int64_t a1, int64_t a2, int64_t a3, int64_
     int64_t v154 = v231; // 0x4ebc6b
     goto lab_0x4ebc73;
   lab_0x4ea7e4:;
-    unsigned char v128 = *g87; // 0x4ea800
+    unsigned char v128 = *(unsigned char *)&g87; // 0x4ea800
     if (v128 < 30) {
         int32_t v129 = *(int32_t *)(4 * (int64_t)v128 + (int64_t)&g57); // 0x4ea80c
         return (int64_t)v129 + (int64_t)&g57;
