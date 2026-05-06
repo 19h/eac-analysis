@@ -101,13 +101,16 @@ def try_range(selected, batch_index, timeout, keep_failed):
         return True, "ok"
 
 
-def salvage_range(selected, batch_index, timeout, min_bytes, max_depth, keep_failed):
+def salvage_range(selected, batch_index, timeout, min_bytes, max_depth, keep_failed, excluded):
     accepted = []
     rejected = []
     stack = [(selected, 0)]
     while stack:
         current, depth = stack.pop(0)
         if not RANGE_RE.match(current):
+            continue
+        if current in excluded:
+            print(f"skip\t{current}\tused")
             continue
         start, end = parse_range(current)
         ok, reason = try_range(current, batch_index, timeout, keep_failed)
@@ -166,6 +169,7 @@ def main():
             args.min_bytes,
             args.max_depth,
             args.keep_failed,
+            excluded,
         )
         accepted_from_row = 0
         for item in ranges:
