@@ -18,14 +18,14 @@ artifact	path_frontier_slot_audit_md_path	dumps/vmtail-wide-1m-w16/vm_path_front
 artifact	path_frontier_slot_audit_md_lines	24	Current line count.
 artifact	path_frontier_slot_audit_md_bytes	1264	Current file size in bytes.
 artifact	native_executable_coverage_audit_c_path	dumps/vmtail-wide-1m-w16/vm_native_executable_coverage_audit.c	Generated reconstruction artifact.
-artifact	native_executable_coverage_audit_c_lines	13105	Current line count.
-artifact	native_executable_coverage_audit_c_bytes	1325093	Current file size in bytes.
+artifact	native_executable_coverage_audit_c_lines	13447	Current line count.
+artifact	native_executable_coverage_audit_c_bytes	1361801	Current file size in bytes.
 artifact	native_executable_coverage_audit_tsv_path	dumps/vmtail-wide-1m-w16/vm_native_executable_coverage_audit.tsv	Generated reconstruction artifact.
-artifact	native_executable_coverage_audit_tsv_lines	13044	Current line count.
-artifact	native_executable_coverage_audit_tsv_bytes	1227834	Current file size in bytes.
+artifact	native_executable_coverage_audit_tsv_lines	13386	Current line count.
+artifact	native_executable_coverage_audit_tsv_bytes	1261740	Current file size in bytes.
 artifact	native_executable_coverage_audit_md_path	dumps/vmtail-wide-1m-w16/vm_native_executable_coverage_audit.md	Generated reconstruction artifact.
 artifact	native_executable_coverage_audit_md_lines	63	Current line count.
-artifact	native_executable_coverage_audit_md_bytes	2522	Current file size in bytes.
+artifact	native_executable_coverage_audit_md_bytes	2515	Current file size in bytes.
 artifact	native_function_inventory_c_path	dumps/vmtail-wide-1m-w16/vm_native_function_inventory.c	Generated reconstruction artifact.
 artifact	native_function_inventory_c_lines	9969	Current line count.
 artifact	native_function_inventory_c_bytes	1177248	Current file size in bytes.
@@ -309,8 +309,8 @@ artifact	source_bundle_path	dumps/vmtail-wide-1m-w16/vm_recovered_source_bundle.
 artifact	source_bundle_lines	304448	Current line count.
 artifact	source_bundle_bytes	20567203	Current file size in bytes.
 artifact	source_all_evidence_bundle_path	dumps/vmtail-wide-1m-w16/vm_recovered_source_all_evidence_bundle.c	Generated reconstruction artifact.
-artifact	source_all_evidence_bundle_lines	722952	Current line count.
-artifact	source_all_evidence_bundle_bytes	47563437	Current file size in bytes.
+artifact	source_all_evidence_bundle_lines	729002	Current line count.
+artifact	source_all_evidence_bundle_bytes	47971947	Current file size in bytes.
 artifact	synthetic_successor_gaps_tsv_path	dumps/vmtail-wide-1m-w16/vm_synthetic_successor_gaps.tsv	Generated reconstruction artifact.
 artifact	synthetic_successor_gaps_tsv_lines	22	Current line count.
 artifact	synthetic_successor_gaps_tsv_bytes	5197	Current file size in bytes.
@@ -1205,6 +1205,24 @@ artifact	native_gap_retdec_batch231_bytes	27540	Current file size in bytes.
 artifact	native_gap_retdec_batch232_path	dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch232.c	Generated reconstruction artifact.
 artifact	native_gap_retdec_batch232_lines	863	Current line count.
 artifact	native_gap_retdec_batch232_bytes	32521	Current file size in bytes.
+artifact	native_gap_retdec_batch233_path	dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch233.c	Generated reconstruction artifact.
+artifact	native_gap_retdec_batch233_lines	791	Current line count.
+artifact	native_gap_retdec_batch233_bytes	30764	Current file size in bytes.
+artifact	native_gap_retdec_batch234_path	dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch234.c	Generated reconstruction artifact.
+artifact	native_gap_retdec_batch234_lines	760	Current line count.
+artifact	native_gap_retdec_batch234_bytes	29279	Current file size in bytes.
+artifact	native_gap_retdec_batch235_path	dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch235.c	Generated reconstruction artifact.
+artifact	native_gap_retdec_batch235_lines	916	Current line count.
+artifact	native_gap_retdec_batch235_bytes	33096	Current file size in bytes.
+artifact	native_gap_retdec_batch236_path	dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch236.c	Generated reconstruction artifact.
+artifact	native_gap_retdec_batch236_lines	1103	Current line count.
+artifact	native_gap_retdec_batch236_bytes	40471	Current file size in bytes.
+artifact	native_gap_retdec_batch237_path	dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch237.c	Generated reconstruction artifact.
+artifact	native_gap_retdec_batch237_lines	890	Current line count.
+artifact	native_gap_retdec_batch237_bytes	35097	Current file size in bytes.
+artifact	native_gap_retdec_batch238_path	dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch238.c	Generated reconstruction artifact.
+artifact	native_gap_retdec_batch238_lines	1236	Current line count.
+artifact	native_gap_retdec_batch238_bytes	42641	Current file size in bytes.
 c_shape	handler_functions	360	All-entry handler/operator C functions.
 c_shape	handler_next_entry_table_offset_normalizations	139	Handler fall-through slots normalized as dispatch-table byte offsets.
 c_shape	handler_next_entry_slot_index_normalizations	10	Handler fall-through slots normalized as direct slot indices.
@@ -1333,16 +1351,16 @@ coverage_frontier	config_coverage_synthetic_fill_only_rows	4	Derived synthetic-f
 c_shape	config_coverage_metric_c_rows	71	Syntax-checkable C metric rows in the config coverage frontier artifact.
 c_shape	config_coverage_frontier_c_rows	173	Syntax-checkable C frontier rows in the config coverage frontier artifact.
 coverage_frontier	native_executable_coverage_section_rows	5	Executable ELF section rows audited against recovered native C sidecar ranges.
-coverage_frontier	native_executable_coverage_range_rows	10638	Recovered native executable range rows included in the executable coverage audit.
-coverage_frontier	native_executable_coverage_gap_rows	2400	Uncovered executable gap rows retained as explicit native reconstruction frontier evidence.
+coverage_frontier	native_executable_coverage_range_rows	10974	Recovered native executable range rows included in the executable coverage audit.
+coverage_frontier	native_executable_coverage_gap_rows	2406	Uncovered executable gap rows retained as explicit native reconstruction frontier evidence.
 coverage_frontier	native_executable_coverage_total_bytes	5651040	Total executable ELF bytes in allocatable executable sections.
-coverage_frontier	native_executable_coverage_recovered_bytes	1242854	Executable ELF bytes intersecting recovered native C sidecar ranges.
-coverage_frontier	native_executable_coverage_uncovered_bytes	4408186	Executable ELF bytes not yet represented by recovered native C sidecar ranges.
-coverage_frontier	native_executable_coverage_percent_x100	2199	Recovered executable-byte percentage scaled by 100.
-coverage_frontier	native_executable_text_coverage_x100	2200	Recovered .text executable-byte percentage scaled by 100.
+coverage_frontier	native_executable_coverage_recovered_bytes	1267430	Executable ELF bytes intersecting recovered native C sidecar ranges.
+coverage_frontier	native_executable_coverage_uncovered_bytes	4383610	Executable ELF bytes not yet represented by recovered native C sidecar ranges.
+coverage_frontier	native_executable_coverage_percent_x100	2242	Recovered executable-byte percentage scaled by 100.
+coverage_frontier	native_executable_text_coverage_x100	2244	Recovered .text executable-byte percentage scaled by 100.
 c_shape	native_executable_coverage_c_section_rows	5	Executable section coverage rows retained in C form.
-c_shape	native_executable_coverage_c_range_rows	10638	Recovered native executable range rows retained in C form.
-c_shape	native_executable_coverage_c_gap_rows	2400	Uncovered native executable gap rows retained in C form.
+c_shape	native_executable_coverage_c_range_rows	10974	Recovered native executable range rows retained in C form.
+c_shape	native_executable_coverage_c_gap_rows	2406	Uncovered native executable gap rows retained in C form.
 coverage_frontier	native_function_inventory_rows	3309	Radare2 native function-boundary rows rendered as weak C skeleton metadata.
 coverage_frontier	native_function_inventory_text_rows	3063	Radare2 function-boundary rows inside the ELF .text section.
 coverage_frontier	native_function_inventory_kind_mix	entrypoint:1,import_plt:244,native_discovered:591,r2_discovered:2412,symbol_named:61	Kind mix for radare2 native function-boundary inventory rows.
@@ -2056,6 +2074,24 @@ c_shape	native_gap_retdec_batch231_address_ranges	16	RetDec address-range commen
 c_shape	native_gap_retdec_batch232_selected_ranges	8	Fixed top-ranked native gap queue ranges selected for RetDec batch 232.
 c_shape	native_gap_retdec_batch232_functions	33	RetDec native C function bodies emitted for native gap batch 232.
 c_shape	native_gap_retdec_batch232_address_ranges	33	RetDec address-range comments emitted for native gap batch 232.
+c_shape	native_gap_retdec_batch233_selected_ranges	8	Fixed top-ranked native gap queue ranges selected for RetDec batch 233.
+c_shape	native_gap_retdec_batch233_functions	35	RetDec native C function bodies emitted for native gap batch 233.
+c_shape	native_gap_retdec_batch233_address_ranges	35	RetDec address-range comments emitted for native gap batch 233.
+c_shape	native_gap_retdec_batch234_selected_ranges	8	Fixed top-ranked native gap queue ranges selected for RetDec batch 234.
+c_shape	native_gap_retdec_batch234_functions	27	RetDec native C function bodies emitted for native gap batch 234.
+c_shape	native_gap_retdec_batch234_address_ranges	27	RetDec address-range comments emitted for native gap batch 234.
+c_shape	native_gap_retdec_batch235_selected_ranges	8	Fixed top-ranked native gap queue ranges selected for RetDec batch 235.
+c_shape	native_gap_retdec_batch235_functions	53	RetDec native C function bodies emitted for native gap batch 235.
+c_shape	native_gap_retdec_batch235_address_ranges	53	RetDec address-range comments emitted for native gap batch 235.
+c_shape	native_gap_retdec_batch236_selected_ranges	8	Fixed top-ranked native gap queue ranges selected for RetDec batch 236.
+c_shape	native_gap_retdec_batch236_functions	60	RetDec native C function bodies emitted for native gap batch 236.
+c_shape	native_gap_retdec_batch236_address_ranges	60	RetDec address-range comments emitted for native gap batch 236.
+c_shape	native_gap_retdec_batch237_selected_ranges	8	Fixed top-ranked native gap queue ranges selected for RetDec batch 237.
+c_shape	native_gap_retdec_batch237_functions	36	RetDec native C function bodies emitted for native gap batch 237.
+c_shape	native_gap_retdec_batch237_address_ranges	36	RetDec address-range comments emitted for native gap batch 237.
+c_shape	native_gap_retdec_batch238_selected_ranges	8	Fixed top-ranked native gap queue ranges selected for RetDec batch 238.
+c_shape	native_gap_retdec_batch238_functions	77	RetDec native C function bodies emitted for native gap batch 238.
+c_shape	native_gap_retdec_batch238_address_ranges	77	RetDec address-range comments emitted for native gap batch 238.
 data_surface	binary_data_section_rows	29	Allocatable ELF sections tracked by the binary data carrier.
 data_surface	binary_data_emitted_section_rows	22	Allocatable non-executable ELF sections emitted as exact C byte arrays.
 data_surface	binary_data_emitted_bytes	0xe63f7	Exact bytes carried for allocatable non-executable ELF data sections.
@@ -2302,8 +2338,8 @@ coverage_frontier	all_evidence_bundle_path_frontier_dispatch_cases	10	Unvalidate
 coverage_frontier	all_evidence_bundle_path_frontier_slot_audit_rows	10	Weak frontier slot-expression audit rows retained in the all-evidence single file.
 coverage_frontier	all_evidence_bundle_path_frontier_slot_audit_symbols	6	Prefixed path frontier slot-audit symbols retained in the all-evidence single file.
 coverage_frontier	all_evidence_bundle_native_executable_coverage_section_rows	5	Native executable section coverage rows retained in the all-evidence single file.
-coverage_frontier	all_evidence_bundle_native_executable_coverage_range_rows	10638	Recovered native executable range rows retained in the all-evidence single file.
-coverage_frontier	all_evidence_bundle_native_executable_coverage_gap_rows	2400	Uncovered native executable gap rows retained in the all-evidence single file.
+coverage_frontier	all_evidence_bundle_native_executable_coverage_range_rows	10974	Recovered native executable range rows retained in the all-evidence single file.
+coverage_frontier	all_evidence_bundle_native_executable_coverage_gap_rows	2406	Uncovered native executable gap rows retained in the all-evidence single file.
 coverage_frontier	all_evidence_bundle_native_executable_coverage_symbols	18	Prefixed native executable coverage audit symbols retained in the all-evidence single file.
 coverage_frontier	all_evidence_bundle_native_function_inventory_stub_functions	3309	Weak native function skeleton stubs retained in the all-evidence single file.
 coverage_frontier	all_evidence_bundle_native_function_inventory_metadata_rows	3309	Weak native function inventory metadata rows retained in the all-evidence single file.
@@ -2776,9 +2812,21 @@ c_shape	all_evidence_bundle_native_gap_retdec_batch231_functions	16	RetDec nativ
 c_shape	all_evidence_bundle_native_gap_retdec_batch231_symbols	548	Prefixed native gap RetDec batch 231 symbols retained in the all-evidence single file.
 c_shape	all_evidence_bundle_native_gap_retdec_batch232_functions	33	RetDec native C function bodies from native gap batch 232 retained in the all-evidence single file.
 c_shape	all_evidence_bundle_native_gap_retdec_batch232_symbols	599	Prefixed native gap RetDec batch 232 symbols retained in the all-evidence single file.
-c_shape	all_evidence_bundle_sidecar_sections	280	Renamed native RetDec/control sidecar files appended to the all-evidence single file.
-c_shape	all_evidence_bundle_prefixed_retdec_functions	5876	RetDec native C functions carried in the all-evidence single file with per-sidecar symbol prefixes.
-c_shape	all_evidence_bundle_prefixed_symbols	149050	Prefixed symbols used to keep overlapping native sidecar C in one translation unit.
+c_shape	all_evidence_bundle_native_gap_retdec_batch233_functions	35	RetDec native C function bodies from native gap batch 233 retained in the all-evidence single file.
+c_shape	all_evidence_bundle_native_gap_retdec_batch233_symbols	599	Prefixed native gap RetDec batch 233 symbols retained in the all-evidence single file.
+c_shape	all_evidence_bundle_native_gap_retdec_batch234_functions	27	RetDec native C function bodies from native gap batch 234 retained in the all-evidence single file.
+c_shape	all_evidence_bundle_native_gap_retdec_batch234_symbols	563	Prefixed native gap RetDec batch 234 symbols retained in the all-evidence single file.
+c_shape	all_evidence_bundle_native_gap_retdec_batch235_functions	53	RetDec native C function bodies from native gap batch 235 retained in the all-evidence single file.
+c_shape	all_evidence_bundle_native_gap_retdec_batch235_symbols	649	Prefixed native gap RetDec batch 235 symbols retained in the all-evidence single file.
+c_shape	all_evidence_bundle_native_gap_retdec_batch236_functions	60	RetDec native C function bodies from native gap batch 236 retained in the all-evidence single file.
+c_shape	all_evidence_bundle_native_gap_retdec_batch236_symbols	688	Prefixed native gap RetDec batch 236 symbols retained in the all-evidence single file.
+c_shape	all_evidence_bundle_native_gap_retdec_batch237_functions	36	RetDec native C function bodies from native gap batch 237 retained in the all-evidence single file.
+c_shape	all_evidence_bundle_native_gap_retdec_batch237_symbols	635	Prefixed native gap RetDec batch 237 symbols retained in the all-evidence single file.
+c_shape	all_evidence_bundle_native_gap_retdec_batch238_functions	77	RetDec native C function bodies from native gap batch 238 retained in the all-evidence single file.
+c_shape	all_evidence_bundle_native_gap_retdec_batch238_symbols	734	Prefixed native gap RetDec batch 238 symbols retained in the all-evidence single file.
+c_shape	all_evidence_bundle_sidecar_sections	286	Renamed native RetDec/control sidecar files appended to the all-evidence single file.
+c_shape	all_evidence_bundle_prefixed_retdec_functions	6164	RetDec native C functions carried in the all-evidence single file with per-sidecar symbol prefixes.
+c_shape	all_evidence_bundle_prefixed_symbols	152918	Prefixed symbols used to keep overlapping native sidecar C in one translation unit.
 coverage_frontier	all_evidence_bundle_config_coverage_metric_rows	71	Config coverage audit metric rows retained in the all-evidence single C file.
 coverage_frontier	all_evidence_bundle_config_coverage_frontier_rows	173	Config/path frontier rows retained in the all-evidence single C file.
 coverage_frontier	all_evidence_bundle_config_coverage_frontier_symbols	8	Prefixed config coverage frontier symbols retained in the all-evidence single C file.
