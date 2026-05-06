@@ -253,6 +253,12 @@ def main():
     parser.add_argument("--rounds", type=int, default=4)
     parser.add_argument("--jobs", type=int, default=min(os.cpu_count() or 1, 8))
     parser.add_argument("--chunk-bytes", type=lambda value: int(value, 0), default=0x200)
+    parser.add_argument(
+        "--section",
+        action="append",
+        default=None,
+        help="Coverage section to probe; repeat for multiple sections, or use 'all'.",
+    )
     parser.add_argument("--max-gap-chunks", type=int, default=4)
     parser.add_argument("--max-candidates", type=int, default=64)
     parser.add_argument("--max-accepted", type=int, default=8)
@@ -277,6 +283,7 @@ def main():
         help="Quarantine failed multi-range batches, retry their ranges one at a time, cache rejects, and continue.",
     )
     args = parser.parse_args()
+    sections = args.section or [".text"]
 
     baseline = read_coverage_metrics()
     created_total = []
@@ -289,6 +296,7 @@ def main():
                 "vm_executable_gap_retdec_probe.py",
                 "--root",
                 args.root,
+                *sum((["--section", section] for section in sections), []),
                 "--chunk-bytes",
                 hex(args.chunk_bytes),
                 "--max-gap-chunks",

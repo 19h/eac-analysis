@@ -20,11 +20,13 @@ def format_range(start, end):
     return f"0x{start:x}-0x{end:x}"
 
 
-def read_gaps(path):
+def read_gaps(path, sections):
+    wanted = set(sections)
     gaps = []
     with path.open(newline="", errors="replace") as handle:
         for row in csv.DictReader(handle, delimiter="\t"):
-            if row.get("row_type") != "gap" or row.get("section") != ".text":
+            section = row.get("section")
+            if row.get("row_type") != "gap" or ("all" not in wanted and section not in wanted):
                 continue
             start = int(row["start"], 16)
             stop = int(row["stop"], 16)
@@ -185,6 +187,12 @@ def main():
         description="Probe largest executable coverage gaps for syntax-clean targeted RetDec chunks."
     )
     parser.add_argument("--coverage", type=Path, default=DEFAULT_COVERAGE)
+    parser.add_argument(
+        "--section",
+        action="append",
+        default=None,
+        help="Coverage section to probe; repeat for multiple sections, or use 'all'.",
+    )
     parser.add_argument("--root", type=Path, default=Path("."))
     parser.add_argument("--start-index", type=int)
     parser.add_argument("--chunk-bytes", type=lambda value: int(value, 0), default=0x200)
@@ -199,13 +207,14 @@ def main():
     args = parser.parse_args()
 
     batch_index = args.start_index if args.start_index is not None else next_batch_index(args.root)
+    sections = args.section or [".text"]
     output = args.root / f"native_gap_retdec_batch{batch_index:02d}.ranges"
     generator_key = generator_fingerprint()
     used = {item for item in used_ranges(args.root) if RANGE_RE.match(item)}
     used.update(read_reject_cache(args.reject_cache, generator_key))
     probe_jobs = max(1, args.probe_jobs)
     candidates = []
-    for selected in candidate_ranges(read_gaps(args.coverage), args.chunk_bytes, args.max_gap_chunks, used):
+    for selected in candidate_ranges(read_gaps(args.coverage, sections), args.chunk_bytes, args.max_gap_chunks, used):
         if len(candidates) >= args.max_candidates:
             break
         candidates.append(selected)

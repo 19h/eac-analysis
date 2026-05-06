@@ -38,10 +38,12 @@ static const VMNativeExecSectionCoverage k_vm_native_exec_section_coverage[] = {
     { ".plt", 0x1fbf0ull, 0x20bd0ull, 4064ull, 0ull, 4064ull, 0u, 0u, 0u },
     { ".plt.got", 0x20bd0ull, 0x20be0ull, 16ull, 0ull, 16ull, 0u, 0u, 0u },
     { ".text", 0x20c00ull, 0x583650ull, 5646928ull, 2205414ull, 3441514ull, 3905u, 24630u, 2717u },
-    { ".fini", 0x583650ull, 0x583659ull, 9ull, 0ull, 9ull, 0u, 0u, 0u },
+    { ".fini", 0x583650ull, 0x583659ull, 9ull, 9ull, 0ull, 10000u, 2u, 1u },
 };
 
 static const VMNativeRecoveredRange k_vm_native_recovered_ranges[] = {
+    { ".fini", 0x583650ull, 0x583659ull, 9ull, "retdec_address_range", "vm_native_gap_retdec_batch524.c" },
+    { ".fini", 0x583650ull, 0x583659ull, 9ull, "retdec_header_range", "vm_native_gap_retdec_batch524.c" },
     { ".text", 0x20c00ull, 0x20c63ull, 99ull, "retdec_address_range", "vm_native_gap_retdec_batch69.c" },
     { ".text", 0x20c00ull, 0x20c63ull, 99ull, "retdec_header_range", "vm_native_gap_retdec_batch69.c" },
     { ".text", 0x20c63ull, 0x20d1eull, 187ull, "retdec_address_range", "vm_native_gap_retdec_batch35.c" },
@@ -26763,7 +26765,6 @@ static const VMNativeExecutableGap k_vm_native_executable_gaps[] = {
     { ".text", 0x579af6ull, 0x579b00ull, 10ull },
     { ".text", 0x581696ull, 0x5816a0ull, 10ull },
     { ".text", 0x583606ull, 0x583610ull, 10ull },
-    { ".fini", 0x583650ull, 0x583659ull, 9ull },
     { ".text", 0x52057ull, 0x52060ull, 9ull },
     { ".text", 0x68f97ull, 0x68fa0ull, 9ull },
     { ".text", 0x68fa7ull, 0x68fb0ull, 9ull },
@@ -27411,7 +27412,7 @@ static unsigned vm_native_executable_gap_count(void) {
 
 _Static_assert(sizeof(k_vm_native_exec_section_coverage) / sizeof(k_vm_native_exec_section_coverage[0]) == 5u,
                "native executable section count changed");
-_Static_assert(sizeof(k_vm_native_recovered_ranges) / sizeof(k_vm_native_recovered_ranges[0]) == 24630u,
+_Static_assert(sizeof(k_vm_native_recovered_ranges) / sizeof(k_vm_native_recovered_ranges[0]) == 24632u,
                "native recovered range count changed");
-_Static_assert(sizeof(k_vm_native_executable_gaps) / sizeof(k_vm_native_executable_gaps[0]) == 2720u,
+_Static_assert(sizeof(k_vm_native_executable_gaps) / sizeof(k_vm_native_executable_gaps[0]) == 2719u,
                "native executable gap count changed");
