@@ -411,3 +411,286 @@ native_executable_coverage_recovered_bytes	2789622	2820854	delta=+31232
 native_executable_coverage_uncovered_bytes	2861418	2830186	delta=-31232
 round_start	9
 + python3 vm_executable_gap_retdec_probe.py --root . --section .text --chunk-bytes 0x200 --min-chunk-bytes 0x80 --max-split-candidates 64 --max-gap-chunks 5 --max-candidates 192 --max-accepted 8 --probe-jobs 8 --timeout 30 --reject-cache dumps/vmtail-wide-1m-w16/vm_executable_gap_retdec_reject_cache.tsv
+try	0x2668c2-0x266ac2	ok
+try	0x2660c2-0x2662c2	ok
+try	0x3993b1-0x3995b1	ok
+try	0x2664c2-0x2666c2	ok
+try	0x3995b1-0x3997b1	ok
+try	0x2662c2-0x2664c2	ok
+try	0x3997b1-0x3999b1	ok
+try	0x2666c2-0x2668c2	ok
+wrote	native_gap_retdec_batch777.ranges	8
+# elapsed 4.10s
+created_batches	777
++ make -j 8 native-gap-retdec-batch777
+make dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch777.c
+make[1]: Entering directory '/models/dev/sc-rev/eac/eacsym'
+python3 vm_native_gap_retdec_batch.py --batch-index 777 --ranges-file native_gap_retdec_batch777.ranges > dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch777.c
+native_gap_retdec_batch=777
+native_gap_retdec_selected_ranges=8
+make[1]: Leaving directory '/models/dev/sc-rev/eac/eacsym'
+# elapsed 1.75s
++ cc -std=c11 -fsyntax-only -w dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch777.c
+# elapsed 0.01s
++ make -s native-executable-coverage-audit native-retdec-gap-queue
+# elapsed 1.67s
++ make -s uncovered-executable-gaps
+uncovered_executable_gaps=2877 bytes=2826090
+uncovered_executable_gaps=2877 bytes=2826090
+uncovered_executable_gaps=2877 bytes=2826090
+# elapsed 1.09s
+coverage_delta
+native_executable_coverage_range_rows	33277	33725	delta=+448
+native_executable_coverage_gap_rows	2878	2882	delta=+4
+native_executable_coverage_recovered_bytes	2789622	2824950	delta=+35328
+native_executable_coverage_uncovered_bytes	2861418	2826090	delta=-35328
+round_start	10
++ python3 vm_executable_gap_retdec_probe.py --root . --section .text --chunk-bytes 0x200 --min-chunk-bytes 0x80 --max-split-candidates 64 --max-gap-chunks 5 --max-candidates 192 --max-accepted 8 --probe-jobs 8 --timeout 30 --reject-cache dumps/vmtail-wide-1m-w16/vm_executable_gap_retdec_reject_cache.tsv
+try	0x244818-0x244a18	ok
+try	0x244018-0x244218	ok
+try	0x244618-0x244818	ok
+try	0x244418-0x244618	ok
+try	0x360bbe-0x360dbe	ok
+try	0x244218-0x244418	ok
+try	0x3609be-0x360bbe	ok
+try	0x360dbe-0x360fbe	ok
+wrote	native_gap_retdec_batch778.ranges	8
+# elapsed 3.99s
+created_batches	778
++ make -j 8 native-gap-retdec-batch778
+make dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch778.c
+make[1]: Entering directory '/models/dev/sc-rev/eac/eacsym'
+python3 vm_native_gap_retdec_batch.py --batch-index 778 --ranges-file native_gap_retdec_batch778.ranges > dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch778.c
+native_gap_retdec_batch=778
+native_gap_retdec_selected_ranges=8
+make[1]: Leaving directory '/models/dev/sc-rev/eac/eacsym'
+# elapsed 1.73s
++ cc -std=c11 -fsyntax-only -w dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch778.c
+# elapsed 0.01s
++ make -s native-executable-coverage-audit native-retdec-gap-queue
+# elapsed 1.64s
++ make -s uncovered-executable-gaps
+uncovered_executable_gaps=2877 bytes=2821994
+uncovered_executable_gaps=2877 bytes=2821994
+uncovered_executable_gaps=2877 bytes=2821994
+# elapsed 1.07s
+coverage_delta
+native_executable_coverage_range_rows	33277	33767	delta=+490
+native_executable_coverage_gap_rows	2878	2882	delta=+4
+native_executable_coverage_recovered_bytes	2789622	2829046	delta=+39424
+native_executable_coverage_uncovered_bytes	2861418	2821994	delta=-39424
+round_start	11
++ python3 vm_executable_gap_retdec_probe.py --root . --section .text --chunk-bytes 0x200 --min-chunk-bytes 0x80 --max-split-candidates 64 --max-gap-chunks 5 --max-candidates 192 --max-accepted 8 --probe-jobs 8 --timeout 30 --reject-cache dumps/vmtail-wide-1m-w16/vm_executable_gap_retdec_reject_cache.tsv
+try	0x4e55f9-0x4e57f9	reject
+split	0x4e55f9-0x4e57f9	0x4e55f9-0x4e56f9
+split	0x4e55f9-0x4e57f9	0x4e56f9-0x4e57f9
+try	0x4e5bf9-0x4e5df9	reject
+split	0x4e5bf9-0x4e5df9	0x4e5bf9-0x4e5cf9
+split	0x4e5bf9-0x4e5df9	0x4e5cf9-0x4e5df9
+try	0x332223-0x332423	reject
+split	0x332223-0x332423	0x332223-0x332323
+split	0x332223-0x332423	0x332323-0x332423
+try	0x332023-0x332223	reject
+split	0x332023-0x332223	0x332023-0x332123
+split	0x332023-0x332223	0x332123-0x332223
+try	0x4e53f9-0x4e55f9	reject
+split	0x4e53f9-0x4e55f9	0x4e53f9-0x4e54f9
+split	0x4e53f9-0x4e55f9	0x4e54f9-0x4e55f9
+try	0x4e57f9-0x4e59f9	ok
+try	0x331e23-0x332023	ok
+try	0x4e59f9-0x4e5bf9	reject
+split	0x4e59f9-0x4e5bf9	0x4e59f9-0x4e5af9
+split	0x4e59f9-0x4e5bf9	0x4e5af9-0x4e5bf9
+try	0x4e5cf9-0x4e5df9	reject
+split	0x4e5cf9-0x4e5df9	0x4e5cf9-0x4e5d79
+split	0x4e5cf9-0x4e5df9	0x4e5d79-0x4e5df9
+try	0x4e56f9-0x4e57f9	reject
+split	0x4e56f9-0x4e57f9	0x4e56f9-0x4e5779
+split	0x4e56f9-0x4e57f9	0x4e5779-0x4e57f9
+try	0x332323-0x332423	ok
+try	0x4e54f9-0x4e55f9	reject
+split	0x4e54f9-0x4e55f9	0x4e54f9-0x4e5579
+split	0x4e54f9-0x4e55f9	0x4e5579-0x4e55f9
+try	0x332023-0x332123	reject
+split	0x332023-0x332123	0x332023-0x3320a3
+split	0x332023-0x332123	0x3320a3-0x332123
+try	0x332123-0x332223	ok
+try	0x4e5af9-0x4e5bf9	reject
+split	0x4e5af9-0x4e5bf9	0x4e5af9-0x4e5b79
+split	0x4e5af9-0x4e5bf9	0x4e5b79-0x4e5bf9
+try	0x4e53f9-0x4e54f9	reject
+split	0x4e53f9-0x4e54f9	0x4e53f9-0x4e5479
+split	0x4e53f9-0x4e54f9	0x4e5479-0x4e54f9
+try	0x4e5d79-0x4e5df9	reject
+try	0x4e5779-0x4e57f9	reject
+try	0x4e56f9-0x4e5779	reject
+try	0x4e5579-0x4e55f9	reject
+try	0x3320a3-0x332123	ok
+try	0x332023-0x3320a3	reject
+try	0x4e5b79-0x4e5bf9	reject
+try	0x4e5479-0x4e54f9	ok
+try	0x4e53f9-0x4e5479	reject
+try	0x4e5cf9-0x4e5d79	reject
+try	0x4e5af9-0x4e5b79	reject
+try	0x4e59f9-0x4e5af9	reject
+split	0x4e59f9-0x4e5af9	0x4e59f9-0x4e5a79
+split	0x4e59f9-0x4e5af9	0x4e5a79-0x4e5af9
+try	0x332223-0x332323	reject
+split	0x332223-0x332323	0x332223-0x3322a3
+split	0x332223-0x332323	0x3322a3-0x332323
+try	0x4e54f9-0x4e5579	reject
+try	0x4e5bf9-0x4e5cf9	reject
+split	0x4e5bf9-0x4e5cf9	0x4e5bf9-0x4e5c79
+split	0x4e5bf9-0x4e5cf9	0x4e5c79-0x4e5cf9
+try	0x4e55f9-0x4e56f9	reject
+split	0x4e55f9-0x4e56f9	0x4e55f9-0x4e5679
+split	0x4e55f9-0x4e56f9	0x4e5679-0x4e56f9
+try	0x332423-0x332623	ok
+try	0x332623-0x332823	ok
+wrote	native_gap_retdec_batch779.ranges	8
+appended_reject_cache	dumps/vmtail-wide-1m-w16/vm_executable_gap_retdec_reject_cache.tsv	26
+# elapsed 10.85s
+created_batches	779
++ make -j 8 native-gap-retdec-batch779
+make dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch779.c
+make[1]: Entering directory '/models/dev/sc-rev/eac/eacsym'
+python3 vm_native_gap_retdec_batch.py --batch-index 779 --ranges-file native_gap_retdec_batch779.ranges > dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch779.c
+native_gap_retdec_batch=779
+native_gap_retdec_selected_ranges=8
+make[1]: Leaving directory '/models/dev/sc-rev/eac/eacsym'
+# elapsed 1.75s
++ cc -std=c11 -fsyntax-only -w dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch779.c
+# elapsed 0.01s
++ make -s native-executable-coverage-audit native-retdec-gap-queue
+# elapsed 1.65s
++ make -s uncovered-executable-gaps
+uncovered_executable_gaps=2881 bytes=2819178
+uncovered_executable_gaps=2881 bytes=2819178
+uncovered_executable_gaps=2881 bytes=2819178
+# elapsed 1.10s
+coverage_delta
+native_executable_coverage_range_rows	33277	33836	delta=+559
+native_executable_coverage_gap_rows	2878	2886	delta=+8
+native_executable_coverage_recovered_bytes	2789622	2831862	delta=+42240
+native_executable_coverage_uncovered_bytes	2861418	2819178	delta=-42240
+round_start	12
++ python3 vm_executable_gap_retdec_probe.py --root . --section .text --chunk-bytes 0x200 --min-chunk-bytes 0x80 --max-split-candidates 64 --max-gap-chunks 5 --max-candidates 192 --max-accepted 8 --probe-jobs 8 --timeout 30 --reject-cache dumps/vmtail-wide-1m-w16/vm_executable_gap_retdec_reject_cache.tsv
+try	0x3ae015-0x3ae215	ok
+try	0x424e1f-0x42501f	reject
+split	0x424e1f-0x42501f	0x424e1f-0x424f1f
+split	0x424e1f-0x42501f	0x424f1f-0x42501f
+try	0x3ae215-0x3ae415	ok
+try	0x424c1f-0x424e1f	ok
+try	0x424a1f-0x424c1f	ok
+try	0x3ade15-0x3ae015	ok
+try	0x42481f-0x424a1f	ok
+try	0x42461f-0x42481f	reject
+split	0x42461f-0x42481f	0x42461f-0x42471f
+split	0x42461f-0x42481f	0x42471f-0x42481f
+try	0x3ae415-0x3ae615	ok
+try	0x424e1f-0x424f1f	reject
+split	0x424e1f-0x424f1f	0x424e1f-0x424e9f
+split	0x424e1f-0x424f1f	0x424e9f-0x424f1f
+try	0x424f1f-0x42501f	ok
+wrote	native_gap_retdec_batch780.ranges	8
+appended_reject_cache	dumps/vmtail-wide-1m-w16/vm_executable_gap_retdec_reject_cache.tsv	3
+# elapsed 5.47s
+created_batches	780
++ make -j 8 native-gap-retdec-batch780
+make dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch780.c
+make[1]: Entering directory '/models/dev/sc-rev/eac/eacsym'
+python3 vm_native_gap_retdec_batch.py --batch-index 780 --ranges-file native_gap_retdec_batch780.ranges > dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch780.c
+native_gap_retdec_batch=780
+native_gap_retdec_selected_ranges=8
+make[1]: Leaving directory '/models/dev/sc-rev/eac/eacsym'
+# elapsed 1.75s
++ cc -std=c11 -fsyntax-only -w dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch780.c
+# elapsed 0.01s
++ make -s native-executable-coverage-audit native-retdec-gap-queue
+# elapsed 1.64s
++ make -s uncovered-executable-gaps
+uncovered_executable_gaps=2883 bytes=2815338
+uncovered_executable_gaps=2883 bytes=2815338
+uncovered_executable_gaps=2883 bytes=2815338
+# elapsed 1.09s
+coverage_delta
+native_executable_coverage_range_rows	33277	33891	delta=+614
+native_executable_coverage_gap_rows	2878	2888	delta=+10
+native_executable_coverage_recovered_bytes	2789622	2835702	delta=+46080
+native_executable_coverage_uncovered_bytes	2861418	2815338	delta=-46080
+round_start	13
++ python3 vm_executable_gap_retdec_probe.py --root . --section .text --chunk-bytes 0x200 --min-chunk-bytes 0x80 --max-split-candidates 64 --max-gap-chunks 5 --max-candidates 192 --max-accepted 8 --probe-jobs 8 --timeout 30 --reject-cache dumps/vmtail-wide-1m-w16/vm_executable_gap_retdec_reject_cache.tsv
+try	0x2ba1a9-0x2ba3a9	ok
+try	0x2d3869-0x2d3a69	ok
+try	0x2d4069-0x2d4269	ok
+try	0x2d3e69-0x2d4069	ok
+try	0x2ba3a9-0x2ba5a9	ok
+try	0x2b9fa9-0x2ba1a9	ok
+try	0x2d3c69-0x2d3e69	reject
+split	0x2d3c69-0x2d3e69	0x2d3c69-0x2d3d69
+split	0x2d3c69-0x2d3e69	0x2d3d69-0x2d3e69
+try	0x2d3a69-0x2d3c69	ok
+try	0x2ba7a9-0x2ba9a9	reject
+split	0x2ba7a9-0x2ba9a9	0x2ba7a9-0x2ba8a9
+split	0x2ba7a9-0x2ba9a9	0x2ba8a9-0x2ba9a9
+try	0x2ba5a9-0x2ba7a9	ok
+wrote	native_gap_retdec_batch781.ranges	8
+appended_reject_cache	dumps/vmtail-wide-1m-w16/vm_executable_gap_retdec_reject_cache.tsv	2
+# elapsed 5.41s
+created_batches	781
++ make -j 8 native-gap-retdec-batch781
+make dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch781.c
+make[1]: Entering directory '/models/dev/sc-rev/eac/eacsym'
+python3 vm_native_gap_retdec_batch.py --batch-index 781 --ranges-file native_gap_retdec_batch781.ranges > dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch781.c
+native_gap_retdec_batch=781
+native_gap_retdec_selected_ranges=8
+make[1]: Leaving directory '/models/dev/sc-rev/eac/eacsym'
+# elapsed 1.73s
++ cc -std=c11 -fsyntax-only -w dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch781.c
+# elapsed 0.01s
++ make -s native-executable-coverage-audit native-retdec-gap-queue
+# elapsed 1.65s
++ make -s uncovered-executable-gaps
+uncovered_executable_gaps=2884 bytes=2811242
+uncovered_executable_gaps=2884 bytes=2811242
+uncovered_executable_gaps=2884 bytes=2811242
+# elapsed 1.08s
+coverage_delta
+native_executable_coverage_range_rows	33277	33957	delta=+680
+native_executable_coverage_gap_rows	2878	2889	delta=+11
+native_executable_coverage_recovered_bytes	2789622	2839798	delta=+50176
+native_executable_coverage_uncovered_bytes	2861418	2811242	delta=-50176
+round_start	14
++ python3 vm_executable_gap_retdec_probe.py --root . --section .text --chunk-bytes 0x200 --min-chunk-bytes 0x80 --max-split-candidates 64 --max-gap-chunks 5 --max-candidates 192 --max-accepted 8 --probe-jobs 8 --timeout 30 --reject-cache dumps/vmtail-wide-1m-w16/vm_executable_gap_retdec_reject_cache.tsv
+try	0x2bf200-0x2bf400	reject
+split	0x2bf200-0x2bf400	0x2bf200-0x2bf300
+split	0x2bf200-0x2bf400	0x2bf300-0x2bf400
+try	0x2bf400-0x2bf600	ok
+try	0x467e34-0x468034	ok
+try	0x2bee00-0x2bf000	ok
+try	0x2bf000-0x2bf200	reject
+split	0x2bf000-0x2bf200	0x2bf000-0x2bf100
+split	0x2bf000-0x2bf200	0x2bf100-0x2bf200
+try	0x468034-0x468234	ok
+try	0x2bf600-0x2bf800	ok
+try	0x468234-0x468434	ok
+try	0x468434-0x468634	ok
+try	0x2bf300-0x2bf400	reject
+split	0x2bf300-0x2bf400	0x2bf300-0x2bf380
+split	0x2bf300-0x2bf400	0x2bf380-0x2bf400
+try	0x2bf200-0x2bf300	ok
+wrote	native_gap_retdec_batch782.ranges	8
+appended_reject_cache	dumps/vmtail-wide-1m-w16/vm_executable_gap_retdec_reject_cache.tsv	3
+# elapsed 5.45s
+created_batches	782
++ make -j 8 native-gap-retdec-batch782
+make dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch782.c
+make[1]: Entering directory '/models/dev/sc-rev/eac/eacsym'
+python3 vm_native_gap_retdec_batch.py --batch-index 782 --ranges-file native_gap_retdec_batch782.ranges > dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch782.c
+native_gap_retdec_batch=782
+native_gap_retdec_selected_ranges=8
+make[1]: Leaving directory '/models/dev/sc-rev/eac/eacsym'
+# elapsed 1.89s
++ cc -std=c11 -fsyntax-only -w dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch782.c
+# elapsed 0.01s
++ make -s native-executable-coverage-audit native-retdec-gap-queue
