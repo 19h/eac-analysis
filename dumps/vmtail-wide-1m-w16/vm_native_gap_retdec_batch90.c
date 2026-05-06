@@ -123,6 +123,7 @@ void __asm_rep_movsd_memcpy(char *dst, char *src, int64_t count);
 void __asm_rep_movsq_memcpy(char *dst, char *src, int64_t count);
 int64_t __asm_hlt(void);
 int64_t __asm_mfence();
+float80_t __asm_fbstp(float80_t value);
 struct eac_retdec_cpuid_regs __asm_cpuid(uint32_t leaf);
 struct eac_retdec_cpuid_regs __asm_cpuid_133(uint32_t leaf);
 struct eac_retdec_cpuid_regs __asm_cpuid_134(uint32_t leaf);
