@@ -974,7 +974,7 @@ program-decompiled-split-audit: $(PROGRAM_DECOMPILED_SPLIT_MANIFEST) $(PROGRAM_S
 $(PROGRAM_MBA_010_CASES_TSV) $(PROGRAM_MBA_010_OBSERVATIONS_TSV) $(PROGRAM_MBA_010_IR_ROWS_TSV) $(PROGRAM_MBA_010_REQUIREMENTS_TSV) $(PROGRAM_MBA_010_MISSING_TSV) $(PROGRAM_MBA_010_TRACE_TARGETS_TSV) $(PROGRAM_MBA_010_FRIDA_JS) $(PROGRAM_MBA_010_MD): vm_program_mba_collection.py $(PROGRAM_DECOMPILED_SPLIT_MANIFEST) $(PRIMARY_DIR)/vm_bytecode_basic_blocks.tsv $(PRIMARY_DIR)/vm_bytecode_basic_block_edges.tsv $(BYTECODE_IR_DECOMPILE_TSV) eac.elf
 	python3 vm_program_mba_collection.py --program 10
 
-.PHONY: program-mba-010 program-mba program-mba-010-reduce program-mba-010-audit program-mba-all program-mba-focus-runs
+.PHONY: program-mba-010 program-mba program-mba-010-reduce program-mba-010-audit program-mba-all program-mba-focus-runs program-decompiled-folded program-decompiled-folded-audit
 program-mba-010: $(PROGRAM_MBA_010_CASES_TSV) $(PROGRAM_MBA_010_OBSERVATIONS_TSV) $(PROGRAM_MBA_010_IR_ROWS_TSV) $(PROGRAM_MBA_010_REQUIREMENTS_TSV) $(PROGRAM_MBA_010_MISSING_TSV) $(PROGRAM_MBA_010_TRACE_TARGETS_TSV) $(PROGRAM_MBA_010_FRIDA_JS) $(PROGRAM_MBA_010_MD)
 
 $(PROGRAM_MBA_010_REDUCED_TSV) $(PROGRAM_MBA_010_REDUCED_C) $(PROGRAM_MBA_010_REDUCED_MD): vm_program_mba_reduce.py $(PROGRAM_MBA_010_CASES_TSV) $(PROGRAM_MBA_010_REQUIREMENTS_TSV)
@@ -992,6 +992,13 @@ program-mba-all:
 
 program-mba-focus-runs:
 	python3 vm_program_mba_focus_runs.py --rereduce
+
+program-decompiled-folded:
+	python3 vm_program_decompiled_fold_mba.py
+	python3 vm_program_string_refs.py --program-manifest $(PRIMARY_DIR)/vm_programs_decompiled_folded_manifest.tsv --output $(PRIMARY_DIR)/vm_program_folded_string_refs.tsv
+
+program-decompiled-folded-audit: program-decompiled-folded
+	python3 vm_program_decompiled_fold_mba_audit.py --syntax --jobs 8
 
 $(HANDLERS_PSEUDOCODE_C): vm_handler_pseudocode_dump.py $(PRIMARY_DIR)/vm_handler_semantics.tsv $(PRIMARY_DIR)/vm_handler_table.tsv $(STATIC_ONLY_HANDLER_QUEUE_TSV) $(STATIC_ONLY_TIER0_MODELS_TSV) $(STATIC_ONLY_TIER1_MODELS_TSV) $(STATIC_ONLY_TIER2_SPLIT_TSV) $(STATIC_ONLY_TIER3_SHARED_TSV) $(STATIC_ONLY_TIER4_CALLRET_TSV) $(STATIC_ONLY_TIER5_LARGE_TSV)
 	python3 vm_handler_pseudocode_dump.py --all > $@
