@@ -45,6 +45,8 @@ PROGRAM_OPCODE_PSEUDOCODE_MANIFEST := $(PRIMARY_DIR)/vm_program_opcode_pseudocod
 SEMANTIC_OPCODE_CATALOG_MD := $(PRIMARY_DIR)/vm_semantic_opcode_catalog.md
 STRING_REFERENCE_CONTEXT_TSV := $(PRIMARY_DIR)/vm_string_reference_context.tsv
 STRING_REFERENCE_CONTEXT_MD := $(PRIMARY_DIR)/vm_string_reference_context.md
+PROGRAM_BEHAVIOR_HYPOTHESES_TSV := $(PRIMARY_DIR)/vm_program_behavior_hypotheses.tsv
+PROGRAM_BEHAVIOR_HYPOTHESES_MD := $(PRIMARY_DIR)/vm_program_behavior_hypotheses.md
 PROGRAM_MBA_010_PREFIX := $(PRIMARY_DIR)/vm_program_atlas_010_mba
 PROGRAM_MBA_010_CASES_TSV := $(PROGRAM_MBA_010_PREFIX)_cases.tsv
 PROGRAM_MBA_010_OBSERVATIONS_TSV := $(PROGRAM_MBA_010_PREFIX)_observations.tsv
@@ -1037,6 +1039,13 @@ string-reference-context: vm_string_reference_context.py semantic-opcode-catalog
 
 string-reference-context-audit: string-reference-context
 	python3 vm_string_reference_context_audit.py --root $(PRIMARY_DIR)
+
+.PHONY: program-behavior-hypotheses program-behavior-hypotheses-audit
+program-behavior-hypotheses: vm_program_behavior_hypotheses.py behavior-inventory string-reference-context $(PRIMARY_DIR)/vm_trace_coverage_matrix.tsv $(PRIMARY_DIR)/vm_native_linkage_stubs.tsv
+	python3 vm_program_behavior_hypotheses.py --root $(PRIMARY_DIR)
+
+program-behavior-hypotheses-audit: program-behavior-hypotheses
+	python3 vm_program_behavior_hypotheses_audit.py --root $(PRIMARY_DIR)
 
 $(HANDLERS_PSEUDOCODE_C): vm_handler_pseudocode_dump.py $(PRIMARY_DIR)/vm_handler_semantics.tsv $(PRIMARY_DIR)/vm_handler_table.tsv $(STATIC_ONLY_HANDLER_QUEUE_TSV) $(STATIC_ONLY_TIER0_MODELS_TSV) $(STATIC_ONLY_TIER1_MODELS_TSV) $(STATIC_ONLY_TIER2_SPLIT_TSV) $(STATIC_ONLY_TIER3_SHARED_TSV) $(STATIC_ONLY_TIER4_CALLRET_TSV) $(STATIC_ONLY_TIER5_LARGE_TSV)
 	python3 vm_handler_pseudocode_dump.py --all > $@
