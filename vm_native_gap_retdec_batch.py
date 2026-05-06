@@ -1039,6 +1039,7 @@ def main():
     print("int128_t __asm_pxor(int128_t left, int128_t right);")
     print("int128_t __asm_xorps(int128_t left, int128_t right);")
     print("int128_t __asm_addps(int128_t left, int128_t right);")
+    print("int128_t __asm_maxps(int128_t left, int128_t right);")
     print("int128_t __asm_cmpnlesd(int128_t left, int128_t right);")
     print("int128_t __asm_cvtsi2sd(int64_t value);")
     print("int128_t __asm_cvtss2sd(int32_t value);")
