@@ -223,6 +223,7 @@ def main() -> int:
 
     root = args.root
     bundle = root / "vm_recovered_source_all_evidence_bundle.c"
+    source_bundle = root / "vm_recovered_source_bundle.c"
     coverage = root / "vm_native_executable_coverage_audit.tsv"
     carrier = root / "vm_uncovered_executable_gaps.tsv"
     program_pseudocode = root / "vm_program_pseudocode_full.c"
@@ -238,6 +239,7 @@ def main() -> int:
 
     ok = True
     ok &= check("bundle_exists", bundle.exists(), str(bundle))
+    ok &= check("source_bundle_exists", source_bundle.exists(), str(source_bundle))
     ok &= check("coverage_exists", coverage.exists(), str(coverage))
     ok &= check("uncovered_carrier_exists", carrier.exists(), str(carrier))
     ok &= check("program_pseudocode_exists", program_pseudocode.exists(), str(program_pseudocode))
@@ -297,6 +299,11 @@ def main() -> int:
             and has_text(bundle, "eac_evidence_program_decompiled_full__vm_program_decompiled"),
             "decompiled VM bytecode-program sidecar with inlined row semantics",
         )
+        ok &= check(
+            "bundle_has_no_legacy_unresolved_tail_fallbacks",
+            not has_text(bundle, "vm_unresolved_synthetic_tail"),
+            "aggregate bundle must use explicit evidence/unknown-entry stubs instead of unresolved VM tails",
+        )
 
     if program_pseudocode.exists() and bytecode_blocks.exists():
         expected_blocks = count_tsv_rows(bytecode_blocks)
@@ -315,6 +322,18 @@ def main() -> int:
             "program_pseudocode_has_dispatch",
             has_text(program_pseudocode, "void vm_program_sketch(VMState *vm, uint64_t vm_ip)"),
             "VM IP dispatch entrypoint present",
+        )
+        ok &= check(
+            "program_pseudocode_has_no_legacy_unresolved_tail_fallbacks",
+            not has_text(program_pseudocode, "vm_unresolved_synthetic_tail"),
+            "legacy sketch dispatch uses vm_program_unknown_entry/vm_program_external_edge",
+        )
+
+    if source_bundle.exists():
+        ok &= check(
+            "source_bundle_has_no_legacy_unresolved_tail_fallbacks",
+            not has_text(source_bundle, "vm_unresolved_synthetic_tail"),
+            "combined handler/program sketch uses local evidence stubs",
         )
 
     if program_decompiled.exists() and bytecode_blocks.exists() and bytecode_ir_decompile.exists():

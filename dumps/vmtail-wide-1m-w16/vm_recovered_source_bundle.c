@@ -7803,7 +7803,6 @@ static VMOpResult vm_call_handler(int entry, VMState *vm) {
 }
 
 /* Recovered full VM bytecode program. */
-extern void vm_unresolved_synthetic_tail(VMState *vm, uint64_t vm_ip);
 extern void vm_native_ret_patch_tail(VMState *vm, uint64_t vm_ip, uint32_t ret0, uint32_t ret1, uint16_t stack_off, uint32_t flags);
 #ifndef VM_ENABLE_NATIVE_RET_PATCH_HIDDEN_BRIDGE
 #define VM_ENABLE_NATIVE_RET_PATCH_HIDDEN_BRIDGE 0
@@ -7817,6 +7816,14 @@ extern void vm_native_ret_patch_hidden_bridge(VMState *vm, uint64_t vm_ip, uint3
 #ifndef VM_ENABLE_OBSERVED_CHAIN_BRIDGES
 #define VM_ENABLE_OBSERVED_CHAIN_BRIDGES 0
 #endif
+static void vm_program_external_edge(VMState *vm, uint64_t target_vm_ip) {
+    (void)vm;
+    (void)target_vm_ip;
+}
+static void vm_program_unknown_entry(VMState *vm, uint64_t vm_ip) {
+    (void)vm;
+    (void)vm_ip;
+}
 
 static void prog_bb_0227(VMState *vm, uint64_t vm_ip);
 static void prog_bb_0226(VMState *vm, uint64_t vm_ip);
@@ -304443,6 +304450,6 @@ void vm_program_sketch(VMState *vm, uint64_t vm_ip) {
     case 0x293630: prog_bb_0202(vm, vm_ip); return;
     case 0x293654: prog_bb_0203(vm, vm_ip); return;
     case 0x293677: prog_bb_0204(vm, vm_ip); return;
-    default: vm_unresolved_synthetic_tail(vm, vm_ip); return;
+    default: vm_program_unknown_entry(vm, vm_ip); return;
     }
 }

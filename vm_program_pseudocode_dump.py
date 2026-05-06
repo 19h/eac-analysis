@@ -312,8 +312,8 @@ def emit_synthetic_edge(edge, synthetic_spans, dynamic_stitches, transfer_probes
         if chain:
             print(f"    /* hidden chain resolves synthetic reentry at {normalize_vm_ip(chain.get('hidden_pred_end_vm_ip', ''))}. */")
             return
-    print(f"    vm_program_external_edge(vm, 0x{parse_hex(target_vm_ip):x});")
-        return
+        print(f"    vm_program_external_edge(vm, 0x{parse_hex(target_vm_ip):x});")
+        return True
 
     source = top_int(info["sources"])
     target = top_int(info["targets"])
