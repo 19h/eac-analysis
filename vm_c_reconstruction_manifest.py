@@ -2683,15 +2683,19 @@ def c_shape_metrics(rows):
     add(rows, "data_surface", "all_evidence_bundle_binary_data_dispatch_table_raw_bytes",
         count(r"^static const uint8_t eac_evidence_binary_data_sections__vm_eac_dispatch_table_raw_bytes\[2880\]", all_evidence_bundle),
         "Raw VM dispatch-table byte array retained in the all-evidence single C file.")
+    all_evidence_binary_data_surface_match = (
+        all_evidence_binary_data_section_arrays == binary_data_section_array_c_rows and
+        all_evidence_binary_data_section_metadata_rows == binary_data_section_metadata_c_rows and
+        all_evidence_binary_data_string_refs == binary_data_string_ref_c_rows and
+        count(r"\beac_evidence_binary_data_sections__vm_eac_dispatch_table_raw_offsets\[360\]", all_evidence_bundle) == 1 and
+        count(r"^static const uint8_t eac_evidence_binary_data_sections__vm_eac_dispatch_table_raw_bytes\[2880\]", all_evidence_bundle) == 1
+    )
     add(rows, "data_surface", "all_evidence_bundle_binary_data_surface_match",
-        "yes" if (
-            all_evidence_binary_data_section_arrays == binary_data_section_array_c_rows and
-            all_evidence_binary_data_section_metadata_rows == binary_data_section_metadata_c_rows and
-            all_evidence_binary_data_string_refs == binary_data_string_ref_c_rows and
-            count(r"\beac_evidence_binary_data_sections__vm_eac_dispatch_table_raw_offsets\[360\]", all_evidence_bundle) == 1 and
-            count(r"^static const uint8_t eac_evidence_binary_data_sections__vm_eac_dispatch_table_raw_bytes\[2880\]", all_evidence_bundle) == 1
-        ) else "no",
+        "yes" if all_evidence_binary_data_surface_match else "no",
         "Whether the all-evidence C file carries the same section arrays, section metadata, full strings, and raw dispatch-table bytes/offsets as the binary data carrier.")
+    add(rows, "data_surface", "all_evidence_bundle_static_referenced_data_included",
+        "yes" if all_evidence_binary_data_surface_match else "no",
+        "Whether the single all-evidence C file includes the static ELF strings/data referenced by the program data carrier; dynamic/generated/decrypted/network buffers need separate capture or decoding.")
     add(rows, "c_shape", "all_evidence_bundle_tier0_static_slot_recoveries",
         count(r"tier0 static slot recovered from the RetDec single-function model", all_evidence_bundle),
         "Executable tier0 static-only slot recoveries retained in the all-evidence single file.")

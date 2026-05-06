@@ -262,6 +262,8 @@ def main():
     print(" * handler layer plus the recovered VM bytecode program. The following")
     print(" * sections append native RetDec/control sidecars with per-file symbol")
     print(" * prefixes so overlapping decompiler output can coexist in one C file.")
+    print(" * The appended binary-data sidecar carries the static ELF strings/data")
+    print(" * and raw VM dispatch-table bytes referenced by the program data carrier.")
     print(" * This is an analysis artifact; the smoke-linked runnable bundle remains")
     print(" * vm_recovered_source_bundle.c.")
     print(" */")
