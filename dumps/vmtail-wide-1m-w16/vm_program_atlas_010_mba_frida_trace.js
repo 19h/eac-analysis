@@ -4,7 +4,11 @@
 // state, key, old/new ctx->next, ctx->ip bytes/u16s, ctx pointer, and alias proof.
 "use strict";
 
-const FN = ptr("0xPUT_VM_PROGRAM_ATLAS_010_FUNCTION_ADDRESS_HERE");
+const FN_ADDRESS = "PUT_VM_PROGRAM_ATLAS_010_FUNCTION_ADDRESS_HERE";
+if (FN_ADDRESS.indexOf("PUT_") === 0) {
+    throw new Error("Set FN_ADDRESS to the native dispatcher/function address before loading this script");
+}
+const FN = ptr(FN_ADDRESS);
 const STATES = new Set(["0x11db16", "0x11dc37", "0x11dd03", "0x11de27"]);
 
 function hx(v) {
