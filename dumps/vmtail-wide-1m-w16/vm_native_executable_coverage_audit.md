@@ -4,36 +4,36 @@ Compares executable ELF sections against native ranges already represented by re
 
 - executable sections: 5
 - executable bytes: 5651040
-- recovered executable bytes: 1447654
-- uncovered executable bytes: 4203386
-- recovered range rows: 13748
-- uncovered gaps: 2478
+- recovered executable bytes: 1464038
+- uncovered executable bytes: 4187002
+- recovered range rows: 14000
+- uncovered gaps: 2483
 
 | section | range | bytes | covered | uncovered | coverage | ranges |
 | --- | --- | ---: | ---: | ---: | ---: | ---: |
 | `.init` | `0x1fbd0-0x1fbe7` | 23 | 0 | 23 | 0.00% | 0 |
 | `.plt` | `0x1fbf0-0x20bd0` | 4064 | 0 | 4064 | 0.00% | 0 |
 | `.plt.got` | `0x20bd0-0x20be0` | 16 | 0 | 16 | 0.00% | 0 |
-| `.text` | `0x20c00-0x583650` | 5646928 | 1447654 | 4199274 | 25.63% | 13748 |
+| `.text` | `0x20c00-0x583650` | 5646928 | 1464038 | 4182890 | 25.92% | 14000 |
 | `.fini` | `0x583650-0x583659` | 9 | 0 | 9 | 0.00% | 0 |
 
 ## Largest Uncovered Gaps
 
 | section | range | bytes |
 | --- | --- | ---: |
-| `.text` | `0x3152bb-0x3275b6` | 74491 |
-| `.text` | `0x169caa-0x17bf1f` | 74357 |
-| `.text` | `0x1e3ae8-0x1f5d10` | 74280 |
-| `.text` | `0x107bbf-0x119b8e` | 73679 |
-| `.text` | `0xecf9c-0xfeebc` | 73504 |
-| `.text` | `0x21f666-0x231586` | 73504 |
-| `.text` | `0x190085-0x1a1fa3` | 73502 |
-| `.text` | `0x149713-0x15b5b2` | 73375 |
-| `.text` | `0x45a634-0x46c45b` | 73255 |
 | `.text` | `0x2a8175-0x2b9f30` | 73147 |
+| `.text` | `0x190285-0x1a1fa3` | 72990 |
 | `.text` | `0x2f541e-0x307093` | 72821 |
+| `.text` | `0x315abb-0x3275b6` | 72443 |
 | `.text` | `0x435e67-0x4478f4` | 72333 |
 | `.text` | `0x258ec2-0x26a821` | 72031 |
+| `.text` | `0xed59c-0xfeebc` | 71968 |
+| `.text` | `0x16a6aa-0x17bf1f` | 71797 |
+| `.text` | `0x1e44e8-0x1f5d10` | 71720 |
+| `.text` | `0x1085bf-0x119b8e` | 71119 |
+| `.text` | `0x220066-0x231586` | 70944 |
+| `.text` | `0x14a113-0x15b5b2` | 70815 |
+| `.text` | `0x45b034-0x46c45b` | 70695 |
 | `.text` | `0xcf5c7-0xe0017` | 68176 |
 | `.text` | `0x1b07ce-0x1c0b59` | 66443 |
 | `.text` | `0x1d125a-0x1e05a8` | 62286 |
