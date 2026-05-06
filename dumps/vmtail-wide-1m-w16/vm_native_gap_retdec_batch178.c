@@ -221,6 +221,7 @@ int128_t __asm_pxor(int128_t left, int128_t right);
 int128_t __asm_xorps(int128_t left, int128_t right);
 int128_t __asm_cmpnlesd(int128_t left, int128_t right);
 int128_t __asm_cvtsi2sd(int64_t value);
+int128_t __asm_cvtss2sd(int32_t value);
 int128_t __asm_subsd(int128_t left, int128_t right);
 int64_t __asm_cvttsd2si(int128_t value);
 void __asm_ucomisd(int128_t left, int128_t right);
@@ -228,6 +229,7 @@ void __asm_ucomiss(int128_t left, int64_t right);
 void __asm_ucomiss_134(int128_t left, int128_t right);
 int128_t __asm_movups();
 void __asm_movups_133();
+void __asm_movups_134();
 int128_t __asm_movaps(int128_t value);
 float80_t __frontend_reg_load_fpr(int32_t reg);
 void __frontend_reg_store_fpr(int32_t reg, float80_t value);
@@ -1568,7 +1570,7 @@ int64_t function_49ecc0(int64_t result, int64_t a2, int64_t a3, int64_t a4, int6
                 int64_t v26 = *(int64_t *)(v6 + 8); // 0x49ee48
                 int64_t str2; // bp-2120, 0x49ecc0
                 snprintf((char *)&str2, 16, "%s%s", "crt->", (char *)v26);
-                v8 = &str2;
+                v8 = (int64_t)&str2;
                 result2 = 1;
                 switch (*v25) {
                     case 1: {
