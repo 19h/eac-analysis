@@ -4,30 +4,28 @@ Compares executable ELF sections against native ranges already represented by re
 
 - executable sections: 5
 - executable bytes: 5651040
-- recovered executable bytes: 5535719
-- uncovered executable bytes: 115321
-- recovered range rows: 76894
-- uncovered gaps: 1786
+- recovered executable bytes: 5537415
+- uncovered executable bytes: 113625
+- recovered range rows: 77031
+- uncovered gaps: 1819
 
 | section | range | bytes | covered | uncovered | coverage | ranges |
 | --- | --- | ---: | ---: | ---: | ---: | ---: |
 | `.init` | `0x1fbd0-0x1fbe7` | 23 | 23 | 0 | 100.00% | 1 |
 | `.plt` | `0x1fbf0-0x20bd0` | 4064 | 4064 | 0 | 100.00% | 254 |
 | `.plt.got` | `0x20bd0-0x20be0` | 16 | 16 | 0 | 100.00% | 2 |
-| `.text` | `0x20c00-0x583650` | 5646928 | 5531607 | 115321 | 97.95% | 76634 |
+| `.text` | `0x20c00-0x583650` | 5646928 | 5533303 | 113625 | 97.98% | 76771 |
 | `.fini` | `0x583650-0x583659` | 9 | 9 | 0 | 100.00% | 3 |
 
 ## Largest Uncovered Gaps
 
 | section | range | bytes |
 | --- | --- | ---: |
-| `.text` | `0x4ddcf9-0x4debf9` | 3840 |
-| `.text` | `0x4e71f9-0x4e7679` | 1152 |
-| `.text` | `0x4e76f9-0x4e7b79` | 1152 |
+| `.text` | `0x4de0f9-0x4debf9` | 2816 |
 | `.text` | `0x4e4bf9-0x4e4ff9` | 1024 |
 | `.text` | `0x4e6679-0x4e6a79` | 1024 |
-| `.text` | `0x4e82f9-0x4e86f9` | 1024 |
 | `.text` | `0x4e7cf9-0x4e8079` | 896 |
+| `.text` | `0x4e8379-0x4e86f9` | 896 |
 | `.text` | `0x4dc5f9-0x4dc8f9` | 768 |
 | `.text` | `0x4e54f9-0x4e57f9` | 768 |
 | `.text` | `0x4e62f9-0x4e65f9` | 768 |
@@ -52,6 +50,7 @@ Compares executable ELF sections against native ranges already represented by re
 | `.text` | `0x4db279-0x4db3f9` | 384 |
 | `.text` | `0x4e0ef9-0x4e1079` | 384 |
 | `.text` | `0x4e4179-0x4e42f9` | 384 |
+| `.text` | `0x4e74f9-0x4e7679` | 384 |
 | `.text` | `0x4e9179-0x4e92f9` | 384 |
 | `.text` | `0x72c6b-0x72dce` | 355 |
 | `.text` | `0xdadc7-0xdaec7` | 256 |
@@ -61,3 +60,4 @@ Compares executable ELF sections against native ranges already represented by re
 | `.text` | `0x1c5a55-0x1c5b55` | 256 |
 | `.text` | `0x2674c2-0x2675c2` | 256 |
 | `.text` | `0x268dc2-0x268ec2` | 256 |
+| `.text` | `0x27c2c1-0x27c3c1` | 256 |
