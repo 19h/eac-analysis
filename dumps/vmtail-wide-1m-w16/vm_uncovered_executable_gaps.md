@@ -1,7 +1,7 @@
 # Uncovered Executable Gaps (all)
 
-- gaps: `367`
-- bytes: `4525`
+- gaps: `330`
+- bytes: `3867`
 
 | Index | Start | Stop | Bytes |
 | ---: | ---: | ---: | ---: |
@@ -69,4 +69,4 @@
 | 61 | `0x192c95` | `0x192ca5` | 16 |
 | 62 | `0x193085` | `0x193095` | 16 |
 | 63 | `0x198e85` | `0x198e95` | 16 |
-| ... | ... | ... | 303 more gaps |
+| ... | ... | ... | 266 more gaps |
