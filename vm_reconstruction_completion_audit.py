@@ -88,6 +88,7 @@ def decompiled_program_counts(path: Path) -> dict[str, int | bool]:
     state_summarized = 0
     op_entry_refs = 0
     unresolved_tail_refs = 0
+    unresolved_tail_refs = 0
     dispatch = False
     omitted = False
     with path.open(encoding="utf-8", errors="replace") as handle:
@@ -103,6 +104,8 @@ def decompiled_program_counts(path: Path) -> dict[str, int | bool]:
                 state_summarized += 1
             if "op_entry_" in line:
                 op_entry_refs += 1
+            if "vm_unresolved_synthetic_tail" in line:
+                unresolved_tail_refs += 1
             if "rows omitted by --rows-per-block" in line:
                 omitted = True
             if "void vm_program_decompiled(VMState *vm, uint64_t vm_ip)" in line:
@@ -113,6 +116,7 @@ def decompiled_program_counts(path: Path) -> dict[str, int | bool]:
         "state_inlined": state_inlined,
         "state_summarized": state_summarized,
         "op_entry_refs": op_entry_refs,
+        "unresolved_tail_refs": unresolved_tail_refs,
         "dispatch": dispatch,
         "omitted": omitted,
     }
@@ -127,6 +131,7 @@ def split_decompiled_counts(manifest: Path, output_dir: Path) -> dict[str, int |
     file_blocks = 0
     file_rows = 0
     op_entry_refs = 0
+    unresolved_tail_refs = 0
     state_summarized = 0
     omitted = False
     dispatch_files = 0
@@ -328,8 +333,8 @@ def main() -> int:
         )
         ok &= check(
             "program_decompiled_has_no_handler_calls",
-            counts["op_entry_refs"] == 0,
-            f"op_entry_refs={counts['op_entry_refs']}",
+            counts["op_entry_refs"] == 0 and counts["unresolved_tail_refs"] == 0,
+            f"op_entry_refs={counts['op_entry_refs']} unresolved_tail_refs={counts['unresolved_tail_refs']}",
         )
         ok &= check(
             "program_decompiled_has_no_omitted_rows",
