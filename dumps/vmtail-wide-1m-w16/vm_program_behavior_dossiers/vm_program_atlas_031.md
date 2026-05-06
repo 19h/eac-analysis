@@ -48,5 +48,5 @@ This dossier is a readable evidence rollup, not a final semantic proof. It point
 
 | site | role | categories | text | opcode |
 | --- | --- | --- | --- | --- |
-| 0x2318ea | cxx_runtime_type_or_exception_text | cxx_runtime:1 | _ZGTtdlPv | vmop_199_plus0x3_state_add_const_slot_multi_path |
+| 0x2318ea | cxx_runtime_type_or_exception_text | cxx_runtime | _ZGTtdlPv | vmop_199_plus0x3_state_add_const_slot_multi_path |
 

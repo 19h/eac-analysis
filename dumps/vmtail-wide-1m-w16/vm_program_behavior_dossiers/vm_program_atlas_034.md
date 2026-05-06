@@ -48,5 +48,5 @@ This dossier is a readable evidence rollup, not a final semantic proof. It point
 
 | site | role | categories | text | opcode |
 | --- | --- | --- | --- | --- |
-| 0x26db58 | literal_data_marker | literal_data:1 | YYYYY | vmop_028_plus0x3_state_add_const_slot_u16_0 |
+| 0x26db58 | literal_data_marker | literal_data | YYYYY | vmop_028_plus0x3_state_add_const_slot_u16_0 |
 

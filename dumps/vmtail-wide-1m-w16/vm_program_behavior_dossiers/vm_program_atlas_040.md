@@ -48,5 +48,5 @@ This dossier is a readable evidence rollup, not a final semantic proof. It point
 
 | site | role | categories | text | opcode |
 | --- | --- | --- | --- | --- |
-| 0x2c13a3 | cxx_runtime_type_or_exception_text | cxx_runtime:1 | basic_string::append | vmop_140_plus0x6_state_add_const_slot_multi_path |
+| 0x2c13a3 | cxx_runtime_type_or_exception_text | cxx_runtime | basic_string::append | vmop_140_plus0x6_state_add_const_slot_multi_path |
 

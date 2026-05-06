@@ -48,5 +48,5 @@ This dossier is a readable evidence rollup, not a final semantic proof. It point
 
 | site | role | categories | text | opcode |
 | --- | --- | --- | --- | --- |
-| 0x36d81e | unclassified_data_string | unclassified_data:1 | :$23 | vmop_140_plus0x6_state_add_const_slot_multi_path |
+| 0x36d81e | unclassified_data_string | unclassified_data | :$23 | vmop_140_plus0x6_state_add_const_slot_multi_path |
 

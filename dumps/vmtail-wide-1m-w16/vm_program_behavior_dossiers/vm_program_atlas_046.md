@@ -48,6 +48,6 @@ This dossier is a readable evidence rollup, not a final semantic proof. It point
 
 | site | role | categories | text | opcode |
 | --- | --- | --- | --- | --- |
-| 0x331948 | gnu_transactional_memory_runtime_symbol | cxx_runtime:1,locale_i18n:1 | _ITM_registerTMCloneTable | vmop_210_plus0x30_sampled_long_or_sparse_slot_unknown |
-| 0x331970 | locale_runtime_symbol | cxx_runtime:1,locale_i18n:1 | __freelocale | vmop_210_plus0x30_sampled_long_or_sparse_slot_unknown |
+| 0x331948 | gnu_transactional_memory_runtime_symbol | cxx_runtime | _ITM_registerTMCloneTable | vmop_210_plus0x30_sampled_long_or_sparse_slot_unknown |
+| 0x331970 | locale_runtime_symbol | locale_i18n | __freelocale | vmop_210_plus0x30_sampled_long_or_sparse_slot_unknown |
 

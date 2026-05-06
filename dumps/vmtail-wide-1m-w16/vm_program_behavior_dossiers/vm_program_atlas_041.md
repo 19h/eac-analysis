@@ -48,9 +48,9 @@ This dossier is a readable evidence rollup, not a final semantic proof. It point
 
 | site | role | categories | text | opcode |
 | --- | --- | --- | --- | --- |
-| 0x30eebd | gnu_transactional_memory_runtime_symbol | cxx_runtime:1,locale_i18n:1,crypto_hashing:1,compiler_metadata:1,disassembly_metadata:1 | _ITM_registerTMCloneTable | vmop_210_plus0x30_sampled_long_or_sparse_slot_unknown |
-| 0x30eee5 | locale_runtime_symbol | cxx_runtime:1,locale_i18n:1,crypto_hashing:1,compiler_metadata:1,disassembly_metadata:1 | __freelocale | vmop_210_plus0x30_sampled_long_or_sparse_slot_unknown |
-| 0x30f17b | crypto_import_symbol | cxx_runtime:1,locale_i18n:1,crypto_hashing:1,compiler_metadata:1,disassembly_metadata:1 | blake3_hasher_finalize | vmop_199_plus0x3_state_add_const_slot_multi_path |
-| 0x310859 | compiler_type_name | cxx_runtime:1,locale_i18n:1,crypto_hashing:1,compiler_metadata:1,disassembly_metadata:1 | unsigned __int128 | vmop_330_plus0x5_state_add_const_slot_u16_0 |
-| 0x315809 | disassembly_metadata_symbol | cxx_runtime:1,locale_i18n:1,crypto_hashing:1,compiler_metadata:1,disassembly_metadata:1 | zydis_decoder_tree_root | vmop_075_minus0x6d_sampled_backedge_slot_unknown |
+| 0x30eebd | gnu_transactional_memory_runtime_symbol | cxx_runtime | _ITM_registerTMCloneTable | vmop_210_plus0x30_sampled_long_or_sparse_slot_unknown |
+| 0x30eee5 | locale_runtime_symbol | locale_i18n | __freelocale | vmop_210_plus0x30_sampled_long_or_sparse_slot_unknown |
+| 0x30f17b | crypto_import_symbol | crypto_hashing | blake3_hasher_finalize | vmop_199_plus0x3_state_add_const_slot_multi_path |
+| 0x310859 | compiler_type_name | compiler_metadata | unsigned __int128 | vmop_330_plus0x5_state_add_const_slot_u16_0 |
+| 0x315809 | disassembly_metadata_symbol | disassembly_metadata | zydis_decoder_tree_root | vmop_075_minus0x6d_sampled_backedge_slot_unknown |
 

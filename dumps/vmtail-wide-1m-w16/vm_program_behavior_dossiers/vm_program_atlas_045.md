@@ -48,5 +48,5 @@ This dossier is a readable evidence rollup, not a final semantic proof. It point
 
 | site | role | categories | text | opcode |
 | --- | --- | --- | --- | --- |
-| 0x31edb4 | threading_import_symbol | threading_sync:1 | pthread_cond_wait | vmop_337_plus0x4_state_add_const_slot_multi_path |
+| 0x31edb4 | threading_import_symbol | threading_sync | pthread_cond_wait | vmop_337_plus0x4_state_add_const_slot_multi_path |
 

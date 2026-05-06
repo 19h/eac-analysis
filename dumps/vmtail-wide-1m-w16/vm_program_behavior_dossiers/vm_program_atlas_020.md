@@ -48,5 +48,5 @@ This dossier is a readable evidence rollup, not a final semantic proof. It point
 
 | site | role | categories | text | opcode |
 | --- | --- | --- | --- | --- |
-| 0x128e61 | cpu_or_runtime_configuration_name | host_environment_inventory:1 | FILTERS_MODE_IPREFETCH | vmop_333_plus0x4_state_add_const_slot_multi_path |
+| 0x128e61 | cpu_or_runtime_configuration_name | host_environment_inventory | FILTERS_MODE_IPREFETCH | vmop_333_plus0x4_state_add_const_slot_multi_path |
 

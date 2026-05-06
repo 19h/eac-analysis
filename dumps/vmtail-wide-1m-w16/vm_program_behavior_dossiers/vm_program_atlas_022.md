@@ -48,5 +48,5 @@ This dossier is a readable evidence rollup, not a final semantic proof. It point
 
 | site | role | categories | text | opcode |
 | --- | --- | --- | --- | --- |
-| 0x1772f2 | compiler_type_name | compiler_metadata:1 | unsigned __int128 | vmop_330_plus0x5_state_add_const_slot_u16_0 |
+| 0x1772f2 | compiler_type_name | compiler_metadata | unsigned __int128 | vmop_330_plus0x5_state_add_const_slot_u16_0 |
 

@@ -48,5 +48,5 @@ This dossier is a readable evidence rollup, not a final semantic proof. It point
 
 | site | role | categories | text | opcode |
 | --- | --- | --- | --- | --- |
-| 0x2c0363 | network_import_symbol | network:1 | socket | vmop_172_plus0x4_state_add_const_slot_mba_stateful |
+| 0x2c0363 | network_import_symbol | network | socket | vmop_172_plus0x4_state_add_const_slot_mba_stateful |
 

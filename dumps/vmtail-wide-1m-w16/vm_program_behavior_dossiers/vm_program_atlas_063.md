@@ -48,8 +48,8 @@ This dossier is a readable evidence rollup, not a final semantic proof. It point
 
 | site | role | categories | text | opcode |
 | --- | --- | --- | --- | --- |
-| 0x36ee05 | process_or_host_import_symbol | process_or_shell:1,host_environment_inventory:1,cxx_runtime:1,locale_i18n:1,tls_or_ssl:1 | pclose | vmop_172_plus0x4_state_add_const_slot_mba_stateful |
-| 0x36ef19 | gnu_transactional_memory_runtime_symbol | process_or_shell:1,host_environment_inventory:1,cxx_runtime:1,locale_i18n:1,tls_or_ssl:1 | _ITM_registerTMCloneTable | vmop_145_plus0x139_sampled_long_or_sparse_slot_unknown |
-| 0x36ef41 | locale_runtime_symbol | process_or_shell:1,host_environment_inventory:1,cxx_runtime:1,locale_i18n:1,tls_or_ssl:1 | __freelocale | vmop_145_plus0x139_sampled_long_or_sparse_slot_unknown |
-| 0x37138e | tls_protocol_message | process_or_shell:1,host_environment_inventory:1,cxx_runtime:1,locale_i18n:1,tls_or_ssl:1 | client hello, adding server name extension: %s | vmop_316_minus0x3c4_sampled_backedge_slot_unknown |
+| 0x36ee05 | process_or_host_import_symbol | process_or_shell;host_environment_inventory | pclose | vmop_172_plus0x4_state_add_const_slot_mba_stateful |
+| 0x36ef19 | gnu_transactional_memory_runtime_symbol | cxx_runtime | _ITM_registerTMCloneTable | vmop_145_plus0x139_sampled_long_or_sparse_slot_unknown |
+| 0x36ef41 | locale_runtime_symbol | locale_i18n | __freelocale | vmop_145_plus0x139_sampled_long_or_sparse_slot_unknown |
+| 0x37138e | tls_protocol_message | tls_or_ssl | client hello, adding server name extension: %s | vmop_316_minus0x3c4_sampled_backedge_slot_unknown |
 

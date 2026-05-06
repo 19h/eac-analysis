@@ -48,8 +48,8 @@ This dossier is a readable evidence rollup, not a final semantic proof. It point
 
 | site | role | categories | text | opcode |
 | --- | --- | --- | --- | --- |
-| 0x367607 | embedded_token_or_encoded_blob | cxx_runtime:2,embedded_data_or_token:1,locale_i18n:1 | QmK3TAsJm8V/J5AWpLEV6jAFgRGymGGHnof0DXzVWZidrcZJWTNuGEX90nB3ee2w | vmop_199_plus0x3_state_add_const_slot_multi_path |
-| 0x367700 | gnu_transactional_memory_runtime_symbol | cxx_runtime:2,embedded_data_or_token:1,locale_i18n:1 | _ITM_registerTMCloneTable | vmop_334_plus0x2a5_sampled_long_or_sparse_slot_unknown |
-| 0x367728 | locale_runtime_symbol | cxx_runtime:2,embedded_data_or_token:1,locale_i18n:1 | __freelocale | vmop_334_plus0x2a5_sampled_long_or_sparse_slot_unknown |
-| 0x367ee7 | cxx_runtime_type_or_exception_text | cxx_runtime:2,embedded_data_or_token:1,locale_i18n:1 | basic_string::_S_construct null not valid | vmop_350_plus0x4_state_add_const_slot_mba_stateful |
+| 0x367607 | embedded_token_or_encoded_blob | embedded_data_or_token | QmK3TAsJm8V/J5AWpLEV6jAFgRGymGGHnof0DXzVWZidrcZJWTNuGEX90nB3ee2w | vmop_199_plus0x3_state_add_const_slot_multi_path |
+| 0x367700 | gnu_transactional_memory_runtime_symbol | cxx_runtime | _ITM_registerTMCloneTable | vmop_334_plus0x2a5_sampled_long_or_sparse_slot_unknown |
+| 0x367728 | locale_runtime_symbol | locale_i18n | __freelocale | vmop_334_plus0x2a5_sampled_long_or_sparse_slot_unknown |
+| 0x367ee7 | cxx_runtime_type_or_exception_text | cxx_runtime | basic_string::_S_construct null not valid | vmop_350_plus0x4_state_add_const_slot_mba_stateful |
 

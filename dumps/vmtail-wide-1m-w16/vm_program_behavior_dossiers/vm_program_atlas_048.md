@@ -48,7 +48,7 @@ This dossier is a readable evidence rollup, not a final semantic proof. It point
 
 | site | role | categories | text | opcode |
 | --- | --- | --- | --- | --- |
-| 0x334c7e | gnu_transactional_memory_runtime_symbol | cxx_runtime:1,locale_i18n:1,compiler_metadata:1 | _ITM_registerTMCloneTable | vmop_145_plus0x139_sampled_long_or_sparse_slot_unknown |
-| 0x334ca6 | locale_runtime_symbol | cxx_runtime:1,locale_i18n:1,compiler_metadata:1 | __freelocale | vmop_145_plus0x139_sampled_long_or_sparse_slot_unknown |
-| 0x336b3c | compiler_type_name | cxx_runtime:1,locale_i18n:1,compiler_metadata:1 | long double | vmop_028_plus0x3_state_add_const_slot_u16_0 |
+| 0x334c7e | gnu_transactional_memory_runtime_symbol | cxx_runtime | _ITM_registerTMCloneTable | vmop_145_plus0x139_sampled_long_or_sparse_slot_unknown |
+| 0x334ca6 | locale_runtime_symbol | locale_i18n | __freelocale | vmop_145_plus0x139_sampled_long_or_sparse_slot_unknown |
+| 0x336b3c | compiler_type_name | compiler_metadata | long double | vmop_028_plus0x3_state_add_const_slot_u16_0 |
 

@@ -129,6 +129,7 @@ def main() -> int:
         root / "vm_program_control_graph_summary.tsv",
         root / "vm_x_program_first_seen.tsv",
         root / "vm_string_role_annotations.tsv",
+        root / "vm_native_side_effect_vm_refs.tsv",
         root / "vm_native_side_effect_programs.tsv",
         root / "vm_program_opcode_pseudocode.tsv",
         root / "vm_program_opcode_pseudocode_manifest.tsv",
@@ -142,6 +143,10 @@ def main() -> int:
     control = {row["program"]: row for row in read_tsv(root / "vm_program_control_graph_summary.tsv")}
     first_seen = {row["program"]: row for row in read_tsv(root / "vm_x_program_first_seen.tsv")}
     side_effects = {row["program"]: row for row in read_tsv(root / "vm_native_side_effect_programs.tsv")}
+    side_ref_categories = {
+        (row.get("program", ""), row.get("site", ""), row.get("text", "")): row.get("categories", "")
+        for row in read_tsv(root / "vm_native_side_effect_vm_refs.tsv")
+    }
     opcode_manifest = {row["program"]: row for row in read_tsv(root / "vm_program_opcode_pseudocode_manifest.tsv")}
     opcodes, state_kinds, slot_kinds = load_opcode_stats(root)
 
@@ -285,7 +290,7 @@ def main() -> int:
                             [
                                 row.get("site", ""),
                                 row.get("role", ""),
-                                side.get("exact_side_effect_categories", ""),
+                                side_ref_categories.get((program, row.get("site", ""), row.get("text", "")), ""),
                                 row.get("text", ""),
                                 row.get("opcode_name", ""),
                             ]

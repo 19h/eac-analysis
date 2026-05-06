@@ -48,6 +48,6 @@ This dossier is a readable evidence rollup, not a final semantic proof. It point
 
 | site | role | categories | text | opcode |
 | --- | --- | --- | --- | --- |
-| 0x33b7f2 | tls_protocol_message | tls_or_ssl:1,host_environment_inventory:1 | dropping unexpected ChangeCipherSpec | vmop_066_plus0x3_state_add_const_slot_multi_path |
-| 0x33c3d4 | libc_version_requirement | tls_or_ssl:1,host_environment_inventory:1 | GLIBC_2.17 | vmop_246_plus0x78_sampled_long_or_sparse_slot_unknown |
+| 0x33b7f2 | tls_protocol_message | tls_or_ssl | dropping unexpected ChangeCipherSpec | vmop_066_plus0x3_state_add_const_slot_multi_path |
+| 0x33c3d4 | libc_version_requirement | host_environment_inventory | GLIBC_2.17 | vmop_246_plus0x78_sampled_long_or_sparse_slot_unknown |
 
