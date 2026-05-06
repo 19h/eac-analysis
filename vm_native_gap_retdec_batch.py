@@ -1003,7 +1003,7 @@ def main():
     print("int864_t __asm_fnsave(void);")
     print("void __asm_frstor(int864_t value);")
     print("void __asm_fldenv(int224_t value);")
-    print("int64_t __asm_fnstenv(int64_t a1, int64_t a2, int64_t a3, int64_t a4);")
+    print("int64_t __asm_fnstenv();")
     print("struct eac_retdec_cpuid_regs __asm_cpuid(uint32_t leaf);")
     print("struct eac_retdec_cpuid_regs __asm_cpuid_133(uint32_t leaf);")
     print("struct eac_retdec_cpuid_regs __asm_cpuid_134(uint32_t leaf);")
