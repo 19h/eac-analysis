@@ -4,17 +4,17 @@ Compares executable ELF sections against native ranges already represented by re
 
 - executable sections: 5
 - executable bytes: 5651040
-- recovered executable bytes: 5384973
-- uncovered executable bytes: 266067
-- recovered range rows: 71964
-- uncovered gaps: 2703
+- recovered executable bytes: 5409455
+- uncovered executable bytes: 241585
+- recovered range rows: 72488
+- uncovered gaps: 2643
 
 | section | range | bytes | covered | uncovered | coverage | ranges |
 | --- | --- | ---: | ---: | ---: | ---: | ---: |
 | `.init` | `0x1fbd0-0x1fbe7` | 23 | 23 | 0 | 100.00% | 1 |
 | `.plt` | `0x1fbf0-0x20bd0` | 4064 | 4064 | 0 | 100.00% | 254 |
 | `.plt.got` | `0x20bd0-0x20be0` | 16 | 16 | 0 | 100.00% | 2 |
-| `.text` | `0x20c00-0x583650` | 5646928 | 5380861 | 266067 | 95.28% | 71704 |
+| `.text` | `0x20c00-0x583650` | 5646928 | 5405343 | 241585 | 95.72% | 72228 |
 | `.fini` | `0x583650-0x583659` | 9 | 9 | 0 | 100.00% | 3 |
 
 ## Largest Uncovered Gaps
@@ -49,15 +49,15 @@ Compares executable ELF sections against native ranges already represented by re
 | `.text` | `0x4e47f9-0x4e49f9` | 512 |
 | `.text` | `0x4e6af9-0x4e6cf9` | 512 |
 | `.text` | `0x4e8cf9-0x4e8ef9` | 512 |
-| `.text` | `0x28cd0-0x28e50` | 384 |
-| `.text` | `0x108abf-0x108c3f` | 384 |
-| `.text` | `0x1165bf-0x11673f` | 384 |
-| `.text` | `0x1177bf-0x11793f` | 384 |
-| `.text` | `0x1fc834-0x1fc9b4` | 384 |
-| `.text` | `0x347ed8-0x348058` | 384 |
-| `.text` | `0x3a2d39-0x3a2eb9` | 384 |
-| `.text` | `0x4dadf9-0x4daf79` | 384 |
 | `.text` | `0x4db279-0x4db3f9` | 384 |
-| `.text` | `0x4dd3f9-0x4dd579` | 384 |
 | `.text` | `0x4e0ef9-0x4e1079` | 384 |
-| `.text` | `0x4e3c79-0x4e3df9` | 384 |
+| `.text` | `0x4e4179-0x4e42f9` | 384 |
+| `.text` | `0x4e9179-0x4e92f9` | 384 |
+| `.text` | `0x72c6b-0x72dce` | 355 |
+| `.text` | `0x56ec85-0x56edc0` | 315 |
+| `.text` | `0x6b109-0x6b22b` | 290 |
+| `.text` | `0x4e3c79-0x4e3d99` | 288 |
+| `.text` | `0x3e07c-0x3e18d` | 273 |
+| `.text` | `0x4ac310-0x4ac420` | 272 |
+| `.text` | `0x286b1-0x287bc` | 267 |
+| `.text` | `0x4aec9-0x4afd4` | 267 |
