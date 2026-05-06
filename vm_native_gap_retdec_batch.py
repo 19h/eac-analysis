@@ -668,7 +668,7 @@ def extract_functions(text):
     functions = normalize_time_struct_accesses(functions)
     functions = re.sub(r"\bmemset\(([^,\n]+),", r"memset((void *)(int64_t)(\1),", functions)
     functions = re.sub(
-        r"\bmemset\((\(void \*\)\(int64_t\)\([^)]*\)),\s*([^,\n)]+)\)",
+        r"\bmemset\((\(void \*\)\(int64_t\)\([^)]*\)),\s*([A-Za-z_]\w*)\)",
         r"memset2(\1, \2, 0)",
         functions,
     )
@@ -843,6 +843,20 @@ def main():
         print("extern int32_t CRC_32C__Castagnoli__poly_0x1EDC6F41_at_585720;")
     if "Hash_constant_words_K_for_SHA_384_and_SHA_512_at_598800" in functions:
         print("extern int64_t Hash_constant_words_K_for_SHA_384_and_SHA_512_at_598800;")
+    for data_symbol in [
+        "libntlm_DES_key_swap_at_5948e0",
+        "libntlm_DES_key_swap_at_594920",
+        "RawDES_sbox8_at_594960",
+        "RawDES_sbox6_at_594a60",
+        "RawDES_sbox4_at_594b60",
+        "RawDES_sbox2_at_594c60",
+        "RawDES_sbox7_at_594d60",
+        "RawDES_sbox5_at_594e60",
+        "RawDES_sbox3_at_594f60",
+        "RawDES_sbox1_at_595060",
+    ]:
+        if data_symbol in functions:
+            print(f"extern int32_t {data_symbol};")
     print("int64_t entry_point();")
     print("unsigned char llvm_ctpop_i8(unsigned char value);")
     print("uint16_t llvm_bswap_i16(uint16_t value);")
