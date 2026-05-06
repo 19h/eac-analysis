@@ -1,7 +1,7 @@
 # Uncovered Executable Gaps (all)
 
-- gaps: `2594`
-- bytes: `217234`
+- gaps: `2575`
+- bytes: `203794`
 
 | Index | Start | Stop | Bytes |
 | ---: | ---: | ---: | ---: |
@@ -69,4 +69,4 @@
 | 61 | `0x122746` | `0x122846` | 256 |
 | 62 | `0x122d46` | `0x122e46` | 256 |
 | 63 | `0x12cedc` | `0x12cfdc` | 256 |
-| ... | ... | ... | 2530 more gaps |
+| ... | ... | ... | 2511 more gaps |
