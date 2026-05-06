@@ -4,32 +4,23 @@ Compares executable ELF sections against native ranges already represented by re
 
 - executable sections: 5
 - executable bytes: 5651040
-- recovered executable bytes: 3996662
-- uncovered executable bytes: 1654378
-- recovered range rows: 50471
-- uncovered gaps: 3192
+- recovered executable bytes: 4029430
+- uncovered executable bytes: 1621610
+- recovered range rows: 50914
+- uncovered gaps: 3196
 
 | section | range | bytes | covered | uncovered | coverage | ranges |
 | --- | --- | ---: | ---: | ---: | ---: | ---: |
 | `.init` | `0x1fbd0-0x1fbe7` | 23 | 23 | 0 | 100.00% | 1 |
 | `.plt` | `0x1fbf0-0x20bd0` | 4064 | 4064 | 0 | 100.00% | 254 |
 | `.plt.got` | `0x20bd0-0x20be0` | 16 | 16 | 0 | 100.00% | 2 |
-| `.text` | `0x20c00-0x583650` | 5646928 | 3992550 | 1654378 | 70.70% | 50211 |
+| `.text` | `0x20c00-0x583650` | 5646928 | 4025318 | 1621610 | 71.28% | 50654 |
 | `.fini` | `0x583650-0x583659` | 9 | 9 | 0 | 100.00% | 3 |
 
 ## Largest Uncovered Gaps
 
 | section | range | bytes |
 | --- | --- | ---: |
-| `.text` | `0x20b59e-0x20ce34` | 6294 |
-| `.text` | `0x32d055-0x32e8e4` | 6287 |
-| `.text` | `0x3ba859-0x3bc0e4` | 6283 |
-| `.text` | `0x33650c-0x337d35` | 6185 |
-| `.text` | `0x1f44e8-0x1f5d10` | 6184 |
-| `.text` | `0x23c0b6-0x23d8b8` | 6146 |
-| `.text` | `0x1f5e08-0x1f7607` | 6143 |
-| `.text` | `0x4a6a5e-0x4a8259` | 6139 |
-| `.text` | `0x26d624-0x26ee18` | 6132 |
 | `.text` | `0x4e82f9-0x4e9ae0` | 6119 |
 | `.text` | `0x4f74e2-0x4f8cc0` | 6110 |
 | `.text` | `0x1c3f7d-0x1c5750` | 6099 |
@@ -61,3 +52,12 @@ Compares executable ELF sections against native ranges already represented by re
 | `.text` | `0x34bbe6-0x34d253` | 5741 |
 | `.text` | `0x13ac09-0x13c266` | 5725 |
 | `.text` | `0xde9c7-0xe0017` | 5712 |
+| `.text` | `0x40cedf-0x40e52b` | 5708 |
+| `.text` | `0x2c1e00-0x2c342b` | 5675 |
+| `.text` | `0x1a94bb-0x1aaadd` | 5666 |
+| `.text` | `0x2534bc-0x254abd` | 5633 |
+| `.text` | `0x1ca955-0x1cbf51` | 5628 |
+| `.text` | `0x3e0280-0x3e185b` | 5595 |
+| `.text` | `0x2b8975-0x2b9f30` | 5563 |
+| `.text` | `0x3973e1-0x398978` | 5527 |
+| `.text` | `0x3d34ff-0x3d4a95` | 5526 |
