@@ -253,6 +253,8 @@ def main():
     parser.add_argument("--rounds", type=int, default=4)
     parser.add_argument("--jobs", type=int, default=min(os.cpu_count() or 1, 8))
     parser.add_argument("--chunk-bytes", type=lambda value: int(value, 0), default=0x200)
+    parser.add_argument("--min-chunk-bytes", type=lambda value: int(value, 0), default=None)
+    parser.add_argument("--max-split-candidates", type=int, default=64)
     parser.add_argument(
         "--section",
         action="append",
@@ -299,6 +301,10 @@ def main():
                 *sum((["--section", section] for section in sections), []),
                 "--chunk-bytes",
                 hex(args.chunk_bytes),
+                "--min-chunk-bytes",
+                hex(args.min_chunk_bytes if args.min_chunk_bytes is not None else args.chunk_bytes),
+                "--max-split-candidates",
+                args.max_split_candidates,
                 "--max-gap-chunks",
                 args.max_gap_chunks,
                 "--max-candidates",

@@ -4,6 +4,7 @@ import csv
 import hashlib
 import subprocess
 import tempfile
+from collections import deque
 from concurrent.futures import FIRST_COMPLETED, ThreadPoolExecutor, wait
 from pathlib import Path
 
@@ -89,6 +90,17 @@ def parse_range(selected):
     return int(start, 16), int(stop, 16)
 
 
+def split_range(selected, min_chunk_bytes):
+    start, stop = parse_range(selected)
+    size = stop - start
+    if size <= min_chunk_bytes or size < 2:
+        return []
+    mid = start + size // 2
+    if mid <= start or mid >= stop:
+        return []
+    return [format_range(start, mid), format_range(mid, stop)]
+
+
 def try_range(selected, batch_index, timeout, keep_failed):
     with tempfile.TemporaryDirectory(prefix="eacsym-exec-gap-retdec-") as tmpdir:
         tmp = Path(tmpdir)
@@ -130,16 +142,28 @@ def try_range(selected, batch_index, timeout, keep_failed):
         return True
 
 
-def probe_candidates(candidates, batch_index, timeout, keep_failed, probe_jobs, max_accepted):
+def probe_candidates(
+    candidates,
+    batch_index,
+    timeout,
+    keep_failed,
+    probe_jobs,
+    max_accepted,
+    min_chunk_bytes,
+    max_split_candidates,
+    used,
+):
     accepted = []
     rejected = []
     pending = {}
-    candidates = iter(candidates)
+    queue = deque(candidates)
+    seen = set(candidates)
+    split_candidates = 0
 
     def submit_next(executor):
         try:
-            selected = next(candidates)
-        except StopIteration:
+            selected = queue.popleft()
+        except IndexError:
             return False
         future = executor.submit(try_range, selected, batch_index, timeout, keep_failed)
         pending[future] = selected
@@ -162,6 +186,15 @@ def probe_candidates(candidates, batch_index, timeout, keep_failed, probe_jobs, 
                         break
                 else:
                     rejected.append(selected)
+                    for split in split_range(selected, min_chunk_bytes):
+                        if split in seen or split in used:
+                            continue
+                        if split_candidates >= max_split_candidates:
+                            break
+                        queue.appendleft(split)
+                        seen.add(split)
+                        split_candidates += 1
+                        print(f"split\t{selected}\t{split}", flush=True)
                 submit_next(executor)
 
         for future in pending:
@@ -196,6 +229,18 @@ def main():
     parser.add_argument("--root", type=Path, default=Path("."))
     parser.add_argument("--start-index", type=int)
     parser.add_argument("--chunk-bytes", type=lambda value: int(value, 0), default=0x200)
+    parser.add_argument(
+        "--min-chunk-bytes",
+        type=lambda value: int(value, 0),
+        default=None,
+        help="If a candidate rejects, recursively split it down to this size and probe subranges.",
+    )
+    parser.add_argument(
+        "--max-split-candidates",
+        type=int,
+        default=64,
+        help="Maximum additional subrange probes created by adaptive splitting.",
+    )
     parser.add_argument("--max-gap-chunks", type=int, default=4)
     parser.add_argument("--max-candidates", type=int, default=64)
     parser.add_argument("--max-accepted", type=int, default=8)
@@ -208,6 +253,7 @@ def main():
 
     batch_index = args.start_index if args.start_index is not None else next_batch_index(args.root)
     sections = args.section or [".text"]
+    min_chunk_bytes = args.min_chunk_bytes if args.min_chunk_bytes is not None else args.chunk_bytes
     output = args.root / f"native_gap_retdec_batch{batch_index:02d}.ranges"
     generator_key = generator_fingerprint()
     used = {item for item in used_ranges(args.root) if RANGE_RE.match(item)}
@@ -226,6 +272,9 @@ def main():
         args.keep_failed,
         probe_jobs,
         args.max_accepted,
+        min_chunk_bytes,
+        max(0, args.max_split_candidates),
+        used,
     )
 
     if not accepted:
