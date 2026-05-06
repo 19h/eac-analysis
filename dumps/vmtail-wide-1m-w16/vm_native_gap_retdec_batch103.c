@@ -208,6 +208,7 @@ int pthread_cond_wait(void *cond, void *mutex);
 int pthread_cond_timedwait(void *cond, void *mutex, const struct timespec *abstime);
 int pthread_cond_broadcast(void *cond);
 int sem_init(int64_t *sem, int pshared, unsigned int value);
+int sem_post(int64_t *sem);
 int sem_wait(int64_t *sem);
 int sem_destroy(int64_t *sem);
 int fcntl(int fd, int cmd, ...);

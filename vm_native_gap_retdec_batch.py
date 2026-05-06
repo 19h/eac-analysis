@@ -973,6 +973,7 @@ def main():
     print("int pthread_cond_timedwait(void *cond, void *mutex, const struct timespec *abstime);")
     print("int pthread_cond_broadcast(void *cond);")
     print("int sem_init(int64_t *sem, int pshared, unsigned int value);")
+    print("int sem_post(int64_t *sem);")
     print("int sem_wait(int64_t *sem);")
     print("int sem_destroy(int64_t *sem);")
     print("int fcntl(int fd, int cmd, ...);")
