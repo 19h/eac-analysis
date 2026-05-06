@@ -3,8 +3,8 @@
  * ELF: eac.elf
  * Coverage: dumps/vmtail-wide-1m-w16/vm_native_executable_coverage_audit.tsv
  * Section: all
- * Gaps: 445
- * Bytes: 5933
+ * Gaps: 408
+ * Bytes: 5233
  *
  * These are not decompiled semantics. They are lossless C evidence for
  * executable bytes that are not yet represented by RetDec/manual lifts.
@@ -1155,936 +1155,740 @@ static const uint8_t vm_uncovered_executable_gap_0226_bytes[16] = {
     0x29, 0xfa, 0xf2, 0x18,
 };
 
-static const uint8_t vm_uncovered_executable_gap_0227_bytes[16] = {
-    0x0f, 0xfc, 0x16, 0x14, 0x65, 0xc0, 0xda, 0x97, 0x7c, 0x66, 0x96, 0x90,
-    0x29, 0x90, 0x09, 0x18,
-};
-
-static const uint8_t vm_uncovered_executable_gap_0228_bytes[16] = {
-    0x64, 0x11, 0x69, 0xa3, 0x68, 0xf4, 0xd5, 0xac, 0x60, 0xca, 0x69, 0xd7,
-    0x47, 0xe8, 0x17, 0xa4,
-};
-
-static const uint8_t vm_uncovered_executable_gap_0229_bytes[16] = {
-    0x0f, 0x67, 0x0f, 0xe9, 0x76, 0x73, 0x5f, 0x0c, 0x23, 0x18, 0x4a, 0x26,
-    0x2e, 0x7c, 0x9c, 0x0e,
-};
-
-static const uint8_t vm_uncovered_executable_gap_0230_bytes[16] = {
-    0x0c, 0xb1, 0x0f, 0x5c, 0x5d, 0x75, 0xe9, 0x0e, 0x44, 0xec, 0x26, 0xf1,
-    0x6c, 0x7b, 0x7b, 0xf9,
-};
-
-static const uint8_t vm_uncovered_executable_gap_0231_bytes[16] = {
-    0x4e, 0xcf, 0x59, 0xec, 0x7b, 0xd5, 0x59, 0xef, 0x0a, 0xdc, 0x7e, 0x84,
-    0x0f, 0x1e, 0x40, 0xaa,
-};
-
-static const uint8_t vm_uncovered_executable_gap_0232_bytes[16] = {
-    0x61, 0xb4, 0x6a, 0x91, 0x71, 0xca, 0x0f, 0xe0, 0x45, 0x2d, 0xe9, 0x60,
-    0x5d, 0x2b, 0x73, 0xc9,
-};
-
-static const uint8_t vm_uncovered_executable_gap_0233_bytes[16] = {
-    0x0f, 0x34, 0x19, 0x5c, 0x2b, 0x98, 0xca, 0x68, 0x1e, 0x10, 0x2a, 0x7c,
-    0x53, 0xcc, 0xf4, 0xa6,
-};
-
-static const uint8_t vm_uncovered_executable_gap_0234_bytes[16] = {
-    0x64, 0xb7, 0xe5, 0x67, 0x59, 0x73, 0x8f, 0x0f, 0x51, 0x06, 0xc9, 0xcb,
-    0x71, 0x94, 0x25, 0x99,
-};
-
-static const uint8_t vm_uncovered_executable_gap_0235_bytes[16] = {
-    0xb8, 0xe7, 0x2a, 0x53, 0xee, 0x64, 0x06, 0xe8, 0xea, 0xdf, 0x35, 0xbe,
-    0x4c, 0x69, 0x7d, 0xcb,
-};
-
-static const uint8_t vm_uncovered_executable_gap_0236_bytes[16] = {
-    0x13, 0xb2, 0x43, 0x7b, 0xd1, 0x69, 0x45, 0x49, 0xa7, 0xdd, 0x37, 0x3a,
-    0x68, 0xe8, 0x32, 0x1a,
-};
-
-static const uint8_t vm_uncovered_executable_gap_0237_bytes[16] = {
-    0x3a, 0xd7, 0x33, 0xf9, 0x91, 0x47, 0x0f, 0xc5, 0xff, 0x00, 0x2e, 0x3c,
-    0xeb, 0xb8, 0x08, 0xd2,
-};
-
-static const uint8_t vm_uncovered_executable_gap_0238_bytes[16] = {
-    0x35, 0xea, 0x75, 0x52, 0x9c, 0x10, 0x11, 0xdf, 0xc0, 0x07, 0x47, 0x62,
-    0x27, 0x92, 0x46, 0x3e,
-};
-
-static const uint8_t vm_uncovered_executable_gap_0239_bytes[16] = {
-    0x0f, 0x17, 0x36, 0xde, 0x26, 0x53, 0x69, 0x96, 0x0f, 0x66, 0x2e, 0xeb,
-    0x6d, 0xb4, 0x1f, 0x61,
-};
-
-static const uint8_t vm_uncovered_executable_gap_0240_bytes[16] = {
-    0x00, 0xdc, 0x0d, 0xcc, 0xc5, 0xfa, 0x0c, 0x0f, 0xdd, 0x2a, 0x55, 0x52,
-    0x95, 0x72, 0x29, 0xa8,
-};
-
-static const uint8_t vm_uncovered_executable_gap_0241_bytes[16] = {
-    0x7b, 0xd9, 0xfd, 0x52, 0x0f, 0xda, 0x3c, 0xad, 0x7e, 0x9e, 0x36, 0x52,
-    0x4b, 0x1a, 0xd3, 0x96,
-};
-
-static const uint8_t vm_uncovered_executable_gap_0242_bytes[16] = {
-    0x65, 0x3e, 0x42, 0xd9, 0x10, 0x3d, 0xf6, 0xcf, 0x08, 0x11, 0x92, 0x0f,
-    0x50, 0xc2, 0xbc, 0xe1,
-};
-
-static const uint8_t vm_uncovered_executable_gap_0243_bytes[16] = {
-    0x5f, 0x8c, 0x59, 0x2a, 0x2b, 0x03, 0x24, 0x50, 0x0f, 0x6a, 0x30, 0x0d,
-    0x04, 0xfa, 0x73, 0x2a,
-};
-
-static const uint8_t vm_uncovered_executable_gap_0244_bytes[16] = {
-    0x99, 0x08, 0xc2, 0x0f, 0xfd, 0x5c, 0xbd, 0x58, 0x11, 0xc5, 0xc3, 0x10,
-    0x00, 0x6c, 0x32, 0x04,
-};
-
-static const uint8_t vm_uncovered_executable_gap_0245_bytes[16] = {
-    0xb8, 0x65, 0xaf, 0x00, 0x2d, 0x05, 0x52, 0x10, 0x18, 0xa3, 0x0f, 0x74,
-    0x41, 0x9e, 0x09, 0x5d,
-};
-
-static const uint8_t vm_uncovered_executable_gap_0246_bytes[16] = {
-    0x59, 0x3c, 0xc5, 0x33, 0x80, 0x29, 0x13, 0x29, 0x32, 0x0f, 0x68, 0x59,
-    0x9b, 0x6d, 0xab, 0x03,
-};
-
-static const uint8_t vm_uncovered_executable_gap_0247_bytes[16] = {
-    0xdf, 0xc0, 0xc3, 0x23, 0x0b, 0x24, 0x1b, 0x46, 0xe8, 0x34, 0xec, 0x4f,
-    0x1f, 0x5e, 0x9d, 0x38,
-};
-
-static const uint8_t vm_uncovered_executable_gap_0248_bytes[16] = {
-    0x2a, 0x0d, 0x8e, 0x6e, 0x97, 0x13, 0x0d, 0x0c, 0x6a, 0x14, 0x36, 0x0f,
-    0x6b, 0xfe, 0x49, 0x3e,
-};
-
-static const uint8_t vm_uncovered_executable_gap_0249_bytes[16] = {
-    0x22, 0x29, 0x72, 0x2c, 0xde, 0xc0, 0x42, 0x0f, 0x67, 0x04, 0x57, 0x2d,
-    0x7a, 0x2e, 0x7d, 0x42,
-};
-
-static const uint8_t vm_uncovered_executable_gap_0250_bytes[16] = {
-    0x7f, 0x3a, 0x49, 0x79, 0x00, 0x0f, 0x2d, 0x0f, 0x4e, 0xda, 0x93, 0x4f,
-    0x5f, 0x8b, 0x60, 0x57,
-};
-
-static const uint8_t vm_uncovered_executable_gap_0251_bytes[16] = {
-    0x80, 0x46, 0x9f, 0x16, 0x9c, 0xd3, 0x7e, 0x42, 0xc5, 0x3c, 0x5f, 0x58,
-    0xfb, 0xb3, 0xae, 0x2e,
-};
-
-static const uint8_t vm_uncovered_executable_gap_0252_bytes[16] = {
-    0x27, 0x24, 0x37, 0x8c, 0x32, 0x78, 0xf6, 0xdf, 0x74, 0x1f, 0xfc, 0xc2,
-    0x1f, 0x0a, 0x00, 0xb0,
-};
-
-static const uint8_t vm_uncovered_executable_gap_0253_bytes[16] = {
-    0x0f, 0x0e, 0xe7, 0x70, 0x30, 0x6f, 0xc1, 0x42, 0xc3, 0x40, 0x85, 0x24,
-    0xdd, 0x72, 0xd1, 0x79,
-};
-
-static const uint8_t vm_uncovered_executable_gap_0254_bytes[16] = {
-    0x30, 0xaf, 0x56, 0x5f, 0x7a, 0x48, 0x0f, 0x69, 0x3f, 0x00, 0x5f, 0x86,
-    0x49, 0x39, 0x91, 0x3c,
-};
-
-static const uint8_t vm_uncovered_executable_gap_0255_bytes[16] = {
-    0x99, 0x58, 0x0f, 0x08, 0xbf, 0x06, 0x96, 0x46, 0x47, 0x7d, 0xf4, 0xe5,
-    0x34, 0x3c, 0x1a, 0x78,
-};
-
-static const uint8_t vm_uncovered_executable_gap_0256_bytes[16] = {
-    0x5b, 0x71, 0xbb, 0xfb, 0x20, 0x71, 0x3f, 0xd9, 0xdd, 0x2e, 0x00, 0x09,
-    0x44, 0x34, 0xb1, 0x9d,
-};
-
-static const uint8_t vm_uncovered_executable_gap_0257_bytes[16] = {
-    0x0f, 0x56, 0xc3, 0xcb, 0x8c, 0x69, 0xb1, 0xef, 0xc3, 0x76, 0x00, 0xa6,
-    0xe3, 0x59, 0x84, 0x87,
-};
-
-static const uint8_t vm_uncovered_executable_gap_0258_bytes[16] = {
-    0xad, 0x0f, 0x75, 0x51, 0x5e, 0x74, 0xcd, 0x37, 0x80, 0x54, 0x68, 0x6a,
-    0xa1, 0x17, 0x6b, 0x84,
-};
-
-static const uint8_t vm_uncovered_executable_gap_0259_bytes[16] = {
-    0x0f, 0x08, 0xeb, 0xcd, 0x3e, 0x62, 0xdf, 0xac, 0x4d, 0x36, 0x42, 0x8a,
-    0x7a, 0x66, 0x5e, 0xa0,
-};
-
-static const uint8_t vm_uncovered_executable_gap_0260_bytes[16] = {
-    0xc5, 0x5c, 0x5e, 0x0a, 0x31, 0x3a, 0xc9, 0x4b, 0x09, 0x4e, 0x65, 0x80,
-    0x21, 0x64, 0x3a, 0xae,
-};
-
-static const uint8_t vm_uncovered_executable_gap_0261_bytes[16] = {
-    0x85, 0x35, 0x78, 0x5b, 0x6f, 0x5e, 0x49, 0xcf, 0xb9, 0x54, 0x7e, 0x96,
-    0x3a, 0x29, 0x1c, 0x14,
-};
-
-static const uint8_t vm_uncovered_executable_gap_0262_bytes[16] = {
-    0xe4, 0x69, 0x78, 0x1c, 0xd7, 0xa6, 0x39, 0x5e, 0xae, 0x90, 0x3e, 0x45,
-    0x48, 0xcf, 0x74, 0x50,
-};
-
-static const uint8_t vm_uncovered_executable_gap_0263_bytes[16] = {
-    0x81, 0x69, 0xff, 0x3d, 0xb7, 0x2c, 0x26, 0x0f, 0x2c, 0x6c, 0x28, 0x34,
-    0x95, 0xeb, 0xa0, 0x3e,
-};
-
-static const uint8_t vm_uncovered_executable_gap_0264_bytes[16] = {
-    0xc5, 0x43, 0x5e, 0x67, 0xe1, 0xe5, 0x80, 0x7b, 0xd0, 0x6c, 0xb8, 0x11,
-    0x8b, 0xbb, 0xee, 0x61,
-};
-
-static const uint8_t vm_uncovered_executable_gap_0265_bytes[16] = {
-    0x28, 0x00, 0x00, 0x00, 0x48, 0x89, 0x44, 0x24, 0x18, 0x31, 0xc0, 0xe8,
-    0xa7, 0xd8, 0xb8, 0xff,
-};
-
-static const uint8_t vm_uncovered_executable_gap_0266_bytes[16] = {
-    0x00, 0x45, 0x85, 0xb7, 0xc4, 0x00, 0x43, 0x0f, 0x41, 0x4f, 0xcf, 0x45,
-    0xd2, 0x02, 0xb8, 0x34,
-};
-
-static const uint8_t vm_uncovered_executable_gap_0267_bytes[16] = {
-    0x10, 0xac, 0x09, 0x7f, 0xa6, 0x7b, 0x21, 0xb8, 0x5a, 0x62, 0x87, 0x7f,
-    0x0f, 0x12, 0x42, 0x13,
-};
-
-static const uint8_t vm_uncovered_executable_gap_0268_bytes[16] = {
-    0xc4, 0x43, 0x25, 0x18, 0x5c, 0x17, 0xd0, 0x01, 0xc4, 0x41, 0x2d, 0x14,
-    0xf3, 0xc4, 0x41, 0x2d,
-};
-
-static const uint8_t vm_uncovered_executable_gap_0269_bytes[16] = {
-    0x00, 0x00, 0x41, 0x0f, 0x18, 0x8c, 0x11, 0x80, 0x00, 0x00, 0x00, 0x41,
-    0x0f, 0x18, 0x8c, 0x15,
-};
-
-static const uint8_t vm_uncovered_executable_gap_0270_bytes[16] = {
-    0x0f, 0x18, 0x8c, 0x17, 0x80, 0x00, 0x00, 0x00, 0xc5, 0xfd, 0xfe, 0x04,
-    0x24, 0xc5, 0xf5, 0xfe,
-};
-
-static const uint8_t vm_uncovered_executable_gap_0271_bytes[16] = {
-    0xfe, 0xce, 0xc5, 0xed, 0xfe, 0xd7, 0xc5, 0xe5, 0xfe, 0xdc, 0xc5, 0x05,
-    0xef, 0xf8, 0xc5, 0x1d,
-};
-
-static const uint8_t vm_uncovered_executable_gap_0272_bytes[16] = {
-    0x00, 0xe8, 0xc4, 0x42, 0x0d, 0x00, 0xf0, 0xc4, 0x41, 0x2d, 0xfe, 0xd7,
-    0xc4, 0x41, 0x25, 0xfe,
-};
-
-static const uint8_t vm_uncovered_executable_gap_0273_bytes[16] = {
-    0xc1, 0x55, 0xef, 0xea, 0xc4, 0xc1, 0x4d, 0xef, 0xf3, 0xc4, 0xc1, 0x45,
-    0xef, 0xf8, 0xc4, 0xc1,
-};
-
-static const uint8_t vm_uncovered_executable_gap_0274_bytes[16] = {
-    0xc5, 0xdd, 0x72, 0xf4, 0x19, 0xc4, 0xc1, 0x5d, 0xeb, 0xe0, 0xc5, 0xfd,
-    0xfe, 0x44, 0x24, 0x40,
-};
-
-static const uint8_t vm_uncovered_executable_gap_0275_bytes[15] = {
+static const uint8_t vm_uncovered_executable_gap_0227_bytes[15] = {
     0xf3, 0x0f, 0x7e, 0x4e, 0x10, 0x66, 0x0f, 0xd6, 0x0f, 0x48, 0x83, 0xc7,
     0x08, 0xeb, 0x47,
 };
 
-static const uint8_t vm_uncovered_executable_gap_0276_bytes[15] = {
+static const uint8_t vm_uncovered_executable_gap_0228_bytes[15] = {
     0x66, 0x41, 0x0f, 0x72, 0xd0, 0x07, 0x66, 0x0f, 0x72, 0xf6, 0x19, 0x66,
     0x41, 0x0f, 0xeb,
 };
 
-static const uint8_t vm_uncovered_executable_gap_0277_bytes[15] = {
+static const uint8_t vm_uncovered_executable_gap_0229_bytes[15] = {
     0x00, 0x66, 0x0f, 0xfe, 0x4c, 0x24, 0x20, 0x66, 0x0f, 0xfe, 0x54, 0x24,
     0x30, 0x66, 0x0f,
 };
 
-static const uint8_t vm_uncovered_executable_gap_0278_bytes[15] = {
+static const uint8_t vm_uncovered_executable_gap_0230_bytes[15] = {
     0xd8, 0xf2, 0x48, 0x0f, 0x2a, 0xd0, 0x66, 0x0f, 0x28, 0xfa, 0xf2, 0x0f,
     0xc2, 0xf8, 0x06,
 };
 
-static const uint8_t vm_uncovered_executable_gap_0279_bytes[14] = {
+static const uint8_t vm_uncovered_executable_gap_0231_bytes[14] = {
     0x0b, 0x00, 0xc5, 0x78, 0x10, 0x06, 0xc5, 0x78, 0x10, 0x4e, 0x10, 0xc4,
     0xc1, 0x38,
 };
 
-static const uint8_t vm_uncovered_executable_gap_0280_bytes[14] = {
+static const uint8_t vm_uncovered_executable_gap_0232_bytes[14] = {
     0x66, 0x0f, 0x72, 0xf5, 0x14, 0x66, 0x41, 0x0f, 0xeb, 0xe8, 0x66, 0x44,
     0x0f, 0x6f,
 };
 
-static const uint8_t vm_uncovered_executable_gap_0281_bytes[14] = {
+static const uint8_t vm_uncovered_executable_gap_0233_bytes[14] = {
     0x41, 0x0f, 0x72, 0xd0, 0x0c, 0x66, 0x0f, 0x72, 0xf6, 0x14, 0x66, 0x41,
     0x0f, 0xeb,
 };
 
-static const uint8_t vm_uncovered_executable_gap_0282_bytes[14] = {
+static const uint8_t vm_uncovered_executable_gap_0234_bytes[14] = {
     0xe9, 0x28, 0x16, 0xb3, 0xff, 0x48, 0x83, 0xec, 0x08, 0xe8, 0xff, 0x0a,
     0xb3, 0xff,
 };
 
-static const uint8_t vm_uncovered_executable_gap_0283_bytes[13] = {
+static const uint8_t vm_uncovered_executable_gap_0235_bytes[13] = {
     0x89, 0xef, 0xe8, 0x48, 0x74, 0xfc, 0xff, 0x48, 0x85, 0xc0, 0x74, 0x0c,
     0x48,
 };
 
-static const uint8_t vm_uncovered_executable_gap_0284_bytes[13] = {
+static const uint8_t vm_uncovered_executable_gap_0236_bytes[13] = {
     0x0f, 0x6f, 0x02, 0xf3, 0x0f, 0x6f, 0x0f, 0x66, 0x0f, 0xef, 0xc1, 0x48,
     0x83,
 };
 
-static const uint8_t vm_uncovered_executable_gap_0285_bytes[13] = {
+static const uint8_t vm_uncovered_executable_gap_0237_bytes[13] = {
     0xdf, 0xc1, 0xf3, 0x0f, 0x7f, 0x01, 0x31, 0xc0, 0xc3, 0x0f, 0x1f, 0x40,
     0x00,
 };
 
-static const uint8_t vm_uncovered_executable_gap_0286_bytes[13] = {
+static const uint8_t vm_uncovered_executable_gap_0238_bytes[13] = {
     0x62, 0xf1, 0x7d, 0x48, 0xfe, 0xc5, 0x62, 0xf1, 0x7d, 0x48, 0xfe, 0xc1,
     0x62,
 };
 
-static const uint8_t vm_uncovered_executable_gap_0287_bytes[13] = {
+static const uint8_t vm_uncovered_executable_gap_0239_bytes[13] = {
     0x70, 0xc0, 0x78, 0x66, 0x0f, 0x6a, 0xef, 0x66, 0x0f, 0x62, 0xf5, 0x66,
     0x0f,
 };
 
-static const uint8_t vm_uncovered_executable_gap_0288_bytes[12] = {
+static const uint8_t vm_uncovered_executable_gap_0240_bytes[12] = {
     0x74, 0x46, 0x64, 0xc1, 0x0d, 0xf6, 0xd1, 0x8a, 0x38, 0xe8, 0x01, 0x04,
 };
 
-static const uint8_t vm_uncovered_executable_gap_0289_bytes[12] = {
+static const uint8_t vm_uncovered_executable_gap_0241_bytes[12] = {
     0x01, 0x08, 0x0f, 0x2a, 0xd0, 0xec, 0xa1, 0x06, 0xe8, 0x01, 0xe2, 0x1d,
 };
 
-static const uint8_t vm_uncovered_executable_gap_0290_bytes[12] = {
+static const uint8_t vm_uncovered_executable_gap_0242_bytes[12] = {
     0x8b, 0xd0, 0xe7, 0x0a, 0x0f, 0x61, 0x5e, 0x4a, 0xe8, 0x01, 0x13, 0xa8,
 };
 
-static const uint8_t vm_uncovered_executable_gap_0291_bytes[12] = {
+static const uint8_t vm_uncovered_executable_gap_0243_bytes[12] = {
     0xdf, 0xc2, 0x10, 0xe8, 0x01, 0xe6, 0x55, 0xe4, 0xb4, 0xa6, 0xec, 0xb1,
 };
 
-static const uint8_t vm_uncovered_executable_gap_0292_bytes[12] = {
+static const uint8_t vm_uncovered_executable_gap_0244_bytes[12] = {
     0x9d, 0x42, 0x47, 0x43, 0x0f, 0xe8, 0x01, 0x73, 0x27, 0x08, 0x30, 0xcc,
 };
 
-static const uint8_t vm_uncovered_executable_gap_0293_bytes[12] = {
+static const uint8_t vm_uncovered_executable_gap_0245_bytes[12] = {
     0x5c, 0xfb, 0xaa, 0xc9, 0x45, 0xf3, 0x93, 0x0f, 0xe8, 0x01, 0x2a, 0xd5,
 };
 
-static const uint8_t vm_uncovered_executable_gap_0294_bytes[12] = {
+static const uint8_t vm_uncovered_executable_gap_0246_bytes[12] = {
     0x0f, 0x15, 0x1a, 0xeb, 0xf3, 0x6d, 0xdd, 0x4d, 0x14, 0x48, 0xbd, 0x37,
 };
 
-static const uint8_t vm_uncovered_executable_gap_0295_bytes[12] = {
+static const uint8_t vm_uncovered_executable_gap_0247_bytes[12] = {
     0xfa, 0x19, 0xd2, 0x56, 0x0f, 0x61, 0xcb, 0xd7, 0x39, 0x33, 0xb6, 0xe4,
 };
 
-static const uint8_t vm_uncovered_executable_gap_0296_bytes[12] = {
+static const uint8_t vm_uncovered_executable_gap_0248_bytes[12] = {
     0xc4, 0xc1, 0x55, 0xef, 0xe9, 0xc4, 0xc1, 0x4d, 0xef, 0xf2, 0xc4, 0xc1,
 };
 
-static const uint8_t vm_uncovered_executable_gap_0297_bytes[12] = {
+static const uint8_t vm_uncovered_executable_gap_0249_bytes[12] = {
     0x14, 0xc4, 0xc1, 0x55, 0xeb, 0xe8, 0xc5, 0xbd, 0x72, 0xd6, 0x0c, 0xc5,
 };
 
-static const uint8_t vm_uncovered_executable_gap_0298_bytes[12] = {
+static const uint8_t vm_uncovered_executable_gap_0250_bytes[12] = {
     0xc1, 0x4d, 0xef, 0xf3, 0xc4, 0xc1, 0x45, 0xef, 0xf8, 0xc4, 0xc1, 0x5d,
 };
 
-static const uint8_t vm_uncovered_executable_gap_0299_bytes[12] = {
+static const uint8_t vm_uncovered_executable_gap_0251_bytes[12] = {
     0x0b, 0x00, 0x62, 0xc1, 0x3c, 0x48, 0xc6, 0xc2, 0x88, 0x62, 0xc1, 0x1c,
 };
 
-static const uint8_t vm_uncovered_executable_gap_0300_bytes[12] = {
+static const uint8_t vm_uncovered_executable_gap_0252_bytes[12] = {
     0x62, 0xd1, 0x1d, 0x48, 0x72, 0xc4, 0x10, 0x62, 0xd1, 0x15, 0x48, 0x72,
 };
 
-static const uint8_t vm_uncovered_executable_gap_0301_bytes[12] = {
+static const uint8_t vm_uncovered_executable_gap_0253_bytes[12] = {
     0x62, 0xd1, 0x1d, 0x48, 0x72, 0xc4, 0x10, 0x62, 0xd1, 0x15, 0x48, 0x72,
 };
 
-static const uint8_t vm_uncovered_executable_gap_0302_bytes[12] = {
+static const uint8_t vm_uncovered_executable_gap_0254_bytes[12] = {
     0x62, 0xd1, 0x1d, 0x48, 0x72, 0xc4, 0x10, 0x62, 0xd1, 0x15, 0x48, 0x72,
 };
 
-static const uint8_t vm_uncovered_executable_gap_0303_bytes[12] = {
+static const uint8_t vm_uncovered_executable_gap_0255_bytes[12] = {
     0x62, 0xd1, 0x1d, 0x48, 0x72, 0xc4, 0x10, 0x62, 0xd1, 0x15, 0x48, 0x72,
 };
 
-static const uint8_t vm_uncovered_executable_gap_0304_bytes[12] = {
+static const uint8_t vm_uncovered_executable_gap_0256_bytes[12] = {
     0x62, 0xd1, 0x1d, 0x48, 0x72, 0xc4, 0x10, 0x62, 0xd1, 0x15, 0x48, 0x72,
 };
 
-static const uint8_t vm_uncovered_executable_gap_0305_bytes[12] = {
+static const uint8_t vm_uncovered_executable_gap_0257_bytes[12] = {
     0x62, 0xd1, 0x1d, 0x48, 0x72, 0xc4, 0x10, 0x62, 0xd1, 0x15, 0x48, 0x72,
 };
 
-static const uint8_t vm_uncovered_executable_gap_0306_bytes[12] = {
+static const uint8_t vm_uncovered_executable_gap_0258_bytes[12] = {
     0x62, 0xd1, 0x1d, 0x48, 0x72, 0xc4, 0x10, 0x62, 0xd1, 0x15, 0x48, 0x72,
 };
 
-static const uint8_t vm_uncovered_executable_gap_0307_bytes[12] = {
+static const uint8_t vm_uncovered_executable_gap_0259_bytes[12] = {
     0xf1, 0x75, 0x08, 0x72, 0xc1, 0x07, 0xc5, 0xf9, 0x70, 0xc0, 0x39, 0xc5,
 };
 
-static const uint8_t vm_uncovered_executable_gap_0308_bytes[12] = {
+static const uint8_t vm_uncovered_executable_gap_0260_bytes[12] = {
     0xf1, 0x75, 0x08, 0x72, 0xc1, 0x07, 0xc5, 0xf9, 0x70, 0xc0, 0x39, 0xc5,
 };
 
-static const uint8_t vm_uncovered_executable_gap_0309_bytes[12] = {
+static const uint8_t vm_uncovered_executable_gap_0261_bytes[12] = {
     0xc5, 0x79, 0x7f, 0xc6, 0xe9, 0x01, 0xff, 0xff, 0xff, 0xc5, 0xf9, 0xef,
 };
 
-static const uint8_t vm_uncovered_executable_gap_0310_bytes[12] = {
+static const uint8_t vm_uncovered_executable_gap_0262_bytes[12] = {
     0xf8, 0x62, 0xd1, 0x5d, 0x48, 0xef, 0xe1, 0x62, 0xf1, 0x55, 0x48, 0x72,
 };
 
-static const uint8_t vm_uncovered_executable_gap_0311_bytes[12] = {
+static const uint8_t vm_uncovered_executable_gap_0263_bytes[12] = {
     0xb1, 0x7d, 0x48, 0xfe, 0xc5, 0x62, 0xb1, 0x75, 0x48, 0xfe, 0xc8, 0x62,
 };
 
-static const uint8_t vm_uncovered_executable_gap_0312_bytes[12] = {
+static const uint8_t vm_uncovered_executable_gap_0264_bytes[12] = {
     0x6f, 0x24, 0x24, 0xc5, 0x79, 0x6f, 0x6c, 0x24, 0x40, 0xc4, 0x41, 0x19,
 };
 
-static const uint8_t vm_uncovered_executable_gap_0313_bytes[12] = {
+static const uint8_t vm_uncovered_executable_gap_0265_bytes[12] = {
     0xc4, 0x43, 0x15, 0x38, 0xee, 0x01, 0xc4, 0xe2, 0x7d, 0x5a, 0x15, 0xf8,
 };
 
-static const uint8_t vm_uncovered_executable_gap_0314_bytes[12] = {
+static const uint8_t vm_uncovered_executable_gap_0266_bytes[12] = {
     0x0f, 0x18, 0x8c, 0x10, 0x80, 0x00, 0x00, 0x00, 0x41, 0x0f, 0x18, 0x8c,
 };
 
-static const uint8_t vm_uncovered_executable_gap_0315_bytes[12] = {
+static const uint8_t vm_uncovered_executable_gap_0267_bytes[12] = {
     0x0f, 0x72, 0xd0, 0x0c, 0x66, 0x0f, 0x72, 0xf4, 0x14, 0x66, 0x41, 0x0f,
 };
 
-static const uint8_t vm_uncovered_executable_gap_0316_bytes[12] = {
+static const uint8_t vm_uncovered_executable_gap_0268_bytes[12] = {
     0x72, 0xd6, 0x08, 0x66, 0x41, 0x0f, 0x72, 0xf0, 0x18, 0x66, 0x45, 0x0f,
 };
 
-static const uint8_t vm_uncovered_executable_gap_0317_bytes[12] = {
+static const uint8_t vm_uncovered_executable_gap_0269_bytes[12] = {
     0x0f, 0xfe, 0xc5, 0x66, 0x45, 0x0f, 0xfe, 0xce, 0x66, 0x41, 0x0f, 0xef,
 };
 
-static const uint8_t vm_uncovered_executable_gap_0318_bytes[12] = {
+static const uint8_t vm_uncovered_executable_gap_0270_bytes[12] = {
     0xb1, 0x66, 0x45, 0x0f, 0xfe, 0xd7, 0x66, 0x45, 0x0f, 0xfe, 0xdc, 0x66,
 };
 
-static const uint8_t vm_uncovered_executable_gap_0319_bytes[12] = {
+static const uint8_t vm_uncovered_executable_gap_0271_bytes[12] = {
     0xfe, 0xc5, 0x66, 0x45, 0x0f, 0xfe, 0xce, 0x66, 0x41, 0x0f, 0xef, 0xea,
 };
 
-static const uint8_t vm_uncovered_executable_gap_0320_bytes[12] = {
+static const uint8_t vm_uncovered_executable_gap_0272_bytes[12] = {
     0x45, 0x0f, 0xfe, 0xc4, 0x66, 0x45, 0x0f, 0xfe, 0xcd, 0x66, 0x45, 0x0f,
 };
 
-static const uint8_t vm_uncovered_executable_gap_0321_bytes[12] = {
+static const uint8_t vm_uncovered_executable_gap_0273_bytes[12] = {
     0x0f, 0x72, 0xd0, 0x0c, 0x66, 0x0f, 0x72, 0xf4, 0x14, 0x66, 0x41, 0x0f,
 };
 
-static const uint8_t vm_uncovered_executable_gap_0322_bytes[12] = {
+static const uint8_t vm_uncovered_executable_gap_0274_bytes[12] = {
     0x0f, 0x72, 0xd0, 0x07, 0x66, 0x0f, 0x72, 0xf5, 0x19, 0x66, 0x41, 0x0f,
 };
 
-static const uint8_t vm_uncovered_executable_gap_0323_bytes[12] = {
+static const uint8_t vm_uncovered_executable_gap_0275_bytes[12] = {
     0x0f, 0xc6, 0xe5, 0x88, 0x44, 0x0f, 0xc6, 0xc5, 0xdd, 0x41, 0x0f, 0x28,
 };
 
-static const uint8_t vm_uncovered_executable_gap_0324_bytes[12] = {
+static const uint8_t vm_uncovered_executable_gap_0276_bytes[12] = {
     0x0f, 0xfe, 0xcd, 0x66, 0x45, 0x0f, 0xfe, 0xd6, 0x66, 0x45, 0x0f, 0xfe,
 };
 
-static const uint8_t vm_uncovered_executable_gap_0325_bytes[12] = {
+static const uint8_t vm_uncovered_executable_gap_0277_bytes[12] = {
     0x41, 0x0f, 0x72, 0xd0, 0x0c, 0x66, 0x0f, 0x72, 0xf7, 0x14, 0x66, 0x41,
 };
 
-static const uint8_t vm_uncovered_executable_gap_0326_bytes[12] = {
+static const uint8_t vm_uncovered_executable_gap_0278_bytes[12] = {
     0x0f, 0x72, 0xd0, 0x07, 0x66, 0x0f, 0x72, 0xf5, 0x19, 0x66, 0x41, 0x0f,
 };
 
-static const uint8_t vm_uncovered_executable_gap_0327_bytes[12] = {
+static const uint8_t vm_uncovered_executable_gap_0279_bytes[12] = {
     0x0f, 0x72, 0xd0, 0x0c, 0x66, 0x0f, 0x72, 0xf7, 0x14, 0x66, 0x41, 0x0f,
 };
 
-static const uint8_t vm_uncovered_executable_gap_0328_bytes[12] = {
+static const uint8_t vm_uncovered_executable_gap_0280_bytes[12] = {
     0x0f, 0x72, 0xd0, 0x0c, 0x66, 0x0f, 0x72, 0xf4, 0x14, 0x66, 0x41, 0x0f,
 };
 
-static const uint8_t vm_uncovered_executable_gap_0329_bytes[12] = {
+static const uint8_t vm_uncovered_executable_gap_0281_bytes[12] = {
     0x44, 0x0f, 0x6f, 0xc5, 0x66, 0x41, 0x0f, 0x72, 0xd0, 0x07, 0x66, 0x0f,
 };
 
-static const uint8_t vm_uncovered_executable_gap_0330_bytes[12] = {
+static const uint8_t vm_uncovered_executable_gap_0282_bytes[12] = {
     0x0f, 0x72, 0xd0, 0x07, 0x66, 0x0f, 0x72, 0xf7, 0x19, 0x66, 0x41, 0x0f,
 };
 
-static const uint8_t vm_uncovered_executable_gap_0331_bytes[12] = {
+static const uint8_t vm_uncovered_executable_gap_0283_bytes[12] = {
     0x66, 0x41, 0x0f, 0x72, 0xd0, 0x07, 0x66, 0x0f, 0x72, 0xf6, 0x19, 0x66,
 };
 
-static const uint8_t vm_uncovered_executable_gap_0332_bytes[12] = {
+static const uint8_t vm_uncovered_executable_gap_0284_bytes[12] = {
     0x41, 0x0f, 0x72, 0xd0, 0x0c, 0x66, 0x0f, 0x72, 0xf7, 0x14, 0x66, 0x41,
 };
 
-static const uint8_t vm_uncovered_executable_gap_0333_bytes[12] = {
+static const uint8_t vm_uncovered_executable_gap_0285_bytes[12] = {
     0x38, 0x00, 0xe0, 0x66, 0x45, 0x0f, 0x38, 0x00, 0xe8, 0x66, 0x45, 0x0f,
 };
 
-static const uint8_t vm_uncovered_executable_gap_0334_bytes[12] = {
+static const uint8_t vm_uncovered_executable_gap_0286_bytes[12] = {
     0x45, 0x0f, 0xfe, 0xc5, 0x66, 0x45, 0x0f, 0xfe, 0xce, 0x66, 0x41, 0x0f,
 };
 
-static const uint8_t vm_uncovered_executable_gap_0335_bytes[12] = {
+static const uint8_t vm_uncovered_executable_gap_0287_bytes[12] = {
     0x88, 0x66, 0x45, 0x0f, 0x70, 0xf6, 0x93, 0x45, 0x0f, 0xc6, 0xdf, 0xdd,
 };
 
-static const uint8_t vm_uncovered_executable_gap_0336_bytes[12] = {
+static const uint8_t vm_uncovered_executable_gap_0288_bytes[12] = {
     0x66, 0x0f, 0x3a, 0x22, 0xd8, 0x03, 0x66, 0x44, 0x0f, 0x3a, 0x22, 0xd8,
 };
 
-static const uint8_t vm_uncovered_executable_gap_0337_bytes[11] = {
+static const uint8_t vm_uncovered_executable_gap_0289_bytes[11] = {
     0x09, 0x22, 0xd8, 0x03, 0xc5, 0x79, 0x7f, 0xfa, 0xc4, 0x41, 0x78,
 };
 
-static const uint8_t vm_uncovered_executable_gap_0338_bytes[10] = {
+static const uint8_t vm_uncovered_executable_gap_0290_bytes[10] = {
     0x90, 0x53, 0x48, 0x89, 0xfb, 0xe8, 0xe9, 0xd4, 0xfa, 0xff,
 };
 
-static const uint8_t vm_uncovered_executable_gap_0339_bytes[10] = {
+static const uint8_t vm_uncovered_executable_gap_0291_bytes[10] = {
     0xef, 0xf2, 0xc4, 0xc1, 0x45, 0xef, 0xfb, 0xc5, 0x7d, 0x7f,
 };
 
-static const uint8_t vm_uncovered_executable_gap_0340_bytes[10] = {
+static const uint8_t vm_uncovered_executable_gap_0292_bytes[10] = {
     0x0c, 0xc5, 0xdd, 0x72, 0xf4, 0x14, 0xc4, 0xc1, 0x5d, 0xeb,
 };
 
-static const uint8_t vm_uncovered_executable_gap_0341_bytes[10] = {
+static const uint8_t vm_uncovered_executable_gap_0293_bytes[10] = {
     0xc5, 0x7d, 0x7f, 0x84, 0x24, 0x00, 0x02, 0x00, 0x00, 0xc5,
 };
 
-static const uint8_t vm_uncovered_executable_gap_0342_bytes[10] = {
+static const uint8_t vm_uncovered_executable_gap_0294_bytes[10] = {
     0x72, 0xd4, 0x0c, 0xc5, 0xdd, 0x72, 0xf4, 0x14, 0xc4, 0xc1,
 };
 
-static const uint8_t vm_uncovered_executable_gap_0343_bytes[10] = {
+static const uint8_t vm_uncovered_executable_gap_0295_bytes[10] = {
     0x50, 0xc5, 0x7c, 0x14, 0xc1, 0xc5, 0x6c, 0x14, 0xcb, 0xc5,
 };
 
-static const uint8_t vm_uncovered_executable_gap_0344_bytes[10] = {
+static const uint8_t vm_uncovered_executable_gap_0296_bytes[10] = {
     0xc5, 0x7c, 0x11, 0x23, 0xc5, 0x5c, 0x15, 0xf5, 0xc4, 0xe3,
 };
 
-static const uint8_t vm_uncovered_executable_gap_0345_bytes[10] = {
+static const uint8_t vm_uncovered_executable_gap_0297_bytes[10] = {
     0x10, 0xf0, 0xc4, 0xc1, 0x38, 0xc6, 0xf1, 0x88, 0xc4, 0xc1,
 };
 
-static const uint8_t vm_uncovered_executable_gap_0346_bytes[10] = {
+static const uint8_t vm_uncovered_executable_gap_0298_bytes[10] = {
     0xd0, 0x07, 0x66, 0x0f, 0x72, 0xf6, 0x19, 0x66, 0x41, 0x0f,
 };
 
-static const uint8_t vm_uncovered_executable_gap_0347_bytes[10] = {
+static const uint8_t vm_uncovered_executable_gap_0299_bytes[10] = {
     0xd0, 0x07, 0x66, 0x0f, 0x72, 0xf7, 0x19, 0x66, 0x41, 0x0f,
 };
 
-static const uint8_t vm_uncovered_executable_gap_0348_bytes[10] = {
+static const uint8_t vm_uncovered_executable_gap_0300_bytes[10] = {
     0x44, 0x0f, 0xef, 0xf2, 0x66, 0x44, 0x0f, 0xef, 0xfb, 0x66,
 };
 
-static const uint8_t vm_uncovered_executable_gap_0349_bytes[10] = {
+static const uint8_t vm_uncovered_executable_gap_0301_bytes[10] = {
     0x0f, 0xef, 0xea, 0x66, 0x44, 0x0f, 0xef, 0xf3, 0x66, 0x44,
 };
 
-static const uint8_t vm_uncovered_executable_gap_0350_bytes[10] = {
+static const uint8_t vm_uncovered_executable_gap_0302_bytes[10] = {
     0xdd, 0xb1, 0xff, 0x48, 0x83, 0xea, 0x01, 0x48, 0x89, 0xc7,
 };
 
-static const uint8_t vm_uncovered_executable_gap_0351_bytes[9] = {
+static const uint8_t vm_uncovered_executable_gap_0303_bytes[9] = {
     0xc5, 0xe5, 0xfe, 0xdf, 0xc5, 0x1d, 0xef, 0xe0, 0xc5,
 };
 
-static const uint8_t vm_uncovered_executable_gap_0352_bytes[9] = {
+static const uint8_t vm_uncovered_executable_gap_0304_bytes[9] = {
     0x0b, 0x00, 0xc4, 0x42, 0x1d, 0x00, 0xe0, 0xc4, 0x42,
 };
 
-static const uint8_t vm_uncovered_executable_gap_0353_bytes[9] = {
+static const uint8_t vm_uncovered_executable_gap_0305_bytes[9] = {
     0x24, 0x01, 0x62, 0x72, 0x7d, 0x48, 0x7c, 0xf2, 0x62,
 };
 
-static const uint8_t vm_uncovered_executable_gap_0354_bytes[9] = {
+static const uint8_t vm_uncovered_executable_gap_0306_bytes[9] = {
     0xfe, 0xc0, 0x62, 0xb1, 0x75, 0x48, 0xfe, 0xca, 0x62,
 };
 
-static const uint8_t vm_uncovered_executable_gap_0355_bytes[9] = {
+static const uint8_t vm_uncovered_executable_gap_0307_bytes[9] = {
     0x62, 0xd1, 0x0d, 0x48, 0x72, 0xc6, 0x10, 0x62, 0x51,
 };
 
-static const uint8_t vm_uncovered_executable_gap_0356_bytes[9] = {
+static const uint8_t vm_uncovered_executable_gap_0308_bytes[9] = {
     0x0f, 0xef, 0xe9, 0x66, 0x44, 0x0f, 0xef, 0xf2, 0x66,
 };
 
-static const uint8_t vm_uncovered_executable_gap_0357_bytes[8] = {
+static const uint8_t vm_uncovered_executable_gap_0309_bytes[8] = {
+    0x0f, 0xfc, 0x16, 0x14, 0x65, 0xc0, 0xda, 0x97,
+};
+
+static const uint8_t vm_uncovered_executable_gap_0310_bytes[8] = {
+    0x64, 0x11, 0x69, 0xa3, 0x68, 0xf4, 0xd5, 0xac,
+};
+
+static const uint8_t vm_uncovered_executable_gap_0311_bytes[8] = {
+    0x0f, 0x67, 0x0f, 0xe9, 0x76, 0x73, 0x5f, 0x0c,
+};
+
+static const uint8_t vm_uncovered_executable_gap_0312_bytes[8] = {
+    0x0c, 0xb1, 0x0f, 0x5c, 0x5d, 0x75, 0xe9, 0x0e,
+};
+
+static const uint8_t vm_uncovered_executable_gap_0313_bytes[8] = {
+    0x4e, 0xcf, 0x59, 0xec, 0x7b, 0xd5, 0x59, 0xef,
+};
+
+static const uint8_t vm_uncovered_executable_gap_0314_bytes[8] = {
+    0x0f, 0x34, 0x19, 0x5c, 0x2b, 0x98, 0xca, 0x68,
+};
+
+static const uint8_t vm_uncovered_executable_gap_0315_bytes[8] = {
+    0xea, 0xdf, 0x35, 0xbe, 0x4c, 0x69, 0x7d, 0xcb,
+};
+
+static const uint8_t vm_uncovered_executable_gap_0316_bytes[8] = {
     0x72, 0x06, 0xf3, 0x0f, 0x58, 0xc1, 0xeb, 0x04,
 };
 
-static const uint8_t vm_uncovered_executable_gap_0358_bytes[8] = {
+static const uint8_t vm_uncovered_executable_gap_0317_bytes[8] = {
     0xc4, 0x42, 0x05, 0x00, 0xf8, 0xc5, 0x1d, 0xfe,
 };
 
-static const uint8_t vm_uncovered_executable_gap_0359_bytes[8] = {
+static const uint8_t vm_uncovered_executable_gap_0318_bytes[8] = {
     0xef, 0xf2, 0xc5, 0x05, 0xef, 0xfb, 0xc4, 0x62,
 };
 
-static const uint8_t vm_uncovered_executable_gap_0360_bytes[8] = {
+static const uint8_t vm_uncovered_executable_gap_0319_bytes[8] = {
     0xf8, 0xc5, 0x1d, 0xef, 0xe1, 0xc5, 0x15, 0xef,
 };
 
-static const uint8_t vm_uncovered_executable_gap_0361_bytes[8] = {
+static const uint8_t vm_uncovered_executable_gap_0320_bytes[8] = {
     0x0b, 0x00, 0xc4, 0x42, 0x1d, 0x00, 0xe0, 0xc4,
 };
 
-static const uint8_t vm_uncovered_executable_gap_0362_bytes[8] = {
+static const uint8_t vm_uncovered_executable_gap_0321_bytes[8] = {
     0x62, 0xd1, 0x05, 0x48, 0x72, 0xc7, 0x10, 0x62,
 };
 
-static const uint8_t vm_uncovered_executable_gap_0363_bytes[8] = {
+static const uint8_t vm_uncovered_executable_gap_0322_bytes[8] = {
     0x48, 0x72, 0xc6, 0x10, 0x62, 0x51, 0x2d, 0x48,
 };
 
-static const uint8_t vm_uncovered_executable_gap_0364_bytes[8] = {
+static const uint8_t vm_uncovered_executable_gap_0323_bytes[8] = {
     0x62, 0xf1, 0x7d, 0x48, 0xfe, 0xc5, 0x62, 0xf1,
 };
 
-static const uint8_t vm_uncovered_executable_gap_0365_bytes[8] = {
+static const uint8_t vm_uncovered_executable_gap_0324_bytes[8] = {
     0x62, 0xf1, 0x7d, 0x48, 0xfe, 0xc4, 0x62, 0xf1,
 };
 
-static const uint8_t vm_uncovered_executable_gap_0366_bytes[8] = {
+static const uint8_t vm_uncovered_executable_gap_0325_bytes[8] = {
     0x62, 0xf1, 0x7d, 0x48, 0xfe, 0xc5, 0x62, 0xf1,
 };
 
-static const uint8_t vm_uncovered_executable_gap_0367_bytes[8] = {
+static const uint8_t vm_uncovered_executable_gap_0326_bytes[8] = {
     0x62, 0xd1, 0x45, 0x48, 0xef, 0xf8, 0x62, 0xd1,
 };
 
-static const uint8_t vm_uncovered_executable_gap_0368_bytes[8] = {
+static const uint8_t vm_uncovered_executable_gap_0327_bytes[8] = {
     0xed, 0xc4, 0xc1, 0x4d, 0xef, 0xf6, 0xc4, 0xc1,
 };
 
-static const uint8_t vm_uncovered_executable_gap_0369_bytes[8] = {
+static const uint8_t vm_uncovered_executable_gap_0328_bytes[8] = {
     0x00, 0x00, 0xc5, 0xf8, 0x92, 0xd0, 0x62, 0x52,
 };
 
-static const uint8_t vm_uncovered_executable_gap_0370_bytes[8] = {
+static const uint8_t vm_uncovered_executable_gap_0329_bytes[8] = {
     0xc0, 0x39, 0xc5, 0xf9, 0x70, 0xdb, 0x4e, 0xc5,
 };
 
-static const uint8_t vm_uncovered_executable_gap_0371_bytes[8] = {
+static const uint8_t vm_uncovered_executable_gap_0330_bytes[8] = {
     0xc5, 0x58, 0xc6, 0xc5, 0xd6, 0xc5, 0x79, 0x70,
 };
 
-static const uint8_t vm_uncovered_executable_gap_0372_bytes[8] = {
+static const uint8_t vm_uncovered_executable_gap_0331_bytes[8] = {
     0x66, 0x45, 0x0f, 0x6d, 0xca, 0x66, 0x45, 0x0f,
 };
 
-static const uint8_t vm_uncovered_executable_gap_0373_bytes[8] = {
+static const uint8_t vm_uncovered_executable_gap_0332_bytes[8] = {
     0xfe, 0xcd, 0x66, 0x0f, 0xfe, 0xd6, 0x66, 0x0f,
 };
 
-static const uint8_t vm_uncovered_executable_gap_0374_bytes[8] = {
+static const uint8_t vm_uncovered_executable_gap_0333_bytes[8] = {
     0xb1, 0xf3, 0x45, 0x0f, 0x70, 0xe4, 0xb1, 0xf2,
 };
 
-static const uint8_t vm_uncovered_executable_gap_0375_bytes[8] = {
+static const uint8_t vm_uncovered_executable_gap_0334_bytes[8] = {
     0x0f, 0x72, 0xd7, 0x08, 0x66, 0x41, 0x0f, 0x72,
 };
 
-static const uint8_t vm_uncovered_executable_gap_0376_bytes[8] = {
+static const uint8_t vm_uncovered_executable_gap_0335_bytes[8] = {
     0x08, 0x66, 0x41, 0x0f, 0x72, 0xf0, 0x18, 0x66,
 };
 
-static const uint8_t vm_uncovered_executable_gap_0377_bytes[8] = {
+static const uint8_t vm_uncovered_executable_gap_0336_bytes[8] = {
     0x0f, 0xef, 0xf2, 0x66, 0x41, 0x0f, 0xef, 0xfb,
 };
 
-static const uint8_t vm_uncovered_executable_gap_0378_bytes[8] = {
+static const uint8_t vm_uncovered_executable_gap_0337_bytes[8] = {
     0x41, 0x0f, 0x72, 0xd0, 0x07, 0x66, 0x0f, 0x72,
 };
 
-static const uint8_t vm_uncovered_executable_gap_0379_bytes[8] = {
+static const uint8_t vm_uncovered_executable_gap_0338_bytes[8] = {
     0xd0, 0x07, 0x66, 0x0f, 0x72, 0xf5, 0x19, 0x66,
 };
 
-static const uint8_t vm_uncovered_executable_gap_0380_bytes[8] = {
+static const uint8_t vm_uncovered_executable_gap_0339_bytes[8] = {
     0x66, 0x41, 0x0f, 0x72, 0xd0, 0x07, 0x66, 0x0f,
 };
 
-static const uint8_t vm_uncovered_executable_gap_0381_bytes[8] = {
+static const uint8_t vm_uncovered_executable_gap_0340_bytes[8] = {
     0x66, 0x0f, 0xfe, 0x44, 0x24, 0x30, 0x66, 0x0f,
 };
 
-static const uint8_t vm_uncovered_executable_gap_0382_bytes[8] = {
+static const uint8_t vm_uncovered_executable_gap_0341_bytes[8] = {
     0x0f, 0xef, 0xe0, 0x66, 0x44, 0x0f, 0xef, 0xe9,
 };
 
-static const uint8_t vm_uncovered_executable_gap_0383_bytes[8] = {
+static const uint8_t vm_uncovered_executable_gap_0342_bytes[8] = {
     0x0c, 0x66, 0x0f, 0x72, 0xf6, 0x14, 0x66, 0x41,
 };
 
-static const uint8_t vm_uncovered_executable_gap_0384_bytes[8] = {
+static const uint8_t vm_uncovered_executable_gap_0343_bytes[8] = {
     0x66, 0x41, 0x0f, 0x72, 0xd0, 0x0c, 0x66, 0x0f,
 };
 
-static const uint8_t vm_uncovered_executable_gap_0385_bytes[8] = {
+static const uint8_t vm_uncovered_executable_gap_0344_bytes[8] = {
     0x72, 0xd0, 0x0c, 0x66, 0x0f, 0x72, 0xf4, 0x14,
 };
 
-static const uint8_t vm_uncovered_executable_gap_0386_bytes[8] = {
+static const uint8_t vm_uncovered_executable_gap_0345_bytes[8] = {
     0x41, 0x0f, 0x72, 0xf0, 0x18, 0x66, 0x45, 0x0f,
 };
 
-static const uint8_t vm_uncovered_executable_gap_0387_bytes[8] = {
+static const uint8_t vm_uncovered_executable_gap_0346_bytes[8] = {
     0x41, 0x0f, 0x72, 0xd4, 0x08, 0x66, 0x41, 0x0f,
 };
 
-static const uint8_t vm_uncovered_executable_gap_0388_bytes[8] = {
+static const uint8_t vm_uncovered_executable_gap_0347_bytes[8] = {
     0xf1, 0x14, 0x66, 0x0f, 0x72, 0xd4, 0x0c, 0x66,
 };
 
-static const uint8_t vm_uncovered_executable_gap_0389_bytes[8] = {
+static const uint8_t vm_uncovered_executable_gap_0348_bytes[8] = {
     0x66, 0x41, 0x0f, 0x72, 0xf1, 0x14, 0x66, 0x0f,
 };
 
-static const uint8_t vm_uncovered_executable_gap_0390_bytes[8] = {
+static const uint8_t vm_uncovered_executable_gap_0349_bytes[8] = {
     0x66, 0x0f, 0xfe, 0xc7, 0x66, 0x45, 0x0f, 0xfe,
 };
 
-static const uint8_t vm_uncovered_executable_gap_0391_bytes[8] = {
+static const uint8_t vm_uncovered_executable_gap_0350_bytes[8] = {
     0x41, 0x0f, 0xc6, 0xed, 0xd6, 0x66, 0x44, 0x0f,
 };
 
-static const uint8_t vm_uncovered_executable_gap_0392_bytes[8] = {
+static const uint8_t vm_uncovered_executable_gap_0351_bytes[8] = {
     0x41, 0x0f, 0xc6, 0xef, 0xfa, 0x66, 0x0f, 0xdb,
 };
 
-static const uint8_t vm_uncovered_executable_gap_0393_bytes[8] = {
+static const uint8_t vm_uncovered_executable_gap_0352_bytes[8] = {
     0x0f, 0xef, 0xde, 0x66, 0x0f, 0xfe, 0xd3, 0x66,
 };
 
-static const uint8_t vm_uncovered_executable_gap_0394_bytes[8] = {
+static const uint8_t vm_uncovered_executable_gap_0353_bytes[8] = {
     0x66, 0x0f, 0x72, 0xf1, 0x19, 0x66, 0x41, 0x0f,
 };
 
-static const uint8_t vm_uncovered_executable_gap_0395_bytes[8] = {
+static const uint8_t vm_uncovered_executable_gap_0354_bytes[8] = {
     0x0f, 0xef, 0xde, 0x66, 0x0f, 0xfe, 0xd3, 0x66,
 };
 
-static const uint8_t vm_uncovered_executable_gap_0396_bytes[8] = {
+static const uint8_t vm_uncovered_executable_gap_0355_bytes[8] = {
     0x66, 0x0f, 0x72, 0xf1, 0x19, 0x66, 0x41, 0x0f,
 };
 
-static const uint8_t vm_uncovered_executable_gap_0397_bytes[8] = {
+static const uint8_t vm_uncovered_executable_gap_0356_bytes[8] = {
     0x66, 0x0f, 0xfe, 0x4c, 0x24, 0x20, 0x66, 0x0f,
 };
 
-static const uint8_t vm_uncovered_executable_gap_0398_bytes[8] = {
+static const uint8_t vm_uncovered_executable_gap_0357_bytes[8] = {
     0x0f, 0xef, 0xe9, 0x66, 0x41, 0x0f, 0xef, 0xf2,
 };
 
-static const uint8_t vm_uncovered_executable_gap_0399_bytes[8] = {
+static const uint8_t vm_uncovered_executable_gap_0358_bytes[8] = {
     0xd0, 0x07, 0x66, 0x0f, 0x72, 0xf4, 0x19, 0x66,
 };
 
-static const uint8_t vm_uncovered_executable_gap_0400_bytes[8] = {
+static const uint8_t vm_uncovered_executable_gap_0359_bytes[8] = {
     0x66, 0x45, 0x0f, 0xfe, 0xc5, 0x66, 0x45, 0x0f,
 };
 
-static const uint8_t vm_uncovered_executable_gap_0401_bytes[8] = {
+static const uint8_t vm_uncovered_executable_gap_0360_bytes[8] = {
     0xd0, 0x0c, 0x66, 0x0f, 0x72, 0xf4, 0x14, 0x66,
 };
 
-static const uint8_t vm_uncovered_executable_gap_0402_bytes[8] = {
+static const uint8_t vm_uncovered_executable_gap_0361_bytes[8] = {
     0x0f, 0xfe, 0x5c, 0x24, 0x40, 0x66, 0x0f, 0xfe,
 };
 
-static const uint8_t vm_uncovered_executable_gap_0403_bytes[8] = {
+static const uint8_t vm_uncovered_executable_gap_0362_bytes[8] = {
     0x0c, 0x66, 0x0f, 0x72, 0xf4, 0x14, 0x66, 0x41,
 };
 
-static const uint8_t vm_uncovered_executable_gap_0404_bytes[8] = {
+static const uint8_t vm_uncovered_executable_gap_0363_bytes[8] = {
     0x66, 0x41, 0x0f, 0x72, 0xd0, 0x0c, 0x66, 0x0f,
 };
 
-static const uint8_t vm_uncovered_executable_gap_0405_bytes[8] = {
+static const uint8_t vm_uncovered_executable_gap_0364_bytes[8] = {
     0x0f, 0xfe, 0xd6, 0x66, 0x0f, 0xfe, 0xdf, 0x66,
 };
 
-static const uint8_t vm_uncovered_executable_gap_0406_bytes[8] = {
+static const uint8_t vm_uncovered_executable_gap_0365_bytes[8] = {
     0x0f, 0xfe, 0xd7, 0x66, 0x45, 0x0f, 0xfe, 0xdc,
 };
 
-static const uint8_t vm_uncovered_executable_gap_0407_bytes[8] = {
+static const uint8_t vm_uncovered_executable_gap_0366_bytes[8] = {
     0x0f, 0xfe, 0xc5, 0x66, 0x45, 0x0f, 0xfe, 0xce,
 };
 
-static const uint8_t vm_uncovered_executable_gap_0408_bytes[8] = {
+static const uint8_t vm_uncovered_executable_gap_0367_bytes[8] = {
     0x72, 0xd0, 0x0c, 0x66, 0x0f, 0x72, 0xf5, 0x14,
 };
 
-static const uint8_t vm_uncovered_executable_gap_0409_bytes[8] = {
+static const uint8_t vm_uncovered_executable_gap_0368_bytes[8] = {
     0x41, 0x0f, 0x72, 0xd0, 0x07, 0x66, 0x0f, 0x72,
 };
 
-static const uint8_t vm_uncovered_executable_gap_0410_bytes[8] = {
+static const uint8_t vm_uncovered_executable_gap_0369_bytes[8] = {
     0x0f, 0x72, 0xf4, 0x14, 0x66, 0x41, 0x0f, 0xeb,
 };
 
-static const uint8_t vm_uncovered_executable_gap_0411_bytes[8] = {
+static const uint8_t vm_uncovered_executable_gap_0370_bytes[8] = {
     0xfe, 0xc4, 0x66, 0x0f, 0xfe, 0xc1, 0x66, 0x0f,
 };
 
-static const uint8_t vm_uncovered_executable_gap_0412_bytes[6] = {
+static const uint8_t vm_uncovered_executable_gap_0371_bytes[6] = {
     0xd6, 0x66, 0x45, 0x0f, 0xfe, 0xdf,
 };
 
-static const uint8_t vm_uncovered_executable_gap_0413_bytes[6] = {
+static const uint8_t vm_uncovered_executable_gap_0372_bytes[6] = {
     0x0f, 0x72, 0xf6, 0x19, 0x66, 0x41,
 };
 
-static const uint8_t vm_uncovered_executable_gap_0414_bytes[6] = {
+static const uint8_t vm_uncovered_executable_gap_0373_bytes[6] = {
     0x0f, 0x72, 0xd0, 0x0c, 0x66, 0x0f,
 };
 
-static const uint8_t vm_uncovered_executable_gap_0415_bytes[5] = {
+static const uint8_t vm_uncovered_executable_gap_0374_bytes[5] = {
     0x0f, 0x70, 0xf8, 0x93, 0x44,
 };
 
-static const uint8_t vm_uncovered_executable_gap_0416_bytes[4] = {
+static const uint8_t vm_uncovered_executable_gap_0375_bytes[4] = {
+    0xa7, 0xdd, 0x37, 0x3a,
+};
+
+static const uint8_t vm_uncovered_executable_gap_0376_bytes[4] = {
+    0x0f, 0x66, 0x2e, 0xeb,
+};
+
+static const uint8_t vm_uncovered_executable_gap_0377_bytes[4] = {
     0x0f, 0x66, 0x0f, 0x38,
 };
 
-static const uint8_t vm_uncovered_executable_gap_0417_bytes[4] = {
+static const uint8_t vm_uncovered_executable_gap_0378_bytes[4] = {
     0xf8, 0xc4, 0xc1, 0x5d,
 };
 
-static const uint8_t vm_uncovered_executable_gap_0418_bytes[4] = {
+static const uint8_t vm_uncovered_executable_gap_0379_bytes[4] = {
     0xe5, 0xfe, 0xdf, 0xc5,
 };
 
-static const uint8_t vm_uncovered_executable_gap_0419_bytes[4] = {
+static const uint8_t vm_uncovered_executable_gap_0380_bytes[4] = {
     0xdf, 0xc5, 0x1d, 0xef,
 };
 
-static const uint8_t vm_uncovered_executable_gap_0420_bytes[4] = {
+static const uint8_t vm_uncovered_executable_gap_0381_bytes[4] = {
     0x4d, 0xef, 0xf3, 0xc4,
 };
 
-static const uint8_t vm_uncovered_executable_gap_0421_bytes[4] = {
+static const uint8_t vm_uncovered_executable_gap_0382_bytes[4] = {
     0xc4, 0xc1, 0x5d, 0xef,
 };
 
-static const uint8_t vm_uncovered_executable_gap_0422_bytes[4] = {
+static const uint8_t vm_uncovered_executable_gap_0383_bytes[4] = {
     0x70, 0xc0, 0x93, 0xc5,
 };
 
-static const uint8_t vm_uncovered_executable_gap_0423_bytes[4] = {
+static const uint8_t vm_uncovered_executable_gap_0384_bytes[4] = {
     0xc5, 0xf9, 0x70, 0xd2,
 };
 
-static const uint8_t vm_uncovered_executable_gap_0424_bytes[4] = {
+static const uint8_t vm_uncovered_executable_gap_0385_bytes[4] = {
     0xfe, 0xc1, 0x62, 0xf1,
 };
 
-static const uint8_t vm_uncovered_executable_gap_0425_bytes[4] = {
+static const uint8_t vm_uncovered_executable_gap_0386_bytes[4] = {
     0x62, 0xf1, 0x65, 0x08,
 };
 
-static const uint8_t vm_uncovered_executable_gap_0426_bytes[4] = {
+static const uint8_t vm_uncovered_executable_gap_0387_bytes[4] = {
     0xc5, 0xc9, 0x62, 0xf5,
 };
 
-static const uint8_t vm_uncovered_executable_gap_0427_bytes[4] = {
+static const uint8_t vm_uncovered_executable_gap_0388_bytes[4] = {
     0x66, 0x45, 0x0f, 0xfe,
 };
 
-static const uint8_t vm_uncovered_executable_gap_0428_bytes[4] = {
+static const uint8_t vm_uncovered_executable_gap_0389_bytes[4] = {
     0x0f, 0x72, 0xf6, 0x14,
 };
 
-static const uint8_t vm_uncovered_executable_gap_0429_bytes[4] = {
+static const uint8_t vm_uncovered_executable_gap_0390_bytes[4] = {
     0x0f, 0x72, 0xf5, 0x14,
 };
 
-static const uint8_t vm_uncovered_executable_gap_0430_bytes[4] = {
+static const uint8_t vm_uncovered_executable_gap_0391_bytes[4] = {
     0x0c, 0x66, 0x0f, 0x72,
 };
 
-static const uint8_t vm_uncovered_executable_gap_0431_bytes[4] = {
+static const uint8_t vm_uncovered_executable_gap_0392_bytes[4] = {
     0x0f, 0x38, 0x00, 0xe0,
 };
 
-static const uint8_t vm_uncovered_executable_gap_0432_bytes[4] = {
+static const uint8_t vm_uncovered_executable_gap_0393_bytes[4] = {
     0x0f, 0x38, 0x00, 0xf0,
 };
 
-static const uint8_t vm_uncovered_executable_gap_0433_bytes[4] = {
+static const uint8_t vm_uncovered_executable_gap_0394_bytes[4] = {
     0xd7, 0x66, 0x45, 0x0f,
 };
 
-static const uint8_t vm_uncovered_executable_gap_0434_bytes[4] = {
+static const uint8_t vm_uncovered_executable_gap_0395_bytes[4] = {
     0x0f, 0x38, 0x00, 0xf8,
 };
 
-static const uint8_t vm_uncovered_executable_gap_0435_bytes[4] = {
+static const uint8_t vm_uncovered_executable_gap_0396_bytes[4] = {
     0x0f, 0x38, 0x00, 0xe8,
 };
 
-static const uint8_t vm_uncovered_executable_gap_0436_bytes[4] = {
+static const uint8_t vm_uncovered_executable_gap_0397_bytes[4] = {
     0x0f, 0x72, 0xd0, 0x07,
 };
 
-static const uint8_t vm_uncovered_executable_gap_0437_bytes[4] = {
+static const uint8_t vm_uncovered_executable_gap_0398_bytes[4] = {
     0x19, 0x66, 0x41, 0x0f,
 };
 
-static const uint8_t vm_uncovered_executable_gap_0438_bytes[4] = {
+static const uint8_t vm_uncovered_executable_gap_0399_bytes[4] = {
     0xd0, 0x0c, 0x66, 0x0f,
 };
 
-static const uint8_t vm_uncovered_executable_gap_0439_bytes[4] = {
+static const uint8_t vm_uncovered_executable_gap_0400_bytes[4] = {
     0x0f, 0xc6, 0xf7, 0x88,
 };
 
-static const uint8_t vm_uncovered_executable_gap_0440_bytes[2] = {
+static const uint8_t vm_uncovered_executable_gap_0401_bytes[2] = {
+    0x36, 0xde,
+};
+
+static const uint8_t vm_uncovered_executable_gap_0402_bytes[2] = {
+    0x0f, 0x6a,
+};
+
+static const uint8_t vm_uncovered_executable_gap_0403_bytes[2] = {
     0xc5, 0x05,
 };
 
-static const uint8_t vm_uncovered_executable_gap_0441_bytes[2] = {
+static const uint8_t vm_uncovered_executable_gap_0404_bytes[2] = {
     0xdd, 0x72,
 };
 
-static const uint8_t vm_uncovered_executable_gap_0442_bytes[2] = {
+static const uint8_t vm_uncovered_executable_gap_0405_bytes[2] = {
     0xc5, 0x7c,
 };
 
-static const uint8_t vm_uncovered_executable_gap_0443_bytes[2] = {
+static const uint8_t vm_uncovered_executable_gap_0406_bytes[2] = {
     0xc5, 0x5c,
 };
 
-static const uint8_t vm_uncovered_executable_gap_0444_bytes[2] = {
+static const uint8_t vm_uncovered_executable_gap_0407_bytes[2] = {
     0x04, 0x24,
 };
 
@@ -2316,228 +2120,191 @@ static const VMUncoveredExecutableGap vm_uncovered_executable_gaps[] = {
     { ".text", 0x42dc13ull, 0x42dc23ull, 16ull, vm_uncovered_executable_gap_0224_bytes },
     { ".text", 0x42ec93ull, 0x42eca3ull, 16ull, vm_uncovered_executable_gap_0225_bytes },
     { ".text", 0x431e93ull, 0x431ea3ull, 16ull, vm_uncovered_executable_gap_0226_bytes },
-    { ".text", 0x431f13ull, 0x431f23ull, 16ull, vm_uncovered_executable_gap_0227_bytes },
-    { ".text", 0x4340f3ull, 0x434103ull, 16ull, vm_uncovered_executable_gap_0228_bytes },
-    { ".text", 0x438ad7ull, 0x438ae7ull, 16ull, vm_uncovered_executable_gap_0229_bytes },
-    { ".text", 0x43e3c7ull, 0x43e3d7ull, 16ull, vm_uncovered_executable_gap_0230_bytes },
-    { ".text", 0x43e867ull, 0x43e877ull, 16ull, vm_uncovered_executable_gap_0231_bytes },
-    { ".text", 0x4448b7ull, 0x4448c7ull, 16ull, vm_uncovered_executable_gap_0232_bytes },
-    { ".text", 0x444957ull, 0x444967ull, 16ull, vm_uncovered_executable_gap_0233_bytes },
-    { ".text", 0x447197ull, 0x4471a7ull, 16ull, vm_uncovered_executable_gap_0234_bytes },
-    { ".text", 0x447ae5ull, 0x447af5ull, 16ull, vm_uncovered_executable_gap_0235_bytes },
-    { ".text", 0x448135ull, 0x448145ull, 16ull, vm_uncovered_executable_gap_0236_bytes },
-    { ".text", 0x449325ull, 0x449335ull, 16ull, vm_uncovered_executable_gap_0237_bytes },
-    { ".text", 0x4497c5ull, 0x4497d5ull, 16ull, vm_uncovered_executable_gap_0238_bytes },
-    { ".text", 0x44a715ull, 0x44a725ull, 16ull, vm_uncovered_executable_gap_0239_bytes },
-    { ".text", 0x44adb5ull, 0x44adc5ull, 16ull, vm_uncovered_executable_gap_0240_bytes },
-    { ".text", 0x453063ull, 0x453073ull, 16ull, vm_uncovered_executable_gap_0241_bytes },
-    { ".text", 0x457ac3ull, 0x457ad3ull, 16ull, vm_uncovered_executable_gap_0242_bytes },
-    { ".text", 0x459854ull, 0x459864ull, 16ull, vm_uncovered_executable_gap_0243_bytes },
-    { ".text", 0x45b2a4ull, 0x45b2b4ull, 16ull, vm_uncovered_executable_gap_0244_bytes },
-    { ".text", 0x45fdc4ull, 0x45fdd4ull, 16ull, vm_uncovered_executable_gap_0245_bytes },
-    { ".text", 0x462044ull, 0x462054ull, 16ull, vm_uncovered_executable_gap_0246_bytes },
-    { ".text", 0x463634ull, 0x463644ull, 16ull, vm_uncovered_executable_gap_0247_bytes },
-    { ".text", 0x463c34ull, 0x463c44ull, 16ull, vm_uncovered_executable_gap_0248_bytes },
-    { ".text", 0x465bb4ull, 0x465bc4ull, 16ull, vm_uncovered_executable_gap_0249_bytes },
-    { ".text", 0x466774ull, 0x466784ull, 16ull, vm_uncovered_executable_gap_0250_bytes },
-    { ".text", 0x46bc34ull, 0x46bc44ull, 16ull, vm_uncovered_executable_gap_0251_bytes },
-    { ".text", 0x46c8deull, 0x46c8eeull, 16ull, vm_uncovered_executable_gap_0252_bytes },
-    { ".text", 0x46ee7eull, 0x46ee8eull, 16ull, vm_uncovered_executable_gap_0253_bytes },
-    { ".text", 0x46f34bull, 0x46f35bull, 16ull, vm_uncovered_executable_gap_0254_bytes },
-    { ".text", 0x470d2eull, 0x470d3eull, 16ull, vm_uncovered_executable_gap_0255_bytes },
-    { ".text", 0x473eeeull, 0x473efeull, 16ull, vm_uncovered_executable_gap_0256_bytes },
-    { ".text", 0x474e8eull, 0x474e9eull, 16ull, vm_uncovered_executable_gap_0257_bytes },
-    { ".text", 0x4756feull, 0x47570eull, 16ull, vm_uncovered_executable_gap_0258_bytes },
-    { ".text", 0x4785ceull, 0x4785deull, 16ull, vm_uncovered_executable_gap_0259_bytes },
-    { ".text", 0x4792eeull, 0x4792feull, 16ull, vm_uncovered_executable_gap_0260_bytes },
-    { ".text", 0x47b64eull, 0x47b65eull, 16ull, vm_uncovered_executable_gap_0261_bytes },
-    { ".text", 0x47c450ull, 0x47c460ull, 16ull, vm_uncovered_executable_gap_0262_bytes },
-    { ".text", 0x47e630ull, 0x47e640ull, 16ull, vm_uncovered_executable_gap_0263_bytes },
-    { ".text", 0x47e730ull, 0x47e740ull, 16ull, vm_uncovered_executable_gap_0264_bytes },
-    { ".text", 0x492ad9ull, 0x492ae9ull, 16ull, vm_uncovered_executable_gap_0265_bytes },
-    { ".text", 0x4937b9ull, 0x4937c9ull, 16ull, vm_uncovered_executable_gap_0266_bytes },
-    { ".text", 0x493d29ull, 0x493d39ull, 16ull, vm_uncovered_executable_gap_0267_bytes },
-    { ".text", 0x4daff9ull, 0x4db009ull, 16ull, vm_uncovered_executable_gap_0268_bytes },
-    { ".text", 0x4db179ull, 0x4db189ull, 16ull, vm_uncovered_executable_gap_0269_bytes },
-    { ".text", 0x4db1a9ull, 0x4db1b9ull, 16ull, vm_uncovered_executable_gap_0270_bytes },
-    { ".text", 0x4db389ull, 0x4db399ull, 16ull, vm_uncovered_executable_gap_0271_bytes },
-    { ".text", 0x4db3b9ull, 0x4db3c9ull, 16ull, vm_uncovered_executable_gap_0272_bytes },
-    { ".text", 0x4db3d9ull, 0x4db3e9ull, 16ull, vm_uncovered_executable_gap_0273_bytes },
-    { ".text", 0x4db4f9ull, 0x4db509ull, 16ull, vm_uncovered_executable_gap_0274_bytes },
-    { ".text", 0x4afc7cull, 0x4afc8bull, 15ull, vm_uncovered_executable_gap_0275_bytes },
-    { ".text", 0x4e8d5dull, 0x4e8d6cull, 15ull, vm_uncovered_executable_gap_0276_bytes },
-    { ".text", 0x4e8d8aull, 0x4e8d99ull, 15ull, vm_uncovered_executable_gap_0277_bytes },
-    { ".text", 0x4fbf14ull, 0x4fbf23ull, 15ull, vm_uncovered_executable_gap_0278_bytes },
-    { ".text", 0x4e0cefull, 0x4e0cfdull, 14ull, vm_uncovered_executable_gap_0279_bytes },
-    { ".text", 0x4e4939ull, 0x4e4947ull, 14ull, vm_uncovered_executable_gap_0280_bytes },
-    { ".text", 0x4e75a3ull, 0x4e75b1ull, 14ull, vm_uncovered_executable_gap_0281_bytes },
-    { ".text", 0x4ef2c3ull, 0x4ef2d1ull, 14ull, vm_uncovered_executable_gap_0282_bytes },
-    { ".text", 0x58cb1ull, 0x58cbeull, 13ull, vm_uncovered_executable_gap_0283_bytes },
-    { ".text", 0x4af877ull, 0x4af884ull, 13ull, vm_uncovered_executable_gap_0284_bytes },
-    { ".text", 0x4af8c3ull, 0x4af8d0ull, 13ull, vm_uncovered_executable_gap_0285_bytes },
-    { ".text", 0x4e3d75ull, 0x4e3d82ull, 13ull, vm_uncovered_executable_gap_0286_bytes },
-    { ".text", 0x4e98caull, 0x4e98d7ull, 13ull, vm_uncovered_executable_gap_0287_bytes },
-    { ".text", 0x1fc470ull, 0x1fc47cull, 12ull, vm_uncovered_executable_gap_0288_bytes },
-    { ".text", 0x1fc864ull, 0x1fc870ull, 12ull, vm_uncovered_executable_gap_0289_bytes },
-    { ".text", 0x1fc948ull, 0x1fc954ull, 12ull, vm_uncovered_executable_gap_0290_bytes },
-    { ".text", 0x347f50ull, 0x347f5cull, 12ull, vm_uncovered_executable_gap_0291_bytes },
-    { ".text", 0x348028ull, 0x348034ull, 12ull, vm_uncovered_executable_gap_0292_bytes },
-    { ".text", 0x3a2e95ull, 0x3a2ea1ull, 12ull, vm_uncovered_executable_gap_0293_bytes },
-    { ".text", 0x3e3552ull, 0x3e355eull, 12ull, vm_uncovered_executable_gap_0294_bytes },
-    { ".text", 0x3efc46ull, 0x3efc52ull, 12ull, vm_uncovered_executable_gap_0295_bytes },
-    { ".text", 0x4db649ull, 0x4db655ull, 12ull, vm_uncovered_executable_gap_0296_bytes },
-    { ".text", 0x4db739ull, 0x4db745ull, 12ull, vm_uncovered_executable_gap_0297_bytes },
-    { ".text", 0x4dbe61ull, 0x4dbe6dull, 12ull, vm_uncovered_executable_gap_0298_bytes },
-    { ".text", 0x4dd605ull, 0x4dd611ull, 12ull, vm_uncovered_executable_gap_0299_bytes },
-    { ".text", 0x4dd919ull, 0x4dd925ull, 12ull, vm_uncovered_executable_gap_0300_bytes },
-    { ".text", 0x4ddbd9ull, 0x4ddbe5ull, 12ull, vm_uncovered_executable_gap_0301_bytes },
-    { ".text", 0x4dde99ull, 0x4ddea5ull, 12ull, vm_uncovered_executable_gap_0302_bytes },
-    { ".text", 0x4de159ull, 0x4de165ull, 12ull, vm_uncovered_executable_gap_0303_bytes },
-    { ".text", 0x4de419ull, 0x4de425ull, 12ull, vm_uncovered_executable_gap_0304_bytes },
-    { ".text", 0x4de6d9ull, 0x4de6e5ull, 12ull, vm_uncovered_executable_gap_0305_bytes },
-    { ".text", 0x4de999ull, 0x4de9a5ull, 12ull, vm_uncovered_executable_gap_0306_bytes },
-    { ".text", 0x4e0c49ull, 0x4e0c55ull, 12ull, vm_uncovered_executable_gap_0307_bytes },
-    { ".text", 0x4e0dc9ull, 0x4e0dd5ull, 12ull, vm_uncovered_executable_gap_0308_bytes },
-    { ".text", 0x4e0fedull, 0x4e0ff9ull, 12ull, vm_uncovered_executable_gap_0309_bytes },
-    { ".text", 0x4e18e9ull, 0x4e18f5ull, 12ull, vm_uncovered_executable_gap_0310_bytes },
-    { ".text", 0x4e190dull, 0x4e1919ull, 12ull, vm_uncovered_executable_gap_0311_bytes },
-    { ".text", 0x4e3ca9ull, 0x4e3cb5ull, 12ull, vm_uncovered_executable_gap_0312_bytes },
-    { ".text", 0x4e3f79ull, 0x4e3f85ull, 12ull, vm_uncovered_executable_gap_0313_bytes },
-    { ".text", 0x4e4639ull, 0x4e4645ull, 12ull, vm_uncovered_executable_gap_0314_bytes },
-    { ".text", 0x4e4709ull, 0x4e4715ull, 12ull, vm_uncovered_executable_gap_0315_bytes },
-    { ".text", 0x4e5719ull, 0x4e5725ull, 12ull, vm_uncovered_executable_gap_0316_bytes },
-    { ".text", 0x4e573dull, 0x4e5749ull, 12ull, vm_uncovered_executable_gap_0317_bytes },
-    { ".text", 0x4e5a59ull, 0x4e5a65ull, 12ull, vm_uncovered_executable_gap_0318_bytes },
-    { ".text", 0x4e5a71ull, 0x4e5a7dull, 12ull, vm_uncovered_executable_gap_0319_bytes },
-    { ".text", 0x4e5c91ull, 0x4e5c9dull, 12ull, vm_uncovered_executable_gap_0320_bytes },
-    { ".text", 0x4e5cc9ull, 0x4e5cd5ull, 12ull, vm_uncovered_executable_gap_0321_bytes },
-    { ".text", 0x4e6479ull, 0x4e6485ull, 12ull, vm_uncovered_executable_gap_0322_bytes },
-    { ".text", 0x4e6f79ull, 0x4e6f85ull, 12ull, vm_uncovered_executable_gap_0323_bytes },
-    { ".text", 0x4e7635ull, 0x4e7641ull, 12ull, vm_uncovered_executable_gap_0324_bytes },
-    { ".text", 0x4e7789ull, 0x4e7795ull, 12ull, vm_uncovered_executable_gap_0325_bytes },
-    { ".text", 0x4e7859ull, 0x4e7865ull, 12ull, vm_uncovered_executable_gap_0326_bytes },
-    { ".text", 0x4e7985ull, 0x4e7991ull, 12ull, vm_uncovered_executable_gap_0327_bytes },
-    { ".text", 0x4e7b6dull, 0x4e7b79ull, 12ull, vm_uncovered_executable_gap_0328_bytes },
-    { ".text", 0x4e7fe9ull, 0x4e7ff5ull, 12ull, vm_uncovered_executable_gap_0329_bytes },
-    { ".text", 0x4e8019ull, 0x4e8025ull, 12ull, vm_uncovered_executable_gap_0330_bytes },
-    { ".text", 0x4e8999ull, 0x4e89a5ull, 12ull, vm_uncovered_executable_gap_0331_bytes },
-    { ".text", 0x4e8a89ull, 0x4e8a95ull, 12ull, vm_uncovered_executable_gap_0332_bytes },
-    { ".text", 0x4e8ec9ull, 0x4e8ed5ull, 12ull, vm_uncovered_executable_gap_0333_bytes },
-    { ".text", 0x4e8eedull, 0x4e8ef9ull, 12ull, vm_uncovered_executable_gap_0334_bytes },
-    { ".text", 0x4e91a1ull, 0x4e91adull, 12ull, vm_uncovered_executable_gap_0335_bytes },
-    { ".text", 0x4e91bdull, 0x4e91c9ull, 12ull, vm_uncovered_executable_gap_0336_bytes },
-    { ".text", 0x4e09d3ull, 0x4e09deull, 11ull, vm_uncovered_executable_gap_0337_bytes },
-    { ".text", 0x7276dull, 0x72777ull, 10ull, vm_uncovered_executable_gap_0338_bytes },
-    { ".text", 0x4db583ull, 0x4db58dull, 10ull, vm_uncovered_executable_gap_0339_bytes },
-    { ".text", 0x4db597ull, 0x4db5a1ull, 10ull, vm_uncovered_executable_gap_0340_bytes },
-    { ".text", 0x4db7f9ull, 0x4db803ull, 10ull, vm_uncovered_executable_gap_0341_bytes },
-    { ".text", 0x4dc287ull, 0x4dc291ull, 10ull, vm_uncovered_executable_gap_0342_bytes },
-    { ".text", 0x4e0299ull, 0x4e02a3ull, 10ull, vm_uncovered_executable_gap_0343_bytes },
-    { ".text", 0x4e02d5ull, 0x4e02dfull, 10ull, vm_uncovered_executable_gap_0344_bytes },
-    { ".text", 0x4e0a01ull, 0x4e0a0bull, 10ull, vm_uncovered_executable_gap_0345_bytes },
-    { ".text", 0x4e5571ull, 0x4e557bull, 10ull, vm_uncovered_executable_gap_0346_bytes },
-    { ".text", 0x4e5586ull, 0x4e5590ull, 10ull, vm_uncovered_executable_gap_0347_bytes },
-    { ".text", 0x4e78d9ull, 0x4e78e3ull, 10ull, vm_uncovered_executable_gap_0348_bytes },
-    { ".text", 0x4e8db9ull, 0x4e8dc3ull, 10ull, vm_uncovered_executable_gap_0349_bytes },
-    { ".text", 0x50294eull, 0x502958ull, 10ull, vm_uncovered_executable_gap_0350_bytes },
-    { ".text", 0x4dbba9ull, 0x4dbbb2ull, 9ull, vm_uncovered_executable_gap_0351_bytes },
-    { ".text", 0x4dbbc4ull, 0x4dbbcdull, 9ull, vm_uncovered_executable_gap_0352_bytes },
-    { ".text", 0x4e116eull, 0x4e1177ull, 9ull, vm_uncovered_executable_gap_0353_bytes },
-    { ".text", 0x4e1180ull, 0x4e1189ull, 9ull, vm_uncovered_executable_gap_0354_bytes },
-    { ".text", 0x4e18b9ull, 0x4e18c2ull, 9ull, vm_uncovered_executable_gap_0355_bytes },
-    { ".text", 0x4e468aull, 0x4e4693ull, 9ull, vm_uncovered_executable_gap_0356_bytes },
-    { ".text", 0x48ddf3ull, 0x48ddfbull, 8ull, vm_uncovered_executable_gap_0357_bytes },
-    { ".text", 0x4db559ull, 0x4db561ull, 8ull, vm_uncovered_executable_gap_0358_bytes },
-    { ".text", 0x4db609ull, 0x4db611ull, 8ull, vm_uncovered_executable_gap_0359_bytes },
-    { ".text", 0x4db6d1ull, 0x4db6d9ull, 8ull, vm_uncovered_executable_gap_0360_bytes },
-    { ".text", 0x4dbfd1ull, 0x4dbfd9ull, 8ull, vm_uncovered_executable_gap_0361_bytes },
-    { ".text", 0x4ddd39ull, 0x4ddd41ull, 8ull, vm_uncovered_executable_gap_0362_bytes },
-    { ".text", 0x4ddd51ull, 0x4ddd59ull, 8ull, vm_uncovered_executable_gap_0363_bytes },
-    { ".text", 0x4dddb9ull, 0x4dddc1ull, 8ull, vm_uncovered_executable_gap_0364_bytes },
-    { ".text", 0x4ddf19ull, 0x4ddf21ull, 8ull, vm_uncovered_executable_gap_0365_bytes },
-    { ".text", 0x4ddfc9ull, 0x4ddfd1ull, 8ull, vm_uncovered_executable_gap_0366_bytes },
-    { ".text", 0x4deb39ull, 0x4deb41ull, 8ull, vm_uncovered_executable_gap_0367_bytes },
-    { ".text", 0x4e0281ull, 0x4e0289ull, 8ull, vm_uncovered_executable_gap_0368_bytes },
-    { ".text", 0x4e0401ull, 0x4e0409ull, 8ull, vm_uncovered_executable_gap_0369_bytes },
-    { ".text", 0x4e0fa1ull, 0x4e0fa9ull, 8ull, vm_uncovered_executable_gap_0370_bytes },
-    { ".text", 0x4e0fb1ull, 0x4e0fb9ull, 8ull, vm_uncovered_executable_gap_0371_bytes },
-    { ".text", 0x4e45b9ull, 0x4e45c1ull, 8ull, vm_uncovered_executable_gap_0372_bytes },
-    { ".text", 0x4e4679ull, 0x4e4681ull, 8ull, vm_uncovered_executable_gap_0373_bytes },
-    { ".text", 0x4e469cull, 0x4e46a4ull, 8ull, vm_uncovered_executable_gap_0374_bytes },
-    { ".text", 0x4e49d1ull, 0x4e49d9ull, 8ull, vm_uncovered_executable_gap_0375_bytes },
-    { ".text", 0x4e4bf9ull, 0x4e4c01ull, 8ull, vm_uncovered_executable_gap_0376_bytes },
-    { ".text", 0x4e4c71ull, 0x4e4c79ull, 8ull, vm_uncovered_executable_gap_0377_bytes },
-    { ".text", 0x4e4c89ull, 0x4e4c91ull, 8ull, vm_uncovered_executable_gap_0378_bytes },
-    { ".text", 0x4e4ca1ull, 0x4e4ca9ull, 8ull, vm_uncovered_executable_gap_0379_bytes },
-    { ".text", 0x4e4ef9ull, 0x4e4f01ull, 8ull, vm_uncovered_executable_gap_0380_bytes },
-    { ".text", 0x4e4f09ull, 0x4e4f11ull, 8ull, vm_uncovered_executable_gap_0381_bytes },
-    { ".text", 0x4e4f39ull, 0x4e4f41ull, 8ull, vm_uncovered_executable_gap_0382_bytes },
-    { ".text", 0x4e5f09ull, 0x4e5f11ull, 8ull, vm_uncovered_executable_gap_0383_bytes },
-    { ".text", 0x4e5f19ull, 0x4e5f21ull, 8ull, vm_uncovered_executable_gap_0384_bytes },
-    { ".text", 0x4e5f31ull, 0x4e5f39ull, 8ull, vm_uncovered_executable_gap_0385_bytes },
-    { ".text", 0x4e5f89ull, 0x4e5f91ull, 8ull, vm_uncovered_executable_gap_0386_bytes },
-    { ".text", 0x4e5f99ull, 0x4e5fa1ull, 8ull, vm_uncovered_executable_gap_0387_bytes },
-    { ".text", 0x4e6899ull, 0x4e68a1ull, 8ull, vm_uncovered_executable_gap_0388_bytes },
-    { ".text", 0x4e68a9ull, 0x4e68b1ull, 8ull, vm_uncovered_executable_gap_0389_bytes },
-    { ".text", 0x4e68b9ull, 0x4e68c1ull, 8ull, vm_uncovered_executable_gap_0390_bytes },
-    { ".text", 0x4e69f9ull, 0x4e6a01ull, 8ull, vm_uncovered_executable_gap_0391_bytes },
-    { ".text", 0x4e6a09ull, 0x4e6a11ull, 8ull, vm_uncovered_executable_gap_0392_bytes },
-    { ".text", 0x4e6ff9ull, 0x4e7001ull, 8ull, vm_uncovered_executable_gap_0393_bytes },
-    { ".text", 0x4e7009ull, 0x4e7011ull, 8ull, vm_uncovered_executable_gap_0394_bytes },
-    { ".text", 0x4e7079ull, 0x4e7081ull, 8ull, vm_uncovered_executable_gap_0395_bytes },
-    { ".text", 0x4e7089ull, 0x4e7091ull, 8ull, vm_uncovered_executable_gap_0396_bytes },
-    { ".text", 0x4e74e1ull, 0x4e74e9ull, 8ull, vm_uncovered_executable_gap_0397_bytes },
-    { ".text", 0x4e7649ull, 0x4e7651ull, 8ull, vm_uncovered_executable_gap_0398_bytes },
-    { ".text", 0x4e7669ull, 0x4e7671ull, 8ull, vm_uncovered_executable_gap_0399_bytes },
-    { ".text", 0x4e7731ull, 0x4e7739ull, 8ull, vm_uncovered_executable_gap_0400_bytes },
-    { ".text", 0x4e77a1ull, 0x4e77a9ull, 8ull, vm_uncovered_executable_gap_0401_bytes },
-    { ".text", 0x4e78b9ull, 0x4e78c1ull, 8ull, vm_uncovered_executable_gap_0402_bytes },
-    { ".text", 0x4e7949ull, 0x4e7951ull, 8ull, vm_uncovered_executable_gap_0403_bytes },
-    { ".text", 0x4e7959ull, 0x4e7961ull, 8ull, vm_uncovered_executable_gap_0404_bytes },
-    { ".text", 0x4e79b9ull, 0x4e79c1ull, 8ull, vm_uncovered_executable_gap_0405_bytes },
-    { ".text", 0x4e7aedull, 0x4e7af5ull, 8ull, vm_uncovered_executable_gap_0406_bytes },
-    { ".text", 0x4e7b01ull, 0x4e7b09ull, 8ull, vm_uncovered_executable_gap_0407_bytes },
-    { ".text", 0x4e8a61ull, 0x4e8a69ull, 8ull, vm_uncovered_executable_gap_0408_bytes },
-    { ".text", 0x4e8d49ull, 0x4e8d51ull, 8ull, vm_uncovered_executable_gap_0409_bytes },
-    { ".text", 0x4e8e69ull, 0x4e8e71ull, 8ull, vm_uncovered_executable_gap_0410_bytes },
-    { ".text", 0x4e997aull, 0x4e9982ull, 8ull, vm_uncovered_executable_gap_0411_bytes },
-    { ".text", 0x4e4c5full, 0x4e4c65ull, 6ull, vm_uncovered_executable_gap_0412_bytes },
-    { ".text", 0x4e4cb9ull, 0x4e4cbfull, 6ull, vm_uncovered_executable_gap_0413_bytes },
-    { ".text", 0x4e758full, 0x4e7595ull, 6ull, vm_uncovered_executable_gap_0414_bytes },
-    { ".text", 0x4e9962ull, 0x4e9967ull, 5ull, vm_uncovered_executable_gap_0415_bytes },
-    { ".text", 0x4af8adull, 0x4af8b1ull, 4ull, vm_uncovered_executable_gap_0416_bytes },
-    { ".text", 0x4db721ull, 0x4db725ull, 4ull, vm_uncovered_executable_gap_0417_bytes },
-    { ".text", 0x4dbc79ull, 0x4dbc7dull, 4ull, vm_uncovered_executable_gap_0418_bytes },
-    { ".text", 0x4dbfb9ull, 0x4dbfbdull, 4ull, vm_uncovered_executable_gap_0419_bytes },
-    { ".text", 0x4dc409ull, 0x4dc40dull, 4ull, vm_uncovered_executable_gap_0420_bytes },
-    { ".text", 0x4dc411ull, 0x4dc415ull, 4ull, vm_uncovered_executable_gap_0421_bytes },
-    { ".text", 0x4e0a69ull, 0x4e0a6dull, 4ull, vm_uncovered_executable_gap_0422_bytes },
-    { ".text", 0x4e0a71ull, 0x4e0a75ull, 4ull, vm_uncovered_executable_gap_0423_bytes },
-    { ".text", 0x4e0c09ull, 0x4e0c0dull, 4ull, vm_uncovered_executable_gap_0424_bytes },
-    { ".text", 0x4e0c11ull, 0x4e0c15ull, 4ull, vm_uncovered_executable_gap_0425_bytes },
-    { ".text", 0x4e0c91ull, 0x4e0c95ull, 4ull, vm_uncovered_executable_gap_0426_bytes },
-    { ".text", 0x4e4c51ull, 0x4e4c55ull, 4ull, vm_uncovered_executable_gap_0427_bytes },
-    { ".text", 0x4e4fedull, 0x4e4ff1ull, 4ull, vm_uncovered_executable_gap_0428_bytes },
-    { ".text", 0x4e5435ull, 0x4e5439ull, 4ull, vm_uncovered_executable_gap_0429_bytes },
-    { ".text", 0x4e545dull, 0x4e5461ull, 4ull, vm_uncovered_executable_gap_0430_bytes },
-    { ".text", 0x4e770dull, 0x4e7711ull, 4ull, vm_uncovered_executable_gap_0431_bytes },
-    { ".text", 0x4e7719ull, 0x4e771dull, 4ull, vm_uncovered_executable_gap_0432_bytes },
-    { ".text", 0x4e7721ull, 0x4e7725ull, 4ull, vm_uncovered_executable_gap_0433_bytes },
-    { ".text", 0x4e7ad5ull, 0x4e7ad9ull, 4ull, vm_uncovered_executable_gap_0434_bytes },
-    { ".text", 0x4e7ae1ull, 0x4e7ae5ull, 4ull, vm_uncovered_executable_gap_0435_bytes },
-    { ".text", 0x4e85c1ull, 0x4e85c5ull, 4ull, vm_uncovered_executable_gap_0436_bytes },
-    { ".text", 0x4e8d3dull, 0x4e8d41ull, 4ull, vm_uncovered_executable_gap_0437_bytes },
-    { ".text", 0x4e8e51ull, 0x4e8e55ull, 4ull, vm_uncovered_executable_gap_0438_bytes },
-    { ".text", 0x4e9952ull, 0x4e9956ull, 4ull, vm_uncovered_executable_gap_0439_bytes },
-    { ".text", 0x4dc635ull, 0x4dc637ull, 2ull, vm_uncovered_executable_gap_0440_bytes },
-    { ".text", 0x4dc691ull, 0x4dc693ull, 2ull, vm_uncovered_executable_gap_0441_bytes },
-    { ".text", 0x4dc8cdull, 0x4dc8cfull, 2ull, vm_uncovered_executable_gap_0442_bytes },
-    { ".text", 0x4dc8d1ull, 0x4dc8d3ull, 2ull, vm_uncovered_executable_gap_0443_bytes },
-    { ".text", 0x4e831bull, 0x4e831dull, 2ull, vm_uncovered_executable_gap_0444_bytes },
+    { ".text", 0x4afc7cull, 0x4afc8bull, 15ull, vm_uncovered_executable_gap_0227_bytes },
+    { ".text", 0x4e8d5dull, 0x4e8d6cull, 15ull, vm_uncovered_executable_gap_0228_bytes },
+    { ".text", 0x4e8d8aull, 0x4e8d99ull, 15ull, vm_uncovered_executable_gap_0229_bytes },
+    { ".text", 0x4fbf14ull, 0x4fbf23ull, 15ull, vm_uncovered_executable_gap_0230_bytes },
+    { ".text", 0x4e0cefull, 0x4e0cfdull, 14ull, vm_uncovered_executable_gap_0231_bytes },
+    { ".text", 0x4e4939ull, 0x4e4947ull, 14ull, vm_uncovered_executable_gap_0232_bytes },
+    { ".text", 0x4e75a3ull, 0x4e75b1ull, 14ull, vm_uncovered_executable_gap_0233_bytes },
+    { ".text", 0x4ef2c3ull, 0x4ef2d1ull, 14ull, vm_uncovered_executable_gap_0234_bytes },
+    { ".text", 0x58cb1ull, 0x58cbeull, 13ull, vm_uncovered_executable_gap_0235_bytes },
+    { ".text", 0x4af877ull, 0x4af884ull, 13ull, vm_uncovered_executable_gap_0236_bytes },
+    { ".text", 0x4af8c3ull, 0x4af8d0ull, 13ull, vm_uncovered_executable_gap_0237_bytes },
+    { ".text", 0x4e3d75ull, 0x4e3d82ull, 13ull, vm_uncovered_executable_gap_0238_bytes },
+    { ".text", 0x4e98caull, 0x4e98d7ull, 13ull, vm_uncovered_executable_gap_0239_bytes },
+    { ".text", 0x1fc470ull, 0x1fc47cull, 12ull, vm_uncovered_executable_gap_0240_bytes },
+    { ".text", 0x1fc864ull, 0x1fc870ull, 12ull, vm_uncovered_executable_gap_0241_bytes },
+    { ".text", 0x1fc948ull, 0x1fc954ull, 12ull, vm_uncovered_executable_gap_0242_bytes },
+    { ".text", 0x347f50ull, 0x347f5cull, 12ull, vm_uncovered_executable_gap_0243_bytes },
+    { ".text", 0x348028ull, 0x348034ull, 12ull, vm_uncovered_executable_gap_0244_bytes },
+    { ".text", 0x3a2e95ull, 0x3a2ea1ull, 12ull, vm_uncovered_executable_gap_0245_bytes },
+    { ".text", 0x3e3552ull, 0x3e355eull, 12ull, vm_uncovered_executable_gap_0246_bytes },
+    { ".text", 0x3efc46ull, 0x3efc52ull, 12ull, vm_uncovered_executable_gap_0247_bytes },
+    { ".text", 0x4db649ull, 0x4db655ull, 12ull, vm_uncovered_executable_gap_0248_bytes },
+    { ".text", 0x4db739ull, 0x4db745ull, 12ull, vm_uncovered_executable_gap_0249_bytes },
+    { ".text", 0x4dbe61ull, 0x4dbe6dull, 12ull, vm_uncovered_executable_gap_0250_bytes },
+    { ".text", 0x4dd605ull, 0x4dd611ull, 12ull, vm_uncovered_executable_gap_0251_bytes },
+    { ".text", 0x4dd919ull, 0x4dd925ull, 12ull, vm_uncovered_executable_gap_0252_bytes },
+    { ".text", 0x4ddbd9ull, 0x4ddbe5ull, 12ull, vm_uncovered_executable_gap_0253_bytes },
+    { ".text", 0x4dde99ull, 0x4ddea5ull, 12ull, vm_uncovered_executable_gap_0254_bytes },
+    { ".text", 0x4de159ull, 0x4de165ull, 12ull, vm_uncovered_executable_gap_0255_bytes },
+    { ".text", 0x4de419ull, 0x4de425ull, 12ull, vm_uncovered_executable_gap_0256_bytes },
+    { ".text", 0x4de6d9ull, 0x4de6e5ull, 12ull, vm_uncovered_executable_gap_0257_bytes },
+    { ".text", 0x4de999ull, 0x4de9a5ull, 12ull, vm_uncovered_executable_gap_0258_bytes },
+    { ".text", 0x4e0c49ull, 0x4e0c55ull, 12ull, vm_uncovered_executable_gap_0259_bytes },
+    { ".text", 0x4e0dc9ull, 0x4e0dd5ull, 12ull, vm_uncovered_executable_gap_0260_bytes },
+    { ".text", 0x4e0fedull, 0x4e0ff9ull, 12ull, vm_uncovered_executable_gap_0261_bytes },
+    { ".text", 0x4e18e9ull, 0x4e18f5ull, 12ull, vm_uncovered_executable_gap_0262_bytes },
+    { ".text", 0x4e190dull, 0x4e1919ull, 12ull, vm_uncovered_executable_gap_0263_bytes },
+    { ".text", 0x4e3ca9ull, 0x4e3cb5ull, 12ull, vm_uncovered_executable_gap_0264_bytes },
+    { ".text", 0x4e3f79ull, 0x4e3f85ull, 12ull, vm_uncovered_executable_gap_0265_bytes },
+    { ".text", 0x4e4639ull, 0x4e4645ull, 12ull, vm_uncovered_executable_gap_0266_bytes },
+    { ".text", 0x4e4709ull, 0x4e4715ull, 12ull, vm_uncovered_executable_gap_0267_bytes },
+    { ".text", 0x4e5719ull, 0x4e5725ull, 12ull, vm_uncovered_executable_gap_0268_bytes },
+    { ".text", 0x4e573dull, 0x4e5749ull, 12ull, vm_uncovered_executable_gap_0269_bytes },
+    { ".text", 0x4e5a59ull, 0x4e5a65ull, 12ull, vm_uncovered_executable_gap_0270_bytes },
+    { ".text", 0x4e5a71ull, 0x4e5a7dull, 12ull, vm_uncovered_executable_gap_0271_bytes },
+    { ".text", 0x4e5c91ull, 0x4e5c9dull, 12ull, vm_uncovered_executable_gap_0272_bytes },
+    { ".text", 0x4e5cc9ull, 0x4e5cd5ull, 12ull, vm_uncovered_executable_gap_0273_bytes },
+    { ".text", 0x4e6479ull, 0x4e6485ull, 12ull, vm_uncovered_executable_gap_0274_bytes },
+    { ".text", 0x4e6f79ull, 0x4e6f85ull, 12ull, vm_uncovered_executable_gap_0275_bytes },
+    { ".text", 0x4e7635ull, 0x4e7641ull, 12ull, vm_uncovered_executable_gap_0276_bytes },
+    { ".text", 0x4e7789ull, 0x4e7795ull, 12ull, vm_uncovered_executable_gap_0277_bytes },
+    { ".text", 0x4e7859ull, 0x4e7865ull, 12ull, vm_uncovered_executable_gap_0278_bytes },
+    { ".text", 0x4e7985ull, 0x4e7991ull, 12ull, vm_uncovered_executable_gap_0279_bytes },
+    { ".text", 0x4e7b6dull, 0x4e7b79ull, 12ull, vm_uncovered_executable_gap_0280_bytes },
+    { ".text", 0x4e7fe9ull, 0x4e7ff5ull, 12ull, vm_uncovered_executable_gap_0281_bytes },
+    { ".text", 0x4e8019ull, 0x4e8025ull, 12ull, vm_uncovered_executable_gap_0282_bytes },
+    { ".text", 0x4e8999ull, 0x4e89a5ull, 12ull, vm_uncovered_executable_gap_0283_bytes },
+    { ".text", 0x4e8a89ull, 0x4e8a95ull, 12ull, vm_uncovered_executable_gap_0284_bytes },
+    { ".text", 0x4e8ec9ull, 0x4e8ed5ull, 12ull, vm_uncovered_executable_gap_0285_bytes },
+    { ".text", 0x4e8eedull, 0x4e8ef9ull, 12ull, vm_uncovered_executable_gap_0286_bytes },
+    { ".text", 0x4e91a1ull, 0x4e91adull, 12ull, vm_uncovered_executable_gap_0287_bytes },
+    { ".text", 0x4e91bdull, 0x4e91c9ull, 12ull, vm_uncovered_executable_gap_0288_bytes },
+    { ".text", 0x4e09d3ull, 0x4e09deull, 11ull, vm_uncovered_executable_gap_0289_bytes },
+    { ".text", 0x7276dull, 0x72777ull, 10ull, vm_uncovered_executable_gap_0290_bytes },
+    { ".text", 0x4db583ull, 0x4db58dull, 10ull, vm_uncovered_executable_gap_0291_bytes },
+    { ".text", 0x4db597ull, 0x4db5a1ull, 10ull, vm_uncovered_executable_gap_0292_bytes },
+    { ".text", 0x4db7f9ull, 0x4db803ull, 10ull, vm_uncovered_executable_gap_0293_bytes },
+    { ".text", 0x4dc287ull, 0x4dc291ull, 10ull, vm_uncovered_executable_gap_0294_bytes },
+    { ".text", 0x4e0299ull, 0x4e02a3ull, 10ull, vm_uncovered_executable_gap_0295_bytes },
+    { ".text", 0x4e02d5ull, 0x4e02dfull, 10ull, vm_uncovered_executable_gap_0296_bytes },
+    { ".text", 0x4e0a01ull, 0x4e0a0bull, 10ull, vm_uncovered_executable_gap_0297_bytes },
+    { ".text", 0x4e5571ull, 0x4e557bull, 10ull, vm_uncovered_executable_gap_0298_bytes },
+    { ".text", 0x4e5586ull, 0x4e5590ull, 10ull, vm_uncovered_executable_gap_0299_bytes },
+    { ".text", 0x4e78d9ull, 0x4e78e3ull, 10ull, vm_uncovered_executable_gap_0300_bytes },
+    { ".text", 0x4e8db9ull, 0x4e8dc3ull, 10ull, vm_uncovered_executable_gap_0301_bytes },
+    { ".text", 0x50294eull, 0x502958ull, 10ull, vm_uncovered_executable_gap_0302_bytes },
+    { ".text", 0x4dbba9ull, 0x4dbbb2ull, 9ull, vm_uncovered_executable_gap_0303_bytes },
+    { ".text", 0x4dbbc4ull, 0x4dbbcdull, 9ull, vm_uncovered_executable_gap_0304_bytes },
+    { ".text", 0x4e116eull, 0x4e1177ull, 9ull, vm_uncovered_executable_gap_0305_bytes },
+    { ".text", 0x4e1180ull, 0x4e1189ull, 9ull, vm_uncovered_executable_gap_0306_bytes },
+    { ".text", 0x4e18b9ull, 0x4e18c2ull, 9ull, vm_uncovered_executable_gap_0307_bytes },
+    { ".text", 0x4e468aull, 0x4e4693ull, 9ull, vm_uncovered_executable_gap_0308_bytes },
+    { ".text", 0x431f13ull, 0x431f1bull, 8ull, vm_uncovered_executable_gap_0309_bytes },
+    { ".text", 0x4340f3ull, 0x4340fbull, 8ull, vm_uncovered_executable_gap_0310_bytes },
+    { ".text", 0x438ad7ull, 0x438adfull, 8ull, vm_uncovered_executable_gap_0311_bytes },
+    { ".text", 0x43e3c7ull, 0x43e3cfull, 8ull, vm_uncovered_executable_gap_0312_bytes },
+    { ".text", 0x43e867ull, 0x43e86full, 8ull, vm_uncovered_executable_gap_0313_bytes },
+    { ".text", 0x444957ull, 0x44495full, 8ull, vm_uncovered_executable_gap_0314_bytes },
+    { ".text", 0x447aedull, 0x447af5ull, 8ull, vm_uncovered_executable_gap_0315_bytes },
+    { ".text", 0x48ddf3ull, 0x48ddfbull, 8ull, vm_uncovered_executable_gap_0316_bytes },
+    { ".text", 0x4db559ull, 0x4db561ull, 8ull, vm_uncovered_executable_gap_0317_bytes },
+    { ".text", 0x4db609ull, 0x4db611ull, 8ull, vm_uncovered_executable_gap_0318_bytes },
+    { ".text", 0x4db6d1ull, 0x4db6d9ull, 8ull, vm_uncovered_executable_gap_0319_bytes },
+    { ".text", 0x4dbfd1ull, 0x4dbfd9ull, 8ull, vm_uncovered_executable_gap_0320_bytes },
+    { ".text", 0x4ddd39ull, 0x4ddd41ull, 8ull, vm_uncovered_executable_gap_0321_bytes },
+    { ".text", 0x4ddd51ull, 0x4ddd59ull, 8ull, vm_uncovered_executable_gap_0322_bytes },
+    { ".text", 0x4dddb9ull, 0x4dddc1ull, 8ull, vm_uncovered_executable_gap_0323_bytes },
+    { ".text", 0x4ddf19ull, 0x4ddf21ull, 8ull, vm_uncovered_executable_gap_0324_bytes },
+    { ".text", 0x4ddfc9ull, 0x4ddfd1ull, 8ull, vm_uncovered_executable_gap_0325_bytes },
+    { ".text", 0x4deb39ull, 0x4deb41ull, 8ull, vm_uncovered_executable_gap_0326_bytes },
+    { ".text", 0x4e0281ull, 0x4e0289ull, 8ull, vm_uncovered_executable_gap_0327_bytes },
+    { ".text", 0x4e0401ull, 0x4e0409ull, 8ull, vm_uncovered_executable_gap_0328_bytes },
+    { ".text", 0x4e0fa1ull, 0x4e0fa9ull, 8ull, vm_uncovered_executable_gap_0329_bytes },
+    { ".text", 0x4e0fb1ull, 0x4e0fb9ull, 8ull, vm_uncovered_executable_gap_0330_bytes },
+    { ".text", 0x4e45b9ull, 0x4e45c1ull, 8ull, vm_uncovered_executable_gap_0331_bytes },
+    { ".text", 0x4e4679ull, 0x4e4681ull, 8ull, vm_uncovered_executable_gap_0332_bytes },
+    { ".text", 0x4e469cull, 0x4e46a4ull, 8ull, vm_uncovered_executable_gap_0333_bytes },
+    { ".text", 0x4e49d1ull, 0x4e49d9ull, 8ull, vm_uncovered_executable_gap_0334_bytes },
+    { ".text", 0x4e4bf9ull, 0x4e4c01ull, 8ull, vm_uncovered_executable_gap_0335_bytes },
+    { ".text", 0x4e4c71ull, 0x4e4c79ull, 8ull, vm_uncovered_executable_gap_0336_bytes },
+    { ".text", 0x4e4c89ull, 0x4e4c91ull, 8ull, vm_uncovered_executable_gap_0337_bytes },
+    { ".text", 0x4e4ca1ull, 0x4e4ca9ull, 8ull, vm_uncovered_executable_gap_0338_bytes },
+    { ".text", 0x4e4ef9ull, 0x4e4f01ull, 8ull, vm_uncovered_executable_gap_0339_bytes },
+    { ".text", 0x4e4f09ull, 0x4e4f11ull, 8ull, vm_uncovered_executable_gap_0340_bytes },
+    { ".text", 0x4e4f39ull, 0x4e4f41ull, 8ull, vm_uncovered_executable_gap_0341_bytes },
+    { ".text", 0x4e5f09ull, 0x4e5f11ull, 8ull, vm_uncovered_executable_gap_0342_bytes },
+    { ".text", 0x4e5f19ull, 0x4e5f21ull, 8ull, vm_uncovered_executable_gap_0343_bytes },
+    { ".text", 0x4e5f31ull, 0x4e5f39ull, 8ull, vm_uncovered_executable_gap_0344_bytes },
+    { ".text", 0x4e5f89ull, 0x4e5f91ull, 8ull, vm_uncovered_executable_gap_0345_bytes },
+    { ".text", 0x4e5f99ull, 0x4e5fa1ull, 8ull, vm_uncovered_executable_gap_0346_bytes },
+    { ".text", 0x4e6899ull, 0x4e68a1ull, 8ull, vm_uncovered_executable_gap_0347_bytes },
+    { ".text", 0x4e68a9ull, 0x4e68b1ull, 8ull, vm_uncovered_executable_gap_0348_bytes },
+    { ".text", 0x4e68b9ull, 0x4e68c1ull, 8ull, vm_uncovered_executable_gap_0349_bytes },
+    { ".text", 0x4e69f9ull, 0x4e6a01ull, 8ull, vm_uncovered_executable_gap_0350_bytes },
+    { ".text", 0x4e6a09ull, 0x4e6a11ull, 8ull, vm_uncovered_executable_gap_0351_bytes },
+    { ".text", 0x4e6ff9ull, 0x4e7001ull, 8ull, vm_uncovered_executable_gap_0352_bytes },
+    { ".text", 0x4e7009ull, 0x4e7011ull, 8ull, vm_uncovered_executable_gap_0353_bytes },
+    { ".text", 0x4e7079ull, 0x4e7081ull, 8ull, vm_uncovered_executable_gap_0354_bytes },
+    { ".text", 0x4e7089ull, 0x4e7091ull, 8ull, vm_uncovered_executable_gap_0355_bytes },
+    { ".text", 0x4e74e1ull, 0x4e74e9ull, 8ull, vm_uncovered_executable_gap_0356_bytes },
+    { ".text", 0x4e7649ull, 0x4e7651ull, 8ull, vm_uncovered_executable_gap_0357_bytes },
+    { ".text", 0x4e7669ull, 0x4e7671ull, 8ull, vm_uncovered_executable_gap_0358_bytes },
+    { ".text", 0x4e7731ull, 0x4e7739ull, 8ull, vm_uncovered_executable_gap_0359_bytes },
+    { ".text", 0x4e77a1ull, 0x4e77a9ull, 8ull, vm_uncovered_executable_gap_0360_bytes },
+    { ".text", 0x4e78b9ull, 0x4e78c1ull, 8ull, vm_uncovered_executable_gap_0361_bytes },
+    { ".text", 0x4e7949ull, 0x4e7951ull, 8ull, vm_uncovered_executable_gap_0362_bytes },
+    { ".text", 0x4e7959ull, 0x4e7961ull, 8ull, vm_uncovered_executable_gap_0363_bytes },
+    { ".text", 0x4e79b9ull, 0x4e79c1ull, 8ull, vm_uncovered_executable_gap_0364_bytes },
+    { ".text", 0x4e7aedull, 0x4e7af5ull, 8ull, vm_uncovered_executable_gap_0365_bytes },
+    { ".text", 0x4e7b01ull, 0x4e7b09ull, 8ull, vm_uncovered_executable_gap_0366_bytes },
+    { ".text", 0x4e8a61ull, 0x4e8a69ull, 8ull, vm_uncovered_executable_gap_0367_bytes },
+    { ".text", 0x4e8d49ull, 0x4e8d51ull, 8ull, vm_uncovered_executable_gap_0368_bytes },
+    { ".text", 0x4e8e69ull, 0x4e8e71ull, 8ull, vm_uncovered_executable_gap_0369_bytes },
+    { ".text", 0x4e997aull, 0x4e9982ull, 8ull, vm_uncovered_executable_gap_0370_bytes },
+    { ".text", 0x4e4c5full, 0x4e4c65ull, 6ull, vm_uncovered_executable_gap_0371_bytes },
+    { ".text", 0x4e4cb9ull, 0x4e4cbfull, 6ull, vm_uncovered_executable_gap_0372_bytes },
+    { ".text", 0x4e758full, 0x4e7595ull, 6ull, vm_uncovered_executable_gap_0373_bytes },
+    { ".text", 0x4e9962ull, 0x4e9967ull, 5ull, vm_uncovered_executable_gap_0374_bytes },
+    { ".text", 0x44813dull, 0x448141ull, 4ull, vm_uncovered_executable_gap_0375_bytes },
+    { ".text", 0x44a71dull, 0x44a721ull, 4ull, vm_uncovered_executable_gap_0376_bytes },
+    { ".text", 0x4af8adull, 0x4af8b1ull, 4ull, vm_uncovered_executable_gap_0377_bytes },
+    { ".text", 0x4db721ull, 0x4db725ull, 4ull, vm_uncovered_executable_gap_0378_bytes },
+    { ".text", 0x4dbc79ull, 0x4dbc7dull, 4ull, vm_uncovered_executable_gap_0379_bytes },
+    { ".text", 0x4dbfb9ull, 0x4dbfbdull, 4ull, vm_uncovered_executable_gap_0380_bytes },
+    { ".text", 0x4dc409ull, 0x4dc40dull, 4ull, vm_uncovered_executable_gap_0381_bytes },
+    { ".text", 0x4dc411ull, 0x4dc415ull, 4ull, vm_uncovered_executable_gap_0382_bytes },
+    { ".text", 0x4e0a69ull, 0x4e0a6dull, 4ull, vm_uncovered_executable_gap_0383_bytes },
+    { ".text", 0x4e0a71ull, 0x4e0a75ull, 4ull, vm_uncovered_executable_gap_0384_bytes },
+    { ".text", 0x4e0c09ull, 0x4e0c0dull, 4ull, vm_uncovered_executable_gap_0385_bytes },
+    { ".text", 0x4e0c11ull, 0x4e0c15ull, 4ull, vm_uncovered_executable_gap_0386_bytes },
+    { ".text", 0x4e0c91ull, 0x4e0c95ull, 4ull, vm_uncovered_executable_gap_0387_bytes },
+    { ".text", 0x4e4c51ull, 0x4e4c55ull, 4ull, vm_uncovered_executable_gap_0388_bytes },
+    { ".text", 0x4e4fedull, 0x4e4ff1ull, 4ull, vm_uncovered_executable_gap_0389_bytes },
+    { ".text", 0x4e5435ull, 0x4e5439ull, 4ull, vm_uncovered_executable_gap_0390_bytes },
+    { ".text", 0x4e545dull, 0x4e5461ull, 4ull, vm_uncovered_executable_gap_0391_bytes },
+    { ".text", 0x4e770dull, 0x4e7711ull, 4ull, vm_uncovered_executable_gap_0392_bytes },
+    { ".text", 0x4e7719ull, 0x4e771dull, 4ull, vm_uncovered_executable_gap_0393_bytes },
+    { ".text", 0x4e7721ull, 0x4e7725ull, 4ull, vm_uncovered_executable_gap_0394_bytes },
+    { ".text", 0x4e7ad5ull, 0x4e7ad9ull, 4ull, vm_uncovered_executable_gap_0395_bytes },
+    { ".text", 0x4e7ae1ull, 0x4e7ae5ull, 4ull, vm_uncovered_executable_gap_0396_bytes },
+    { ".text", 0x4e85c1ull, 0x4e85c5ull, 4ull, vm_uncovered_executable_gap_0397_bytes },
+    { ".text", 0x4e8d3dull, 0x4e8d41ull, 4ull, vm_uncovered_executable_gap_0398_bytes },
+    { ".text", 0x4e8e51ull, 0x4e8e55ull, 4ull, vm_uncovered_executable_gap_0399_bytes },
+    { ".text", 0x4e9952ull, 0x4e9956ull, 4ull, vm_uncovered_executable_gap_0400_bytes },
+    { ".text", 0x44a717ull, 0x44a719ull, 2ull, vm_uncovered_executable_gap_0401_bytes },
+    { ".text", 0x45985cull, 0x45985eull, 2ull, vm_uncovered_executable_gap_0402_bytes },
+    { ".text", 0x4dc635ull, 0x4dc637ull, 2ull, vm_uncovered_executable_gap_0403_bytes },
+    { ".text", 0x4dc691ull, 0x4dc693ull, 2ull, vm_uncovered_executable_gap_0404_bytes },
+    { ".text", 0x4dc8cdull, 0x4dc8cfull, 2ull, vm_uncovered_executable_gap_0405_bytes },
+    { ".text", 0x4dc8d1ull, 0x4dc8d3ull, 2ull, vm_uncovered_executable_gap_0406_bytes },
+    { ".text", 0x4e831bull, 0x4e831dull, 2ull, vm_uncovered_executable_gap_0407_bytes },
 };
 
-enum { VM_UNCOVERED_EXECUTABLE_GAP_COUNT = 445 };
-enum { VM_UNCOVERED_EXECUTABLE_GAP_BYTES = 5933 };
+enum { VM_UNCOVERED_EXECUTABLE_GAP_COUNT = 408 };
+enum { VM_UNCOVERED_EXECUTABLE_GAP_BYTES = 5233 };
 _Static_assert(sizeof(vm_uncovered_executable_gaps) / sizeof(vm_uncovered_executable_gaps[0]) == VM_UNCOVERED_EXECUTABLE_GAP_COUNT, "gap table count mismatch");
 
 const VMUncoveredExecutableGap *vm_uncovered_executable_gap_at(size_t index) {
