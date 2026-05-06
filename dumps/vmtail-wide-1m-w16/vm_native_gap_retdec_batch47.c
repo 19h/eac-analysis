@@ -164,6 +164,7 @@ int32_t *wmemset(int32_t *wcs, int32_t wc, size_t n);
 int64_t memset2(void *s, int c, size_t n);
 int pthread_mutex_lock(void *mutex);
 int pthread_mutex_unlock(void *mutex);
+int pthread_once(int32_t *once_control, int64_t init_routine);
 int pthread_cond_wait(void *cond, void *mutex);
 int pthread_cond_timedwait(void *cond, void *mutex, const struct timespec *abstime);
 int fcntl(int fd, int cmd, ...);
