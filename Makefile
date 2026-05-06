@@ -39,6 +39,10 @@ PROGRAM_MBA_REDUCED_TSVS := $(wildcard $(PRIMARY_DIR)/vm_program_atlas_*_mba_red
 BEHAVIOR_INVENTORY_TSV := $(PRIMARY_DIR)/vm_behavior_inventory.tsv
 BEHAVIOR_GAP_REGISTER_TSV := $(PRIMARY_DIR)/vm_behavior_gap_register.tsv
 BEHAVIOR_INVENTORY_MD := $(PRIMARY_DIR)/vm_behavior_inventory.md
+SEMANTIC_OPCODE_CATALOG_TSV := $(PRIMARY_DIR)/vm_semantic_opcode_catalog.tsv
+PROGRAM_OPCODE_PSEUDOCODE_TSV := $(PRIMARY_DIR)/vm_program_opcode_pseudocode.tsv
+PROGRAM_OPCODE_PSEUDOCODE_MANIFEST := $(PRIMARY_DIR)/vm_program_opcode_pseudocode_manifest.tsv
+SEMANTIC_OPCODE_CATALOG_MD := $(PRIMARY_DIR)/vm_semantic_opcode_catalog.md
 PROGRAM_MBA_010_PREFIX := $(PRIMARY_DIR)/vm_program_atlas_010_mba
 PROGRAM_MBA_010_CASES_TSV := $(PROGRAM_MBA_010_PREFIX)_cases.tsv
 PROGRAM_MBA_010_OBSERVATIONS_TSV := $(PROGRAM_MBA_010_PREFIX)_observations.tsv
@@ -1017,6 +1021,13 @@ behavior-inventory: vm_behavior_inventory.py $(PROGRAM_DECOMPILED_FOLDED_MANIFES
 
 behavior-inventory-audit: behavior-inventory
 	python3 vm_behavior_inventory_audit.py --root $(PRIMARY_DIR)
+
+.PHONY: semantic-opcode-catalog semantic-opcode-catalog-audit
+semantic-opcode-catalog: vm_semantic_opcode_catalog.py $(PRIMARY_DIR)/vm_microcode_catalog.tsv $(PROGRAM_DECOMPILED_FOLDED_MANIFEST) $(PROGRAM_FOLDED_STRING_REFS_TSV) $(BYTECODE_IR_DECOMPILE_TSV)
+	python3 vm_semantic_opcode_catalog.py --root $(PRIMARY_DIR)
+
+semantic-opcode-catalog-audit: semantic-opcode-catalog
+	python3 vm_semantic_opcode_catalog_audit.py --root $(PRIMARY_DIR)
 
 $(HANDLERS_PSEUDOCODE_C): vm_handler_pseudocode_dump.py $(PRIMARY_DIR)/vm_handler_semantics.tsv $(PRIMARY_DIR)/vm_handler_table.tsv $(STATIC_ONLY_HANDLER_QUEUE_TSV) $(STATIC_ONLY_TIER0_MODELS_TSV) $(STATIC_ONLY_TIER1_MODELS_TSV) $(STATIC_ONLY_TIER2_SPLIT_TSV) $(STATIC_ONLY_TIER3_SHARED_TSV) $(STATIC_ONLY_TIER4_CALLRET_TSV) $(STATIC_ONLY_TIER5_LARGE_TSV)
 	python3 vm_handler_pseudocode_dump.py --all > $@
