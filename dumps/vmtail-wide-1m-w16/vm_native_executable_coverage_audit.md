@@ -4,17 +4,17 @@ Compares executable ELF sections against native ranges already represented by re
 
 - executable sections: 5
 - executable bytes: 5651040
-- recovered executable bytes: 5447246
-- uncovered executable bytes: 203794
-- recovered range rows: 73446
-- uncovered gaps: 2575
+- recovered executable bytes: 5460302
+- uncovered executable bytes: 190738
+- recovered range rows: 73788
+- uncovered gaps: 2550
 
 | section | range | bytes | covered | uncovered | coverage | ranges |
 | --- | --- | ---: | ---: | ---: | ---: | ---: |
 | `.init` | `0x1fbd0-0x1fbe7` | 23 | 23 | 0 | 100.00% | 1 |
 | `.plt` | `0x1fbf0-0x20bd0` | 4064 | 4064 | 0 | 100.00% | 254 |
 | `.plt.got` | `0x20bd0-0x20be0` | 16 | 16 | 0 | 100.00% | 2 |
-| `.text` | `0x20c00-0x583650` | 5646928 | 5443134 | 203794 | 96.39% | 73186 |
+| `.text` | `0x20c00-0x583650` | 5646928 | 5456190 | 190738 | 96.62% | 73528 |
 | `.fini` | `0x583650-0x583659` | 9 | 9 | 0 | 100.00% | 3 |
 
 ## Largest Uncovered Gaps
