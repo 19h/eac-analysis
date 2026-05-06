@@ -921,6 +921,7 @@ def main():
     print("void __asm_out_135(uint16_t port, int32_t value);")
     print("void __asm_out_136(uint16_t port, int32_t value);")
     print("void __asm_out_137(uint16_t port, char value);")
+    print("void __asm_out_138(uint16_t port, char value);")
     print("void __asm_out_139(uint16_t port, int32_t value);")
     print("void __asm_outsb(uint16_t port, char value);")
     print("void __asm_outsd(uint16_t port, int32_t value);")
