@@ -186,7 +186,7 @@ int64_t memset2(void *s, int c, size_t n);
 int pthread_mutex_lock(void *mutex);
 int pthread_mutex_unlock(void *mutex);
 int pthread_create(int32_t *thread, const void *attr, int64_t *(*start_routine)(int64_t *), int64_t *arg);
-int pthread_once(int32_t *once_control, void (*init_routine)(void));
+int pthread_once(int32_t *once_control, int64_t init_routine);
 int pthread_cond_wait(void *cond, void *mutex);
 int pthread_cond_timedwait(void *cond, void *mutex, const struct timespec *abstime);
 int sem_init(int64_t *sem, int pshared, unsigned int value);

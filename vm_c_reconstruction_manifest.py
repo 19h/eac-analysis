@@ -273,7 +273,10 @@ def native_gap_batch_key(path: Path):
     match = re.search(r"vm_native_gap_retdec_batch([0-9]+)\.c$", path.name)
     if not match:
         return None
-    return int(match.group(1))
+    digits = match.group(1)
+    if len(digits) > 2 and digits.startswith("0"):
+        return None
+    return int(digits)
 
 
 def native_gap_batch_paths(min_index=0):

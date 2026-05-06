@@ -10,13 +10,22 @@ TRACE_DIR = Path("dumps/vmtail-wide-1m-w16")
 
 def native_gap_batch_key(path: Path) -> int:
     match = re.search(r"vm_native_gap_retdec_batch([0-9]+)\.c$", path.name)
-    return int(match.group(1)) if match else 0
+    if not match:
+        return -1
+    digits = match.group(1)
+    if len(digits) > 2 and digits.startswith("0"):
+        return -1
+    return int(digits)
 
 
 def default_sidecars():
     seen = set()
     sidecars = []
-    for path in DEFAULT_SIDECARS + sorted(TRACE_DIR.glob("vm_native_gap_retdec_batch*.c"), key=native_gap_batch_key):
+    native_gap_sidecars = [
+        path for path in TRACE_DIR.glob("vm_native_gap_retdec_batch*.c")
+        if native_gap_batch_key(path) >= 0
+    ]
+    for path in DEFAULT_SIDECARS + sorted(native_gap_sidecars, key=native_gap_batch_key):
         if path in seen:
             continue
         seen.add(path)
