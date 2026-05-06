@@ -841,6 +841,8 @@ def main():
         print(f"extern int g{index};")
     if "CRC_32C__Castagnoli__poly_0x1EDC6F41_at_585720" in functions:
         print("extern int32_t CRC_32C__Castagnoli__poly_0x1EDC6F41_at_585720;")
+    if "Hash_constant_words_K_for_SHA_384_and_SHA_512_at_598800" in functions:
+        print("extern int64_t Hash_constant_words_K_for_SHA_384_and_SHA_512_at_598800;")
     print("int64_t entry_point();")
     print("unsigned char llvm_ctpop_i8(unsigned char value);")
     print("uint16_t llvm_bswap_i16(uint16_t value);")
@@ -1000,7 +1002,7 @@ def main():
     print("int dlclose(void *handle);")
     print("int32_t mbrtowc(int32_t *pwc, const char *s, size_t n, struct _TYPEDEF___mbstate_t *ps);")
     print("size_t mbstowcs(int32_t *dest, const char *src, size_t n);")
-    print("size_t mbsrtowcs(int32_t *dst, const char **src, size_t len, struct _TYPEDEF___mbstate_t *ps);")
+    print("size_t mbsrtowcs(int32_t *dst, char **src, size_t len, struct _TYPEDEF___mbstate_t *ps);")
     print("int32_t mbsnrtowcs(int32_t *dst, char **src, size_t nms, size_t len, struct _TYPEDEF___mbstate_t *ps);")
     print("size_t wcslen(const int32_t *s);")
     print("int wcscmp(const int32_t *s1, const int32_t *s2);")
