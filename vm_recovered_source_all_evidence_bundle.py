@@ -347,6 +347,7 @@ def main():
     print("int snprintf(char *str, size_t size, const char *format, ...);")
     print("char *strchr(const char *s, int c);")
     print("int strcmp(const char *s1, const char *s2);")
+    print("char *strerror(int errnum);")
     print("char *strstr(const char *haystack, const char *needle);")
     print("size_t strlen(const char *s);")
     print("size_t __ctype_get_mb_cur_max(void);")
