@@ -219,6 +219,7 @@ int32_t __towupper_l(int32_t wc, struct __locale_struct *locale);
 int vswprintf(int32_t *wcs, size_t maxlen, const int32_t *format, int64_t ap);
 int32_t *wmemchr(const int32_t *s, int32_t c, size_t n);
 int32_t *wmemcpy(int32_t *dest, const int32_t *src, size_t n);
+int wmemcmp(const int32_t *s1, const int32_t *s2, size_t n);
 int32_t *wmemmove(int32_t *dest, const int32_t *src, size_t n);
 int32_t *wmemset(int32_t *wcs, int32_t wc, size_t n);
 int32_t getwc(struct _IO_FILE *stream);
@@ -317,7 +318,7 @@ int64_t function_72a54(int64_t a1);
 // Address range: 0x24dff - 0x24e0d
 int64_t function_24dff(int64_t a1, int64_t a2) {
     // 0x24dff
-    return memset((void *)(int64_t)(a1), a2);
+    return memset2((void *)(int64_t)(a1), a2, 0);
 }
 
 // Address range: 0x27a2a - 0x27a38

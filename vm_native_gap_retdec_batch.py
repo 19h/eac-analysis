@@ -667,6 +667,11 @@ def extract_functions(text):
     )
     functions = normalize_time_struct_accesses(functions)
     functions = re.sub(r"\bmemset\(([^,\n]+),", r"memset((void *)(int64_t)(\1),", functions)
+    functions = re.sub(
+        r"\bmemset\((\(void \*\)\(int64_t\)\([^)]*\)),\s*([^,\n)]+)\)",
+        r"memset2(\1, \2, 0)",
+        functions,
+    )
     functions = re.sub(r"(int64_t\s+v\d+\s*=\s*)&([A-Za-z_]\w*)", r"\1(int64_t)&\2", functions)
     functions = re.sub(r"((?:u?int(?:8|16|32|64)_t|char)\s*\*\s+v\d+\s*=\s*)g(\d+)", r"\1(void *)(int64_t)g\2", functions)
     functions = re.sub(r" = &g(\d+)", r" = (int64_t)&g\1", functions)
@@ -991,6 +996,7 @@ def main():
     print("int vswprintf(int32_t *wcs, size_t maxlen, const int32_t *format, int64_t ap);")
     print("int32_t *wmemchr(const int32_t *s, int32_t c, size_t n);")
     print("int32_t *wmemcpy(int32_t *dest, const int32_t *src, size_t n);")
+    print("int wmemcmp(const int32_t *s1, const int32_t *s2, size_t n);")
     print("int32_t *wmemmove(int32_t *dest, const int32_t *src, size_t n);")
     print("int32_t *wmemset(int32_t *wcs, int32_t wc, size_t n);")
     print("int32_t getwc(struct _IO_FILE *stream);")

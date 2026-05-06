@@ -219,6 +219,7 @@ int32_t __towupper_l(int32_t wc, struct __locale_struct *locale);
 int vswprintf(int32_t *wcs, size_t maxlen, const int32_t *format, int64_t ap);
 int32_t *wmemchr(const int32_t *s, int32_t c, size_t n);
 int32_t *wmemcpy(int32_t *dest, const int32_t *src, size_t n);
+int wmemcmp(const int32_t *s1, const int32_t *s2, size_t n);
 int32_t *wmemmove(int32_t *dest, const int32_t *src, size_t n);
 int32_t *wmemset(int32_t *wcs, int32_t wc, size_t n);
 int32_t getwc(struct _IO_FILE *stream);
