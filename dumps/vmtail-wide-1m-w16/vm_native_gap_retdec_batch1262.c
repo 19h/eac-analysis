@@ -1,12 +1,12 @@
 /*
- * Targeted RetDec C for native executable gap queue batch 1231.
+ * Targeted RetDec C for native executable gap queue batch 1262.
  *
  * This batch is fixed from the ranked native gap queue so it can feed the
  * executable coverage audit without creating a Make dependency cycle:
  * coverage -> queue -> RetDec batch -> coverage.
  *
  * Ranges:
- *   0x1c417d-0x1c437d rank=- name=- kind=- bytes=- uncovered=-
+ *   0x5213c0-0x5215c0 rank=- name=- kind=- bytes=- uncovered=-
  */
 #include <stdbool.h>
 #include <stdio.h>
@@ -364,140 +364,112 @@ void _Unwind_SetIP(int64_t context, int64_t value);
 void _Unwind_Resume(struct _Unwind_Exception *exception);
 void _Unwind_Resume_or_Rethrow(int64_t exception);
 
-int64_t function_1c417d(int64_t a1, int64_t a2, int64_t a3, int64_t a4);
-int64_t function_1c41a6(void);
-int64_t function_1c41b9(int64_t a1, int64_t a2, int64_t a3, int64_t a4);
-int64_t function_1c41fc(int64_t a1);
-int64_t function_1c420d(int64_t a1);
-int64_t function_1c4219(void);
-int64_t function_1c4253(int64_t a1);
-int64_t function_1c427d(int64_t a1, int64_t a2, int64_t a3, int64_t a4);
-int64_t function_1c428e(void);
-int64_t function_1c42db(void);
-int64_t function_1c42df(int64_t a1, int64_t a2, int64_t a3, int64_t a4, int64_t a5);
-int64_t function_1c430e(void);
-int64_t function_1c4313(void);
-int64_t function_1c434c(void);
-int64_t function_690e9abf();
-int64_t function_ffffffffddb09a5a();
-int64_t unknown_3a210095();
-int64_t unknown_ffffffff8ba65083();
+int64_t function_52121d();
+int64_t function_5212c4();
+int64_t function_5212e0();
+int64_t function_5213c0(int64_t a1, int64_t a2, int64_t a3, uint64_t a4, int32_t a5, int32_t a6);
+int64_t function_521508(int64_t a1, int64_t a2, int64_t a3, int64_t a4, int64_t a5);
+int64_t function_521558(void);
+int64_t function_5215b6(void);
+int64_t function_521ce8();
+int64_t function_521edd();
+int64_t function_567700();
 
-// Address range: 0x1c417d - 0x1c41a3
-int64_t function_1c417d(int64_t a1, int64_t a2, int64_t a3, int64_t a4) {
-    // 0x1c417d
-    int64_t v1; // 0x1c417d
-    *(char *)0x68aa0091f0eb01e8 = (char)v1 | -40;
-    *(int32_t *)(a1 + 56) = (int32_t)a4;
-    int32_t * v2 = (int32_t *)(a3 + 54); // 0x1c418c
-    *v2 = *v2 | (int32_t)a2;
-    unknown_3a210095();
-    int64_t v3; // 0x1c417d
-    uint32_t v4 = *(int32_t *)&v3; // 0x1c4194
-    int64_t result = v4 + 0x48dd9367; // 0x1c4195
-    int32_t * v5 = (int32_t *)(result - 43); // 0x1c419f
-    int32_t v6 = *v5; // 0x1c419f
-    *v5 = (int32_t)a3 - (int32_t)a1 + v6 + (int32_t)(v4 < 0xb7226c99);
-    return result;
-}
-
-// Address range: 0x1c41a6 - 0x1c41ac
-int64_t function_1c41a6(void) {
-    // 0x1c41a6
-    int64_t result; // 0x1c41a6
-    return result;
-}
-
-// Address range: 0x1c41b9 - 0x1c41c2
-int64_t function_1c41b9(int64_t a1, int64_t a2, int64_t a3, int64_t a4) {
-    char * v1 = (char *)(a2 + 0x6601e8a4); // 0x1c41b9
-    *v1 = *v1 + (char)a4;
-    int64_t result; // 0x1c41b9
-    return result;
-}
-
-// Address range: 0x1c41fc - 0x1c41ff
-int64_t function_1c41fc(int64_t a1) {
-    // 0x1c41fc
-    int64_t result; // 0x1c41fc
-    return result;
-}
-
-// Address range: 0x1c420d - 0x1c4211
-int64_t function_1c420d(int64_t a1) {
-    // 0x1c420d
-    int64_t result; // 0x1c420d
-    return result;
-}
-
-// Address range: 0x1c4219 - 0x1c4220
-int64_t function_1c4219(void) {
-    // 0x1c4219
-    int64_t v1; // 0x1c4219
-    int64_t v2 = v1;
-    *(char *)v2 = (char)v2 + (char)v1;
-    return function_ffffffffddb09a5a();
-}
-
-// Address range: 0x1c4253 - 0x1c4256
-int64_t function_1c4253(int64_t a1) {
-    // 0x1c4253
-    int64_t result; // 0x1c4253
-    return result;
-}
-
-// Address range: 0x1c427d - 0x1c428a
-int64_t function_1c427d(int64_t a1, int64_t a2, int64_t a3, int64_t a4) {
-    int64_t result = unknown_ffffffff8ba65083(); // 0x1c427d
-    bool v1; // 0x1c427d
-    __asm_outsb((int16_t)a3, *(char *)((v1 ? -4 : 4) + a2));
-    return result;
-}
-
-// Address range: 0x1c428e - 0x1c4297
-int64_t function_1c428e(void) {
-    char v1 = *(char *)-0x44b5be6b; // 0x1c428e
-    int64_t result; // 0x1c428e
-    *(char *)-0x44b5be6b = v1 + (char)((uint64_t)result / 256);
-    return result;
-}
-
-// Address range: 0x1c42db - 0x1c42dc
-int64_t function_1c42db(void) {
-    // 0x1c42db
-    int64_t result; // 0x1c42db
-    return result;
-}
-
-// Address range: 0x1c42df - 0x1c42e9
-int64_t function_1c42df(int64_t a1, int64_t a2, int64_t a3, int64_t a4, int64_t a5) {
-    // 0x1c42df
-    int64_t result; // 0x1c42df
-    *(int32_t *)a1 = (int32_t)result;
-    return result;
-}
-
-// Address range: 0x1c430e - 0x1c430f
-int64_t function_1c430e(void) {
-    // 0x1c430e
-    int64_t result; // 0x1c430e
-    return result;
-}
-
-// Address range: 0x1c4313 - 0x1c4318
-int64_t function_1c4313(void) {
-    // 0x1c4313
-    return function_690e9abf();
-}
-
-// Address range: 0x1c434c - 0x1c4350
-int64_t function_1c434c(void) {
-    // 0x1c434c
-    int64_t result; // 0x1c434c
-    bool v1; // 0x1c434c
-    if (true == !v1) {
-        result = function_1c430e();
+// Address range: 0x5213c0 - 0x521502
+int64_t function_5213c0(int64_t a1, int64_t a2, int64_t a3, uint64_t a4, int32_t a5, int32_t a6) {
+    // 0x5213c0
+    int64_t v1; // 0x5213c0
+    char * v2 = (char *)(v1 + 15); // 0x5213c0
+    *v2 = *v2 + (char)a4;
+    int64_t v3 = 0x100000000 * v1 >> 32 & -192; // 0x5213c7
+    if (v1 == 0) {
+        // 0x5218f6
+        return v3 + a4;
     }
-    // 0x1c434e
+    int64_t * v4 = (int64_t *)(v1 + 16); // 0x5213f2
+    uint64_t result = *v4; // 0x5213f2
+    uint64_t v5 = *(int64_t *)(v1 + 24); // 0x5213f6
+    if (result >= v5) {
+        // 0x521790
+        return result;
+    }
+    int64_t result2 = result + 1; // 0x521403
+    *v4 = result2;
+    if (v1 == 0 || v5 <= result2) {
+        // 0x521790
+        return result2;
+    }
+    // 0x521421
+    if (a5 == -1 || v1 == 0) {
+        // 0x521790
+        return 0;
+    }
+    uint64_t v6 = v1 + 1; // 0x521455
+    int64_t result3 = v1 == v1 + 16 ? 15 : v1;
+    if (v6 > result3) {
+        // 0x521790
+        return result3;
+    }
+    uint64_t v7 = -1 - v3;
+    int32_t v8 = a6 + 1; // 0x5213df
+    *(char *)(2 * v1) = (char)v8;
+    *(char *)(v6 + v1) = 0;
+    int64_t v9 = *(int64_t *)(v1 + 24); // 0x52149c
+    int64_t v10 = *(int64_t *)(v1 + 16); // 0x5214a0
+    int64_t result4 = function_567700(v10, v9, v1, v7 & -256 | (int64_t)(v7 < a4)); // 0x5214a4
+    if ((char)result4 == 0) {
+        // 0x521790
+        return result4;
+    }
+    if (v8 == 0) {
+        // 0x5214be
+        if ((char)v1 != 1 == v6 == 0) {
+            // 0x521790
+            return result4;
+        }
+    }
+    // 0x5214d0
+    char v11; // 0x5213c0
+    if (v11 != 0 || (v11 || (char)(v7 < a4)) == 0) {
+        // 0x521790
+        return result4;
+    }
+    // 0x5214e6
+    *(int64_t *)v1 = -1;
+    int32_t * v12; // 0x5213c0
+    return (int64_t)v12;
+}
+
+// Address range: 0x521508 - 0x521553
+int64_t function_521508(int64_t a1, int64_t a2, int64_t a3, int64_t a4, int64_t a5) {
+    // 0x521508
+    int64_t v1; // 0x521508
+    int64_t v2 = v1;
+    if (v2 == 0) {
+        function_521edd();
+    }
+    if ((int32_t)v1 == -1) {
+        // 0x521517
+        if (*(int64_t *)(v2 + 16) >= *(int64_t *)(v2 + 24)) {
+            function_521ce8();
+        }
+    }
+    if ((char)v1 != 0) {
+        function_52121d();
+    }
+    // 0x52153a
+    return function_5212e0();
+}
+
+// Address range: 0x521558 - 0x521571
+int64_t function_521558(void) {
+    // 0x521558
+    return function_5212c4();
+}
+
+// Address range: 0x5215b6 - 0x5215b9
+int64_t function_5215b6(void) {
+    // 0x5215b6
+    int64_t result; // 0x5215b6
     return result;
 }
