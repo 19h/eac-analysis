@@ -1028,6 +1028,7 @@ def main():
     print("int128_t __asm_andpd(int128_t left, int128_t right);")
     print("int128_t __asm_andnpd(int128_t left, int128_t right);")
     print("int128_t __asm_orpd(int128_t left, int128_t right);")
+    print("int128_t __asm_vdivpd(int128_t left, int128_t right);")
     print("int128_t __asm_divsd(int128_t left, int64_t right);")
     print("int128_t __asm_divsd_133(int128_t left, int128_t right);")
     print("int128_t __asm_pclmulqdq(int128_t left, int128_t right, int imm);")
