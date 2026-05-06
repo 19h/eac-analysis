@@ -4,17 +4,17 @@ Compares executable ELF sections against native ranges already represented by re
 
 - executable sections: 5
 - executable bytes: 5651040
-- recovered executable bytes: 546484
-- uncovered executable bytes: 5104556
-- recovered range rows: 3770
-- uncovered gaps: 752
+- recovered executable bytes: 548817
+- uncovered executable bytes: 5102223
+- recovered range rows: 3802
+- uncovered gaps: 767
 
 | section | range | bytes | covered | uncovered | coverage | ranges |
 | --- | --- | ---: | ---: | ---: | ---: | ---: |
 | `.init` | `0x1fbd0-0x1fbe7` | 23 | 0 | 23 | 0.00% | 0 |
 | `.plt` | `0x1fbf0-0x20bd0` | 4064 | 0 | 4064 | 0.00% | 0 |
 | `.plt.got` | `0x20bd0-0x20be0` | 16 | 0 | 16 | 0.00% | 0 |
-| `.text` | `0x20c00-0x583650` | 5646928 | 546484 | 5100444 | 9.67% | 3770 |
+| `.text` | `0x20c00-0x583650` | 5646928 | 548817 | 5098111 | 9.71% | 3802 |
 | `.fini` | `0x583650-0x583659` | 9 | 0 | 9 | 0.00% | 0 |
 
 ## Largest Uncovered Gaps
@@ -42,7 +42,7 @@ Compares executable ELF sections against native ranges already represented by re
 | `.text` | `0xcf5c7-0xe0017` | 68176 |
 | `.text` | `0x4d918b-0x4e9ae0` | 67925 |
 | `.text` | `0x3bc1b5-0x3cc938` | 67459 |
-| `.text` | `0x2c5064-0x2d2cf4` | 56464 |
+| `.text` | `0x2c7707-0x2d2cf4` | 46573 |
 | `.text` | `0x28cc4c-0x2961e3` | 38295 |
 | `.text` | `0x519847-0x522540` | 36089 |
 | `.text` | `0x327655-0x330190` | 35643 |
@@ -53,11 +53,11 @@ Compares executable ELF sections against native ranges already represented by re
 | `.text` | `0x6c090-0x713da` | 21322 |
 | `.text` | `0xe0166-0xe50f4` | 20366 |
 | `.text` | `0x530e56-0x535930` | 19162 |
-| `.text` | `0x5149d8-0x519050` | 18040 |
 | `.text` | `0x4d486e-0x4d8cc0` | 17490 |
 | `.text` | `0x4a48e0-0x4a8c40` | 17248 |
-| `.text` | `0x55ee32-0x5630c0` | 17038 |
 | `.text` | `0x1a3fa9-0x1a7ffe` | 16469 |
 | `.text` | `0x4ea2d5-0x4ee130` | 15963 |
 | `.text` | `0x33b642-0x33f109` | 15047 |
 | `.text` | `0x56c0f5-0x56fab0` | 14779 |
+| `.text` | `0x53c60b-0x53fbe0` | 13781 |
+| `.text` | `0x4a0701-0x4a3b70` | 13423 |
