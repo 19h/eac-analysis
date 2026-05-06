@@ -176,6 +176,10 @@ FIXED_TYPE_NAMES = {
     "int128_t",
 }
 
+NO_REWRITE_SIDECARS = {
+    "vm_uncovered_executable_gaps.c",
+}
+
 
 def read_text(path):
     return Path(path).read_text(errors="replace")
@@ -275,10 +279,11 @@ def sanitize_sidecar(path):
     text = read_text(path)
     tag = tag_for(path)
     replacements = {}
-    for name in collect_typedefs(text):
-        replacements[name] = f"EACEvidence_{tag}__{name}"
-    for name in collect_symbols(text):
-        replacements[name] = f"eac_evidence_{tag}__{name}"
+    if path.name not in NO_REWRITE_SIDECARS:
+        for name in collect_typedefs(text):
+            replacements[name] = f"EACEvidence_{tag}__{name}"
+        for name in collect_symbols(text):
+            replacements[name] = f"eac_evidence_{tag}__{name}"
 
     out_lines = []
     for line in text.splitlines():
