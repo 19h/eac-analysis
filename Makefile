@@ -32,6 +32,9 @@ PROGRAM_DECOMPILED_FULL_C := $(PRIMARY_DIR)/vm_program_decompiled_full.c
 PROGRAM_DECOMPILED_SPLIT_DIR := $(PRIMARY_DIR)/vm_programs_decompiled
 PROGRAM_DECOMPILED_SPLIT_MANIFEST := $(PRIMARY_DIR)/vm_programs_decompiled_manifest.tsv
 PROGRAM_STRING_REFS_TSV := $(PRIMARY_DIR)/vm_program_string_refs.tsv
+BEHAVIOR_INVENTORY_TSV := $(PRIMARY_DIR)/vm_behavior_inventory.tsv
+BEHAVIOR_GAP_REGISTER_TSV := $(PRIMARY_DIR)/vm_behavior_gap_register.tsv
+BEHAVIOR_INVENTORY_MD := $(PRIMARY_DIR)/vm_behavior_inventory.md
 PROGRAM_MBA_010_PREFIX := $(PRIMARY_DIR)/vm_program_atlas_010_mba
 PROGRAM_MBA_010_CASES_TSV := $(PROGRAM_MBA_010_PREFIX)_cases.tsv
 PROGRAM_MBA_010_OBSERVATIONS_TSV := $(PROGRAM_MBA_010_PREFIX)_observations.tsv
@@ -999,6 +1002,15 @@ program-decompiled-folded:
 
 program-decompiled-folded-audit: program-decompiled-folded
 	python3 vm_program_decompiled_fold_mba_audit.py --syntax --jobs 8
+
+.PHONY: behavior-inventory behavior-inventory-audit
+$(BEHAVIOR_INVENTORY_TSV) $(BEHAVIOR_GAP_REGISTER_TSV) $(BEHAVIOR_INVENTORY_MD): vm_behavior_inventory.py program-decompiled-folded $(PRIMARY_DIR)/vm_bytecode_basic_blocks.tsv $(BYTECODE_IR_DECOMPILE_TSV) $(PRIMARY_TRACE) $(PRIMARY_DIR)/vm_trace_coverage_matrix.tsv $(PRIMARY_DIR)/vm_isa_handlers.tsv $(PRIMARY_DIR)/vm_native_linkage_stubs.tsv
+	python3 vm_behavior_inventory.py --root $(PRIMARY_DIR)
+
+behavior-inventory: $(BEHAVIOR_INVENTORY_TSV) $(BEHAVIOR_GAP_REGISTER_TSV) $(BEHAVIOR_INVENTORY_MD)
+
+behavior-inventory-audit: behavior-inventory
+	python3 vm_behavior_inventory_audit.py --root $(PRIMARY_DIR)
 
 $(HANDLERS_PSEUDOCODE_C): vm_handler_pseudocode_dump.py $(PRIMARY_DIR)/vm_handler_semantics.tsv $(PRIMARY_DIR)/vm_handler_table.tsv $(STATIC_ONLY_HANDLER_QUEUE_TSV) $(STATIC_ONLY_TIER0_MODELS_TSV) $(STATIC_ONLY_TIER1_MODELS_TSV) $(STATIC_ONLY_TIER2_SPLIT_TSV) $(STATIC_ONLY_TIER3_SHARED_TSV) $(STATIC_ONLY_TIER4_CALLRET_TSV) $(STATIC_ONLY_TIER5_LARGE_TSV)
 	python3 vm_handler_pseudocode_dump.py --all > $@
