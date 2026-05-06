@@ -1328,7 +1328,8 @@ native-gap-retdec-batch80: $(NATIVE_GAP_RETDEC_BATCH80_C)
 native-gap-retdec-batch81: $(NATIVE_GAP_RETDEC_BATCH81_C)
 native-gap-retdec-batch82: $(NATIVE_GAP_RETDEC_BATCH82_C)
 native-gap-retdec-batch83: $(NATIVE_GAP_RETDEC_BATCH83_C)
-native-gap-retdec-batch%: $(PRIMARY_DIR)/vm_native_gap_retdec_batch%.c
+native-gap-retdec-batch%:
+	$(MAKE) $(PRIMARY_DIR)/vm_native_gap_retdec_batch$*.c
 native-gap-retdec-batches: $(NATIVE_GAP_RETDEC_BATCH_CS)
 
 $(NATIVE_RETDEC_GAP_QUEUE_TSV): vm_native_retdec_gap_queue.py $(NATIVE_FUNCTION_INVENTORY_TSV) $(NATIVE_EXECUTABLE_COVERAGE_AUDIT_TSV)
