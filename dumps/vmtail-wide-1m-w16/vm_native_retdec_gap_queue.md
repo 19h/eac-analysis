@@ -27,10 +27,10 @@ Ranks native function skeletons whose byte ranges are not yet covered by semanti
 | 18 | `0x52586-0x525ef` | 105 | 105 | `tier0_small_native_gap` | `targeted_retdec_single_function` | `fcn.00052586` |
 | 19 | `0x4aa5d0-0x4aa639` | 105 | 105 | `tier0_small_native_gap` | `targeted_retdec_single_function` | `fcn.004aa5d0` |
 | 20 | `0x4c3060-0x4c30b5` | 85 | 85 | `tier0_small_native_gap` | `targeted_retdec_single_function` | `fcn.004c3060` |
-| 21 | `0x4a95d0-0x4a9612` | 66 | 66 | `tier0_small_native_gap` | `targeted_retdec_single_function` | `fcn.004a95d0` |
-| 22 | `0x4b03a0-0x4b03de` | 62 | 62 | `tier0_small_native_gap` | `targeted_retdec_single_function` | `fcn.004b03a0` |
-| 23 | `0x4883d8-0x488414` | 60 | 60 | `tier0_small_native_gap` | `targeted_retdec_single_function` | `fcn.004883d8` |
-| 24 | `0x4b4e10-0x4b4e4c` | 60 | 60 | `tier0_small_native_gap` | `targeted_retdec_single_function` | `fcn.004b4e10` |
+| 21 | `0x4b03a0-0x4b03de` | 62 | 30 | `tier0_small_native_gap` | `targeted_retdec_single_function` | `fcn.004b03a0` |
+| 22 | `0x4b4e10-0x4b4e4c` | 60 | 28 | `tier0_small_native_gap` | `targeted_retdec_single_function` | `fcn.004b4e10` |
+| 23 | `0x4883d8-0x488414` | 60 | 20 | `tier0_small_native_gap` | `targeted_retdec_single_function` | `fcn.004883d8` |
+| 24 | `0x4a95d0-0x4a9612` | 66 | 18 | `tier0_small_native_gap` | `targeted_retdec_single_function` | `fcn.004a95d0` |
 | 25 | `0x57cf40-0x57d4d7` | 1431 | 1431 | `tier1_medium_native_gap` | `targeted_retdec_single_function` | `fcn.0057cf40` |
 | 26 | `0x4d1510-0x4d19b5` | 1189 | 1189 | `tier1_medium_native_gap` | `targeted_retdec_single_function` | `fcn.004d1510` |
 | 27 | `0x4b3910-0x4b3cce` | 958 | 958 | `tier1_medium_native_gap` | `targeted_retdec_single_function` | `fcn.004b3910` |

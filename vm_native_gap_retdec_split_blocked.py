@@ -143,6 +143,7 @@ def main():
     parser.add_argument("--start-index", type=int)
     parser.add_argument("--limit-rows", type=int, default=8)
     parser.add_argument("--max-accepted", type=int, default=16)
+    parser.add_argument("--max-per-row", type=int, default=1)
     parser.add_argument("--min-bytes", type=lambda value: int(value, 0), default=0x30)
     parser.add_argument("--max-depth", type=int, default=3)
     parser.add_argument("--timeout", type=int, default=45)
@@ -166,13 +167,17 @@ def main():
             args.max_depth,
             args.keep_failed,
         )
+        accepted_from_row = 0
         for item in ranges:
             if item not in excluded:
                 accepted.append(item)
                 excluded.add(item)
+                accepted_from_row += 1
                 if len(accepted) >= args.max_accepted:
                     write_batch(output, accepted, args.dry_run)
                     return
+                if accepted_from_row >= args.max_per_row:
+                    break
         rejected.extend(failures)
 
     if not accepted:
