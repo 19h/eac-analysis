@@ -672,6 +672,7 @@ def extract_functions(text):
         r"memset2(\1, \2, 0)",
         functions,
     )
+    functions = re.sub(r"(int64_t\s+[A-Za-z_]\w+\s*=\s*)&([A-Za-z_]\w*)", r"\1(int64_t)&\2", functions)
     functions = re.sub(r"(int64_t\s+v\d+\s*=\s*)&([A-Za-z_]\w*)", r"\1(int64_t)&\2", functions)
     functions = re.sub(r"(\bv\d+\s*=\s*)&([A-Za-z_]\w*)", r"\1(int64_t)&\2", functions)
     functions = re.sub(r"((?:u?int(?:8|16|32|64)_t|char)\s*\*\s+v\d+\s*=\s*)g(\d+)", r"\1(void *)(int64_t)g\2", functions)

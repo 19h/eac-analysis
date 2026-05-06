@@ -188,6 +188,7 @@ int64_t blake3_hasher_init_derive_key_raw(int64_t hasher, int64_t context, int64
 int64_t unknown_166c28d(void);
 int128_t __asm_movsd(int64_t value);
 int128_t __asm_movsd_133(int64_t value);
+int128_t __asm_movd(int32_t value);
 int128_t __asm_movss(int32_t value);
 int64_t __asm_movss_133(int128_t value);
 int128_t __asm_movdqa(int128_t value);
@@ -205,6 +206,7 @@ int128_t __asm_pclmulqdq(int128_t left, int128_t right, int imm);
 int128_t __asm_pshufd(int128_t value, int imm);
 int128_t __asm_psrldq(int128_t value, int count);
 int128_t __asm_pslldq(int128_t value, int count);
+int128_t __asm_punpckldq(int128_t left, int128_t right);
 int128_t __asm_psllq(int128_t value, int count);
 int128_t __asm_psrlq(int128_t value, int count);
 int128_t __asm_por(int128_t left, int128_t right);
@@ -212,6 +214,7 @@ int128_t __asm_pxor(int128_t left, int128_t right);
 int128_t __asm_xorps(int128_t left, int128_t right);
 int128_t __asm_cmpnlesd(int128_t left, int128_t right);
 int128_t __asm_cvtsi2sd(int64_t value);
+int128_t __asm_cvtss2sd(int32_t value);
 int128_t __asm_subsd(int128_t left, int128_t right);
 int64_t __asm_cvttsd2si(int128_t value);
 void __asm_ucomisd(int128_t left, int128_t right);
@@ -219,6 +222,7 @@ void __asm_ucomiss(int128_t left, int64_t right);
 void __asm_ucomiss_134(int128_t left, int128_t right);
 int128_t __asm_movups();
 void __asm_movups_133();
+void __asm_movups_134();
 int128_t __asm_movaps(int128_t value);
 float80_t __frontend_reg_load_fpr(int32_t reg);
 void __frontend_reg_store_fpr(int32_t reg, float80_t value);
@@ -272,6 +276,8 @@ int32_t *wmemset(int32_t *wcs, int32_t wc, size_t n);
 int32_t getwc(struct _IO_FILE *stream);
 int32_t putwc(int32_t wc, struct _IO_FILE *stream);
 int32_t ungetwc(int32_t wc, struct _IO_FILE *stream);
+size_t wcsnrtombs(char *dst, int32_t **src, size_t nwc, size_t len, struct _TYPEDEF___mbstate_t *ps);
+size_t wcrtomb(char *s, int32_t wc, struct _TYPEDEF___mbstate_t *ps);
 int64_t memset2(void *s, int c, size_t n);
 int pthread_mutex_lock(void *mutex);
 int pthread_mutex_trylock(void *mutex);
@@ -656,7 +662,7 @@ int64_t function_49e960(int64_t result, int64_t a2, int64_t a3, int64_t a4, int6
     }
     // 0x49e9b0
     int64_t str; // bp-568, 0x49e960
-    int64_t result2 = &str; // 0x49e9c2
+    int64_t result2 = (int64_t)&str; // 0x49e9c2
     snprintf((char *)&str, (int32_t)&g12, "dumping '%s' (%u bytes)\n", (char *)a5, a7);
     int64_t v2 = 0; // bp-600, 0x49ea06
     if (a7 == 0) {
