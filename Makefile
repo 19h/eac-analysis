@@ -32,6 +32,14 @@ PROGRAM_DECOMPILED_FULL_C := $(PRIMARY_DIR)/vm_program_decompiled_full.c
 PROGRAM_DECOMPILED_SPLIT_DIR := $(PRIMARY_DIR)/vm_programs_decompiled
 PROGRAM_DECOMPILED_SPLIT_MANIFEST := $(PRIMARY_DIR)/vm_programs_decompiled_manifest.tsv
 PROGRAM_STRING_REFS_TSV := $(PRIMARY_DIR)/vm_program_string_refs.tsv
+PROGRAM_MBA_010_PREFIX := $(PRIMARY_DIR)/vm_program_atlas_010_mba
+PROGRAM_MBA_010_CASES_TSV := $(PROGRAM_MBA_010_PREFIX)_cases.tsv
+PROGRAM_MBA_010_OBSERVATIONS_TSV := $(PROGRAM_MBA_010_PREFIX)_observations.tsv
+PROGRAM_MBA_010_IR_ROWS_TSV := $(PROGRAM_MBA_010_PREFIX)_ir_rows.tsv
+PROGRAM_MBA_010_REQUIREMENTS_TSV := $(PROGRAM_MBA_010_PREFIX)_requirements.tsv
+PROGRAM_MBA_010_MISSING_TSV := $(PROGRAM_MBA_010_PREFIX)_missing.tsv
+PROGRAM_MBA_010_FRIDA_JS := $(PROGRAM_MBA_010_PREFIX)_frida_trace.js
+PROGRAM_MBA_010_MD := $(PROGRAM_MBA_010_PREFIX).md
 HANDLERS_PSEUDOCODE_C := $(PRIMARY_DIR)/vm_handlers_pseudocode.c
 HANDLERS_HOT_PSEUDOCODE_C := $(PRIMARY_DIR)/vm_handlers_hot_pseudocode.c
 PATH_HANDLERS_PSEUDOCODE_C := $(PRIMARY_DIR)/vm_path_handlers_pseudocode.c
@@ -958,6 +966,17 @@ program-string-refs-audit: $(PROGRAM_STRING_REFS_TSV)
 
 program-decompiled-split-audit: $(PROGRAM_DECOMPILED_SPLIT_MANIFEST) $(PROGRAM_STRING_REFS_TSV)
 	python3 vm_program_decompiled_split_audit.py --compile --jobs 8
+
+$(PROGRAM_MBA_010_CASES_TSV) $(PROGRAM_MBA_010_OBSERVATIONS_TSV) $(PROGRAM_MBA_010_IR_ROWS_TSV) $(PROGRAM_MBA_010_REQUIREMENTS_TSV) $(PROGRAM_MBA_010_MISSING_TSV) $(PROGRAM_MBA_010_FRIDA_JS) $(PROGRAM_MBA_010_MD): vm_program_mba_collection.py $(PROGRAM_DECOMPILED_SPLIT_MANIFEST) $(PRIMARY_DIR)/vm_bytecode_basic_blocks.tsv $(PRIMARY_DIR)/vm_bytecode_basic_block_edges.tsv $(BYTECODE_IR_DECOMPILE_TSV) eac.elf
+	python3 vm_program_mba_collection.py --program 10
+
+.PHONY: program-mba-010 program-mba program-mba-010-audit
+program-mba-010: $(PROGRAM_MBA_010_CASES_TSV) $(PROGRAM_MBA_010_OBSERVATIONS_TSV) $(PROGRAM_MBA_010_IR_ROWS_TSV) $(PROGRAM_MBA_010_REQUIREMENTS_TSV) $(PROGRAM_MBA_010_MISSING_TSV) $(PROGRAM_MBA_010_FRIDA_JS) $(PROGRAM_MBA_010_MD)
+
+program-mba: program-mba-010
+
+program-mba-010-audit: program-mba-010
+	python3 vm_program_mba_audit.py --program 10
 
 $(HANDLERS_PSEUDOCODE_C): vm_handler_pseudocode_dump.py $(PRIMARY_DIR)/vm_handler_semantics.tsv $(PRIMARY_DIR)/vm_handler_table.tsv $(STATIC_ONLY_HANDLER_QUEUE_TSV) $(STATIC_ONLY_TIER0_MODELS_TSV) $(STATIC_ONLY_TIER1_MODELS_TSV) $(STATIC_ONLY_TIER2_SPLIT_TSV) $(STATIC_ONLY_TIER3_SHARED_TSV) $(STATIC_ONLY_TIER4_CALLRET_TSV) $(STATIC_ONLY_TIER5_LARGE_TSV)
 	python3 vm_handler_pseudocode_dump.py --all > $@
