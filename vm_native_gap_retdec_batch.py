@@ -874,6 +874,7 @@ def main():
     print("uint64_t __asm_xgetbv(uint64_t index);")
     print("void __stack_chk_fail(void);")
     print("int __cxa_atexit(void (*func)(int64_t *), void *arg, void *dso);")
+    print("int64_t unknown_166c28d(void);")
     print("int128_t __asm_movsd(int64_t value);")
     print("int128_t __asm_movsd_133(int64_t value);")
     print("int128_t __asm_movss(int32_t value);")
