@@ -1027,6 +1027,7 @@ def main():
     print("int32_t eac_retdec_vsnprintf(char *str, int32_t size, char *format, int64_t ap);")
     print("int64_t __wctype_l(const char *property, struct __locale_struct *locale);")
     print("int __iswctype_l(int32_t wc, int32_t desc, struct __locale_struct *locale);")
+    print("int32_t __wcsftime_l(int32_t *s, int32_t max, int32_t *format, struct tm *tm, struct __locale_struct *locale);")
     print("char *strdup(const char *s);")
     print("int __sprintf_chk(char *str, int flag, size_t slen, const char *format, ...);")
     print("struct tm *gmtime_r(const time_t *timep, struct tm *result);")
