@@ -4,30 +4,23 @@ Compares executable ELF sections against native ranges already represented by re
 
 - executable sections: 5
 - executable bytes: 5651040
-- recovered executable bytes: 2123494
-- uncovered executable bytes: 3527546
-- recovered range rows: 23362
-- uncovered gaps: 2692
+- recovered executable bytes: 2135782
+- uncovered executable bytes: 3515258
+- recovered range rows: 23551
+- uncovered gaps: 2697
 
 | section | range | bytes | covered | uncovered | coverage | ranges |
 | --- | --- | ---: | ---: | ---: | ---: | ---: |
 | `.init` | `0x1fbd0-0x1fbe7` | 23 | 0 | 23 | 0.00% | 0 |
 | `.plt` | `0x1fbf0-0x20bd0` | 4064 | 0 | 4064 | 0.00% | 0 |
 | `.plt.got` | `0x20bd0-0x20be0` | 16 | 0 | 16 | 0.00% | 0 |
-| `.text` | `0x20c00-0x583650` | 5646928 | 2123494 | 3523434 | 37.60% | 23362 |
+| `.text` | `0x20c00-0x583650` | 5646928 | 2135782 | 3511146 | 37.82% | 23551 |
 | `.fini` | `0x583650-0x583659` | 9 | 0 | 9 | 0.00% | 0 |
 
 ## Largest Uncovered Gaps
 
 | section | range | bytes |
 | --- | --- | ---: |
-| `.text` | `0x2fea1e-0x307093` | 34421 |
-| `.text` | `0x1ed6e8-0x1f5d10` | 34344 |
-| `.text` | `0x127adc-0x1300d5` | 34297 |
-| `.text` | `0x42ce93-0x4353f8` | 34149 |
-| `.text` | `0x229066-0x231586` | 34080 |
-| `.text` | `0x11e346-0x126851` | 34059 |
-| `.text` | `0x410342-0x41883d` | 34043 |
 | `.text` | `0x42081f-0x428ce3` | 33988 |
 | `.text` | `0x3aa015-0x3b24aa` | 33941 |
 | `.text` | `0x173aaa-0x17bf1f` | 33909 |
@@ -50,11 +43,18 @@ Compares executable ELF sections against native ranges already represented by re
 | `.text` | `0x37e330-0x386394` | 32868 |
 | `.text` | `0x2cad07-0x2d2cf4` | 32749 |
 | `.text` | `0x3f479e-0x3fc6bc` | 32542 |
+| `.text` | `0x410942-0x41883d` | 32507 |
+| `.text` | `0x1282dc-0x1300d5` | 32249 |
 | `.text` | `0x1b8dce-0x1c0b59` | 32139 |
 | `.text` | `0x274e41-0x27cb8e` | 32077 |
 | `.text` | `0x240a18-0x248752` | 32058 |
 | `.text` | `0x31f8bb-0x3275b6` | 31995 |
+| `.text` | `0x2ff41e-0x307093` | 31861 |
+| `.text` | `0x1ee0e8-0x1f5d10` | 31784 |
 | `.text` | `0x464834-0x46c45b` | 31783 |
+| `.text` | `0x42d893-0x4353f8` | 31589 |
+| `.text` | `0x229a66-0x231586` | 31520 |
+| `.text` | `0x11ed46-0x126851` | 31499 |
 | `.text` | `0x3431d8-0x34abc6` | 31214 |
 | `.text` | `0x47c230-0x483a1a` | 30698 |
 | `.text` | `0x447925-0x44f040` | 30491 |
