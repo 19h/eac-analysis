@@ -43,6 +43,8 @@ SEMANTIC_OPCODE_CATALOG_TSV := $(PRIMARY_DIR)/vm_semantic_opcode_catalog.tsv
 PROGRAM_OPCODE_PSEUDOCODE_TSV := $(PRIMARY_DIR)/vm_program_opcode_pseudocode.tsv
 PROGRAM_OPCODE_PSEUDOCODE_MANIFEST := $(PRIMARY_DIR)/vm_program_opcode_pseudocode_manifest.tsv
 SEMANTIC_OPCODE_CATALOG_MD := $(PRIMARY_DIR)/vm_semantic_opcode_catalog.md
+STRING_REFERENCE_CONTEXT_TSV := $(PRIMARY_DIR)/vm_string_reference_context.tsv
+STRING_REFERENCE_CONTEXT_MD := $(PRIMARY_DIR)/vm_string_reference_context.md
 PROGRAM_MBA_010_PREFIX := $(PRIMARY_DIR)/vm_program_atlas_010_mba
 PROGRAM_MBA_010_CASES_TSV := $(PROGRAM_MBA_010_PREFIX)_cases.tsv
 PROGRAM_MBA_010_OBSERVATIONS_TSV := $(PROGRAM_MBA_010_PREFIX)_observations.tsv
@@ -1028,6 +1030,13 @@ semantic-opcode-catalog: vm_semantic_opcode_catalog.py $(PRIMARY_DIR)/vm_microco
 
 semantic-opcode-catalog-audit: semantic-opcode-catalog
 	python3 vm_semantic_opcode_catalog_audit.py --root $(PRIMARY_DIR)
+
+.PHONY: string-reference-context string-reference-context-audit
+string-reference-context: vm_string_reference_context.py semantic-opcode-catalog $(PROGRAM_FOLDED_STRING_REFS_TSV)
+	python3 vm_string_reference_context.py --root $(PRIMARY_DIR)
+
+string-reference-context-audit: string-reference-context
+	python3 vm_string_reference_context_audit.py --root $(PRIMARY_DIR)
 
 $(HANDLERS_PSEUDOCODE_C): vm_handler_pseudocode_dump.py $(PRIMARY_DIR)/vm_handler_semantics.tsv $(PRIMARY_DIR)/vm_handler_table.tsv $(STATIC_ONLY_HANDLER_QUEUE_TSV) $(STATIC_ONLY_TIER0_MODELS_TSV) $(STATIC_ONLY_TIER1_MODELS_TSV) $(STATIC_ONLY_TIER2_SPLIT_TSV) $(STATIC_ONLY_TIER3_SHARED_TSV) $(STATIC_ONLY_TIER4_CALLRET_TSV) $(STATIC_ONLY_TIER5_LARGE_TSV)
 	python3 vm_handler_pseudocode_dump.py --all > $@
