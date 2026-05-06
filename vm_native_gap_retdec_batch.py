@@ -892,6 +892,7 @@ def main():
     print("int32_t btowc(int c);")
     print("int32_t towlower(int32_t wc);")
     print("int vswprintf(int32_t *wcs, size_t maxlen, const int32_t *format, int64_t ap);")
+    print("int32_t *wmemchr(const int32_t *s, int32_t c, size_t n);")
     print("int32_t *wmemcpy(int32_t *dest, const int32_t *src, size_t n);")
     print("int32_t *wmemmove(int32_t *dest, const int32_t *src, size_t n);")
     print("int32_t *wmemset(int32_t *wcs, int32_t wc, size_t n);")
