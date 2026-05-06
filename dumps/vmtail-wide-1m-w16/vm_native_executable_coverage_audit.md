@@ -4,17 +4,17 @@ Compares executable ELF sections against native ranges already represented by re
 
 - executable sections: 5
 - executable bytes: 5651040
-- recovered executable bytes: 4866234
-- uncovered executable bytes: 784806
-- recovered range rows: 62481
-- uncovered gaps: 3190
+- recovered executable bytes: 4878583
+- uncovered executable bytes: 772457
+- recovered range rows: 62685
+- uncovered gaps: 3180
 
 | section | range | bytes | covered | uncovered | coverage | ranges |
 | --- | --- | ---: | ---: | ---: | ---: | ---: |
 | `.init` | `0x1fbd0-0x1fbe7` | 23 | 23 | 0 | 100.00% | 1 |
 | `.plt` | `0x1fbf0-0x20bd0` | 4064 | 4064 | 0 | 100.00% | 254 |
 | `.plt.got` | `0x20bd0-0x20be0` | 16 | 16 | 0 | 100.00% | 2 |
-| `.text` | `0x20c00-0x583650` | 5646928 | 4862122 | 784806 | 86.10% | 62221 |
+| `.text` | `0x20c00-0x583650` | 5646928 | 4874471 | 772457 | 86.32% | 62425 |
 | `.fini` | `0x583650-0x583659` | 9 | 9 | 0 | 100.00% | 3 |
 
 ## Largest Uncovered Gaps
@@ -25,22 +25,10 @@ Compares executable ELF sections against native ranges already represented by re
 | `.text` | `0x4e07f9-0x4e0e79` | 1664 |
 | `.text` | `0x4e59f9-0x4e6079` | 1664 |
 | `.text` | `0x4dc3f9-0x4dc8f9` | 1280 |
-| `.text` | `0x4060d1-0x4065ad` | 1244 |
-| `.text` | `0x1ae71e-0x1aebf9` | 1243 |
-| `.text` | `0x37459-0x37930` | 1239 |
-| `.text` | `0x4c2b91-0x4c3060` | 1231 |
-| `.text` | `0x3cc479-0x3cc938` | 1215 |
-| `.text` | `0x77502-0x779bd` | 1211 |
-| `.text` | `0x29104c-0x2914ea` | 1182 |
-| `.text` | `0x4d1ed-0x4d688` | 1179 |
-| `.text` | `0x2d4e6-0x2d980` | 1178 |
-| `.text` | `0x213547-0x2139db` | 1172 |
 | `.text` | `0x491976-0x491e06` | 1168 |
 | `.text` | `0x4dd3f9-0x4dd879` | 1152 |
-| `.text` | `0x4df079-0x4df4f9` | 1152 |
 | `.text` | `0x4e71f9-0x4e7679` | 1152 |
 | `.text` | `0x4e76f9-0x4e7b79` | 1152 |
-| `.text` | `0x13110e-0x13158d` | 1151 |
 | `.text` | `0x1047ee-0x104c68` | 1146 |
 | `.text` | `0x217b33-0x217fac` | 1145 |
 | `.text` | `0x2e0d0e-0x2e117a` | 1132 |
@@ -61,3 +49,15 @@ Compares executable ELF sections against native ranges already represented by re
 | `.text` | `0x107fbf-0x1083bf` | 1024 |
 | `.text` | `0x1089bf-0x108dbf` | 1024 |
 | `.text` | `0x1093bf-0x1097bf` | 1024 |
+| `.text` | `0x1099bf-0x109dbf` | 1024 |
+| `.text` | `0x10bbbf-0x10bfbf` | 1024 |
+| `.text` | `0x11c746-0x11cb46` | 1024 |
+| `.text` | `0x120746-0x120b46` | 1024 |
+| `.text` | `0x1272dc-0x1276dc` | 1024 |
+| `.text` | `0x130b0e-0x130f0e` | 1024 |
+| `.text` | `0x13110e-0x13150e` | 1024 |
+| `.text` | `0x137da4-0x1381a4` | 1024 |
+| `.text` | `0x138da4-0x1391a4` | 1024 |
+| `.text` | `0x13ae09-0x13b209` | 1024 |
+| `.text` | `0x13d068-0x13d468` | 1024 |
+| `.text` | `0x13f668-0x13fa68` | 1024 |
