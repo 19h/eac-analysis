@@ -146,8 +146,9 @@ def main() -> int:
         )
         ok &= check(
             "bundle_includes_vm_program_pseudocode",
-            has_text(bundle, "VM bytecode program pseudocode") and has_text(bundle, "void vm_program_sketch"),
-            "readable inline VM program pseudocode from vm_program_pseudocode_full.c",
+            has_text(bundle, "void vm_program_sketch(VMState *vm, uint64_t vm_ip)")
+            and has_text(bundle, "static void prog_bb_0000(VMState *vm, uint64_t vm_ip)"),
+            "readable inline VM program pseudocode entrypoint and block functions",
         )
 
     if program_pseudocode.exists() and bytecode_blocks.exists():
