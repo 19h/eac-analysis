@@ -174,6 +174,7 @@ FIXED_TYPE_NAMES = {
     "VMHandlerEnvironmentCoverage",
     "VMUnresolvedFamilyEvent",
     "int128_t",
+    "int864_t",
 }
 
 NO_REWRITE_SIDECARS = {
@@ -195,6 +196,8 @@ def tag_for(path):
 def collect_typedefs(text):
     names = set(FIXED_TYPE_NAMES)
     for match in re.finditer(r"^typedef\s+struct\s+([A-Za-z_]\w*)\s*\{", text, re.M):
+        names.add(match.group(1))
+    for match in re.finditer(r"^typedef\s+struct\s*\{[^;\n]*\}\s*([A-Za-z_]\w*)\s*;", text, re.M):
         names.add(match.group(1))
     for match in re.finditer(r"^\}\s*([A-Za-z_]\w*)\s*;", text, re.M):
         names.add(match.group(1))
