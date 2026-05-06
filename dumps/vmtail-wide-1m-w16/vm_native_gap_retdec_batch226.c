@@ -192,6 +192,7 @@ int128_t __asm_punpcklqdq(int128_t left, int128_t right);
 int128_t __asm_psllq(int128_t value, int count);
 int128_t __asm_psrlq(int128_t value, int count);
 int128_t __asm_paddq(int128_t left, int128_t right);
+int128_t __asm_pmaxsw(int128_t left, int128_t right);
 int128_t __asm_por(int128_t left, int128_t right);
 int128_t __asm_pxor(int128_t left, int128_t right);
 int128_t __asm_xorps(int128_t left, int128_t right);
