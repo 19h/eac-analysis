@@ -1,12 +1,12 @@
 /*
- * Targeted RetDec C for native executable gap queue batch 3769.
+ * Targeted RetDec C for native executable gap queue batch 3829.
  *
  * This batch is fixed from the ranked native gap queue so it can feed the
  * executable coverage audit without creating a Make dependency cycle:
  * coverage -> queue -> RetDec batch -> coverage.
  *
  * Ranges:
- *   0x342e4-0x34364 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x560104-0x5601c0 rank=- name=- kind=- bytes=- uncovered=-
  */
 #include <stdbool.h>
 #include <stdio.h>
@@ -53,8 +53,6 @@ struct eac_retdec_cpuid_regs { uint32_t e0; uint32_t e1; uint32_t e2; uint32_t e
 #define SYS_getegid32 50
 #define PTHREAD_MUTEX_RECURSIVE 1
 extern int g1;
-extern int g2;
-extern int g3;
 int64_t entry_point();
 unsigned char llvm_ctpop_i8(unsigned char value);
 uint16_t llvm_bswap_i16(uint16_t value);
@@ -367,54 +365,82 @@ void _Unwind_SetIP(int64_t context, int64_t value);
 void _Unwind_Resume(struct _Unwind_Exception *exception);
 void _Unwind_Resume_or_Rethrow(int64_t exception);
 
-int64_t function_342e4(void);
-int64_t function_342ea(int64_t a1, int64_t a2, int64_t a3, int64_t a4, int64_t a5);
-int64_t function_34330(int64_t a1);
-int64_t function_34340(int64_t a1);
+int64_t function_552550();
+int64_t function_55f940();
+int64_t function_55f94f();
+int64_t function_55fa64();
+int64_t function_55fa71();
+int64_t function_55fad8();
+int64_t function_55ff12();
+int64_t function_560104(void);
+int64_t function_560109(void);
+int64_t function_560118(void);
+int64_t function_560126(char a1);
+int64_t function_560130(void);
+int64_t function_56013a(void);
+int64_t function_560148(char a1);
+int64_t function_56015e(char a1);
+int64_t function_560177(int64_t a1);
 
-// Address range: 0x342e4 - 0x342e9
-int64_t function_342e4(void) {
-    // 0x342e4
-    int64_t v1; // 0x342e4
-    return v1 & 0xeeab3c9c;
+// Address range: 0x560104 - 0x560109
+int64_t function_560104(void) {
+    // 0x560104
+    return function_55fad8();
 }
 
-// Address range: 0x342ea - 0x3432e
-int64_t function_342ea(int64_t a1, int64_t a2, int64_t a3, int64_t a4, int64_t a5) {
-    // 0x342ea
-    int64_t v1; // 0x342ea
-    int64_t v2 = v1;
-    *(char *)v2 = (char)v2 + (char)v1;
-    unsigned char v3 = (char)a4 % 32; // 0x342f7
-    if (v3 != 0) {
-        char * v4 = (char *)(v1 - 0x772d772e); // 0x342f7
-        unsigned char v5 = *v4; // 0x342f7
-        *v4 = v5 >> v3 | v5 << 8 - v3;
+// Address range: 0x560109 - 0x560118
+int64_t function_560109(void) {
+    // 0x560109
+    return function_55f94f();
+}
+
+// Address range: 0x560118 - 0x560126
+int64_t function_560118(void) {
+    // 0x560118
+    return function_55f940();
+}
+
+// Address range: 0x560126 - 0x560130
+int64_t function_560126(char a1) {
+    // 0x560126
+    return function_55ff12();
+}
+
+// Address range: 0x560130 - 0x56013a
+int64_t function_560130(void) {
+    // 0x560130
+    return function_55fa64();
+}
+
+// Address range: 0x56013a - 0x560148
+int64_t function_56013a(void) {
+    // 0x56013a
+    return function_55fa71();
+}
+
+// Address range: 0x560148 - 0x56015e
+int64_t function_560148(char a1) {
+    // 0x560148
+    return function_55fa71();
+}
+
+// Address range: 0x56015e - 0x560177
+int64_t function_56015e(char a1) {
+    // 0x56015e
+    return function_55fa71();
+}
+
+// Address range: 0x560177 - 0x5601bc
+int64_t function_560177(int64_t a1) {
+    int64_t v1 = a1 - 24; // 0x560182
+    if (v1 != (int64_t)g1) {
+        // 0x56018f
+        int64_t v2; // bp+127, 0x560177
+        function_552550(v1, &v2);
     }
-    float80_t v6; // 0x342ea
-    *(int32_t *)(v1 - 0x7736772e) = (int32_t)v6;
-    *(int32_t *)((v1 & -0xff01) - 0x38ebdbac) = (int32_t)v6;
-    int64_t v7 = v1 & -236; // 0x34309
-    char * v8 = (char *)v7; // 0x3430c
-    *v8 = *v8 + 2 * (char)v7;
-    int64_t result = 0; // 0x34322
-    if (__readfsqword(40) != a5) {
-        // 0x34324
-        __stack_chk_fail();
-        result = (int64_t)&g3;
-    }
-    // 0x34329
-    return result;
-}
-
-// Address range: 0x34330 - 0x3433d
-int64_t function_34330(int64_t a1) {
-    // 0x34330
-    return (int64_t)&g1;
-}
-
-// Address range: 0x34340 - 0x3434d
-int64_t function_34340(int64_t a1) {
-    // 0x34340
-    return (int64_t)&g2;
+    // 0x560199
+    int64_t v3; // 0x560177
+    _Unwind_Resume((struct _Unwind_Exception *)v3);
+    __stack_chk_fail();
+    return function_55f94f();
 }
