@@ -922,6 +922,7 @@ def main():
     print("int32_t *wmemcpy(int32_t *dest, const int32_t *src, size_t n);")
     print("int32_t *wmemmove(int32_t *dest, const int32_t *src, size_t n);")
     print("int32_t *wmemset(int32_t *wcs, int32_t wc, size_t n);")
+    print("int32_t getwc(struct _IO_FILE *stream);")
     print("int64_t memset2(void *s, int c, size_t n);")
     print("int pthread_mutex_lock(void *mutex);")
     print("int pthread_mutex_unlock(void *mutex);")
@@ -942,6 +943,7 @@ def main():
     print("int64_t sysconf(int name);")
     print("int64_t syscall(int64_t number, ...);")
     print("int mprotect(void *addr, size_t len, int prot);")
+    print("int munmap(void *addr, size_t len);")
     print("int __fxstat64(int ver, int fd, struct stat64 *buf);")
     print("int fseeko64(struct _IO_FILE *stream, int64_t offset, int whence);")
     print("int64_t ftello64(struct _IO_FILE *stream);")
@@ -967,6 +969,7 @@ def main():
     print("int64_t _Unwind_DeleteException(int64_t exception);")
     print("int64_t _Unwind_GetRegionStart();")
     print("void _Unwind_Resume(struct _Unwind_Exception *exception);")
+    print("void _Unwind_Resume_or_Rethrow(int64_t exception);")
     print("")
     for proto in function_prototypes(functions):
         print(proto)
