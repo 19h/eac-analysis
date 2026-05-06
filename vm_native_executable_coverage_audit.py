@@ -99,7 +99,9 @@ def recovered_ranges():
                     f"entry={entry};class={klass};sidecar={row.get('sidecar', '')}",
                 )
 
-    for c_path in sorted(TRACE_DIR.glob("vm_*retdec*.c")):
+    retdec_sidecars = sorted(TRACE_DIR.glob("vm_*retdec*.c"))
+    manual_sidecars = [TRACE_DIR / "vm_native_linkage_stubs.c"]
+    for c_path in retdec_sidecars + [path for path in manual_sidecars if path.exists()]:
         text = c_path.read_text(errors="replace")
         for start, stop in re.findall(r"// Address range: 0x([0-9a-fA-F]+) - 0x([0-9a-fA-F]+)", text):
             add_range(

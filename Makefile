@@ -212,6 +212,9 @@ NATIVE_HANDLER_ENVIRONMENT_COVERAGE_MD := $(PRIMARY_DIR)/vm_native_handler_envir
 CONFIG_COVERAGE_FRONTIER_C := $(PRIMARY_DIR)/vm_config_coverage_frontier.c
 CONFIG_COVERAGE_FRONTIER_TSV := $(PRIMARY_DIR)/vm_config_coverage_frontier.tsv
 CONFIG_COVERAGE_FRONTIER_MD := $(PRIMARY_DIR)/vm_config_coverage_frontier.md
+NATIVE_LINKAGE_STUBS_C := $(PRIMARY_DIR)/vm_native_linkage_stubs.c
+NATIVE_LINKAGE_STUBS_TSV := $(PRIMARY_DIR)/vm_native_linkage_stubs.tsv
+NATIVE_LINKAGE_STUBS_MD := $(PRIMARY_DIR)/vm_native_linkage_stubs.md
 BINARY_DATA_SECTIONS_C := $(PRIMARY_DIR)/vm_binary_data_sections.c
 BINARY_DATA_SECTIONS_TSV := $(PRIMARY_DIR)/vm_binary_data_sections.tsv
 BINARY_DATA_SECTIONS_MD := $(PRIMARY_DIR)/vm_binary_data_sections.md
@@ -737,6 +740,17 @@ $(CONFIG_COVERAGE_FRONTIER_MD): vm_config_coverage_frontier_dump $(PRIMARY_DIR)/
 	./vm_config_coverage_frontier_dump --markdown > $@
 
 config-coverage-frontier: $(CONFIG_COVERAGE_FRONTIER_C) $(CONFIG_COVERAGE_FRONTIER_TSV) $(CONFIG_COVERAGE_FRONTIER_MD)
+
+$(NATIVE_LINKAGE_STUBS_C): vm_native_linkage_stubs.py eac.elf
+	python3 vm_native_linkage_stubs.py --elf eac.elf --format c > $@
+
+$(NATIVE_LINKAGE_STUBS_TSV): vm_native_linkage_stubs.py eac.elf
+	python3 vm_native_linkage_stubs.py --elf eac.elf --format tsv > $@
+
+$(NATIVE_LINKAGE_STUBS_MD): vm_native_linkage_stubs.py eac.elf
+	python3 vm_native_linkage_stubs.py --elf eac.elf --format markdown > $@
+
+native-linkage-stubs: $(NATIVE_LINKAGE_STUBS_C) $(NATIVE_LINKAGE_STUBS_TSV) $(NATIVE_LINKAGE_STUBS_MD)
 
 $(BINARY_DATA_SECTIONS_C): vm_binary_data_sections_dump eac.elf
 	./vm_binary_data_sections_dump --c > $@

@@ -49,6 +49,7 @@ DEFAULT_SIDECARS = [
     TRACE_DIR / "vm_native_ret_patch_hidden_bridge.c",
     TRACE_DIR / "vm_native_handler_environment_coverage.c",
     TRACE_DIR / "vm_config_coverage_frontier.c",
+    TRACE_DIR / "vm_native_linkage_stubs.c",
     TRACE_DIR / "vm_binary_data_sections.c",
     TRACE_DIR / "vm_uncovered_executable_gaps.c",
     TRACE_DIR / "vm_path_handlers_pseudocode.c",
