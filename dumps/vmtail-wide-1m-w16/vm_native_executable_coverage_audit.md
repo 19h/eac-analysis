@@ -4,27 +4,23 @@ Compares executable ELF sections against native ranges already represented by re
 
 - executable sections: 5
 - executable bytes: 5651040
-- recovered executable bytes: 2289398
-- uncovered executable bytes: 3361642
-- recovered range rows: 26150
-- uncovered gaps: 2734
+- recovered executable bytes: 2297590
+- uncovered executable bytes: 3353450
+- recovered range rows: 26275
+- uncovered gaps: 2735
 
 | section | range | bytes | covered | uncovered | coverage | ranges |
 | --- | --- | ---: | ---: | ---: | ---: | ---: |
 | `.init` | `0x1fbd0-0x1fbe7` | 23 | 23 | 0 | 100.00% | 1 |
 | `.plt` | `0x1fbf0-0x20bd0` | 4064 | 4064 | 0 | 100.00% | 254 |
 | `.plt.got` | `0x20bd0-0x20be0` | 16 | 16 | 0 | 100.00% | 2 |
-| `.text` | `0x20c00-0x583650` | 5646928 | 2285286 | 3361642 | 40.46% | 25890 |
+| `.text` | `0x20c00-0x583650` | 5646928 | 2293478 | 3353450 | 40.61% | 26015 |
 | `.fini` | `0x583650-0x583659` | 9 | 9 | 0 | 100.00% | 3 |
 
 ## Largest Uncovered Gaps
 
 | section | range | bytes |
 | --- | --- | ---: |
-| `.text` | `0xf7d9c-0xfeebc` | 28960 |
-| `.text` | `0x447f25-0x44f040` | 28955 |
-| `.text` | `0x11f746-0x126851` | 28939 |
-| `.text` | `0x3ff4d1-0x4065ad` | 28892 |
 | `.text` | `0x421c1f-0x428ce3` | 28868 |
 | `.text` | `0x3cd9ff-0x3d4a95` | 28822 |
 | `.text` | `0x174eaa-0x17bf1f` | 28789 |
@@ -54,6 +50,7 @@ Compares executable ELF sections against native ranges already represented by re
 | `.text` | `0x2b3375-0x2b9f30` | 27579 |
 | `.text` | `0x4756ee-0x47c22d` | 27455 |
 | `.text` | `0x22aa66-0x231586` | 27424 |
+| `.text` | `0x3ffad1-0x4065ad` | 27356 |
 | `.text` | `0x3aba15-0x3b24aa` | 27285 |
 | `.text` | `0x1ef2e8-0x1f5d10` | 27176 |
 | `.text` | `0x236eb6-0x23d8b8` | 27138 |
@@ -61,3 +58,6 @@ Compares executable ELF sections against native ranges already represented by re
 | `.text` | `0x19b685-0x1a1fa3` | 26910 |
 | `.text` | `0x3e8096-0x3ee99a` | 26884 |
 | `.text` | `0x201034-0x20792d` | 26873 |
+| `.text` | `0x2862cb-0x28cb6f` | 26788 |
+| `.text` | `0x1c5755-0x1cbf51` | 26620 |
+| `.text` | `0x51b9c0-0x522120` | 26464 |
