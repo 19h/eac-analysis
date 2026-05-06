@@ -23,7 +23,7 @@ This artifact reduces each collected dispatcher/MBA case to the concrete success
 | `0x370508` | `ready_for_mba_reduction` | `0x370624` | 95 | `covered_synthetic_fallthrough` | `` |
 | `0x370632` | `ready_for_mba_reduction` | `0x370743` | 145 | `covered_synthetic_fallthrough` | `` |
 | `0x370756` | `ready_for_mba_reduction` | `0x37078a` | 171 | `decoded_control` | `` |
-| `0x370770` | `needs_more_evidence` | `0x37078a` | 171 | `fallthrough` | `state_trace_pre_state,state_trace_pre_flags,state_trace_pre_byte` |
+| `0x370770` | `ready_for_mba_reduction` | `0x37078a` | 171 | `fallthrough` | `` |
 | `0x37078a` | `ready_for_mba_reduction` | `0x371a63` | 165 | `decoded_control` | `` |
 | `0x3707b1` | `ready_for_mba_reduction` | `0x3708e4` | 264 | `covered_synthetic_fallthrough` | `` |
 | `0x3708f2` | `ready_for_mba_reduction` | `0x370a81` | 246 | `covered_synthetic_fallthrough` | `` |
@@ -34,5 +34,5 @@ This artifact reduces each collected dispatcher/MBA case to the concrete success
 | `0x371488` | `ready_for_mba_reduction` | `0x3716c7` | 354 | `decoded_control` | `` |
 
 - Concrete successor reductions emitted: `28` / `28` cases
-- Cases with complete stateful formula inputs: `27` / `28` cases
+- Cases with complete stateful formula inputs: `28` / `28` cases
 - Remaining work is expression-level simplification of the native MBA formulas for cases whose input state is absent, not successor discovery.

@@ -41,7 +41,7 @@ static const VMProgramAtlasMBAReducedCase vm_program_atlas_063_mba_reduced_cases
     {0x370508u, 0x370624u, 95, "ready_for_mba_reduction", "covered_synthetic_fallthrough", "next = 95@0x8c41c:25, ip += +0x4; dispatch_model=static_100", 0xac55u, 0xaaacu, 0xb8aau, 0x3880u, 0x17d0d191u, 0x40320854u, ""},
     {0x370632u, 0x370743u, 145, "ready_for_mba_reduction", "covered_synthetic_fallthrough", "next = 145@0x95b5c:25, ip += +0x5; dispatch_model=static_100", 0x9du, 0x8f00u, 0xd78fu, 0x99u, 0x10547508u, 0x7f504ca8u, ""},
     {0x370756u, 0x37078au, 171, "ready_for_mba_reduction", "decoded_control", "next = table[171], ip += 0x22", 0x875u, 0x2508u, 0x8f25u, 0x200u, 0xf4efa1e7u, 0xcefebcd7u, ""},
-    {0x370770u, 0x37078au, 171, "needs_more_evidence", "fallthrough", "next = 171@0x9b4b3:1, ip += +0x2; dispatch_model=static_100", 0xc7u, 0xd700u, 0x48d7u, 0x6a50u, 0x0u, 0x0u, "state_trace_pre_state,state_trace_pre_flags,state_trace_pre_byte"},
+    {0x370770u, 0x37078au, 171, "ready_for_mba_reduction", "fallthrough", "next = 171@0x9b4b3:1, ip += +0x2; dispatch_model=static_100", 0xc7u, 0xd700u, 0x48d7u, 0x6a50u, 0xebfa37e9u, 0x651434f9u, ""},
     {0x37078au, 0x371a63u, 165, "ready_for_mba_reduction", "decoded_control", "next = table[165], ip += 0x12c3", 0xa8u, 0xb300u, 0xb3u, 0xd586u, 0xc0174e93u, 0x4736efdau, ""},
     {0x3707b1u, 0x3708e4u, 264, "ready_for_mba_reduction", "covered_synthetic_fallthrough", "next = 264@0xaf4cf:25, ip += +0x4; dispatch_model=static_100", 0x9267u, 0x492u, 0xda04u, 0xc6dcu, 0x206f075eu, 0x73b864ecu, ""},
     {0x3708f2u, 0x370a81u, 246, "ready_for_mba_reduction", "covered_synthetic_fallthrough", "next = 246@0xab427:25, ip += +0x5; dispatch_model=static_100", 0x151u, 0xf001u, 0x94f0u, 0x99u, 0xf995dffeu, 0x123dbe45u, ""},

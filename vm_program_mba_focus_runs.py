@@ -108,7 +108,7 @@ def main() -> int:
     parser.add_argument("--window", type=lambda value: int(value, 0), default=0x1200)
     parser.add_argument("--tag", default="all")
     parser.add_argument("--sleep-seconds", default="3")
-    parser.add_argument("--tail-limit-multiplier", type=int, default=4)
+    parser.add_argument("--tail-limit-multiplier", type=int, default=128)
     parser.add_argument("--stop-after-matches", type=int, default=0)
     parser.add_argument("--plan-only", action="store_true")
     parser.add_argument("--rereduce", action="store_true")
