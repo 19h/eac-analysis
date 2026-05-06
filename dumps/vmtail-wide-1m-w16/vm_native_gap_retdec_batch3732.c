@@ -1,12 +1,12 @@
 /*
- * Targeted RetDec C for native executable gap queue batch 3673.
+ * Targeted RetDec C for native executable gap queue batch 3732.
  *
  * This batch is fixed from the ranked native gap queue so it can feed the
  * executable coverage audit without creating a Make dependency cycle:
  * coverage -> queue -> RetDec batch -> coverage.
  *
  * Ranges:
- *   0x14d293-0x14d313 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x13f168-0x13f268 rank=- name=- kind=- bytes=- uncovered=-
  */
 #include <stdbool.h>
 #include <stdio.h>
@@ -52,6 +52,7 @@ struct eac_retdec_cpuid_regs { uint32_t e0; uint32_t e1; uint32_t e2; uint32_t e
 #define SIGALARM 14
 #define SYS_getegid32 50
 #define PTHREAD_MUTEX_RECURSIVE 1
+extern int g1;
 int64_t entry_point();
 unsigned char llvm_ctpop_i8(unsigned char value);
 uint16_t llvm_bswap_i16(uint16_t value);
@@ -364,39 +365,36 @@ void _Unwind_SetIP(int64_t context, int64_t value);
 void _Unwind_Resume(struct _Unwind_Exception *exception);
 void _Unwind_Resume_or_Rethrow(int64_t exception);
 
-int64_t function_14d272();
-int64_t function_14d293(int64_t a1, int64_t a2, int64_t a3, int64_t a4, int64_t a5);
+int64_t function_13f168(int64_t a1, int64_t a2, int64_t a3, int64_t a4, int64_t a5);
 
-// Address range: 0x14d293 - 0x14d311
-int64_t function_14d293(int64_t a1, int64_t a2, int64_t a3, int64_t a4, int64_t a5) {
-    int64_t v1 = a2;
-    int64_t v2 = a1;
-    int32_t * v3 = (int32_t *)(a4 - 0x23d30fe2); // 0x14d293
-    uint32_t v4 = *v3; // 0x14d293
-    int64_t v5; // 0x14d293
-    uint32_t v6 = v4 + (int32_t)v5; // 0x14d293
-    *v3 = v6;
-    if (v6 < v4) {
-        // 0x14d2ec
-        *(int32_t *)-0x6915fb5c = -1 - *(int32_t *)-0x6915fb5c;
-        *(int32_t *)0x6705e82537013d00 = (int32_t)v5 & -77;
-        uint32_t result = *(int32_t *)&v1 - 0x7b672ca2; // 0x14d302
-        __asm_out(73, (char)result);
-        *(char *)-0x3002d4ee = *(char *)-0x3002d4ee + (char)(v5 / 256);
+// Address range: 0x13f168 - 0x13f268
+int64_t function_13f168(int64_t a1, int64_t a2, int64_t a3, int64_t a4, int64_t a5) {
+    int64_t v1 = a3;
+    int64_t result; // 0x13f168
+    uint32_t v2 = (int32_t)result; // 0x13f16b
+    int64_t v3 = a4 - 1; // 0x13f170
+    if (v3 == 0 || v2 == 0x484ac901 || llvm_ctpop_i8((char)result + (char)v3 + (char)(v2 < 0x484ac901)) % 2 != 0) {
+        // 0x13f172
         return result;
     }
-    char * v7 = (char *)(v5 - 0x405b43fd); // 0x14d29b
-    *v7 = *v7 - (char)v5;
-    char v8 = __asm_in(0x2318); // 0x14d2b7
-    float80_t v9 = *(float80_t *)&v2; // 0x14d2b8
-    int64_t v10 = ((a4 & 0xffffff00 | 173) + 0x4de241a4 & 0xffffff00 | (int64_t)v8) + 0xce6700b3; // 0x14d2ba
-    char v11 = *(char *)(v10 & 0xffffffff); // 0x14d2bf
-    int64_t v12 = v9;
-    int64_t result2 = v10 & 0xffffff00 | (int64_t)(v11 & (char)v10); // 0x14d2c9
-    if ((*(char *)(v12 - 15) || (char)(v5 / 256)) != 0) {
-        result2 = function_14d272();
-    }
-    // 0x14d2cb
-    *(float80_t *)(v12 + 0x90b127) = v9;
-    return result2;
+    char * v4 = (char *)(8 * result + v3); // 0x13f1e4
+    char v5 = result / 256; // 0x13f1e4
+    *v4 = *v4 + v5;
+    char * v6 = (char *)(result + 10); // 0x13f1ec
+    *v6 = *v6 & (char)v1;
+    unsigned char v7 = *(char *)&v1; // 0x13f1f0
+    unsigned char v8 = v7 + v5; // 0x13f1f0
+    *(char *)v1 = v8;
+    uint32_t v9 = (int32_t)a2; // 0x13f1f2
+    uint32_t v10 = v8 < v7 ? 0x2c2a6b59 : 0x2c2a6b58; // 0x13f1f3
+    int32_t v11 = v9 - v10; // 0x13f1f3
+    int64_t v12 = 256 * (64 * (int64_t)(v11 == 0) | (int64_t)(v8 < v7 | v10 > v9) | 128 * (int64_t)(v11 < 0) | 16 * (int64_t)(v9 % 16 + (int32_t)(v8 < v7) - (v10 & 9) > 15) | 4 * (int64_t)(llvm_ctpop_i8((char)v11) % 2 == 0)) | (int64_t)(v11 & -0xff01); // 0x13f1f8
+    char v13 = *(char *)0x792bf202; // 0x13f1fb
+    *(char *)0x792bf202 = v13 + (char)((int64_t)&g1 >> 8);
+    uint32_t v14 = *(int32_t *)(result - 0x23ff9800); // 0x13f201
+    int32_t v15 = v14 - 0x449267ef; // 0x13f201
+    unsigned char v16 = llvm_ctpop_i8((char)v15); // 0x13f201
+    *(int32_t *)-0x395dfe173b603924 = (int32_t)v12 | 512;
+    int64_t v17 = v14 < 0x449267ef ? 0x13d00b3 : 0x13d00b2; // 0x13f215
+    return (v12 & 0xffff00ff | 256 * (64 * (int64_t)(v15 == 0) | (int64_t)(v14 < 0x449267ef) | 128 * (int64_t)(v15 < 0) | 16 * (int64_t)(v14 % 16 > 30) | 4 * (int64_t)(v16 % 2 == 0)) | 512) - v17 & 0xffffffff;
 }

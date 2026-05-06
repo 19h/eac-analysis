@@ -1,12 +1,12 @@
 /*
- * Targeted RetDec C for native executable gap queue batch 3673.
+ * Targeted RetDec C for native executable gap queue batch 3762.
  *
  * This batch is fixed from the ranked native gap queue so it can feed the
  * executable coverage audit without creating a Make dependency cycle:
  * coverage -> queue -> RetDec batch -> coverage.
  *
  * Ranges:
- *   0x14d293-0x14d313 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x4aa335-0x4aa430 rank=- name=- kind=- bytes=- uncovered=-
  */
 #include <stdbool.h>
 #include <stdio.h>
@@ -52,6 +52,7 @@ struct eac_retdec_cpuid_regs { uint32_t e0; uint32_t e1; uint32_t e2; uint32_t e
 #define SIGALARM 14
 #define SYS_getegid32 50
 #define PTHREAD_MUTEX_RECURSIVE 1
+extern int g1;
 int64_t entry_point();
 unsigned char llvm_ctpop_i8(unsigned char value);
 uint16_t llvm_bswap_i16(uint16_t value);
@@ -364,39 +365,141 @@ void _Unwind_SetIP(int64_t context, int64_t value);
 void _Unwind_Resume(struct _Unwind_Exception *exception);
 void _Unwind_Resume_or_Rethrow(int64_t exception);
 
-int64_t function_14d272();
-int64_t function_14d293(int64_t a1, int64_t a2, int64_t a3, int64_t a4, int64_t a5);
+int64_t function_4a9f33();
+int64_t function_4aa335(void);
+int64_t function_4aa350(int64_t a1, int64_t a2, int64_t a3, int64_t a4);
 
-// Address range: 0x14d293 - 0x14d311
-int64_t function_14d293(int64_t a1, int64_t a2, int64_t a3, int64_t a4, int64_t a5) {
-    int64_t v1 = a2;
-    int64_t v2 = a1;
-    int32_t * v3 = (int32_t *)(a4 - 0x23d30fe2); // 0x14d293
-    uint32_t v4 = *v3; // 0x14d293
-    int64_t v5; // 0x14d293
-    uint32_t v6 = v4 + (int32_t)v5; // 0x14d293
-    *v3 = v6;
-    if (v6 < v4) {
-        // 0x14d2ec
-        *(int32_t *)-0x6915fb5c = -1 - *(int32_t *)-0x6915fb5c;
-        *(int32_t *)0x6705e82537013d00 = (int32_t)v5 & -77;
-        uint32_t result = *(int32_t *)&v1 - 0x7b672ca2; // 0x14d302
-        __asm_out(73, (char)result);
-        *(char *)-0x3002d4ee = *(char *)-0x3002d4ee + (char)(v5 / 256);
-        return result;
+// Address range: 0x4aa335 - 0x4aa344
+int64_t function_4aa335(void) {
+    // 0x4aa335
+    return function_4a9f33();
+}
+
+// Address range: 0x4aa350 - 0x4aa423
+int64_t function_4aa350(int64_t a1, int64_t a2, int64_t a3, int64_t a4) {
+    char * v1 = (char *)a3;
+    int64_t v2 = (int64_t)&g1; // 0x4aa37a
+    int64_t str = a1;
+    int64_t size = a2;
+    int32_t * v3 = (int32_t *)v2; // 0x4aa38d
+    int32_t v4 = a4 & 0xffffffff;
+    int64_t v5 = v2; // 0x4aa38f
+    int64_t v6 = v2; // 0x4aa38f
+    int64_t v7 = (int64_t)"The certificate validity has expired"; // 0x4aa38f
+    int32_t * v8 = v3; // 0x4aa38f
+    int64_t size2; // 0x4aa350
+    int64_t str2; // 0x4aa350
+    int64_t v9; // 0x4aa384
+    int64_t v10; // 0x4aa380
+    int32_t * v11; // 0x4aa350
+    if ((*v3 & v4) == 0) {
+        v9 = *(int64_t *)(v5 + 24);
+        size2 = size;
+        str2 = str;
+        if (v9 == 0) {
+            // break (via goto) -> 0x4aa3c8
+            goto lab_0x4aa3c8;
+        }
+        // 0x4aa38d
+        v10 = v5 + 16;
+        v11 = (int32_t *)v10;
+        v5 = v10;
+        v6 = v10;
+        v7 = v9;
+        v8 = v11;
+        while ((*v11 & v4) == 0) {
+            // 0x4aa380
+            v9 = *(int64_t *)(v5 + 24);
+            size2 = size;
+            str2 = str;
+            if (v9 == 0) {
+                // break (via goto) -> 0x4aa3c8
+                goto lab_0x4aa3c8;
+            }
+            // 0x4aa38d
+            v10 = v5 + 16;
+            v11 = (int32_t *)v10;
+            v5 = v10;
+            v6 = v10;
+            v7 = v9;
+            v8 = v11;
+        }
     }
-    char * v7 = (char *)(v5 - 0x405b43fd); // 0x14d29b
-    *v7 = *v7 - (char)v5;
-    char v8 = __asm_in(0x2318); // 0x14d2b7
-    float80_t v9 = *(float80_t *)&v2; // 0x14d2b8
-    int64_t v10 = ((a4 & 0xffffff00 | 173) + 0x4de241a4 & 0xffffff00 | (int64_t)v8) + 0xce6700b3; // 0x14d2ba
-    char v11 = *(char *)(v10 & 0xffffffff); // 0x14d2bf
-    int64_t v12 = v9;
-    int64_t result2 = v10 & 0xffffff00 | (int64_t)(v11 & (char)v10); // 0x14d2c9
-    if ((*(char *)(v12 - 15) || (char)(v5 / 256)) != 0) {
-        result2 = function_14d272();
+    int32_t chars_printed = snprintf((char *)str, (int32_t)size, "%s%s\n", v1, (char *)v7); // 0x4aa3a3
+    while (chars_printed >= 0) {
+        uint64_t v12 = (int64_t)chars_printed; // 0x4aa3ac
+        if (size <= v12) {
+            // 0x4aa3e8
+            return 0xffffd680;
+        }
+        int64_t v13 = *(int64_t *)(v6 + 24); // 0x4aa3bc
+        v2 = v6 + 16;
+        if (v13 == 0) {
+            // break -> 0x4aa3c8
+            break;
+        }
+        str += v12;
+        size -= v12;
+        v3 = (int32_t *)v2;
+        v4 ^= *v8;
+        v5 = v2;
+        v6 = v2;
+        v7 = v13;
+        v8 = v3;
+        if ((*v3 & v4) == 0) {
+            v9 = *(int64_t *)(v5 + 24);
+            size2 = size;
+            str2 = str;
+            if (v9 == 0) {
+                // break (via goto) -> 0x4aa3c8
+                goto lab_0x4aa3c8;
+            }
+            // 0x4aa38d
+            v10 = v5 + 16;
+            v11 = (int32_t *)v10;
+            v5 = v10;
+            v6 = v10;
+            v7 = v9;
+            v8 = v11;
+            while ((*v11 & v4) == 0) {
+                // 0x4aa380
+                v9 = *(int64_t *)(v5 + 24);
+                size2 = size;
+                str2 = str;
+                if (v9 == 0) {
+                    // break (via goto) -> 0x4aa3c8
+                    goto lab_0x4aa3c8;
+                }
+                // 0x4aa38d
+                v10 = v5 + 16;
+                v11 = (int32_t *)v10;
+                v5 = v10;
+                v6 = v10;
+                v7 = v9;
+                v8 = v11;
+            }
+        }
+        // 0x4aa391
+        chars_printed = snprintf((char *)str, (int32_t)size, "%s%s\n", v1, (char *)v7);
     }
-    // 0x14d2cb
-    *(float80_t *)(v12 + 0x90b127) = v9;
-    return result2;
+    // 0x4aa3e8
+    return 0xffffd680;
+  lab_0x4aa3c8:
+    // 0x4aa3c8
+    if (v4 == 0) {
+        // 0x4aa3cc
+        return a2 - size2 & 0xffffffff;
+    }
+    int32_t chars_printed2 = snprintf((char *)str2, (int32_t)size2, "%sUnknown reason (this should not happen)\n", v1); // 0x4aa40e
+    if (chars_printed2 < 0) {
+        // 0x4aa3e8
+        return 0xffffd680;
+    }
+    uint64_t v14 = (int64_t)chars_printed2; // 0x4aa417
+    if (size2 <= v14) {
+        // 0x4aa3e8
+        return 0xffffd680;
+    }
+    // 0x4aa3cc
+    return a2 - (size2 - v14) & 0xffffffff;
 }

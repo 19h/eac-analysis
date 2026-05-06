@@ -1,12 +1,12 @@
 /*
- * Targeted RetDec C for native executable gap queue batch 3673.
+ * Targeted RetDec C for native executable gap queue batch 3752.
  *
  * This batch is fixed from the ranked native gap queue so it can feed the
  * executable coverage audit without creating a Make dependency cycle:
  * coverage -> queue -> RetDec batch -> coverage.
  *
  * Ranges:
- *   0x14d293-0x14d313 rank=- name=- kind=- bytes=- uncovered=-
+ *   0xe981c-0xe989c rank=- name=- kind=- bytes=- uncovered=-
  */
 #include <stdbool.h>
 #include <stdio.h>
@@ -364,39 +364,54 @@ void _Unwind_SetIP(int64_t context, int64_t value);
 void _Unwind_Resume(struct _Unwind_Exception *exception);
 void _Unwind_Resume_or_Rethrow(int64_t exception);
 
-int64_t function_14d272();
-int64_t function_14d293(int64_t a1, int64_t a2, int64_t a3, int64_t a4, int64_t a5);
+int64_t function_149eaf76();
+int64_t function_1b4c03c7();
+int64_t function_e981c(int64_t a1, int64_t a2);
+int64_t function_e9833(void);
+int64_t function_e984c(int64_t a1, int64_t a2, int64_t a3, int64_t a4);
+int64_t function_e9879(int64_t a1);
+int64_t unknown_ffffffffbf09183c();
 
-// Address range: 0x14d293 - 0x14d311
-int64_t function_14d293(int64_t a1, int64_t a2, int64_t a3, int64_t a4, int64_t a5) {
-    int64_t v1 = a2;
-    int64_t v2 = a1;
-    int32_t * v3 = (int32_t *)(a4 - 0x23d30fe2); // 0x14d293
-    uint32_t v4 = *v3; // 0x14d293
-    int64_t v5; // 0x14d293
-    uint32_t v6 = v4 + (int32_t)v5; // 0x14d293
-    *v3 = v6;
-    if (v6 < v4) {
-        // 0x14d2ec
-        *(int32_t *)-0x6915fb5c = -1 - *(int32_t *)-0x6915fb5c;
-        *(int32_t *)0x6705e82537013d00 = (int32_t)v5 & -77;
-        uint32_t result = *(int32_t *)&v1 - 0x7b672ca2; // 0x14d302
-        __asm_out(73, (char)result);
-        *(char *)-0x3002d4ee = *(char *)-0x3002d4ee + (char)(v5 / 256);
-        return result;
-    }
-    char * v7 = (char *)(v5 - 0x405b43fd); // 0x14d29b
-    *v7 = *v7 - (char)v5;
-    char v8 = __asm_in(0x2318); // 0x14d2b7
-    float80_t v9 = *(float80_t *)&v2; // 0x14d2b8
-    int64_t v10 = ((a4 & 0xffffff00 | 173) + 0x4de241a4 & 0xffffff00 | (int64_t)v8) + 0xce6700b3; // 0x14d2ba
-    char v11 = *(char *)(v10 & 0xffffffff); // 0x14d2bf
-    int64_t v12 = v9;
-    int64_t result2 = v10 & 0xffffff00 | (int64_t)(v11 & (char)v10); // 0x14d2c9
-    if ((*(char *)(v12 - 15) || (char)(v5 / 256)) != 0) {
-        result2 = function_14d272();
-    }
-    // 0x14d2cb
-    *(float80_t *)(v12 + 0x90b127) = v9;
-    return result2;
+// Address range: 0xe981c - 0xe9827
+int64_t function_e981c(int64_t a1, int64_t a2) {
+    // 0xe981c
+    int64_t v1; // 0xe981c
+    int32_t * v2 = (int32_t *)(v1 + 2 * a1); // 0xe981c
+    uint32_t v3 = *v2; // 0xe981c
+    bool v4; // 0xe981c
+    int32_t v5 = v4; // 0xe981c
+    uint32_t v6 = v5 + (int32_t)v1; // 0xe981c
+    int32_t v7 = v3 - v6; // 0xe981c
+    uint32_t v8 = v7 - v5; // 0xe981c
+    bool v9 = v4 ? v6 != -1 | v3 < v8 : v3 < v6; // 0xe981c
+    unsigned char v10 = llvm_ctpop_i8((char)v7); // 0xe981c
+    *v2 = v7;
+    return 0x4000 * (int64_t)v4 | 1024 * (int64_t)v4 | 512 * (int64_t)v4 | 256 * (int64_t)v4 | 64 * (int64_t)(v7 == 0) | 128 * (int64_t)(v7 < 0) | (int64_t)v9 | 16 * (int64_t)(v5 - v6 % 16 + v3 % 16 > 15) | 4 * (int64_t)(v10 % 2 == 0) | 2048 * (int64_t)(((v8 ^ v3) & (v3 ^ v6)) < 0) | 2;
+}
+
+// Address range: 0xe9833 - 0xe9848
+int64_t function_e9833(void) {
+    // 0xe9833
+    unknown_ffffffffbf09183c();
+    return function_149eaf76();
+}
+
+// Address range: 0xe984c - 0xe9879
+int64_t function_e984c(int64_t a1, int64_t a2, int64_t a3, int64_t a4) {
+    // 0xe984c
+    int64_t v1; // 0xe984c
+    *(char *)0x765e145d = *(char *)0x765e145d + (char)(v1 / 256);
+    char * v2 = (char *)(2 * (256 * v1 + a4 & 0xff00 | a4 & 0x7fffffffffff00ff)); // 0xe9867
+    *v2 = *v2 + (*(char *)(a2 + 0x6251fb04) | (char)v1);
+    __asm_in((int16_t)a3);
+    return function_1b4c03c7();
+}
+
+// Address range: 0xe9879 - 0xe987e
+int64_t function_e9879(int64_t a1) {
+    // 0xe9879
+    int64_t v1; // 0xe9879
+    int64_t v2 = v1;
+    *(int32_t *)v2 = 2 * (int32_t)v2;
+    return v1 | 232;
 }
