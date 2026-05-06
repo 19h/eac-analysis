@@ -2776,3 +2776,61 @@ try	0x57336e-0x573380	ok
 try	0x577e3e-0x577e50	ok
 try	0x56526e-0x565280	ok
 try	0x57341e-0x573430	ok
+try	0x49b48d-0x49b4a0	ok
+try	0x579baf-0x579bc0	ok
+try	0x57b46f-0x57b480	ok
+try	0x4d486e-0x4d4880	ok
+try	0x4b939d-0x4b93b0	ok
+try	0x4c1d4d-0x4c1d60	ok
+try	0x568a8e-0x568aa0	ok
+try	0x577eee-0x577f00	ok
+try	0x4ba42e-0x4ba440	ok
+try	0x4a4bcd-0x4a4be0	ok
+try	0x5a447-0x5a45a	ok
+try	0x25224-0x25236	ok
+try	0x57208f-0x5720a0	ok
+try	0x4b841e-0x4b8430	ok
+try	0x4b860e-0x4b8620	ok
+try	0x56fe1f-0x56fe30	ok
+try	0x4b03de-0x4b03f0	ok
+try	0x57a03f-0x57a050	ok
+try	0x49692e-0x496940	ok
+try	0x56367f-0x563690	ok
+try	0x4f0abf-0x4f0ad0	ok
+try	0x4ef3cf-0x4ef3e0	ok
+try	0x52b3ef-0x52b400	ok
+try	0x4eecff-0x4eed10	ok
+try	0x4efe0f-0x4efe20	ok
+try	0x5598cf-0x5598e0	ok
+try	0x4d2b6f-0x4d2b80	ok
+wrote	native_gap_retdec_batch3948.ranges	32
+# elapsed 6.67s
+created_batches	3948
++ make -j 24 native-gap-retdec-batch3948
+make[1]: Entering directory '/models/dev/sc-rev/eac/eacsym'
+make dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch3948.c
+make[2]: Entering directory '/models/dev/sc-rev/eac/eacsym'
+python3 vm_native_gap_retdec_batch.py --batch-index 3948 --ranges-file native_gap_retdec_batch3948.ranges > dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch3948.c
+native_gap_retdec_batch=3948
+native_gap_retdec_selected_ranges=32
+make[2]: Leaving directory '/models/dev/sc-rev/eac/eacsym'
+make[1]: Leaving directory '/models/dev/sc-rev/eac/eacsym'
+# elapsed 1.70s
++ cc -std=c11 -fsyntax-only -w dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch3948.c
+# elapsed 0.02s
++ make -s native-executable-coverage-audit native-retdec-gap-queue
+# elapsed 3.93s
++ make -s uncovered-executable-gaps
+uncovered_executable_gaps=1743 bytes=117049
+uncovered_executable_gaps=1743 bytes=117049
+uncovered_executable_gaps=1743 bytes=117049
+# elapsed 1.18s
+coverage_delta
+native_executable_coverage_range_rows	74320	76742	delta=+2422
+native_executable_coverage_gap_rows	2499	1748	delta=-751
+native_executable_coverage_recovered_bytes	5481580	5533991	delta=+52411
+native_executable_coverage_uncovered_bytes	169460	117049	delta=-52411
++ make -s uncovered-executable-gaps
+# elapsed 0.64s
++ make -s all-evidence-bundle
+uncovered_executable_gaps=1743 bytes=117049

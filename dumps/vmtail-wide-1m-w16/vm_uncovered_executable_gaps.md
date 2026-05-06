@@ -1,7 +1,7 @@
 # Uncovered Executable Gaps (all)
 
-- gaps: `1775`
-- bytes: `117617`
+- gaps: `1743`
+- bytes: `117049`
 
 | Index | Start | Stop | Bytes |
 | ---: | ---: | ---: | ---: |
@@ -69,4 +69,4 @@
 | 61 | `0x4dcb79` | `0x4dcc79` | 256 |
 | 62 | `0x4dcf79` | `0x4dd079` | 256 |
 | 63 | `0x4e0679` | `0x4e0779` | 256 |
-| ... | ... | ... | 1711 more gaps |
+| ... | ... | ... | 1679 more gaps |
