@@ -185,7 +185,7 @@ def main() -> int:
     parser.add_argument("--log-dir", type=Path, default=TRACE_DIR / "unattended_logs")
     parser.add_argument("--append-recon", action="store_true")
     parser.add_argument("--aggregate-syntax", action="store_true")
-    parser.add_argument("--skip-manifest", action="store_true", default=True)
+    parser.add_argument("--skip-manifest", action=argparse.BooleanOptionalAction, default=True)
     parser.add_argument("--keep-going-on-failure", action="store_true")
     args = parser.parse_args()
 
