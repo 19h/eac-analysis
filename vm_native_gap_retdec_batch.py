@@ -922,6 +922,7 @@ def main():
     print("int32_t iconv(void *cd, char **inbuf, int32_t *inbytesleft, char **outbuf, int32_t *outbytesleft);")
     print("int iconv_close(void *cd);")
     print("struct _IO_FILE *fopen(const char *path, const char *mode);")
+    print("struct _IO_FILE *fopen64(const char *path, const char *mode);")
     print("struct _IO_FILE *fdopen(int fd, const char *mode);")
     print("size_t fread(void *ptr, size_t size, size_t nmemb, struct _IO_FILE *stream);")
     print("void rewind(struct _IO_FILE *stream);")
