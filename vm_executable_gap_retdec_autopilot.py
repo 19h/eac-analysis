@@ -194,14 +194,28 @@ def salvage_failed_batch(index, args):
         return []
 
     print(f"salvage_batch_start\t{index}\t{len(ranges)}", flush=True)
-    salvaged = []
-    rejected = []
+    candidates = []
     for selected in ranges:
         salvage_index = next_free_batch_index(args.root)
         salvage_path = range_file_path(args.root, salvage_index)
         salvage_path.write_text(f"{selected}\n")
+        candidates.append((salvage_index, selected, salvage_path))
         print(f"salvage_try\t{selected}\tbatch={salvage_index}", flush=True)
-        if build_and_syntax_check(salvage_index, args.jobs, allow_failure=True):
+
+    run(
+        ["make", "-j", args.jobs, *[f"native-gap-retdec-batch{item[0]}" for item in candidates]],
+        allow_failure=True,
+    )
+    salvaged = []
+    rejected = []
+    for salvage_index, selected, salvage_path in candidates:
+        syntax_rc = 1
+        if sidecar_path(salvage_index).exists():
+            syntax_rc = run(
+                ["cc", "-std=c11", "-fsyntax-only", "-w", sidecar_path(salvage_index)],
+                allow_failure=True,
+            )
+        if syntax_rc == 0:
             salvaged.append(salvage_index)
             continue
         rejected.append(selected)
