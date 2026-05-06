@@ -915,6 +915,7 @@ def main():
     print("int pthread_once(int32_t *once_control, int64_t init_routine);")
     print("int pthread_cond_wait(void *cond, void *mutex);")
     print("int pthread_cond_timedwait(void *cond, void *mutex, const struct timespec *abstime);")
+    print("int sem_init(int64_t *sem, int pshared, unsigned int value);")
     print("int fcntl(int fd, int cmd, ...);")
     print("int writev(int fd, const struct iovec *iov, int iovcnt);")
     print("int epoll_create(int size);")

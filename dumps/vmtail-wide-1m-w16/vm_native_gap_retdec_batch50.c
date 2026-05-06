@@ -183,6 +183,7 @@ int pthread_mutex_unlock(void *mutex);
 int pthread_once(int32_t *once_control, int64_t init_routine);
 int pthread_cond_wait(void *cond, void *mutex);
 int pthread_cond_timedwait(void *cond, void *mutex, const struct timespec *abstime);
+int sem_init(int64_t *sem, int pshared, unsigned int value);
 int fcntl(int fd, int cmd, ...);
 int writev(int fd, const struct iovec *iov, int iovcnt);
 int epoll_create(int size);
