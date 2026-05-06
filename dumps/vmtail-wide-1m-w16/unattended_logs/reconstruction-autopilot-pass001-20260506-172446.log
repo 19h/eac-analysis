@@ -1973,3 +1973,1326 @@ try	0x43ae67-0x43b067	reject
 split	0x43ae67-0x43b067	0x43ae67-0x43af67
 split	0x43ae67-0x43b067	0x43af67-0x43b067
 try	0x417742-0x417942	ok
+try	0x3b37b4-0x3b38b4	ok
+try	0x435667-0x435867	reject
+split	0x435667-0x435867	0x435667-0x435767
+split	0x435667-0x435867	0x435767-0x435867
+try	0x4093e5-0x4095e5	ok
+try	0x417d42-0x417f42	ok
+try	0x3f219e-0x3f239e	reject
+split	0x3f219e-0x3f239e	0x3f219e-0x3f229e
+split	0x3f219e-0x3f239e	0x3f229e-0x3f239e
+try	0x3aba15-0x3abc15	ok
+try	0x435467-0x435667	reject
+split	0x435467-0x435667	0x435467-0x435567
+split	0x435467-0x435667	0x435567-0x435667
+try	0x410b42-0x410d42	reject
+split	0x410b42-0x410d42	0x410b42-0x410c42
+split	0x410b42-0x410d42	0x410c42-0x410d42
+try	0x3c37dd-0x3c39dd	ok
+try	0x3b58c9-0x3b5ac9	ok
+try	0x417f42-0x418142	ok
+try	0x410942-0x410b42	reject
+split	0x410942-0x410b42	0x410942-0x410a42
+split	0x410942-0x410b42	0x410a42-0x410b42
+try	0x417942-0x417b42	ok
+try	0x3f1f9e-0x3f219e	ok
+try	0x3aa015-0x3aa215	ok
+try	0x3b3534-0x3b35b4	reject
+try	0x3b57c9-0x3b58c9	reject
+split	0x3b57c9-0x3b58c9	0x3b57c9-0x3b5849
+split	0x3b57c9-0x3b58c9	0x3b5849-0x3b58c9
+try	0x3b56c9-0x3b57c9	ok
+try	0x3b3734-0x3b37b4	ok
+try	0x43ae67-0x43af67	ok
+try	0x4091e5-0x4092e5	ok
+try	0x4092e5-0x4093e5	reject
+split	0x4092e5-0x4093e5	0x4092e5-0x409365
+split	0x4092e5-0x4093e5	0x409365-0x4093e5
+try	0x435667-0x435767	ok
+try	0x3b34b4-0x3b3534	ok
+try	0x410942-0x410a42	ok
+try	0x410b42-0x410c42	reject
+split	0x410b42-0x410c42	0x410b42-0x410bc2
+split	0x410b42-0x410c42	0x410bc2-0x410c42
+try	0x3b36b4-0x3b3734	ok
+try	0x3f219e-0x3f229e	reject
+split	0x3f219e-0x3f229e	0x3f219e-0x3f221e
+split	0x3f219e-0x3f229e	0x3f221e-0x3f229e
+try	0x43af67-0x43b067	reject
+split	0x43af67-0x43b067	0x43af67-0x43afe7
+split	0x43af67-0x43b067	0x43afe7-0x43b067
+try	0x435767-0x435867	reject
+split	0x435767-0x435867	0x435767-0x4357e7
+split	0x435767-0x435867	0x4357e7-0x435867
+try	0x3f229e-0x3f239e	ok
+try	0x39c3b1-0x39c5b1	reject
+split	0x39c3b1-0x39c5b1	0x39c3b1-0x39c4b1
+split	0x39c3b1-0x39c5b1	0x39c4b1-0x39c5b1
+try	0x39c1b1-0x39c3b1	reject
+split	0x39c1b1-0x39c3b1	0x39c1b1-0x39c2b1
+split	0x39c1b1-0x39c3b1	0x39c2b1-0x39c3b1
+try	0x435467-0x435567	ok
+try	0x3aa215-0x3aa415	reject
+split	0x3aa215-0x3aa415	0x3aa215-0x3aa315
+split	0x3aa215-0x3aa415	0x3aa315-0x3aa415
+try	0x410c42-0x410d42	ok
+try	0x435567-0x435667	reject
+split	0x435567-0x435667	0x435567-0x4355e7
+split	0x435567-0x435667	0x4355e7-0x435667
+try	0x410a42-0x410b42	reject
+split	0x410a42-0x410b42	0x410a42-0x410ac2
+split	0x410a42-0x410b42	0x410ac2-0x410b42
+try	0x384c30-0x384e30	ok
+try	0x384e30-0x385030	ok
+try	0x409365-0x4093e5	reject
+try	0x3b5849-0x3b58c9	ok
+try	0x4092e5-0x409365	ok
+try	0x37856a-0x37876a	ok
+try	0x37836a-0x37856a	ok
+wrote	native_gap_retdec_batch1842.ranges	32
+appended_reject_cache	dumps/vmtail-wide-1m-w16/vm_executable_gap_retdec_reject_cache.tsv	23
+# elapsed 9.04s
+created_batches	1842
++ make -j 24 native-gap-retdec-batch1842
+make[1]: Entering directory '/models/dev/sc-rev/eac/eacsym'
+make dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1842.c
+make[2]: Entering directory '/models/dev/sc-rev/eac/eacsym'
+python3 vm_native_gap_retdec_batch.py --batch-index 1842 --ranges-file native_gap_retdec_batch1842.ranges > dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1842.c
+native_gap_retdec_batch=1842
+native_gap_retdec_selected_ranges=32
+make[2]: Leaving directory '/models/dev/sc-rev/eac/eacsym'
+make[1]: Leaving directory '/models/dev/sc-rev/eac/eacsym'
+# elapsed 2.04s
++ cc -std=c11 -fsyntax-only -w dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1842.c
+dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1842.c: In function ‘function_3b36ea’:
+dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1842.c:1127:5: error: implicit declaration of function ‘__asm_vpunpcklbw’; did you mean ‘__asm_punpckldq’? [-Wimplicit-function-declaration]
+ 1127 |     __asm_vpunpcklbw(v5, v5);
+      |     ^~~~~~~~~~~~~~~~
+      |     __asm_punpckldq
+# elapsed 0.02s
+quarantined_range_file	native_gap_retdec_batch1842.ranges	native_gap_retdec_batch1842.ranges.failed
+removed_failed_sidecar	dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1842.c
+salvage_batch_start	1842	32
+salvage_try	0x37836a-0x37856a	batch=1842
+salvage_try	0x37856a-0x37876a	batch=1843
+salvage_try	0x384c30-0x384e30	batch=1844
+salvage_try	0x384e30-0x385030	batch=1845
+salvage_try	0x3aa015-0x3aa215	batch=1846
+salvage_try	0x3aba15-0x3abc15	batch=1847
+salvage_try	0x3abc15-0x3abe15	batch=1848
+salvage_try	0x3b34b4-0x3b3534	batch=1849
+salvage_try	0x3b35b4-0x3b36b4	batch=1850
+salvage_try	0x3b36b4-0x3b3734	batch=1851
+salvage_try	0x3b3734-0x3b37b4	batch=1852
+salvage_try	0x3b37b4-0x3b38b4	batch=1853
+salvage_try	0x3b56c9-0x3b57c9	batch=1854
+salvage_try	0x3b5849-0x3b58c9	batch=1855
+salvage_try	0x3b58c9-0x3b5ac9	batch=1856
+salvage_try	0x3c37dd-0x3c39dd	batch=1857
+salvage_try	0x3c39dd-0x3c3bdd	batch=1858
+salvage_try	0x3f1f9e-0x3f219e	batch=1859
+salvage_try	0x3f229e-0x3f239e	batch=1860
+salvage_try	0x4091e5-0x4092e5	batch=1861
+salvage_try	0x4092e5-0x409365	batch=1862
+salvage_try	0x4093e5-0x4095e5	batch=1863
+salvage_try	0x410942-0x410a42	batch=1864
+salvage_try	0x410c42-0x410d42	batch=1865
+salvage_try	0x417742-0x417942	batch=1866
+salvage_try	0x417942-0x417b42	batch=1867
+salvage_try	0x417d42-0x417f42	batch=1868
+salvage_try	0x417f42-0x418142	batch=1869
+salvage_try	0x435467-0x435567	batch=1870
+salvage_try	0x435667-0x435767	batch=1871
+salvage_try	0x43ae67-0x43af67	batch=1872
+salvage_try	0x43b067-0x43b267	batch=1873
++ make -j 24 native-gap-retdec-batch1842 native-gap-retdec-batch1843 native-gap-retdec-batch1844 native-gap-retdec-batch1845 native-gap-retdec-batch1846 native-gap-retdec-batch1847 native-gap-retdec-batch1848 native-gap-retdec-batch1849 native-gap-retdec-batch1850 native-gap-retdec-batch1851 native-gap-retdec-batch1852 native-gap-retdec-batch1853 native-gap-retdec-batch1854 native-gap-retdec-batch1855 native-gap-retdec-batch1856 native-gap-retdec-batch1857 native-gap-retdec-batch1858 native-gap-retdec-batch1859 native-gap-retdec-batch1860 native-gap-retdec-batch1861 native-gap-retdec-batch1862 native-gap-retdec-batch1863 native-gap-retdec-batch1864 native-gap-retdec-batch1865 native-gap-retdec-batch1866 native-gap-retdec-batch1867 native-gap-retdec-batch1868 native-gap-retdec-batch1869 native-gap-retdec-batch1870 native-gap-retdec-batch1871 native-gap-retdec-batch1872 native-gap-retdec-batch1873
+make[1]: Entering directory '/models/dev/sc-rev/eac/eacsym'
+make dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1842.c
+make dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1843.c
+make dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1844.c
+make dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1845.c
+make dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1846.c
+make dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1847.c
+make dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1848.c
+make dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1849.c
+make dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1850.c
+make dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1851.c
+make dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1852.c
+make dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1853.c
+make dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1854.c
+make dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1855.c
+make dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1856.c
+make dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1857.c
+make dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1858.c
+make dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1859.c
+make dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1860.c
+make dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1861.c
+make dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1862.c
+make dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1863.c
+make dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1864.c
+make dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1865.c
+make[2]: Entering directory '/models/dev/sc-rev/eac/eacsym'
+make[2]: Entering directory '/models/dev/sc-rev/eac/eacsym'
+python3 vm_native_gap_retdec_batch.py --batch-index 1849 --ranges-file native_gap_retdec_batch1849.ranges > dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1849.c
+python3 vm_native_gap_retdec_batch.py --batch-index 1844 --ranges-file native_gap_retdec_batch1844.ranges > dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1844.c
+make[2]: Entering directory '/models/dev/sc-rev/eac/eacsym'
+python3 vm_native_gap_retdec_batch.py --batch-index 1842 --ranges-file native_gap_retdec_batch1842.ranges > dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1842.c
+make[2]: Entering directory '/models/dev/sc-rev/eac/eacsym'
+python3 vm_native_gap_retdec_batch.py --batch-index 1843 --ranges-file native_gap_retdec_batch1843.ranges > dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1843.c
+make[2]: Entering directory '/models/dev/sc-rev/eac/eacsym'
+python3 vm_native_gap_retdec_batch.py --batch-index 1851 --ranges-file native_gap_retdec_batch1851.ranges > dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1851.c
+make[2]: Entering directory '/models/dev/sc-rev/eac/eacsym'
+python3 vm_native_gap_retdec_batch.py --batch-index 1845 --ranges-file native_gap_retdec_batch1845.ranges > dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1845.c
+make[2]: Entering directory '/models/dev/sc-rev/eac/eacsym'
+python3 vm_native_gap_retdec_batch.py --batch-index 1846 --ranges-file native_gap_retdec_batch1846.ranges > dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1846.c
+make[2]: Entering directory '/models/dev/sc-rev/eac/eacsym'
+python3 vm_native_gap_retdec_batch.py --batch-index 1852 --ranges-file native_gap_retdec_batch1852.ranges > dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1852.c
+make[2]: Entering directory '/models/dev/sc-rev/eac/eacsym'
+make[2]: Entering directory '/models/dev/sc-rev/eac/eacsym'
+python3 vm_native_gap_retdec_batch.py --batch-index 1853 --ranges-file native_gap_retdec_batch1853.ranges > dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1853.c
+python3 vm_native_gap_retdec_batch.py --batch-index 1847 --ranges-file native_gap_retdec_batch1847.ranges > dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1847.c
+make[2]: Entering directory '/models/dev/sc-rev/eac/eacsym'
+python3 vm_native_gap_retdec_batch.py --batch-index 1850 --ranges-file native_gap_retdec_batch1850.ranges > dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1850.c
+make[2]: Entering directory '/models/dev/sc-rev/eac/eacsym'
+python3 vm_native_gap_retdec_batch.py --batch-index 1848 --ranges-file native_gap_retdec_batch1848.ranges > dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1848.c
+make[2]: Entering directory '/models/dev/sc-rev/eac/eacsym'
+python3 vm_native_gap_retdec_batch.py --batch-index 1855 --ranges-file native_gap_retdec_batch1855.ranges > dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1855.c
+make[2]: Entering directory '/models/dev/sc-rev/eac/eacsym'
+python3 vm_native_gap_retdec_batch.py --batch-index 1854 --ranges-file native_gap_retdec_batch1854.ranges > dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1854.c
+make[2]: Entering directory '/models/dev/sc-rev/eac/eacsym'
+python3 vm_native_gap_retdec_batch.py --batch-index 1856 --ranges-file native_gap_retdec_batch1856.ranges > dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1856.c
+make[2]: Entering directory '/models/dev/sc-rev/eac/eacsym'
+python3 vm_native_gap_retdec_batch.py --batch-index 1857 --ranges-file native_gap_retdec_batch1857.ranges > dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1857.c
+make[2]: Entering directory '/models/dev/sc-rev/eac/eacsym'
+python3 vm_native_gap_retdec_batch.py --batch-index 1858 --ranges-file native_gap_retdec_batch1858.ranges > dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1858.c
+make[2]: Entering directory '/models/dev/sc-rev/eac/eacsym'
+python3 vm_native_gap_retdec_batch.py --batch-index 1859 --ranges-file native_gap_retdec_batch1859.ranges > dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1859.c
+make[2]: Entering directory '/models/dev/sc-rev/eac/eacsym'
+python3 vm_native_gap_retdec_batch.py --batch-index 1862 --ranges-file native_gap_retdec_batch1862.ranges > dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1862.c
+make[2]: Entering directory '/models/dev/sc-rev/eac/eacsym'
+python3 vm_native_gap_retdec_batch.py --batch-index 1864 --ranges-file native_gap_retdec_batch1864.ranges > dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1864.c
+make[2]: Entering directory '/models/dev/sc-rev/eac/eacsym'
+python3 vm_native_gap_retdec_batch.py --batch-index 1860 --ranges-file native_gap_retdec_batch1860.ranges > dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1860.c
+make[2]: Entering directory '/models/dev/sc-rev/eac/eacsym'
+python3 vm_native_gap_retdec_batch.py --batch-index 1865 --ranges-file native_gap_retdec_batch1865.ranges > dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1865.c
+make[2]: Entering directory '/models/dev/sc-rev/eac/eacsym'
+python3 vm_native_gap_retdec_batch.py --batch-index 1861 --ranges-file native_gap_retdec_batch1861.ranges > dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1861.c
+make[2]: Entering directory '/models/dev/sc-rev/eac/eacsym'
+python3 vm_native_gap_retdec_batch.py --batch-index 1863 --ranges-file native_gap_retdec_batch1863.ranges > dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1863.c
+native_gap_retdec_batch=1851
+native_gap_retdec_selected_ranges=1
+make[2]: Leaving directory '/models/dev/sc-rev/eac/eacsym'
+make dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1866.c
+make[2]: Entering directory '/models/dev/sc-rev/eac/eacsym'
+python3 vm_native_gap_retdec_batch.py --batch-index 1866 --ranges-file native_gap_retdec_batch1866.ranges > dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1866.c
+native_gap_retdec_batch=1847
+native_gap_retdec_selected_ranges=1
+make[2]: Leaving directory '/models/dev/sc-rev/eac/eacsym'
+make dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1867.c
+make[2]: Entering directory '/models/dev/sc-rev/eac/eacsym'
+python3 vm_native_gap_retdec_batch.py --batch-index 1867 --ranges-file native_gap_retdec_batch1867.ranges > dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1867.c
+native_gap_retdec_batch=1858
+native_gap_retdec_selected_ranges=1
+make[2]: Leaving directory '/models/dev/sc-rev/eac/eacsym'
+make dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1868.c
+native_gap_retdec_batch=1846
+native_gap_retdec_selected_ranges=1
+native_gap_retdec_batch=1856
+native_gap_retdec_selected_ranges=1
+make[2]: Entering directory '/models/dev/sc-rev/eac/eacsym'
+python3 vm_native_gap_retdec_batch.py --batch-index 1868 --ranges-file native_gap_retdec_batch1868.ranges > dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1868.c
+make[2]: Leaving directory '/models/dev/sc-rev/eac/eacsym'
+make dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1869.c
+make[2]: Leaving directory '/models/dev/sc-rev/eac/eacsym'
+make dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1870.c
+make[2]: Entering directory '/models/dev/sc-rev/eac/eacsym'
+python3 vm_native_gap_retdec_batch.py --batch-index 1869 --ranges-file native_gap_retdec_batch1869.ranges > dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1869.c
+make[2]: Entering directory '/models/dev/sc-rev/eac/eacsym'
+python3 vm_native_gap_retdec_batch.py --batch-index 1870 --ranges-file native_gap_retdec_batch1870.ranges > dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1870.c
+native_gap_retdec_batch=1848
+native_gap_retdec_selected_ranges=1
+make[2]: Leaving directory '/models/dev/sc-rev/eac/eacsym'
+make dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1871.c
+make[2]: Entering directory '/models/dev/sc-rev/eac/eacsym'
+python3 vm_native_gap_retdec_batch.py --batch-index 1871 --ranges-file native_gap_retdec_batch1871.ranges > dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1871.c
+native_gap_retdec_batch=1855
+native_gap_retdec_selected_ranges=1
+make[2]: Leaving directory '/models/dev/sc-rev/eac/eacsym'
+make dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1872.c
+make[2]: Entering directory '/models/dev/sc-rev/eac/eacsym'
+python3 vm_native_gap_retdec_batch.py --batch-index 1872 --ranges-file native_gap_retdec_batch1872.ranges > dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1872.c
+native_gap_retdec_batch=1853
+native_gap_retdec_selected_ranges=1
+native_gap_retdec_batch=1860
+native_gap_retdec_selected_ranges=1
+native_gap_retdec_batch=1845
+native_gap_retdec_selected_ranges=1
+make[2]: Leaving directory '/models/dev/sc-rev/eac/eacsym'
+make dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1873.c
+native_gap_retdec_batch=1850
+native_gap_retdec_selected_ranges=1
+make[2]: Leaving directory '/models/dev/sc-rev/eac/eacsym'
+native_gap_retdec_batch=1843
+native_gap_retdec_selected_ranges=1
+make[2]: Leaving directory '/models/dev/sc-rev/eac/eacsym'
+native_gap_retdec_batch=1852
+native_gap_retdec_selected_ranges=1
+make[2]: Leaving directory '/models/dev/sc-rev/eac/eacsym'
+native_gap_retdec_batch=1849
+native_gap_retdec_selected_ranges=1
+make[2]: Leaving directory '/models/dev/sc-rev/eac/eacsym'
+make[2]: Entering directory '/models/dev/sc-rev/eac/eacsym'
+python3 vm_native_gap_retdec_batch.py --batch-index 1873 --ranges-file native_gap_retdec_batch1873.ranges > dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1873.c
+native_gap_retdec_batch=1865
+native_gap_retdec_selected_ranges=1
+native_gap_retdec_batch=1857
+native_gap_retdec_selected_ranges=1
+make[2]: Leaving directory '/models/dev/sc-rev/eac/eacsym'
+native_gap_retdec_batch=1842
+native_gap_retdec_selected_ranges=1
+make[2]: Leaving directory '/models/dev/sc-rev/eac/eacsym'
+make[2]: Leaving directory '/models/dev/sc-rev/eac/eacsym'
+make[2]: Leaving directory '/models/dev/sc-rev/eac/eacsym'
+make[2]: Leaving directory '/models/dev/sc-rev/eac/eacsym'
+native_gap_retdec_batch=1861
+native_gap_retdec_selected_ranges=1
+native_gap_retdec_batch=1863
+native_gap_retdec_selected_ranges=1
+make[2]: Leaving directory '/models/dev/sc-rev/eac/eacsym'
+native_gap_retdec_batch=1844
+native_gap_retdec_selected_ranges=1
+make[2]: Leaving directory '/models/dev/sc-rev/eac/eacsym'
+make[2]: Leaving directory '/models/dev/sc-rev/eac/eacsym'
+native_gap_retdec_batch=1864
+native_gap_retdec_selected_ranges=1
+make[2]: Leaving directory '/models/dev/sc-rev/eac/eacsym'
+native_gap_retdec_batch=1862
+native_gap_retdec_selected_ranges=1
+make[2]: Leaving directory '/models/dev/sc-rev/eac/eacsym'
+native_gap_retdec_batch=1854
+native_gap_retdec_selected_ranges=1
+native_gap_retdec_batch=1859
+native_gap_retdec_selected_ranges=1
+make[2]: Leaving directory '/models/dev/sc-rev/eac/eacsym'
+make[2]: Leaving directory '/models/dev/sc-rev/eac/eacsym'
+native_gap_retdec_batch=1872
+native_gap_retdec_selected_ranges=1
+make[2]: Leaving directory '/models/dev/sc-rev/eac/eacsym'
+native_gap_retdec_batch=1868
+native_gap_retdec_selected_ranges=1
+native_gap_retdec_batch=1869
+native_gap_retdec_selected_ranges=1
+make[2]: Leaving directory '/models/dev/sc-rev/eac/eacsym'
+make[2]: Leaving directory '/models/dev/sc-rev/eac/eacsym'
+native_gap_retdec_batch=1870
+native_gap_retdec_selected_ranges=1
+native_gap_retdec_batch=1867
+native_gap_retdec_selected_ranges=1
+make[2]: Leaving directory '/models/dev/sc-rev/eac/eacsym'
+make[2]: Leaving directory '/models/dev/sc-rev/eac/eacsym'
+native_gap_retdec_batch=1866
+native_gap_retdec_selected_ranges=1
+make[2]: Leaving directory '/models/dev/sc-rev/eac/eacsym'
+native_gap_retdec_batch=1873
+native_gap_retdec_selected_ranges=1
+native_gap_retdec_batch=1871
+native_gap_retdec_selected_ranges=1
+make[2]: Leaving directory '/models/dev/sc-rev/eac/eacsym'
+make[2]: Leaving directory '/models/dev/sc-rev/eac/eacsym'
+make[1]: Leaving directory '/models/dev/sc-rev/eac/eacsym'
+# elapsed 4.19s
++ cc -std=c11 -fsyntax-only -w dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1842.c
+# elapsed 0.01s
++ cc -std=c11 -fsyntax-only -w dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1843.c
+# elapsed 0.01s
++ cc -std=c11 -fsyntax-only -w dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1844.c
+# elapsed 0.01s
++ cc -std=c11 -fsyntax-only -w dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1845.c
+# elapsed 0.01s
++ cc -std=c11 -fsyntax-only -w dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1846.c
+# elapsed 0.01s
++ cc -std=c11 -fsyntax-only -w dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1847.c
+# elapsed 0.01s
++ cc -std=c11 -fsyntax-only -w dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1848.c
+# elapsed 0.01s
++ cc -std=c11 -fsyntax-only -w dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1849.c
+# elapsed 0.01s
++ cc -std=c11 -fsyntax-only -w dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1850.c
+# elapsed 0.01s
++ cc -std=c11 -fsyntax-only -w dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1851.c
+# elapsed 0.01s
++ cc -std=c11 -fsyntax-only -w dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1852.c
+# elapsed 0.01s
++ cc -std=c11 -fsyntax-only -w dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1853.c
+# elapsed 0.01s
++ cc -std=c11 -fsyntax-only -w dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1854.c
+# elapsed 0.01s
++ cc -std=c11 -fsyntax-only -w dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1855.c
+# elapsed 0.01s
++ cc -std=c11 -fsyntax-only -w dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1856.c
+# elapsed 0.01s
++ cc -std=c11 -fsyntax-only -w dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1857.c
+# elapsed 0.01s
++ cc -std=c11 -fsyntax-only -w dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1858.c
+# elapsed 0.01s
++ cc -std=c11 -fsyntax-only -w dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1859.c
+# elapsed 0.01s
++ cc -std=c11 -fsyntax-only -w dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1860.c
+# elapsed 0.01s
++ cc -std=c11 -fsyntax-only -w dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1861.c
+# elapsed 0.01s
++ cc -std=c11 -fsyntax-only -w dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1862.c
+# elapsed 0.01s
++ cc -std=c11 -fsyntax-only -w dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1863.c
+# elapsed 0.01s
++ cc -std=c11 -fsyntax-only -w dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1864.c
+# elapsed 0.01s
++ cc -std=c11 -fsyntax-only -w dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1865.c
+# elapsed 0.01s
++ cc -std=c11 -fsyntax-only -w dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1866.c
+# elapsed 0.01s
++ cc -std=c11 -fsyntax-only -w dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1867.c
+# elapsed 0.01s
++ cc -std=c11 -fsyntax-only -w dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1868.c
+# elapsed 0.01s
++ cc -std=c11 -fsyntax-only -w dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1869.c
+# elapsed 0.01s
++ cc -std=c11 -fsyntax-only -w dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1870.c
+# elapsed 0.01s
++ cc -std=c11 -fsyntax-only -w dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1871.c
+# elapsed 0.01s
++ cc -std=c11 -fsyntax-only -w dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1872.c
+# elapsed 0.01s
++ cc -std=c11 -fsyntax-only -w dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1873.c
+# elapsed 0.01s
+salvage_batch_done	1842	salvaged=1842,1843,1844,1845,1846,1847,1848,1849,1850,1851,1852,1853,1854,1855,1856,1857,1858,1859,1860,1861,1862,1863,1864,1865,1866,1867,1868,1869,1870,1871,1872,1873	rejected=0
++ make -s native-executable-coverage-audit native-retdec-gap-queue
+# elapsed 3.00s
++ make -s uncovered-executable-gaps
+uncovered_executable_gaps=3167 bytes=729368
+uncovered_executable_gaps=3167 bytes=729368
+uncovered_executable_gaps=3167 bytes=729368
+# elapsed 0.90s
+coverage_delta
+native_executable_coverage_range_rows	62481	63389	delta=+908
+native_executable_coverage_gap_rows	3195	3172	delta=-23
+native_executable_coverage_recovered_bytes	4866234	4921672	delta=+55438
+native_executable_coverage_uncovered_bytes	784806	729368	delta=-55438
+round_start	6
++ python3 vm_executable_gap_retdec_probe.py --root . --section .text --chunk-bytes 0x200 --min-chunk-bytes 0x80 --max-split-candidates 256 --max-gap-chunks 12 --max-candidates 768 --max-accepted 32 --probe-jobs 24 --timeout 30 --reject-cache dumps/vmtail-wide-1m-w16/vm_executable_gap_retdec_reject_cache.tsv
+try	0x31c6bb-0x31c8bb	reject
+split	0x31c6bb-0x31c8bb	0x31c6bb-0x31c7bb
+split	0x31c6bb-0x31c8bb	0x31c7bb-0x31c8bb
+try	0x348cd8-0x348ed8	ok
+try	0x39c3b1-0x39c4b1	reject
+split	0x39c3b1-0x39c4b1	0x39c3b1-0x39c431
+split	0x39c3b1-0x39c4b1	0x39c431-0x39c4b1
+try	0x2fee1e-0x2ff01e	reject
+split	0x2fee1e-0x2ff01e	0x2fee1e-0x2fef1e
+split	0x2fee1e-0x2ff01e	0x2fef1e-0x2ff01e
+try	0x3082af-0x3084af	ok
+try	0x39c4b1-0x39c5b1	ok
+try	0x309b1d-0x309d1d	ok
+try	0x3112bb-0x3114bb	ok
+try	0x3080af-0x3082af	ok
+try	0x3116bb-0x3118bb	ok
+try	0x39c1b1-0x39c2b1	reject
+split	0x39c1b1-0x39c2b1	0x39c1b1-0x39c231
+split	0x39c1b1-0x39c2b1	0x39c231-0x39c2b1
+try	0x3110bb-0x3112bb	ok
+try	0x2f661e-0x2f681e	ok
+try	0x35548a-0x35568a	reject
+split	0x35548a-0x35568a	0x35548a-0x35558a
+split	0x35548a-0x35568a	0x35558a-0x35568a
+try	0x2ebc1e-0x2ebe1e	reject
+split	0x2ebc1e-0x2ebe1e	0x2ebc1e-0x2ebd1e
+split	0x2ebc1e-0x2ebe1e	0x2ebd1e-0x2ebe1e
+try	0x348ad8-0x348cd8	ok
+try	0x35568a-0x35588a	reject
+split	0x35568a-0x35588a	0x35568a-0x35578a
+split	0x35568a-0x35588a	0x35578a-0x35588a
+try	0x30991d-0x309b1d	ok
+try	0x2ff01e-0x2ff21e	reject
+split	0x2ff01e-0x2ff21e	0x2ff01e-0x2ff11e
+split	0x2ff01e-0x2ff21e	0x2ff11e-0x2ff21e
+try	0x3118bb-0x311abb	ok
+try	0x2f641e-0x2f661e	ok
+try	0x39c2b1-0x39c3b1	ok
+try	0x2eba1e-0x2ebc1e	reject
+split	0x2eba1e-0x2ebc1e	0x2eba1e-0x2ebb1e
+split	0x2eba1e-0x2ebc1e	0x2ebb1e-0x2ebc1e
+try	0x31c8bb-0x31cabb	ok
+try	0x39c431-0x39c4b1	ok
+try	0x2fef1e-0x2ff01e	ok
+try	0x31c6bb-0x31c7bb	reject
+split	0x31c6bb-0x31c7bb	0x31c6bb-0x31c73b
+split	0x31c6bb-0x31c7bb	0x31c73b-0x31c7bb
+try	0x2fee1e-0x2fef1e	reject
+split	0x2fee1e-0x2fef1e	0x2fee1e-0x2fee9e
+split	0x2fee1e-0x2fef1e	0x2fee9e-0x2fef1e
+try	0x39c3b1-0x39c431	ok
+try	0x31c7bb-0x31c8bb	ok
+try	0x2b8375-0x2b8575	reject
+split	0x2b8375-0x2b8575	0x2b8375-0x2b8475
+split	0x2b8375-0x2b8575	0x2b8475-0x2b8575
+try	0x2b8b75-0x2b8d75	ok
+try	0x2d1b07-0x2d1d07	ok
+try	0x2b8575-0x2b8775	reject
+split	0x2b8575-0x2b8775	0x2b8575-0x2b8675
+split	0x2b8575-0x2b8775	0x2b8675-0x2b8775
+try	0x2d1d07-0x2d1f07	ok
+try	0x39c231-0x39c2b1	reject
+try	0x39c1b1-0x39c231	ok
+try	0x2ebc1e-0x2ebd1e	reject
+split	0x2ebc1e-0x2ebd1e	0x2ebc1e-0x2ebc9e
+split	0x2ebc1e-0x2ebd1e	0x2ebc9e-0x2ebd1e
+try	0x2ebd1e-0x2ebe1e	ok
+try	0x35558a-0x35568a	ok
+try	0x2b8975-0x2b8b75	ok
+try	0x35578a-0x35588a	ok
+try	0x35548a-0x35558a	ok
+try	0x35568a-0x35578a	ok
+try	0x2ff11e-0x2ff21e	ok
+try	0x2ff01e-0x2ff11e	reject
+split	0x2ff01e-0x2ff11e	0x2ff01e-0x2ff09e
+split	0x2ff01e-0x2ff11e	0x2ff09e-0x2ff11e
+try	0x2ebb1e-0x2ebc1e	reject
+split	0x2ebb1e-0x2ebc1e	0x2ebb1e-0x2ebb9e
+split	0x2ebb1e-0x2ebc1e	0x2ebb9e-0x2ebc1e
+try	0x2eba1e-0x2ebb1e	ok
+try	0x2b0b75-0x2b0d75	reject
+split	0x2b0b75-0x2b0d75	0x2b0b75-0x2b0c75
+split	0x2b0b75-0x2b0d75	0x2b0c75-0x2b0d75
+try	0x2fee1e-0x2fee9e	ok
+wrote	native_gap_retdec_batch1874.ranges	32
+appended_reject_cache	dumps/vmtail-wide-1m-w16/vm_executable_gap_retdec_reject_cache.tsv	18
+# elapsed 8.41s
+created_batches	1874
++ make -j 24 native-gap-retdec-batch1874
+make[1]: Entering directory '/models/dev/sc-rev/eac/eacsym'
+make dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1874.c
+make[2]: Entering directory '/models/dev/sc-rev/eac/eacsym'
+python3 vm_native_gap_retdec_batch.py --batch-index 1874 --ranges-file native_gap_retdec_batch1874.ranges > dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1874.c
+native_gap_retdec_batch=1874
+native_gap_retdec_selected_ranges=32
+make[2]: Leaving directory '/models/dev/sc-rev/eac/eacsym'
+make[1]: Leaving directory '/models/dev/sc-rev/eac/eacsym'
+# elapsed 2.21s
++ cc -std=c11 -fsyntax-only -w dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1874.c
+dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1874.c: In function ‘function_35559e’:
+dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1874.c:2576:5: error: implicit declaration of function ‘__asm_vshufpd’; did you mean ‘__asm_pshufd’? [-Wimplicit-function-declaration]
+ 2576 |     __asm_vshufpd(v15, *(int128_t *)(v10 + 0x30aecd0e), -24);
+      |     ^~~~~~~~~~~~~
+      |     __asm_pshufd
+dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1874.c: In function ‘function_355781’:
+dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1874.c:2660:5: error: implicit declaration of function ‘__asm_psubsb’; did you mean ‘__asm_subsd’? [-Wimplicit-function-declaration]
+ 2660 |     __asm_psubsb(result, a6);
+      |     ^~~~~~~~~~~~
+      |     __asm_subsd
+dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1874.c: In function ‘function_39c3e5’:
+dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1874.c:2884:5: error: implicit declaration of function ‘__asm_vrsqrtss’; did you mean ‘__asm_rdtsc’? [-Wimplicit-function-declaration]
+ 2884 |     __asm_vrsqrtss(v26, v26);
+      |     ^~~~~~~~~~~~~~
+      |     __asm_rdtsc
+# elapsed 0.02s
+quarantined_range_file	native_gap_retdec_batch1874.ranges	native_gap_retdec_batch1874.ranges.failed
+removed_failed_sidecar	dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1874.c
+salvage_batch_start	1874	32
+salvage_try	0x2b8975-0x2b8b75	batch=1874
+salvage_try	0x2b8b75-0x2b8d75	batch=1875
+salvage_try	0x2d1b07-0x2d1d07	batch=1876
+salvage_try	0x2d1d07-0x2d1f07	batch=1877
+salvage_try	0x2eba1e-0x2ebb1e	batch=1878
+salvage_try	0x2ebd1e-0x2ebe1e	batch=1879
+salvage_try	0x2f641e-0x2f661e	batch=1880
+salvage_try	0x2f661e-0x2f681e	batch=1881
+salvage_try	0x2fee1e-0x2fee9e	batch=1882
+salvage_try	0x2fef1e-0x2ff01e	batch=1883
+salvage_try	0x2ff11e-0x2ff21e	batch=1884
+salvage_try	0x3080af-0x3082af	batch=1885
+salvage_try	0x3082af-0x3084af	batch=1886
+salvage_try	0x30991d-0x309b1d	batch=1887
+salvage_try	0x309b1d-0x309d1d	batch=1888
+salvage_try	0x3110bb-0x3112bb	batch=1889
+salvage_try	0x3112bb-0x3114bb	batch=1890
+salvage_try	0x3116bb-0x3118bb	batch=1891
+salvage_try	0x3118bb-0x311abb	batch=1892
+salvage_try	0x31c7bb-0x31c8bb	batch=1893
+salvage_try	0x31c8bb-0x31cabb	batch=1894
+salvage_try	0x348ad8-0x348cd8	batch=1895
+salvage_try	0x348cd8-0x348ed8	batch=1896
+salvage_try	0x35548a-0x35558a	batch=1897
+salvage_try	0x35558a-0x35568a	batch=1898
+salvage_try	0x35568a-0x35578a	batch=1899
+salvage_try	0x35578a-0x35588a	batch=1900
+salvage_try	0x39c1b1-0x39c231	batch=1901
+salvage_try	0x39c2b1-0x39c3b1	batch=1902
+salvage_try	0x39c3b1-0x39c431	batch=1903
+salvage_try	0x39c431-0x39c4b1	batch=1904
+salvage_try	0x39c4b1-0x39c5b1	batch=1905
++ make -j 24 native-gap-retdec-batch1874 native-gap-retdec-batch1875 native-gap-retdec-batch1876 native-gap-retdec-batch1877 native-gap-retdec-batch1878 native-gap-retdec-batch1879 native-gap-retdec-batch1880 native-gap-retdec-batch1881 native-gap-retdec-batch1882 native-gap-retdec-batch1883 native-gap-retdec-batch1884 native-gap-retdec-batch1885 native-gap-retdec-batch1886 native-gap-retdec-batch1887 native-gap-retdec-batch1888 native-gap-retdec-batch1889 native-gap-retdec-batch1890 native-gap-retdec-batch1891 native-gap-retdec-batch1892 native-gap-retdec-batch1893 native-gap-retdec-batch1894 native-gap-retdec-batch1895 native-gap-retdec-batch1896 native-gap-retdec-batch1897 native-gap-retdec-batch1898 native-gap-retdec-batch1899 native-gap-retdec-batch1900 native-gap-retdec-batch1901 native-gap-retdec-batch1902 native-gap-retdec-batch1903 native-gap-retdec-batch1904 native-gap-retdec-batch1905
+make[1]: Entering directory '/models/dev/sc-rev/eac/eacsym'
+make dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1874.c
+make dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1875.c
+make dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1876.c
+make dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1877.c
+make dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1878.c
+make dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1879.c
+make dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1880.c
+make dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1881.c
+make dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1882.c
+make dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1883.c
+make dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1884.c
+make dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1885.c
+make dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1886.c
+make dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1887.c
+make dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1888.c
+make dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1889.c
+make dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1890.c
+make dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1891.c
+make dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1892.c
+make dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1893.c
+make dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1894.c
+make dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1895.c
+make dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1896.c
+make dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1897.c
+make[2]: Entering directory '/models/dev/sc-rev/eac/eacsym'
+python3 vm_native_gap_retdec_batch.py --batch-index 1883 --ranges-file native_gap_retdec_batch1883.ranges > dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1883.c
+make[2]: Entering directory '/models/dev/sc-rev/eac/eacsym'
+make[2]: Entering directory '/models/dev/sc-rev/eac/eacsym'
+python3 vm_native_gap_retdec_batch.py --batch-index 1878 --ranges-file native_gap_retdec_batch1878.ranges > dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1878.c
+python3 vm_native_gap_retdec_batch.py --batch-index 1876 --ranges-file native_gap_retdec_batch1876.ranges > dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1876.c
+make[2]: Entering directory '/models/dev/sc-rev/eac/eacsym'
+python3 vm_native_gap_retdec_batch.py --batch-index 1874 --ranges-file native_gap_retdec_batch1874.ranges > dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1874.c
+make[2]: Entering directory '/models/dev/sc-rev/eac/eacsym'
+python3 vm_native_gap_retdec_batch.py --batch-index 1875 --ranges-file native_gap_retdec_batch1875.ranges > dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1875.c
+make[2]: Entering directory '/models/dev/sc-rev/eac/eacsym'
+python3 vm_native_gap_retdec_batch.py --batch-index 1877 --ranges-file native_gap_retdec_batch1877.ranges > dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1877.c
+make[2]: Entering directory '/models/dev/sc-rev/eac/eacsym'
+python3 vm_native_gap_retdec_batch.py --batch-index 1879 --ranges-file native_gap_retdec_batch1879.ranges > dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1879.c
+make[2]: Entering directory '/models/dev/sc-rev/eac/eacsym'
+python3 vm_native_gap_retdec_batch.py --batch-index 1885 --ranges-file native_gap_retdec_batch1885.ranges > dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1885.c
+make[2]: Entering directory '/models/dev/sc-rev/eac/eacsym'
+python3 vm_native_gap_retdec_batch.py --batch-index 1880 --ranges-file native_gap_retdec_batch1880.ranges > dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1880.c
+make[2]: Entering directory '/models/dev/sc-rev/eac/eacsym'
+python3 vm_native_gap_retdec_batch.py --batch-index 1881 --ranges-file native_gap_retdec_batch1881.ranges > dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1881.c
+make[2]: Entering directory '/models/dev/sc-rev/eac/eacsym'
+python3 vm_native_gap_retdec_batch.py --batch-index 1888 --ranges-file native_gap_retdec_batch1888.ranges > dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1888.c
+make[2]: Entering directory '/models/dev/sc-rev/eac/eacsym'
+python3 vm_native_gap_retdec_batch.py --batch-index 1882 --ranges-file native_gap_retdec_batch1882.ranges > dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1882.c
+make[2]: Entering directory '/models/dev/sc-rev/eac/eacsym'
+python3 vm_native_gap_retdec_batch.py --batch-index 1884 --ranges-file native_gap_retdec_batch1884.ranges > dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1884.c
+make[2]: Entering directory '/models/dev/sc-rev/eac/eacsym'
+python3 vm_native_gap_retdec_batch.py --batch-index 1887 --ranges-file native_gap_retdec_batch1887.ranges > dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1887.c
+make[2]: Entering directory '/models/dev/sc-rev/eac/eacsym'
+python3 vm_native_gap_retdec_batch.py --batch-index 1890 --ranges-file native_gap_retdec_batch1890.ranges > dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1890.c
+make[2]: Entering directory '/models/dev/sc-rev/eac/eacsym'
+python3 vm_native_gap_retdec_batch.py --batch-index 1886 --ranges-file native_gap_retdec_batch1886.ranges > dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1886.c
+make[2]: Entering directory '/models/dev/sc-rev/eac/eacsym'
+python3 vm_native_gap_retdec_batch.py --batch-index 1889 --ranges-file native_gap_retdec_batch1889.ranges > dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1889.c
+make[2]: Entering directory '/models/dev/sc-rev/eac/eacsym'
+python3 vm_native_gap_retdec_batch.py --batch-index 1894 --ranges-file native_gap_retdec_batch1894.ranges > dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1894.c
+make[2]: Entering directory '/models/dev/sc-rev/eac/eacsym'
+python3 vm_native_gap_retdec_batch.py --batch-index 1891 --ranges-file native_gap_retdec_batch1891.ranges > dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1891.c
+make[2]: Entering directory '/models/dev/sc-rev/eac/eacsym'
+python3 vm_native_gap_retdec_batch.py --batch-index 1893 --ranges-file native_gap_retdec_batch1893.ranges > dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1893.c
+make[2]: Entering directory '/models/dev/sc-rev/eac/eacsym'
+python3 vm_native_gap_retdec_batch.py --batch-index 1892 --ranges-file native_gap_retdec_batch1892.ranges > dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1892.c
+make[2]: Entering directory '/models/dev/sc-rev/eac/eacsym'
+python3 vm_native_gap_retdec_batch.py --batch-index 1895 --ranges-file native_gap_retdec_batch1895.ranges > dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1895.c
+make[2]: Entering directory '/models/dev/sc-rev/eac/eacsym'
+python3 vm_native_gap_retdec_batch.py --batch-index 1896 --ranges-file native_gap_retdec_batch1896.ranges > dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1896.c
+make[2]: Entering directory '/models/dev/sc-rev/eac/eacsym'
+python3 vm_native_gap_retdec_batch.py --batch-index 1897 --ranges-file native_gap_retdec_batch1897.ranges > dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1897.c
+native_gap_retdec_batch=1897
+native_gap_retdec_selected_ranges=1
+make[2]: Leaving directory '/models/dev/sc-rev/eac/eacsym'
+make dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1898.c
+make[2]: Entering directory '/models/dev/sc-rev/eac/eacsym'
+python3 vm_native_gap_retdec_batch.py --batch-index 1898 --ranges-file native_gap_retdec_batch1898.ranges > dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1898.c
+native_gap_retdec_batch=1885
+native_gap_retdec_selected_ranges=1
+make[2]: Leaving directory '/models/dev/sc-rev/eac/eacsym'
+make dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1899.c
+make[2]: Entering directory '/models/dev/sc-rev/eac/eacsym'
+python3 vm_native_gap_retdec_batch.py --batch-index 1899 --ranges-file native_gap_retdec_batch1899.ranges > dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1899.c
+native_gap_retdec_batch=1895
+native_gap_retdec_selected_ranges=1
+make[2]: Leaving directory '/models/dev/sc-rev/eac/eacsym'
+make dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1900.c
+native_gap_retdec_batch=1896
+native_gap_retdec_selected_ranges=1
+make[2]: Entering directory '/models/dev/sc-rev/eac/eacsym'
+python3 vm_native_gap_retdec_batch.py --batch-index 1900 --ranges-file native_gap_retdec_batch1900.ranges > dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1900.c
+make[2]: Leaving directory '/models/dev/sc-rev/eac/eacsym'
+make dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1901.c
+native_gap_retdec_batch=1889
+native_gap_retdec_selected_ranges=1
+make[2]: Entering directory '/models/dev/sc-rev/eac/eacsym'
+python3 vm_native_gap_retdec_batch.py --batch-index 1901 --ranges-file native_gap_retdec_batch1901.ranges > dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1901.c
+make[2]: Leaving directory '/models/dev/sc-rev/eac/eacsym'
+make dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1902.c
+make[2]: Entering directory '/models/dev/sc-rev/eac/eacsym'
+python3 vm_native_gap_retdec_batch.py --batch-index 1902 --ranges-file native_gap_retdec_batch1902.ranges > dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1902.c
+native_gap_retdec_batch=1881
+native_gap_retdec_selected_ranges=1
+make[2]: Leaving directory '/models/dev/sc-rev/eac/eacsym'
+make dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1903.c
+make[2]: Entering directory '/models/dev/sc-rev/eac/eacsym'
+python3 vm_native_gap_retdec_batch.py --batch-index 1903 --ranges-file native_gap_retdec_batch1903.ranges > dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1903.c
+native_gap_retdec_batch=1876
+native_gap_retdec_selected_ranges=1
+make[2]: Leaving directory '/models/dev/sc-rev/eac/eacsym'
+make dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1904.c
+make[2]: Entering directory '/models/dev/sc-rev/eac/eacsym'
+python3 vm_native_gap_retdec_batch.py --batch-index 1904 --ranges-file native_gap_retdec_batch1904.ranges > dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1904.c
+native_gap_retdec_batch=1878
+native_gap_retdec_selected_ranges=1
+make[2]: Leaving directory '/models/dev/sc-rev/eac/eacsym'
+make dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1905.c
+make[2]: Entering directory '/models/dev/sc-rev/eac/eacsym'
+python3 vm_native_gap_retdec_batch.py --batch-index 1905 --ranges-file native_gap_retdec_batch1905.ranges > dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1905.c
+native_gap_retdec_batch=1883
+native_gap_retdec_selected_ranges=1
+make[2]: Leaving directory '/models/dev/sc-rev/eac/eacsym'
+native_gap_retdec_batch=1880
+native_gap_retdec_selected_ranges=1
+make[2]: Leaving directory '/models/dev/sc-rev/eac/eacsym'
+native_gap_retdec_batch=1882
+native_gap_retdec_selected_ranges=1
+native_gap_retdec_batch=1879
+native_gap_retdec_selected_ranges=1
+make[2]: Leaving directory '/models/dev/sc-rev/eac/eacsym'
+make[2]: Leaving directory '/models/dev/sc-rev/eac/eacsym'
+native_gap_retdec_batch=1886
+native_gap_retdec_selected_ranges=1
+native_gap_retdec_batch=1892
+native_gap_retdec_selected_ranges=1
+make[2]: Leaving directory '/models/dev/sc-rev/eac/eacsym'
+make[2]: Leaving directory '/models/dev/sc-rev/eac/eacsym'
+native_gap_retdec_batch=1888
+native_gap_retdec_selected_ranges=1
+native_gap_retdec_batch=1891
+native_gap_retdec_selected_ranges=1
+native_gap_retdec_batch=1877
+native_gap_retdec_selected_ranges=1
+make[2]: Leaving directory '/models/dev/sc-rev/eac/eacsym'
+native_gap_retdec_batch=1884
+native_gap_retdec_selected_ranges=1
+make[2]: Leaving directory '/models/dev/sc-rev/eac/eacsym'
+make[2]: Leaving directory '/models/dev/sc-rev/eac/eacsym'
+make[2]: Leaving directory '/models/dev/sc-rev/eac/eacsym'
+native_gap_retdec_batch=1874
+native_gap_retdec_selected_ranges=1
+native_gap_retdec_batch=1875
+native_gap_retdec_selected_ranges=1
+native_gap_retdec_batch=1887
+native_gap_retdec_selected_ranges=1
+make[2]: Leaving directory '/models/dev/sc-rev/eac/eacsym'
+make[2]: Leaving directory '/models/dev/sc-rev/eac/eacsym'
+make[2]: Leaving directory '/models/dev/sc-rev/eac/eacsym'
+native_gap_retdec_batch=1890
+native_gap_retdec_selected_ranges=1
+make[2]: Leaving directory '/models/dev/sc-rev/eac/eacsym'
+native_gap_retdec_batch=1894
+native_gap_retdec_selected_ranges=1
+make[2]: Leaving directory '/models/dev/sc-rev/eac/eacsym'
+native_gap_retdec_batch=1893
+native_gap_retdec_selected_ranges=1
+make[2]: Leaving directory '/models/dev/sc-rev/eac/eacsym'
+native_gap_retdec_batch=1899
+native_gap_retdec_selected_ranges=1
+make[2]: Leaving directory '/models/dev/sc-rev/eac/eacsym'
+native_gap_retdec_batch=1901
+native_gap_retdec_selected_ranges=1
+make[2]: Leaving directory '/models/dev/sc-rev/eac/eacsym'
+native_gap_retdec_batch=1898
+native_gap_retdec_selected_ranges=1
+make[2]: Leaving directory '/models/dev/sc-rev/eac/eacsym'
+native_gap_retdec_batch=1900
+native_gap_retdec_selected_ranges=1
+native_gap_retdec_batch=1903
+native_gap_retdec_selected_ranges=1
+make[2]: Leaving directory '/models/dev/sc-rev/eac/eacsym'
+make[2]: Leaving directory '/models/dev/sc-rev/eac/eacsym'
+native_gap_retdec_batch=1904
+native_gap_retdec_selected_ranges=1
+native_gap_retdec_batch=1902
+native_gap_retdec_selected_ranges=1
+make[2]: Leaving directory '/models/dev/sc-rev/eac/eacsym'
+make[2]: Leaving directory '/models/dev/sc-rev/eac/eacsym'
+native_gap_retdec_batch=1905
+native_gap_retdec_selected_ranges=1
+make[2]: Leaving directory '/models/dev/sc-rev/eac/eacsym'
+make[1]: Leaving directory '/models/dev/sc-rev/eac/eacsym'
+# elapsed 4.39s
++ cc -std=c11 -fsyntax-only -w dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1874.c
+# elapsed 0.01s
++ cc -std=c11 -fsyntax-only -w dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1875.c
+# elapsed 0.01s
++ cc -std=c11 -fsyntax-only -w dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1876.c
+# elapsed 0.01s
++ cc -std=c11 -fsyntax-only -w dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1877.c
+# elapsed 0.01s
++ cc -std=c11 -fsyntax-only -w dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1878.c
+# elapsed 0.01s
++ cc -std=c11 -fsyntax-only -w dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1879.c
+# elapsed 0.01s
++ cc -std=c11 -fsyntax-only -w dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1880.c
+# elapsed 0.01s
++ cc -std=c11 -fsyntax-only -w dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1881.c
+# elapsed 0.01s
++ cc -std=c11 -fsyntax-only -w dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1882.c
+# elapsed 0.01s
++ cc -std=c11 -fsyntax-only -w dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1883.c
+# elapsed 0.01s
++ cc -std=c11 -fsyntax-only -w dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1884.c
+# elapsed 0.01s
++ cc -std=c11 -fsyntax-only -w dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1885.c
+# elapsed 0.01s
++ cc -std=c11 -fsyntax-only -w dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1886.c
+# elapsed 0.01s
++ cc -std=c11 -fsyntax-only -w dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1887.c
+# elapsed 0.01s
++ cc -std=c11 -fsyntax-only -w dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1888.c
+# elapsed 0.01s
++ cc -std=c11 -fsyntax-only -w dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1889.c
+# elapsed 0.01s
++ cc -std=c11 -fsyntax-only -w dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1890.c
+# elapsed 0.01s
++ cc -std=c11 -fsyntax-only -w dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1891.c
+# elapsed 0.01s
++ cc -std=c11 -fsyntax-only -w dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1892.c
+# elapsed 0.01s
++ cc -std=c11 -fsyntax-only -w dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1893.c
+# elapsed 0.01s
++ cc -std=c11 -fsyntax-only -w dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1894.c
+# elapsed 0.01s
++ cc -std=c11 -fsyntax-only -w dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1895.c
+# elapsed 0.01s
++ cc -std=c11 -fsyntax-only -w dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1896.c
+# elapsed 0.01s
++ cc -std=c11 -fsyntax-only -w dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1897.c
+# elapsed 0.01s
++ cc -std=c11 -fsyntax-only -w dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1898.c
+# elapsed 0.01s
++ cc -std=c11 -fsyntax-only -w dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1899.c
+# elapsed 0.01s
++ cc -std=c11 -fsyntax-only -w dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1900.c
+# elapsed 0.01s
++ cc -std=c11 -fsyntax-only -w dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1901.c
+# elapsed 0.01s
++ cc -std=c11 -fsyntax-only -w dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1902.c
+# elapsed 0.01s
++ cc -std=c11 -fsyntax-only -w dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1903.c
+# elapsed 0.01s
++ cc -std=c11 -fsyntax-only -w dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1904.c
+# elapsed 0.01s
++ cc -std=c11 -fsyntax-only -w dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1905.c
+# elapsed 0.01s
+salvage_batch_done	1874	salvaged=1874,1875,1876,1877,1878,1879,1880,1881,1882,1883,1884,1885,1886,1887,1888,1889,1890,1891,1892,1893,1894,1895,1896,1897,1898,1899,1900,1901,1902,1903,1904,1905	rejected=0
++ make -s native-executable-coverage-audit native-retdec-gap-queue
+# elapsed 2.96s
++ make -s uncovered-executable-gaps
+uncovered_executable_gaps=3159 bytes=717336
+uncovered_executable_gaps=3159 bytes=717336
+uncovered_executable_gaps=3159 bytes=717336
+# elapsed 0.90s
+coverage_delta
+native_executable_coverage_range_rows	62481	63596	delta=+1115
+native_executable_coverage_gap_rows	3195	3164	delta=-31
+native_executable_coverage_recovered_bytes	4866234	4933704	delta=+67470
+native_executable_coverage_uncovered_bytes	784806	717336	delta=-67470
+round_start	7
++ python3 vm_executable_gap_retdec_probe.py --root . --section .text --chunk-bytes 0x200 --min-chunk-bytes 0x80 --max-split-candidates 256 --max-gap-chunks 12 --max-candidates 768 --max-accepted 32 --probe-jobs 24 --timeout 30 --reject-cache dumps/vmtail-wide-1m-w16/vm_executable_gap_retdec_reject_cache.tsv
+try	0x2b8675-0x2b8775	reject
+split	0x2b8675-0x2b8775	0x2b8675-0x2b86f5
+split	0x2b8675-0x2b8775	0x2b86f5-0x2b8775
+try	0x2add75-0x2adf75	reject
+split	0x2add75-0x2adf75	0x2add75-0x2ade75
+split	0x2add75-0x2adf75	0x2ade75-0x2adf75
+try	0x2b0b75-0x2b0c75	ok
+try	0x2b0d75-0x2b0f75	ok
+try	0x299cc9-0x299ec9	reject
+split	0x299cc9-0x299ec9	0x299cc9-0x299dc9
+split	0x299cc9-0x299ec9	0x299dc9-0x299ec9
+try	0x2abd75-0x2abf75	reject
+split	0x2abd75-0x2abf75	0x2abd75-0x2abe75
+split	0x2abd75-0x2abf75	0x2abe75-0x2abf75
+try	0x29eabf-0x29ecbf	ok
+try	0x2b0c75-0x2b0d75	reject
+split	0x2b0c75-0x2b0d75	0x2b0c75-0x2b0cf5
+split	0x2b0c75-0x2b0d75	0x2b0cf5-0x2b0d75
+try	0x27cd9f-0x27cf9f	ok
+try	0x2b8575-0x2b8675	ok
+try	0x2b8475-0x2b8575	reject
+split	0x2b8475-0x2b8575	0x2b8475-0x2b84f5
+split	0x2b8475-0x2b8575	0x2b84f5-0x2b8575
+try	0x2aab75-0x2aad75	reject
+split	0x2aab75-0x2aad75	0x2aab75-0x2aac75
+split	0x2aab75-0x2aad75	0x2aac75-0x2aad75
+try	0x29084c-0x290a4c	ok
+try	0x2abb75-0x2abd75	reject
+split	0x2abb75-0x2abd75	0x2abb75-0x2abc75
+split	0x2abb75-0x2abd75	0x2abc75-0x2abd75
+try	0x2b8375-0x2b8475	ok
+try	0x299ac9-0x299cc9	reject
+split	0x299ac9-0x299cc9	0x299ac9-0x299bc9
+split	0x299ac9-0x299cc9	0x299bc9-0x299cc9
+try	0x271041-0x271241	ok
+try	0x290a4c-0x290c4c	reject
+split	0x290a4c-0x290c4c	0x290a4c-0x290b4c
+split	0x290a4c-0x290c4c	0x290b4c-0x290c4c
+try	0x2978c9-0x297ac9	reject
+split	0x2978c9-0x297ac9	0x2978c9-0x2979c9
+split	0x2978c9-0x297ac9	0x2979c9-0x297ac9
+try	0x29ecbf-0x29eebf	ok
+try	0x297ac9-0x297cc9	reject
+split	0x297ac9-0x297cc9	0x297ac9-0x297bc9
+split	0x297ac9-0x297cc9	0x297bc9-0x297cc9
+try	0x2adf75-0x2ae175	ok
+try	0x2aa975-0x2aab75	reject
+split	0x2aa975-0x2aab75	0x2aa975-0x2aaa75
+split	0x2aa975-0x2aab75	0x2aaa75-0x2aab75
+try	0x27cb9f-0x27cd9f	ok
+try	0x2add75-0x2ade75	ok
+try	0x299dc9-0x299ec9	reject
+split	0x299dc9-0x299ec9	0x299dc9-0x299e49
+split	0x299dc9-0x299ec9	0x299e49-0x299ec9
+try	0x2b86f5-0x2b8775	ok
+try	0x2b8675-0x2b86f5	reject
+try	0x2abd75-0x2abe75	ok
+try	0x2ade75-0x2adf75	ok
+try	0x2b0cf5-0x2b0d75	reject
+try	0x2aac75-0x2aad75	ok
+try	0x299cc9-0x299dc9	ok
+try	0x2abe75-0x2abf75	reject
+split	0x2abe75-0x2abf75	0x2abe75-0x2abef5
+split	0x2abe75-0x2abf75	0x2abef5-0x2abf75
+try	0x2b84f5-0x2b8575	ok
+try	0x2b0c75-0x2b0cf5	reject
+try	0x2aab75-0x2aac75	reject
+split	0x2aab75-0x2aac75	0x2aab75-0x2aabf5
+split	0x2aab75-0x2aac75	0x2aabf5-0x2aac75
+try	0x2abb75-0x2abc75	ok
+try	0x290b4c-0x290c4c	ok
+try	0x2979c9-0x297ac9	reject
+split	0x2979c9-0x297ac9	0x2979c9-0x297a49
+split	0x2979c9-0x297ac9	0x297a49-0x297ac9
+try	0x299bc9-0x299cc9	ok
+try	0x297ac9-0x297bc9	reject
+split	0x297ac9-0x297bc9	0x297ac9-0x297b49
+split	0x297ac9-0x297bc9	0x297b49-0x297bc9
+try	0x299ac9-0x299bc9	reject
+split	0x299ac9-0x299bc9	0x299ac9-0x299b49
+split	0x299ac9-0x299bc9	0x299b49-0x299bc9
+try	0x2abc75-0x2abd75	reject
+split	0x2abc75-0x2abd75	0x2abc75-0x2abcf5
+split	0x2abc75-0x2abd75	0x2abcf5-0x2abd75
+try	0x2aaa75-0x2aab75	ok
+try	0x2978c9-0x2979c9	ok
+try	0x2aa975-0x2aaa75	reject
+split	0x2aa975-0x2aaa75	0x2aa975-0x2aa9f5
+split	0x2aa975-0x2aaa75	0x2aa9f5-0x2aaa75
+try	0x297bc9-0x297cc9	ok
+try	0x299e49-0x299ec9	ok
+try	0x290a4c-0x290b4c	reject
+split	0x290a4c-0x290b4c	0x290a4c-0x290acc
+split	0x290a4c-0x290b4c	0x290acc-0x290b4c
+try	0x268bc2-0x268dc2	reject
+split	0x268bc2-0x268dc2	0x268bc2-0x268cc2
+split	0x268bc2-0x268dc2	0x268cc2-0x268dc2
+try	0x299dc9-0x299e49	reject
+try	0x25b6c2-0x25b8c2	ok
+try	0x268dc2-0x268fc2	reject
+split	0x268dc2-0x268fc2	0x268dc2-0x268ec2
+split	0x268dc2-0x268fc2	0x268ec2-0x268fc2
+try	0x271241-0x271441	ok
+try	0x2abef5-0x2abf75	ok
+try	0x25b8c2-0x25bac2	ok
+try	0x25b0c2-0x25b2c2	ok
+try	0x2b8475-0x2b84f5	ok
+try	0x2abcf5-0x2abd75	ok
+wrote	native_gap_retdec_batch1906.ranges	32
+appended_reject_cache	dumps/vmtail-wide-1m-w16/vm_executable_gap_retdec_reject_cache.tsv	28
+# elapsed 9.33s
+created_batches	1906
++ make -j 24 native-gap-retdec-batch1906
+make[1]: Entering directory '/models/dev/sc-rev/eac/eacsym'
+make dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1906.c
+make[2]: Entering directory '/models/dev/sc-rev/eac/eacsym'
+python3 vm_native_gap_retdec_batch.py --batch-index 1906 --ranges-file native_gap_retdec_batch1906.ranges > dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1906.c
+native_gap_retdec_batch=1906
+native_gap_retdec_selected_ranges=32
+make[2]: Leaving directory '/models/dev/sc-rev/eac/eacsym'
+make[1]: Leaving directory '/models/dev/sc-rev/eac/eacsym'
+# elapsed 1.98s
++ cc -std=c11 -fsyntax-only -w dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1906.c
+dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1906.c: In function ‘function_2ade79’:
+dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1906.c:2074:5: error: implicit declaration of function ‘__asm_vcmpsd’; did you mean ‘__asm_ucomisd’? [-Wimplicit-function-declaration]
+ 2074 |     __asm_vcmpsd(v3, v1, -76);
+      |     ^~~~~~~~~~~~
+      |     __asm_ucomisd
+dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1906.c: In function ‘function_2b84ee’:
+dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1906.c:2474:5: error: implicit declaration of function ‘__asm_punpcklbw’; did you mean ‘__asm_punpckldq’? [-Wimplicit-function-declaration]
+ 2474 |     __asm_punpcklbw(v3, *(int32_t *)0x23f70579);
+      |     ^~~~~~~~~~~~~~~
+      |     __asm_punpckldq
+# elapsed 0.02s
+quarantined_range_file	native_gap_retdec_batch1906.ranges	native_gap_retdec_batch1906.ranges.failed
+removed_failed_sidecar	dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1906.c
+salvage_batch_start	1906	32
+salvage_try	0x25b0c2-0x25b2c2	batch=1906
+salvage_try	0x25b6c2-0x25b8c2	batch=1907
+salvage_try	0x25b8c2-0x25bac2	batch=1908
+salvage_try	0x271041-0x271241	batch=1909
+salvage_try	0x271241-0x271441	batch=1910
+salvage_try	0x27cb9f-0x27cd9f	batch=1911
+salvage_try	0x27cd9f-0x27cf9f	batch=1912
+salvage_try	0x29084c-0x290a4c	batch=1913
+salvage_try	0x290b4c-0x290c4c	batch=1914
+salvage_try	0x2978c9-0x2979c9	batch=1915
+salvage_try	0x297bc9-0x297cc9	batch=1916
+salvage_try	0x299bc9-0x299cc9	batch=1917
+salvage_try	0x299cc9-0x299dc9	batch=1918
+salvage_try	0x299e49-0x299ec9	batch=1919
+salvage_try	0x29eabf-0x29ecbf	batch=1920
+salvage_try	0x29ecbf-0x29eebf	batch=1921
+salvage_try	0x2aaa75-0x2aab75	batch=1922
+salvage_try	0x2aac75-0x2aad75	batch=1923
+salvage_try	0x2abb75-0x2abc75	batch=1924
+salvage_try	0x2abcf5-0x2abd75	batch=1925
+salvage_try	0x2abd75-0x2abe75	batch=1926
+salvage_try	0x2abef5-0x2abf75	batch=1927
+salvage_try	0x2add75-0x2ade75	batch=1928
+salvage_try	0x2ade75-0x2adf75	batch=1929
+salvage_try	0x2adf75-0x2ae175	batch=1930
+salvage_try	0x2b0b75-0x2b0c75	batch=1931
+salvage_try	0x2b0d75-0x2b0f75	batch=1932
+salvage_try	0x2b8375-0x2b8475	batch=1933
+salvage_try	0x2b8475-0x2b84f5	batch=1934
+salvage_try	0x2b84f5-0x2b8575	batch=1935
+salvage_try	0x2b8575-0x2b8675	batch=1936
+salvage_try	0x2b86f5-0x2b8775	batch=1937
++ make -j 24 native-gap-retdec-batch1906 native-gap-retdec-batch1907 native-gap-retdec-batch1908 native-gap-retdec-batch1909 native-gap-retdec-batch1910 native-gap-retdec-batch1911 native-gap-retdec-batch1912 native-gap-retdec-batch1913 native-gap-retdec-batch1914 native-gap-retdec-batch1915 native-gap-retdec-batch1916 native-gap-retdec-batch1917 native-gap-retdec-batch1918 native-gap-retdec-batch1919 native-gap-retdec-batch1920 native-gap-retdec-batch1921 native-gap-retdec-batch1922 native-gap-retdec-batch1923 native-gap-retdec-batch1924 native-gap-retdec-batch1925 native-gap-retdec-batch1926 native-gap-retdec-batch1927 native-gap-retdec-batch1928 native-gap-retdec-batch1929 native-gap-retdec-batch1930 native-gap-retdec-batch1931 native-gap-retdec-batch1932 native-gap-retdec-batch1933 native-gap-retdec-batch1934 native-gap-retdec-batch1935 native-gap-retdec-batch1936 native-gap-retdec-batch1937
+make[1]: Entering directory '/models/dev/sc-rev/eac/eacsym'
+make dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1906.c
+make dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1907.c
+make dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1908.c
+make dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1909.c
+make dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1910.c
+make dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1911.c
+make dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1912.c
+make dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1913.c
+make dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1914.c
+make dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1915.c
+make dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1916.c
+make dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1917.c
+make dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1918.c
+make dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1919.c
+make dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1920.c
+make dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1921.c
+make dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1922.c
+make dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1923.c
+make dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1924.c
+make dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1925.c
+make dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1926.c
+make dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1927.c
+make dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1928.c
+make dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1929.c
+make[2]: Entering directory '/models/dev/sc-rev/eac/eacsym'
+python3 vm_native_gap_retdec_batch.py --batch-index 1906 --ranges-file native_gap_retdec_batch1906.ranges > dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1906.c
+make[2]: Entering directory '/models/dev/sc-rev/eac/eacsym'
+python3 vm_native_gap_retdec_batch.py --batch-index 1909 --ranges-file native_gap_retdec_batch1909.ranges > dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1909.c
+make[2]: Entering directory '/models/dev/sc-rev/eac/eacsym'
+python3 vm_native_gap_retdec_batch.py --batch-index 1907 --ranges-file native_gap_retdec_batch1907.ranges > dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1907.c
+make[2]: Entering directory '/models/dev/sc-rev/eac/eacsym'
+python3 vm_native_gap_retdec_batch.py --batch-index 1908 --ranges-file native_gap_retdec_batch1908.ranges > dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1908.c
+make[2]: Entering directory '/models/dev/sc-rev/eac/eacsym'
+python3 vm_native_gap_retdec_batch.py --batch-index 1913 --ranges-file native_gap_retdec_batch1913.ranges > dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1913.c
+make[2]: Entering directory '/models/dev/sc-rev/eac/eacsym'
+make[2]: Entering directory '/models/dev/sc-rev/eac/eacsym'
+python3 vm_native_gap_retdec_batch.py --batch-index 1919 --ranges-file native_gap_retdec_batch1919.ranges > dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1919.c
+python3 vm_native_gap_retdec_batch.py --batch-index 1918 --ranges-file native_gap_retdec_batch1918.ranges > dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1918.c
+make[2]: Entering directory '/models/dev/sc-rev/eac/eacsym'
+python3 vm_native_gap_retdec_batch.py --batch-index 1914 --ranges-file native_gap_retdec_batch1914.ranges > dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1914.c
+make[2]: Entering directory '/models/dev/sc-rev/eac/eacsym'
+python3 vm_native_gap_retdec_batch.py --batch-index 1911 --ranges-file native_gap_retdec_batch1911.ranges > dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1911.c
+make[2]: Entering directory '/models/dev/sc-rev/eac/eacsym'
+python3 vm_native_gap_retdec_batch.py --batch-index 1917 --ranges-file native_gap_retdec_batch1917.ranges > dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1917.c
+make[2]: Entering directory '/models/dev/sc-rev/eac/eacsym'
+python3 vm_native_gap_retdec_batch.py --batch-index 1912 --ranges-file native_gap_retdec_batch1912.ranges > dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1912.c
+make[2]: Entering directory '/models/dev/sc-rev/eac/eacsym'
+python3 vm_native_gap_retdec_batch.py --batch-index 1910 --ranges-file native_gap_retdec_batch1910.ranges > dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1910.c
+make[2]: Entering directory '/models/dev/sc-rev/eac/eacsym'
+python3 vm_native_gap_retdec_batch.py --batch-index 1916 --ranges-file native_gap_retdec_batch1916.ranges > dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1916.c
+make[2]: Entering directory '/models/dev/sc-rev/eac/eacsym'
+python3 vm_native_gap_retdec_batch.py --batch-index 1915 --ranges-file native_gap_retdec_batch1915.ranges > dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1915.c
+make[2]: Entering directory '/models/dev/sc-rev/eac/eacsym'
+python3 vm_native_gap_retdec_batch.py --batch-index 1923 --ranges-file native_gap_retdec_batch1923.ranges > dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1923.c
+make[2]: Entering directory '/models/dev/sc-rev/eac/eacsym'
+python3 vm_native_gap_retdec_batch.py --batch-index 1925 --ranges-file native_gap_retdec_batch1925.ranges > dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1925.c
+make[2]: Entering directory '/models/dev/sc-rev/eac/eacsym'
+python3 vm_native_gap_retdec_batch.py --batch-index 1920 --ranges-file native_gap_retdec_batch1920.ranges > dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1920.c
+make[2]: Entering directory '/models/dev/sc-rev/eac/eacsym'
+python3 vm_native_gap_retdec_batch.py --batch-index 1922 --ranges-file native_gap_retdec_batch1922.ranges > dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1922.c
+make[2]: Entering directory '/models/dev/sc-rev/eac/eacsym'
+python3 vm_native_gap_retdec_batch.py --batch-index 1926 --ranges-file native_gap_retdec_batch1926.ranges > dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1926.c
+make[2]: Entering directory '/models/dev/sc-rev/eac/eacsym'
+python3 vm_native_gap_retdec_batch.py --batch-index 1924 --ranges-file native_gap_retdec_batch1924.ranges > dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1924.c
+make[2]: Entering directory '/models/dev/sc-rev/eac/eacsym'
+python3 vm_native_gap_retdec_batch.py --batch-index 1921 --ranges-file native_gap_retdec_batch1921.ranges > dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1921.c
+make[2]: Entering directory '/models/dev/sc-rev/eac/eacsym'
+python3 vm_native_gap_retdec_batch.py --batch-index 1927 --ranges-file native_gap_retdec_batch1927.ranges > dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1927.c
+make[2]: Entering directory '/models/dev/sc-rev/eac/eacsym'
+python3 vm_native_gap_retdec_batch.py --batch-index 1929 --ranges-file native_gap_retdec_batch1929.ranges > dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1929.c
+make[2]: Entering directory '/models/dev/sc-rev/eac/eacsym'
+python3 vm_native_gap_retdec_batch.py --batch-index 1928 --ranges-file native_gap_retdec_batch1928.ranges > dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1928.c
+native_gap_retdec_batch=1917
+native_gap_retdec_selected_ranges=1
+make[2]: Leaving directory '/models/dev/sc-rev/eac/eacsym'
+make dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1930.c
+native_gap_retdec_batch=1914
+native_gap_retdec_selected_ranges=1
+make[2]: Entering directory '/models/dev/sc-rev/eac/eacsym'
+python3 vm_native_gap_retdec_batch.py --batch-index 1930 --ranges-file native_gap_retdec_batch1930.ranges > dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1930.c
+make[2]: Leaving directory '/models/dev/sc-rev/eac/eacsym'
+make dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1931.c
+native_gap_retdec_batch=1913
+native_gap_retdec_selected_ranges=1
+native_gap_retdec_batch=1923
+native_gap_retdec_selected_ranges=1
+make[2]: Entering directory '/models/dev/sc-rev/eac/eacsym'
+python3 vm_native_gap_retdec_batch.py --batch-index 1931 --ranges-file native_gap_retdec_batch1931.ranges > dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1931.c
+make[2]: Leaving directory '/models/dev/sc-rev/eac/eacsym'
+make dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1932.c
+make[2]: Leaving directory '/models/dev/sc-rev/eac/eacsym'
+make dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1933.c
+make[2]: Entering directory '/models/dev/sc-rev/eac/eacsym'
+python3 vm_native_gap_retdec_batch.py --batch-index 1932 --ranges-file native_gap_retdec_batch1932.ranges > dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1932.c
+make[2]: Entering directory '/models/dev/sc-rev/eac/eacsym'
+python3 vm_native_gap_retdec_batch.py --batch-index 1933 --ranges-file native_gap_retdec_batch1933.ranges > dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1933.c
+native_gap_retdec_batch=1915
+native_gap_retdec_selected_ranges=1
+make[2]: Leaving directory '/models/dev/sc-rev/eac/eacsym'
+make dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1934.c
+make[2]: Entering directory '/models/dev/sc-rev/eac/eacsym'
+python3 vm_native_gap_retdec_batch.py --batch-index 1934 --ranges-file native_gap_retdec_batch1934.ranges > dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1934.c
+native_gap_retdec_batch=1907
+native_gap_retdec_selected_ranges=1
+native_gap_retdec_batch=1922
+native_gap_retdec_selected_ranges=1
+make[2]: Leaving directory '/models/dev/sc-rev/eac/eacsym'
+make dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1935.c
+make[2]: Leaving directory '/models/dev/sc-rev/eac/eacsym'
+make dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1936.c
+make[2]: Entering directory '/models/dev/sc-rev/eac/eacsym'
+python3 vm_native_gap_retdec_batch.py --batch-index 1935 --ranges-file native_gap_retdec_batch1935.ranges > dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1935.c
+make[2]: Entering directory '/models/dev/sc-rev/eac/eacsym'
+python3 vm_native_gap_retdec_batch.py --batch-index 1936 --ranges-file native_gap_retdec_batch1936.ranges > dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1936.c
+native_gap_retdec_batch=1925
+native_gap_retdec_selected_ranges=1
+make[2]: Leaving directory '/models/dev/sc-rev/eac/eacsym'
+make dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1937.c
+make[2]: Entering directory '/models/dev/sc-rev/eac/eacsym'
+python3 vm_native_gap_retdec_batch.py --batch-index 1937 --ranges-file native_gap_retdec_batch1937.ranges > dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1937.c
+native_gap_retdec_batch=1906
+native_gap_retdec_selected_ranges=1
+native_gap_retdec_batch=1929
+native_gap_retdec_selected_ranges=1
+native_gap_retdec_batch=1919
+native_gap_retdec_selected_ranges=1
+make[2]: Leaving directory '/models/dev/sc-rev/eac/eacsym'
+make[2]: Leaving directory '/models/dev/sc-rev/eac/eacsym'
+native_gap_retdec_batch=1924
+native_gap_retdec_selected_ranges=1
+make[2]: Leaving directory '/models/dev/sc-rev/eac/eacsym'
+native_gap_retdec_batch=1909
+native_gap_retdec_selected_ranges=1
+native_gap_retdec_batch=1927
+native_gap_retdec_selected_ranges=1
+make[2]: Leaving directory '/models/dev/sc-rev/eac/eacsym'
+make[2]: Leaving directory '/models/dev/sc-rev/eac/eacsym'
+make[2]: Leaving directory '/models/dev/sc-rev/eac/eacsym'
+native_gap_retdec_batch=1920
+native_gap_retdec_selected_ranges=1
+make[2]: Leaving directory '/models/dev/sc-rev/eac/eacsym'
+native_gap_retdec_batch=1928
+native_gap_retdec_selected_ranges=1
+make[2]: Leaving directory '/models/dev/sc-rev/eac/eacsym'
+native_gap_retdec_batch=1912
+native_gap_retdec_selected_ranges=1
+make[2]: Leaving directory '/models/dev/sc-rev/eac/eacsym'
+native_gap_retdec_batch=1911
+native_gap_retdec_selected_ranges=1
+native_gap_retdec_batch=1926
+native_gap_retdec_selected_ranges=1
+native_gap_retdec_batch=1908
+native_gap_retdec_selected_ranges=1
+make[2]: Leaving directory '/models/dev/sc-rev/eac/eacsym'
+native_gap_retdec_batch=1910
+native_gap_retdec_selected_ranges=1
+make[2]: Leaving directory '/models/dev/sc-rev/eac/eacsym'
+native_gap_retdec_batch=1921
+native_gap_retdec_selected_ranges=1
+make[2]: Leaving directory '/models/dev/sc-rev/eac/eacsym'
+make[2]: Leaving directory '/models/dev/sc-rev/eac/eacsym'
+make[2]: Leaving directory '/models/dev/sc-rev/eac/eacsym'
+native_gap_retdec_batch=1916
+native_gap_retdec_selected_ranges=1
+make[2]: Leaving directory '/models/dev/sc-rev/eac/eacsym'
+native_gap_retdec_batch=1918
+native_gap_retdec_selected_ranges=1
+make[2]: Leaving directory '/models/dev/sc-rev/eac/eacsym'
+native_gap_retdec_batch=1933
+native_gap_retdec_selected_ranges=1
+make[2]: Leaving directory '/models/dev/sc-rev/eac/eacsym'
+native_gap_retdec_batch=1931
+native_gap_retdec_selected_ranges=1
+make[2]: Leaving directory '/models/dev/sc-rev/eac/eacsym'
+native_gap_retdec_batch=1935
+native_gap_retdec_selected_ranges=1
+make[2]: Leaving directory '/models/dev/sc-rev/eac/eacsym'
+native_gap_retdec_batch=1932
+native_gap_retdec_selected_ranges=1
+native_gap_retdec_batch=1930
+native_gap_retdec_selected_ranges=1
+make[2]: Leaving directory '/models/dev/sc-rev/eac/eacsym'
+make[2]: Leaving directory '/models/dev/sc-rev/eac/eacsym'
+native_gap_retdec_batch=1936
+native_gap_retdec_selected_ranges=1
+make[2]: Leaving directory '/models/dev/sc-rev/eac/eacsym'
+native_gap_retdec_batch=1934
+native_gap_retdec_selected_ranges=1
+make[2]: Leaving directory '/models/dev/sc-rev/eac/eacsym'
+native_gap_retdec_batch=1937
+native_gap_retdec_selected_ranges=1
+make[2]: Leaving directory '/models/dev/sc-rev/eac/eacsym'
+make[1]: Leaving directory '/models/dev/sc-rev/eac/eacsym'
+# elapsed 4.16s
++ cc -std=c11 -fsyntax-only -w dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1906.c
+# elapsed 0.01s
++ cc -std=c11 -fsyntax-only -w dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1907.c
+# elapsed 0.01s
++ cc -std=c11 -fsyntax-only -w dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1908.c
+# elapsed 0.01s
++ cc -std=c11 -fsyntax-only -w dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1909.c
+# elapsed 0.01s
++ cc -std=c11 -fsyntax-only -w dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1910.c
+# elapsed 0.01s
++ cc -std=c11 -fsyntax-only -w dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1911.c
+# elapsed 0.01s
++ cc -std=c11 -fsyntax-only -w dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1912.c
+# elapsed 0.01s
++ cc -std=c11 -fsyntax-only -w dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1913.c
+# elapsed 0.01s
++ cc -std=c11 -fsyntax-only -w dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1914.c
+# elapsed 0.01s
++ cc -std=c11 -fsyntax-only -w dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1915.c
+# elapsed 0.01s
++ cc -std=c11 -fsyntax-only -w dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1916.c
+# elapsed 0.01s
++ cc -std=c11 -fsyntax-only -w dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1917.c
+# elapsed 0.01s
++ cc -std=c11 -fsyntax-only -w dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1918.c
+# elapsed 0.01s
++ cc -std=c11 -fsyntax-only -w dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1919.c
+# elapsed 0.01s
++ cc -std=c11 -fsyntax-only -w dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1920.c
+# elapsed 0.01s
++ cc -std=c11 -fsyntax-only -w dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1921.c
+# elapsed 0.01s
++ cc -std=c11 -fsyntax-only -w dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1922.c
+# elapsed 0.01s
++ cc -std=c11 -fsyntax-only -w dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1923.c
+# elapsed 0.01s
++ cc -std=c11 -fsyntax-only -w dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1924.c
+# elapsed 0.01s
++ cc -std=c11 -fsyntax-only -w dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1925.c
+# elapsed 0.01s
++ cc -std=c11 -fsyntax-only -w dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1926.c
+# elapsed 0.01s
++ cc -std=c11 -fsyntax-only -w dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1927.c
+# elapsed 0.01s
++ cc -std=c11 -fsyntax-only -w dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1928.c
+# elapsed 0.01s
++ cc -std=c11 -fsyntax-only -w dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1929.c
+# elapsed 0.01s
++ cc -std=c11 -fsyntax-only -w dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1930.c
+# elapsed 0.01s
++ cc -std=c11 -fsyntax-only -w dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1931.c
+# elapsed 0.01s
++ cc -std=c11 -fsyntax-only -w dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1932.c
+# elapsed 0.01s
++ cc -std=c11 -fsyntax-only -w dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1933.c
+# elapsed 0.01s
++ cc -std=c11 -fsyntax-only -w dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1934.c
+# elapsed 0.01s
++ cc -std=c11 -fsyntax-only -w dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1935.c
+# elapsed 0.01s
++ cc -std=c11 -fsyntax-only -w dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1936.c
+# elapsed 0.01s
++ cc -std=c11 -fsyntax-only -w dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch1937.c
+# elapsed 0.01s
+salvage_batch_done	1906	salvaged=1906,1907,1908,1909,1910,1911,1912,1913,1914,1915,1916,1917,1918,1919,1920,1921,1922,1923,1924,1925,1926,1927,1928,1929,1930,1931,1932,1933,1934,1935,1936,1937	rejected=0
++ make -s native-executable-coverage-audit native-retdec-gap-queue
+# elapsed 3.02s
++ make -s uncovered-executable-gaps
+uncovered_executable_gaps=3157 bytes=706840
+uncovered_executable_gaps=3157 bytes=706840
+uncovered_executable_gaps=3157 bytes=706840
+# elapsed 0.90s
+coverage_delta
+native_executable_coverage_range_rows	62481	63802	delta=+1321
+native_executable_coverage_gap_rows	3195	3162	delta=-33
+native_executable_coverage_recovered_bytes	4866234	4944200	delta=+77966
+native_executable_coverage_uncovered_bytes	784806	706840	delta=-77966
+round_start	8
++ python3 vm_executable_gap_retdec_probe.py --root . --section .text --chunk-bytes 0x200 --min-chunk-bytes 0x80 --max-split-candidates 256 --max-gap-chunks 12 --max-candidates 768 --max-accepted 32 --probe-jobs 24 --timeout 30 --reject-cache dumps/vmtail-wide-1m-w16/vm_executable_gap_retdec_reject_cache.tsv
+try	0x268bc2-0x268cc2	reject
+split	0x268bc2-0x268cc2	0x268bc2-0x268c42
+split	0x268bc2-0x268cc2	0x268c42-0x268cc2
+try	0x268ec2-0x268fc2	ok
+try	0x2598c2-0x259ac2	ok
+try	0x2526bc-0x2528bc	reject
+split	0x2526bc-0x2528bc	0x2526bc-0x2527bc
+split	0x2526bc-0x2528bc	0x2527bc-0x2528bc
+try	0x247218-0x247418	ok
+try	0x21bc66-0x21be66	reject
+split	0x21bc66-0x21be66	0x21bc66-0x21bd66
+split	0x21bc66-0x21be66	0x21bd66-0x21be66
+try	0x25a8c2-0x25aac2	ok
+try	0x268dc2-0x268ec2	reject
+split	0x268dc2-0x268ec2	0x268dc2-0x268e42
+split	0x268dc2-0x268ec2	0x268e42-0x268ec2
+try	0x20de40-0x20e040	reject
+split	0x20de40-0x20e040	0x20de40-0x20df40
+split	0x20de40-0x20e040	0x20df40-0x20e040
+try	0x25a6c2-0x25a8c2	ok
+try	0x2320b6-0x2322b6	reject
+split	0x2320b6-0x2322b6	0x2320b6-0x2321b6
+split	0x2320b6-0x2322b6	0x2321b6-0x2322b6
+try	0x2366b6-0x2368b6	reject
+split	0x2366b6-0x2368b6	0x2366b6-0x2367b6
+split	0x2366b6-0x2368b6	0x2367b6-0x2368b6
+try	0x20e040-0x20e240	reject
+split	0x20e040-0x20e240	0x20e040-0x20e140
+split	0x20e040-0x20e240	0x20e140-0x20e240
+try	0x247018-0x247218	ok
+try	0x1e70e8-0x1e72e8	ok
+try	0x2322b6-0x2324b6	ok
+try	0x268cc2-0x268dc2	ok
+try	0x2528bc-0x252abc	reject
+split	0x2528bc-0x252abc	0x2528bc-0x2529bc
+split	0x2528bc-0x252abc	0x2529bc-0x252abc
+try	0x259ac2-0x259cc2	ok
+try	0x2364b6-0x2366b6	reject
+split	0x2364b6-0x2366b6	0x2364b6-0x2365b6
+split	0x2364b6-0x2366b6	0x2365b6-0x2366b6
+try	0x21be66-0x21c066	reject
+split	0x21be66-0x21c066	0x21be66-0x21bf66
+split	0x21be66-0x21c066	0x21bf66-0x21c066
+try	0x1ed2e8-0x1ed4e8	ok
+try	0x1ed0e8-0x1ed2e8	ok
+try	0x1e6ee8-0x1e70e8	ok
