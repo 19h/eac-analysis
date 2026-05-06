@@ -37,16 +37,38 @@ def read_gaps(path, sections):
     return sorted(gaps, reverse=True)
 
 
-def candidate_ranges(gaps, chunk_bytes, max_gap_chunks, used):
+def split_bounds(start, stop, min_chunk_bytes):
+    size = stop - start
+    if size <= min_chunk_bytes or size < 2:
+        return []
+    mid = start + size // 2
+    if mid <= start or mid >= stop:
+        return []
+    return [(start, mid), (mid, stop)]
+
+
+def expand_candidate(start, stop, used, rejected, min_chunk_bytes):
+    selected = format_range(start, stop)
+    if selected not in used:
+        yield selected
+        return
+    if selected not in rejected:
+        return
+    for child_start, child_stop in split_bounds(start, stop, min_chunk_bytes):
+        yield from expand_candidate(child_start, child_stop, used, rejected, min_chunk_bytes)
+
+
+def candidate_ranges(gaps, chunk_bytes, max_gap_chunks, used, rejected, min_chunk_bytes):
     for _, start, stop in gaps:
         emitted = 0
         pos = start
         while pos < stop and emitted < max_gap_chunks:
             end = min(stop, pos + chunk_bytes)
-            item = format_range(pos, end)
-            if item not in used:
+            for item in expand_candidate(pos, end, used, rejected, min_chunk_bytes):
                 yield item
                 emitted += 1
+                if emitted >= max_gap_chunks:
+                    break
             pos = end
 
 
@@ -92,13 +114,7 @@ def parse_range(selected):
 
 def split_range(selected, min_chunk_bytes):
     start, stop = parse_range(selected)
-    size = stop - start
-    if size <= min_chunk_bytes or size < 2:
-        return []
-    mid = start + size // 2
-    if mid <= start or mid >= stop:
-        return []
-    return [format_range(start, mid), format_range(mid, stop)]
+    return [format_range(start, stop) for start, stop in split_bounds(start, stop, min_chunk_bytes)]
 
 
 def try_range(selected, batch_index, timeout, keep_failed):
@@ -257,10 +273,18 @@ def main():
     output = args.root / f"native_gap_retdec_batch{batch_index:02d}.ranges"
     generator_key = generator_fingerprint()
     used = {item for item in used_ranges(args.root) if RANGE_RE.match(item)}
-    used.update(read_reject_cache(args.reject_cache, generator_key))
+    rejected = read_reject_cache(args.reject_cache, generator_key)
+    used.update(rejected)
     probe_jobs = max(1, args.probe_jobs)
     candidates = []
-    for selected in candidate_ranges(read_gaps(args.coverage, sections), args.chunk_bytes, args.max_gap_chunks, used):
+    for selected in candidate_ranges(
+        read_gaps(args.coverage, sections),
+        args.chunk_bytes,
+        args.max_gap_chunks,
+        used,
+        rejected,
+        min_chunk_bytes,
+    ):
         if len(candidates) >= args.max_candidates:
             break
         candidates.append(selected)
