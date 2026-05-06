@@ -2,8 +2,8 @@
 
 Ranks native function skeletons whose byte ranges are not yet covered by semantic RetDec/native C sidecars.
 
-- queued functions: 37
-- class mix: tier0_small_native_gap:24, tier1_medium_native_gap:10, tier2_large_native_gap:2, tier3_huge_or_noisy_native_gap:1
+- queued functions: 36
+- class mix: tier0_small_native_gap:24, tier1_medium_native_gap:10, tier2_large_native_gap:2
 
 | rank | range | bytes | uncovered | class | action | name |
 | ---: | --- | ---: | ---: | --- | --- | --- |
@@ -43,4 +43,3 @@ Ranks native function skeletons whose byte ranges are not yet covered by semanti
 | 34 | `0x4926da-0x49295c` | 642 | 344 | `tier1_medium_native_gap` | `targeted_retdec_single_function` | `fcn.004926da` |
 | 35 | `0x4a4be0-0x4a6a5e` | 7806 | 7806 | `tier2_large_native_gap` | `targeted_retdec_with_timeout` | `fcn.004a4be0` |
 | 36 | `0x3e19c-0x3f89f` | 5891 | 5684 | `tier2_large_native_gap` | `targeted_retdec_with_timeout` | `fcn.0003e19c` |
-| 37 | `0x4d5a50-0x4d7e3c` | 9196 | 9196 | `tier3_huge_or_noisy_native_gap` | `split_or_model_before_retdec` | `fcn.004d5a50` |

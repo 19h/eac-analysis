@@ -59,12 +59,11 @@ static const VMNativeRetdecGapQueueRow k_vm_native_retdec_gap_queue[] = {
     { 34u, 0x4926daull, 0x49295cull, 642u, 298u, 344u, 4641u, "r2_discovered", "fcn.004926da", 27u, 153u, 12u, "tier1_medium_native_gap", "targeted_retdec_single_function", "0x4926da-0x49295c" },
     { 35u, 0x4a4be0ull, 0x4a6a5eull, 7806u, 0u, 7806u, 0u, "r2_discovered", "fcn.004a4be0", 324u, 1681u, 95u, "tier2_large_native_gap", "targeted_retdec_with_timeout", "0x4a4be0-0x4a6a5e" },
     { 36u, 0x3e19cull, 0x3f89full, 5891u, 207u, 5684u, 351u, "r2_discovered", "fcn.0003e19c", 468u, 1574u, 1u, "tier2_large_native_gap", "targeted_retdec_with_timeout", "0x3e19c-0x3f89f" },
-    { 37u, 0x4d5a50ull, 0x4d7e3cull, 9196u, 0u, 9196u, 0u, "r2_discovered", "fcn.004d5a50", 123u, 2007u, 22u, "tier3_huge_or_noisy_native_gap", "split_or_model_before_retdec", "0x4d5a50-0x4d7e3c" },
 };
 
 static unsigned vm_native_retdec_gap_queue_count(void) {
     return (unsigned)(sizeof(k_vm_native_retdec_gap_queue) / sizeof(k_vm_native_retdec_gap_queue[0]));
 }
 
-_Static_assert(sizeof(k_vm_native_retdec_gap_queue) / sizeof(k_vm_native_retdec_gap_queue[0]) == 37u,
+_Static_assert(sizeof(k_vm_native_retdec_gap_queue) / sizeof(k_vm_native_retdec_gap_queue[0]) == 36u,
                "native RetDec gap queue count changed");
