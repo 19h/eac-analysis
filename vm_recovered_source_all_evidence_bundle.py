@@ -50,6 +50,7 @@ DEFAULT_SIDECARS = [
     TRACE_DIR / "vm_native_handler_environment_coverage.c",
     TRACE_DIR / "vm_config_coverage_frontier.c",
     TRACE_DIR / "vm_binary_data_sections.c",
+    TRACE_DIR / "vm_uncovered_executable_gaps.c",
     TRACE_DIR / "vm_path_handlers_pseudocode.c",
     TRACE_DIR / "vm_path_handlers_frontier_pseudocode.c",
     TRACE_DIR / "vm_path_frontier_slot_audit.c",
