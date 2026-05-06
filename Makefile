@@ -1069,6 +1069,10 @@ $(NATIVE_GAP_RETDEC_BATCH54_C): vm_native_gap_retdec_batch.py native_gap_retdec_
 $(NATIVE_GAP_RETDEC_BATCH55_C): vm_native_gap_retdec_batch.py native_gap_retdec_batch55.ranges eac.elf
 	python3 vm_native_gap_retdec_batch.py --batch-index 55 --ranges-file native_gap_retdec_batch55.ranges > $@
 
+.PHONY: native-gap-retdec-batch56
+$(NATIVE_GAP_RETDEC_BATCH56_C): vm_native_gap_retdec_batch.py native_gap_retdec_batch56.ranges eac.elf
+	python3 vm_native_gap_retdec_batch.py --batch-index 56 --ranges-file native_gap_retdec_batch56.ranges > $@
+
 native-gap-retdec-batch0: $(NATIVE_GAP_RETDEC_BATCH00_C)
 native-gap-retdec-batch1: $(NATIVE_GAP_RETDEC_BATCH01_C)
 native-gap-retdec-batch2: $(NATIVE_GAP_RETDEC_BATCH02_C)
@@ -1125,6 +1129,7 @@ native-gap-retdec-batch52: $(NATIVE_GAP_RETDEC_BATCH52_C)
 native-gap-retdec-batch53: $(NATIVE_GAP_RETDEC_BATCH53_C)
 native-gap-retdec-batch54: $(NATIVE_GAP_RETDEC_BATCH54_C)
 native-gap-retdec-batch55: $(NATIVE_GAP_RETDEC_BATCH55_C)
+native-gap-retdec-batch56: $(NATIVE_GAP_RETDEC_BATCH56_C)
 native-gap-retdec-batches: $(NATIVE_GAP_RETDEC_BATCH_CS)
 
 $(NATIVE_RETDEC_GAP_QUEUE_TSV): vm_native_retdec_gap_queue.py $(NATIVE_FUNCTION_INVENTORY_TSV) $(NATIVE_EXECUTABLE_COVERAGE_AUDIT_TSV)
@@ -1214,6 +1219,7 @@ pseudocode-syntax-check: $(PSEUDOCODE_TOP_C) $(PROGRAM_PSEUDOCODE_TOP_C) $(PROGR
 	$(CC) -std=c11 -fsyntax-only -w dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch53.c
 	$(CC) -std=c11 -fsyntax-only -w dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch54.c
 	$(CC) -std=c11 -fsyntax-only -w dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch55.c
+	$(CC) -std=c11 -fsyntax-only -w dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch56.c
 	$(CC) -std=c11 -fsyntax-only -Wall -Wextra -Wno-unused-variable -Wno-unused-function -Wno-parentheses dumps/vmtail-wide-1m-w16/vm_pseudocode_top.c
 	$(CC) -std=c11 -fsyntax-only -Wall -Wextra -Wno-unused-variable -Wno-unused-function -Wno-parentheses dumps/vmtail-wide-1m-w16/vm_program_pseudocode_top.c
 	$(CC) -std=c11 -fsyntax-only -Wall -Wextra -Wno-unused-variable -Wno-unused-function -Wno-parentheses dumps/vmtail-wide-1m-w16/vm_program_pseudocode_full.c
