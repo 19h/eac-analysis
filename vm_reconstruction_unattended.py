@@ -45,8 +45,11 @@ def run_capture(cmd: list[str], *, check: bool = True) -> subprocess.CompletedPr
     )
 
 
-def read_status() -> dict[str, str]:
-    proc = run_capture(["make", "-s", "reconstruction-status"])
+def read_status(*, fast: bool) -> dict[str, str]:
+    cmd = ["python3", "vm_reconstruction_status.py", "--root", str(TRACE_DIR)]
+    if fast:
+        cmd.append("--fast")
+    proc = run_capture(cmd)
     status: dict[str, str] = {}
     for line in proc.stdout.splitlines():
         if "=" not in line:
@@ -154,10 +157,12 @@ def autopilot_cmd(args: argparse.Namespace) -> list[str]:
         str(args.max_accepted),
         "--timeout",
         str(args.timeout),
-        "--final-checkpoint",
         "--salvage-failed-batches",
-        "--completion-audit",
     ]
+    if args.run_checkpoint:
+        cmd.append("--final-checkpoint")
+        if args.completion_audit:
+            cmd.append("--completion-audit")
     if args.aggregate_syntax:
         cmd.append("--aggregate-syntax")
     if args.skip_manifest:
@@ -187,23 +192,42 @@ def main() -> int:
     parser.add_argument("--aggregate-syntax", action="store_true")
     parser.add_argument("--skip-manifest", action=argparse.BooleanOptionalAction, default=True)
     parser.add_argument("--keep-going-on-failure", action="store_true")
+    parser.add_argument(
+        "--checkpoint-every-passes",
+        type=int,
+        default=1,
+        help="Run the expensive all-evidence bundle/audit checkpoint every N passes; 0 means only at the end.",
+    )
+    parser.add_argument("--completion-audit", action=argparse.BooleanOptionalAction, default=True)
+    parser.add_argument(
+        "--fast-status",
+        action=argparse.BooleanOptionalAction,
+        default=True,
+        help="Use coverage artifacts for interim status instead of rebuilding/scanning the large bundle.",
+    )
     args = parser.parse_args()
 
     args.log_dir.mkdir(parents=True, exist_ok=True)
     started = time.monotonic()
-    before_all = read_status()
+    before_all = read_status(fast=args.fast_status)
     print_status("start", before_all)
+    last_checkpoint_batch = int_status(before_all, "latest_batch")
 
     for pass_index in range(1, args.passes + 1):
         if args.max_seconds and time.monotonic() - started >= args.max_seconds:
             print(f"stop_reason=max_seconds elapsed={time.monotonic() - started:.1f}", flush=True)
             break
 
-        before = read_status()
+        before = read_status(fast=args.fast_status)
         stamp = dt.datetime.now().strftime("%Y%m%d-%H%M%S")
         log_path = args.log_dir / f"reconstruction-autopilot-pass{pass_index:03d}-{stamp}.log"
+        due_checkpoint = (
+            pass_index == args.passes
+            or (args.checkpoint_every_passes > 0 and pass_index % args.checkpoint_every_passes == 0)
+        )
+        args.run_checkpoint = due_checkpoint
         cmd = autopilot_cmd(args)
-        print(f"pass_start\t{pass_index}\tlog={log_path}", flush=True)
+        print(f"pass_start\t{pass_index}\tcheckpoint={int(due_checkpoint)}\tlog={log_path}", flush=True)
         with log_path.open("w", encoding="utf-8") as log:
             log.write("+ " + " ".join(cmd) + "\n")
             log.flush()
@@ -213,7 +237,7 @@ def main() -> int:
             print(f"failure_log={log_path}", flush=True)
             return proc.returncode
 
-        after = read_status()
+        after = read_status(fast=args.fast_status and not due_checkpoint)
         print_status("after_pass", after)
         delta = int_status(after, "text_covered_bytes") - int_status(before, "text_covered_bytes")
         print(
@@ -221,13 +245,20 @@ def main() -> int:
             f"latest_batch={before['latest_batch']}->{after['latest_batch']}",
             flush=True,
         )
-        if args.append_recon:
+        if due_checkpoint:
+            last_checkpoint_batch = int_status(after, "latest_batch")
+        if args.append_recon and due_checkpoint:
             append_recon_note(before, after, log_path)
         if delta <= 0:
             print("stop_reason=no_semantic_coverage_progress", flush=True)
             break
 
-    after_all = read_status()
+    after_all = read_status(fast=args.fast_status)
+    if args.completion_audit and int_status(after_all, "latest_batch") > last_checkpoint_batch:
+        print("final_checkpoint_start", flush=True)
+        run_capture(["make", "-s", "uncovered-executable-gaps", "all-evidence-bundle", "reconstruction-completion-audit"])
+        after_all = read_status(fast=False)
+        print("final_checkpoint_done", flush=True)
     print_status("finish", after_all)
     print(
         "total_delta\t"

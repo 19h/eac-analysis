@@ -93,6 +93,11 @@ def uncovered_carrier_counts(path: Path) -> tuple[int, int]:
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--root", type=Path, default=Path("dumps/vmtail-wide-1m-w16"))
+    parser.add_argument(
+        "--fast",
+        action="store_true",
+        help="Avoid scanning the large all-evidence bundle; report bundle-derived counters as -1.",
+    )
     args = parser.parse_args()
     root = args.root
 
@@ -101,8 +106,15 @@ def main() -> int:
     reject_cache = root / "vm_executable_gap_retdec_reject_cache.tsv"
     uncovered_carrier = root / "vm_uncovered_executable_gaps.tsv"
 
-    bundle_lines, bundle_bytes = line_byte_count(bundle)
-    sidecars, functions, symbols = bundle_counts(bundle)
+    if args.fast:
+        bundle_lines = -1
+        bundle_bytes = bundle.stat().st_size if bundle.exists() else 0
+        sidecars = -1
+        functions = -1
+        symbols = -1
+    else:
+        bundle_lines, bundle_bytes = line_byte_count(bundle)
+        sidecars, functions, symbols = bundle_counts(bundle)
     cov = coverage_counts(coverage)
     carrier_gaps, carrier_bytes = uncovered_carrier_counts(uncovered_carrier)
 
