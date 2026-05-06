@@ -102,11 +102,14 @@ def read_gaps(coverage_tsv: Path, sections: dict[str, ElfSection], elf_data: byt
     with coverage_tsv.open(newline="") as handle:
         reader = csv.DictReader(handle, delimiter="\t")
         for row in reader:
-            if row.get("row_type") != "gap" or row.get("section") != section_name:
+            if row.get("row_type") != "gap":
                 continue
-            section = sections.get(section_name)
+            row_section_name = row.get("section", "")
+            if section_name != "all" and row_section_name != section_name:
+                continue
+            section = sections.get(row_section_name)
             if section is None:
-                raise SystemExit(f"ELF section {section_name!r} is missing")
+                raise SystemExit(f"ELF section {row_section_name!r} is missing")
             start = parse_int(row["start"])
             stop = parse_int(row["stop"])
             expected_size = int(row["bytes"])
@@ -154,6 +157,7 @@ def emit_c(gaps: list[Gap], elf: Path, coverage: Path, section_name: str) -> Non
     print("#include <stdint.h>")
     print("")
     print("typedef struct VMUncoveredExecutableGap {")
+    print("    const char *section;")
     print("    uint64_t start;")
     print("    uint64_t stop;")
     print("    uint64_t size;")
@@ -167,7 +171,7 @@ def emit_c(gaps: list[Gap], elf: Path, coverage: Path, section_name: str) -> Non
     for gap in gaps:
         print(
             "    { "
-            f"0x{gap.start:x}ull, 0x{gap.stop:x}ull, {gap.size}ull, "
+            f"\"{gap.section.name}\", 0x{gap.start:x}ull, 0x{gap.stop:x}ull, {gap.size}ull, "
             f"vm_uncovered_executable_gap_{gap.index:04d}_bytes"
             " },"
         )
@@ -215,7 +219,7 @@ def main() -> int:
         type=Path,
         default=Path("dumps/vmtail-wide-1m-w16/vm_native_executable_coverage_audit.tsv"),
     )
-    parser.add_argument("--section", default=".text")
+    parser.add_argument("--section", default="all", help="Coverage section name to emit, or 'all'.")
     parser.add_argument("--format", choices=("c", "tsv", "markdown"), default="c")
     args = parser.parse_args()
 
