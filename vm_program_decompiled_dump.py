@@ -28,7 +28,7 @@ def dec_block_name(block: str) -> str:
 def emit_preamble() -> None:
     print("/*")
     print(" * Decompiled VM bytecode programs.")
-    print(" * This layer inlines lifted bytecode-row semantics instead of calling op_entry_NNN.")
+    print(" * This layer inlines lifted bytecode-row semantics instead of handler-call sketches.")
     print(" * Rows whose symbolic expressions were clipped upstream are retained as comments,")
     print(" * so the artifact remains syntax-checkable while preserving audit visibility.")
     print(" */")
