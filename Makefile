@@ -1365,6 +1365,10 @@ reconstruction-autopilot: $(NATIVE_EXECUTABLE_COVERAGE_AUDIT_TSV)
 reconstruction-status: $(ALL_EVIDENCE_BUNDLE_C) $(NATIVE_EXECUTABLE_COVERAGE_AUDIT_TSV)
 	python3 vm_reconstruction_status.py --root $(PRIMARY_DIR)
 
+.PHONY: reconstruction-completion-audit
+reconstruction-completion-audit: $(ALL_EVIDENCE_BUNDLE_C) $(NATIVE_EXECUTABLE_COVERAGE_AUDIT_TSV) $(UNCOVERED_EXECUTABLE_GAPS_TSV)
+	python3 vm_reconstruction_completion_audit.py --root $(PRIMARY_DIR) --syntax
+
 $(NATIVE_RETDEC_GAP_QUEUE_TSV): vm_native_retdec_gap_queue.py $(NATIVE_FUNCTION_INVENTORY_TSV) $(NATIVE_EXECUTABLE_COVERAGE_AUDIT_TSV)
 	python3 vm_native_retdec_gap_queue.py --inventory $(NATIVE_FUNCTION_INVENTORY_TSV) --coverage $(NATIVE_EXECUTABLE_COVERAGE_AUDIT_TSV) > $@
 
