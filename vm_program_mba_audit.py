@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import argparse
 import csv
+import subprocess
 from pathlib import Path
 
 
@@ -22,6 +23,7 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--root", type=Path, default=Path("dumps/vmtail-wide-1m-w16"))
     parser.add_argument("--program", type=int, default=10)
+    parser.add_argument("--cc", default="cc")
     parser.add_argument("--fail-if-missing-state", action="store_true")
     args = parser.parse_args()
 
@@ -33,6 +35,9 @@ def main() -> int:
     missing_path = prefix.with_name(prefix.name + "_missing.tsv")
     frida_path = prefix.with_name(prefix.name + "_frida_trace.js")
     md_path = prefix.with_suffix(".md")
+    reduced_path = prefix.with_name(prefix.name + "_reduced.tsv")
+    reduced_c_path = prefix.with_name(prefix.name + "_reduced.c")
+    reduced_md_path = prefix.with_name(prefix.name + "_reduced.md")
 
     ok = True
     for label, path in [
@@ -43,6 +48,9 @@ def main() -> int:
         ("mba_missing_exists", missing_path),
         ("mba_frida_template_exists", frida_path),
         ("mba_markdown_exists", md_path),
+        ("mba_reduced_tsv_exists", reduced_path),
+        ("mba_reduced_c_exists", reduced_c_path),
+        ("mba_reduced_markdown_exists", reduced_md_path),
     ]:
         ok &= check(label, path.exists(), str(path))
 
@@ -55,10 +63,12 @@ def main() -> int:
     ir_rows = read_tsv(ir_path)
     requirements = read_tsv(requirements_path)
     missing = read_tsv(missing_path)
+    reduced = read_tsv(reduced_path)
 
     case_states = {row["state"] for row in cases}
     req_states = {row["state"] for row in requirements}
     missing_states = {row["state"] for row in missing}
+    reduced_states = {row["case_state"] for row in reduced}
     obs_case_states = {row["case_state"] for row in observations if row.get("relation") == "case_start"}
     ir_blocks = {row["block"] for row in ir_rows if row.get("block")}
     case_blocks = {row["block"] for row in cases}
@@ -81,6 +91,22 @@ def main() -> int:
     ]
     ok &= check("mba_ready_cases_have_required_fields", not bad_ready, f"ready={len(ready)} bad_ready={len(bad_ready)}")
     ok &= check("mba_missing_manifest_matches_requirements", missing_states == {row["state"] for row in not_ready}, f"missing={len(missing_states)} not_ready={len(not_ready)}")
+    ok &= check("mba_reduced_covers_cases", reduced_states == case_states, f"reduced={len(reduced_states)} cases={len(case_states)}")
+    case_successors = {row["state"]: (row.get("edge_target_vm_ip", ""), row.get("edge_target_entry", "")) for row in cases}
+    bad_reduced = [
+        row for row in reduced
+        if (row.get("successor_vm_ip", ""), row.get("successor_entry", "")) != case_successors.get(row.get("case_state", ""), ("", ""))
+    ]
+    ok &= check("mba_reduced_successors_match_cases", not bad_reduced, f"bad_reduced={len(bad_reduced)}")
+    result = subprocess.run(
+        [args.cc, "-std=c11", "-fsyntax-only", "-w", str(reduced_c_path)],
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT,
+        text=True,
+    )
+    ok &= check("mba_reduced_c_syntax", result.returncode == 0, f"command={' '.join(result.args)}")
+    if result.returncode != 0:
+        print(result.stdout[-4000:])
 
     if missing:
         print("mba_missing_states=" + ",".join(row["state"] for row in missing))
