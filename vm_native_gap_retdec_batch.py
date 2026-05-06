@@ -11,6 +11,7 @@ from pathlib import Path
 TRACE_DIR = Path("dumps/vmtail-wide-1m-w16")
 FUNCTION_DEF_RE = re.compile(r"^int64_t (function_[0-9a-f]+)\(([^)]*)\) \{", re.M)
 FUNCTION_CALL_RE = re.compile(r"\b(function_[0-9a-f]+)\(")
+UNKNOWN_CALL_RE = re.compile(r"\b(unknown_[0-9a-fA-F]+)\(")
 GLOBAL_RE = re.compile(r"\bg(\d+)\b")
 
 
@@ -736,6 +737,10 @@ def function_prototypes(functions):
     return prototypes
 
 
+def unknown_prototypes(functions):
+    return [f"int64_t {name}();" for name in sorted(set(UNKNOWN_CALL_RE.findall(functions)))]
+
+
 def referenced_globals(functions):
     return sorted({int(match) for match in GLOBAL_RE.findall(functions)})
 
@@ -1045,7 +1050,7 @@ def main():
     print("int32_t ungetwc(int32_t wc, struct _IO_FILE *stream);")
     print("size_t wcsnrtombs(char *dst, int32_t **src, size_t nwc, size_t len, struct _TYPEDEF___mbstate_t *ps);")
     print("size_t wcrtomb(char *s, int32_t wc, struct _TYPEDEF___mbstate_t *ps);")
-    print("int64_t memset2(void *s, int c, size_t n);")
+    print("int64_t memset2();")
     print("int pthread_mutex_lock(void *mutex);")
     print("int pthread_mutex_trylock(void *mutex);")
     print("int pthread_mutex_unlock(void *mutex);")
@@ -1125,6 +1130,8 @@ def main():
     print("void _Unwind_Resume_or_Rethrow(int64_t exception);")
     print("")
     for proto in function_prototypes(functions):
+        print(proto)
+    for proto in unknown_prototypes(functions):
         print(proto)
     print("")
     print(functions)
