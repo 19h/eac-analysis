@@ -4797,26 +4797,32 @@ def emit_tsv(rows, output=sys.stdout):
         writer.writerow(row)
 
 
-def emit_markdown(rows):
-    print("# C Reconstruction Manifest\n")
-    print("Reproducible inventory of the current C-shaped reconstruction artifacts and gates.\n")
-    print("| Section | Item | Value | Note |")
-    print("| --- | --- | ---: | --- |")
+def emit_markdown(rows, output=sys.stdout):
+    print("# C Reconstruction Manifest\n", file=output)
+    print("Reproducible inventory of the current C-shaped reconstruction artifacts and gates.\n", file=output)
+    print("| Section | Item | Value | Note |", file=output)
+    print("| --- | --- | ---: | --- |", file=output)
     for row in rows:
-        print(f"| `{row['section']}` | `{row['item']}` | `{row['value']}` | {row['note']} |")
+        print(f"| `{row['section']}` | `{row['item']}` | `{row['value']}` | {row['note']} |", file=output)
 
 
 def main():
     parser = argparse.ArgumentParser(description="Emit a manifest of C-like VM reconstruction artifacts.")
     parser.add_argument("--markdown", action="store_true")
     parser.add_argument("--output", type=Path, help="Write TSV output directly to this path.")
+    parser.add_argument("--markdown-output", type=Path, help="Also write Markdown output to this path.")
     args = parser.parse_args()
     rows = build_rows()
-    if args.markdown:
-        emit_markdown(rows)
-    elif args.output:
+    if args.output:
         with args.output.open("w", newline="") as handle:
             emit_tsv(rows, handle)
+    if args.markdown_output:
+        with args.markdown_output.open("w") as handle:
+            emit_markdown(rows, handle)
+    if args.output or args.markdown_output:
+        return
+    if args.markdown:
+        emit_markdown(rows)
     else:
         emit_tsv(rows)
 

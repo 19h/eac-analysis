@@ -1691,8 +1691,7 @@ C_RECONSTRUCTION_NATIVE_ACCELERATION_INPUTS := \
 	vm_static_only_tier5_large_dump.c vm_static_only_tier5_large_dump
 
 c-reconstruction-manifest: pseudocode-syntax-check pseudocode-object-check pseudocode-link-check $(C_RECONSTRUCTION_MANIFEST_INPUTS) $(C_RECONSTRUCTION_NATIVE_ACCELERATION_INPUTS)
-	python3 vm_c_reconstruction_manifest.py > dumps/vmtail-wide-1m-w16/vm_c_reconstruction_manifest.tsv
-	python3 vm_c_reconstruction_manifest.py --markdown > dumps/vmtail-wide-1m-w16/vm_c_reconstruction_manifest.md
+	python3 vm_c_reconstruction_manifest.py --output dumps/vmtail-wide-1m-w16/vm_c_reconstruction_manifest.tsv --markdown-output dumps/vmtail-wide-1m-w16/vm_c_reconstruction_manifest.md
 
 clean:
 	rm -f driver trace_preload.so vm_fast_path_profile
