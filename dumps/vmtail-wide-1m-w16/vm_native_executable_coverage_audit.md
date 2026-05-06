@@ -4,37 +4,23 @@ Compares executable ELF sections against native ranges already represented by re
 
 - executable sections: 5
 - executable bytes: 5651040
-- recovered executable bytes: 3306486
-- uncovered executable bytes: 2344554
-- recovered range rows: 40479
-- uncovered gaps: 3008
+- recovered executable bytes: 3335158
+- uncovered executable bytes: 2315882
+- recovered range rows: 40864
+- uncovered gaps: 3009
 
 | section | range | bytes | covered | uncovered | coverage | ranges |
 | --- | --- | ---: | ---: | ---: | ---: | ---: |
 | `.init` | `0x1fbd0-0x1fbe7` | 23 | 23 | 0 | 100.00% | 1 |
 | `.plt` | `0x1fbf0-0x20bd0` | 4064 | 4064 | 0 | 100.00% | 254 |
 | `.plt.got` | `0x20bd0-0x20be0` | 16 | 16 | 0 | 100.00% | 2 |
-| `.text` | `0x20c00-0x583650` | 5646928 | 3302374 | 2344554 | 58.48% | 40219 |
+| `.text` | `0x20c00-0x583650` | 5646928 | 3331046 | 2315882 | 58.98% | 40604 |
 | `.fini` | `0x583650-0x583659` | 9 | 9 | 0 | 100.00% | 3 |
 
 ## Largest Uncovered Gaps
 
 | section | range | bytes |
 | --- | --- | ---: |
-| `.text` | `0x2a1719-0x2a468f` | 12150 |
-| `.text` | `0x383430-0x386394` | 12132 |
-| `.text` | `0x37776a-0x37a6c8` | 12126 |
-| `.text` | `0x279c41-0x27cb8e` | 12109 |
-| `.text` | `0x3a5939-0x3a8871` | 12088 |
-| `.text` | `0x22e666-0x231586` | 12064 |
-| `.text` | `0x340273-0x343193` | 12064 |
-| `.text` | `0x44c125-0x44f040` | 12059 |
-| `.text` | `0x415942-0x41883d` | 12027 |
-| `.text` | `0x3899a8-0x38c897` | 12015 |
-| `.text` | `0x3c9a79-0x3cc938` | 11967 |
-| `.text` | `0x289ccb-0x28cb6f` | 11940 |
-| `.text` | `0x28e64c-0x2914ea` | 11934 |
-| `.text` | `0x32ba55-0x32e8e4` | 11919 |
 | `.text` | `0x101dee-0x104c68` | 11898 |
 | `.text` | `0x2de30e-0x2e117a` | 11884 |
 | `.text` | `0x2bb7a9-0x2be60e` | 11877 |
@@ -61,3 +47,17 @@ Compares executable ELF sections against native ranges already represented by re
 | `.text` | `0x4e1d79-0x4e49f9` | 11392 |
 | `.text` | `0x281cee-0x28494c` | 11358 |
 | `.text` | `0xdd3c7-0xe0017` | 11344 |
+| `.text` | `0x46c47e-0x46f0b8` | 11322 |
+| `.text` | `0x29d8bf-0x2a04ec` | 11309 |
+| `.text` | `0x469834-0x46c45b` | 11303 |
+| `.text` | `0x1ce601-0x1d1223` | 11298 |
+| `.text` | `0x37211b-0x374d29` | 11278 |
+| `.text` | `0x4dc1f9-0x4dedf9` | 11264 |
+| `.text` | `0x3bddb5-0x3c09b1` | 11260 |
+| `.text` | `0x20ce40-0x20fa39` | 11257 |
+| `.text` | `0x15f200-0x161df6` | 11254 |
+| `.text` | `0x38f4a0-0x392091` | 11249 |
+| `.text` | `0x2d0107-0x2d2cf4` | 11245 |
+| `.text` | `0x480e30-0x483a1a` | 11242 |
+| `.text` | `0x131ba5-0x134781` | 11228 |
+| `.text` | `0x116fbf-0x119b8e` | 11215 |
