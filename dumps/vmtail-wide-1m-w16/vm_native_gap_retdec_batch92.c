@@ -16,10 +16,10 @@
  *   0x5610a-0x56146 rank=92 name=fcn.0005610a kind=r2_discovered bytes=60 uncovered=60
  *   0x61046-0x61082 rank=93 name=fcn.00061046 kind=r2_discovered bytes=60 uncovered=60
  *   0x3a8871-0x3a88ad rank=94 name=fcn.003a8871 kind=r2_discovered bytes=60 uncovered=60
- *   0x4883d8-0x488414 rank=95 name=fcn.004883d8 kind=r2_discovered bytes=60 uncovered=60
+ *   0x52450-0x52489 rank=151 name=fcn.00052450 kind=r2_discovered bytes=57 uncovered=57
  *   0x48d416-0x48d452 rank=96 name=fcn.0048d416 kind=r2_discovered bytes=60 uncovered=60
  *   0x497321-0x49735d rank=97 name=fcn.00497321 kind=r2_discovered bytes=60 uncovered=60
- *   0x4b4e10-0x4b4e4c rank=98 name=fcn.004b4e10 kind=r2_discovered bytes=60 uncovered=60
+ *   0x72c32-0x72c6b rank=152 name=fcn.00072c32 kind=r2_discovered bytes=57 uncovered=57
  *   0x4ee9e0-0x4eea1c rank=99 name=sym.ZydisGetAccessedFlags kind=symbol_named bytes=60 uncovered=60
  *   0x53e5a0-0x53e5dc rank=100 name=method.std::iostream.virtual_0 kind=native_discovered bytes=60 uncovered=60
  */
@@ -65,14 +65,13 @@ extern int g2;
 extern int g3;
 extern int g4;
 extern int g5;
+extern int g6;
 extern int g7;
-extern int g8;
 extern int g9;
+extern int g10;
 extern int g11;
 extern int g12;
 extern int g13;
-extern int g14;
-extern int g15;
 unsigned char llvm_ctpop_i8(unsigned char value);
 uint16_t llvm_bswap_i16(uint16_t value);
 void __asm_int(int32_t interrupt);
@@ -88,6 +87,7 @@ void __asm_outsb(uint16_t port, char value);
 void __asm_outsd(uint16_t port, int32_t value);
 uint8_t __readfsbyte(int64_t offset);
 uint64_t __readfsqword(int64_t offset);
+uint32_t __readgsdword(int64_t offset);
 int64_t __asm_iretd(void);
 int64_t __asm_sti(int64_t value, int64_t flags);
 int64_t unknown_34e4aca1(int64_t value);
@@ -125,6 +125,7 @@ struct eac_retdec_cpuid_regs __asm_cpuid_134(uint32_t leaf);
 uint64_t __asm_xgetbv(uint64_t index);
 void __stack_chk_fail(void);
 int __cxa_atexit(void (*func)(int64_t *), void *arg, void *dso);
+int64_t _ZN9__gnu_cxxL27__exchange_and_add_dispatchEPii_constprop_31(int64_t value);
 int64_t unknown_166c28d(void);
 int128_t __asm_movsd(int64_t value);
 int128_t __asm_movsd_133(int64_t value);
@@ -227,6 +228,7 @@ int clock_gettime(int clk_id, struct timespec *tp);
 int64_t sysconf(int name);
 int64_t syscall(int64_t number, ...);
 int mprotect(void *addr, size_t len, int prot);
+void *mmap(void *addr, size_t len, int prot, int flags, int fd, int64_t offset);
 int munmap(void *addr, size_t len);
 int __fxstat64(int ver, int fd, struct stat64 *buf);
 int fseeko64(struct _IO_FILE *stream, int64_t offset, int whence);
@@ -267,16 +269,17 @@ int64_t function_29cea();
 int64_t function_29cf4();
 int64_t function_29d10(int64_t a1, int64_t a2);
 int64_t function_29d94(int64_t result, int64_t a2);
+int64_t function_35fcc();
 int64_t function_380a0(int64_t result, int64_t a2);
 int64_t function_3a8871(int64_t a1, int64_t a2, int64_t a3, int64_t a4, int64_t a5, int64_t a6);
-int64_t function_4883d8(uint64_t a1, int64_t a2, int64_t a3);
 int64_t function_48d416(int64_t result, int64_t a2, int64_t a3, uint64_t a4);
 int64_t function_497321(int64_t a1, int64_t a2, uint64_t a3);
-int64_t function_4b4e10(int64_t a1, int64_t a2, int64_t a3);
+int64_t function_4eeb50();
 int64_t function_4f15a0();
 int64_t function_4f7430();
 int64_t function_4fc010();
 int64_t function_5033d0();
+int64_t function_52450(int64_t a1);
 int64_t function_53e5a0(int64_t a1);
 int64_t function_540f00(int64_t a1, int64_t a2, int64_t a3);
 int64_t function_54cf10();
@@ -285,13 +288,17 @@ int64_t function_5610a(int64_t a1, int64_t a2, int64_t a3);
 int64_t function_565f30();
 int64_t function_5700a0();
 int64_t function_61046(int64_t a1, int64_t a2, int64_t a3, int64_t a4, int64_t a5, int64_t a6);
+int64_t function_7276e();
+int64_t function_72994();
+int64_t function_72c22();
+int64_t function_72c32(int64_t a1);
 int64_t function_c9849();
 
 // Address range: 0x214b0 - 0x214ec
 int64_t function_214b0(void) {
     // 0x214b0
     __cxa_atexit((void (*)(int64_t *))0x5421e0, (int64_t *)0x84a060, (int64_t *)0x849800);
-    int32_t result = __cxa_atexit((void (*)(int64_t *))0x5421b0, (int64_t *)&g13, &g12); // 0x214e7
+    int32_t result = __cxa_atexit((void (*)(int64_t *))0x5421b0, (int64_t *)&g11, &g10); // 0x214e7
     return result;
 }
 
@@ -305,8 +312,8 @@ int64_t function_251e8(int64_t a1, int64_t a2) {
     }
     // 0x251ff
     function_24cb0(v2);
-    *(int64_t *)a1 = (int64_t)&g14;
-    return (int64_t)&g14;
+    *(int64_t *)a1 = (int64_t)&g12;
+    return (int64_t)&g12;
 }
 
 // Address range: 0x29d10 - 0x29d4c
@@ -319,8 +326,8 @@ int64_t function_29d10(int64_t a1, int64_t a2) {
     }
     // 0x29d27
     function_2843e(v2);
-    *(int64_t *)a1 = (int64_t)&g15;
-    return (int64_t)&g15;
+    *(int64_t *)a1 = (int64_t)&g13;
+    return (int64_t)&g13;
 }
 
 // Address range: 0x29d94 - 0x29dd0
@@ -333,6 +340,34 @@ int64_t function_29d94(int64_t result, int64_t a2) {
 int64_t function_380a0(int64_t result, int64_t a2) {
     // 0x380a0
     return result;
+}
+
+// Address range: 0x52450 - 0x52489
+int64_t function_52450(int64_t a1) {
+    int64_t v1 = *(int64_t *)(a1 + 8); // 0x52457
+    int64_t v2 = a1; // 0x52461
+    int64_t v3 = a1; // 0x52461
+    int64_t result; // 0x52450
+    if (v1 != a1) {
+        int64_t v4 = v2 + 8; // 0x52463
+        v2 += 16;
+        result = function_35fcc(v4);
+        v3 = v4;
+        while (v1 != v2) {
+            // 0x52463
+            v4 = v2 + 8;
+            v2 += 16;
+            result = function_35fcc(v4);
+            v3 = v4;
+        }
+    }
+    // 0x52472
+    if (v3 == 0) {
+        // 0x52484
+        return result;
+    }
+    // 0x5247b
+    return function_4eeb50(v3);
 }
 
 // Address range: 0x5610a - 0x56146
@@ -363,6 +398,15 @@ int64_t function_61046(int64_t a1, int64_t a2, int64_t a3, int64_t a4, int64_t a
     return result;
 }
 
+// Address range: 0x72c32 - 0x72c58
+int64_t function_72c32(int64_t a1) {
+    // 0x72c32
+    *(int64_t *)a1 = (int64_t)&g4;
+    function_72c22();
+    function_72994(a1 + 120);
+    return function_7276e(a1 + 16);
+}
+
 // Address range: 0x3a8871 - 0x3a88ad
 int64_t function_3a8871(int64_t a1, int64_t a2, int64_t a3, int64_t a4, int64_t a5, int64_t a6) {
     // 0x3a8871
@@ -370,61 +414,6 @@ int64_t function_3a8871(int64_t a1, int64_t a2, int64_t a3, int64_t a4, int64_t 
     char * v2 = (char *)(v1 - 119); // 0x3a8871
     *v2 = *v2 + (char)a4;
     return function_c9849(a5);
-}
-
-// Address range: 0x4883d8 - 0x488414
-int64_t function_4883d8(uint64_t a1, int64_t a2, int64_t a3) {
-    uint16_t v1 = *(int16_t *)(a2 + 6); // 0x4883dc
-    if (v1 == 0) {
-        // 0x488413
-        return 0;
-    }
-    int64_t v2 = 0; // 0x488408
-    int64_t v3 = a2 + 24 + (int64_t)*(int16_t *)(a2 + 20);
-    int32_t v4 = *(int32_t *)(v3 + 8); // 0x4883ed
-    int32_t v5 = v4; // 0x4883f2
-    if (v4 == 0) {
-        // 0x4883f4
-        v5 = *(int32_t *)(v3 + 16);
-    }
-    uint64_t v6 = (int64_t)*(int32_t *)(v3 + 12); // 0x4883f7
-    if (v6 <= a1) {
-        // 0x488400
-        if ((v6 + (int64_t)v5 & 0xffffffff) > a1) {
-            // break -> 0x488413
-            break;
-        }
-    }
-    // 0x488408
-    v2++;
-    int64_t v7 = v3 + 40; // 0x4883eb
-    int64_t result = 0; // 0x4883eb
-    while (v2 < (int64_t)v1) {
-        // 0x4883ed
-        v3 = v7;
-        v4 = *(int32_t *)(v3 + 8);
-        v5 = v4;
-        if (v4 == 0) {
-            // 0x4883f4
-            v5 = *(int32_t *)(v3 + 16);
-        }
-        // 0x4883f7
-        v6 = (int64_t)*(int32_t *)(v3 + 12);
-        if (v6 <= a1) {
-            // 0x488400
-            result = v3;
-            if ((v6 + (int64_t)v5 & 0xffffffff) > a1) {
-                // break -> 0x488413
-                break;
-            }
-        }
-        // 0x488408
-        v2++;
-        v7 = v3 + 40;
-        result = 0;
-    }
-    // 0x488413
-    return result;
 }
 
 // Address range: 0x48d416 - 0x48d452
@@ -475,49 +464,6 @@ int64_t function_497321(int64_t a1, int64_t a2, uint64_t a3) {
     return 0;
 }
 
-// Address range: 0x4b4e10 - 0x4b4e48
-int64_t function_4b4e10(int64_t a1, int64_t a2, int64_t a3) {
-    int64_t result = (int64_t)g5; // 0x4b4e17
-    if (g5 == NULL) {
-        // 0x4b4e48
-        return result;
-    }
-    int64_t v1 = (int64_t)&g4; // 0x4b4e10
-    if (*(int32_t *)*(int64_t *)(result + 40) == (int32_t)a1) {
-        // 0x4b4e3e
-        if (*(int32_t *)(result + 8) == (int32_t)a2) {
-            // 0x4b4e43
-            if (*(int32_t *)(result + 4) == (int32_t)a3) {
-                // break -> 0x4b4e48
-                break;
-            }
-        }
-    }
-    int64_t v2 = *(int64_t *)(v1 + 24); // 0x4b4e2c
-    v1 += 16;
-    int64_t result2 = 0; // 0x4b4e33
-    while (v2 != 0) {
-        int64_t v3 = v2;
-        if (*(int32_t *)*(int64_t *)(v3 + 40) == (int32_t)a1) {
-            // 0x4b4e3e
-            if (*(int32_t *)(v3 + 8) == (int32_t)a2) {
-                // 0x4b4e43
-                result2 = v3;
-                if (*(int32_t *)(v3 + 4) == (int32_t)a3) {
-                    // break -> 0x4b4e48
-                    break;
-                }
-            }
-        }
-        // 0x4b4e28
-        v2 = *(int64_t *)(v1 + 24);
-        v1 += 16;
-        result2 = 0;
-    }
-    // 0x4b4e48
-    return result2;
-}
-
 // Address range: 0x4ee9e0 - 0x4eea1c
 int64_t ZydisGetAccessedFlags(int64_t a1, int64_t a2) {
     unsigned char v1 = 4 * *(char *)(a1 + 5) & 124 | *(char *)(a1 + 4) / 64;
@@ -530,11 +476,11 @@ int64_t ZydisGetAccessedFlags(int64_t a1, int64_t a2) {
 // Type:          constructor
 int64_t function_53e5a0(int64_t a1) {
     int64_t v1 = *(int64_t *)(a1 - 24) + a1; // 0x53e5a3
-    *(int64_t *)(v1 + 16) = (int64_t)&g8;
+    *(int64_t *)(v1 + 16) = (int64_t)&g6;
     *(int64_t *)(v1 + 8) = 0;
     int64_t v2 = v1 + 24; // 0x53e5c1
-    *(int64_t *)v1 = (int64_t)&g9;
-    *(int64_t *)v2 = (int64_t)&g7;
+    *(int64_t *)v1 = (int64_t)&g7;
+    *(int64_t *)v2 = (int64_t)&g5;
     return function_54cf10(v2);
 }
 
@@ -555,7 +501,7 @@ int64_t function_540f00(int64_t a1, int64_t a2, int64_t a3) {
 int64_t function_54d6e0(int64_t a1, int64_t a2) {
     // 0x54d6e0
     *(int32_t *)(a1 + 8) = (int32_t)(bool)(a2 != 0);
-    *(int64_t *)a1 = (int64_t)&g11;
+    *(int64_t *)a1 = (int64_t)&g9;
     *(int64_t *)(a1 + 16) = function_565f30();
     *(char *)(a1 + 24) = 0;
     return function_5700a0(a1);
