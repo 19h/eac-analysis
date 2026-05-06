@@ -14,6 +14,7 @@ from vm_recovered_source_all_evidence_bundle import default_sidecars
 
 PROGRAM_BLOCK_RE = re.compile(r"^static void prog_bb_([0-9]{4})\(VMState \*vm, uint64_t vm_ip\) \{")
 DECOMPILED_BLOCK_RE = re.compile(r"^static void vmdec_bb_([0-9]{4})\(VMState \*vm, uint64_t vm_ip\) \{")
+SPLIT_DECOMPILED_BLOCK_RE = re.compile(r"^static void vmdec_p[0-9]{3}_bb_([0-9]{4})\(VMState \*vm, uint64_t vm_ip\) \{")
 DECOMPILED_ROW_RE = re.compile(r"^\s*/\* 0x[0-9a-f]+..0x[0-9a-f]+:")
 
 
@@ -115,6 +116,51 @@ def decompiled_program_counts(path: Path) -> dict[str, int | bool]:
     }
 
 
+def split_decompiled_counts(manifest: Path, output_dir: Path) -> dict[str, int | bool]:
+    manifest_rows = []
+    if manifest.exists():
+        with manifest.open(newline="") as handle:
+            manifest_rows = list(csv.DictReader(handle, delimiter="\t"))
+    files = sorted(output_dir.glob("vm_program_atlas_*.c")) if output_dir.exists() else []
+    file_blocks = 0
+    file_rows = 0
+    op_entry_refs = 0
+    state_summarized = 0
+    omitted = False
+    dispatch_files = 0
+    for path in files:
+        has_dispatch = False
+        with path.open(encoding="utf-8", errors="replace") as handle:
+            for line in handle:
+                if SPLIT_DECOMPILED_BLOCK_RE.match(line):
+                    file_blocks += 1
+                if DECOMPILED_ROW_RE.match(line):
+                    file_rows += 1
+                if "op_entry_" in line:
+                    op_entry_refs += 1
+                if "state effect summarized/clipped" in line:
+                    state_summarized += 1
+                if "rows omitted by --rows-per-block" in line:
+                    omitted = True
+                if re.search(r"void vm_program_atlas_[0-9]{3}_decompiled\(VMState \*vm, uint64_t vm_ip\)", line):
+                    has_dispatch = True
+        if has_dispatch:
+            dispatch_files += 1
+    return {
+        "manifest_rows": len(manifest_rows),
+        "files": len(files),
+        "manifest_blocks": sum(int(row.get("blocks", "0") or 0) for row in manifest_rows),
+        "manifest_rows_total": sum(int(row.get("rows", "0") or 0) for row in manifest_rows),
+        "manifest_state_summarized": sum(int(row.get("state_summarized", "0") or 0) for row in manifest_rows),
+        "file_blocks": file_blocks,
+        "file_rows": file_rows,
+        "op_entry_refs": op_entry_refs,
+        "state_summarized": state_summarized,
+        "omitted": omitted,
+        "dispatch_files": dispatch_files,
+    }
+
+
 def check(name: str, ok: bool, detail: str) -> bool:
     print(f"{name}={'ok' if ok else 'missing'}\t{detail}")
     return ok
@@ -134,6 +180,8 @@ def main() -> int:
     carrier = root / "vm_uncovered_executable_gaps.tsv"
     program_pseudocode = root / "vm_program_pseudocode_full.c"
     program_decompiled = root / "vm_program_decompiled_full.c"
+    program_split_manifest = root / "vm_programs_decompiled_manifest.tsv"
+    program_split_dir = root / "vm_programs_decompiled"
     bytecode_ir_decompile = root / "vm_bytecode_ir_decompile.tsv"
     bytecode_blocks = root / "vm_bytecode_basic_blocks.tsv"
 
@@ -146,6 +194,8 @@ def main() -> int:
     ok &= check("uncovered_carrier_exists", carrier.exists(), str(carrier))
     ok &= check("program_pseudocode_exists", program_pseudocode.exists(), str(program_pseudocode))
     ok &= check("program_decompiled_exists", program_decompiled.exists(), str(program_decompiled))
+    ok &= check("program_split_manifest_exists", program_split_manifest.exists(), str(program_split_manifest))
+    ok &= check("program_split_dir_exists", program_split_dir.exists(), str(program_split_dir))
     ok &= check("bytecode_ir_decompile_exists", bytecode_ir_decompile.exists(), str(bytecode_ir_decompile))
     ok &= check("bytecode_blocks_exists", bytecode_blocks.exists(), str(bytecode_blocks))
 
@@ -251,6 +301,46 @@ def main() -> int:
             "program_decompiled_has_dispatch",
             bool(counts["dispatch"]),
             "VM IP decompiled dispatch entrypoint present",
+        )
+
+    if program_split_manifest.exists() and program_split_dir.exists() and bytecode_blocks.exists() and bytecode_ir_decompile.exists():
+        expected_blocks = count_tsv_rows(bytecode_blocks)
+        expected_rows = count_tsv_rows(bytecode_ir_decompile)
+        split_counts = split_decompiled_counts(program_split_manifest, program_split_dir)
+        ok &= check(
+            "program_split_file_count_matches_manifest",
+            split_counts["files"] == split_counts["manifest_rows"],
+            f"files={split_counts['files']} manifest_rows={split_counts['manifest_rows']}",
+        )
+        ok &= check(
+            "program_split_manifest_covers_all_bytecode_blocks",
+            split_counts["manifest_blocks"] == expected_blocks,
+            f"manifest_blocks={split_counts['manifest_blocks']} expected_blocks={expected_blocks}",
+        )
+        ok &= check(
+            "program_split_manifest_covers_all_bytecode_rows",
+            split_counts["manifest_rows_total"] == expected_rows,
+            f"manifest_rows={split_counts['manifest_rows_total']} expected_rows={expected_rows}",
+        )
+        ok &= check(
+            "program_split_files_cover_all_bytecode_blocks",
+            split_counts["file_blocks"] == expected_blocks,
+            f"file_blocks={split_counts['file_blocks']} expected_blocks={expected_blocks}",
+        )
+        ok &= check(
+            "program_split_files_cover_all_bytecode_rows",
+            split_counts["file_rows"] == expected_rows,
+            f"file_rows={split_counts['file_rows']} expected_rows={expected_rows}",
+        )
+        ok &= check(
+            "program_split_files_are_decompiled_no_handler_fallbacks",
+            split_counts["op_entry_refs"] == 0 and split_counts["state_summarized"] == 0 and not split_counts["omitted"],
+            f"op_entry_refs={split_counts['op_entry_refs']} state_summarized={split_counts['state_summarized']} omitted={split_counts['omitted']}",
+        )
+        ok &= check(
+            "program_split_files_have_dispatch_entrypoints",
+            split_counts["dispatch_files"] == split_counts["files"],
+            f"dispatch_files={split_counts['dispatch_files']} files={split_counts['files']}",
         )
 
     if args.syntax:
