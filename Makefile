@@ -111,6 +111,7 @@ NATIVE_GAP_RETDEC_BATCH63_C := $(PRIMARY_DIR)/vm_native_gap_retdec_batch63.c
 NATIVE_GAP_RETDEC_BATCH64_C := $(PRIMARY_DIR)/vm_native_gap_retdec_batch64.c
 NATIVE_GAP_RETDEC_BATCH65_C := $(PRIMARY_DIR)/vm_native_gap_retdec_batch65.c
 NATIVE_GAP_RETDEC_BATCH66_C := $(PRIMARY_DIR)/vm_native_gap_retdec_batch66.c
+NATIVE_GAP_RETDEC_BATCH67_C := $(PRIMARY_DIR)/vm_native_gap_retdec_batch67.c
 NATIVE_GAP_RETDEC_BATCH_CS := $(NATIVE_GAP_RETDEC_BATCH00_C) $(NATIVE_GAP_RETDEC_BATCH01_C) $(NATIVE_GAP_RETDEC_BATCH02_C) $(NATIVE_GAP_RETDEC_BATCH03_C) $(NATIVE_GAP_RETDEC_BATCH04_C) $(NATIVE_GAP_RETDEC_BATCH05_C) $(NATIVE_GAP_RETDEC_BATCH06_C) $(NATIVE_GAP_RETDEC_BATCH07_C) $(NATIVE_GAP_RETDEC_BATCH08_C) $(NATIVE_GAP_RETDEC_BATCH09_C) $(NATIVE_GAP_RETDEC_BATCH10_C) $(NATIVE_GAP_RETDEC_BATCH11_C) $(NATIVE_GAP_RETDEC_BATCH12_C) $(NATIVE_GAP_RETDEC_BATCH13_C) $(NATIVE_GAP_RETDEC_BATCH14_C) $(NATIVE_GAP_RETDEC_BATCH15_C) $(NATIVE_GAP_RETDEC_BATCH16_C) $(NATIVE_GAP_RETDEC_BATCH17_C) $(NATIVE_GAP_RETDEC_BATCH18_C) $(NATIVE_GAP_RETDEC_BATCH19_C) $(NATIVE_GAP_RETDEC_BATCH20_C) $(NATIVE_GAP_RETDEC_BATCH21_C) $(NATIVE_GAP_RETDEC_BATCH22_C) $(NATIVE_GAP_RETDEC_BATCH23_C) $(NATIVE_GAP_RETDEC_BATCH24_C) $(NATIVE_GAP_RETDEC_BATCH25_C) $(NATIVE_GAP_RETDEC_BATCH26_C) $(NATIVE_GAP_RETDEC_BATCH27_C) $(NATIVE_GAP_RETDEC_BATCH28_C) $(NATIVE_GAP_RETDEC_BATCH29_C) $(NATIVE_GAP_RETDEC_BATCH30_C) $(NATIVE_GAP_RETDEC_BATCH31_C) $(NATIVE_GAP_RETDEC_BATCH32_C) $(NATIVE_GAP_RETDEC_BATCH33_C) $(NATIVE_GAP_RETDEC_BATCH34_C) $(NATIVE_GAP_RETDEC_BATCH35_C) $(NATIVE_GAP_RETDEC_BATCH36_C) $(NATIVE_GAP_RETDEC_BATCH37_C) $(NATIVE_GAP_RETDEC_BATCH38_C) $(NATIVE_GAP_RETDEC_BATCH39_C) $(NATIVE_GAP_RETDEC_BATCH40_C) $(NATIVE_GAP_RETDEC_BATCH41_C) $(NATIVE_GAP_RETDEC_BATCH42_C) $(NATIVE_GAP_RETDEC_BATCH43_C) $(NATIVE_GAP_RETDEC_BATCH44_C) $(NATIVE_GAP_RETDEC_BATCH45_C) $(NATIVE_GAP_RETDEC_BATCH46_C)
 NATIVE_GAP_RETDEC_BATCH_CS += $(NATIVE_GAP_RETDEC_BATCH47_C)
 NATIVE_GAP_RETDEC_BATCH_CS += $(NATIVE_GAP_RETDEC_BATCH48_C)
@@ -132,6 +133,7 @@ NATIVE_GAP_RETDEC_BATCH_CS += $(NATIVE_GAP_RETDEC_BATCH63_C)
 NATIVE_GAP_RETDEC_BATCH_CS += $(NATIVE_GAP_RETDEC_BATCH64_C)
 NATIVE_GAP_RETDEC_BATCH_CS += $(NATIVE_GAP_RETDEC_BATCH65_C)
 NATIVE_GAP_RETDEC_BATCH_CS += $(NATIVE_GAP_RETDEC_BATCH66_C)
+NATIVE_GAP_RETDEC_BATCH_CS += $(NATIVE_GAP_RETDEC_BATCH67_C)
 SOURCE_BUNDLE_C := $(PRIMARY_DIR)/vm_recovered_source_bundle.c
 ALL_EVIDENCE_BUNDLE_C := $(PRIMARY_DIR)/vm_recovered_source_all_evidence_bundle.c
 NATIVE_RET_PATCH_TARGETS_C := $(PRIMARY_DIR)/vm_native_ret_patch_targets.c
@@ -1133,6 +1135,10 @@ $(NATIVE_GAP_RETDEC_BATCH65_C): vm_native_gap_retdec_batch.py native_gap_retdec_
 $(NATIVE_GAP_RETDEC_BATCH66_C): vm_native_gap_retdec_batch.py native_gap_retdec_batch66.ranges eac.elf
 	python3 vm_native_gap_retdec_batch.py --batch-index 66 --ranges-file native_gap_retdec_batch66.ranges > $@
 
+.PHONY: native-gap-retdec-batch67
+$(NATIVE_GAP_RETDEC_BATCH67_C): vm_native_gap_retdec_batch.py native_gap_retdec_batch67.ranges eac.elf
+	python3 vm_native_gap_retdec_batch.py --batch-index 67 --ranges-file native_gap_retdec_batch67.ranges > $@
+
 native-gap-retdec-batch0: $(NATIVE_GAP_RETDEC_BATCH00_C)
 native-gap-retdec-batch1: $(NATIVE_GAP_RETDEC_BATCH01_C)
 native-gap-retdec-batch2: $(NATIVE_GAP_RETDEC_BATCH02_C)
@@ -1200,6 +1206,7 @@ native-gap-retdec-batch63: $(NATIVE_GAP_RETDEC_BATCH63_C)
 native-gap-retdec-batch64: $(NATIVE_GAP_RETDEC_BATCH64_C)
 native-gap-retdec-batch65: $(NATIVE_GAP_RETDEC_BATCH65_C)
 native-gap-retdec-batch66: $(NATIVE_GAP_RETDEC_BATCH66_C)
+native-gap-retdec-batch67: $(NATIVE_GAP_RETDEC_BATCH67_C)
 native-gap-retdec-batches: $(NATIVE_GAP_RETDEC_BATCH_CS)
 
 $(NATIVE_RETDEC_GAP_QUEUE_TSV): vm_native_retdec_gap_queue.py $(NATIVE_FUNCTION_INVENTORY_TSV) $(NATIVE_EXECUTABLE_COVERAGE_AUDIT_TSV)
@@ -1300,6 +1307,7 @@ pseudocode-syntax-check: $(PSEUDOCODE_TOP_C) $(PROGRAM_PSEUDOCODE_TOP_C) $(PROGR
 	$(CC) -std=c11 -fsyntax-only -w dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch64.c
 	$(CC) -std=c11 -fsyntax-only -w dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch65.c
 	$(CC) -std=c11 -fsyntax-only -w dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch66.c
+	$(CC) -std=c11 -fsyntax-only -w dumps/vmtail-wide-1m-w16/vm_native_gap_retdec_batch67.c
 	$(CC) -std=c11 -fsyntax-only -Wall -Wextra -Wno-unused-variable -Wno-unused-function -Wno-parentheses dumps/vmtail-wide-1m-w16/vm_pseudocode_top.c
 	$(CC) -std=c11 -fsyntax-only -Wall -Wextra -Wno-unused-variable -Wno-unused-function -Wno-parentheses dumps/vmtail-wide-1m-w16/vm_program_pseudocode_top.c
 	$(CC) -std=c11 -fsyntax-only -Wall -Wextra -Wno-unused-variable -Wno-unused-function -Wno-parentheses dumps/vmtail-wide-1m-w16/vm_program_pseudocode_full.c
