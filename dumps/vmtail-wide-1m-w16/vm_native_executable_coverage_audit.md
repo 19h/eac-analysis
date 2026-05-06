@@ -4,17 +4,17 @@ Compares executable ELF sections against native ranges already represented by re
 
 - executable sections: 5
 - executable bytes: 5651040
-- recovered executable bytes: 5635088
-- uncovered executable bytes: 15952
-- recovered range rows: 85784
-- uncovered gaps: 718
+- recovered executable bytes: 5635760
+- uncovered executable bytes: 15280
+- recovered range rows: 86040
+- uncovered gaps: 719
 
 | section | range | bytes | covered | uncovered | coverage | ranges |
 | --- | --- | ---: | ---: | ---: | ---: | ---: |
 | `.init` | `0x1fbd0-0x1fbe7` | 23 | 23 | 0 | 100.00% | 1 |
 | `.plt` | `0x1fbf0-0x20bd0` | 4064 | 4064 | 0 | 100.00% | 254 |
 | `.plt.got` | `0x20bd0-0x20be0` | 16 | 16 | 0 | 100.00% | 2 |
-| `.text` | `0x20c00-0x583650` | 5646928 | 5630976 | 15952 | 99.71% | 85524 |
+| `.text` | `0x20c00-0x583650` | 5646928 | 5631648 | 15280 | 99.72% | 85780 |
 | `.fini` | `0x583650-0x583659` | 9 | 9 | 0 | 100.00% | 3 |
 
 ## Largest Uncovered Gaps
@@ -22,13 +22,7 @@ Compares executable ELF sections against native ranges already represented by re
 | section | range | bytes |
 | --- | --- | ---: |
 | `.text` | `0x4dc819-0x4dc899` | 128 |
-| `.text` | `0x4e4899-0x4e4919` | 128 |
-| `.text` | `0x4e4ef9-0x4e4f79` | 128 |
-| `.text` | `0x4e53f9-0x4e5479` | 128 |
-| `.text` | `0x4e5639-0x4e56b9` | 128 |
-| `.text` | `0x4e60f9-0x4e6179` | 128 |
-| `.text` | `0x4e7d79-0x4e7df9` | 128 |
-| `.text` | `0x4e83b9-0x4e8439` | 128 |
+| `.text` | `0x4e48a1-0x4e4919` | 120 |
 | `.text` | `0x4e8b61-0x4e8bc9` | 104 |
 | `.text` | `0x4dae49-0x4dae89` | 64 |
 | `.text` | `0x4dd9b9-0x4dd9f9` | 64 |
@@ -61,3 +55,9 @@ Compares executable ELF sections against native ranges already represented by re
 | `.text` | `0x4db979-0x4db9b5` | 60 |
 | `.text` | `0x4e0f99-0x4e0fd5` | 60 |
 | `.text` | `0x4e5a29-0x4e5a65` | 60 |
+| `.text` | `0x4e4d31-0x4e4d69` | 56 |
+| `.text` | `0x4e6bb1-0x4e6be9` | 56 |
+| `.text` | `0x4e6c31-0x4e6c69` | 56 |
+| `.text` | `0x4e997a-0x4e99ad` | 51 |
+| `.text` | `0x4dcff9-0x4dd029` | 48 |
+| `.text` | `0x4e4f49-0x4e4f79` | 48 |
