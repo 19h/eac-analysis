@@ -1,12 +1,12 @@
 /*
- * Targeted RetDec C for native executable gap queue batch 715.
+ * Targeted RetDec C for native executable gap queue batch 718.
  *
  * This batch is fixed from the ranked native gap queue so it can feed the
  * executable coverage audit without creating a Make dependency cycle:
  * coverage -> queue -> RetDec batch -> coverage.
  *
  * Ranges:
- *   0x4df9f9-0x4dfaf9 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x4e0179-0x4e01f9 rank=- name=- kind=- bytes=- uncovered=-
  */
 #include <stdbool.h>
 #include <stdio.h>
@@ -357,47 +357,19 @@ void _Unwind_SetIP(int64_t context, int64_t value);
 void _Unwind_Resume(struct _Unwind_Exception *exception);
 void _Unwind_Resume_or_Rethrow(int64_t exception);
 
-int64_t function_285b6c4e();
-int64_t function_4df9f9(void);
-int64_t function_4df9fa(int64_t a1, int64_t a2, uint64_t a3, int64_t a4, int64_t a5);
-int64_t function_4dfad9(int64_t a1, int64_t a2, int64_t a3, int64_t a4);
+int64_t function_4e0179(int64_t a1, int64_t a2, int64_t a3, int64_t a4);
+int64_t function_4e01c3(int64_t a1, int64_t a2, int64_t a3);
 
-// Address range: 0x4df9f9 - 0x4df9fa
-int64_t function_4df9f9(void) {
-    // 0x4df9f9
-    int64_t result; // 0x4df9f9
+// Address range: 0x4e0179 - 0x4e0191
+int64_t function_4e0179(int64_t a1, int64_t a2, int64_t a3, int64_t a4) {
+    // 0x4e0179
+    int64_t v1; // 0x4e0179
+    return v1 + 0x3e3b2802 & 0x41c4dcfe ^ 0xd162cefe;
+}
+
+// Address range: 0x4e01c3 - 0x4e01c8
+int64_t function_4e01c3(int64_t a1, int64_t a2, int64_t a3) {
+    // 0x4e01c3
+    int64_t result; // 0x4e01c3
     return result;
-}
-
-// Address range: 0x4df9fa - 0x4dfa1e
-int64_t function_4df9fa(int64_t a1, int64_t a2, uint64_t a3, int64_t a4, int64_t a5) {
-    // 0x4df9fa
-    __asm_int1();
-    int64_t v1; // 0x4df9fa
-    char * v2 = (char *)(v1 - 58); // 0x4df9fd
-    char v3 = v1; // 0x4df9fd
-    *v2 = *v2 - v3;
-    __asm_int1();
-    char * v4 = (char *)(v1 - 57); // 0x4dfa04
-    *v4 = *v4 - v3;
-    int64_t v5 = __asm_int1(); // 0x4dfa0a
-    char * v6 = (char *)(a3 - 60); // 0x4dfa0c
-    *v6 = *v6 - (char)(a3 / 256);
-    return v5 | 98;
-}
-
-// Address range: 0x4dfad9 - 0x4dfaec
-int64_t function_4dfad9(int64_t a1, int64_t a2, int64_t a3, int64_t a4) {
-    // 0x4dfad9
-    bool v1; // 0x4dfad9
-    bool v2 = v1;
-    int32_t v3 = __asm_in(-2); // 0x4dfad9
-    __asm_fbld(*(float80_t *)(a3 + 113));
-    uint32_t result = v3 - (v2 ? 0x62e0ef29 : 0x62e0ef28); // 0x4dfade
-    if ((-1 - result + (int32_t)v2 & v3) >= 0) {
-        // 0x4dfafa
-        return result;
-    }
-    // 0x4dfae5
-    return function_285b6c4e();
 }
