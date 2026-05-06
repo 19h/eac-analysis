@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import argparse
 import csv
+import hashlib
 import subprocess
 import tempfile
 from concurrent.futures import FIRST_COMPLETED, ThreadPoolExecutor, wait
@@ -11,6 +12,8 @@ from vm_native_gap_retdec_ranges_from_queue import RANGE_RE, next_batch_index, u
 
 TRACE_DIR = Path("dumps/vmtail-wide-1m-w16")
 DEFAULT_COVERAGE = TRACE_DIR / "vm_native_executable_coverage_audit.tsv"
+DEFAULT_REJECT_CACHE = TRACE_DIR / "vm_executable_gap_retdec_reject_cache.tsv"
+RETDEC_GENERATOR = Path("vm_native_gap_retdec_batch.py")
 
 
 def format_range(start, end):
@@ -42,6 +45,41 @@ def candidate_ranges(gaps, chunk_bytes, max_gap_chunks, used):
                 yield item
                 emitted += 1
             pos = end
+
+
+def generator_fingerprint():
+    data = RETDEC_GENERATOR.read_bytes()
+    return hashlib.sha256(data).hexdigest()[:16]
+
+
+def read_reject_cache(path, generator_key):
+    rejected = set()
+    if not path.exists():
+        return rejected
+    with path.open(newline="", errors="replace") as handle:
+        for row in csv.DictReader(handle, delimiter="\t"):
+            selected = (row.get("range") or "").strip()
+            if row.get("generator_key") == generator_key and RANGE_RE.match(selected):
+                rejected.add(selected)
+    return rejected
+
+
+def append_reject_cache(path, generator_key, rejected, dry_run):
+    if not rejected:
+        return
+    rows = sorted(set(rejected), key=lambda item: (*parse_range(item), item))
+    if dry_run:
+        print(f"would_append_reject_cache\t{path}\t{len(rows)}")
+        return
+    path.parent.mkdir(parents=True, exist_ok=True)
+    write_header = not path.exists() or path.stat().st_size == 0
+    with path.open("a", newline="") as handle:
+        writer = csv.writer(handle, delimiter="\t")
+        if write_header:
+            writer.writerow(["range", "generator_key"])
+        for selected in rows:
+            writer.writerow([selected, generator_key])
+    print(f"appended_reject_cache\t{path}\t{len(rows)}")
 
 
 def parse_range(selected):
@@ -92,6 +130,7 @@ def try_range(selected, batch_index, timeout, keep_failed):
 
 def probe_candidates(candidates, batch_index, timeout, keep_failed, probe_jobs, max_accepted):
     accepted = []
+    rejected = []
     pending = {}
     candidates = iter(candidates)
 
@@ -119,12 +158,14 @@ def probe_candidates(candidates, batch_index, timeout, keep_failed, probe_jobs, 
                     accepted.append(selected)
                     if len(accepted) >= max_accepted:
                         break
+                else:
+                    rejected.append(selected)
                 submit_next(executor)
 
         for future in pending:
             future.cancel()
 
-    return sorted(accepted, key=parse_range)
+    return sorted(accepted, key=parse_range), rejected
 
 
 def write_batch(path, ranges, dry_run):
@@ -152,13 +193,16 @@ def main():
     parser.add_argument("--max-accepted", type=int, default=8)
     parser.add_argument("--probe-jobs", type=int, default=4)
     parser.add_argument("--timeout", type=int, default=45)
+    parser.add_argument("--reject-cache", type=Path, default=DEFAULT_REJECT_CACHE)
     parser.add_argument("--dry-run", action="store_true")
     parser.add_argument("--keep-failed", action="store_true")
     args = parser.parse_args()
 
     batch_index = args.start_index if args.start_index is not None else next_batch_index(args.root)
     output = args.root / f"native_gap_retdec_batch{batch_index:02d}.ranges"
+    generator_key = generator_fingerprint()
     used = {item for item in used_ranges(args.root) if RANGE_RE.match(item)}
+    used.update(read_reject_cache(args.reject_cache, generator_key))
     probe_jobs = max(1, args.probe_jobs)
     candidates = []
     for selected in candidate_ranges(read_gaps(args.coverage), args.chunk_bytes, args.max_gap_chunks, used):
@@ -166,7 +210,7 @@ def main():
             break
         candidates.append(selected)
 
-    accepted = probe_candidates(
+    accepted, rejected = probe_candidates(
         candidates,
         batch_index,
         args.timeout,
@@ -176,8 +220,10 @@ def main():
     )
 
     if not accepted:
+        append_reject_cache(args.reject_cache, generator_key, rejected, args.dry_run)
         raise SystemExit("no syntax-checkable executable gap chunks found")
     write_batch(output, accepted, args.dry_run)
+    append_reject_cache(args.reject_cache, generator_key, rejected, args.dry_run)
 
 
 if __name__ == "__main__":
