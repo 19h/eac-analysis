@@ -1,0 +1,259 @@
+section	start	stop	bytes	symbol	normalized_symbol	categories	classification_confidence	classification_reason	provenance
+.fini	0x583650	0x583659	9	_fini@@Base	_fini	native_runtime_misc	low	no stronger side-effect category	native_linkage_stub_inventory
+.init	0x1fbd0	0x1fbe7	23	_init@@Base	_init	native_runtime_misc	low	no stronger side-effect category	native_linkage_stub_inventory
+.plt	0x1fbf0	0x1fc00	16	_ITM_addUserCommitAction@plt-0x10	_ITM_addUserCommitAction	cxx_runtime	high	GNU transactional-memory runtime symbol	native_linkage_stub_inventory
+.plt	0x1fc00	0x1fc10	16	_ITM_addUserCommitAction@plt	_ITM_addUserCommitAction	cxx_runtime	high	GNU transactional-memory runtime symbol	native_linkage_stub_inventory
+.plt	0x1fc10	0x1fc20	16	__strtof_l@plt	__strtof_l	native_runtime_misc	low	no stronger side-effect category	native_linkage_stub_inventory
+.plt	0x1fc20	0x1fc30	16	_ITM_memcpyRtWn@plt	_ITM_memcpyRtWn	cxx_runtime	high	GNU transactional-memory runtime symbol	native_linkage_stub_inventory
+.plt	0x1fc30	0x1fc40	16	mprotect@plt	mprotect	memory_protection	high	memory mapping/protection import	native_linkage_stub_inventory
+.plt	0x1fc40	0x1fc50	16	sem_wait@plt	sem_wait	threading_sync	high	pthread/semaphore/scheduler import	native_linkage_stub_inventory
+.plt	0x1fc50	0x1fc60	16	fileno@plt	fileno	filesystem_io	high	filesystem/device I/O import	native_linkage_stub_inventory
+.plt	0x1fc60	0x1fc70	16	pthread_cond_destroy@plt	pthread_cond_destroy	threading_sync	high	pthread/semaphore/scheduler import	native_linkage_stub_inventory
+.plt	0x1fc70	0x1fc80	16	printf@plt	printf	text_formatting	high	formatting/output import	native_linkage_stub_inventory
+.plt	0x1fc80	0x1fc90	16	__strcoll_l@plt	__strcoll_l	native_runtime_misc	low	no stronger side-effect category	native_linkage_stub_inventory
+.plt	0x1fc90	0x1fca0	16	__nl_langinfo_l@plt	__nl_langinfo_l	locale_i18n	high	locale/i18n import	native_linkage_stub_inventory
+.plt	0x1fca0	0x1fcb0	16	dgettext@plt	dgettext	locale_i18n	high	locale/i18n import	native_linkage_stub_inventory
+.plt	0x1fcb0	0x1fcc0	16	wcsftime@plt	wcsftime	locale_i18n	high	locale/i18n import	native_linkage_stub_inventory
+.plt	0x1fcc0	0x1fcd0	16	__cxa_free_exception@plt	__cxa_free_exception	cxx_runtime	high	C++ ABI/exception import	native_linkage_stub_inventory
+.plt	0x1fcd0	0x1fce0	16	_Unwind_GetRegionStart@plt	_Unwind_GetRegionStart	cxx_runtime	high	C++ ABI/exception import	native_linkage_stub_inventory
+.plt	0x1fce0	0x1fcf0	16	fseeko64@plt	fseeko64	filesystem_io	high	filesystem/device I/O import	native_linkage_stub_inventory
+.plt	0x1fcf0	0x1fd00	16	wmemcpy@plt	wmemcpy	memory_string	high	memory/string helper import	native_linkage_stub_inventory
+.plt	0x1fd00	0x1fd10	16	memset@plt	memset	memory_string	high	memory/string helper import	native_linkage_stub_inventory
+.plt	0x1fd10	0x1fd20	16	ftell@plt	ftell	filesystem_io	high	filesystem/device I/O import	native_linkage_stub_inventory
+.plt	0x1fd20	0x1fd30	16	mbrtowc@plt	mbrtowc	locale_i18n	high	locale/i18n import	native_linkage_stub_inventory
+.plt	0x1fd30	0x1fd40	16	snprintf@plt	snprintf	text_formatting	high	formatting/output import	native_linkage_stub_inventory
+.plt	0x1fd40	0x1fd50	16	__cxa_begin_catch@plt	__cxa_begin_catch	cxx_runtime	high	C++ ABI/exception import	native_linkage_stub_inventory
+.plt	0x1fd50	0x1fd60	16	_Unwind_SetGR@plt	_Unwind_SetGR	cxx_runtime	high	C++ ABI/exception import	native_linkage_stub_inventory
+.plt	0x1fd60	0x1fd70	16	wcslen@plt	wcslen	memory_string	high	memory/string helper import	native_linkage_stub_inventory
+.plt	0x1fd70	0x1fd80	16	blake3_compress_xof_sse41@plt	blake3_compress_xof_sse41	crypto_hashing	high	crypto/hash/random import	native_linkage_stub_inventory
+.plt	0x1fd80	0x1fd90	16	close@plt	close	filesystem_io	high	filesystem/device I/O import	native_linkage_stub_inventory
+.plt	0x1fd90	0x1fda0	16	__duplocale@plt	__duplocale	locale_i18n	high	locale/i18n import	native_linkage_stub_inventory
+.plt	0x1fda0	0x1fdb0	16	_Unwind_GetDataRelBase@plt	_Unwind_GetDataRelBase	cxx_runtime	high	C++ ABI/exception import	native_linkage_stub_inventory
+.plt	0x1fdb0	0x1fdc0	16	blake3_hasher_update@plt	blake3_hasher_update	crypto_hashing	high	crypto/hash/random import	native_linkage_stub_inventory
+.plt	0x1fdc0	0x1fdd0	16	ioctl@plt	ioctl	host_environment_inventory	high	host/process environment import	native_linkage_stub_inventory
+.plt	0x1fdd0	0x1fde0	16	abort@plt	abort	native_runtime_misc	low	no stronger side-effect category	native_linkage_stub_inventory
+.plt	0x1fde0	0x1fdf0	16	memchr@plt	memchr	memory_string	high	memory/string helper import	native_linkage_stub_inventory
+.plt	0x1fdf0	0x1fe00	16	ZydisGetInstructionEncodingInfo@plt	ZydisGetInstructionEncodingInfo	disassembly_metadata	high	Zydis disassembly symbol	native_linkage_stub_inventory
+.plt	0x1fe00	0x1fe10	16	epoll_create@plt	epoll_create	network	high	network libc/syscall import	native_linkage_stub_inventory
+.plt	0x1fe10	0x1fe20	16	sem_destroy@plt	sem_destroy	threading_sync	high	pthread/semaphore/scheduler import	native_linkage_stub_inventory
+.plt	0x1fe20	0x1fe30	16	puts@plt	puts	text_formatting	high	formatting/output import	native_linkage_stub_inventory
+.plt	0x1fe30	0x1fe40	16	uname@plt	uname	host_environment_inventory	high	host/process environment import	native_linkage_stub_inventory
+.plt	0x1fe40	0x1fe50	16	fseek@plt	fseek	filesystem_io	high	filesystem/device I/O import	native_linkage_stub_inventory
+.plt	0x1fe50	0x1fe60	16	getaddrinfo@plt	getaddrinfo	network	high	network libc/syscall import	native_linkage_stub_inventory
+.plt	0x1fe60	0x1fe70	16	bindtextdomain@plt	bindtextdomain	native_runtime_misc	low	no stronger side-effect category	native_linkage_stub_inventory
+.plt	0x1fe70	0x1fe80	16	wmemcmp@plt	wmemcmp	native_runtime_misc	low	no stronger side-effect category	native_linkage_stub_inventory
+.plt	0x1fe80	0x1fe90	16	__strftime_l@plt	__strftime_l	native_runtime_misc	low	no stronger side-effect category	native_linkage_stub_inventory
+.plt	0x1fe90	0x1fea0	16	gettimeofday@plt	gettimeofday	native_runtime_misc	low	no stronger side-effect category	native_linkage_stub_inventory
+.plt	0x1fea0	0x1feb0	16	__cxa_call_terminate@plt	__cxa_call_terminate	cxx_runtime	high	C++ ABI/exception import	native_linkage_stub_inventory
+.plt	0x1feb0	0x1fec0	16	setvbuf@plt	setvbuf	native_runtime_misc	low	no stronger side-effect category	native_linkage_stub_inventory
+.plt	0x1fec0	0x1fed0	16	__strxfrm_l@plt	__strxfrm_l	native_runtime_misc	low	no stronger side-effect category	native_linkage_stub_inventory
+.plt	0x1fed0	0x1fee0	16	putchar@plt	putchar	text_formatting	high	formatting/output import	native_linkage_stub_inventory
+.plt	0x1fee0	0x1fef0	16	_ITM_RU1@plt	_ITM_RU1	cxx_runtime	high	GNU transactional-memory runtime symbol	native_linkage_stub_inventory
+.plt	0x1fef0	0x1ff00	16	mbsnrtowcs@plt	mbsnrtowcs	native_runtime_misc	low	no stronger side-effect category	native_linkage_stub_inventory
+.plt	0x1ff00	0x1ff10	16	read@plt	read	filesystem_io	high	filesystem/device I/O import	native_linkage_stub_inventory
+.plt	0x1ff10	0x1ff20	16	strncmp@plt	strncmp	memory_string	high	memory/string helper import	native_linkage_stub_inventory
+.plt	0x1ff20	0x1ff30	16	malloc@plt	malloc	native_runtime_misc	low	no stronger side-effect category	native_linkage_stub_inventory
+.plt	0x1ff30	0x1ff40	16	fopen@plt	fopen	filesystem_io	high	filesystem/device I/O import	native_linkage_stub_inventory
+.plt	0x1ff40	0x1ff50	16	recv@plt	recv	network	high	network libc/syscall import	native_linkage_stub_inventory
+.plt	0x1ff50	0x1ff60	16	__cxa_guard_release@plt	__cxa_guard_release	cxx_runtime	high	C++ ABI/exception import	native_linkage_stub_inventory
+.plt	0x1ff60	0x1ff70	16	gettext@plt	gettext	locale_i18n	high	locale/i18n import	native_linkage_stub_inventory
+.plt	0x1ff70	0x1ff80	16	blake3_xof_many_avx512@plt	blake3_xof_many_avx512	crypto_hashing	high	crypto/hash/random import	native_linkage_stub_inventory
+.plt	0x1ff80	0x1ff90	16	ZydisDecoderDecodeInstruction@plt	ZydisDecoderDecodeInstruction	disassembly_metadata	high	Zydis disassembly symbol	native_linkage_stub_inventory
+.plt	0x1ff90	0x1ffa0	16	blake3_hasher_finalize_seek@plt	blake3_hasher_finalize_seek	crypto_hashing	high	crypto/hash/random import	native_linkage_stub_inventory
+.plt	0x1ffa0	0x1ffb0	16	strtold_l@plt	strtold_l	native_runtime_misc	low	no stronger side-effect category	native_linkage_stub_inventory
+.plt	0x1ffb0	0x1ffc0	16	sched_yield@plt	sched_yield	threading_sync	high	pthread/semaphore/scheduler import	native_linkage_stub_inventory
+.plt	0x1ffc0	0x1ffd0	16	ungetwc@plt	ungetwc	native_runtime_misc	low	no stronger side-effect category	native_linkage_stub_inventory
+.plt	0x1ffd0	0x1ffe0	16	_Unwind_DeleteException@plt	_Unwind_DeleteException	cxx_runtime	high	C++ ABI/exception import	native_linkage_stub_inventory
+.plt	0x1ffe0	0x1fff0	16	pthread_cond_timedwait@plt	pthread_cond_timedwait	threading_sync	high	pthread/semaphore/scheduler import	native_linkage_stub_inventory
+.plt	0x1fff0	0x20000	16	__wctype_l@plt	__wctype_l	native_runtime_misc	low	no stronger side-effect category	native_linkage_stub_inventory
+.plt	0x20000	0x20010	16	__memcpy_chk@plt	__memcpy_chk	native_runtime_misc	low	no stronger side-effect category	native_linkage_stub_inventory
+.plt	0x20010	0x20020	16	gmtime@plt	gmtime	native_runtime_misc	low	no stronger side-effect category	native_linkage_stub_inventory
+.plt	0x20020	0x20030	16	__cxa_atexit@plt	__cxa_atexit	cxx_runtime	high	C++ ABI/exception import	native_linkage_stub_inventory
+.plt	0x20030	0x20040	16	ZydisCalcAbsoluteAddress@plt	ZydisCalcAbsoluteAddress	disassembly_metadata	high	Zydis disassembly symbol	native_linkage_stub_inventory
+.plt	0x20040	0x20050	16	__cxa_current_exception_type@plt	__cxa_current_exception_type	cxx_runtime	high	C++ ABI/exception import	native_linkage_stub_inventory
+.plt	0x20050	0x20060	16	blake3_compress_xof_avx512@plt	blake3_compress_xof_avx512	crypto_hashing	high	crypto/hash/random import	native_linkage_stub_inventory
+.plt	0x20060	0x20070	16	setsockopt@plt	setsockopt	network	high	network libc/syscall import	native_linkage_stub_inventory
+.plt	0x20070	0x20080	16	sysconf@plt	sysconf	host_environment_inventory	high	host/process environment import	native_linkage_stub_inventory
+.plt	0x20080	0x20090	16	getpid@plt	getpid	host_environment_inventory	high	host/process environment import	native_linkage_stub_inventory
+.plt	0x20090	0x200a0	16	pthread_mutex_init@plt	pthread_mutex_init	threading_sync	high	pthread/semaphore/scheduler import	native_linkage_stub_inventory
+.plt	0x200a0	0x200b0	16	fgets@plt	fgets	native_runtime_misc	low	no stronger side-effect category	native_linkage_stub_inventory
+.plt	0x200b0	0x200c0	16	__towupper_l@plt	__towupper_l	native_runtime_misc	low	no stronger side-effect category	native_linkage_stub_inventory
+.plt	0x200c0	0x200d0	16	__cxa_call_unexpected@plt	__cxa_call_unexpected	cxx_runtime	high	C++ ABI/exception import	native_linkage_stub_inventory
+.plt	0x200d0	0x200e0	16	__wcsxfrm_l@plt	__wcsxfrm_l	native_runtime_misc	low	no stronger side-effect category	native_linkage_stub_inventory
+.plt	0x200e0	0x200f0	16	__fxstat64@plt	__fxstat64	native_runtime_misc	low	no stronger side-effect category	native_linkage_stub_inventory
+.plt	0x200f0	0x20100	16	iconv_open@plt	iconv_open	locale_i18n	high	locale/i18n import	native_linkage_stub_inventory
+.plt	0x20100	0x20110	16	getpwuid@plt	getpwuid	host_environment_inventory	high	host/process environment import	native_linkage_stub_inventory
+.plt	0x20110	0x20120	16	__cxa_bad_cast@plt	__cxa_bad_cast	cxx_runtime	high	C++ ABI/exception import	native_linkage_stub_inventory
+.plt	0x20120	0x20130	16	_ZGTtdlPv@plt	_ZGTtdlPv	cxx_runtime	high	C++ ABI/exception import	native_linkage_stub_inventory
+.plt	0x20130	0x20140	16	__cxa_get_globals_fast@plt	__cxa_get_globals_fast	cxx_runtime	high	C++ ABI/exception import	native_linkage_stub_inventory
+.plt	0x20140	0x20150	16	_Unwind_GetLanguageSpecificData@plt	_Unwind_GetLanguageSpecificData	cxx_runtime	high	C++ ABI/exception import	native_linkage_stub_inventory
+.plt	0x20150	0x20160	16	vswprintf@plt	vswprintf	native_runtime_misc	low	no stronger side-effect category	native_linkage_stub_inventory
+.plt	0x20160	0x20170	16	ZydisRegisterEncode@plt	ZydisRegisterEncode	disassembly_metadata	high	Zydis disassembly symbol	native_linkage_stub_inventory
+.plt	0x20170	0x20180	16	__udivti3@plt	__udivti3	native_runtime_misc	low	no stronger side-effect category	native_linkage_stub_inventory
+.plt	0x20180	0x20190	16	_Unwind_Resume_or_Rethrow@plt	_Unwind_Resume_or_Rethrow	cxx_runtime	high	C++ ABI/exception import	native_linkage_stub_inventory
+.plt	0x20190	0x201a0	16	ungetc@plt	ungetc	native_runtime_misc	low	no stronger side-effect category	native_linkage_stub_inventory
+.plt	0x201a0	0x201b0	16	__wcscoll_l@plt	__wcscoll_l	native_runtime_misc	low	no stronger side-effect category	native_linkage_stub_inventory
+.plt	0x201b0	0x201c0	16	__popcountdi2@plt	__popcountdi2	native_runtime_misc	low	no stronger side-effect category	native_linkage_stub_inventory
+.plt	0x201c0	0x201d0	16	fputc@plt	fputc	native_runtime_misc	low	no stronger side-effect category	native_linkage_stub_inventory
+.plt	0x201d0	0x201e0	16	freeaddrinfo@plt	freeaddrinfo	network	high	network libc/syscall import	native_linkage_stub_inventory
+.plt	0x201e0	0x201f0	16	free@plt	free	native_runtime_misc	low	no stronger side-effect category	native_linkage_stub_inventory
+.plt	0x201f0	0x20200	16	secure_getenv@plt	secure_getenv	env_check	high	environment-variable import	native_linkage_stub_inventory
+.plt	0x20200	0x20210	16	strlen@plt	strlen	memory_string	high	memory/string helper import	native_linkage_stub_inventory
+.plt	0x20210	0x20220	16	__cxa_allocate_exception@plt	__cxa_allocate_exception	cxx_runtime	high	C++ ABI/exception import	native_linkage_stub_inventory
+.plt	0x20220	0x20230	16	ferror@plt	ferror	native_runtime_misc	low	no stronger side-effect category	native_linkage_stub_inventory
+.plt	0x20230	0x20240	16	pthread_create@plt	pthread_create	threading_sync	high	pthread/semaphore/scheduler import	native_linkage_stub_inventory
+.plt	0x20240	0x20250	16	wmemchr@plt	wmemchr	native_runtime_misc	low	no stronger side-effect category	native_linkage_stub_inventory
+.plt	0x20250	0x20260	16	opendir@plt	opendir	filesystem_io	high	filesystem/device I/O import	native_linkage_stub_inventory
+.plt	0x20260	0x20270	16	__xstat@plt	__xstat	native_runtime_misc	low	no stronger side-effect category	native_linkage_stub_inventory
+.plt	0x20270	0x20280	16	pclose@plt	pclose	process_or_shell	high	process/shell import	native_linkage_stub_inventory
+.plt	0x20280	0x20290	16	pthread_cond_init@plt	pthread_cond_init	threading_sync	high	pthread/semaphore/scheduler import	native_linkage_stub_inventory
+.plt	0x20290	0x202a0	16	__xpg_basename@plt	__xpg_basename	native_runtime_misc	low	no stronger side-effect category	native_linkage_stub_inventory
+.plt	0x202a0	0x202b0	16	_Unwind_RaiseException@plt	_Unwind_RaiseException	cxx_runtime	high	C++ ABI/exception import	native_linkage_stub_inventory
+.plt	0x202b0	0x202c0	16	__ctype_get_mb_cur_max@plt	__ctype_get_mb_cur_max	native_runtime_misc	low	no stronger side-effect category	native_linkage_stub_inventory
+.plt	0x202c0	0x202d0	16	realpath@plt	realpath	filesystem_io	high	filesystem/device I/O import	native_linkage_stub_inventory
+.plt	0x202d0	0x202e0	16	wctob@plt	wctob	native_runtime_misc	low	no stronger side-effect category	native_linkage_stub_inventory
+.plt	0x202e0	0x202f0	16	__wcsftime_l@plt	__wcsftime_l	native_runtime_misc	low	no stronger side-effect category	native_linkage_stub_inventory
+.plt	0x202f0	0x20300	16	__iswctype_l@plt	__iswctype_l	native_runtime_misc	low	no stronger side-effect category	native_linkage_stub_inventory
+.plt	0x20300	0x20310	16	readdir@plt	readdir	filesystem_io	high	filesystem/device I/O import	native_linkage_stub_inventory
+.plt	0x20310	0x20320	16	__tls_get_addr@plt	__tls_get_addr	tls_or_ssl	high	TLS/SSL symbol	native_linkage_stub_inventory
+.plt	0x20320	0x20330	16	mbstowcs@plt	mbstowcs	native_runtime_misc	low	no stronger side-effect category	native_linkage_stub_inventory
+.plt	0x20330	0x20340	16	fdopen@plt	fdopen	native_runtime_misc	low	no stronger side-effect category	native_linkage_stub_inventory
+.plt	0x20340	0x20350	16	syscall@plt	syscall	native_runtime_misc	low	no stronger side-effect category	native_linkage_stub_inventory
+.plt	0x20350	0x20360	16	memfd_create@plt	memfd_create	memory_protection	high	memory mapping/protection import	native_linkage_stub_inventory
+.plt	0x20360	0x20370	16	iconv@plt	iconv	locale_i18n	high	locale/i18n import	native_linkage_stub_inventory
+.plt	0x20370	0x20380	16	dlclose@plt	dlclose	native_runtime_misc	low	no stronger side-effect category	native_linkage_stub_inventory
+.plt	0x20380	0x20390	16	ZydisDecoderTreeGetChildNode@plt	ZydisDecoderTreeGetChildNode	disassembly_metadata	high	Zydis disassembly symbol	native_linkage_stub_inventory
+.plt	0x20390	0x203a0	16	pthread_self@plt	pthread_self	threading_sync	high	pthread/semaphore/scheduler import	native_linkage_stub_inventory
+.plt	0x203a0	0x203b0	16	_ITM_RU8@plt	_ITM_RU8	cxx_runtime	high	GNU transactional-memory runtime symbol	native_linkage_stub_inventory
+.plt	0x203b0	0x203c0	16	__cxa_throw@plt	__cxa_throw	cxx_runtime	high	C++ ABI/exception import	native_linkage_stub_inventory
+.plt	0x203c0	0x203d0	16	blake3_hash_many_sse2@plt	blake3_hash_many_sse2	crypto_hashing	high	crypto/hash/random import	native_linkage_stub_inventory
+.plt	0x203d0	0x203e0	16	pthread_join@plt	pthread_join	threading_sync	high	pthread/semaphore/scheduler import	native_linkage_stub_inventory
+.plt	0x203e0	0x203f0	16	__newlocale@plt	__newlocale	locale_i18n	high	locale/i18n import	native_linkage_stub_inventory
+.plt	0x203f0	0x20400	16	poll@plt	poll	network	high	network libc/syscall import	native_linkage_stub_inventory
+.plt	0x20400	0x20410	16	pthread_mutex_trylock@plt	pthread_mutex_trylock	threading_sync	high	pthread/semaphore/scheduler import	native_linkage_stub_inventory
+.plt	0x20410	0x20420	16	gmtime_r@plt	gmtime_r	native_runtime_misc	low	no stronger side-effect category	native_linkage_stub_inventory
+.plt	0x20420	0x20430	16	strerror@plt	strerror	native_runtime_misc	low	no stronger side-effect category	native_linkage_stub_inventory
+.plt	0x20430	0x20440	16	epoll_ctl@plt	epoll_ctl	network	high	network libc/syscall import	native_linkage_stub_inventory
+.plt	0x20440	0x20450	16	strstr@plt	strstr	memory_string	high	memory/string helper import	native_linkage_stub_inventory
+.plt	0x20450	0x20460	16	rewind@plt	rewind	native_runtime_misc	low	no stronger side-effect category	native_linkage_stub_inventory
+.plt	0x20460	0x20470	16	getsockopt@plt	getsockopt	network	high	network libc/syscall import	native_linkage_stub_inventory
+.plt	0x20470	0x20480	16	__cxa_demangle@plt	__cxa_demangle	cxx_runtime	high	C++ ABI/exception import	native_linkage_stub_inventory
+.plt	0x20480	0x20490	16	blake3_hasher_init@plt	blake3_hasher_init	crypto_hashing	high	crypto/hash/random import	native_linkage_stub_inventory
+.plt	0x20490	0x204a0	16	fputs@plt	fputs	native_runtime_misc	low	no stronger side-effect category	native_linkage_stub_inventory
+.plt	0x204a0	0x204b0	16	lseek@plt	lseek	native_runtime_misc	low	no stronger side-effect category	native_linkage_stub_inventory
+.plt	0x204b0	0x204c0	16	readlink@plt	readlink	filesystem_io	high	filesystem/device I/O import	native_linkage_stub_inventory
+.plt	0x204c0	0x204d0	16	atoi@plt	atoi	native_runtime_misc	low	no stronger side-effect category	native_linkage_stub_inventory
+.plt	0x204d0	0x204e0	16	connect@plt	connect	network	high	network libc/syscall import	native_linkage_stub_inventory
+.plt	0x204e0	0x204f0	16	mbsrtowcs@plt	mbsrtowcs	native_runtime_misc	low	no stronger side-effect category	native_linkage_stub_inventory
+.plt	0x204f0	0x20500	16	towlower@plt	towlower	native_runtime_misc	low	no stronger side-effect category	native_linkage_stub_inventory
+.plt	0x20500	0x20510	16	wcrtomb@plt	wcrtomb	native_runtime_misc	low	no stronger side-effect category	native_linkage_stub_inventory
+.plt	0x20510	0x20520	16	putwc@plt	putwc	native_runtime_misc	low	no stronger side-effect category	native_linkage_stub_inventory
+.plt	0x20520	0x20530	16	blake3_hash_many_avx512@plt	blake3_hash_many_avx512	crypto_hashing	high	crypto/hash/random import	native_linkage_stub_inventory
+.plt	0x20530	0x20540	16	putc@plt	putc	native_runtime_misc	low	no stronger side-effect category	native_linkage_stub_inventory
+.plt	0x20540	0x20550	16	__cxa_end_catch@plt	__cxa_end_catch	cxx_runtime	high	C++ ABI/exception import	native_linkage_stub_inventory
+.plt	0x20550	0x20560	16	__cxa_guard_acquire@plt	__cxa_guard_acquire	cxx_runtime	high	C++ ABI/exception import	native_linkage_stub_inventory
+.plt	0x20560	0x20570	16	signal@plt	signal	native_runtime_misc	low	no stronger side-effect category	native_linkage_stub_inventory
+.plt	0x20570	0x20580	16	memmove@plt	memmove	memory_string	high	memory/string helper import	native_linkage_stub_inventory
+.plt	0x20580	0x20590	16	strchr@plt	strchr	memory_string	high	memory/string helper import	native_linkage_stub_inventory
+.plt	0x20590	0x205a0	16	ZydisGetElementInfo@plt	ZydisGetElementInfo	disassembly_metadata	high	Zydis disassembly symbol	native_linkage_stub_inventory
+.plt	0x205a0	0x205b0	16	socket@plt	socket	network	high	network libc/syscall import	native_linkage_stub_inventory
+.plt	0x205b0	0x205c0	16	vsnprintf@plt	vsnprintf	text_formatting	high	formatting/output import	native_linkage_stub_inventory
+.plt	0x205c0	0x205d0	16	fread@plt	fread	native_runtime_misc	low	no stronger side-effect category	native_linkage_stub_inventory
+.plt	0x205d0	0x205e0	16	wmemmove@plt	wmemmove	native_runtime_misc	low	no stronger side-effect category	native_linkage_stub_inventory
+.plt	0x205e0	0x205f0	16	ZydisGetOperandDefinitions@plt	ZydisGetOperandDefinitions	disassembly_metadata	high	Zydis disassembly symbol	native_linkage_stub_inventory
+.plt	0x205f0	0x20600	16	getenv@plt	getenv	env_check	high	environment-variable import	native_linkage_stub_inventory
+.plt	0x20600	0x20610	16	alarm@plt	alarm	native_runtime_misc	low	no stronger side-effect category	native_linkage_stub_inventory
+.plt	0x20610	0x20620	16	_ITM_memcpyRnWt@plt	_ITM_memcpyRnWt	cxx_runtime	high	GNU transactional-memory runtime symbol	native_linkage_stub_inventory
+.plt	0x20620	0x20630	16	_Unwind_GetIPInfo@plt	_Unwind_GetIPInfo	cxx_runtime	high	C++ ABI/exception import	native_linkage_stub_inventory
+.plt	0x20630	0x20640	16	dl_iterate_phdr@plt	dl_iterate_phdr	native_runtime_misc	low	no stronger side-effect category	native_linkage_stub_inventory
+.plt	0x20640	0x20650	16	__errno_location@plt	__errno_location	native_runtime_misc	low	no stronger side-effect category	native_linkage_stub_inventory
+.plt	0x20650	0x20660	16	__cxa_get_globals@plt	__cxa_get_globals	cxx_runtime	high	C++ ABI/exception import	native_linkage_stub_inventory
+.plt	0x20660	0x20670	16	__cxa_init_primary_exception@plt	__cxa_init_primary_exception	cxx_runtime	high	C++ ABI/exception import	native_linkage_stub_inventory
+.plt	0x20670	0x20680	16	strdup@plt	strdup	memory_string	high	memory/string helper import	native_linkage_stub_inventory
+.plt	0x20680	0x20690	16	sem_init@plt	sem_init	threading_sync	high	pthread/semaphore/scheduler import	native_linkage_stub_inventory
+.plt	0x20690	0x206a0	16	pthread_mutexattr_settype@plt	pthread_mutexattr_settype	threading_sync	high	pthread/semaphore/scheduler import	native_linkage_stub_inventory
+.plt	0x206a0	0x206b0	16	__uselocale@plt	__uselocale	locale_i18n	high	locale/i18n import	native_linkage_stub_inventory
+.plt	0x206b0	0x206c0	16	blake3_compress_xof_sse2@plt	blake3_compress_xof_sse2	crypto_hashing	high	crypto/hash/random import	native_linkage_stub_inventory
+.plt	0x206c0	0x206d0	16	__stack_chk_fail@plt	__stack_chk_fail	native_runtime_misc	low	no stronger side-effect category	native_linkage_stub_inventory
+.plt	0x206d0	0x206e0	16	blake3_compress_in_place_sse2@plt	blake3_compress_in_place_sse2	crypto_hashing	high	crypto/hash/random import	native_linkage_stub_inventory
+.plt	0x206e0	0x206f0	16	strcmp@plt	strcmp	memory_string	high	memory/string helper import	native_linkage_stub_inventory
+.plt	0x206f0	0x20700	16	send@plt	send	network	high	network libc/syscall import	native_linkage_stub_inventory
+.plt	0x20700	0x20710	16	ZydisGetAccessedFlags@plt	ZydisGetAccessedFlags	disassembly_metadata	high	Zydis disassembly symbol	native_linkage_stub_inventory
+.plt	0x20710	0x20720	16	ZydisRegisterGetWidth@plt	ZydisRegisterGetWidth	disassembly_metadata	high	Zydis disassembly symbol	native_linkage_stub_inventory
+.plt	0x20720	0x20730	16	sem_post@plt	sem_post	threading_sync	high	pthread/semaphore/scheduler import	native_linkage_stub_inventory
+.plt	0x20730	0x20740	16	__dynamic_cast@plt	__dynamic_cast	native_runtime_misc	low	no stronger side-effect category	native_linkage_stub_inventory
+.plt	0x20740	0x20750	16	__strtod_l@plt	__strtod_l	native_runtime_misc	low	no stronger side-effect category	native_linkage_stub_inventory
+.plt	0x20750	0x20760	16	epoll_wait@plt	epoll_wait	network	high	network libc/syscall import	native_linkage_stub_inventory
+.plt	0x20760	0x20770	16	getwc@plt	getwc	native_runtime_misc	low	no stronger side-effect category	native_linkage_stub_inventory
+.plt	0x20770	0x20780	16	nanosleep@plt	nanosleep	native_runtime_misc	low	no stronger side-effect category	native_linkage_stub_inventory
+.plt	0x20780	0x20790	16	glob@plt	glob	native_runtime_misc	low	no stronger side-effect category	native_linkage_stub_inventory
+.plt	0x20790	0x207a0	16	getuid@plt	getuid	host_environment_inventory	high	host/process environment import	native_linkage_stub_inventory
+.plt	0x207a0	0x207b0	16	pthread_cond_wait@plt	pthread_cond_wait	threading_sync	high	pthread/semaphore/scheduler import	native_linkage_stub_inventory
+.plt	0x207b0	0x207c0	16	ZydisGetInstructionDefinition@plt	ZydisGetInstructionDefinition	disassembly_metadata	high	Zydis disassembly symbol	native_linkage_stub_inventory
+.plt	0x207c0	0x207d0	16	dladdr@plt	dladdr	native_runtime_misc	low	no stronger side-effect category	native_linkage_stub_inventory
+.plt	0x207d0	0x207e0	16	pthread_once@plt	pthread_once	threading_sync	high	pthread/semaphore/scheduler import	native_linkage_stub_inventory
+.plt	0x207e0	0x207f0	16	memcmp@plt	memcmp	memory_string	high	memory/string helper import	native_linkage_stub_inventory
+.plt	0x207f0	0x20800	16	blake3_hasher_finalize@plt	blake3_hasher_finalize	crypto_hashing	high	crypto/hash/random import	native_linkage_stub_inventory
+.plt	0x20800	0x20810	16	calloc@plt	calloc	native_runtime_misc	low	no stronger side-effect category	native_linkage_stub_inventory
+.plt	0x20810	0x20820	16	globfree@plt	globfree	native_runtime_misc	low	no stronger side-effect category	native_linkage_stub_inventory
+.plt	0x20820	0x20830	16	munmap@plt	munmap	memory_protection	high	memory mapping/protection import	native_linkage_stub_inventory
+.plt	0x20830	0x20840	16	feof@plt	feof	native_runtime_misc	low	no stronger side-effect category	native_linkage_stub_inventory
+.plt	0x20840	0x20850	16	blake3_hasher_reset@plt	blake3_hasher_reset	crypto_hashing	high	crypto/hash/random import	native_linkage_stub_inventory
+.plt	0x20850	0x20860	16	ZydisDecoderDecodeOperands@plt	ZydisDecoderDecodeOperands	disassembly_metadata	high	Zydis disassembly symbol	native_linkage_stub_inventory
+.plt	0x20860	0x20870	16	writev@plt	writev	native_runtime_misc	low	no stronger side-effect category	native_linkage_stub_inventory
+.plt	0x20870	0x20880	16	fclose@plt	fclose	filesystem_io	high	filesystem/device I/O import	native_linkage_stub_inventory
+.plt	0x20880	0x20890	16	blake3_hash_many_avx2@plt	blake3_hash_many_avx2	crypto_hashing	high	crypto/hash/random import	native_linkage_stub_inventory
+.plt	0x20890	0x208a0	16	isspace@plt	isspace	native_runtime_misc	low	no stronger side-effect category	native_linkage_stub_inventory
+.plt	0x208a0	0x208b0	16	__cxa_throw_bad_array_new_length@plt	__cxa_throw_bad_array_new_length	cxx_runtime	high	C++ ABI/exception import	native_linkage_stub_inventory
+.plt	0x208b0	0x208c0	16	difftime@plt	difftime	native_runtime_misc	low	no stronger side-effect category	native_linkage_stub_inventory
+.plt	0x208c0	0x208d0	16	lseek64@plt	lseek64	native_runtime_misc	low	no stronger side-effect category	native_linkage_stub_inventory
+.plt	0x208d0	0x208e0	16	blake3_compress_in_place_avx512@plt	blake3_compress_in_place_avx512	crypto_hashing	high	crypto/hash/random import	native_linkage_stub_inventory
+.plt	0x208e0	0x208f0	16	dlsym@plt	dlsym	native_runtime_misc	low	no stronger side-effect category	native_linkage_stub_inventory
+.plt	0x208f0	0x20900	16	_Unwind_GetTextRelBase@plt	_Unwind_GetTextRelBase	cxx_runtime;locale_i18n	high	C++ ABI/exception import; locale/i18n import	native_linkage_stub_inventory
+.plt	0x20900	0x20910	16	__freelocale@plt	__freelocale	locale_i18n	high	locale/i18n import	native_linkage_stub_inventory
+.plt	0x20910	0x20920	16	bind_textdomain_codeset@plt	bind_textdomain_codeset	native_runtime_misc	low	no stronger side-effect category	native_linkage_stub_inventory
+.plt	0x20920	0x20930	16	wcsnrtombs@plt	wcsnrtombs	native_runtime_misc	low	no stronger side-effect category	native_linkage_stub_inventory
+.plt	0x20930	0x20940	16	closedir@plt	closedir	filesystem_io	high	filesystem/device I/O import	native_linkage_stub_inventory
+.plt	0x20940	0x20950	16	__sprintf_chk@plt	__sprintf_chk	native_runtime_misc	low	no stronger side-effect category	native_linkage_stub_inventory
+.plt	0x20950	0x20960	16	btowc@plt	btowc	native_runtime_misc	low	no stronger side-effect category	native_linkage_stub_inventory
+.plt	0x20960	0x20970	16	sched_get_priority_max@plt	sched_get_priority_max	native_runtime_misc	low	no stronger side-effect category	native_linkage_stub_inventory
+.plt	0x20970	0x20980	16	ftruncate@plt	ftruncate	native_runtime_misc	low	no stronger side-effect category	native_linkage_stub_inventory
+.plt	0x20980	0x20990	16	getppid@plt	getppid	host_environment_inventory	high	host/process environment import	native_linkage_stub_inventory
+.plt	0x20990	0x209a0	16	fopen64@plt	fopen64	filesystem_io	high	filesystem/device I/O import	native_linkage_stub_inventory
+.plt	0x209a0	0x209b0	16	pthread_setschedparam@plt	pthread_setschedparam	threading_sync	high	pthread/semaphore/scheduler import	native_linkage_stub_inventory
+.plt	0x209b0	0x209c0	16	blake3_compress_in_place_sse41@plt	blake3_compress_in_place_sse41	crypto_hashing	high	crypto/hash/random import	native_linkage_stub_inventory
+.plt	0x209c0	0x209d0	16	wcscmp@plt	wcscmp	native_runtime_misc	low	no stronger side-effect category	native_linkage_stub_inventory
+.plt	0x209d0	0x209e0	16	fwrite@plt	fwrite	native_runtime_misc	low	no stronger side-effect category	native_linkage_stub_inventory
+.plt	0x209e0	0x209f0	16	pthread_mutex_lock@plt	pthread_mutex_lock	threading_sync	high	pthread/semaphore/scheduler import	native_linkage_stub_inventory
+.plt	0x209f0	0x20a00	16	_ZGTtnam@plt	_ZGTtnam	cxx_runtime	high	C++ ABI/exception import	native_linkage_stub_inventory
+.plt	0x20a00	0x20a10	16	realloc@plt	realloc	native_runtime_misc	low	no stronger side-effect category	native_linkage_stub_inventory
+.plt	0x20a10	0x20a20	16	setlocale@plt	setlocale	locale_i18n	high	locale/i18n import	native_linkage_stub_inventory
+.plt	0x20a20	0x20a30	16	rand@plt	rand	crypto_hashing	high	crypto/hash/random import	native_linkage_stub_inventory
+.plt	0x20a30	0x20a40	16	pthread_mutexattr_init@plt	pthread_mutexattr_init	threading_sync	high	pthread/semaphore/scheduler import	native_linkage_stub_inventory
+.plt	0x20a40	0x20a50	16	pthread_mutex_destroy@plt	pthread_mutex_destroy	threading_sync	high	pthread/semaphore/scheduler import	native_linkage_stub_inventory
+.plt	0x20a50	0x20a60	16	__cxa_rethrow@plt	__cxa_rethrow	cxx_runtime	high	C++ ABI/exception import	native_linkage_stub_inventory
+.plt	0x20a60	0x20a70	16	blake3_hash_many_sse41@plt	blake3_hash_many_sse41	crypto_hashing	high	crypto/hash/random import	native_linkage_stub_inventory
+.plt	0x20a70	0x20a80	16	write@plt	write	filesystem_io	high	filesystem/device I/O import	native_linkage_stub_inventory
+.plt	0x20a80	0x20a90	16	_Unwind_Resume@plt	_Unwind_Resume	cxx_runtime	high	C++ ABI/exception import	native_linkage_stub_inventory
+.plt	0x20a90	0x20aa0	16	pthread_cond_broadcast@plt	pthread_cond_broadcast	threading_sync	high	pthread/semaphore/scheduler import	native_linkage_stub_inventory
+.plt	0x20aa0	0x20ab0	16	ftello64@plt	ftello64	native_runtime_misc	low	no stronger side-effect category	native_linkage_stub_inventory
+.plt	0x20ab0	0x20ac0	16	strftime@plt	strftime	native_runtime_misc	low	no stronger side-effect category	native_linkage_stub_inventory
+.plt	0x20ac0	0x20ad0	16	popen@plt	popen	process_or_shell	high	process/shell import	native_linkage_stub_inventory
+.plt	0x20ad0	0x20ae0	16	clock_gettime@plt	clock_gettime	native_runtime_misc	low	no stronger side-effect category	native_linkage_stub_inventory
+.plt	0x20ae0	0x20af0	16	strtoul@plt	strtoul	native_runtime_misc	low	no stronger side-effect category	native_linkage_stub_inventory
+.plt	0x20af0	0x20b00	16	pthread_mutex_unlock@plt	pthread_mutex_unlock	threading_sync	high	pthread/semaphore/scheduler import	native_linkage_stub_inventory
+.plt	0x20b00	0x20b10	16	ZydisDecoderInit@plt	ZydisDecoderInit	disassembly_metadata	high	Zydis disassembly symbol	native_linkage_stub_inventory
+.plt	0x20b10	0x20b20	16	memcpy@plt	memcpy	memory_string	high	memory/string helper import	native_linkage_stub_inventory
+.plt	0x20b20	0x20b30	16	fcntl@plt	fcntl	native_runtime_misc	low	no stronger side-effect category	native_linkage_stub_inventory
+.plt	0x20b30	0x20b40	16	open@plt	open	filesystem_io	high	filesystem/device I/O import	native_linkage_stub_inventory
+.plt	0x20b40	0x20b50	16	mmap@plt	mmap	memory_protection	high	memory mapping/protection import	native_linkage_stub_inventory
+.plt	0x20b50	0x20b60	16	_Unwind_SetIP@plt	_Unwind_SetIP	cxx_runtime	high	C++ ABI/exception import	native_linkage_stub_inventory
+.plt	0x20b60	0x20b70	16	iconv_close@plt	iconv_close	locale_i18n	high	locale/i18n import	native_linkage_stub_inventory
+.plt	0x20b70	0x20b80	16	__towlower_l@plt	__towlower_l	native_runtime_misc	low	no stronger side-effect category	native_linkage_stub_inventory
+.plt	0x20b80	0x20b90	16	time@plt	time	native_runtime_misc	low	no stronger side-effect category	native_linkage_stub_inventory
+.plt	0x20b90	0x20ba0	16	wmemset@plt	wmemset	native_runtime_misc	low	no stronger side-effect category	native_linkage_stub_inventory
+.plt	0x20ba0	0x20bb0	16	fflush@plt	fflush	native_runtime_misc	low	no stronger side-effect category	native_linkage_stub_inventory
+.plt	0x20bb0	0x20bc0	16	wcstombs@plt	wcstombs	native_runtime_misc	low	no stronger side-effect category	native_linkage_stub_inventory
+.plt	0x20bc0	0x20bd0	16	getc@plt	getc	native_runtime_misc	low	no stronger side-effect category	native_linkage_stub_inventory
+.plt.got	0x20bd0	0x20bd8	8	__cxa_finalize@plt	__cxa_finalize	cxx_runtime	high	C++ ABI/exception import	native_linkage_stub_inventory
+.plt.got	0x20bd8	0x20be0	8	dlopen@plt	dlopen	native_runtime_misc	low	no stronger side-effect category	native_linkage_stub_inventory
