@@ -4790,8 +4790,8 @@ def build_rows():
     return rows
 
 
-def emit_tsv(rows):
-    writer = csv.DictWriter(sys.stdout, fieldnames=["section", "item", "value", "note"], delimiter="\t", lineterminator="\n")
+def emit_tsv(rows, output=sys.stdout):
+    writer = csv.DictWriter(output, fieldnames=["section", "item", "value", "note"], delimiter="\t", lineterminator="\n")
     writer.writeheader()
     for row in rows:
         writer.writerow(row)
@@ -4809,10 +4809,14 @@ def emit_markdown(rows):
 def main():
     parser = argparse.ArgumentParser(description="Emit a manifest of C-like VM reconstruction artifacts.")
     parser.add_argument("--markdown", action="store_true")
+    parser.add_argument("--output", type=Path, help="Write TSV output directly to this path.")
     args = parser.parse_args()
     rows = build_rows()
     if args.markdown:
         emit_markdown(rows)
+    elif args.output:
+        with args.output.open("w", newline="") as handle:
+            emit_tsv(rows, handle)
     else:
         emit_tsv(rows)
 
