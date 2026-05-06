@@ -3,6 +3,7 @@ import argparse
 import csv
 import subprocess
 import tempfile
+from concurrent.futures import FIRST_COMPLETED, ThreadPoolExecutor, wait
 from pathlib import Path
 
 from vm_native_gap_retdec_ranges_from_queue import RANGE_RE, next_batch_index, used_ranges
@@ -41,6 +42,11 @@ def candidate_ranges(gaps, chunk_bytes, max_gap_chunks, used):
                 yield item
                 emitted += 1
             pos = end
+
+
+def parse_range(selected):
+    start, stop = selected.split("-", 1)
+    return int(start, 16), int(stop, 16)
 
 
 def try_range(selected, batch_index, timeout, keep_failed):
@@ -84,6 +90,43 @@ def try_range(selected, batch_index, timeout, keep_failed):
         return True
 
 
+def probe_candidates(candidates, batch_index, timeout, keep_failed, probe_jobs, max_accepted):
+    accepted = []
+    pending = {}
+    candidates = iter(candidates)
+
+    def submit_next(executor):
+        try:
+            selected = next(candidates)
+        except StopIteration:
+            return False
+        future = executor.submit(try_range, selected, batch_index, timeout, keep_failed)
+        pending[future] = selected
+        return True
+
+    with ThreadPoolExecutor(max_workers=probe_jobs) as executor:
+        for _ in range(probe_jobs):
+            if not submit_next(executor):
+                break
+
+        while pending and len(accepted) < max_accepted:
+            done, _ = wait(pending, return_when=FIRST_COMPLETED)
+            for future in done:
+                selected = pending.pop(future)
+                ok = future.result()
+                print(f"try\t{selected}\t{'ok' if ok else 'reject'}", flush=True)
+                if ok:
+                    accepted.append(selected)
+                    if len(accepted) >= max_accepted:
+                        break
+                submit_next(executor)
+
+        for future in pending:
+            future.cancel()
+
+    return sorted(accepted, key=parse_range)
+
+
 def write_batch(path, ranges, dry_run):
     body = "".join(f"{item}\n" for item in ranges)
     if dry_run:
@@ -107,6 +150,7 @@ def main():
     parser.add_argument("--max-gap-chunks", type=int, default=4)
     parser.add_argument("--max-candidates", type=int, default=64)
     parser.add_argument("--max-accepted", type=int, default=8)
+    parser.add_argument("--probe-jobs", type=int, default=4)
     parser.add_argument("--timeout", type=int, default=45)
     parser.add_argument("--dry-run", action="store_true")
     parser.add_argument("--keep-failed", action="store_true")
@@ -115,18 +159,21 @@ def main():
     batch_index = args.start_index if args.start_index is not None else next_batch_index(args.root)
     output = args.root / f"native_gap_retdec_batch{batch_index:02d}.ranges"
     used = {item for item in used_ranges(args.root) if RANGE_RE.match(item)}
-    accepted = []
+    probe_jobs = max(1, args.probe_jobs)
+    candidates = []
     for selected in candidate_ranges(read_gaps(args.coverage), args.chunk_bytes, args.max_gap_chunks, used):
-        if len(accepted) >= args.max_accepted:
+        if len(candidates) >= args.max_candidates:
             break
-        if args.max_candidates <= 0:
-            break
-        args.max_candidates -= 1
-        ok = try_range(selected, batch_index, args.timeout, args.keep_failed)
-        print(f"try\t{selected}\t{'ok' if ok else 'reject'}")
-        if ok:
-            accepted.append(selected)
-            used.add(selected)
+        candidates.append(selected)
+
+    accepted = probe_candidates(
+        candidates,
+        batch_index,
+        args.timeout,
+        args.keep_failed,
+        probe_jobs,
+        args.max_accepted,
+    )
 
     if not accepted:
         raise SystemExit("no syntax-checkable executable gap chunks found")

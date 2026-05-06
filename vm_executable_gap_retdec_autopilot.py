@@ -87,6 +87,31 @@ def touch_existing_sidecars():
         path.touch()
 
 
+def checkpoint(*, aggregate_syntax):
+    touch_existing_sidecars()
+    run(["make", "-s", "all-evidence-bundle"])
+    run(
+        [
+            "python3",
+            "vm_c_reconstruction_manifest.py",
+            "--output",
+            TRACE_DIR / "vm_c_reconstruction_manifest.tsv",
+            "--markdown-output",
+            TRACE_DIR / "vm_c_reconstruction_manifest.md",
+        ]
+    )
+    if aggregate_syntax:
+        run(
+            [
+                "gcc",
+                "-std=c11",
+                "-fsyntax-only",
+                "-w",
+                TRACE_DIR / "vm_recovered_source_all_evidence_bundle.c",
+            ]
+        )
+
+
 def main():
     parser = argparse.ArgumentParser(
         description="Loop executable-gap RetDec probing, sidecar build, syntax check, and coverage refresh."
@@ -97,7 +122,11 @@ def main():
     parser.add_argument("--max-gap-chunks", type=int, default=4)
     parser.add_argument("--max-candidates", type=int, default=64)
     parser.add_argument("--max-accepted", type=int, default=8)
+    parser.add_argument("--probe-jobs", type=int, default=min(os.cpu_count() or 1, 4))
     parser.add_argument("--timeout", type=int, default=30)
+    parser.add_argument("--checkpoint-frequency", type=int, default=0)
+    parser.add_argument("--final-checkpoint", action="store_true")
+    parser.add_argument("--aggregate-syntax", action="store_true")
     args = parser.parse_args()
 
     baseline = read_coverage_metrics()
@@ -117,6 +146,8 @@ def main():
                 args.max_candidates,
                 "--max-accepted",
                 args.max_accepted,
+                "--probe-jobs",
+                args.probe_jobs,
                 "--timeout",
                 args.timeout,
             ],
@@ -137,6 +168,10 @@ def main():
         run(["make", "-s", "native-executable-coverage-audit", "native-retdec-gap-queue"])
         print_delta(baseline, read_coverage_metrics())
         created_total.extend(created)
+        if args.checkpoint_frequency > 0 and round_index % args.checkpoint_frequency == 0:
+            checkpoint(aggregate_syntax=args.aggregate_syntax)
+    if args.final_checkpoint and created_total:
+        checkpoint(aggregate_syntax=args.aggregate_syntax)
     print("executable_gap_autopilot_created_batches\t" + ",".join(str(index) for index in created_total), flush=True)
 
 
