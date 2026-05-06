@@ -136,7 +136,7 @@ int64_t unknown_6830301e(void);
 int64_t unknown_2f0fdc0b(void);
 int64_t unknown_38ae20ec(void);
 int64_t unknown_401c0cfa(void);
-void unknown_b6ccb9(void);
+int64_t unknown_b6ccb9(void);
 int64_t unknown_ffffffffd3dfe90d(void);
 int64_t unknown_ffffffffba4fa1e3(void);
 int64_t unknown_ffffffffa83be585(void);

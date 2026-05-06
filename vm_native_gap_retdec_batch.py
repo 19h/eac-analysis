@@ -955,7 +955,7 @@ def main():
     print("int64_t unknown_2f0fdc0b(void);")
     print("int64_t unknown_38ae20ec(void);")
     print("int64_t unknown_401c0cfa(void);")
-    print("void unknown_b6ccb9(void);")
+    print("int64_t unknown_b6ccb9(void);")
     print("int64_t unknown_ffffffffd3dfe90d(void);")
     print("int64_t unknown_ffffffffba4fa1e3(void);")
     print("int64_t unknown_ffffffffa83be585(void);")
