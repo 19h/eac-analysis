@@ -89,7 +89,7 @@ def c_string(text: str) -> str:
         elif 32 <= code < 127:
             out.append(ch)
         else:
-            out.append(f"\\x{code:02x}")
+            out.append(f"\\{code:03o}")
     out.append('"')
     return "".join(out)
 

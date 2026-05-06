@@ -36,6 +36,7 @@ def file_counts(path: Path) -> dict[str, int | bool]:
     rows = 0
     state_summarized = 0
     op_entry_refs = 0
+    unresolved_tail_refs = 0
     omitted = False
     dispatch = False
     with path.open(encoding="utf-8", errors="replace") as handle:
@@ -48,6 +49,8 @@ def file_counts(path: Path) -> dict[str, int | bool]:
                 state_summarized += 1
             if "op_entry_" in line:
                 op_entry_refs += 1
+            if "vm_unresolved_synthetic_tail" in line:
+                unresolved_tail_refs += 1
             if "rows omitted by --rows-per-block" in line:
                 omitted = True
             if re.search(r"void vm_program_atlas_[0-9]{3}_decompiled\(VMState \*vm, uint64_t vm_ip\)", line):
@@ -57,6 +60,7 @@ def file_counts(path: Path) -> dict[str, int | bool]:
         "rows": rows,
         "state_summarized": state_summarized,
         "op_entry_refs": op_entry_refs,
+        "unresolved_tail_refs": unresolved_tail_refs,
         "omitted": omitted,
         "dispatch": dispatch,
     }
@@ -116,11 +120,11 @@ def main() -> int:
         counts = file_counts(path)
         file_block_total += int(counts["blocks"])
         file_row_total += int(counts["rows"])
-        if counts["op_entry_refs"] or counts["state_summarized"] or counts["omitted"] or not counts["dispatch"]:
+        if counts["op_entry_refs"] or counts["unresolved_tail_refs"] or counts["state_summarized"] or counts["omitted"] or not counts["dispatch"]:
             bad_files.append(str(path))
     ok &= check("split_files_cover_all_blocks", file_block_total == expected_blocks, f"file_blocks={file_block_total} expected_blocks={expected_blocks}")
     ok &= check("split_files_cover_all_rows", file_row_total == expected_rows, f"file_rows={file_row_total} expected_rows={expected_rows}")
-    ok &= check("split_files_have_no_handler_calls_or_omissions", not bad_files, f"bad_files={bad_files[:5]}")
+    ok &= check("split_files_have_no_handler_calls_unresolved_tails_or_omissions", not bad_files, f"bad_files={bad_files[:5]}")
 
     if args.syntax or args.compile:
         object_dir = Path("/tmp/eacsym-vm-program-split-audit-objs") if args.compile else None
