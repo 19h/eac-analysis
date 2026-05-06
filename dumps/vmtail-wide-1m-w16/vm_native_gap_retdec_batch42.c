@@ -142,6 +142,7 @@ float80_t __frontend_reg_load_fpr(int32_t reg);
 void __frontend_reg_store_fpr(int32_t reg, float80_t value);
 char *__nl_langinfo_l(int32_t item, struct __locale_struct *locale);
 struct __locale_struct *__uselocale(struct __locale_struct *locale);
+float80_t strtold_l(const char *nptr, char **endptr, struct __locale_struct *locale);
 char *dgettext(char *domain, char *msgid);
 char *gettext(char *msgid);
 char *bind_textdomain_codeset(char *domainname, char *codeset);
