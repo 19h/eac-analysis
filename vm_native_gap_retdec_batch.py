@@ -886,6 +886,7 @@ def main():
     print("size_t mbstowcs(int32_t *dest, const char *src, size_t n);")
     print("int32_t mbsnrtowcs(int32_t *dst, char **src, size_t nms, size_t len, struct _TYPEDEF___mbstate_t *ps);")
     print("size_t wcslen(const int32_t *s);")
+    print("int wcscmp(const int32_t *s1, const int32_t *s2);")
     print("int wctob(int32_t wc);")
     print("int32_t btowc(int c);")
     print("int32_t towlower(int32_t wc);")
