@@ -13,6 +13,8 @@ from vm_recovered_source_all_evidence_bundle import default_sidecars
 
 
 PROGRAM_BLOCK_RE = re.compile(r"^static void prog_bb_([0-9]{4})\(VMState \*vm, uint64_t vm_ip\) \{")
+DECOMPILED_BLOCK_RE = re.compile(r"^static void vmdec_bb_([0-9]{4})\(VMState \*vm, uint64_t vm_ip\) \{")
+DECOMPILED_ROW_RE = re.compile(r"^\s*/\* 0x[0-9a-f]+..0x[0-9a-f]+:")
 
 
 def read_coverage_gaps(path: Path) -> list[tuple[str, str, str, int]]:
@@ -77,6 +79,42 @@ def program_pseudocode_blocks(path: Path) -> set[str]:
     return blocks
 
 
+def decompiled_program_counts(path: Path) -> dict[str, int | bool]:
+    blocks: set[str] = set()
+    row_comments = 0
+    state_inlined = 0
+    state_summarized = 0
+    op_entry_refs = 0
+    dispatch = False
+    omitted = False
+    with path.open(encoding="utf-8", errors="replace") as handle:
+        for line in handle:
+            match = DECOMPILED_BLOCK_RE.match(line)
+            if match:
+                blocks.add(match.group(1))
+            if DECOMPILED_ROW_RE.match(line):
+                row_comments += 1
+            if line.startswith("    vm->state = "):
+                state_inlined += 1
+            if "state effect summarized/clipped" in line:
+                state_summarized += 1
+            if "op_entry_" in line:
+                op_entry_refs += 1
+            if "rows omitted by --rows-per-block" in line:
+                omitted = True
+            if "void vm_program_decompiled(VMState *vm, uint64_t vm_ip)" in line:
+                dispatch = True
+    return {
+        "blocks": len(blocks),
+        "row_comments": row_comments,
+        "state_inlined": state_inlined,
+        "state_summarized": state_summarized,
+        "op_entry_refs": op_entry_refs,
+        "dispatch": dispatch,
+        "omitted": omitted,
+    }
+
+
 def check(name: str, ok: bool, detail: str) -> bool:
     print(f"{name}={'ok' if ok else 'missing'}\t{detail}")
     return ok
@@ -95,6 +133,8 @@ def main() -> int:
     coverage = root / "vm_native_executable_coverage_audit.tsv"
     carrier = root / "vm_uncovered_executable_gaps.tsv"
     program_pseudocode = root / "vm_program_pseudocode_full.c"
+    program_decompiled = root / "vm_program_decompiled_full.c"
+    bytecode_ir_decompile = root / "vm_bytecode_ir_decompile.tsv"
     bytecode_blocks = root / "vm_bytecode_basic_blocks.tsv"
 
     print("objective=reconstruct the binary back to C/C++ in full, including executable semantics and referenced static data")
@@ -105,6 +145,8 @@ def main() -> int:
     ok &= check("coverage_exists", coverage.exists(), str(coverage))
     ok &= check("uncovered_carrier_exists", carrier.exists(), str(carrier))
     ok &= check("program_pseudocode_exists", program_pseudocode.exists(), str(program_pseudocode))
+    ok &= check("program_decompiled_exists", program_decompiled.exists(), str(program_decompiled))
+    ok &= check("bytecode_ir_decompile_exists", bytecode_ir_decompile.exists(), str(bytecode_ir_decompile))
     ok &= check("bytecode_blocks_exists", bytecode_blocks.exists(), str(bytecode_blocks))
 
     coverage_gaps = read_coverage_gaps(coverage)
@@ -150,6 +192,12 @@ def main() -> int:
             and has_text(bundle, "static void prog_bb_0000(VMState *vm, uint64_t vm_ip)"),
             "readable inline VM program pseudocode entrypoint and block functions",
         )
+        ok &= check(
+            "bundle_includes_vm_program_decompiled",
+            has_text(bundle, "vm_program_decompiled_full.c")
+            and has_text(bundle, "eac_evidence_program_decompiled_full__vm_program_decompiled"),
+            "decompiled VM bytecode-program sidecar with inlined row semantics",
+        )
 
     if program_pseudocode.exists() and bytecode_blocks.exists():
         expected_blocks = count_tsv_rows(bytecode_blocks)
@@ -168,6 +216,41 @@ def main() -> int:
             "program_pseudocode_has_dispatch",
             has_text(program_pseudocode, "void vm_program_sketch(VMState *vm, uint64_t vm_ip)"),
             "VM IP dispatch entrypoint present",
+        )
+
+    if program_decompiled.exists() and bytecode_blocks.exists() and bytecode_ir_decompile.exists():
+        expected_blocks = count_tsv_rows(bytecode_blocks)
+        expected_rows = count_tsv_rows(bytecode_ir_decompile)
+        counts = decompiled_program_counts(program_decompiled)
+        ok &= check(
+            "program_decompiled_covers_all_bytecode_blocks",
+            counts["blocks"] == expected_blocks,
+            f"expected_blocks={expected_blocks} decompiled_blocks={counts['blocks']}",
+        )
+        ok &= check(
+            "program_decompiled_covers_all_bytecode_rows",
+            counts["row_comments"] == expected_rows,
+            f"expected_rows={expected_rows} decompiled_rows={counts['row_comments']}",
+        )
+        ok &= check(
+            "program_decompiled_has_no_handler_calls",
+            counts["op_entry_refs"] == 0,
+            f"op_entry_refs={counts['op_entry_refs']}",
+        )
+        ok &= check(
+            "program_decompiled_has_no_omitted_rows",
+            not counts["omitted"],
+            "generated with --limit-blocks 0 --rows-per-block 0",
+        )
+        ok &= check(
+            "program_decompiled_has_no_clipped_state_effects",
+            counts["state_summarized"] == 0,
+            f"state_inlined={counts['state_inlined']} state_summarized={counts['state_summarized']}",
+        )
+        ok &= check(
+            "program_decompiled_has_dispatch",
+            bool(counts["dispatch"]),
+            "VM IP decompiled dispatch entrypoint present",
         )
 
     if args.syntax:
