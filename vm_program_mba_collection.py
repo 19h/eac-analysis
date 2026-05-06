@@ -181,7 +181,11 @@ def write_frida_template(path: Path, program: int, states: list[str]) -> None:
 // state, key, old/new ctx->next, ctx->ip bytes/u16s, ctx pointer, and alias proof.
 "use strict";
 
-const FN = ptr("0xPUT_VM_PROGRAM_ATLAS_{program:03d}_FUNCTION_ADDRESS_HERE");
+const FN_ADDRESS = "PUT_VM_PROGRAM_ATLAS_{program:03d}_FUNCTION_ADDRESS_HERE";
+if (FN_ADDRESS.indexOf("PUT_") === 0) {{
+    throw new Error("Set FN_ADDRESS to the native dispatcher/function address before loading this script");
+}}
+const FN = ptr(FN_ADDRESS);
 const STATES = new Set([{state_array}]);
 
 function hx(v) {{
