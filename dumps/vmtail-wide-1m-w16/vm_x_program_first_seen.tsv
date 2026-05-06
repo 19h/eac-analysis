@@ -1,0 +1,67 @@
+first_seen_rank	program	first_segment	first_seq	first_vm_ip	total_rows	segment_count	behavior_tags	confidence	string_refs	top_strings	outgoing_targets	external_or_exit_edges
+0	033	0	1	0x26cd71	452	4	control_transfer_or_native_bridge_candidate	low	0		034:1	0
+1	034	1	114	0x26db07	5745	4	control_transfer_or_native_bridge_candidate	low_to_medium	1	YYYYY	033:1	0
+2	032	4	3100	0x249468	5416	3	control_transfer_or_native_bridge_candidate	low	0		032:14,033:1,external_or_exit:1	1
+3	007	11	11614	0x11ac5e	1024	1	control_transfer_or_native_bridge_candidate	low	0		007:7,008:1	0
+4	008	12	12638	0x11bc28	188	1	control_transfer_or_native_bridge_candidate	low	0		008:2,009:1	0
+5	009	13	12826	0x11bf5d	194	1	control_transfer_or_native_bridge_candidate	low	0		009:2,010:1	0
+6	010	14	13020	0x11c2aa	1823	5	control_transfer_or_native_bridge_candidate	low	0		010:12,055:1,056:1,011:1	0
+7	025	15	14353	0x18b66f	929	3	control_transfer_or_native_bridge_candidate	low	0		025:6,external_or_exit:1	1
+8	001	16	14830	0xd3fac	380	1	control_transfer_or_native_bridge_candidate	low	0		001:2,002:1	0
+9	002	17	15210	0xd476e	1080	2	control_transfer_or_native_bridge_candidate	low	0		002:7,003:1	0
+10	000	18	15287	0xd0ac0	1086	3	control_transfer_or_native_bridge_candidate	low	0		000:6,external_or_exit:1	1
+11	029	19	16090	0x22fe2d	73109	1	control_transfer_or_native_bridge_candidate	low	0		029:5,external_or_exit:1	1
+12	030	21	89366	0x230722	42753	1	vm_dispatch_math_only_so_far	none	0		030:4	0
+13	003	24	133238	0xd5a12	313	1	control_transfer_or_native_bridge_candidate	low	0		003:2,external_or_exit:1	1
+14	004	26	133742	0xd718e	489	1	control_transfer_or_native_bridge_candidate	low	0		004:3,005:1	0
+15	005	27	134231	0xda38f	157	1	control_transfer_or_native_bridge_candidate	low	0		005:1,006:1	0
+16	006	28	134388	0xdac57	194	1	control_transfer_or_native_bridge_candidate	low	0		006:1,external_or_exit:1	1
+17	042	31	135007	0x31aa27	4724	1	cxx_runtime	medium	4	_ITM_registerTMCloneTable || __freelocale	042:27,043:1	0
+18	043	32	139731	0x31df8f	554	5	control_transfer_or_native_bridge_candidate	low	0		043:7,048:1,052:1,044:1	0
+19	048	33	139785	0x334a3d	3590	2	cxx_runtime	medium	3	_ITM_registerTMCloneTable || __freelocale || long double	048:12,049:1	0
+20	053	34	143140	0x33db28	7767	12	control_transfer_or_native_bridge_candidate	low	0		053:7,054:2	0
+21	054	35	143992	0x33e889	400	12	control_transfer_or_native_bridge_candidate	low	0		053:1,048:1	0
+22	049	43	146098	0x336dc8	222	1	control_transfer_or_native_bridge_candidate	low	0		external_or_exit:1	1
+23	046	45	146443	0x33170b	3663	2	cxx_runtime	medium	2	_ITM_registerTMCloneTable || __freelocale	046:17,047:1	0
+24	047	55	152828	0x333882	220	1	control_transfer_or_native_bridge_candidate	low	0		047:1,external_or_exit:1	1
+25	050	57	153171	0x337e84	3926	2	control_transfer_or_native_bridge_candidate	low	0		050:14,051:1	0
+26	051	67	159819	0x33a385	220	1	control_transfer_or_native_bridge_candidate	low	0		051:1,external_or_exit:1	1
+27	052	69	160163	0x33b647	3374	1	tls_or_ssl;host_environment	medium	2	dropping unexpected ChangeCipherSpec || GLIBC_2.17	052:4,external_or_exit:1	1
+28	044	71	163667	0x31ea5c	14	1	control_transfer_or_native_bridge_candidate	low	0		045:1	0
+29	045	72	163681	0x31eae4	520	1	threading_sync	low_to_medium	1	pthread_cond_wait	045:3,external_or_exit:1	1
+30	055	74	164325	0x33f278	11755	2	tls_or_ssl;threading_sync;host_environment;cxx_runtime	medium	17	_ITM_registerTMCloneTable || __freelocale || NSt7__cxx118time_getIwSt19istreambuf_iteratorIwSt11char_traitsIwEEEE || /home/richard/code/mbedtls/library/ssl_tls.c || pthread_cond_timedwait || pthread_mutex_destroy || ...+1	055:43,041:1,external_or_exit:1	1
+31	041	75	173820	0x30e872	502501	1	crypto_hashing;cxx_runtime;disassembly_metadata	medium	5	_ITM_registerTMCloneTable || __freelocale || blake3_hasher_finalize || unsigned __int128 || zydis_decoder_tree_root	041:12,055:1	0
+32	056	78	678705	0x3603af	6962	4	control_transfer_or_native_bridge_candidate	low	0		056:21,057:1	0
+33	059	79	685299	0x3674c3	8056	4	cxx_runtime	medium	4	QmK3TAsJm8V/J5AWpLEV6jAFgRGymGGHnof0DXzVWZidrcZJWTNuGEX90nB3ee2w || _ITM_registerTMCloneTable || __freelocale || basic_string::_S_construct null not valid	059:22,060:2	0
+34	060	80	691618	0x369ad3	429	4	control_transfer_or_native_bridge_candidate	low	0		060:2,059:1,056:1	0
+35	061	88	693908	0x36b124	8004	4	cxx_runtime	medium	2	_ITM_registerTMCloneTable || __freelocale	061:20,062:2	0
+36	062	89	700175	0x36d524	429	4	control_transfer_or_native_bridge_candidate	low_to_medium	1	:$23	062:2,061:1,056:1	0
+37	063	97	702465	0x36ecdc	44029	151	tls_or_ssl;cxx_runtime;process_or_shell	medium	4	pclose || _ITM_registerTMCloneTable || __freelocale || client hello, adding server name extension: %s	063:25,064:2,065:1	0
+38	064	98	707172	0x3716c7	2975	150	control_transfer_or_native_bridge_candidate	low	0		063:1,065:1	0
+39	065	109	707663	0x3717c4	4441	26	control_transfer_or_native_bridge_candidate	low	0		065:4,063:1,056:1	0
+40	057	425	754030	0x365458	14	1	control_transfer_or_native_bridge_candidate	low	0		058:1	0
+41	058	426	754044	0x3654e0	70	1	control_transfer_or_native_bridge_candidate	low	0		external_or_exit:1	1
+42	011	428	754192	0x11de9f	326	1	control_transfer_or_native_bridge_candidate	low	0		011:3,012:1	0
+43	012	429	754518	0x11e574	632	1	control_transfer_or_native_bridge_candidate	low	0		012:4,013:1	0
+44	013	430	755150	0x11ef65	356	1	control_transfer_or_native_bridge_candidate	low	0		013:2,014:1	0
+45	014	431	755506	0x1209d2	320	2	control_transfer_or_native_bridge_candidate	low	0		014:2,015:1	0
+46	022	432	755584	0x176883	698	1	control_transfer_or_native_bridge_candidate	low_to_medium	1	unsigned __int128	022:4,023:1	0
+47	023	433	756282	0x177353	608	1	control_transfer_or_native_bridge_candidate	low	0		023:4,024:1	0
+48	024	434	756890	0x179f43	325	1	control_transfer_or_native_bridge_candidate	low	0		024:2,external_or_exit:1	1
+49	015	436	757457	0x1210d6	642	2	control_transfer_or_native_bridge_candidate	low	0		015:6,016:1	0
+50	031	437	758006	0x2316bf	315	2	cxx_runtime	low_to_medium	1	_ZGTtdlPv	031:1,external_or_exit:1	1
+51	016	439	758298	0x121b31	319	3	control_transfer_or_native_bridge_candidate	low	0		016:2,017:1	0
+52	028	442	758654	0x1ec0ab	1317	1	control_transfer_or_native_bridge_candidate	low	0		028:8,external_or_exit:1	1
+53	017	444	760050	0x122074	157	2	control_transfer_or_native_bridge_candidate	low	0		017:1,018:1	0
+54	026	445	760128	0x1a480d	1496	1	control_transfer_or_native_bridge_candidate	low	0		026:12,027:1	0
+55	027	446	761624	0x1a5f3d	70	1	control_transfer_or_native_bridge_candidate	low	0		external_or_exit:1	1
+56	018	448	761773	0x122344	229	2	control_transfer_or_native_bridge_candidate	low	0		018:2,019:1	0
+57	021	449	761851	0x1705a9	4230	13	threading_sync	low_to_medium	1	pthread_mutexattr_init	021:25,external_or_exit:1	1
+58	020	450	764171	0x128952	477	3	control_transfer_or_native_bridge_candidate	low_to_medium	1	FILTERS_MODE_IPREFETCH	020:2,external_or_exit:1	1
+59	035	456	765167	0x292986	1175	7	control_transfer_or_native_bridge_candidate	low	0		035:12,external_or_exit:1	1
+60	036	467	766826	0x2bec2e	272	3	control_transfer_or_native_bridge_candidate	low	0		036:2,037:1	0
+61	037	472	767404	0x2bf297	157	2	control_transfer_or_native_bridge_candidate	low	0		037:1,038:1	0
+62	038	475	767705	0x2bf97c	14	1	control_transfer_or_native_bridge_candidate	low	0		039:1	0
+63	039	476	767719	0x2bfe6f	476	4	networking	low_to_medium	1	socket	039:3,040:1	0
+64	019	480	768239	0x122a46	258	2	control_transfer_or_native_bridge_candidate	low	0		019:1,external_or_exit:1	1
+65	040	484	768720	0x2c1156	165	1	cxx_runtime	low_to_medium	1	basic_string::append	040:1,035:1	0
