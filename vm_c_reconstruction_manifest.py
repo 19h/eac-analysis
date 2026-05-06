@@ -376,6 +376,10 @@ def c_shape_metrics(rows):
         r"^    \{ \d+, 0x[0-9a-f]+ull, 0x[0-9a-f]+ull, \d+, vm_eac_section_\d+_[A-Za-z0-9_]+ \+ 0x[0-9a-f]+ull, \"",
         binary_data_sections,
     )
+    binary_data_section_metadata_c_rows = count(
+        r'^    \{ "\.[^"]+", \d+, \d+, 0x[0-9a-f]+ull, 0x[0-9a-f]+ull, 0x[0-9a-f]+ull, 0x[0-9a-f]+ull, 0x[0-9a-f]+ull, (?:vm_eac_section_\d+_[A-Za-z0-9_]+|NULL) \},$',
+        binary_data_sections,
+    )
     binary_data_section_array_c_rows = count(r"^static const uint8_t vm_eac_section_\d+_", binary_data_sections)
     static_only_handler_queue = read_text(TRACE_DIR / "vm_static_only_handler_queue.c")
     static_only_handler_queue_index = read_tsv(TRACE_DIR / "vm_static_only_handler_queue.tsv")
@@ -1347,6 +1351,20 @@ def c_shape_metrics(rows):
     add(rows, "c_shape", "binary_data_section_arrays",
         binary_data_section_array_c_rows,
         "C byte arrays emitted for exact runtime data sections.")
+    add(rows, "c_shape", "binary_data_section_metadata_rows_in_c",
+        binary_data_section_metadata_c_rows,
+        "C metadata rows for all allocatable ELF sections, including NOBITS and executable code-section metadata.")
+    add(rows, "data_surface", "binary_data_section_arrays_match_index",
+        "yes" if binary_data_section_array_c_rows == sum(
+            1 for row in binary_data_sections_index
+            if row.get("kind", "") == "section" and row.get("emitted_data", "") == "yes"
+        ) else "no",
+        "Whether every TSV-indexed emitted runtime data section has an exact C byte array.")
+    add(rows, "data_surface", "binary_data_section_metadata_rows_match_index",
+        "yes" if binary_data_section_metadata_c_rows == sum(
+            1 for row in binary_data_sections_index if row.get("kind", "") == "section"
+        ) else "no",
+        "Whether every TSV-indexed allocatable ELF section has a C metadata row.")
     add(rows, "c_shape", "binary_data_full_string_rows",
         binary_data_string_ref_c_rows,
         "C string-reference rows with full text and pointers into exact backing byte arrays.")
@@ -1359,6 +1377,9 @@ def c_shape_metrics(rows):
     add(rows, "c_shape", "binary_data_dispatch_table_offsets",
         count(r"^static const uint64_t vm_eac_dispatch_table_raw_offsets\[360\]", binary_data_sections),
         "Raw 360-entry VM dispatch-table offset array carried in C.")
+    add(rows, "c_shape", "binary_data_dispatch_table_raw_bytes",
+        count(r"^static const uint8_t vm_eac_dispatch_table_raw_bytes\[2880\]", binary_data_sections),
+        "Raw VM dispatch-table byte array carried in C.")
     add(rows, "coverage", "static_only_handler_queue_rows",
         len(static_only_handler_queue_index),
         "Ranked static-only dispatch entries to convert from sidecar evidence into stronger handler C.")
@@ -2245,6 +2266,10 @@ def c_shape_metrics(rows):
         r"^static const uint8_t eac_evidence_binary_data_sections__vm_eac_section_\d+_",
         all_evidence_bundle,
     )
+    all_evidence_binary_data_section_metadata_rows = count(
+        r'^    \{ "\.[^"]+", \d+, \d+, 0x[0-9a-f]+ull, 0x[0-9a-f]+ull, 0x[0-9a-f]+ull, 0x[0-9a-f]+ull, 0x[0-9a-f]+ull, (?:eac_evidence_binary_data_sections__vm_eac_section_\d+_[A-Za-z0-9_]+|NULL) \},$',
+        all_evidence_bundle,
+    )
     all_evidence_binary_data_string_refs = count(
         r"^    \{ \d+, 0x[0-9a-f]+ull, 0x[0-9a-f]+ull, \d+, eac_evidence_binary_data_sections__vm_eac_section_\d+_[A-Za-z0-9_]+ \+ 0x[0-9a-f]+ull, \"",
         all_evidence_bundle,
@@ -2252,6 +2277,9 @@ def c_shape_metrics(rows):
     add(rows, "data_surface", "all_evidence_bundle_binary_data_section_arrays",
         all_evidence_binary_data_section_arrays,
         "Exact binary data section arrays retained in the all-evidence single C file.")
+    add(rows, "data_surface", "all_evidence_bundle_binary_data_section_metadata_rows",
+        all_evidence_binary_data_section_metadata_rows,
+        "All allocatable ELF section metadata rows retained in the all-evidence single C file.")
     add(rows, "data_surface", "all_evidence_bundle_binary_data_string_refs",
         all_evidence_binary_data_string_refs,
         "Full runtime string-reference rows retained in the all-evidence single C file.")
@@ -2261,13 +2289,18 @@ def c_shape_metrics(rows):
     add(rows, "data_surface", "all_evidence_bundle_binary_data_dispatch_table",
         count(r"\beac_evidence_binary_data_sections__vm_eac_dispatch_table_raw_offsets\[360\]", all_evidence_bundle),
         "Raw VM dispatch-table offset array retained in the all-evidence single C file.")
+    add(rows, "data_surface", "all_evidence_bundle_binary_data_dispatch_table_raw_bytes",
+        count(r"^static const uint8_t eac_evidence_binary_data_sections__vm_eac_dispatch_table_raw_bytes\[2880\]", all_evidence_bundle),
+        "Raw VM dispatch-table byte array retained in the all-evidence single C file.")
     add(rows, "data_surface", "all_evidence_bundle_binary_data_surface_match",
         "yes" if (
             all_evidence_binary_data_section_arrays == binary_data_section_array_c_rows and
+            all_evidence_binary_data_section_metadata_rows == binary_data_section_metadata_c_rows and
             all_evidence_binary_data_string_refs == binary_data_string_ref_c_rows and
-            count(r"\beac_evidence_binary_data_sections__vm_eac_dispatch_table_raw_offsets\[360\]", all_evidence_bundle) == 1
+            count(r"\beac_evidence_binary_data_sections__vm_eac_dispatch_table_raw_offsets\[360\]", all_evidence_bundle) == 1 and
+            count(r"^static const uint8_t eac_evidence_binary_data_sections__vm_eac_dispatch_table_raw_bytes\[2880\]", all_evidence_bundle) == 1
         ) else "no",
-        "Whether the all-evidence C file carries the same section arrays, full strings, and raw dispatch table as the binary data carrier.")
+        "Whether the all-evidence C file carries the same section arrays, section metadata, full strings, and raw dispatch-table bytes/offsets as the binary data carrier.")
     add(rows, "c_shape", "all_evidence_bundle_tier0_static_slot_recoveries",
         count(r"tier0 static slot recovered from the RetDec single-function model", all_evidence_bundle),
         "Executable tier0 static-only slot recoveries retained in the all-evidence single file.")
