@@ -23,12 +23,11 @@ typedef struct VMNativeRetdecGapQueueRow {
 } VMNativeRetdecGapQueueRow;
 
 static const VMNativeRetdecGapQueueRow k_vm_native_retdec_gap_queue[] = {
-    { 1u, 0x6b7a0ull, 0x6b8bbull, 283u, 275u, 8u, 9717u, "r2_discovered", "fcn.0006b7a0", 15u, 78u, 8u, "tier0_small_native_gap", "targeted_retdec_single_function", "0x6b7a0-0x6b8bb" },
 };
 
 static unsigned vm_native_retdec_gap_queue_count(void) {
     return (unsigned)(sizeof(k_vm_native_retdec_gap_queue) / sizeof(k_vm_native_retdec_gap_queue[0]));
 }
 
-_Static_assert(sizeof(k_vm_native_retdec_gap_queue) / sizeof(k_vm_native_retdec_gap_queue[0]) == 1u,
+_Static_assert(sizeof(k_vm_native_retdec_gap_queue) / sizeof(k_vm_native_retdec_gap_queue[0]) == 0u,
                "native RetDec gap queue count changed");

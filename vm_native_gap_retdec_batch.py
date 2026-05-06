@@ -14,6 +14,24 @@ FUNCTION_CALL_RE = re.compile(r"\b(function_[0-9a-f]+)\(")
 UNKNOWN_CALL_RE = re.compile(r"\b(unknown_[0-9a-fA-F]+)\(")
 GLOBAL_RE = re.compile(r"\bg(\d+)\b")
 
+MANUAL_NATIVE_GAP_LIFTS = {
+    "0x6b7f0-0x6b7f8": """// Address range: 0x6b7f0 - 0x6b7f8
+static const uint8_t eac_native_gap_6b7f0_bytes[8] = {
+    0x89, 0xdf, 0xe8, 0xc9, 0x52, 0xfb, 0xff, 0x48,
+};
+
+int64_t function_6b7f0(int64_t rbx) {
+    /*
+     * Manual lift for the last RetDec-hostile residual in fcn.0006b7a0.
+     * The selected range starts one byte into `mov %rbx,%rdi` at 0x6b7ef,
+     * contains `call popen@plt` at 0x6b7f2, and includes the first byte of
+     * the following `test %rax,%rax` at 0x6b7f7. The surrounding sidecars
+     * cover the full predecessor/successor instructions.
+     */
+    return (int64_t)popen((const char *)rbx, (const char *)0x5855d7);
+}""",
+}
+
 
 BATCHES = {
     0: [
@@ -765,26 +783,34 @@ def main():
     if not ranges:
         raise SystemExit(f"no fixed native gap RetDec batch {args.batch_index}")
 
-    with tempfile.TemporaryDirectory(prefix=f"eacsym-retdec-native-gap-b{args.batch_index:02d}-") as tmpdir:
-        out_path = Path(tmpdir) / f"native_gap_batch{args.batch_index:02d}.c"
-        cmd = [
-            args.retdec,
-            "--select-ranges",
-            ",".join(ranges),
-            "--select-decode-only",
-            "--timeout",
-            str(args.timeout),
-            "-o",
-            str(out_path),
-            args.eac,
-        ]
-        proc = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
-        if proc.returncode != 0:
-            sys.stderr.write(proc.stdout)
-            raise SystemExit(proc.returncode)
-        source = out_path.read_text(errors="replace")
+    retdec_ranges = [item for item in ranges if item not in MANUAL_NATIVE_GAP_LIFTS]
+    function_parts = []
+    if retdec_ranges:
+        with tempfile.TemporaryDirectory(prefix=f"eacsym-retdec-native-gap-b{args.batch_index:02d}-") as tmpdir:
+            out_path = Path(tmpdir) / f"native_gap_batch{args.batch_index:02d}.c"
+            cmd = [
+                args.retdec,
+                "--select-ranges",
+                ",".join(retdec_ranges),
+                "--select-decode-only",
+                "--timeout",
+                str(args.timeout),
+                "-o",
+                str(out_path),
+                args.eac,
+            ]
+            proc = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
+            if proc.returncode != 0:
+                sys.stderr.write(proc.stdout)
+                raise SystemExit(proc.returncode)
+            source = out_path.read_text(errors="replace")
+        function_parts.append(extract_functions(source))
+    for selected_range in ranges:
+        manual = MANUAL_NATIVE_GAP_LIFTS.get(selected_range)
+        if manual:
+            function_parts.append(manual)
 
-    functions = extract_functions(source)
+    functions = "\n\n".join(function_parts)
     provenance = queue_by_range(args.queue)
 
     print("/*")
@@ -1045,6 +1071,7 @@ def main():
     print("int fileno(struct _IO_FILE *stream);")
     print("void rewind(struct _IO_FILE *stream);")
     print("int fclose(struct _IO_FILE *stream);")
+    print("struct _IO_FILE *popen(const char *command, const char *type);")
     print("int uname(struct utsname *buf);")
     print("int64_t __tls_get_addr(void *arg);")
     print("void *dlsym(void *handle, const char *symbol);")
