@@ -37,7 +37,7 @@ static const VMNativeExecSectionCoverage k_vm_native_exec_section_coverage[] = {
     { ".init", 0x1fbd0ull, 0x1fbe7ull, 23ull, 23ull, 0ull, 10000u, 1u, 1u },
     { ".plt", 0x1fbf0ull, 0x20bd0ull, 4064ull, 4064ull, 0ull, 10000u, 254u, 1u },
     { ".plt.got", 0x20bd0ull, 0x20be0ull, 16ull, 16ull, 0ull, 10000u, 2u, 1u },
-    { ".text", 0x20c00ull, 0x583650ull, 5646928ull, 3063782ull, 2583146ull, 5425u, 36806u, 2945u },
+    { ".text", 0x20c00ull, 0x583650ull, 5646928ull, 3067878ull, 2579050ull, 5432u, 36827u, 2945u },
     { ".fini", 0x583650ull, 0x583659ull, 9ull, 9ull, 0ull, 10000u, 3u, 1u },
 };
 
@@ -6884,6 +6884,14 @@ static const VMNativeRecoveredRange k_vm_native_recovered_ranges[] = {
     { ".text", 0x100f94ull, 0x100f9aull, 6ull, "retdec_address_range", "vm_native_gap_retdec_batch791.c" },
     { ".text", 0x100fd4ull, 0x1011c4ull, 496ull, "retdec_address_range", "vm_native_gap_retdec_batch791.c" },
     { ".text", 0x100feeull, 0x1011eeull, 512ull, "retdec_header_range", "vm_native_gap_retdec_batch791.c" },
+    { ".text", 0x1011eeull, 0x10134full, 353ull, "retdec_address_range", "vm_native_gap_retdec_batch847.c" },
+    { ".text", 0x1011eeull, 0x1013eeull, 512ull, "retdec_header_range", "vm_native_gap_retdec_batch847.c" },
+    { ".text", 0x10134full, 0x101488ull, 313ull, "retdec_address_range", "vm_native_gap_retdec_batch847.c" },
+    { ".text", 0x1013eeull, 0x1015eeull, 512ull, "retdec_header_range", "vm_native_gap_retdec_batch847.c" },
+    { ".text", 0x101488ull, 0x1015c5ull, 317ull, "retdec_address_range", "vm_native_gap_retdec_batch847.c" },
+    { ".text", 0x1015c5ull, 0x101742ull, 381ull, "retdec_address_range", "vm_native_gap_retdec_batch847.c" },
+    { ".text", 0x1015eeull, 0x1017eeull, 512ull, "retdec_header_range", "vm_native_gap_retdec_batch847.c" },
+    { ".text", 0x10177full, 0x101789ull, 10ull, "retdec_address_range", "vm_native_gap_retdec_batch847.c" },
     { ".text", 0x104c68ull, 0x104c77ull, 15ull, "retdec_address_range", "vm_native_gap_retdec_batch145.c" },
     { ".text", 0x104c68ull, 0x104c78ull, 16ull, "retdec_header_range", "vm_native_gap_retdec_batch145.c" },
     { ".text", 0x1060abull, 0x1061bfull, 276ull, "retdec_address_range", "vm_native_gap_retdec_batch19.c" },
@@ -9712,6 +9720,19 @@ static const VMNativeRecoveredRange k_vm_native_recovered_ranges[] = {
     { ".text", 0x157862ull, 0x1579cbull, 361ull, "retdec_address_range", "vm_native_gap_retdec_batch810.c" },
     { ".text", 0x157913ull, 0x157b13ull, 512ull, "retdec_header_range", "vm_native_gap_retdec_batch810.c" },
     { ".text", 0x157a48ull, 0x157a49ull, 1ull, "retdec_address_range", "vm_native_gap_retdec_batch810.c" },
+    { ".text", 0x157b13ull, 0x157b2eull, 27ull, "retdec_address_range", "vm_native_gap_retdec_batch847.c" },
+    { ".text", 0x157b13ull, 0x157d13ull, 512ull, "retdec_header_range", "vm_native_gap_retdec_batch847.c" },
+    { ".text", 0x157b2eull, 0x157c9cull, 366ull, "retdec_address_range", "vm_native_gap_retdec_batch847.c" },
+    { ".text", 0x157c9cull, 0x157dcaull, 302ull, "retdec_address_range", "vm_native_gap_retdec_batch847.c" },
+    { ".text", 0x157d13ull, 0x157f13ull, 512ull, "retdec_header_range", "vm_native_gap_retdec_batch847.c" },
+    { ".text", 0x157dcaull, 0x157f5full, 405ull, "retdec_address_range", "vm_native_gap_retdec_batch847.c" },
+    { ".text", 0x157f13ull, 0x158113ull, 512ull, "retdec_header_range", "vm_native_gap_retdec_batch847.c" },
+    { ".text", 0x157f5full, 0x1580bbull, 348ull, "retdec_address_range", "vm_native_gap_retdec_batch847.c" },
+    { ".text", 0x1580bbull, 0x158227ull, 364ull, "retdec_address_range", "vm_native_gap_retdec_batch847.c" },
+    { ".text", 0x158113ull, 0x158313ull, 512ull, "retdec_header_range", "vm_native_gap_retdec_batch847.c" },
+    { ".text", 0x158227ull, 0x158347ull, 288ull, "retdec_address_range", "vm_native_gap_retdec_batch847.c" },
+    { ".text", 0x158313ull, 0x158513ull, 512ull, "retdec_header_range", "vm_native_gap_retdec_batch847.c" },
+    { ".text", 0x158347ull, 0x1584d4ull, 397ull, "retdec_address_range", "vm_native_gap_retdec_batch847.c" },
     { ".text", 0x15b5b2ull, 0x15b632ull, 128ull, "retpatch_disasm_window", "entry=278;vm_ip=0x12906f;target=0x15b5b2" },
     { ".text", 0x15b5b2ull, 0x15b6f2ull, 320ull, "retdec_address_range", "vm_native_ret_patch_source278_retdec.c" },
     { ".text", 0x15b5b2ull, 0x15b6f2ull, 320ull, "retdec_header_range", "vm_native_ret_patch_source278_retdec.c" },
@@ -37111,8 +37132,6 @@ static const VMNativeRecoveredRange k_vm_native_recovered_ranges[] = {
 };
 
 static const VMNativeExecutableGap k_vm_native_executable_gaps[] = {
-    { ".text", 0x157b13ull, 0x15b5b2ull, 15007ull },
-    { ".text", 0x1011eeull, 0x104c68ull, 14970ull },
     { ".text", 0x1784aaull, 0x17bf1full, 14965ull },
     { ".text", 0x2dd70eull, 0x2e117aull, 14956ull },
     { ".text", 0x136da4ull, 0x13a7f8ull, 14932ull },
@@ -37178,6 +37197,7 @@ static const VMNativeExecutableGap k_vm_native_executable_gaps[] = {
     { ".text", 0x3650b6ull, 0x368588ull, 13522ull },
     { ".text", 0x3c9479ull, 0x3cc938ull, 13503ull },
     { ".text", 0x3af015ull, 0x3b24aaull, 13461ull },
+    { ".text", 0x1017eeull, 0x104c68ull, 13434ull },
     { ".text", 0x303c1eull, 0x307093ull, 13429ull },
     { ".text", 0x38eca0ull, 0x392091ull, 13297ull },
     { ".text", 0x337e7bull, 0x33b1f2ull, 13175ull },
@@ -37207,6 +37227,7 @@ static const VMNativeExecutableGap k_vm_native_executable_gaps[] = {
     { ".text", 0x425c1full, 0x428ce3ull, 12484ull },
     { ".text", 0x34d285ull, 0x35033aull, 12469ull },
     { ".text", 0x13d668ull, 0x140711ull, 12457ull },
+    { ".text", 0x158513ull, 0x15b5b2ull, 12447ull },
     { ".text", 0x35bc8aull, 0x35ea08ull, 11646ull },
     { ".text", 0x2daf3ull, 0x307d0ull, 11485ull },
     { ".text", 0x30911dull, 0x30bdcdull, 11440ull },
@@ -40071,7 +40092,7 @@ static unsigned vm_native_executable_gap_count(void) {
 
 _Static_assert(sizeof(k_vm_native_exec_section_coverage) / sizeof(k_vm_native_exec_section_coverage[0]) == 5u,
                "native executable section count changed");
-_Static_assert(sizeof(k_vm_native_recovered_ranges) / sizeof(k_vm_native_recovered_ranges[0]) == 37066u,
+_Static_assert(sizeof(k_vm_native_recovered_ranges) / sizeof(k_vm_native_recovered_ranges[0]) == 37087u,
                "native recovered range count changed");
 _Static_assert(sizeof(k_vm_native_executable_gaps) / sizeof(k_vm_native_executable_gaps[0]) == 2944u,
                "native executable gap count changed");
