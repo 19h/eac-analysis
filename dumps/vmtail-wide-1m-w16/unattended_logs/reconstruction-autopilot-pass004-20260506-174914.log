@@ -2834,3 +2834,49 @@ native_executable_coverage_uncovered_bytes	169460	117049	delta=-52411
 # elapsed 0.64s
 + make -s all-evidence-bundle
 uncovered_executable_gaps=1743 bytes=117049
+all_evidence_bundle_sidecars=3998 symbol_rewrites=1429469
+# elapsed 264.37s
+checkpoint_manifest_skipped
++ make -s reconstruction-completion-audit
+uncovered_executable_gaps=1743 bytes=117049
+objective=reconstruct the binary back to C/C++ in full, including executable semantics and referenced static data
+success_criteria=single C/C++ evidence artifact, all referenced static data present, all executable bytes covered by decompiled/manual semantics or exact byte carriers, no uncovered executable semantics
+bundle_exists=ok	dumps/vmtail-wide-1m-w16/vm_recovered_source_all_evidence_bundle.c
+coverage_exists=ok	dumps/vmtail-wide-1m-w16/vm_native_executable_coverage_audit.tsv
+uncovered_carrier_exists=ok	dumps/vmtail-wide-1m-w16/vm_uncovered_executable_gaps.tsv
+uncovered_carrier_matches_coverage=ok	coverage_gaps=1743 carrier_gaps=1743 coverage_bytes=117049 carrier_bytes=117049
+text_semantic_coverage=5529879/5646928 bytes (97.92%)
+bundle_includes_expected_sidecars=ok	expected=3998 present=3998 missing=0
+bundle_includes_binary_data_sidecar=ok	static ELF section/string/data carrier sidecar marker
+bundle_includes_uncovered_executable_carrier=ok	exact byte carrier sidecar marker and byte-count enum
+aggregate_c_syntax=missing	command=cc -std=c11 -fsyntax-only -w dumps/vmtail-wide-1m-w16/vm_recovered_source_all_evidence_bundle.c
+dumps/vmtail-wide-1m-w16/vm_recovered_source_all_evidence_bundle.c: In function ‘eac_evidence_native_gap_retdec_batch2064__function_548cd0’:
+dumps/vmtail-wide-1m-w16/vm_recovered_source_all_evidence_bundle.c:2115915:30: error: implicit declaration of function ‘strtoul’ [-Wimplicit-function-declaration]
+2115915 |         uint32_t str_as_ul = strtoul("mt19937", &endptr, 0); // 0x548d67
+        |                              ^~~~~~~
+dumps/vmtail-wide-1m-w16/vm_recovered_source_all_evidence_bundle.c: In function ‘eac_evidence_native_gap_retdec_batch2165__function_5795b3’:
+dumps/vmtail-wide-1m-w16/vm_recovered_source_all_evidence_bundle.c:2166942:9: error: implicit declaration of function ‘fputs’ [-Wimplicit-function-declaration]
+2166942 |         fputs((char *)str, (struct eac_evidence_native_gap_retdec_batch2165___IO_FILE *)stream4);
+        |         ^~~~~
+dumps/vmtail-wide-1m-w16/vm_recovered_source_all_evidence_bundle.c:18:1: note: include ‘<stdio.h>’ or provide a declaration of ‘fputs’
+   17 | #include <time.h>
+  +++ |+#include <stdio.h>
+   18 | 
+dumps/vmtail-wide-1m-w16/vm_recovered_source_all_evidence_bundle.c: In function ‘eac_evidence_native_gap_retdec_batch3223__function_48e9ed’:
+dumps/vmtail-wide-1m-w16/vm_recovered_source_all_evidence_bundle.c:2623463:9: error: implicit declaration of function ‘wcstombs’ [-Wimplicit-function-declaration]
+2623463 |         wcstombs((char *)dest, (int32_t *)src, (int32_t)n);
+        |         ^~~~~~~~
+dumps/vmtail-wide-1m-w16/vm_recovered_source_all_evidence_bundle.c: In function ‘eac_evidence_native_gap_retdec_batch3223__function_4c8750’:
+dumps/vmtail-wide-1m-w16/vm_recovered_source_all_evidence_bundle.c:2623997:25: error: implicit declaration of function ‘rand’ [-Wimplicit-function-declaration]
+2623997 |     *(char *)v1 = (char)rand();
+        |                         ^~~~
+dumps/vmtail-wide-1m-w16/vm_recovered_source_all_evidence_bundle.c: In function ‘eac_evidence_native_gap_retdec_batch3320__function_4c18e0’:
+dumps/vmtail-wide-1m-w16/vm_recovered_source_all_evidence_bundle.c:2669031:14: error: implicit declaration of function ‘ferror’; did you mean ‘strerror’? [-Wimplicit-function-declaration]
+2669031 |         v4 = ferror(file) == 0 ? v3 : 0xffffae00;
+        |              ^~~~~~
+        |              strerror
+
+incomplete_reason=remaining executable semantics: text_uncovered_bytes=117049 audit_gap_bytes=117049
+completion_status=not_complete
+# elapsed 10.68s
+executable_gap_autopilot_created_batches	3801,3802,3803,3804,3805,3806,3807,3808,3809,3810,3811,3812,3813,3814,3815,3816,3817,3818,3819,3820,3821,3822,3823,3824,3825,3826,3827,3828,3829,3830,3831,3832,3833,3834,3835,3836,3837,3838,3839,3840,3841,3842,3843,3844,3845,3846,3847,3848,3849,3850,3851,3852,3853,3854,3855,3856,3857,3858,3859,3860,3861,3862,3863,3864,3865,3866,3867,3868,3869,3870,3871,3872,3873,3874,3875,3876,3877,3878,3879,3880,3881,3882,3883,3884,3885,3886,3887,3888,3889,3890,3891,3892,3893,3894,3895,3896,3897,3898,3899,3900,3901,3902,3903,3904,3905,3906,3907,3908,3909,3910,3911,3912,3913,3914,3915,3916,3917,3918,3919,3920,3921,3922,3923,3924,3925,3926,3927,3928,3929,3930,3931,3932,3933,3934,3935,3936,3937,3938,3939,3940,3941,3942,3943,3944,3945,3946,3947,3948
