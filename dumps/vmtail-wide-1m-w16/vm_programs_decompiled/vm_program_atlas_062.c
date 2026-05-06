@@ -1694,3 +1694,21 @@ void vm_program_atlas_062_decompiled(VMState *vm, uint64_t vm_ip) {
     default: vm_program_unknown_entry(vm, vm_ip); return;
     }
 }
+
+/* === VM PROGRAM STRING REFERENCES BEGIN === */
+typedef struct VMProgramStringRef {
+    const char *source;
+    uint64_t site;
+    uint64_t value;
+    uint64_t string_vaddr;
+    uint64_t string_offset;
+    uint64_t string_size;
+    const char *section;
+    const char *match_class;
+    const char *text;
+} VMProgramStringRef;
+enum { VM_PROGRAM_ATLAS_062_STRING_REF_COUNT = 1 };
+static const VMProgramStringRef k_vm_program_atlas_062_string_refs[VM_PROGRAM_ATLAS_062_STRING_REF_COUNT] = {
+    { "bytecode_u32", UINT64_C(0x36d81e), UINT64_C(0x5cea05), UINT64_C(0x5cea02), UINT64_C(0x3), UINT64_C(0x4), ".rodata", "string_interior", ":$23" },
+};
+/* === VM PROGRAM STRING REFERENCES END === */

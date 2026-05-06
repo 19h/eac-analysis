@@ -9642,3 +9642,23 @@ void vm_program_atlas_048_decompiled(VMState *vm, uint64_t vm_ip) {
     default: vm_program_unknown_entry(vm, vm_ip); return;
     }
 }
+
+/* === VM PROGRAM STRING REFERENCES BEGIN === */
+typedef struct VMProgramStringRef {
+    const char *source;
+    uint64_t site;
+    uint64_t value;
+    uint64_t string_vaddr;
+    uint64_t string_offset;
+    uint64_t string_size;
+    const char *section;
+    const char *match_class;
+    const char *text;
+} VMProgramStringRef;
+enum { VM_PROGRAM_ATLAS_048_STRING_REF_COUNT = 3 };
+static const VMProgramStringRef k_vm_program_atlas_048_string_refs[VM_PROGRAM_ATLAS_048_STRING_REF_COUNT] = {
+    { "bytecode_u32", UINT64_C(0x334c7e), UINT64_C(0x3000), UINT64_C(0x2ff2), UINT64_C(0xe), UINT64_C(0x19), ".dynstr", "string_interior", "_ITM_registerTMCloneTable" },
+    { "bytecode_u32", UINT64_C(0x334ca6), UINT64_C(0x4000), UINT64_C(0x3ff6), UINT64_C(0xa), UINT64_C(0xc), ".dynstr", "string_interior", "__freelocale" },
+    { "bytecode_u32", UINT64_C(0x336b3c), UINT64_C(0x5f06e0), UINT64_C(0x5f06db), UINT64_C(0x5), UINT64_C(0xb), ".rodata", "string_interior", "long double" },
+};
+/* === VM PROGRAM STRING REFERENCES END === */

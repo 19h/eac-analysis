@@ -31,6 +31,7 @@ PROGRAM_PSEUDOCODE_FULL_C := $(PRIMARY_DIR)/vm_program_pseudocode_full.c
 PROGRAM_DECOMPILED_FULL_C := $(PRIMARY_DIR)/vm_program_decompiled_full.c
 PROGRAM_DECOMPILED_SPLIT_DIR := $(PRIMARY_DIR)/vm_programs_decompiled
 PROGRAM_DECOMPILED_SPLIT_MANIFEST := $(PRIMARY_DIR)/vm_programs_decompiled_manifest.tsv
+PROGRAM_STRING_REFS_TSV := $(PRIMARY_DIR)/vm_program_string_refs.tsv
 HANDLERS_PSEUDOCODE_C := $(PRIMARY_DIR)/vm_handlers_pseudocode.c
 HANDLERS_HOT_PSEUDOCODE_C := $(PRIMARY_DIR)/vm_handlers_hot_pseudocode.c
 PATH_HANDLERS_PSEUDOCODE_C := $(PRIMARY_DIR)/vm_path_handlers_pseudocode.c
@@ -947,7 +948,15 @@ $(PROGRAM_DECOMPILED_SPLIT_MANIFEST): vm_program_decompiled_split.py vm_program_
 
 program-decompiled-split: $(PROGRAM_DECOMPILED_SPLIT_MANIFEST)
 
-program-decompiled-split-audit: $(PROGRAM_DECOMPILED_SPLIT_MANIFEST)
+$(PROGRAM_STRING_REFS_TSV): vm_program_string_refs.py $(PROGRAM_DECOMPILED_SPLIT_MANIFEST) $(BINARY_DATA_SECTIONS_TSV) eac.elf
+	python3 vm_program_string_refs.py
+
+program-string-refs: $(PROGRAM_STRING_REFS_TSV)
+
+program-string-refs-audit: $(PROGRAM_STRING_REFS_TSV)
+	python3 vm_program_string_refs_audit.py --compile --jobs 8
+
+program-decompiled-split-audit: $(PROGRAM_DECOMPILED_SPLIT_MANIFEST) $(PROGRAM_STRING_REFS_TSV)
 	python3 vm_program_decompiled_split_audit.py --compile --jobs 8
 
 $(HANDLERS_PSEUDOCODE_C): vm_handler_pseudocode_dump.py $(PRIMARY_DIR)/vm_handler_semantics.tsv $(PRIMARY_DIR)/vm_handler_table.tsv $(STATIC_ONLY_HANDLER_QUEUE_TSV) $(STATIC_ONLY_TIER0_MODELS_TSV) $(STATIC_ONLY_TIER1_MODELS_TSV) $(STATIC_ONLY_TIER2_SPLIT_TSV) $(STATIC_ONLY_TIER3_SHARED_TSV) $(STATIC_ONLY_TIER4_CALLRET_TSV) $(STATIC_ONLY_TIER5_LARGE_TSV)

@@ -2113,3 +2113,19 @@ void vm_program_atlas_004_decompiled(VMState *vm, uint64_t vm_ip) {
     default: vm_program_unknown_entry(vm, vm_ip); return;
     }
 }
+
+/* === VM PROGRAM STRING REFERENCES BEGIN === */
+typedef struct VMProgramStringRef {
+    const char *source;
+    uint64_t site;
+    uint64_t value;
+    uint64_t string_vaddr;
+    uint64_t string_offset;
+    uint64_t string_size;
+    const char *section;
+    const char *match_class;
+    const char *text;
+} VMProgramStringRef;
+enum { VM_PROGRAM_ATLAS_004_STRING_REF_COUNT = 0 };
+/* No exact string-address references were found in this VM program's decompiled literals or bytecode immediates. */
+/* === VM PROGRAM STRING REFERENCES END === */

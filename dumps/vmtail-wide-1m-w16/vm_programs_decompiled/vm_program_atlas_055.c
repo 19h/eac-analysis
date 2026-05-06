@@ -27003,3 +27003,37 @@ void vm_program_atlas_055_decompiled(VMState *vm, uint64_t vm_ip) {
     default: vm_program_unknown_entry(vm, vm_ip); return;
     }
 }
+
+/* === VM PROGRAM STRING REFERENCES BEGIN === */
+typedef struct VMProgramStringRef {
+    const char *source;
+    uint64_t site;
+    uint64_t value;
+    uint64_t string_vaddr;
+    uint64_t string_offset;
+    uint64_t string_size;
+    const char *section;
+    const char *match_class;
+    const char *text;
+} VMProgramStringRef;
+enum { VM_PROGRAM_ATLAS_055_STRING_REF_COUNT = 17 };
+static const VMProgramStringRef k_vm_program_atlas_055_string_refs[VM_PROGRAM_ATLAS_055_STRING_REF_COUNT] = {
+    { "bytecode_u32", UINT64_C(0x33f6e3), UINT64_C(0x3000), UINT64_C(0x2ff2), UINT64_C(0xe), UINT64_C(0x19), ".dynstr", "string_interior", "_ITM_registerTMCloneTable" },
+    { "bytecode_u32", UINT64_C(0x33f70b), UINT64_C(0x4000), UINT64_C(0x3ff6), UINT64_C(0xa), UINT64_C(0xc), ".dynstr", "string_interior", "__freelocale" },
+    { "bytecode_u32", UINT64_C(0x33f7c5), UINT64_C(0x5ed1e8), UINT64_C(0x5ed1e0), UINT64_C(0x8), UINT64_C(0x44), ".rodata", "string_interior", "NSt7__cxx118time_getIwSt19istreambuf_iteratorIwSt11char_traitsIwEEEE" },
+    { "bytecode_u32", UINT64_C(0x340196), UINT64_C(0x3000), UINT64_C(0x2ff2), UINT64_C(0xe), UINT64_C(0x19), ".dynstr", "string_interior", "_ITM_registerTMCloneTable" },
+    { "bytecode_u32", UINT64_C(0x3401be), UINT64_C(0x4000), UINT64_C(0x3ff6), UINT64_C(0xa), UINT64_C(0xc), ".dynstr", "string_interior", "__freelocale" },
+    { "bytecode_u32", UINT64_C(0x3403f3), UINT64_C(0x58a87e), UINT64_C(0x58a868), UINT64_C(0x16), UINT64_C(0x2c), ".rodata", "string_interior", "/home/richard/code/mbedtls/library/ssl_tls.c" },
+    { "bytecode_u32", UINT64_C(0x3408e1), UINT64_C(0x3386), UINT64_C(0x3381), UINT64_C(0x5), UINT64_C(0x16), ".dynstr", "string_interior", "pthread_cond_timedwait" },
+    { "bytecode_u32", UINT64_C(0x340f1e), UINT64_C(0x3000), UINT64_C(0x2ff2), UINT64_C(0xe), UINT64_C(0x19), ".dynstr", "string_interior", "_ITM_registerTMCloneTable" },
+    { "bytecode_u32", UINT64_C(0x340f46), UINT64_C(0x4000), UINT64_C(0x3ff6), UINT64_C(0xa), UINT64_C(0xc), ".dynstr", "string_interior", "__freelocale" },
+    { "bytecode_u32", UINT64_C(0x341a48), UINT64_C(0x3000), UINT64_C(0x2ff2), UINT64_C(0xe), UINT64_C(0x19), ".dynstr", "string_interior", "_ITM_registerTMCloneTable" },
+    { "bytecode_u32", UINT64_C(0x341a70), UINT64_C(0x4000), UINT64_C(0x3ff6), UINT64_C(0xa), UINT64_C(0xc), ".dynstr", "string_interior", "__freelocale" },
+    { "bytecode_u32", UINT64_C(0x34230a), UINT64_C(0x33e3), UINT64_C(0x33dc), UINT64_C(0x7), UINT64_C(0x15), ".dynstr", "string_interior", "pthread_mutex_destroy" },
+    { "bytecode_u32", UINT64_C(0x3427d0), UINT64_C(0x3000), UINT64_C(0x2ff2), UINT64_C(0xe), UINT64_C(0x19), ".dynstr", "string_interior", "_ITM_registerTMCloneTable" },
+    { "bytecode_u32", UINT64_C(0x3427f8), UINT64_C(0x4000), UINT64_C(0x3ff6), UINT64_C(0xa), UINT64_C(0xc), ".dynstr", "string_interior", "__freelocale" },
+    { "bytecode_u32", UINT64_C(0x343f0f), UINT64_C(0x3000), UINT64_C(0x2ff2), UINT64_C(0xe), UINT64_C(0x19), ".dynstr", "string_interior", "_ITM_registerTMCloneTable" },
+    { "bytecode_u32", UINT64_C(0x343f37), UINT64_C(0x4000), UINT64_C(0x3ff6), UINT64_C(0xa), UINT64_C(0xc), ".dynstr", "string_interior", "__freelocale" },
+    { "bytecode_u32", UINT64_C(0x34448e), UINT64_C(0x332d), UINT64_C(0x332b), UINT64_C(0x2), UINT64_C(0x5), ".dynstr", "string_interior", "uname" },
+};
+/* === VM PROGRAM STRING REFERENCES END === */

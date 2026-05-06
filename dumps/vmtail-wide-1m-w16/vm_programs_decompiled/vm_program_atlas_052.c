@@ -7727,3 +7727,22 @@ void vm_program_atlas_052_decompiled(VMState *vm, uint64_t vm_ip) {
     default: vm_program_unknown_entry(vm, vm_ip); return;
     }
 }
+
+/* === VM PROGRAM STRING REFERENCES BEGIN === */
+typedef struct VMProgramStringRef {
+    const char *source;
+    uint64_t site;
+    uint64_t value;
+    uint64_t string_vaddr;
+    uint64_t string_offset;
+    uint64_t string_size;
+    const char *section;
+    const char *match_class;
+    const char *text;
+} VMProgramStringRef;
+enum { VM_PROGRAM_ATLAS_052_STRING_REF_COUNT = 2 };
+static const VMProgramStringRef k_vm_program_atlas_052_string_refs[VM_PROGRAM_ATLAS_052_STRING_REF_COUNT] = {
+    { "bytecode_u32", UINT64_C(0x33b7f2), UINT64_C(0x58b465), UINT64_C(0x58b450), UINT64_C(0x15), UINT64_C(0x24), ".rodata", "string_interior", "dropping unexpected ChangeCipherSpec" },
+    { "bytecode_u32", UINT64_C(0x33c3d4), UINT64_C(0x42b8), UINT64_C(0x42af), UINT64_C(0x9), UINT64_C(0xa), ".dynstr", "string_interior", "GLIBC_2.17" },
+};
+/* === VM PROGRAM STRING REFERENCES END === */

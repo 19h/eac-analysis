@@ -9219,3 +9219,22 @@ void vm_program_atlas_046_decompiled(VMState *vm, uint64_t vm_ip) {
     default: vm_program_unknown_entry(vm, vm_ip); return;
     }
 }
+
+/* === VM PROGRAM STRING REFERENCES BEGIN === */
+typedef struct VMProgramStringRef {
+    const char *source;
+    uint64_t site;
+    uint64_t value;
+    uint64_t string_vaddr;
+    uint64_t string_offset;
+    uint64_t string_size;
+    const char *section;
+    const char *match_class;
+    const char *text;
+} VMProgramStringRef;
+enum { VM_PROGRAM_ATLAS_046_STRING_REF_COUNT = 2 };
+static const VMProgramStringRef k_vm_program_atlas_046_string_refs[VM_PROGRAM_ATLAS_046_STRING_REF_COUNT] = {
+    { "bytecode_u32", UINT64_C(0x331948), UINT64_C(0x3000), UINT64_C(0x2ff2), UINT64_C(0xe), UINT64_C(0x19), ".dynstr", "string_interior", "_ITM_registerTMCloneTable" },
+    { "bytecode_u32", UINT64_C(0x331970), UINT64_C(0x4000), UINT64_C(0x3ff6), UINT64_C(0xa), UINT64_C(0xc), ".dynstr", "string_interior", "__freelocale" },
+};
+/* === VM PROGRAM STRING REFERENCES END === */

@@ -10,6 +10,7 @@ import subprocess
 from pathlib import Path
 
 from vm_recovered_source_all_evidence_bundle import default_sidecars
+from vm_program_string_refs import BEGIN as STRING_REFS_BEGIN, END as STRING_REFS_END
 
 
 PROGRAM_BLOCK_RE = re.compile(r"^static void prog_bb_([0-9]{4})\(VMState \*vm, uint64_t vm_ip\) \{")
@@ -86,6 +87,7 @@ def decompiled_program_counts(path: Path) -> dict[str, int | bool]:
     state_inlined = 0
     state_summarized = 0
     op_entry_refs = 0
+    unresolved_tail_refs = 0
     dispatch = False
     omitted = False
     with path.open(encoding="utf-8", errors="replace") as handle:
@@ -138,6 +140,8 @@ def split_decompiled_counts(manifest: Path, output_dir: Path) -> dict[str, int |
                     file_rows += 1
                 if "op_entry_" in line:
                     op_entry_refs += 1
+                if "vm_unresolved_synthetic_tail" in line:
+                    unresolved_tail_refs += 1
                 if "state effect summarized/clipped" in line:
                     state_summarized += 1
                 if "rows omitted by --rows-per-block" in line:
@@ -155,9 +159,47 @@ def split_decompiled_counts(manifest: Path, output_dir: Path) -> dict[str, int |
         "file_blocks": file_blocks,
         "file_rows": file_rows,
         "op_entry_refs": op_entry_refs,
+        "unresolved_tail_refs": unresolved_tail_refs,
         "state_summarized": state_summarized,
         "omitted": omitted,
         "dispatch_files": dispatch_files,
+    }
+
+
+def string_ref_counts(manifest: Path, output_dir: Path) -> dict[str, int | bool]:
+    rows = []
+    if manifest.exists():
+        with manifest.open(newline="") as handle:
+            rows = list(csv.DictReader(handle, delimiter="\t"))
+    files = sorted(output_dir.glob("vm_program_atlas_*.c")) if output_dir.exists() else []
+    programs = {path.stem.rsplit("_", 1)[-1] for path in files}
+    programs_with_refs = {row.get("program", "") for row in rows}
+    files_with_blocks = 0
+    count_mismatches = 0
+    invalid_sources = 0
+    allowed_sources = {"c_literal", "bytecode_u32", "bytecode_u64"}
+    manifest_counts: dict[str, int] = {}
+    for row in rows:
+        manifest_counts[row.get("program", "")] = manifest_counts.get(row.get("program", ""), 0) + 1
+        if row.get("source") not in allowed_sources:
+            invalid_sources += 1
+    for path in files:
+        program = path.stem.rsplit("_", 1)[-1]
+        text = path.read_text(encoding="utf-8", errors="replace")
+        if STRING_REFS_BEGIN in text and STRING_REFS_END in text:
+            files_with_blocks += 1
+        match = re.search(rf"enum \{{ VM_PROGRAM_ATLAS_{program}_STRING_REF_COUNT = ([0-9]+) \}};", text)
+        file_count = int(match.group(1)) if match else -1
+        if file_count != manifest_counts.get(program, 0):
+            count_mismatches += 1
+    return {
+        "rows": len(rows),
+        "programs": len(programs),
+        "programs_with_refs": len(programs_with_refs),
+        "files": len(files),
+        "files_with_blocks": files_with_blocks,
+        "count_mismatches": count_mismatches,
+        "invalid_sources": invalid_sources,
     }
 
 
@@ -182,6 +224,7 @@ def main() -> int:
     program_decompiled = root / "vm_program_decompiled_full.c"
     program_split_manifest = root / "vm_programs_decompiled_manifest.tsv"
     program_split_dir = root / "vm_programs_decompiled"
+    program_string_refs = root / "vm_program_string_refs.tsv"
     bytecode_ir_decompile = root / "vm_bytecode_ir_decompile.tsv"
     bytecode_blocks = root / "vm_bytecode_basic_blocks.tsv"
 
@@ -196,6 +239,7 @@ def main() -> int:
     ok &= check("program_decompiled_exists", program_decompiled.exists(), str(program_decompiled))
     ok &= check("program_split_manifest_exists", program_split_manifest.exists(), str(program_split_manifest))
     ok &= check("program_split_dir_exists", program_split_dir.exists(), str(program_split_dir))
+    ok &= check("program_string_refs_exists", program_string_refs.exists(), str(program_string_refs))
     ok &= check("bytecode_ir_decompile_exists", bytecode_ir_decompile.exists(), str(bytecode_ir_decompile))
     ok &= check("bytecode_blocks_exists", bytecode_blocks.exists(), str(bytecode_blocks))
 
@@ -333,14 +377,27 @@ def main() -> int:
             f"file_rows={split_counts['file_rows']} expected_rows={expected_rows}",
         )
         ok &= check(
-            "program_split_files_are_decompiled_no_handler_fallbacks",
-            split_counts["op_entry_refs"] == 0 and split_counts["state_summarized"] == 0 and not split_counts["omitted"],
-            f"op_entry_refs={split_counts['op_entry_refs']} state_summarized={split_counts['state_summarized']} omitted={split_counts['omitted']}",
+            "program_split_files_are_decompiled_no_handler_or_unresolved_tail_fallbacks",
+            split_counts["op_entry_refs"] == 0 and split_counts["unresolved_tail_refs"] == 0 and split_counts["state_summarized"] == 0 and not split_counts["omitted"],
+            f"op_entry_refs={split_counts['op_entry_refs']} unresolved_tail_refs={split_counts['unresolved_tail_refs']} state_summarized={split_counts['state_summarized']} omitted={split_counts['omitted']}",
         )
         ok &= check(
             "program_split_files_have_dispatch_entrypoints",
             split_counts["dispatch_files"] == split_counts["files"],
             f"dispatch_files={split_counts['dispatch_files']} files={split_counts['files']}",
+        )
+
+    if program_string_refs.exists() and program_split_dir.exists():
+        ref_counts = string_ref_counts(program_string_refs, program_split_dir)
+        ok &= check(
+            "program_string_refs_embedded_in_all_split_files",
+            ref_counts["files_with_blocks"] == ref_counts["files"],
+            f"files_with_blocks={ref_counts['files_with_blocks']} files={ref_counts['files']}",
+        )
+        ok &= check(
+            "program_string_refs_manifest_matches_embedded_counts",
+            ref_counts["count_mismatches"] == 0 and ref_counts["invalid_sources"] == 0,
+            f"rows={ref_counts['rows']} programs_with_refs={ref_counts['programs_with_refs']} count_mismatches={ref_counts['count_mismatches']} invalid_sources={ref_counts['invalid_sources']}",
         )
 
     if args.syntax:

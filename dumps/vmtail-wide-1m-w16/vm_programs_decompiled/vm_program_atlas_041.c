@@ -34064,3 +34064,25 @@ void vm_program_atlas_041_decompiled(VMState *vm, uint64_t vm_ip) {
     default: vm_program_unknown_entry(vm, vm_ip); return;
     }
 }
+
+/* === VM PROGRAM STRING REFERENCES BEGIN === */
+typedef struct VMProgramStringRef {
+    const char *source;
+    uint64_t site;
+    uint64_t value;
+    uint64_t string_vaddr;
+    uint64_t string_offset;
+    uint64_t string_size;
+    const char *section;
+    const char *match_class;
+    const char *text;
+} VMProgramStringRef;
+enum { VM_PROGRAM_ATLAS_041_STRING_REF_COUNT = 5 };
+static const VMProgramStringRef k_vm_program_atlas_041_string_refs[VM_PROGRAM_ATLAS_041_STRING_REF_COUNT] = {
+    { "bytecode_u32", UINT64_C(0x30eebd), UINT64_C(0x3000), UINT64_C(0x2ff2), UINT64_C(0xe), UINT64_C(0x19), ".dynstr", "string_interior", "_ITM_registerTMCloneTable" },
+    { "bytecode_u32", UINT64_C(0x30eee5), UINT64_C(0x4000), UINT64_C(0x3ff6), UINT64_C(0xa), UINT64_C(0xc), ".dynstr", "string_interior", "__freelocale" },
+    { "bytecode_u32", UINT64_C(0x30f17b), UINT64_C(0x31f5), UINT64_C(0x31ef), UINT64_C(0x6), UINT64_C(0x16), ".dynstr", "string_interior", "blake3_hasher_finalize" },
+    { "bytecode_u32", UINT64_C(0x310859), UINT64_C(0x5f073a), UINT64_C(0x5f072a), UINT64_C(0x10), UINT64_C(0x11), ".rodata", "string_interior", "unsigned __int128" },
+    { "bytecode_u32", UINT64_C(0x315809), UINT64_C(0x3800), UINT64_C(0x3800), UINT64_C(0x0), UINT64_C(0x17), ".dynstr", "string_start", "zydis_decoder_tree_root" },
+};
+/* === VM PROGRAM STRING REFERENCES END === */
