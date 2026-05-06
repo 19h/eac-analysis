@@ -1,0 +1,19 @@
++ python3 vm_executable_gap_retdec_autopilot.py --rounds 24 --jobs 16 --probe-jobs 16 --chunk-bytes 0x200 --min-chunk-bytes 0x80 --max-split-candidates 128 --max-gap-chunks 8 --max-candidates 384 --max-accepted 16 --timeout 30 --salvage-failed-batches --final-checkpoint --completion-audit --skip-manifest --section .text
+round_start	1
++ python3 vm_executable_gap_retdec_probe.py --root . --section .text --chunk-bytes 0x200 --min-chunk-bytes 0x80 --max-split-candidates 128 --max-gap-chunks 8 --max-candidates 384 --max-accepted 16 --probe-jobs 16 --timeout 30 --reject-cache dumps/vmtail-wide-1m-w16/vm_executable_gap_retdec_reject_cache.tsv
+try	0x1f6e08-0x1f7008	ok
+try	0x23d0b6-0x23d1b6	ok
+try	0x1f7408-0x1f7607	ok
+try	0x4a7e5e-0x4a805e	ok
+try	0x23d4b6-0x23d6b6	ok
+try	0x2bdb6-0x2bfb6	ok
+try	0x4a7a5e-0x4a7c5e	ok
+try	0x2b9b6-0x2bbb6	ok
+try	0x1f7008-0x1f7208	ok
+try	0x1f7208-0x1f7408	ok
+try	0x4a805e-0x4a8259	ok
+try	0x23d1b6-0x23d2b6	ok
+try	0x23d6b6-0x23d8b6	ok
+try	0x4a7c5e-0x4a7e5e	ok
+try	0x2bbb6-0x2bdb6	ok
+try	0x23d2b6-0x23d4b6	ok
