@@ -24,6 +24,25 @@ CASE_REDUCTION_FIELDS = [
     "needs",
 ]
 
+TRACE_TARGET_FIELDS = [
+    "program",
+    "case_state",
+    "capture_status",
+    "case_start_site",
+    "case_start_source_entry",
+    "case_start_target_entry",
+    "case_start_bytes",
+    "predecessor_start_vm_ip",
+    "predecessor_end_vm_ip",
+    "predecessor_site",
+    "predecessor_source_entry",
+    "focus_ips",
+    "focus_sites",
+    "stop_after_matches",
+    "focus_env",
+    "capture_goal",
+]
+
 
 def parse_int(text: str) -> int:
     text = text or "0"
@@ -253,6 +272,72 @@ Interceptor.attach(FN, {{
     )
 
 
+def first_row(rows: list[dict[str, str]], relation: str) -> dict[str, str]:
+    for row in rows:
+        if row.get("relation") == relation:
+            return row
+    return {}
+
+
+def focus_env(focus_ips: list[str], focus_sites: list[str], stop_after: int) -> str:
+    ips = ",".join(ip for ip in focus_ips if ip)
+    sites = ",".join(site for site in focus_sites if site)
+    parts = [
+        "EAC_VMTAIL_TRACE=1",
+        "EAC_VMTAIL_REGS=1",
+        "EAC_VMTAIL_SCRATCH=1",
+        f"EAC_VMTAIL_LIMIT={max(16, stop_after + 4)}",
+        "EAC_VMTAIL_SITES=$ALL_TABLE_SPEC",
+        f"EAC_VMTAIL_FOCUS_IPS={ips}",
+        f"EAC_VMTAIL_STOP_AFTER_MATCHES={stop_after}",
+    ]
+    if sites:
+        parts.insert(6, f"EAC_VMTAIL_FOCUS_SITES={sites}")
+    return " ".join(parts)
+
+
+def build_trace_targets(program: int, missing_rows: list[dict[str, str]], observations: list[dict[str, str]]) -> list[dict[str, str]]:
+    by_case: dict[str, list[dict[str, str]]] = defaultdict(list)
+    for row in observations:
+        by_case[row.get("case_state", "")].append(row)
+
+    rows: list[dict[str, str]] = []
+    for missing in missing_rows:
+        state = missing["state"]
+        obs = by_case.get(state, [])
+        case = first_row(obs, "case_start")
+        pred = first_row(obs, "predecessor_to_case")
+        focus_ips = []
+        focus_sites = []
+        if pred:
+            focus_ips.append(pred.get("start_vm_ip", ""))
+            focus_sites.append(pred.get("site", ""))
+        focus_ips.append(state)
+        focus_sites.append(case.get("site", ""))
+        focus_ips = [value for value in focus_ips if value]
+        focus_sites = [value for value in focus_sites if value]
+        stop_after = 2 if pred else 1
+        rows.append({
+            "program": f"{program:03d}",
+            "case_state": state,
+            "capture_status": "needs_stateful_capture",
+            "case_start_site": case.get("site", ""),
+            "case_start_source_entry": case.get("source_entry", ""),
+            "case_start_target_entry": case.get("target_entry", ""),
+            "case_start_bytes": case.get("bytes", ""),
+            "predecessor_start_vm_ip": pred.get("start_vm_ip", ""),
+            "predecessor_end_vm_ip": pred.get("end_vm_ip", ""),
+            "predecessor_site": pred.get("site", ""),
+            "predecessor_source_entry": pred.get("source_entry", ""),
+            "focus_ips": ",".join(focus_ips),
+            "focus_sites": ",".join(focus_sites),
+            "stop_after_matches": str(stop_after),
+            "focus_env": focus_env(focus_ips, focus_sites, stop_after),
+            "capture_goal": f"emit VMTAIL row for {state} with vm_state/vm_flags/vm_byte populated",
+        })
+    return rows
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--root", type=Path, default=Path("dumps/vmtail-wide-1m-w16"))
@@ -426,6 +511,8 @@ def main() -> int:
     write_tsv(out_prefix.with_name(out_prefix.name + "_ir_rows.tsv"), ir_fields, ir_out)
     write_tsv(out_prefix.with_name(out_prefix.name + "_requirements.tsv"), CASE_REDUCTION_FIELDS, reduction_rows)
     write_tsv(out_prefix.with_name(out_prefix.name + "_missing.tsv"), CASE_REDUCTION_FIELDS, missing_rows)
+    trace_target_rows = build_trace_targets(args.program, missing_rows, observations)
+    write_tsv(out_prefix.with_name(out_prefix.name + "_trace_targets.tsv"), TRACE_TARGET_FIELDS, trace_target_rows)
     write_frida_template(
         out_prefix.with_name(out_prefix.name + "_frida_trace.js"),
         args.program,
@@ -462,6 +549,7 @@ def main() -> int:
         handle.write(f"- `{out_prefix.name}_ir_rows.tsv`: all lifted IR rows inside the program.\n\n")
         handle.write(f"- `{out_prefix.name}_requirements.tsv`: reduction-readiness checklist for each case.\n")
         handle.write(f"- `{out_prefix.name}_missing.tsv`: focused list of cases still missing mandatory reduction inputs.\n")
+        handle.write(f"- `{out_prefix.name}_trace_targets.tsv`: focused VMTAIL capture env for cases still missing state/flags/byte.\n")
         handle.write(f"- `{out_prefix.name}_frida_trace.js`: focused direct-instrumentation template for missing runtime fields.\n\n")
         handle.write("## Missing For Full MBA Reduction\n\n")
         if missing_rows:
