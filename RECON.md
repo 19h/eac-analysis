@@ -2275,3 +2275,5 @@ The most useful next deobfuscation path is broader dynamic basic-block recovery 
 2. Break or instrument dispatcher entries (`0xc823b`, `0xcdc60`, and neighbors) to log logical next targets.
 3. Normalize stack VM sequences into direct register assignments/jumps.
 4. Re-run with throttled `/proc` tracing so long-running workers can complete without producing noisy logs.
+
+Unattended reconstruction checkpoint `2026-05-06T15:24:53` added batches 594-595. Batch function counts: 594=41, 595=69. This pass changed semantic `.text` coverage by +8192 bytes and uncovered `.text` by -8192 bytes. Current status is latest batch `595`, `1347820` all-evidence lines / `92548276` bytes, `645` sidecar sections, `20532` prefixed RetDec/manual native functions, `386390` prefixed evidence symbols, `27574` recovered `.text` range rows, `2405094` recovered `.text` bytes, `3241834` uncovered `.text` bytes (42.59%), and an exact carrier matching `2768` gap rows / `3241834` bytes. `completion_status` remains `not_complete`. Full autopilot log: `dumps/vmtail-wide-1m-w16/unattended_logs/reconstruction-autopilot-pass001-20260506-152301.log`.

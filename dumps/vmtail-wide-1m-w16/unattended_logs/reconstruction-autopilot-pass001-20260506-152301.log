@@ -72,3 +72,23 @@ native_executable_coverage_uncovered_bytes	3250026	3241834	delta=-8192
 # elapsed 0.08s
 + make -s all-evidence-bundle
 uncovered_executable_gaps=2768 bytes=3241834
+all_evidence_bundle_sidecars=645 symbol_rewrites=221612
+# elapsed 90.70s
+checkpoint_manifest_skipped
++ make -s reconstruction-completion-audit
+uncovered_executable_gaps=2768 bytes=3241834
+objective=reconstruct the binary back to C/C++ in full, including executable semantics and referenced static data
+success_criteria=single C/C++ evidence artifact, all referenced static data present, all executable bytes covered by decompiled/manual semantics or exact byte carriers, no uncovered executable semantics
+bundle_exists=ok	dumps/vmtail-wide-1m-w16/vm_recovered_source_all_evidence_bundle.c
+coverage_exists=ok	dumps/vmtail-wide-1m-w16/vm_native_executable_coverage_audit.tsv
+uncovered_carrier_exists=ok	dumps/vmtail-wide-1m-w16/vm_uncovered_executable_gaps.tsv
+uncovered_carrier_matches_coverage=ok	coverage_gaps=2768 carrier_gaps=2768 coverage_bytes=3241834 carrier_bytes=3241834
+text_semantic_coverage=2405094/5646928 bytes (42.59%)
+bundle_includes_binary_data_sidecar=ok	static ELF section/string/data carrier sidecar marker
+bundle_includes_uncovered_executable_carrier=ok	exact byte carrier sidecar marker and byte-count enum
+aggregate_c_syntax=ok	command=cc -std=c11 -fsyntax-only -w dumps/vmtail-wide-1m-w16/vm_recovered_source_all_evidence_bundle.c
+incomplete_reason=remaining executable semantics: text_uncovered_bytes=3241834 audit_gap_bytes=3241834
+completion_status=not_complete
+# elapsed 3.48s
+executable_gap_autopilot_created_batches	594,595
++ python3 vm_executable_gap_retdec_autopilot.py --rounds 2 --jobs 8 --probe-jobs 8 --chunk-bytes 0x200 --min-chunk-bytes 0x80 --max-split-candidates 64 --max-gap-chunks 5 --max-candidates 192 --max-accepted 8 --timeout 30 --final-checkpoint --salvage-failed-batches --completion-audit --skip-manifest --section .text
