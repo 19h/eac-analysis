@@ -1,27 +1,12 @@
 /*
- * Targeted RetDec C for native executable gap queue batch 100.
+ * Targeted RetDec C for native executable gap queue batch 1184.
  *
  * This batch is fixed from the ranked native gap queue so it can feed the
  * executable coverage audit without creating a Make dependency cycle:
  * coverage -> queue -> RetDec batch -> coverage.
  *
  * Ranges:
- *   0x551ae0-0x551b15 rank=- name=- kind=- bytes=- uncovered=-
- *   0x551b50-0x551b85 rank=- name=- kind=- bytes=- uncovered=-
- *   0x551b90-0x551bc5 rank=- name=- kind=- bytes=- uncovered=-
- *   0x20f25-0x20f59 rank=- name=- kind=- bytes=- uncovered=-
- *   0x25856-0x2588a rank=- name=- kind=- bytes=- uncovered=-
- *   0x379a0-0x379d4 rank=- name=- kind=- bytes=- uncovered=-
- *   0x4fb7c-0x4fbb0 rank=- name=- kind=- bytes=- uncovered=-
- *   0x67ce4-0x67d18 rank=- name=- kind=- bytes=- uncovered=-
- *   0x428ce3-0x428d17 rank=- name=- kind=- bytes=- uncovered=-
- *   0x48da6e-0x48daa2 rank=- name=- kind=- bytes=- uncovered=-
- *   0x4f5380-0x4f53b4 rank=- name=- kind=- bytes=- uncovered=-
- *   0x4f5480-0x4f54b4 rank=- name=- kind=- bytes=- uncovered=-
- *   0x4fc010-0x4fc044 rank=- name=- kind=- bytes=- uncovered=-
- *   0x4fca70-0x4fcaa4 rank=- name=- kind=- bytes=- uncovered=-
- *   0x54e5f0-0x54e624 rank=- name=- kind=- bytes=- uncovered=-
- *   0x216c0-0x216f3 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x363fbe-0x3641be rank=- name=- kind=- bytes=- uncovered=-
  */
 #include <stdbool.h>
 #include <stdio.h>
@@ -67,16 +52,6 @@ struct eac_retdec_cpuid_regs { uint32_t e0; uint32_t e1; uint32_t e2; uint32_t e
 #define SIGALARM 14
 #define SYS_getegid32 50
 #define PTHREAD_MUTEX_RECURSIVE 1
-extern int g1;
-extern int g2;
-extern int g3;
-extern int g4;
-extern int g5;
-extern int g6;
-extern int g7;
-extern int g8;
-extern int g9;
-extern int g10;
 int64_t entry_point();
 unsigned char llvm_ctpop_i8(unsigned char value);
 uint16_t llvm_bswap_i16(uint16_t value);
@@ -233,7 +208,6 @@ int128_t __asm_paddq(int128_t left, int128_t right);
 int128_t __asm_pavgw(int128_t left, int128_t right);
 int128_t __asm_pmaxub(int128_t left, int128_t right);
 int128_t __asm_pmaxsw(int128_t left, int128_t right);
-int128_t __asm_packsswb(int128_t left, int128_t right);
 int128_t __asm_pmulhw(int128_t left, int128_t right);
 int128_t __asm_por(int128_t left, int128_t right);
 int128_t __asm_pxor(int128_t left, int128_t right);
@@ -389,271 +363,136 @@ void _Unwind_SetIP(int64_t context, int64_t value);
 void _Unwind_Resume(struct _Unwind_Exception *exception);
 void _Unwind_Resume_or_Rethrow(int64_t exception);
 
-int64_t function_20bd0();
-int64_t function_20f25(void);
-int64_t function_21630();
-int64_t function_216c0(void);
-int64_t function_25856(int64_t a1, uint64_t a2, int64_t a3);
-int64_t function_36166();
-int64_t function_379a0(int64_t a1);
-int64_t function_428ce3(int64_t a1, int64_t a2, int64_t a3, int64_t a4);
-int64_t function_48da6e(int64_t a1, int64_t a2, int64_t a3);
-int64_t function_4f5380(int64_t a1);
-int64_t function_4f5480(int64_t a1);
-int64_t function_4fa50();
-int64_t function_4fb7c(int64_t a1, int64_t a2, int64_t a3);
-int64_t function_4fc010(int64_t a1, int64_t a2);
-int64_t function_4fca70(int64_t a1, int64_t a2);
-int64_t function_542590();
-int64_t function_549920();
-int64_t function_54cf10();
-int64_t function_54dd30();
-int64_t function_54e5f0(int64_t a1, int64_t a2);
-int64_t function_551ae0(int64_t a1);
-int64_t function_551b50(int64_t a1);
-int64_t function_551b90(int64_t a1);
-int64_t function_67ce4(int64_t a1, int64_t a2, int64_t a3);
-int64_t function_72496();
-int64_t function_7259e();
-int64_t function_7260a();
-int64_t function_7293a();
-int64_t function_72994();
+int64_t function_363f4d();
+int64_t function_363fbe(void);
+int64_t function_363fc1(int64_t a1, int64_t a2, int64_t a3, int64_t a4);
+int64_t function_363fd5(int64_t a1);
+int64_t function_36400a(void);
+int64_t function_36400d(void);
+int64_t function_36401a(int64_t a1, int64_t a2, int64_t a3, int64_t a4);
+int64_t function_3640fe(void);
+int64_t function_364159(int64_t a1);
+int64_t function_3641a6(int64_t a1, int64_t a2, int64_t a3);
+int64_t function_b1943c0();
+int64_t function_ffffffff9fe270c9();
 
-// Address range: 0x20f25 - 0x20f59
-int64_t function_20f25(void) {
-    // 0x20f25
-    function_7293a(&g9);
-    *(int16_t *)&g8 = 0;
-    int32_t result = __cxa_atexit((void (*)(int64_t *))0x4f94a, &g8, (int64_t *)0x849800); // 0x20f54
+// Address range: 0x363fbe - 0x363fc0
+int64_t function_363fbe(void) {
+    // 0x363fbe
+    int64_t result; // 0x363fbe
+    bool v1; // 0x363fbe
+    if (v1) {
+        result = function_363f4d();
+    }
+    // 0x363fc0
     return result;
 }
 
-// Address range: 0x216c0 - 0x216f1
-int64_t function_216c0(void) {
-    // 0x216c0
-    if (g7 != 0) {
-        // 0x216f8
-        int64_t result; // 0x216c0
-        return result;
-    }
-    // 0x216c9
-    if (g5 != 0) {
-        // 0x216d7
-        function_20bd0(g6);
-    }
-    // 0x216e3
-    g7 = 1;
-    return function_21630();
+// Address range: 0x363fc1 - 0x363fd3
+int64_t function_363fc1(int64_t a1, int64_t a2, int64_t a3, int64_t a4) {
+    // 0x363fc1
+    __asm_out(61, 36);
+    int32_t * v1 = (int32_t *)(a4 + 118); // 0x363fc9
+    int64_t v2; // 0x363fc1
+    *v1 = *v1 + ((int32_t)v2 & -256 | 97);
+    return function_b1943c0();
 }
 
-// Address range: 0x25856 - 0x2588a
-int64_t function_25856(int64_t a1, uint64_t a2, int64_t a3) {
-    int64_t v1 = *(int64_t *)(a1 + 8) - a1; // 0x2585a
-    int64_t v2 = v1; // 0x25866
-    if (-1 - v1 < a2) {
-        // 0x25868
-        v2 = function_542590(a3);
-    }
-    uint64_t v3 = v2;
-    uint64_t v4 = (v3 > a2 ? v3 : a2) + v3; // 0x2587b
-    return v4 < v3 ? -1 : v4;
-}
-
-// Address range: 0x379a0 - 0x379d4
-int64_t function_379a0(int64_t a1) {
-    int64_t v1 = a1 + 40; // 0x379a1
-    function_7260a(v1);
-    function_36166(a1 + 456);
-    function_7259e(v1);
-    return function_72994(a1);
-}
-
-// Address range: 0x4fb7c - 0x4fbb0
-int64_t function_4fb7c(int64_t a1, int64_t a2, int64_t a3) {
-    int64_t result; // 0x4fb7c
-    if (a2 == 0 || a3 == 0) {
-        // 0x4fbaa
-        return result;
-    }
-    int64_t v1 = 8 * a2; // 0x4fb88
-    if (v1 == 0) {
-        // 0x4fbaa
-        return result;
-    }
-    int64_t v2 = a3 + 8; // 0x4fb9f
-    result = function_4fa50(a1, *(int64_t *)a3);
-    while (v2 != v1 + a3) {
-        int64_t v3 = v2;
-        v2 = v3 + 8;
-        result = function_4fa50(a1, *(int64_t *)v3);
-    }
-    // 0x4fbaa
+// Address range: 0x363fd5 - 0x363fd6
+int64_t function_363fd5(int64_t a1) {
+    // 0x363fd5
+    int64_t result; // 0x363fd5
     return result;
 }
 
-// Address range: 0x67ce4 - 0x67d18
-int64_t function_67ce4(int64_t a1, int64_t a2, int64_t a3) {
-    int64_t v1 = *(int64_t *)(a1 + 120); // 0x67ced
-    int64_t result; // 0x67ce4
-    if (v1 == 0) {
-        // 0x67d14
-        return result;
-    }
-    if ((char)a3 != 0) {
-        // 0x67cfd
-        result = function_72496(v1, a1);
-    }
-    // 0x67d14
+// Address range: 0x36400a - 0x36400b
+int64_t function_36400a(void) {
+    // 0x36400a
+    int64_t result; // 0x36400a
     return result;
 }
 
-// Address range: 0x428ce3 - 0x428d17
-int64_t function_428ce3(int64_t a1, int64_t a2, int64_t a3, int64_t a4) {
-    // 0x428ce3
-    bool v1; // 0x428ce3
-    bool v2 = v1;
-    int64_t v3; // 0x428ce3
-    unsigned char v4 = (char)v3; // 0x428ce3
-    bool v5 = v2 ? v4 + 76 + (char)v2 <= v4 : v4 > 179; // 0x428ce3
-    __asm_wait();
-    int32_t v6 = *(int32_t *)0x496228be; // 0x428ce6
-    int64_t v7 = v1 ? -1 : 1; // 0x428cec
-    int64_t v8 = v7 + a2; // 0x428cec
-    int64_t v9 = __asm_int1(v7 + a1, v8); // 0x428ced
-    int64_t v10 = v8; // bp-8, 0x428cee
-    int64_t v11 = (int64_t)&v10; // 0x428cee
-    int32_t * v12 = (int32_t *)(int64_t)(v6 + (int32_t)v3 + (int32_t)v5); // 0x428cef
-    *v12 = *v12 - (int32_t)a4;
-    int32_t * v13 = (int32_t *)(a3 - 0x4ed6dece); // 0x428cf1
-    *v13 = *v13 | (int32_t)v11;
-    float80_t v14; // 0x428ce3
-    *(int16_t *)-0x2e9c6dfa = (int16_t)v14;
-    *(char *)(a3 - (v9 & 0xff00) & 0xff00 | a3 & -0xff01) = (char)a3;
-    return v11 + 0xbf967932 & 0xfffffffa;
+// Address range: 0x36400d - 0x36400e
+int64_t function_36400d(void) {
+    // 0x36400d
+    int64_t result; // 0x36400d
+    return result;
 }
 
-// Address range: 0x48da6e - 0x48daa2
-int64_t function_48da6e(int64_t a1, int64_t a2, int64_t a3) {
-    int64_t v1 = 0; // 0x48da6e
-    while (v1 != a3) {
-        int64_t v2 = 4 * v1; // 0x48da75
-        int32_t v3 = *(int32_t *)(v2 + a1); // 0x48da75
-        int32_t v4 = *(int32_t *)(v2 + a2); // 0x48da79
-        v1++;
-        if (v4 == 0 || v3 == 0 || v3 != v4) {
-            // 0x48da9b
-            return v1 & -256 | (int64_t)(v3 == v4);
+// Address range: 0x36401a - 0x3640b7
+int64_t function_36401a(int64_t a1, int64_t a2, int64_t a3, int64_t a4) {
+    // 0x36401a
+    int64_t v1; // 0x36401a
+    uint64_t v2 = v1;
+    int64_t v3 = a4;
+    unsigned char v4 = *(char *)0x3a7073dd0c08ce01; // 0x36401c
+    int64_t result = v2 & -0x10000 | (int64_t)v4 | 256 * (int64_t)(v4 + (char)(v2 / 256)); // 0x364025
+    int64_t v5 = a3 & -0xff01 | (int64_t)"cxa_get_globals_fast"; // 0x364027
+    uint32_t v6 = (int32_t)v1;
+    int32_t v7 = v6 + (int32_t)v5; // 0x364029
+    *(int32_t *)v1 = v7;
+    if (v7 < 0) {
+        int64_t v8 = v5 & -256 | 125; // 0x36409f
+        char * v9 = (char *)v8; // 0x3640a1
+        char v10 = *v9 | (char)(v1 / 256); // 0x3640a1
+        *v9 = v10;
+        int64_t v11 = v3; // 0x3640a3
+        int64_t v12 = v11 - 1; // 0x3640a3
+        v3 = v12;
+        if (v10 != 0 && v12 != 0) {
+            // 0x364076
+            return result;
         }
-    }
-    // 0x48da98
-    return a3 & -256 | 1;
-}
-
-// Address range: 0x4f5380 - 0x4f53b4
-// From class:    std::basic_ios<char, std::char_traits<char> >
-// Type:          constructor
-int64_t function_4f5380(int64_t a1) {
-    int64_t v1 = *(int64_t *)(a1 - 24) + a1; // 0x4f5383
-    *(int64_t *)v1 = (int64_t)&g1;
-    int64_t v2 = v1 + 16; // 0x4f539c
-    *(int64_t *)(v1 + 8) = 0;
-    *(int64_t *)v2 = (int64_t)&g3;
-    return function_54cf10(v2);
-}
-
-// Address range: 0x4f5480 - 0x4f54b4
-// From class:    std::basic_ios<wchar_t, std::char_traits<wchar_t> >
-// Type:          constructor
-int64_t function_4f5480(int64_t a1) {
-    int64_t v1 = *(int64_t *)(a1 - 24) + a1; // 0x4f5483
-    *(int64_t *)v1 = (int64_t)&g2;
-    int64_t v2 = v1 + 16; // 0x4f549c
-    *(int64_t *)(v1 + 8) = 0;
-    *(int64_t *)v2 = (int64_t)&g4;
-    return function_54cf10(v2);
-}
-
-// Address range: 0x4fc010 - 0x4fc043
-int64_t function_4fc010(int64_t a1, int64_t a2) {
-    int32_t v1 = (int64_t)(*(int64_t *)(a1 + 232) == 0) | a2; // 0x4fc01a
-    *(int32_t *)(a1 + 32) = v1;
-    if ((*(int32_t *)(a1 + 28) & v1) != 0) {
-        // 0x4fc02d
-        return function_549920("basic_ios::clear");
-    }
-    // 0x4fc022
-    int64_t result; // 0x4fc010
-    return result;
-}
-
-// Address range: 0x4fca70 - 0x4fcaa3
-int64_t function_4fca70(int64_t a1, int64_t a2) {
-    int32_t v1 = (int64_t)(*(int64_t *)(a1 + 232) == 0) | a2; // 0x4fca7a
-    *(int32_t *)(a1 + 32) = v1;
-    if ((*(int32_t *)(a1 + 28) & v1) != 0) {
-        // 0x4fca8d
-        return function_549920("basic_ios::clear");
-    }
-    // 0x4fca82
-    int64_t result; // 0x4fca70
-    return result;
-}
-
-// Address range: 0x54e5f0 - 0x54e618
-int64_t function_54e5f0(int64_t a1, int64_t a2) {
-    if ((a2 & 4) == 0) {
-        // 0x54e5f5
-        int64_t result; // 0x54e5f0
+        // 0x3640a5
+        int3_t v13; // 0x36401a
+        *(int64_t *)(v11 - 25) = (int64_t)__frontend_reg_load_fpr(v13);
+        *(int64_t *)v1 = v8;
+        // 0x3640a9
+        int64_t v14; // 0x36401a
+        *(int64_t *)(v14 - 8) = a2;
         return result;
     }
-    int64_t result2 = function_54dd30(); // 0x54e60a
-    if ((char)result2 == 0) {
-        // 0x54e5f5
-        return result2;
+    int32_t * v15 = (int32_t *)result; // 0x36402d
+    *v15 = *v15 + (v7 < v6 ? -0x77ff1fa0 : -0x77ff1fa1);
+    char v16 = *(char *)&v3; // 0x364033
+    unsigned char v17 = v16 | (char)(v1 / 256); // 0x364033
+    if (v17 == 0) {
+        int32_t * v18 = (int32_t *)(a2 - 24); // 0x3640b0
+        *v18 = -1 - *v18;
+        return result;
     }
-    // 0x54e613
-    *(int32_t *)a2 = (int32_t)a2 & -2;
-    return result2;
+    // 0x364037
+    __asm_int3();
+    int64_t v19 = a1; // bp-16, 0x364045
+    int64_t v20 = v3;
+    *(char *)v20 = v16 & (char)v20;
+    if (v3 == 1) {
+        // 0x36404d
+        return function_ffffffff9fe270c9();
+    }
+    // 0x3640a9
+    *(int64_t *)((int64_t)&v19 - 8) = v5 + a2 & 0xffffffff;
+    return 256 * (int64_t)v17 | v1 & 0xffff00ff;
 }
 
-// Address range: 0x551ae0 - 0x551b15
-// From class:    std::moneypunct<char, false>
-// Type:          virtual member function
-int64_t function_551ae0(int64_t a1) {
-    // 0x551ae0
-    if (__readfsqword(40) == __readfsqword(40)) {
-        // 0x551b0b
-        return (int64_t)*(int32_t *)(*(int64_t *)(a1 + 16) + 96);
-    }
-    // 0x551b10
-    __stack_chk_fail();
-    return (int64_t)&g10;
+// Address range: 0x3640fe - 0x364101
+int64_t function_3640fe(void) {
+    // 0x3640fe
+    int64_t result; // 0x3640fe
+    return result;
 }
 
-// Address range: 0x551b50 - 0x551b85
-// From class:    std::moneypunct<char, true>
-// Type:          virtual member function
-int64_t function_551b50(int64_t a1) {
-    // 0x551b50
-    if (__readfsqword(40) == __readfsqword(40)) {
-        // 0x551b7b
-        return (int64_t)*(int32_t *)(*(int64_t *)(a1 + 16) + 92);
-    }
-    // 0x551b80
-    __stack_chk_fail();
-    return (int64_t)&g10;
+// Address range: 0x364159 - 0x36415a
+int64_t function_364159(int64_t a1) {
+    // 0x364159
+    int64_t result; // 0x364159
+    return result;
 }
 
-// Address range: 0x551b90 - 0x551bc5
-// From class:    std::moneypunct<char, true>
-// Type:          virtual member function
-int64_t function_551b90(int64_t a1) {
-    // 0x551b90
-    if (__readfsqword(40) == __readfsqword(40)) {
-        // 0x551bbb
-        return (int64_t)*(int32_t *)(*(int64_t *)(a1 + 16) + 96);
-    }
-    // 0x551bc0
-    __stack_chk_fail();
-    return (int64_t)&g10;
+// Address range: 0x3641a6 - 0x3641a9
+int64_t function_3641a6(int64_t a1, int64_t a2, int64_t a3) {
+    // 0x3641a6
+    *(int32_t *)a1 = __asm_insd((int16_t)a3);
+    int64_t result; // 0x3641a6
+    return result;
 }
