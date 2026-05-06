@@ -250,6 +250,7 @@ def main():
     print("#include <stdbool.h>")
     print("#include <stddef.h>")
     print("#include <stdint.h>")
+    print("#include <time.h>")
     print("")
     print("void *iconv_open(const char *tocode, const char *fromcode);")
     print("size_t iconv(void *cd, char **inbuf, size_t *inbytesleft, char **outbuf, size_t *outbytesleft);")
