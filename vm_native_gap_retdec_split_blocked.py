@@ -27,6 +27,40 @@ def format_range(start, end):
     return f"0x{start:x}-0x{end:x}"
 
 
+def range_intervals(items):
+    intervals = []
+    for item in items:
+        if RANGE_RE.match(item):
+            intervals.append(parse_range(item))
+    intervals.sort()
+    merged = []
+    for start, end in intervals:
+        if not merged or start > merged[-1][1]:
+            merged.append([start, end])
+        else:
+            merged[-1][1] = max(merged[-1][1], end)
+    return [(start, end) for start, end in merged]
+
+
+def subtract_intervals(item, intervals):
+    start, end = parse_range(item)
+    pieces = [(start, end)]
+    for used_start, used_end in intervals:
+        next_pieces = []
+        for left, right in pieces:
+            if used_end <= left or used_start >= right:
+                next_pieces.append((left, right))
+                continue
+            if left < used_start:
+                next_pieces.append((left, min(right, used_start)))
+            if used_end < right:
+                next_pieces.append((max(left, used_end), right))
+        pieces = next_pieces
+        if not pieces:
+            break
+    return [format_range(left, right) for left, right in pieces if left < right]
+
+
 def split_range(item):
     start, end = parse_range(item)
     size = end - start
@@ -104,6 +138,7 @@ def try_range(selected, batch_index, timeout, keep_failed):
 def salvage_range(selected, batch_index, timeout, min_bytes, max_depth, keep_failed, excluded):
     accepted = []
     rejected = []
+    used_intervals = range_intervals(excluded)
     stack = [(selected, 0)]
     while stack:
         current, depth = stack.pop(0)
@@ -111,6 +146,14 @@ def salvage_range(selected, batch_index, timeout, min_bytes, max_depth, keep_fai
             continue
         if current in excluded:
             print(f"skip\t{current}\tused")
+            continue
+        residual = subtract_intervals(current, used_intervals)
+        if not residual:
+            print(f"skip\t{current}\tcovered")
+            continue
+        if residual != [current]:
+            print(f"split\t{current}\tresidual={','.join(residual)}")
+            stack[0:0] = [(item, depth) for item in residual]
             continue
         start, end = parse_range(current)
         ok, reason = try_range(current, batch_index, timeout, keep_failed)
