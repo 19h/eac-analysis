@@ -1033,59 +1033,75 @@ program-decompiled-folded-audit: program-decompiled-folded
 	python3 vm_program_decompiled_fold_mba_audit.py --syntax --jobs 8
 
 .PHONY: behavior-inventory behavior-inventory-audit
-behavior-inventory: vm_behavior_inventory.py $(PROGRAM_DECOMPILED_FOLDED_MANIFEST) $(PROGRAM_FOLDED_STRING_REFS_TSV) $(PRIMARY_DIR)/vm_bytecode_basic_blocks.tsv $(BYTECODE_IR_DECOMPILE_TSV) $(PRIMARY_TRACE) $(PRIMARY_DIR)/vm_trace_coverage_matrix.tsv $(PRIMARY_DIR)/vm_isa_handlers.tsv $(PRIMARY_DIR)/vm_native_linkage_stubs.tsv
+$(BEHAVIOR_INVENTORY_TSV) $(BEHAVIOR_GAP_REGISTER_TSV) $(BEHAVIOR_INVENTORY_MD): vm_behavior_inventory.py $(PROGRAM_DECOMPILED_FOLDED_MANIFEST) $(PROGRAM_FOLDED_STRING_REFS_TSV) $(PRIMARY_DIR)/vm_bytecode_basic_blocks.tsv $(BYTECODE_IR_DECOMPILE_TSV) $(PRIMARY_TRACE) $(PRIMARY_DIR)/vm_trace_coverage_matrix.tsv $(PRIMARY_DIR)/vm_isa_handlers.tsv $(PRIMARY_DIR)/vm_native_linkage_stubs.tsv
 	python3 vm_behavior_inventory.py --root $(PRIMARY_DIR)
 
-behavior-inventory-audit: behavior-inventory
+behavior-inventory: $(BEHAVIOR_INVENTORY_TSV) $(BEHAVIOR_GAP_REGISTER_TSV) $(BEHAVIOR_INVENTORY_MD)
+
+behavior-inventory-audit: $(BEHAVIOR_INVENTORY_TSV) $(BEHAVIOR_GAP_REGISTER_TSV) $(BEHAVIOR_INVENTORY_MD)
 	python3 vm_behavior_inventory_audit.py --root $(PRIMARY_DIR)
 
 .PHONY: semantic-opcode-catalog semantic-opcode-catalog-audit
-semantic-opcode-catalog: vm_semantic_opcode_catalog.py $(PRIMARY_DIR)/vm_microcode_catalog.tsv $(PROGRAM_DECOMPILED_FOLDED_MANIFEST) $(PROGRAM_FOLDED_STRING_REFS_TSV) $(BYTECODE_IR_DECOMPILE_TSV)
+$(SEMANTIC_OPCODE_CATALOG_TSV) $(PROGRAM_OPCODE_PSEUDOCODE_TSV) $(PROGRAM_OPCODE_PSEUDOCODE_MANIFEST) $(SEMANTIC_OPCODE_CATALOG_MD): vm_semantic_opcode_catalog.py $(PRIMARY_DIR)/vm_microcode_catalog.tsv $(PROGRAM_DECOMPILED_FOLDED_MANIFEST) $(PROGRAM_FOLDED_STRING_REFS_TSV) $(BYTECODE_IR_DECOMPILE_TSV)
 	python3 vm_semantic_opcode_catalog.py --root $(PRIMARY_DIR)
 
-semantic-opcode-catalog-audit: semantic-opcode-catalog
+semantic-opcode-catalog: $(SEMANTIC_OPCODE_CATALOG_TSV) $(PROGRAM_OPCODE_PSEUDOCODE_TSV) $(PROGRAM_OPCODE_PSEUDOCODE_MANIFEST) $(SEMANTIC_OPCODE_CATALOG_MD)
+
+semantic-opcode-catalog-audit: $(SEMANTIC_OPCODE_CATALOG_TSV) $(PROGRAM_OPCODE_PSEUDOCODE_TSV) $(PROGRAM_OPCODE_PSEUDOCODE_MANIFEST) $(SEMANTIC_OPCODE_CATALOG_MD)
 	python3 vm_semantic_opcode_catalog_audit.py --root $(PRIMARY_DIR)
 
 .PHONY: string-reference-context string-reference-context-audit
-string-reference-context: vm_string_reference_context.py semantic-opcode-catalog $(PROGRAM_FOLDED_STRING_REFS_TSV)
+$(STRING_REFERENCE_CONTEXT_TSV) $(STRING_REFERENCE_CONTEXT_MD): vm_string_reference_context.py $(PROGRAM_OPCODE_PSEUDOCODE_TSV) $(PROGRAM_FOLDED_STRING_REFS_TSV)
 	python3 vm_string_reference_context.py --root $(PRIMARY_DIR)
 
-string-reference-context-audit: string-reference-context
+string-reference-context: $(STRING_REFERENCE_CONTEXT_TSV) $(STRING_REFERENCE_CONTEXT_MD)
+
+string-reference-context-audit: $(STRING_REFERENCE_CONTEXT_TSV) $(STRING_REFERENCE_CONTEXT_MD)
 	python3 vm_string_reference_context_audit.py --root $(PRIMARY_DIR)
 
 .PHONY: program-behavior-hypotheses program-behavior-hypotheses-audit
-program-behavior-hypotheses: vm_program_behavior_hypotheses.py behavior-inventory string-reference-context $(PRIMARY_DIR)/vm_trace_coverage_matrix.tsv $(PRIMARY_DIR)/vm_native_linkage_stubs.tsv
+$(PROGRAM_BEHAVIOR_HYPOTHESES_TSV) $(PROGRAM_BEHAVIOR_HYPOTHESES_MD): vm_program_behavior_hypotheses.py $(BEHAVIOR_INVENTORY_TSV) $(STRING_REFERENCE_CONTEXT_TSV) $(PRIMARY_DIR)/vm_trace_coverage_matrix.tsv $(PRIMARY_DIR)/vm_native_linkage_stubs.tsv
 	python3 vm_program_behavior_hypotheses.py --root $(PRIMARY_DIR)
 
-program-behavior-hypotheses-audit: program-behavior-hypotheses
+program-behavior-hypotheses: $(PROGRAM_BEHAVIOR_HYPOTHESES_TSV) $(PROGRAM_BEHAVIOR_HYPOTHESES_MD)
+
+program-behavior-hypotheses-audit: $(PROGRAM_BEHAVIOR_HYPOTHESES_TSV) $(PROGRAM_BEHAVIOR_HYPOTHESES_MD)
 	python3 vm_program_behavior_hypotheses_audit.py --root $(PRIMARY_DIR)
 
 .PHONY: program-control-graph program-control-graph-audit
-program-control-graph: vm_program_control_graph.py $(PROGRAM_DECOMPILED_FOLDED_MANIFEST) $(PROGRAM_MBA_REDUCED_TSVS)
+$(PROGRAM_CONTROL_GRAPH_EDGES_TSV) $(PROGRAM_CONTROL_GRAPH_SUMMARY_TSV) $(PROGRAM_CONTROL_GRAPH_MD): vm_program_control_graph.py $(PROGRAM_DECOMPILED_FOLDED_MANIFEST) $(PROGRAM_MBA_REDUCED_TSVS)
 	python3 vm_program_control_graph.py --root $(PRIMARY_DIR)
 
-program-control-graph-audit: program-control-graph
+program-control-graph: $(PROGRAM_CONTROL_GRAPH_EDGES_TSV) $(PROGRAM_CONTROL_GRAPH_SUMMARY_TSV) $(PROGRAM_CONTROL_GRAPH_MD)
+
+program-control-graph-audit: $(PROGRAM_CONTROL_GRAPH_EDGES_TSV) $(PROGRAM_CONTROL_GRAPH_SUMMARY_TSV) $(PROGRAM_CONTROL_GRAPH_MD)
 	python3 vm_program_control_graph_audit.py --root $(PRIMARY_DIR)
 
 .PHONY: trace-program-path trace-program-path-audit
-trace-program-path: vm_trace_program_path.py $(PROGRAM_DECOMPILED_FOLDED_MANIFEST) $(PRIMARY_DIR)/vm_trace_coverage_matrix.tsv program-behavior-hypotheses
+$(TRACE_PROGRAM_PATH_SUMMARY_TSV) $(TRACE_PROGRAM_PATH_PROGRAMS_TSV) $(TRACE_PROGRAM_PATH_EDGES_TSV) $(TRACE_PROGRAM_PATH_MD): vm_trace_program_path.py $(PROGRAM_DECOMPILED_FOLDED_MANIFEST) $(PRIMARY_DIR)/vm_trace_coverage_matrix.tsv $(PROGRAM_BEHAVIOR_HYPOTHESES_TSV) $(PRIMARY_TRACE)
 	python3 vm_trace_program_path.py --root $(PRIMARY_DIR)
 
-trace-program-path-audit: trace-program-path
+trace-program-path: $(TRACE_PROGRAM_PATH_SUMMARY_TSV) $(TRACE_PROGRAM_PATH_PROGRAMS_TSV) $(TRACE_PROGRAM_PATH_EDGES_TSV) $(TRACE_PROGRAM_PATH_MD)
+
+trace-program-path-audit: $(TRACE_PROGRAM_PATH_SUMMARY_TSV) $(TRACE_PROGRAM_PATH_PROGRAMS_TSV) $(TRACE_PROGRAM_PATH_EDGES_TSV) $(TRACE_PROGRAM_PATH_MD)
 	python3 vm_trace_program_path_audit.py --root $(PRIMARY_DIR)
 
 .PHONY: x-program-timeline x-program-timeline-audit
-x-program-timeline: vm_x_program_timeline.py trace-program-path program-control-graph string-reference-context
+$(X_PROGRAM_TIMELINE_TSV) $(X_PROGRAM_FIRST_SEEN_TSV) $(X_PROGRAM_TIMELINE_MD): vm_x_program_timeline.py $(TRACE_PROGRAM_PATH_SUMMARY_TSV) $(PROGRAM_CONTROL_GRAPH_SUMMARY_TSV) $(STRING_REFERENCE_CONTEXT_TSV) $(PROGRAM_BEHAVIOR_HYPOTHESES_TSV) $(PRIMARY_TRACE)
 	python3 vm_x_program_timeline.py --root $(PRIMARY_DIR)
 
-x-program-timeline-audit: x-program-timeline
+x-program-timeline: $(X_PROGRAM_TIMELINE_TSV) $(X_PROGRAM_FIRST_SEEN_TSV) $(X_PROGRAM_TIMELINE_MD)
+
+x-program-timeline-audit: $(X_PROGRAM_TIMELINE_TSV) $(X_PROGRAM_FIRST_SEEN_TSV) $(X_PROGRAM_TIMELINE_MD)
 	python3 vm_x_program_timeline_audit.py --root $(PRIMARY_DIR)
 
 .PHONY: string-role-annotations string-role-annotations-audit
-string-role-annotations: vm_string_role_annotations.py string-reference-context x-program-timeline program-behavior-hypotheses
+$(STRING_ROLE_ANNOTATIONS_TSV) $(STRING_ROLE_PROGRAMS_TSV) $(STRING_ROLE_ANNOTATIONS_MD): vm_string_role_annotations.py $(STRING_REFERENCE_CONTEXT_TSV) $(X_PROGRAM_FIRST_SEEN_TSV) $(PROGRAM_BEHAVIOR_HYPOTHESES_TSV)
 	python3 vm_string_role_annotations.py --root $(PRIMARY_DIR)
 
-string-role-annotations-audit: string-role-annotations
+string-role-annotations: $(STRING_ROLE_ANNOTATIONS_TSV) $(STRING_ROLE_PROGRAMS_TSV) $(STRING_ROLE_ANNOTATIONS_MD)
+
+string-role-annotations-audit: $(STRING_ROLE_ANNOTATIONS_TSV) $(STRING_ROLE_PROGRAMS_TSV) $(STRING_ROLE_ANNOTATIONS_MD)
 	python3 vm_string_role_annotations_audit.py --root $(PRIMARY_DIR)
 
 .PHONY: behavior-understanding-audit
