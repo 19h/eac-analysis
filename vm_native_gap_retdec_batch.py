@@ -661,6 +661,10 @@ def extract_functions(text):
     functions = text[start + len(start_marker):end].strip()
     functions = functions.replace(" = &v", " = (int64_t)&v")
     functions = functions.replace("vsnprintf(", "eac_retdec_vsnprintf(")
+    functions = functions.replace(
+        "_ZN9__gnu_cxxL27__exchange_and_add_dispatchEPii.constprop.31",
+        "_ZN9__gnu_cxxL27__exchange_and_add_dispatchEPii_constprop_31",
+    )
     functions = normalize_time_struct_accesses(functions)
     functions = re.sub(r"\bmemset\(([^,\n]+),", r"memset((void *)(int64_t)(\1),", functions)
     functions = re.sub(r"(int64_t\s+v\d+\s*=\s*)&([A-Za-z_]\w*)", r"\1(int64_t)&\2", functions)
@@ -827,6 +831,8 @@ def main():
     print("#define PTHREAD_MUTEX_RECURSIVE 1")
     for index in referenced_globals(functions):
         print(f"extern int g{index};")
+    if "CRC_32C__Castagnoli__poly_0x1EDC6F41_at_585720" in functions:
+        print("extern int32_t CRC_32C__Castagnoli__poly_0x1EDC6F41_at_585720;")
     print("unsigned char llvm_ctpop_i8(unsigned char value);")
     print("uint16_t llvm_bswap_i16(uint16_t value);")
     print("void __asm_int(int32_t interrupt);")
@@ -934,6 +940,8 @@ def main():
     print("float32_t __strtof_l(const char *nptr, char **endptr, struct __locale_struct *locale);")
     print("float64_t __strtod_l(const char *nptr, char **endptr, struct __locale_struct *locale);")
     print("float80_t strtold_l(const char *nptr, char **endptr, struct __locale_struct *locale);")
+    print("int32_t __strcoll_l(const char *s1, const char *s2, struct __locale_struct *locale);")
+    print("int32_t __wcscoll_l(const int32_t *s1, const int32_t *s2, struct __locale_struct *locale);")
     print("char *dgettext(char *domain, char *msgid);")
     print("char *gettext(char *msgid);")
     print("char *bind_textdomain_codeset(char *domainname, char *codeset);")

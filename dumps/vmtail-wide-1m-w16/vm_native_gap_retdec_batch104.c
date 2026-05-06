@@ -1,0 +1,642 @@
+/*
+ * Targeted RetDec C for native executable gap queue batch 104.
+ *
+ * This batch is fixed from the ranked native gap queue so it can feed the
+ * executable coverage audit without creating a Make dependency cycle:
+ * coverage -> queue -> RetDec batch -> coverage.
+ *
+ * Ranges:
+ *   0x2e2fee-0x2e301e rank=25 name=fcn.002e2fee kind=r2_discovered bytes=48 uncovered=48
+ *   0x488396-0x4883c6 rank=26 name=fcn.00488396 kind=r2_discovered bytes=48 uncovered=48
+ *   0x48d2d2-0x48d302 rank=27 name=fcn.0048d2d2 kind=r2_discovered bytes=48 uncovered=48
+ *   0x48d302-0x48d332 rank=28 name=fcn.0048d302 kind=r2_discovered bytes=48 uncovered=48
+ *   0x5679b0-0x5679e0 rank=29 name=fcn.005679b0 kind=r2_discovered bytes=48 uncovered=48
+ *   0x57a050-0x57a080 rank=30 name=fcn.0057a050 kind=r2_discovered bytes=48 uncovered=48
+ *   0x47630-0x4765f rank=31 name=fcn.00047630 kind=r2_discovered bytes=47 uncovered=47
+ *   0x72a24-0x72a53 rank=32 name=fcn.00072a24 kind=r2_discovered bytes=47 uncovered=47
+ *   0x4afe70-0x4afe9f rank=33 name=fcn.004afe70 kind=r2_discovered bytes=47 uncovered=47
+ *   0x4b272a-0x4b2759 rank=34 name=fcn.004b272a kind=r2_discovered bytes=47 uncovered=47
+ *   0x4efde0-0x4efe0f rank=35 name=sym.__cxa_call_terminate kind=symbol_named bytes=47 uncovered=47
+ *   0x5571e0-0x55720f rank=36 name=fcn.005571e0 kind=r2_discovered bytes=47 uncovered=47
+ *   0x56ff00-0x56ff2f rank=37 name=method.std::ctype_wchar_t_.virtual_88 kind=native_discovered bytes=47 uncovered=47
+ *   0x572060-0x57208f rank=38 name=fcn.00572060 kind=r2_discovered bytes=47 uncovered=47
+ *   0x57e8d-0x57ebb rank=39 name=fcn.00057e8d kind=r2_discovered bytes=46 uncovered=46
+ *   0x48d7ed-0x48d81b rank=40 name=fcn.0048d7ed kind=r2_discovered bytes=46 uncovered=46
+ */
+#include <stdbool.h>
+#include <stdio.h>
+#include <stdint.h>
+#include <stdlib.h>
+#include <string.h>
+#include <time.h>
+
+typedef __int128 int128_t;
+typedef unsigned __int128 uint128_t;
+typedef int32_t int3_t;
+typedef float float32_t;
+typedef double float64_t;
+typedef long double float80_t;
+static inline int128_t eac_retdec_i128(uint64_t hi, uint64_t lo) { return (int128_t)(((uint128_t)hi << 64) | (uint128_t)lo); }
+struct __locale_struct;
+struct _TYPEDEF_glob_t;
+struct _TYPEDEF___mbstate_t;
+struct _IO_FILE;
+struct pollfd;
+struct sockaddr;
+struct addrinfo;
+struct stat64;
+struct timespec;
+struct timeval;
+struct utsname;
+struct iovec;
+struct epoll_event;
+#ifndef EAC_RETDEC_CPUID_REGS_DEFINED
+#define EAC_RETDEC_CPUID_REGS_DEFINED 1
+struct eac_retdec_cpuid_regs { uint32_t e0; uint32_t e1; uint32_t e2; uint32_t e3; };
+#endif
+#define F_GETFL 3
+#define F_SETFL 4
+#define SO_DEBUG 1
+#define _SC_PAGESIZE 30
+#define SYS_getegid32 50
+#define PTHREAD_MUTEX_RECURSIVE 1
+extern int g1;
+extern int g3;
+extern int g4;
+extern int g5;
+extern int g7;
+unsigned char llvm_ctpop_i8(unsigned char value);
+uint16_t llvm_bswap_i16(uint16_t value);
+void __asm_int(int32_t interrupt);
+int64_t __asm_int1();
+int64_t __asm_int3(void);
+int32_t __asm_in(uint16_t port);
+int32_t __asm_in_133(uint16_t port);
+int32_t __asm_in_134(uint16_t port);
+char __asm_in_136(uint16_t port);
+char __asm_insb(uint16_t port);
+void __asm_out(uint16_t port, char value);
+void __asm_out_135(uint16_t port, int32_t value);
+void __asm_outsb(uint16_t port, char value);
+void __asm_outsd(uint16_t port, int32_t value);
+uint8_t __readfsbyte(int64_t offset);
+uint64_t __readfsqword(int64_t offset);
+uint32_t __readgsdword(int64_t offset);
+int64_t __asm_iretd(void);
+int64_t __asm_sti(int64_t value, int64_t flags);
+int64_t unknown_34e4aca1(int64_t value);
+void unknown_11c3039(void);
+int64_t unknown_2a35274a(void);
+int64_t unknown_3dc1cbae(int32_t value);
+int64_t unknown_6847365b(void);
+int64_t unknown_6ae5a3c4(void);
+int64_t unknown_3d2a4ac0(void);
+int64_t unknown_3f58ba8f(void);
+int64_t unknown_1a5f8c06(void);
+int64_t unknown_fce9f06(void);
+int64_t unknown_6830301e(void);
+int64_t unknown_2f0fdc0b(void);
+int64_t unknown_38ae20ec(void);
+int64_t unknown_401c0cfa(void);
+int64_t unknown_ffffffffd3dfe90d(void);
+int64_t unknown_ffffffffba4fa1e3(void);
+int64_t unknown_ffffffffa83be585(void);
+int64_t unknown_ffffffffc9a6c1f7(void);
+int64_t unknown_ffffffff8d401ab3(void);
+int64_t unknown_ffffffffc304842d(int64_t value);
+int64_t unknown_ffffffffd64cfc2a(int64_t dst, int64_t src);
+int64_t unknown_ffffffffe8914fc1(void);
+int64_t _ITM_RU1(int64_t src);
+int64_t _ZGTtnam(int64_t size);
+int64_t _ITM_memcpyRtWn(int64_t dst, int64_t src, int64_t size);
+void __asm_rcl(int32_t value);
+void __asm_rep_movsb_memcpy(char *dst, char *src, int64_t count);
+void __asm_rep_stosb_memset(char *dst, char value, int64_t count);
+void __asm_rep_stosd_memset(char *dst, int32_t value, int64_t count);
+void __asm_rep_stosq_memset(char *dst, int64_t value, int64_t count);
+void __asm_rep_movsd_memcpy(char *dst, char *src, int64_t count);
+void __asm_rep_movsq_memcpy(char *dst, char *src, int64_t count);
+int64_t __asm_hlt(void);
+int64_t __asm_mfence();
+void __asm_wait(void);
+float80_t __asm_fbstp(float80_t value);
+struct eac_retdec_cpuid_regs __asm_cpuid(uint32_t leaf);
+struct eac_retdec_cpuid_regs __asm_cpuid_133(uint32_t leaf);
+struct eac_retdec_cpuid_regs __asm_cpuid_134(uint32_t leaf);
+uint64_t __asm_xgetbv(uint64_t index);
+void __stack_chk_fail(void);
+int __cxa_atexit(void (*func)(int64_t *), void *arg, void *dso);
+int64_t _ZN9__gnu_cxxL27__exchange_and_add_dispatchEPii_constprop_31(int64_t value);
+int64_t _ZGTtdlPv(int64_t value);
+int64_t blake3_hasher_init_derive_key_raw(int64_t hasher, int64_t context, int64_t context_len);
+int64_t unknown_166c28d(void);
+int128_t __asm_movsd(int64_t value);
+int128_t __asm_movsd_133(int64_t value);
+int128_t __asm_movss(int32_t value);
+int64_t __asm_movss_133(int128_t value);
+int128_t __asm_movdqa(int128_t value);
+void __asm_movq(int64_t value, int128_t dst);
+int128_t __asm_aesimc(int128_t value);
+int128_t __asm_aeskeygenassist(int128_t value, int imm);
+int128_t __asm_movdqu(int128_t value);
+int128_t __asm_movdqu_133(int128_t value);
+int128_t __asm_movapd(int128_t value);
+int128_t __asm_andpd(int128_t left, int128_t right);
+int128_t __asm_andnpd(int128_t left, int128_t right);
+int128_t __asm_divsd(int128_t left, int64_t right);
+int128_t __asm_divsd_133(int128_t left, int128_t right);
+int128_t __asm_pclmulqdq(int128_t left, int128_t right, int imm);
+int128_t __asm_pshufd(int128_t value, int imm);
+int128_t __asm_psrldq(int128_t value, int count);
+int128_t __asm_pslldq(int128_t value, int count);
+int128_t __asm_psllq(int128_t value, int count);
+int128_t __asm_psrlq(int128_t value, int count);
+int128_t __asm_por(int128_t left, int128_t right);
+int128_t __asm_pxor(int128_t left, int128_t right);
+int128_t __asm_xorps(int128_t left, int128_t right);
+int128_t __asm_cmpnlesd(int128_t left, int128_t right);
+int128_t __asm_cvtsi2sd(int64_t value);
+int128_t __asm_subsd(int128_t left, int128_t right);
+int64_t __asm_cvttsd2si(int128_t value);
+void __asm_ucomisd(int128_t left, int128_t right);
+void __asm_ucomiss(int128_t left, int64_t right);
+void __asm_ucomiss_134(int128_t left, int128_t right);
+int128_t __asm_movups();
+void __asm_movups_133();
+int128_t __asm_movaps(int128_t value);
+float80_t __frontend_reg_load_fpr(int32_t reg);
+void __frontend_reg_store_fpr(int32_t reg, float80_t value);
+char *__nl_langinfo_l(int32_t item, struct __locale_struct *locale);
+struct __locale_struct *__newlocale(int category_mask, const char *locale, struct __locale_struct *base);
+struct __locale_struct *__uselocale(struct __locale_struct *locale);
+float32_t __strtof_l(const char *nptr, char **endptr, struct __locale_struct *locale);
+float64_t __strtod_l(const char *nptr, char **endptr, struct __locale_struct *locale);
+float80_t strtold_l(const char *nptr, char **endptr, struct __locale_struct *locale);
+int32_t __strcoll_l(const char *s1, const char *s2, struct __locale_struct *locale);
+int32_t __wcscoll_l(const int32_t *s1, const int32_t *s2, struct __locale_struct *locale);
+char *dgettext(char *domain, char *msgid);
+char *gettext(char *msgid);
+char *bind_textdomain_codeset(char *domainname, char *codeset);
+void *iconv_open(const char *tocode, const char *fromcode);
+int32_t iconv(void *cd, char **inbuf, int32_t *inbytesleft, char **outbuf, int32_t *outbytesleft);
+int iconv_close(void *cd);
+struct _IO_FILE *fopen(const char *path, const char *mode);
+struct _IO_FILE *fopen64(const char *path, const char *mode);
+struct _IO_FILE *fdopen(int fd, const char *mode);
+size_t fread(void *ptr, size_t size, size_t nmemb, struct _IO_FILE *stream);
+int32_t read(int fd, void *buf, size_t count);
+void rewind(struct _IO_FILE *stream);
+int fclose(struct _IO_FILE *stream);
+int uname(struct utsname *buf);
+int64_t __tls_get_addr(void *arg);
+int32_t mbrtowc(int32_t *pwc, const char *s, size_t n, struct _TYPEDEF___mbstate_t *ps);
+size_t mbstowcs(int32_t *dest, const char *src, size_t n);
+int32_t mbsnrtowcs(int32_t *dst, char **src, size_t nms, size_t len, struct _TYPEDEF___mbstate_t *ps);
+size_t wcslen(const int32_t *s);
+int wcscmp(const int32_t *s1, const int32_t *s2);
+int wctob(int32_t wc);
+int32_t btowc(int c);
+int32_t towlower(int32_t wc);
+int32_t __towlower_l(int32_t wc, struct __locale_struct *locale);
+int32_t __towupper_l(int32_t wc, struct __locale_struct *locale);
+int vswprintf(int32_t *wcs, size_t maxlen, const int32_t *format, int64_t ap);
+int32_t *wmemchr(const int32_t *s, int32_t c, size_t n);
+int32_t *wmemcpy(int32_t *dest, const int32_t *src, size_t n);
+int32_t *wmemmove(int32_t *dest, const int32_t *src, size_t n);
+int32_t *wmemset(int32_t *wcs, int32_t wc, size_t n);
+int32_t getwc(struct _IO_FILE *stream);
+int32_t putwc(int32_t wc, struct _IO_FILE *stream);
+int32_t ungetwc(int32_t wc, struct _IO_FILE *stream);
+int64_t memset2(void *s, int c, size_t n);
+int pthread_mutex_lock(void *mutex);
+int pthread_mutex_unlock(void *mutex);
+int pthread_mutex_init(void *mutex, void *attr);
+int pthread_mutexattr_init(void *attr);
+int pthread_mutexattr_settype(void *attr, int type);
+int pthread_create(int32_t *thread, const void *attr, int64_t *(*start_routine)(int64_t *), int64_t *arg);
+int pthread_once(int32_t *once_control, void (*init_routine)(void));
+int pthread_cond_wait(void *cond, void *mutex);
+int pthread_cond_timedwait(void *cond, void *mutex, const struct timespec *abstime);
+int pthread_cond_broadcast(void *cond);
+int sem_init(int64_t *sem, int pshared, unsigned int value);
+int sem_post(int64_t *sem);
+int sem_wait(int64_t *sem);
+int sem_destroy(int64_t *sem);
+int fcntl(int fd, int cmd, ...);
+int32_t write(int fd, const void *buf, size_t nbyte);
+int writev(int fd, const struct iovec *iov, int iovcnt);
+int epoll_create(int size);
+int epoll_ctl(int epfd, int op, int fd, struct epoll_event *event);
+int epoll_wait(int epfd, struct epoll_event *events, int maxevents, int timeout);
+int close(int fd);
+int ioctl(int fd, unsigned long request, ...);
+int poll(struct pollfd *fds, unsigned long nfds, int timeout);
+int gettimeofday(struct timeval *tv, void *tz);
+int clock_gettime(int clk_id, struct timespec *tp);
+int64_t sysconf(int name);
+int64_t syscall(int64_t number, ...);
+int mprotect(void *addr, size_t len, int prot);
+void *mmap(void *addr, size_t len, int prot, int flags, int fd, int64_t offset);
+int munmap(void *addr, size_t len);
+int __fxstat64(int ver, int fd, struct stat64 *buf);
+int fseeko64(struct _IO_FILE *stream, int64_t offset, int whence);
+int64_t ftello64(struct _IO_FILE *stream);
+int64_t lseek64(int fd, int64_t offset, int whence);
+int32_t *__errno_location(void);
+int connect(int sockfd, const struct sockaddr *addr, int32_t addrlen);
+int getsockopt(int sockfd, int level, int optname, void *optval, int32_t *optlen);
+int setsockopt(int sockfd, int level, int optname, const void *optval, int32_t optlen);
+int getaddrinfo(const char *node, const char *service, const struct addrinfo *hints, struct addrinfo **res);
+void freeaddrinfo(struct addrinfo *res);
+int64_t readlink(const char *path, char *buf, size_t bufsiz);
+char *realpath(const char *path, char *resolved_path);
+int glob(const char *pattern, int flags, void *errfunc, struct _TYPEDEF_glob_t *pglob);
+void globfree(struct _TYPEDEF_glob_t *pglob);
+char *__xpg_basename(char *path);
+int32_t eac_retdec_vsnprintf(char *str, int32_t size, char *format, int64_t ap);
+int64_t __wctype_l(const char *property, struct __locale_struct *locale);
+int __iswctype_l(int32_t wc, int32_t desc, struct __locale_struct *locale);
+char *strdup(const char *s);
+int __sprintf_chk(char *str, int flag, size_t slen, const char *format, ...);
+struct tm *gmtime_r(const time_t *timep, struct tm *result);
+struct _Unwind_Exception;
+int64_t _Unwind_DeleteException(int64_t exception);
+int64_t _Unwind_GetDataRelBase(int64_t context);
+int64_t _Unwind_GetRegionStart();
+int64_t _Unwind_RaiseException(int64_t exception);
+void _Unwind_Resume(struct _Unwind_Exception *exception);
+void _Unwind_Resume_or_Rethrow(int64_t exception);
+
+int64_t function_1fd40();
+int64_t function_2e2fee(int64_t a1, int64_t a2, int64_t a3, int64_t a4);
+int64_t function_47630(uint64_t a1, int64_t a2, int64_t a3, int64_t a4);
+int64_t function_488396(int64_t a1);
+int64_t function_48d2d2(int64_t a1);
+int64_t function_48d302(int64_t a1);
+int64_t function_48d7ed(int64_t a1, int64_t a2);
+int64_t function_4afd30();
+int64_t function_4afe70(int64_t result, int64_t a2, int64_t a3, int64_t a4);
+int64_t function_4b1590();
+int64_t function_4b19a0();
+int64_t function_4b2718();
+int64_t function_4b271b();
+int64_t function_4b2728();
+int64_t function_4b272a(int64_t a1, int64_t a2, int64_t a3);
+int64_t function_4b2750(void);
+int64_t function_4eeb50();
+int64_t function_4efcc0();
+int64_t function_542770();
+int64_t function_556f40();
+int64_t function_5571e0(int64_t a1, int64_t a2, int64_t a3, int64_t a4, int64_t a5, int64_t a6, int64_t a7);
+int64_t function_5679b0(int64_t a1);
+int64_t function_56ff00(int64_t a1, uint64_t a2, uint64_t result);
+int64_t function_572060(int64_t a1);
+int64_t function_57a050(int64_t a1, int64_t a2);
+int64_t function_57e8d(int64_t a1);
+int64_t function_72750();
+int64_t function_7293a();
+int64_t function_72a24(int64_t a1);
+
+// Address range: 0x47630 - 0x4765f
+int64_t function_47630(uint64_t a1, int64_t a2, int64_t a3, int64_t a4) {
+    uint32_t v1 = (int32_t)a1;
+    if (v1 >= 0x10000000) {
+        // 0x4765e
+        return 0;
+    }
+    // 0x4763d
+    if ((char)a2 == 0) {
+        // 0x4765e
+        return 1;
+    }
+    int64_t result = 0; // 0x47649
+    if (v1 < 14) {
+        int64_t v2 = 1 << a1 % 64;
+        result = v2 & -256 | (int64_t)(((int32_t)v2 & (int32_t)&g1) != 0);
+    }
+    // 0x4765e
+    return result;
+}
+
+// Address range: 0x57e8d - 0x57ebb
+int64_t function_57e8d(int64_t a1) {
+    int64_t v1 = a1; // 0x57e93
+    int64_t v2; // 0x57e8d
+    while (true) {
+        // 0x57e96
+        v2 = v1;
+        int64_t v3 = v2; // 0x57e8d
+        while (true) {
+          lab_0x57e96:
+            // 0x57e96
+            v1 = v3 + 1;
+            char v4 = *(char *)v3; // 0x57e99
+            switch (v4) {
+                case 0: {
+                    return *(char *)v2 != 0 ? v2 : a1;
+                }
+                case 92: {
+                    goto lab_0x57eae;
+                }
+                default: {
+                    // 0x57ea8
+                    v3 = v1;
+                    if (v4 == 47) {
+                        // break -> 0x57eae
+                        break;
+                    }
+                    goto lab_0x57e96;
+                }
+            }
+        }
+      lab_0x57eae:;
+    }
+  lab_0x57eb3:
+    // 0x57eb3
+    return *(char *)v2 != 0 ? v2 : a1;
+}
+
+// Address range: 0x72a24 - 0x72a53
+int64_t function_72a24(int64_t a1) {
+    // 0x72a24
+    *(int64_t *)a1 = (int64_t)&g3;
+    function_72750(a1 + 16);
+    *(char *)(a1 + 112) = 0;
+    int64_t result = function_7293a(a1 + 120); // 0x72a44
+    *(int64_t *)(a1 + 8) = 0;
+    return result;
+}
+
+// Address range: 0x2e2fee - 0x2e301d
+int64_t function_2e2fee(int64_t a1, int64_t a2, int64_t a3, int64_t a4) {
+    // 0x2e2fee
+    int64_t v1; // 0x2e2fee
+    unsigned char v2 = *(char *)(v1 % 256 + v1); // 0x2e2fef
+    *(int32_t *)0x57be5cfb = *(int32_t *)0x57be5cfb + (int32_t)a1;
+    __asm_outsb((int16_t)((int32_t)(v1 & 0xffffff00 | (int64_t)v2) + (int32_t)v1 >> 31), (char)v1);
+    int64_t v3 = unknown_fce9f06(); // 0x2e3000
+    char v4 = v3; // 0x2e3005
+    *(char *)0x701e8fe8520ff7c = v4;
+    char * v5 = (char *)((v1 & -0xff01 | (int64_t)&g7) - 45); // 0x2e300f
+    *v5 = *v5 & (char)((int64_t)&g7 >> 8);
+    char * v6 = (char *)(v3 + 14); // 0x2e3012
+    *v6 = *v6 + v4;
+    return unknown_6830301e();
+}
+
+// Address range: 0x488396 - 0x4883c6
+int64_t function_488396(int64_t a1) {
+    // 0x488396
+    if ((int64_t)g4 == a1) {
+        // 0x4883c5
+        int64_t result; // 0x488396
+        return result;
+    }
+    int32_t * v1 = (int32_t *)(a1 + 16);
+    uint32_t result2 = *v1;
+    *v1 = result2 - 1;
+    if (result2 >= 0 == (result2 != 0)) {
+        // 0x4883c5
+        return result2;
+    }
+    // 0x4883c0
+    return function_4eeb50();
+}
+
+// Address range: 0x48d2d2 - 0x48d302
+int64_t function_48d2d2(int64_t a1) {
+    // 0x48d2d2
+    if (*(int64_t *)0x848c20 == a1) {
+        // 0x48d301
+        int64_t result; // 0x48d2d2
+        return result;
+    }
+    int32_t * v1 = (int32_t *)(a1 + 16);
+    uint32_t result2 = *v1;
+    *v1 = result2 - 1;
+    if (result2 >= 0 == (result2 != 0)) {
+        // 0x48d301
+        return result2;
+    }
+    // 0x48d2fc
+    return function_4eeb50();
+}
+
+// Address range: 0x48d302 - 0x48d332
+int64_t function_48d302(int64_t a1) {
+    // 0x48d302
+    if ((int64_t)g4 == a1) {
+        // 0x48d331
+        int64_t result; // 0x48d302
+        return result;
+    }
+    int32_t * v1 = (int32_t *)(a1 + 16);
+    uint32_t result2 = *v1;
+    *v1 = result2 - 1;
+    if (result2 >= 0 == (result2 != 0)) {
+        // 0x48d331
+        return result2;
+    }
+    // 0x48d32c
+    return function_4eeb50();
+}
+
+// Address range: 0x48d7ed - 0x48d81b
+int64_t function_48d7ed(int64_t a1, int64_t a2) {
+    int64_t result = 0; // 0x48d7f3
+    if (*(char *)a1 == 0) {
+      lab_0x48d812:
+        // 0x48d812
+        return result;
+    }
+    int64_t v1 = 0;
+    char v2 = *(char *)(v1 + a2); // 0x48d7fb
+    int64_t v3; // 0x48d809
+    while ((*(char *)(v1 + a1) || 32) == (v2 || 32)) {
+        // 0x48d809
+        v3 = v1 + 1;
+        result = a1;
+        if (*(char *)(v3 + a2) == 0) {
+            return result;
+        }
+        v1 = v3;
+        v2 = *(char *)(v1 + a2);
+    }
+    int64_t v4 = a1 + 1; // 0x48d813
+    while (*(char *)v4 != 0) {
+        int64_t v5 = v4;
+        v1 = 0;
+        v2 = *(char *)(v1 + a2);
+        while ((*(char *)(v1 + v5) || 32) == (v2 || 32)) {
+            // 0x48d809
+            v3 = v1 + 1;
+            result = v5;
+            if (*(char *)(v3 + a2) == 0) {
+                return result;
+            }
+            v1 = v3;
+            v2 = *(char *)(v1 + a2);
+        }
+        // 0x48d813
+        v4 = v5 + 1;
+    }
+    // 0x48d812
+    return 0;
+}
+
+// Address range: 0x4afe70 - 0x4afe9e
+int64_t function_4afe70(int64_t result, int64_t a2, int64_t a3, int64_t a4) {
+    // 0x4afe70
+    if (a2 - result < 1) {
+        // 0x4afe98
+        return result;
+    }
+    // 0x4afe7e
+    if ((int32_t)result % 256 != (int32_t)a4) {
+        // 0x4afe98
+        return 0xffffff9e;
+    }
+    // 0x4afe87
+    *(int64_t *)result = result + 1;
+    return function_4afd30();
+}
+
+// Address range: 0x4b272a - 0x4b274b
+int64_t function_4b272a(int64_t a1, int64_t a2, int64_t a3) {
+    // 0x4b272a
+    int64_t v1; // 0x4b272a
+    int64_t v2 = v1;
+    __asm_out((int16_t)a3, (char)v1);
+    if ((int32_t)function_4b1590(v2) < 0) {
+        function_4b271b();
+    }
+    // 0x4b2737
+    if ((int32_t)function_4b19a0(v2, v2, v1) == 0) {
+        function_4b2728();
+    }
+    // 0x4b2749
+    return function_4b2718();
+}
+
+// Address range: 0x4b2750 - 0x4b2758
+int64_t function_4b2750(void) {
+    // 0x4b2750
+    return function_4b271b();
+}
+
+// Address range: 0x4efde0 - 0x4efe06
+int64_t __cxa_call_terminate(int64_t a1) {
+    if (a1 == 0) {
+        // 0x4efe01
+        return function_4efcc0();
+    }
+    // 0x4efde6
+    function_1fd40();
+    int64_t result = a1 - 0x474e5543432b2b00; // 0x4efdf8
+    if (a1 == 0x474e5543432b2b01 || result == 0) {
+        // 0x4efe10
+        return result;
+    }
+    // 0x4efe01
+    return function_4efcc0();
+}
+
+// Address range: 0x5571e0 - 0x55720f
+int64_t function_5571e0(int64_t a1, int64_t a2, int64_t a3, int64_t a4, int64_t a5, int64_t a6, int64_t a7) {
+    int32_t * v1 = (int32_t *)a7; // 0x5571fe
+    int64_t v2; // 0x5571e0
+    int64_t result = function_556f40(a4, 0x100000000000000 * a2 >> 56, a5, a6, a3, *v1, v2, v2); // 0x557201
+    *v1 = (int32_t)a3;
+    return result;
+}
+
+// Address range: 0x5679b0 - 0x5679e0
+int64_t function_5679b0(int64_t a1) {
+    // 0x5679b0
+    int64_t v1; // 0x5679b0
+    struct __locale_struct * v2 = __newlocale(64, (char *)v1, (struct __locale_struct *)v1); // 0x5679b9
+    int64_t result = (int64_t)v2; // 0x5679b9
+    *(int64_t *)a1 = result;
+    if (v2 == NULL) {
+        // 0x5679c8
+        return function_542770("locale::facet::_S_create_c_locale name not valid");
+    }
+    // 0x5679c6
+    return result;
+}
+
+// Address range: 0x56ff00 - 0x56ff2f
+// From class:    std::ctype_byname<wchar_t>
+// Type:          virtual member function
+int64_t function_56ff00(int64_t a1, uint64_t a2, uint64_t result) {
+    if (a2 >= result) {
+        // 0x56ff2d
+        return result;
+    }
+    int64_t v1 = a2 + 1; // 0x56ff14
+    int32_t v2 = *(int32_t *)(a1 + 156 + 4 * (int64_t)*(char *)a2); // 0x56ff1c
+    int64_t v3; // 0x56ff00
+    *(int32_t *)v3 = v2;
+    v3 += 4;
+    while (v1 != result) {
+        int64_t v4 = v1;
+        v1 = v4 + 1;
+        v2 = *(int32_t *)(a1 + 156 + 4 * (int64_t)*(char *)v4);
+        *(int32_t *)v3 = v2;
+        v3 += 4;
+    }
+    // 0x56ff2d
+    return result;
+}
+
+// Address range: 0x572060 - 0x57208e
+int64_t function_572060(int64_t a1) {
+    int32_t * v1 = (int32_t *)(a1 + 8);
+    uint32_t result = *v1;
+    if (g5 == 0) {
+        // 0x572080
+        *v1 = result - 1;
+        return result;
+    }
+    // 0x57206a
+    *v1 = result - 1;
+    return result;
+}
+
+// Address range: 0x57a050 - 0x57a080
+int64_t function_57a050(int64_t a1, int64_t a2) {
+    // 0x57a050
+    if (a1 == 0) {
+        // 0x57a07d
+        return 0;
+    }
+    int64_t result = 0; // 0x57a058
+    if ((int32_t)a1 != 47) {
+        // 0x57a07d
+        return result;
+    }
+    int32_t v1 = a2; // 0x57a05a
+    int64_t v2 = a1; // 0x57a05d
+    if (v1 >= 0 != v1 != 0) {
+        // 0x57a07d
+        return result;
+    }
+    int64_t v3 = a2; // 0x57a05d
+    v2 += 16;
+    while (v2 != 0) {
+        // 0x57a068
+        if (*(int32_t *)v2 != 47) {
+            // break -> 0x57a07d
+            break;
+        }
+        // 0x57a06d
+        if ((int32_t)v3 == 0) {
+            // break -> 0x57a07d
+            break;
+        }
+        v3 &= 0xffffffff;
+        v2 += 16;
+    }
+    // 0x57a07d
+    return 0;
+}
