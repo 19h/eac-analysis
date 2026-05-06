@@ -6,7 +6,6 @@
  * coverage -> queue -> RetDec batch -> coverage.
  *
  * Ranges:
- *   0x50ec20-0x50eec0 rank=46 name=method.std::num_put_wchar_t__std::ostreambuf_iterator_wchar_t__std::char_traits_wchar_t_____.virtual_40 kind=native_discovered bytes=672 uncovered=672
  *   0x4b7490-0x4b772d rank=47 name=fcn.004b7490 kind=r2_discovered bytes=669 uncovered=669
  *   0x50e1e0-0x50e47b rank=48 name=fcn.0050e1e0 kind=r2_discovered bytes=667 uncovered=667
  *   0x55026-0x552bd rank=49 name=fcn.00055026 kind=r2_discovered bytes=663 uncovered=663
@@ -22,6 +21,7 @@
  *   0x558400-0x55868a rank=59 name=fcn.00558400 kind=r2_discovered bytes=650 uncovered=650
  *   0x4931c-0x495a4 rank=60 name=fcn.0004931c kind=r2_discovered bytes=648 uncovered=648
  *   0x48b48-0x48dcd rank=61 name=fcn.00048b48 kind=r2_discovered bytes=645 uncovered=645
+ *   0x47a80-0x47d04 rank=62 name=fcn.00047a80 kind=r2_discovered bytes=644 uncovered=644
  */
 #include <stdbool.h>
 #include <stdio.h>
@@ -366,12 +366,19 @@ int64_t function_36712();
 int64_t function_36990();
 int64_t function_36a32();
 int64_t function_36b14();
+int64_t function_380a0();
 int64_t function_3b222();
+int64_t function_47156();
+int64_t function_479a0();
+int64_t function_47a80(int64_t a1, int64_t a2, int64_t a3);
+int64_t function_47c75(int64_t a1, int64_t a2, int64_t a3, int64_t a4);
 int64_t function_48b48(int64_t a1, int64_t a2, int64_t a3);
 int64_t function_48d50f();
 int64_t function_48f087(int64_t a1, int64_t a2);
 int64_t function_48f79e();
 int64_t function_4931c(int64_t a1, int64_t a2, int64_t a3);
+int64_t function_4a578();
+int64_t function_4a6e6();
 int64_t function_4a8c6();
 int64_t function_4a93a();
 int64_t function_4ad1a();
@@ -384,6 +391,7 @@ int64_t function_4b1680();
 int64_t function_4b1ac0();
 int64_t function_4b26c0();
 int64_t function_4b3cf0();
+int64_t function_4b466();
 int64_t function_4b7490(int64_t a1, int64_t a2, int64_t a3);
 int64_t function_4ba580();
 int64_t function_4ba6b0();
@@ -397,7 +405,10 @@ int64_t function_4caa90(int64_t a1);
 int64_t function_4cab30(int64_t a1, int64_t a2);
 int64_t function_4d1ea0();
 int64_t function_4d23f0(int64_t a1, int64_t a2, int64_t a3, int64_t a4, int64_t a5, int64_t a6);
+int64_t function_4e9c8();
+int64_t function_4e9fa();
 int64_t function_4ea04();
+int64_t function_4eaea();
 int64_t function_4ee38();
 int64_t function_4eeb50();
 int64_t function_4efd30();
@@ -425,15 +436,8 @@ int64_t function_50c700();
 int64_t function_50cd00();
 int64_t function_50cf10();
 int64_t function_50cf40();
-int64_t function_50d000();
 int64_t function_50e0e0();
 int64_t function_50e1e0(int64_t a1, int64_t result, int64_t a3, int64_t a4, int64_t a5, int64_t a6);
-int64_t function_50e970();
-int64_t function_50ec20(void);
-int64_t function_50ec30(int64_t a1);
-int64_t function_50ec50(int64_t a1, int64_t result, int64_t a3, int64_t a4, int64_t a5, int64_t a6);
-int64_t function_50ee90(void);
-int64_t function_50eea0(int64_t a1);
 int64_t function_5423f0();
 int64_t function_542590();
 int64_t function_54878();
@@ -459,6 +463,141 @@ int64_t function_581610();
 int64_t function_5822c0();
 int64_t function_5826d0(int64_t a1, int64_t a2, int64_t a3, int64_t a4);
 int64_t function_5f43e();
+
+// Address range: 0x47a80 - 0x47c24
+int64_t function_47a80(int64_t a1, int64_t a2, int64_t a3) {
+    int64_t v1 = a2;
+    int64_t v2 = __readfsqword(40); // 0x47a97
+    int64_t v3; // 0x47b13
+    int64_t * v4; // 0x47abc
+    int64_t v5; // 0x47acd
+    if ((char)function_4eaea() == 0) {
+        goto lab_0x47c00;
+    } else {
+        int64_t v6 = function_4e9fa(a2); // 0x47ab7
+        v4 = (int64_t *)(a1 + (int64_t)&g12);
+        uint64_t v7 = *v4; // 0x47abc
+        uint64_t v8 = (v6 & 0xffffffff) % v7;
+        v5 = a1 + (int64_t)&g11;
+        int64_t v9 = *(int64_t *)(*(int64_t *)v5 + 8 * v8); // 0x47ad4
+        if (v9 == 0) {
+            goto lab_0x47b1c;
+        } else {
+            int64_t v10 = *(int64_t *)v9; // 0x47ae0
+            if (v10 == 0) {
+                goto lab_0x47b1c;
+            } else {
+                // 0x47ae8
+                v1 = 0;
+                int64_t v11 = 0; // 0x47ae8
+                int64_t v12 = v10; // 0x47ae8
+                while (true) {
+                    int64_t v13 = v11;
+                    int64_t v14; // 0x47a80
+                    if (*(int32_t *)(v12 + 8) != (int32_t)v6) {
+                        // 0x47af5
+                        v14 = v13;
+                        if (v13 != 0) {
+                            // break -> 0x47c00
+                            break;
+                        }
+                    } else {
+                        int64_t v15 = v13 + 1; // 0x47af0
+                        v1 = v15;
+                        v14 = v15;
+                    }
+                    // 0x47afe
+                    v3 = v14;
+                    v12 = *(int64_t *)v12;
+                    if (v12 == 0) {
+                        goto lab_0x47b13_2;
+                    }
+                    // 0x47b06
+                    v11 = v3;
+                    if (v8 != (int64_t)*(int32_t *)(v12 + 8) % v7) {
+                        goto lab_0x47b13_2;
+                    }
+                }
+                goto lab_0x47c00;
+            }
+        }
+    }
+  lab_0x47b13_2:
+    if (v3 != 0) {
+        goto lab_0x47c00;
+    } else {
+        goto lab_0x47b1c;
+    }
+  lab_0x47c00:
+    // 0x47c00
+    if (v2 == __readfsqword(40)) {
+        // 0x47c15
+        return 0;
+    }
+    // 0x47c10
+    __stack_chk_fail();
+    // 0x47c15
+    return (int64_t)&g21;
+  lab_0x47b1c:;
+    int64_t v16 = function_4e9fa(a2); // 0x47b26
+    uint64_t v17 = v16 & 0xffffffff; // 0x47b2b
+    int32_t v18 = v16; // 0x47b36
+    int32_t v19 = v18; // bp-68, 0x47b36
+    int64_t v20 = v17 % *v4;
+    v1 = v20;
+    int64_t v21 = function_47156(v5, v20, &v19); // 0x47b54
+    int32_t v22; // 0x47a80
+    int64_t v23; // 0x47a80
+    if (v21 == 0) {
+        goto lab_0x47b6a;
+    } else {
+        int64_t v24 = *(int64_t *)v21; // 0x47b5e
+        v22 = v20;
+        v23 = v24;
+        if (v24 != 0) {
+            goto lab_0x47ba4;
+        } else {
+            goto lab_0x47b6a;
+        }
+    }
+  lab_0x47b6a:;
+    int64_t v25 = function_4efd30(64); // 0x47b6f
+    *(int64_t *)v25 = 0;
+    *(int32_t *)(v25 + 8) = v18;
+    function_4e9c8(v25 + 16, 0);
+    int64_t v26 = function_4a578(v5, v20, v17, v25); // 0x47b9b
+    v22 = *(int32_t *)&v1;
+    v23 = v26;
+    goto lab_0x47ba4;
+  lab_0x47ba4:
+    // 0x47ba4
+    *(int32_t *)(v23 + 16) = v22;
+    function_380a0(v23 + 24, a2 + 8);
+    function_4a6e6(v23 + 32, a2 + 16);
+    *(int64_t *)(v23 + 56) = *(int64_t *)(a2 + 40);
+    function_4b466(a1 + 40, a2);
+    if (v2 == __readfsqword(40)) {
+        // 0x47be7
+        return function_479a0(a1, a2);
+    }
+    // 0x47c10
+    __stack_chk_fail();
+    // 0x47c15
+    return (int64_t)&g21;
+}
+
+// Address range: 0x47c75 - 0x47c7d
+int64_t function_47c75(int64_t a1, int64_t a2, int64_t a3, int64_t a4) {
+    // 0x47c75
+    int64_t v1; // 0x47c75
+    unsigned char v2 = (char)v1;
+    unsigned char v3 = 2 * v2; // 0x47c75
+    *(char *)v1 = v3;
+    int64_t v4; // 0x47c75
+    char v5 = *(char *)&v4; // 0x47c77
+    *(char *)a1 = v5 + (char)a4 + (char)(v3 < v2);
+    return a2 & 0xffffffff;
+}
 
 // Address range: 0x48b48 - 0x48dcd
 int64_t function_48b48(int64_t a1, int64_t a2, int64_t a3) {
@@ -506,7 +645,7 @@ int64_t function_48b48(int64_t a1, int64_t a2, int64_t a3) {
                 function_36a32((int64_t *)&v3, 32, 0);
                 if (g18 >= 0) {
                     int64_t v20 = (int64_t)v3 - 24; // 0x48c58
-                    if (v20 != (int64_t)g12) {
+                    if (v20 != (int64_t)g14) {
                         // 0x48c65
                         if ((char)function_25622(v20) != 0) {
                             // 0x48c6e
@@ -784,16 +923,16 @@ int64_t function_55026(int64_t a1, int64_t a2, int64_t a3) {
                 }
                 int64_t v32 = 0; // bp-696, 0x551a1
                 int64_t v33 = 0; // bp-688, 0x551aa
-                int64_t v34 = function_4efd30(&g5); // 0x551b3
+                int64_t v34 = function_4efd30((int64_t)&g5); // 0x551b3
                 function_573fe(v34, &v7);
                 int64_t v35 = 0; // bp-704, 0x551cb
-                int64_t v36 = function_4efd30((int64_t *)32); // 0x551d9
+                int64_t v36 = function_4efd30(32); // 0x551d9
                 int64_t v37 = v33; // 0x551e8
                 *(int64_t *)(v36 + 8) = 0x100000001;
                 *(int64_t *)(v36 + 24) = v34;
                 v33 = v36;
                 v32 = v34;
-                *(int64_t *)v36 = (int64_t)&g11;
+                *(int64_t *)v36 = (int64_t)&g13;
                 v35 = v37;
                 function_35fcc(&v35);
                 int64_t v38 = *v4; // 0x55218
@@ -897,16 +1036,16 @@ int64_t function_55026(int64_t a1, int64_t a2, int64_t a3) {
                     // 0x5519c
                     v32 = 0;
                     v33 = 0;
-                    v34 = function_4efd30(&g5);
+                    v34 = function_4efd30((int64_t)&g5);
                     function_573fe(v34, &v7);
                     v35 = 0;
-                    v36 = function_4efd30((int64_t *)32);
+                    v36 = function_4efd30(32);
                     v37 = v33;
                     *(int64_t *)(v36 + 8) = 0x100000001;
                     *(int64_t *)(v36 + 24) = v34;
                     v33 = v36;
                     v32 = v34;
-                    *(int64_t *)v36 = (int64_t)&g11;
+                    *(int64_t *)v36 = (int64_t)&g13;
                     v35 = v37;
                     function_35fcc(&v35);
                     v38 = *v4;
@@ -2150,17 +2289,17 @@ int64_t function_50e1e0(int64_t a1, int64_t result, int64_t a3, int64_t a4, int6
         int64_t v27 = v26 + 15 & -16 | 8; // 0x50e3d4
         *(int64_t *)(v26 - 8) = (int64_t)&v12;
         *(int64_t *)(v26 - 16) = v14;
-        function_50cd00(a1, v23, v24, *(int32_t *)(v1 + 76), a4, v27, v25, v1);
-        int64_t v28 = v12; // 0x50e3f1
-        int64_t v29 = 0x100000000 * v27 >> 32; // 0x50e3f4
+        int64_t v28 = 0x100000000 * v27 >> 32; // 0x50e3ea
+        function_50cd00(a1, v23, v24, *(int32_t *)(v1 + 76), a4, v27, v25, v1, v28);
+        int64_t v29 = v12; // 0x50e3f1
         int64_t v30 = v25 & 0xffffffff; // 0x50e3f9
-        v19 = v28;
+        v19 = v29;
         v21 = v26;
-        v17 = v29;
+        v17 = v28;
         v15 = v30;
-        v20 = v28;
+        v20 = v29;
         v22 = v26;
-        v18 = v29;
+        v18 = v28;
         v16 = v30;
         if (v3 != 64 && v3 != 8) {
             goto lab_0x50e2c2;
@@ -2259,140 +2398,6 @@ int64_t function_50e1e0(int64_t a1, int64_t result, int64_t a3, int64_t a4, int6
     *v31 = 0;
     __readfsqword(40);
     return result;
-}
-
-// Address range: 0x50ec20 - 0x50ec25
-// From class:    std::num_put<wchar_t, std::ostreambuf_iterator<wchar_t, std::char_traits<wchar_t> > >
-// Type:          virtual member function
-int64_t function_50ec20(void) {
-    // 0x50ec20
-    return function_50e970();
-}
-
-// Address range: 0x50ec30 - 0x50ec4a
-int64_t function_50ec30(int64_t a1) {
-    int64_t result = *(int64_t *)(a1 + 40); // 0x50ec33
-    if (result != g15) {
-        // 0x50ec48
-        return result;
-    }
-    // 0x50ec40
-    return function_50e970();
-}
-
-// Address range: 0x50ec50 - 0x50ee90
-int64_t function_50ec50(int64_t a1, int64_t result, int64_t a3, int64_t a4, int64_t a5, int64_t a6) {
-    int64_t v1 = __readfsqword(40); // 0x50ec81
-    int64_t v2 = function_50e0e0(); // 0x50ec90
-    uint32_t v3 = *(int32_t *)(a4 + 24); // 0x50ec95
-    int64_t v4; // bp-296, 0x50ec50
-    int64_t v5 = (int64_t)&v4; // 0x50ec99
-    int32_t v6 = v3 & 74; // 0x50ecbf
-    int64_t v7; // bp-128, 0x50ec50
-    int64_t v8 = function_50d000(&v7, a6); // 0x50ece5
-    int32_t v9 = v8; // bp-68, 0x50ecf9
-    int64_t v10 = 0x100000000 * v8; // 0x50ecf7
-    int64_t v11; // bp-288, 0x50ec50
-    int64_t v12 = (0x2800000000 - v10 >> 30) + (int64_t)&v11; // 0x50ed04
-    int64_t v13; // 0x50ec50
-    int64_t v14; // 0x50ec50
-    int64_t v15; // 0x50ec50
-    int64_t v16; // 0x50ec50
-    int64_t v17; // 0x50ec50
-    if (*(char *)(v2 + 32) != 0) {
-        int32_t v18 = *(int32_t *)(v2 + 76); // 0x50ed83
-        int64_t v19 = *(int64_t *)(v2 + 16); // 0x50ed87
-        int64_t v20 = *(int64_t *)(v2 + 24); // 0x50ed8d
-        int64_t v21 = v5 - ((v10 + 0x100000000 >> 29) + 30 & -16); // 0x50eda4
-        int64_t v22 = v21 + 15 & -16 | 8; // 0x50edb0
-        *(int64_t *)(v21 - 8) = (int64_t)&v9;
-        *(int64_t *)(v21 - 16) = v12;
-        function_50cd00(a1, v19, v20, v18, a4, v22, v22, (int64_t)&g21);
-        int64_t v23 = v9; // 0x50edcd
-        v14 = v23;
-        v16 = v21;
-        v15 = v23;
-        v17 = v21;
-        v13 = v22;
-        if (v6 != 64 && v6 != 8) {
-            goto lab_0x50ed12;
-        } else {
-            goto lab_0x50eddf;
-        }
-    } else {
-        // 0x50ed0a
-        v14 = v8;
-        v16 = v5;
-        v15 = v8;
-        v17 = v5;
-        v13 = v12;
-        if (v6 == 64 || v6 == 8) {
-            goto lab_0x50eddf;
-        } else {
-            goto lab_0x50ed12;
-        }
-    }
-  lab_0x50ed12:;
-    int64_t * v24 = (int64_t *)(a4 + 16); // 0x50ed12
-    int64_t v25 = *v24; // 0x50ed12
-    if (0x100000000 * v14 >> 32 < v25) {
-        // 0x50ee30
-        *(int64_t *)(v16 - 16 - (4 * v25 + 30 & -16)) = (int64_t)&v9;
-        function_50cf10(a1, (int32_t)a5);
-    }
-    // 0x50ed22
-    *v24 = 0;
-    if (v1 != __readfsqword(40)) {
-        // 0x50ee87
-        __stack_chk_fail();
-        return (int64_t)&g21;
-    }
-    // 0x50ed69
-    return result;
-  lab_0x50eddf:
-    // 0x50eddf
-    v14 = v15;
-    v16 = v17;
-    if (a6 != 0 && (v3 & (int32_t)&g1) != 0) {
-        // 0x50edf7
-        if (v6 == 64) {
-            int64_t v26 = v15 + 1; // 0x50ee75
-            v9 = v26;
-            *(int32_t *)(v13 - 4) = *(int32_t *)(v2 + 96);
-            v14 = v26 & 0xffffffff;
-            v16 = v17;
-        } else {
-            int64_t v27 = v15 + 2; // 0x50ee05
-            int32_t v28 = *(int32_t *)(v2 + 80 + (int64_t)(v3 / 0x1000 & 4 | 8)); // 0x50ee17
-            v9 = v27;
-            *(int32_t *)(v13 - 4) = v28;
-            *(int32_t *)(v13 - 8) = *(int32_t *)(v2 + 96);
-            v14 = v27 & 0xffffffff;
-            v16 = v17;
-        }
-    }
-    goto lab_0x50ed12;
-}
-
-// Address range: 0x50ee90 - 0x50ee95
-// From class:    std::num_put<wchar_t, std::ostreambuf_iterator<wchar_t, std::char_traits<wchar_t> > >
-// Type:          virtual member function
-int64_t function_50ee90(void) {
-    // 0x50ee90
-    int64_t v1; // 0x50ee90
-    return function_50ec50(v1, v1, v1, v1, v1, v1);
-}
-
-// Address range: 0x50eea0 - 0x50eeba
-int64_t function_50eea0(int64_t a1) {
-    int64_t result = *(int64_t *)(a1 + 48); // 0x50eea3
-    if (result != g13) {
-        // 0x50eeb8
-        return result;
-    }
-    // 0x50eeb0
-    int64_t v1; // 0x50eea0
-    return function_50ec50(a1, v1, v1, v1, v1, v1);
 }
 
 // Address range: 0x558400 - 0x558687
@@ -2555,7 +2560,7 @@ int64_t function_558e30(int64_t a1, int64_t a2, int64_t a3, int64_t a4, int64_t 
 // Address range: 0x558e40 - 0x558e62
 int64_t function_558e40(int64_t a1, int64_t a2, int64_t a3, int64_t a4, int64_t a5) {
     int64_t result = *(int64_t *)(a1 + 40); // 0x558e47
-    if (result != g14) {
+    if (result != g15) {
         // 0x558e60
         return result;
     }
