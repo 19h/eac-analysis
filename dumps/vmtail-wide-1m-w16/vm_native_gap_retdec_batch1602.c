@@ -1,12 +1,12 @@
 /*
- * Targeted RetDec C for native executable gap queue batch 1591.
+ * Targeted RetDec C for native executable gap queue batch 1602.
  *
  * This batch is fixed from the ranked native gap queue so it can feed the
  * executable coverage audit without creating a Make dependency cycle:
  * coverage -> queue -> RetDec batch -> coverage.
  *
  * Ranges:
- *   0x4e9679-0x4e96f9 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x34fc85-0x34fe85 rank=- name=- kind=- bytes=- uncovered=-
  */
 #include <stdbool.h>
 #include <stdio.h>
@@ -364,29 +364,80 @@ void _Unwind_SetIP(int64_t context, int64_t value);
 void _Unwind_Resume(struct _Unwind_Exception *exception);
 void _Unwind_Resume_or_Rethrow(int64_t exception);
 
-int64_t function_4e965a();
-int64_t function_4e9679(int64_t a1);
-int64_t function_4e968d(void);
-int64_t function_4e96f0(int64_t a1, int64_t a2, int64_t a3);
-int64_t function_6f5dd85c();
+int64_t function_34fc55();
+int64_t function_34fc85(int64_t a1, int64_t a2, int64_t a3);
+int64_t function_34fc88(int64_t a1, int64_t a2, int64_t a3, uint64_t a4);
+int64_t function_34fd3f(void);
+int64_t function_34fd7c(int64_t a1, int64_t a2, int64_t a3, int64_t a4);
+int64_t function_34fde8(void);
+int64_t function_34fded(void);
+int64_t function_761d024c();
+int64_t function_ffffffffb1fa63e6();
+int64_t unknown_3d5090a5();
+int64_t unknown_fffffffffb94f0ae();
+int64_t unknown_fffffffffedf7282();
 
-// Address range: 0x4e9679 - 0x4e967c
-int64_t function_4e9679(int64_t a1) {
-    // 0x4e9679
-    int64_t result; // 0x4e9679
+// Address range: 0x34fc85 - 0x34fc87
+int64_t function_34fc85(int64_t a1, int64_t a2, int64_t a3) {
+    // 0x34fc85
+    int64_t result; // 0x34fc85
     return result;
 }
 
-// Address range: 0x4e968d - 0x4e968f
-int64_t function_4e968d(void) {
-    // 0x4e968d
-    return function_4e965a();
+// Address range: 0x34fc88 - 0x34fcd4
+int64_t function_34fc88(int64_t a1, int64_t a2, int64_t a3, uint64_t a4) {
+    int64_t v1 = a4;
+    int32_t * v2 = (int32_t *)(a4 - 0x8f52006); // 0x34fc8f
+    int64_t v3; // 0x34fc88
+    *v2 = *v2 + (int32_t)v3;
+    *(char *)-0x23f51c69288744c8 = (char)(a4 / 256 + 58 + v3);
+    int32_t * v4 = (int32_t *)(unknown_3d5090a5() + v3 & 0xffffffff); // 0x34fca6
+    int32_t v5 = *v4; // 0x34fca6
+    int32_t v6 = a3; // 0x34fca6
+    int32_t v7 = v5 + v6; // 0x34fca6
+    *v4 = v7;
+    unknown_fffffffffb94f0ae();
+    if (((v7 ^ v5) & (v7 ^ v6)) < 0) {
+        function_34fc55();
+    }
+    int64_t v8 = __asm_iretd(); // 0x34fcaf
+    unsigned char v9 = (char)v3; // 0x34fcb3
+    unsigned char v10 = *(char *)(v3 - 13); // 0x34fcb3
+    int64_t v11 = v10 > v9 ? 22 : 21; // 0x34fcb6
+    int32_t v12 = *(int32_t *)&v1; // 0x34fcb8
+    *(int32_t *)v1 = v12 + (int32_t)(((v8 & 62) - v11) % 256 | v8 & 0xffffff00);
+    int32_t * v13 = (int32_t *)(v1 + 0x13d008e); // 0x34fcbe
+    *v13 = *v13 + (int32_t)a2;
+    int16_t v14 = v3 & 0xff00 | (int64_t)(v9 - v10 | (char)(v1 / 256)); // 0x34fcc5
+    int16_t v15 = (int16_t)v12 % 256; // 0x34fcc5
+    return v3 & 0xffff0000 | (int64_t)(256 * (v14 % v15)) | (int64_t)((v14 / v15 + 119) % 256);
 }
 
-// Address range: 0x4e96f0 - 0x4e96f6
-int64_t function_4e96f0(int64_t a1, int64_t a2, int64_t a3) {
-    // 0x4e96f0
-    int64_t v1; // 0x4e96f0
-    __asm_outsd((int16_t)a3, (int32_t)v1);
-    return function_6f5dd85c();
+// Address range: 0x34fd3f - 0x34fd44
+int64_t function_34fd3f(void) {
+    // 0x34fd3f
+    return function_761d024c();
+}
+
+// Address range: 0x34fd7c - 0x34fde0
+int64_t function_34fd7c(int64_t a1, int64_t a2, int64_t a3, int64_t a4) {
+    int64_t result = unknown_fffffffffedf7282(); // 0x34fd7c
+    int64_t v1; // 0x34fd7c
+    int32_t * v2 = (int32_t *)(v1 + 92); // 0x34fd81
+    *v2 = *v2 - 1;
+    *(char *)a1 = (char)result;
+    return result;
+}
+
+// Address range: 0x34fde8 - 0x34fded
+int64_t function_34fde8(void) {
+    // 0x34fde8
+    return function_ffffffffb1fa63e6();
+}
+
+// Address range: 0x34fded - 0x34fdf1
+int64_t function_34fded(void) {
+    // 0x34fded
+    int64_t result; // 0x34fded
+    return result;
 }

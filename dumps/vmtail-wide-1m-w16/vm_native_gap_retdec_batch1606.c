@@ -1,12 +1,12 @@
 /*
- * Targeted RetDec C for native executable gap queue batch 1591.
+ * Targeted RetDec C for native executable gap queue batch 1606.
  *
  * This batch is fixed from the ranked native gap queue so it can feed the
  * executable coverage audit without creating a Make dependency cycle:
  * coverage -> queue -> RetDec batch -> coverage.
  *
  * Ranges:
- *   0x4e9679-0x4e96f9 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x3b8db0-0x3b8e4b rank=- name=- kind=- bytes=- uncovered=-
  */
 #include <stdbool.h>
 #include <stdio.h>
@@ -364,29 +364,21 @@ void _Unwind_SetIP(int64_t context, int64_t value);
 void _Unwind_Resume(struct _Unwind_Exception *exception);
 void _Unwind_Resume_or_Rethrow(int64_t exception);
 
-int64_t function_4e965a();
-int64_t function_4e9679(int64_t a1);
-int64_t function_4e968d(void);
-int64_t function_4e96f0(int64_t a1, int64_t a2, int64_t a3);
-int64_t function_6f5dd85c();
+int64_t function_3b8d98();
+int64_t function_3b8db0(int64_t a1, int64_t a2, int64_t a3, uint64_t a4);
 
-// Address range: 0x4e9679 - 0x4e967c
-int64_t function_4e9679(int64_t a1) {
-    // 0x4e9679
-    int64_t result; // 0x4e9679
-    return result;
-}
-
-// Address range: 0x4e968d - 0x4e968f
-int64_t function_4e968d(void) {
-    // 0x4e968d
-    return function_4e965a();
-}
-
-// Address range: 0x4e96f0 - 0x4e96f6
-int64_t function_4e96f0(int64_t a1, int64_t a2, int64_t a3) {
-    // 0x4e96f0
-    int64_t v1; // 0x4e96f0
-    __asm_outsd((int16_t)a3, (int32_t)v1);
-    return function_6f5dd85c();
+// Address range: 0x3b8db0 - 0x3b8dd3
+int64_t function_3b8db0(int64_t a1, int64_t a2, int64_t a3, uint64_t a4) {
+    // 0x3b8db0
+    int64_t v1; // 0x3b8db0
+    v1 = function_3b8d98();
+    int64_t v2 = v1;
+    int64_t v3 = (v2 + a4 / 256) % 256 | v2 & -256; // 0x3b8db5
+    int32_t * v4 = (int32_t *)v3; // 0x3b8db7
+    int32_t v5 = v3; // 0x3b8db7
+    *v4 = *v4 + v5;
+    int16_t v6 = a3; // 0x3b8dbf
+    __asm_out(v6, v5);
+    *(int32_t *)a1 = __asm_insd(v6);
+    return __asm_in(-75);
 }

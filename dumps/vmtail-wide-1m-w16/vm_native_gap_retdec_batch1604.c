@@ -1,12 +1,12 @@
 /*
- * Targeted RetDec C for native executable gap queue batch 1591.
+ * Targeted RetDec C for native executable gap queue batch 1604.
  *
  * This batch is fixed from the ranked native gap queue so it can feed the
  * executable coverage audit without creating a Make dependency cycle:
  * coverage -> queue -> RetDec batch -> coverage.
  *
  * Ranges:
- *   0x4e9679-0x4e96f9 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x350285-0x35033a rank=- name=- kind=- bytes=- uncovered=-
  */
 #include <stdbool.h>
 #include <stdio.h>
@@ -364,29 +364,92 @@ void _Unwind_SetIP(int64_t context, int64_t value);
 void _Unwind_Resume(struct _Unwind_Exception *exception);
 void _Unwind_Resume_or_Rethrow(int64_t exception);
 
-int64_t function_4e965a();
-int64_t function_4e9679(int64_t a1);
-int64_t function_4e968d(void);
-int64_t function_4e96f0(int64_t a1, int64_t a2, int64_t a3);
-int64_t function_6f5dd85c();
+int64_t function_350276();
+int64_t function_350285(void);
+int64_t function_350292(int64_t a1);
+int64_t function_35029f(void);
+int64_t function_3502bc(int64_t a1, int64_t a2, int64_t a3, int64_t a4, int64_t a5);
+int64_t function_3502e1(int64_t a1, int64_t a2, int64_t a3, int64_t a4, int64_t a5);
+int64_t function_35034f();
+int64_t unknown_6dd099c2();
 
-// Address range: 0x4e9679 - 0x4e967c
-int64_t function_4e9679(int64_t a1) {
-    // 0x4e9679
-    int64_t result; // 0x4e9679
+// Address range: 0x350285 - 0x350286
+int64_t function_350285(void) {
+    // 0x350285
+    int64_t result; // 0x350285
     return result;
 }
 
-// Address range: 0x4e968d - 0x4e968f
-int64_t function_4e968d(void) {
-    // 0x4e968d
-    return function_4e965a();
+// Address range: 0x350292 - 0x350293
+int64_t function_350292(int64_t a1) {
+    // 0x350292
+    int64_t result; // 0x350292
+    return result;
 }
 
-// Address range: 0x4e96f0 - 0x4e96f6
-int64_t function_4e96f0(int64_t a1, int64_t a2, int64_t a3) {
-    // 0x4e96f0
-    int64_t v1; // 0x4e96f0
-    __asm_outsd((int16_t)a3, (int32_t)v1);
-    return function_6f5dd85c();
+// Address range: 0x35029f - 0x3502a0
+int64_t function_35029f(void) {
+    // 0x35029f
+    int64_t result; // 0x35029f
+    return result;
+}
+
+// Address range: 0x3502bc - 0x3502db
+int64_t function_3502bc(int64_t a1, int64_t a2, int64_t a3, int64_t a4, int64_t a5) {
+    // 0x3502bc
+    int16_t v1; // 0x3502bc
+    uint16_t v2 = v1;
+    int64_t v3 = a3;
+    unknown_6dd099c2();
+    bool v4; // 0x3502bc
+    if (v4 || v4) {
+        function_350276();
+    }
+    int64_t result = v2; // 0x3502ca
+    *(int32_t *)0x664ec61f = *(int32_t *)0x664ec61f + (int32_t)v2;
+    uint32_t v5 = (int32_t)a4 % 32; // 0x3502cf
+    v3 = a3;
+    char v6 = a3; // 0x3502cf
+    if (v5 != 0) {
+        int16_t v7; // 0x3502bc
+        uint32_t v8 = *(int32_t *)&v7; // 0x3502cf
+        *(int32_t *)result = v8 >> 32 - v5 | v8 << v5;
+        v6 = *(char *)&v3;
+    }
+    // 0x3502c3
+    *(char *)v3 = v6 + (char)v2;
+    return result;
+}
+
+// Address range: 0x3502e1 - 0x350316
+int64_t function_3502e1(int64_t a1, int64_t a2, int64_t a3, int64_t a4, int64_t a5) {
+    // 0x3502e1
+    int64_t v1; // 0x3502e1
+    uint32_t v2 = (int32_t)v1;
+    *(int32_t *)a1 = v2;
+    bool v3; // 0x3502e1
+    uint32_t v4 = *(int32_t *)((v3 ? -4 : 4) + a2) + v2; // 0x3502e3
+    uint32_t v5 = 0x10000 * v4 / 0x10000; // 0x3502eb
+    int64_t v6 = ((v4 < v2 ? 107 : 106) + (int64_t)v5) % 256 | (int64_t)(v5 & -256); // 0x3502ec
+    int32_t * v7 = (int32_t *)(a4 - 0x17a4aad1); // 0x3502f1
+    *v7 = *v7 & (int32_t)v1 - 0xf1efe18;
+    int32_t * v8 = (int32_t *)v6; // 0x3502f7
+    int32_t v9 = *v8 + (int32_t)v1; // 0x3502f7
+    unsigned char v10 = llvm_ctpop_i8((char)v9); // 0x3502f7
+    *v8 = v9;
+    int64_t v11 = v6; // 0x3502f9
+    if (v10 % 2 != 0) {
+        v11 = function_35034f();
+    }
+    // 0x3502fb
+    *(int32_t *)-0x17c914fe = *(int32_t *)-0x17c914fe >> 1;
+    int32_t * v12 = (int32_t *)(a3 + 0x623110cf); // 0x350301
+    int32_t v13 = *v12 + (int32_t)v11; // 0x350301
+    *v12 = v13;
+    int64_t result = v11; // 0x350307
+    if (v13 < 1) {
+        result = function_35029f();
+    }
+    // 0x350309
+    return result;
 }

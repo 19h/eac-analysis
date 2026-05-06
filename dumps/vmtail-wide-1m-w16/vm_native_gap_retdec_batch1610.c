@@ -1,12 +1,12 @@
 /*
- * Targeted RetDec C for native executable gap queue batch 1591.
+ * Targeted RetDec C for native executable gap queue batch 1610.
  *
  * This batch is fixed from the ranked native gap queue so it can feed the
  * executable coverage audit without creating a Make dependency cycle:
  * coverage -> queue -> RetDec batch -> coverage.
  *
  * Ranges:
- *   0x4e9679-0x4e96f9 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x4f68fc-0x4f69b0 rank=- name=- kind=- bytes=- uncovered=-
  */
 #include <stdbool.h>
 #include <stdio.h>
@@ -52,6 +52,7 @@ struct eac_retdec_cpuid_regs { uint32_t e0; uint32_t e1; uint32_t e2; uint32_t e
 #define SIGALARM 14
 #define SYS_getegid32 50
 #define PTHREAD_MUTEX_RECURSIVE 1
+extern int g1;
 int64_t entry_point();
 unsigned char llvm_ctpop_i8(unsigned char value);
 uint16_t llvm_bswap_i16(uint16_t value);
@@ -364,29 +365,59 @@ void _Unwind_SetIP(int64_t context, int64_t value);
 void _Unwind_Resume(struct _Unwind_Exception *exception);
 void _Unwind_Resume_or_Rethrow(int64_t exception);
 
-int64_t function_4e965a();
-int64_t function_4e9679(int64_t a1);
-int64_t function_4e968d(void);
-int64_t function_4e96f0(int64_t a1, int64_t a2, int64_t a3);
-int64_t function_6f5dd85c();
+int64_t function_20540();
+int64_t function_20a50();
+int64_t function_4f6720();
+int64_t function_4f68fc(void);
+int64_t function_4f68ff(void);
+int64_t function_4f6903(int64_t a1, int64_t a2);
+int64_t function_5423f0();
+int64_t function_54d560();
 
-// Address range: 0x4e9679 - 0x4e967c
-int64_t function_4e9679(int64_t a1) {
-    // 0x4e9679
-    int64_t result; // 0x4e9679
+// Address range: 0x4f68fc - 0x4f68fd
+int64_t function_4f68fc(void) {
+    // 0x4f68fc
+    int64_t result; // 0x4f68fc
     return result;
 }
 
-// Address range: 0x4e968d - 0x4e968f
-int64_t function_4e968d(void) {
-    // 0x4e968d
-    return function_4e965a();
+// Address range: 0x4f68ff - 0x4f6903
+int64_t function_4f68ff(void) {
+    // 0x4f68ff
+    int64_t result; // 0x4f68ff
+    int32_t * v1 = (int32_t *)(result - 119); // 0x4f68ff
+    *v1 = *v1 - 1;
+    return result;
 }
 
-// Address range: 0x4e96f0 - 0x4e96f6
-int64_t function_4e96f0(int64_t a1, int64_t a2, int64_t a3) {
-    // 0x4e96f0
-    int64_t v1; // 0x4e96f0
-    __asm_outsd((int16_t)a3, (int32_t)v1);
-    return function_6f5dd85c();
+// Address range: 0x4f6903 - 0x4f69b0
+int64_t function_4f6903(int64_t a1, int64_t a2) {
+    // 0x4f6903
+    function_20540();
+    int64_t v1; // 0x4f6903
+    _Unwind_Resume((struct _Unwind_Exception *)v1);
+    function_20a50();
+    int64_t v2 = function_20a50(); // 0x4f6915
+    function_20540();
+    _Unwind_Resume((struct _Unwind_Exception *)v2);
+    int64_t v3 = *(int64_t *)(v2 + 240 + *(int64_t *)(*(int64_t *)v2 - 24)); // 0x4f693b
+    if (v3 == 0) {
+        // 0x4f699c
+        return function_5423f0();
+    }
+    // 0x4f6948
+    if (*(char *)(v3 + 56) != 0) {
+        // 0x4f6958
+        return function_4f6720(v2, a2, (int64_t)*(char *)(v3 + 67));
+    }
+    // 0x4f6970
+    function_54d560(v3);
+    int64_t v4 = *(int64_t *)(*(int64_t *)v3 + 48); // 0x4f6980
+    int64_t v5 = 10; // 0x4f698b
+    if (v4 != g1) {
+        // 0x4f698d
+        v5 = 0x100000000000000 * v4 >> 56;
+    }
+    // 0x4f6958
+    return function_4f6720(v2, a2, v5);
 }

@@ -1,12 +1,12 @@
 /*
- * Targeted RetDec C for native executable gap queue batch 1591.
+ * Targeted RetDec C for native executable gap queue batch 1600.
  *
  * This batch is fixed from the ranked native gap queue so it can feed the
  * executable coverage audit without creating a Make dependency cycle:
  * coverage -> queue -> RetDec batch -> coverage.
  *
  * Ranges:
- *   0x4e9679-0x4e96f9 rank=- name=- kind=- bytes=- uncovered=-
+ *   0x34fa85-0x34fb85 rank=- name=- kind=- bytes=- uncovered=-
  */
 #include <stdbool.h>
 #include <stdio.h>
@@ -364,29 +364,29 @@ void _Unwind_SetIP(int64_t context, int64_t value);
 void _Unwind_Resume(struct _Unwind_Exception *exception);
 void _Unwind_Resume_or_Rethrow(int64_t exception);
 
-int64_t function_4e965a();
-int64_t function_4e9679(int64_t a1);
-int64_t function_4e968d(void);
-int64_t function_4e96f0(int64_t a1, int64_t a2, int64_t a3);
-int64_t function_6f5dd85c();
+int64_t function_34fa85(void);
+int64_t function_34fa9e(int64_t a1);
+int64_t function_34fb53(int64_t a1, int64_t a2, int64_t a3);
 
-// Address range: 0x4e9679 - 0x4e967c
-int64_t function_4e9679(int64_t a1) {
-    // 0x4e9679
-    int64_t result; // 0x4e9679
+// Address range: 0x34fa85 - 0x34fa86
+int64_t function_34fa85(void) {
+    // 0x34fa85
+    int64_t result; // 0x34fa85
     return result;
 }
 
-// Address range: 0x4e968d - 0x4e968f
-int64_t function_4e968d(void) {
-    // 0x4e968d
-    return function_4e965a();
+// Address range: 0x34fa9e - 0x34faa0
+int64_t function_34fa9e(int64_t a1) {
+    // 0x34fa9e
+    int64_t result; // 0x34fa9e
+    return result;
 }
 
-// Address range: 0x4e96f0 - 0x4e96f6
-int64_t function_4e96f0(int64_t a1, int64_t a2, int64_t a3) {
-    // 0x4e96f0
-    int64_t v1; // 0x4e96f0
-    __asm_outsd((int16_t)a3, (int32_t)v1);
-    return function_6f5dd85c();
+// Address range: 0x34fb53 - 0x34fb5a
+int64_t function_34fb53(int64_t a1, int64_t a2, int64_t a3) {
+    // 0x34fb53
+    int64_t result; // 0x34fb53
+    int32_t * v1 = (int32_t *)(result + 0x21fc3a0e); // 0x34fb53
+    *v1 = *v1 + (int32_t)a2;
+    return result;
 }
