@@ -24,6 +24,7 @@ VALIDATED_HANDLER_RETDEC_CS := $(PRIMARY_DIR)/vm_validated_handlers_retdec_batch
 HANDLER_RETDEC_INDEX_TSV := $(PRIMARY_DIR)/vm_handler_retdec_index.tsv
 HANDLER_RETDEC_INDEX_MD := $(PRIMARY_DIR)/vm_handler_retdec_index.md
 UNRESOLVED_FAMILY_C := $(PRIMARY_DIR)/vm_unresolved_family_chains.c
+BYTECODE_IR_DECOMPILE_TSV := $(PRIMARY_DIR)/vm_bytecode_ir_decompile.tsv
 PSEUDOCODE_TOP_C := $(PRIMARY_DIR)/vm_pseudocode_top.c
 PROGRAM_PSEUDOCODE_TOP_C := $(PRIMARY_DIR)/vm_program_pseudocode_top.c
 PROGRAM_PSEUDOCODE_FULL_C := $(PRIMARY_DIR)/vm_program_pseudocode_full.c
@@ -931,8 +932,11 @@ $(PROGRAM_PSEUDOCODE_FULL_C): vm_program_pseudocode_dump.py vm_pseudocode_dump.p
 
 pseudocode-full: $(PROGRAM_PSEUDOCODE_FULL_C)
 
-$(PROGRAM_DECOMPILED_FULL_C): vm_program_decompiled_dump.py vm_pseudocode_dump.py $(PRIMARY_DIR)/vm_bytecode_ir.tsv $(PRIMARY_DIR)/vm_bytecode_basic_blocks.tsv $(PRIMARY_DIR)/vm_bytecode_basic_block_edges.tsv
-	python3 vm_program_decompiled_dump.py --limit-blocks 0 --rows-per-block 0 > $@
+$(BYTECODE_IR_DECOMPILE_TSV): vm_bytecode_ir.py $(PRIMARY_DIR)/vm_instruction_lift.tsv $(PRIMARY_DIR)/vm_bytecode_basic_block_edges.tsv
+	python3 vm_bytecode_ir.py --max-expr-len 4000 > $@
+
+$(PROGRAM_DECOMPILED_FULL_C): vm_program_decompiled_dump.py vm_pseudocode_dump.py $(BYTECODE_IR_DECOMPILE_TSV) $(PRIMARY_DIR)/vm_bytecode_basic_blocks.tsv $(PRIMARY_DIR)/vm_bytecode_basic_block_edges.tsv
+	python3 vm_program_decompiled_dump.py --ir $(BYTECODE_IR_DECOMPILE_TSV) --limit-blocks 0 --rows-per-block 0 --max-expr-len 4000 > $@
 
 program-decompiled: $(PROGRAM_DECOMPILED_FULL_C)
 
