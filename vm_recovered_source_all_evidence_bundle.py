@@ -272,6 +272,7 @@ def main():
     print("long ftell(void *stream);")
     print("size_t fwrite(const void *ptr, size_t size, size_t nmemb, void *stream);")
     print("void free(void *ptr);")
+    print("void *realloc(void *ptr, size_t size);")
     print("void *memchr(const void *s, int c, size_t n);")
     print("void *memcpy(void *dest, const void *src, size_t n);")
     print("int memcmp(const void *s1, const void *s2, size_t n);")
