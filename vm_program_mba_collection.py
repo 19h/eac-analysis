@@ -5,6 +5,8 @@ from __future__ import annotations
 
 import argparse
 import csv
+import re
+import struct
 from collections import Counter, defaultdict
 from pathlib import Path
 
@@ -86,6 +88,15 @@ def trace_paths() -> list[Path]:
     return sorted(Path("dumps").glob("**/vm_instruction_trace*.tsv"))
 
 
+def raw_run_paths() -> list[Path]:
+    return sorted(Path("dumps").glob("vmtail-mba-*/run.stderr"))
+
+
+def read_dispatch_table(eac_path: Path, table_off: int = 0xC3718, entries: int = 360) -> list[int]:
+    data = eac_path.read_bytes()
+    return [struct.unpack_from("<Q", data, table_off + idx * 8)[0] for idx in range(entries)]
+
+
 def load_program_row(manifest: Path, program: int) -> dict[str, str]:
     for row in read_tsv(manifest):
         if int(row["program"]) == program:
@@ -145,6 +156,66 @@ def collect_trace_observations(paths: list[Path], case_starts: set[str]) -> list
                     out[key] = row.get(key, "")
                 rows.append(out)
     rows.sort(key=lambda row: (row["case_state"], row["relation"], row["trace_path"], row.get("seq", "")))
+    return rows
+
+
+HEX_FIELD_RE = re.compile(r"\b([A-Za-z0-9_]+)=0x([0-9a-fA-F]+)")
+
+
+def collect_raw_vmtail_observations(paths: list[Path], case_starts: set[str], target_to_entry: dict[int, int]) -> list[dict[str, str]]:
+    rows: list[dict[str, str]] = []
+    for path in paths:
+        if not path.exists():
+            continue
+        with path.open(errors="replace") as handle:
+            for lineno, line in enumerate(handle, 1):
+                if not line.startswith("[VMTAIL]"):
+                    continue
+                fields = {key: int(value, 16) for key, value in HEX_FIELD_RE.findall(line)}
+                vm_ip_off = fields.get("vm_ip_off")
+                if vm_ip_off is None:
+                    continue
+                case_state = f"0x{vm_ip_off:x}"
+                if case_state not in case_starts:
+                    continue
+                target_off = fields.get("target_off")
+                target_entry = target_to_entry.get(target_off, "") if target_off is not None else ""
+                out = {
+                    "trace_path": str(path),
+                    "relation": "case_start",
+                    "case_state": case_state,
+                    "seq": f"raw:{lineno}",
+                    "frame": f"0x{fields.get('frame', 0):x}" if "frame" in fields else "",
+                    "source_entry": "",
+                    "source_target": "",
+                    "start_vm_ip": case_state,
+                    "end_vm_ip": "",
+                    "delta": "",
+                    "kind": "raw_vmtail",
+                    "site": f"0x{fields.get('site', 0):x}" if "site" in fields else "",
+                    "target_entry": str(target_entry) if target_entry != "" else "",
+                    "target": f"0x{target_off:x}" if target_off is not None else "",
+                    "bytes": "",
+                    "byte_status": "raw_vmtail",
+                    "pre_flags": f"0x{fields['vm_flags']:x}" if "vm_flags" in fields else "",
+                    "post_flags": "",
+                    "pre_state": f"0x{fields['vm_state']:x}" if "vm_state" in fields else "",
+                    "post_state": "",
+                    "state_delta": "",
+                    "pre_byte": f"0x{fields['vm_byte']:x}" if "vm_byte" in fields else "",
+                    "post_byte": "",
+                }
+                words = []
+                for idx in range(6):
+                    key = f"ip_w{idx}"
+                    value = fields.get(key)
+                    out[f"w{idx}"] = f"0x{value:x}" if value is not None else ""
+                    if value is not None:
+                        words.append(value)
+                if words:
+                    out["bytes"] = "".join(f"{word & 0xff:02x}{(word >> 8) & 0xff:02x}" for word in words)
+                rows.append(out)
+    rows.sort(key=lambda row: (row["case_state"], row["trace_path"], row["seq"]))
     return rows
 
 
@@ -384,7 +455,11 @@ def main() -> int:
         ir_by_block[row["_block"]].append(row)
 
     elf = args.elf.read_bytes()
+    table = read_dispatch_table(args.elf)
+    target_to_entry = {target: idx for idx, target in enumerate(table)}
     observations = collect_trace_observations(trace_paths(), case_starts)
+    observations.extend(collect_raw_vmtail_observations(raw_run_paths(), case_starts, target_to_entry))
+    observations.sort(key=lambda row: (row["case_state"], row["relation"], row["trace_path"], row.get("seq", "")))
     obs_by_case: dict[str, list[dict[str, str]]] = defaultdict(list)
     for row in observations:
         if row["relation"] == "case_start":
@@ -530,7 +605,7 @@ def main() -> int:
         handle.write(f"- Program range: `{program_row['start']}`..`{program_row['end']}`\n")
         handle.write(f"- Case states / blocks: `{len(case_rows)}`\n")
         handle.write(f"- IR rows captured: `{len(ir_out)}`\n")
-        handle.write(f"- Runtime observations captured: `{len(observations)}` from `{len(trace_paths())}` trace files\n")
+        handle.write(f"- Runtime observations captured: `{len(observations)}` from `{len(trace_paths())}` trace TSV files and `{len(raw_run_paths())}` raw VMTAIL runs\n")
         handle.write(f"- Case-start observations with concrete pre-state: `{sum(1 for row in observations if row['relation'] == 'case_start' and row.get('pre_state'))}`\n\n")
         handle.write("## Reduction Readiness\n\n")
         ready = len(reduction_rows) - len(missing_rows)
