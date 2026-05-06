@@ -1,0 +1,19 @@
+program	first_seen_rank	string_refs	role_mix	confidence_mix	behavior_tags	top_strings
+020	58	1	cpu_or_runtime_configuration_name:1	medium:1	control_transfer_or_native_bridge_candidate	FILTERS_MODE_IPREFETCH
+021	57	1	threading_import_symbol:1	high:1	threading_sync	pthread_mutexattr_init
+022	46	1	compiler_type_name:1	medium:1	control_transfer_or_native_bridge_candidate	unsigned __int128
+031	50	1	cxx_runtime_type_or_exception_text:1	medium:1	cxx_runtime	_ZGTtdlPv
+034	1	1	literal_data_marker:1	low:1	control_transfer_or_native_bridge_candidate	YYYYY
+039	63	1	network_import_symbol:1	high:1	networking	socket
+040	65	1	cxx_runtime_type_or_exception_text:1	medium:1	cxx_runtime	basic_string::append
+041	31	5	gnu_transactional_memory_runtime_symbol:1,locale_runtime_symbol:1,crypto_import_symbol:1,compiler_type_name:1,disassembly_metadata_symbol:1	medium:3,high:2	crypto_hashing;cxx_runtime;disassembly_metadata	_ITM_registerTMCloneTable || __freelocale || blake3_hasher_finalize || unsigned __int128 || zydis_decoder_tree_root
+042	17	4	gnu_transactional_memory_runtime_symbol:2,locale_runtime_symbol:2	medium:4	cxx_runtime	_ITM_registerTMCloneTable || __freelocale || _ITM_registerTMCloneTable || __freelocale
+045	29	1	threading_import_symbol:1	high:1	threading_sync	pthread_cond_wait
+046	23	2	gnu_transactional_memory_runtime_symbol:1,locale_runtime_symbol:1	medium:2	cxx_runtime	_ITM_registerTMCloneTable || __freelocale
+048	19	3	gnu_transactional_memory_runtime_symbol:1,locale_runtime_symbol:1,compiler_type_name:1	medium:3	cxx_runtime	_ITM_registerTMCloneTable || __freelocale || long double
+052	27	2	tls_protocol_message:1,libc_version_requirement:1	high:2	tls_or_ssl;host_environment	dropping unexpected ChangeCipherSpec || GLIBC_2.17
+055	30	17	gnu_transactional_memory_runtime_symbol:6,locale_runtime_symbol:6,threading_import_symbol:2,cxx_runtime_type_or_exception_text:1,tls_library_source_path:1,process_or_host_import_symbol:1	medium:13,high:4	tls_or_ssl;threading_sync;host_environment;cxx_runtime	_ITM_registerTMCloneTable || __freelocale || NSt7__cxx118time_getIwSt19istreambuf_iteratorIwSt11char_traitsIwEEEE || _ITM_registerTMCloneTable || __freelocale || /home/richard/code/mbedtls/library/ssl_tls.c || pthread_cond_timedwait || _ITM_registerTMCloneTable
+059	33	4	embedded_token_or_encoded_blob:1,gnu_transactional_memory_runtime_symbol:1,locale_runtime_symbol:1,cxx_runtime_type_or_exception_text:1	medium:4	cxx_runtime	QmK3TAsJm8V/J5AWpLEV6jAFgRGymGGHnof0DXzVWZidrcZJWTNuGEX90nB3ee2w || _ITM_registerTMCloneTable || __freelocale || basic_string::_S_construct null not valid
+061	35	2	gnu_transactional_memory_runtime_symbol:1,locale_runtime_symbol:1	medium:2	cxx_runtime	_ITM_registerTMCloneTable || __freelocale
+062	36	1	unclassified_data_string:1	low:1	control_transfer_or_native_bridge_candidate	:$23
+063	37	4	process_or_host_import_symbol:1,gnu_transactional_memory_runtime_symbol:1,locale_runtime_symbol:1,tls_protocol_message:1	high:2,medium:2	tls_or_ssl;cxx_runtime;process_or_shell	pclose || _ITM_registerTMCloneTable || __freelocale || client hello, adding server name extension: %s
