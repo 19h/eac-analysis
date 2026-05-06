@@ -925,6 +925,7 @@ def main():
     print("void __asm_outsb(uint16_t port, char value);")
     print("void __asm_outsd(uint16_t port, int32_t value);")
     print("uint8_t __readfsbyte(int64_t offset);")
+    print("uint32_t __readfsdword(int64_t offset);")
     print("uint64_t __readfsqword(int64_t offset);")
     print("uint8_t __readgsbyte(int64_t offset);")
     print("uint32_t __readgsdword(int64_t offset);")
