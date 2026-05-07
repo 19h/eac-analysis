@@ -1,0 +1,16 @@
+phase	events	runs	operations	top_details	evidence_scope
+device_inventory	20	5	opendir:5,readlink:5,realpath:5,open:5	opendir:/sys/class/net:5,readlink:/sys/class/net/enxce0c6f149a89:5,realpath:/sys/class/net/../../devices/pci0000:00/0000:00:14.0/usb1/1-7/1-7:1.0/net/enxce0c6f149a89:5,open:/sys/devices/pci0000:00/0000:00:14.0/usb1/1-7/1-7:1.0/net/enxce0c6f149a89/address:5	runtime_trace_sequence_native_offsets
+entropy_seed	65	32	fopen:65	fopen:/dev/urandom:65	runtime_trace_sequence_native_offsets
+environment_check	48	31	getenv:48	getenv:EAC_LAUNCHERDIR:31,getenv:LD_PRELOAD:7,getenv:LD_AUDIT:7,getenv:_EAC_DEV:3	runtime_trace_sequence_native_offsets
+filesystem_io	19	5	open:15,fopen:4	open:/etc/machine-id:5,open:/etc/hostname:5,open:/etc/os-release:5,fopen:/models/dev/sc-rev/eac/eacsym/driver:4	runtime_trace_sequence_native_offsets
+firmware_hardware_inventory	96	31	open:96	open:/sys/devices/virtual/dmi/id/board_name:31,open:/sys/devices/virtual/dmi/id/product_name:31,open:/sys/class/dmi/id/bios_vendor:9,open:/sys/class/dmi/id/bios_date:9,open:/sys/class/dmi/id/sys_vendor:9,open:/sys/class/dmi/id/product_name:7	runtime_trace_sequence_native_offsets
+mount_inventory	13	7	open:13	open:/etc/mtab:13	runtime_trace_sequence_native_offsets
+native_runtime_event	2	1	close:2	close:3:2	runtime_trace_sequence_native_offsets
+network_connectivity	72	31	getaddrinfo:62,send:4,socket:2,connect:2,recv:2	getaddrinfo:api.epicgames.dev:31,getaddrinfo:datarouter.ol.epicgames.com:31,send:3:4,connect:127.0.0.1:443:2,recv:3:2	runtime_trace_sequence_native_offsets
+network_dns_fallback_shell	60	30	popen:60	popen:host -4 api.epicgames.dev:30,popen:host -4 datarouter.ol.epicgames.com:30	runtime_trace_sequence_native_offsets
+process_inventory	6703	31	open:4221,readlink:2448,fopen:31,opendir:3	open:/proc/mounts:31,fopen:/proc/bus/pci/devices:31,readlink:/proc/self/exe:8,open:/proc/cpuinfo:5,open:/proc/net/route:5,open:/proc/modules:3,opendir:/proc/:3,readlink:/proc/1/exe:3,open:/proc/1/comm:3,open:/proc/1/cmdline:3	runtime_trace_sequence_native_offsets
+process_or_shell_probe	5	5	popen:5	popen:lshw -C display 2>/dev/null:5	runtime_trace_sequence_native_offsets
+self_memory_map_inspection	34	31	open:34	open:/proc/self/maps:34	runtime_trace_sequence_native_offsets
+self_memory_protection	62	31	mprotect:62	mprotect:0x72281bc00000:2,mprotect:0x716a80a00000:2,mprotect:0x71e060e00000:2,mprotect:0x76aef2600000:2,mprotect:0x7e8fac200000:2,mprotect:0x7d6087c00000:2,mprotect:0x734dc7600000:2,mprotect:0x7f225ba00000:2,mprotect:0x787fe4000000:2,mprotect:0x7ed627c00000:2	runtime_trace_sequence_native_offsets
+storage_inventory	246	6	readlink:117,realpath:117,open:6,opendir:6	realpath:/dev/disk/by-id/../../nvm:90,realpath:/dev/disk/by-id/../../sda1:12,realpath:/dev/disk/by-id/../../sda:10,open:/sys/class/block/nvme1n1p/device/model:6,opendir:/dev/disk/by-id/:6,readlink:/dev/disk/by-id/wwn-0x5000c500e5ee7ff3-part1:6,readlink:/dev/disk/by-id/ata-ST2000DM008-2UB102_ZFL6L34T-part1:6,readlink:/dev/disk/by-id/ata-ST2000DM008-2UB102_ZFL6L34T:5,readlink:/dev/disk/by-id/wwn-0x5000c500e5ee7ff3:5,readlink:/dev/disk/by-id/nvme-Micron_3400_MTFDKBA1T0TFH_22403BB5D67C_1-part1:5	runtime_trace_sequence_native_offsets
+thread_start	93	31	pthread_create:93		runtime_trace_sequence_native_offsets
