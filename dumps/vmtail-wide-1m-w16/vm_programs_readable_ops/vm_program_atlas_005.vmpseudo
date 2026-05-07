@@ -4,931 +4,775 @@ rows: 157
 family_mix: obfuscated_table_dispatch:140,operand_table_dispatch:14,fixed_or_affine_dispatch:2,long_or_backedge_control:1
 string_refs: 
 
-block 3@0xda38f-0xda607+0x0
+block 3
   0xda38f..0xda391 vmop_171_plus0x2_state_const_post_slot_const_or_affine bytes=7200 family=fixed_or_affine_dispatch grade=readable_control_semantics target=114@0x90319:1 delta=+0x2
     state: vm_state is set to or checked against a post-dispatch constant marker
     dispatch: next_entry = fixed or affine dispatch slot; expression=128=u16_0 << 0x3
     ip: ip += 0x2
-block 3@0xda38f-0xda607+0x2
   0xda391..0xda395 vmop_114_plus0x4_state_add_const_slot_multi_path bytes=a2635bac family=obfuscated_table_dispatch grade=readable_with_structural_algebra target=172@0x9b68a:1 delta=+0x4
     state: vm_state = add/constant-style update over state, flags, and operands; formula=state0 ^ flags0 & state0 | 0x6729b5bf - 0x3dca653f ^ 0x671da5f4 + state0 & 0x48367f78 ^ 0x63bb548f + flags0 & state0 | 0x6729b5bf - 0x3dca653f ^ 0x671da5f4 + state0 & 0x292b555d ^ u16_2 + state0 ^ fla...#12f
     dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=51=(mask32((mask32(u16_0 + (mask32((mask32((mask32((mask32((mask32((mask32(state0 ^ (mask32((mask32((mask32(flags0 & (mask32(state0 | 0x6729b5bf)))) + state0)) & 0x48367f78)))) ^ 0x63bb548f)) + (mask3...#12f
     ip: ip += 0x4
     unresolved: algebraic_state_or_slot_formula
-block 3@0xda38f-0xda607+0x6
   0xda395..0xda399 vmop_172_plus0x4_state_add_const_slot_mba_stateful bytes=c8e12308 family=obfuscated_table_dispatch grade=readable_with_structural_algebra target=66@0x855ff:1 delta=+0x4
     state: vm_state = add/constant-style update over state, flags, and operands; formula=state0 ^ 0x7070916c - 0x6ecee241 + u16_0 ^ state0 ^ 0x7070916c - 0x6ecee241 ^ flags0 ^ 0x15bf847f & state0 | 0x3eba9edf | u16_2 ^ 0x715f0a33
     dispatch: next_entry = MBA(state, flags, operands) dispatch slot; per-row concrete target is resolved; expression=128=(mask32(u16_2 ^ 0x715f0a33)) & 0xffff
     ip: ip += 0x4
     unresolved: algebraic_state_or_slot_formula
-block 3@0xda38f-0xda607+0xa
   0xda399..0xda39c vmop_066_plus0x3_state_add_const_slot_multi_path bytes=a51c2a family=obfuscated_table_dispatch grade=readable_with_structural_algebra target=332@0xbd36d:1 delta=+0x3
     state: vm_state = add/constant-style update over state, flags, and operands; formula=state0 & 0x2f6cb1f6 - b2 ^ state0 & 0x2f6cb1f6 ^ 0x745ff1d2 & 0x13de2cdd - flags0 - 0x50170614 | 0x7167293a ^ 0x42a6ffd6 ^ u16_0 - state0 & 0x2f6cb1f6 - b2 ^ state0 & 0x2f6cb1f6 ^ 0x745ff1d2 & 0x13de2...#108
     dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=99=(mask32((mask32(u16_0 - (mask32((mask32((mask32((mask32((mask32(state0 & 0x2f6cb1f6)) - (mask32(b2 ^ (mask32(state0 & 0x2f6cb1f6)))))) ^ 0x745ff1d2)) & 0x13de2cdd)) - (mask32(flags0 ^ 0x42a6ffd6)))...#12f
     ip: ip += 0x3
     unresolved: algebraic_state_or_slot_formula
-block 3@0xda38f-0xda607+0xd
   0xda39c..0xda3a0 vmop_332_plus0x4_state_add_const_slot_multi_path bytes=c0e45399 family=obfuscated_table_dispatch grade=readable_with_structural_algebra target=91@0x8b6de:1 delta=+0x4
     state: vm_state = add/constant-style update over state, flags, and operands; formula=state0 | 0x30661b97 & 0x57d9fe65 | flags0 & state0 | 0x2f0ca7d2 & state0 | 0x30661b97 - 0x23cebdbc ^ state0 | 0x30661b97 & 0x57d9fe65 & flags0 & state0 | 0x2f0ca7d2 & state0 | 0x30661b97 - 0x23cebdbc ...#12f
     dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=128=(mask32((mask32(u16_2 ^ (mask32((mask32((mask32((mask32((mask32((mask32(state0 | 0x30661b97)) & 0x57d9fe65)) | (mask32((mask32((mask32(flags0 & (mask32(state0 | 0x2f0ca7d2)))) & (mask32((mask32(st...#df
     ip: ip += 0x4
     unresolved: algebraic_state_or_slot_formula
-block 3@0xda38f-0xda607+0x11
   0xda3a0..0xda3a4 vmop_091_plus0x4_state_add_const_slot_mba_stateful bytes=881de801 family=obfuscated_table_dispatch grade=readable_with_structural_algebra target=79@0x885b0:1 delta=+0x4
     state: vm_state = add/constant-style update over state, flags, and operands; formula=state0 ^ u16_0 ^ state0
     dispatch: next_entry = MBA(state, flags, operands) dispatch slot; per-row concrete target is resolved; expression=128=(mask32(u16_0 ^ state0)) & 0xffff
     ip: ip += 0x4
     unresolved: algebraic_state_or_slot_formula
-block 3@0xda38f-0xda607+0x15
   0xda3a4..0xda3a9 vmop_079_plus0x5_state_add_const_slot_multi_path bytes=a8a03d0100 family=obfuscated_table_dispatch grade=readable_with_structural_algebra target=257@0xadbfd:1 delta=+0x5
     state: vm_state = add/constant-style update over state, flags, and operands; formula=state0 - flags0 ^ 0xc7e744f ^ 0x623ccce4 & 0xd4da920 | flags0 ^ 0xc7e744f ^ 0x225dfa31 - 0x6110d031 ^ 0x3fcb6e9a ^ flags0 ^ 0xc7e744f + 0x60a9dba6 | u16_0 ^ state0 - flags0 ^ 0xc7e744f ^ 0x623ccce4 & ...#12f
     dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=128=(mask32(u16_0 ^ (mask32((mask32((mask32((mask32((mask32((mask32((mask32(state0 - (mask32((mask32(flags0 ^ 0xc7e744f)) ^ 0x623ccce4)))) & 0xd4da920)) | (mask32((mask32(flags0 ^ 0xc7e744f)) ^ 0x225d...#df
     ip: ip += 0x5
     unresolved: algebraic_state_or_slot_formula
-block 3@0xda38f-0xda607+0x1a
   0xda3a9..0xda3ab vmop_257_plus0x2_state_add_const_slot_multi_path bytes=c7b7 family=obfuscated_table_dispatch grade=readable_with_structural_algebra target=258@0xadf2c:1 delta=+0x2
     state: vm_state = add/constant-style update over state, flags, and operands; formula=state0 - 0x509f61c9 + 0x1b9def5 - 0x7d4ca123 | 0x1d2af87 ^ u16_0 - state0 - 0x509f61c9 + 0x1b9def5 - 0x7d4ca123 | 0x1d2af87
     dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=128=(mask32(u16_0 - (mask32((mask32((mask32((mask32(state0 - 0x509f61c9)) + 0x1b9def5)) - 0x7d4ca123)) | 0x1d2af87)))) & 0xffff
     ip: ip += 0x2
     unresolved: algebraic_state_or_slot_formula
-block 3@0xda38f-0xda607+0x1c
   0xda3ab..0xda3af vmop_258_plus0x4_state_add_const_slot_multi_path bytes=83cb5deb family=obfuscated_table_dispatch grade=readable_with_structural_algebra target=43@0x8173d:1 delta=+0x4
     state: vm_state = add/constant-style update over state, flags, and operands; formula=state0 ^ 0x11095fd5 + flags0 - 0x1510614f | 0xa1b079a ^ 0x1769756e ^ u16_2 - flags0 - 0x1510614f | 0xa1b079a ^ 0x1769756e & u16_0 - state0 ^ 0x11095fd5 + flags0 - 0x1510614f | 0xa1b079a ^ 0x1769756e ^...#10a
     dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=70=(mask32((mask32(u16_0 - (mask32((mask32((mask32(state0 ^ 0x11095fd5)) + (mask32(flags0 ^ 0x1769756e)))) ^ (mask32(u16_2 - (mask32(flags0 ^ 0x1769756e)))))))) ^ 0x5812e92c)) & 0xffff | 58=(mask32((m...#12f
     ip: ip += 0x4
     unresolved: algebraic_state_or_slot_formula
-block 3@0xda38f-0xda607+0x20
   0xda3af..0xda3b3 vmop_043_plus0x4_state_add_const_slot_mba_stateful bytes=c47f6001 family=obfuscated_table_dispatch grade=readable_with_structural_algebra target=345@0xc02e4:1 delta=+0x4
     state: vm_state = add/constant-style update over state, flags, and operands; formula=state0 ^ u16_2 ^ state0
     dispatch: next_entry = MBA(state, flags, operands) dispatch slot; per-row concrete target is resolved; expression=128=(mask32((mask32(u16_0 ^ (mask32(state0 ^ (mask32(u16_2 ^ state0)))))) - 0x64d373dc)) & 0xffff
     ip: ip += 0x4
     unresolved: algebraic_state_or_slot_formula
-block 3@0xda38f-0xda607+0x24
   0xda3b3..0xda3b9 vmop_345_plus0x6_state_add_const_slot_mba_stateful bytes=48047001f8f6 family=obfuscated_table_dispatch grade=readable_with_structural_algebra target=185@0x9d964:1 delta=+0x6
     state: vm_state = add/constant-style update over state, flags, and operands; formula=state0 + u32_2 ^ state0 + flags0 + u16_0 + state0 + u32_2 ^ state0 + flags0
     dispatch: next_entry = MBA(state, flags, operands) dispatch slot; per-row concrete target is resolved; expression=128=(mask32(u16_0 + (mask32(state0 + (mask32((mask32(u32_2 ^ state0)) + flags0)))))) & 0xffff
     ip: ip += 0x6
     unresolved: algebraic_state_or_slot_formula
-block 3@0xda38f-0xda607+0x2a
   0xda3b9..0xda3bc vmop_185_plus0x3_state_add_const_slot_multi_path bytes=e3a23a family=obfuscated_table_dispatch grade=readable_with_structural_algebra target=70@0x8610e:1 delta=+0x3
     state: vm_state = add/constant-style update over state, flags, and operands; formula=state0 ^ flags0 | 0x17e55682 ^ 0x2000c224 & 0x1f29f35 + flags0 | 0x17e55682 + 0x28030c24 ^ 0x30d03eec | 0x7fa981a ^ 0x5ea8d1c5 | u16_0 ^ state0 ^ flags0 | 0x17e55682 ^ 0x2000c224 & 0x1f29f35 + flags0 ...#107
     dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=128=(mask32(u16_0 ^ (mask32((mask32((mask32((mask32(state0 ^ (mask32(flags0 | 0x17e55682)))) ^ 0x2000c224)) & 0x1f29f35)) + (mask32((mask32((mask32((mask32((mask32(flags0 | 0x17e55682)) + 0x28030c24))...#df
     ip: ip += 0x3
     unresolved: algebraic_state_or_slot_formula
-block 3@0xda38f-0xda607+0x2d
   0xda3bc..0xda3c1 vmop_070_plus0x5_state_add_const_slot_mba_stateful bytes=4ac2003d01 family=obfuscated_table_dispatch grade=readable_with_structural_algebra target=144@0x95887:1 delta=+0x5
     state: vm_state = add/constant-style update over state, flags, and operands; formula=state0 ^ flags0 ^ flags0 - flags0 + state0 ^ flags0 ^ flags0 + 0x55fafa0c - 0x5abc12af ^ state0 ^ flags0 ^ flags0 | 0x58fb4a0c ^ 0x62ac6845 ^ flags0 + state0 ^ flags0 ^ flags0 + 0x55fafa0c - 0x5abc12a...#12f
     dispatch: next_entry = MBA(state, flags, operands) dispatch slot; per-row concrete target is resolved; expression=128=(mask32((mask32(u16_0 - (mask32((mask32((mask32((mask32((mask32(state0 ^ flags0)) ^ flags0)) - (mask32((mask32((mask32((mask32(flags0 + (mask32((mask32((mask32(state0 ^ flags0)) ^ flags0)) + 0x55f...#df
     ip: ip += 0x5
     unresolved: algebraic_state_or_slot_formula
-block 3@0xda38f-0xda607+0x32
   0xda3c1..0xda3c3 vmop_144_plus0x2_state_mixed_slot_mba_stateful bytes=1f9b family=obfuscated_table_dispatch grade=readable_with_structural_algebra target=189@0x9e7af:1 delta=+0x2
     state: vm_state = mixed MBA update over state, flags, and operands; formula=state0 & 0x61f88068 & 0x1d022eee ^ 0x6367b3dd & u16_0 ^ state0 & 0x61f88068 & 0x1d022eee ^ 0x6367b3dd - 0x2f1222e2
     dispatch: next_entry = MBA(state, flags, operands) dispatch slot; per-row concrete target is resolved; expression=128=(mask32((mask32(u16_0 ^ (mask32((mask32((mask32(state0 & 0x61f88068)) & 0x1d022eee)) ^ 0x6367b3dd)))) - 0x2f1222e2)) & 0xffff
     ip: ip += 0x2
     unresolved: algebraic_state_or_slot_formula;state_formula_not_named
-block 3@0xda38f-0xda607+0x34
   0xda3c3..0xda3c7 vmop_189_plus0x4_state_add_const_slot_mba_stateful bytes=7f881cdf family=obfuscated_table_dispatch grade=readable_with_structural_algebra target=307@0xb8064:1 delta=+0x4
     state: vm_state = add/constant-style update over state, flags, and operands; formula=state0 & 0x160e4f34 + u16_2 + state0 & 0x160e4f34 ^ 0x2a1ce984
     dispatch: next_entry = MBA(state, flags, operands) dispatch slot; per-row concrete target is resolved; expression=128=(mask32((mask32(u16_2 + (mask32(state0 & 0x160e4f34)))) ^ 0x2a1ce984)) & 0xffff
     ip: ip += 0x4
     unresolved: algebraic_state_or_slot_formula
-block 3@0xda38f-0xda607+0x38
   0xda3c7..0xda3ca vmop_307_plus0x3_state_add_const_slot_u16_1_sub_const bytes=3ea5aa family=operand_table_dispatch grade=readable_control_semantics target=30@0x7e849:1 delta=+0x3
     state: vm_state = add/constant-style update over state, flags, and operands; formula=state0 ^ b0 - flags0 & flags0 & 0x5792b958 ^ flags0 & 0x5792b958
     dispatch: next_entry = dispatch_table[(u16(ip+1) - constant) & 0xffff]
     ip: ip += 0x3
-block 3@0xda38f-0xda607+0x3b
   0xda3ca..0xda3ce vmop_030_plus0x4_state_add_const_slot_multi_path bytes=b0b76800 family=obfuscated_table_dispatch grade=readable_with_structural_algebra target=168@0x9aa83:1 delta=+0x4
     state: vm_state = add/constant-style update over state, flags, and operands; formula=state0 | flags0 & 0x614d4b17 + 0x64fd160c
     dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=113=(mask32((mask32(u16_0 ^ (mask32((mask32(state0 | flags0)) + 0x64fd160c)))) + 0x5903fc84)) & 0xffff | 15=(mask32((mask32(u16_0 ^ (mask32((mask32(state0 | (mask32(flags0 & 0x614d4b17)))) + 0x64fd160...#e5
     ip: ip += 0x4
     unresolved: algebraic_state_or_slot_formula
-block 3@0xda38f-0xda607+0x3f
   0xda3ce..0xda3d2 vmop_168_plus0x4_state_add_const_slot_multi_path bytes=335536d8 family=obfuscated_table_dispatch grade=readable_with_structural_algebra target=301@0xb708d:1 delta=+0x4
     state: vm_state = add/constant-style update over state, flags, and operands; formula=state0 | 0x6899d5d4 & u16_0 + flags0 & 0x66031b5e - 0x2eab70d9 ^ 0x7c2abc25 & 0x46cbe42d & 0x69af076d | 0x4ee70776 & u16_2 + state0 | 0x6899d5d4 & u16_0 + flags0 & 0x66031b5e - 0x2eab70d9 ^ 0x7c2abc25...#fc
     dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=74=(mask32((mask32(u16_2 + (mask32((mask32(state0 | 0x6899d5d4)) & (mask32(u16_0 + flags0)))))) + 0x553030a2)) & 0xffff | 54=(mask32((mask32(u16_2 + (mask32((mask32(state0 | 0x6899d5d4)) & (mask32(u16...#11f
     ip: ip += 0x4
     unresolved: algebraic_state_or_slot_formula
-block 3@0xda38f-0xda607+0x43
   0xda3d2..0xda3d7 vmop_301_plus0x5_state_add_const_slot_mba_stateful bytes=003d01e7f3 family=obfuscated_table_dispatch grade=readable_with_structural_algebra target=257@0xadbfd:1 delta=+0x5
     state: vm_state = add/constant-style update over state, flags, and operands; formula=state0 & flags0 ^ u16_3 - state0 & flags0 - 0x2c0febdf
     dispatch: next_entry = MBA(state, flags, operands) dispatch slot; per-row concrete target is resolved; expression=128=(mask32((mask32(u16_3 - (mask32(state0 & flags0)))) - 0x2c0febdf)) & 0xffff
     ip: ip += 0x5
     unresolved: algebraic_state_or_slot_formula
-block 3@0xda38f-0xda607+0x48
   0xda3d7..0xda3d9 vmop_257_plus0x2_state_add_const_slot_multi_path bytes=1ffa family=obfuscated_table_dispatch grade=readable_with_structural_algebra target=337@0xbec0e:1 delta=+0x2
     state: vm_state = add/constant-style update over state, flags, and operands; formula=state0 - 0x509f61c9 + 0x1b9def5 - 0x7d4ca123 | 0x1d2af87 ^ u16_0 - state0 - 0x509f61c9 + 0x1b9def5 - 0x7d4ca123 | 0x1d2af87
     dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=128=(mask32(u16_0 - (mask32((mask32((mask32((mask32(state0 - 0x509f61c9)) + 0x1b9def5)) - 0x7d4ca123)) | 0x1d2af87)))) & 0xffff
     ip: ip += 0x2
     unresolved: algebraic_state_or_slot_formula
-block 3@0xda38f-0xda607+0x4a
   0xda3d9..0xda3dd vmop_337_plus0x4_state_add_const_slot_multi_path bytes=6c95f41a family=obfuscated_table_dispatch grade=readable_with_structural_algebra target=28@0x7e390:1 delta=+0x4
     state: vm_state = add/constant-style update over state, flags, and operands; formula=state0 - flags0 - u16_2 + state0 - flags0 + flags0 + 0x2051de91 & flags0 + 0x61f749a7 | 0x51d7631a ^ flags0 + 0x61f749a7 ^ 0x3de72107 & 0xe04b834 | u16_0 + state0 - flags0 - u16_2 + state0 - flags0 + ...#13a
     dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=85=(mask32((mask32(u16_0 + (mask32((mask32((mask32((mask32((mask32((mask32(state0 - flags0)) - (mask32((mask32(u16_2 + (mask32(state0 - flags0)))) + flags0)))) + 0x2051de91)) & (mask32(flags0 + 0x61f7...#12f
     ip: ip += 0x4
     unresolved: algebraic_state_or_slot_formula
-block 3@0xda38f-0xda607+0x4e
   0xda3dd..0xda3e0 vmop_028_plus0x3_state_add_const_slot_u16_0 bytes=60053e family=operand_table_dispatch grade=readable_control_semantics target=172@0x9b68a:1 delta=+0x3
     state: vm_state = add/constant-style update over state, flags, and operands; formula=state0 | flags0 ^ state0 | 0xb9ad02a & 0x3fb85e48 - state0 ^ 0x6e3e6f1a | flags0 ^ state0 | 0xb9ad02a & 0x3fb85e48 - state0 ^ 0x6e3e6f1a + 0x43078fb1 & 0x282416bb ^ 0x53f50e0b ^ state0 | flags0 ^ stat...#12f
     dispatch: next_entry = dispatch_table[u16(ip+0)]
     ip: ip += 0x3
-block 3@0xda38f-0xda607+0x51
   0xda3e0..0xda3e4 vmop_172_plus0x4_state_add_const_slot_mba_stateful bytes=1849c300 family=obfuscated_table_dispatch grade=readable_with_structural_algebra target=350@0xc1926:1 delta=+0x4
     state: vm_state = add/constant-style update over state, flags, and operands; formula=state0 ^ 0x7070916c - 0x6ecee241 + u16_0 ^ state0 ^ 0x7070916c - 0x6ecee241 ^ flags0 ^ 0x15bf847f & state0 | 0x3eba9edf | u16_2 ^ 0x715f0a33
     dispatch: next_entry = MBA(state, flags, operands) dispatch slot; per-row concrete target is resolved; expression=128=(mask32(u16_2 ^ 0x715f0a33)) & 0xffff
     ip: ip += 0x4
     unresolved: algebraic_state_or_slot_formula
-block 3@0xda38f-0xda607+0x55
   0xda3e4..0xda3e8 vmop_350_plus0x4_state_add_const_slot_mba_stateful bytes=c4a0ed34 family=obfuscated_table_dispatch grade=readable_with_structural_algebra target=269@0xb045b:1 delta=+0x4
     state: vm_state = add/constant-style update over state, flags, and operands; formula=state0 + 0x5c4fb994 - 0x33be5a8b ^ flags0 & state0 + 0x5c4fb994 + 0x261f270f & u16_0 ^ state0 + 0x5c4fb994 - 0x33be5a8b ^ flags0 & state0 + 0x5c4fb994 + 0x261f270f & u16_2 ^ state0 + 0x5c4fb994 - 0x33...#12f
     dispatch: next_entry = MBA(state, flags, operands) dispatch slot; per-row concrete target is resolved; expression=128=(mask32((mask32(u16_2 ^ (mask32((mask32((mask32((mask32(state0 + 0x5c4fb994)) - 0x33be5a8b)) ^ (mask32(flags0 & (mask32((mask32(state0 + 0x5c4fb994)) + 0x261f270f)))))) & (mask32(u16_0 ^ (mask32((...#df
     ip: ip += 0x4
     unresolved: algebraic_state_or_slot_formula
-block 3@0xda38f-0xda607+0x59
   0xda3e8..0xda3ed vmop_269_plus0x5_state_add_const_slot_multi_path bytes=003d0177be family=obfuscated_table_dispatch grade=readable_with_structural_algebra target=144@0x95887:1 delta=+0x5
     state: vm_state = add/constant-style update over state, flags, and operands; formula=state0 ^ flags0 & state0 & 0x6f7fff69 & flags0 & state0 | flags0 & state0 ^ 0x4f60a287 + u16_3 + state0 ^ flags0 & state0 & 0x6f7fff69 & flags0 & state0 | flags0 & state0 ^ 0x4f60a287 + 0x4faa382
     dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=128=(mask32((mask32(u16_3 + (mask32((mask32((mask32((mask32(state0 ^ (mask32(flags0 & state0)))) & 0x6f7fff69)) & (mask32(flags0 & state0)))) | (mask32((mask32(flags0 & state0)) ^ 0x4f60a287)))))) + 0x4faa382)) & 0xffff
     ip: ip += 0x5
     unresolved: algebraic_state_or_slot_formula
-block 3@0xda38f-0xda607+0x5e
   0xda3ed..0xda3ef vmop_144_plus0x2_state_mixed_slot_mba_stateful bytes=c79a family=obfuscated_table_dispatch grade=readable_with_structural_algebra target=199@0xa0631:1 delta=+0x2
     state: vm_state = mixed MBA update over state, flags, and operands; formula=state0 & 0x61f88068 & 0x1d022eee ^ 0x6367b3dd & u16_0 ^ state0 & 0x61f88068 & 0x1d022eee ^ 0x6367b3dd - 0x2f1222e2
     dispatch: next_entry = MBA(state, flags, operands) dispatch slot; per-row concrete target is resolved; expression=128=(mask32((mask32(u16_0 ^ (mask32((mask32((mask32(state0 & 0x61f88068)) & 0x1d022eee)) ^ 0x6367b3dd)))) - 0x2f1222e2)) & 0xffff
     ip: ip += 0x2
     unresolved: algebraic_state_or_slot_formula;state_formula_not_named
-block 3@0xda38f-0xda607+0x60
   0xda3ef..0xda3f2 vmop_199_plus0x3_state_add_const_slot_multi_path bytes=b2c13d family=obfuscated_table_dispatch grade=readable_with_structural_algebra target=347@0xc088d:1 delta=+0x3
     state: vm_state = add/constant-style update over state, flags, and operands; formula=state0 + b2 + flags0 ^ 0x7353b039 - 0x24d1328a ^ 0x7e708197 & 0x20d5418 + flags0 ^ 0x7353b039 - 0x24d1328a
     dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=106=(mask32((mask32(u16_0 ^ (mask32((mask32((mask32((mask32(state0 + (mask32(b2 + flags0)))) ^ 0x7e708197)) & 0x20d5418)) + flags0)))) + 0x3030bb89)) & 0xffff | 22=(mask32((mask32(u16_0 ^ (mask32((mas...#12f
     ip: ip += 0x3
     unresolved: algebraic_state_or_slot_formula
-block 3@0xda38f-0xda607+0x63
   0xda3f2..0xda3f6 vmop_347_plus0x4_state_add_const_slot_multi_path bytes=ea8d3401 family=obfuscated_table_dispatch grade=readable_with_structural_algebra target=161@0x9975a:1 delta=+0x4
     state: vm_state = add/constant-style update over state, flags, and operands; formula=state0 | flags0 + 0x6fa972f0 | flags0 ^ state0 | flags0 + 0x6fa972f0 & 0x45223942 + state0 | flags0 + 0x6fa972f0 | 0x2efc96c5 ^ 0x5cf483c7 & flags0 ^ state0 | flags0 + 0x6fa972f0 & 0x45223942 + state0...#12f
     dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=92=(mask32((mask32(u16_0 ^ (mask32((mask32((mask32((mask32((mask32((mask32((mask32(state0 | (mask32(flags0 + 0x6fa972f0)))) | (mask32((mask32(flags0 ^ (mask32((mask32(state0 | (mask32(flags0 + 0x6fa97...#12f
     ip: ip += 0x4
     unresolved: algebraic_state_or_slot_formula
-block 3@0xda38f-0xda607+0x67
   0xda3f6..0xda3fa vmop_161_plus0x4_state_add_const_slot_multi_path bytes=85d4e801 family=obfuscated_table_dispatch grade=readable_with_structural_algebra target=215@0xa4609:1 delta=+0x4
     state: vm_state = add/constant-style update over state, flags, and operands; formula=state0 | 0x69145e52
     dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=128=(mask32((mask32(u16_0 + (mask32(state0 | 0x69145e52)))) + 0x4c0132b4)) & 0xffff
     ip: ip += 0x4
     unresolved: algebraic_state_or_slot_formula
-block 3@0xda38f-0xda607+0x6b
   0xda3fa..0xda3fd vmop_215_plus0x3_state_mixed_slot_u16_0 bytes=880adc family=operand_table_dispatch grade=readable_with_structural_algebra target=337@0xbec0e:1 delta=+0x3
     state: vm_state = mixed MBA update over state, flags, and operands; formula=state0 | 0x760f463f - flags0 | 0x77dcc51b ^ 0xee9796d ^ 0x717a207c + 0x15a799dd | 0x6c5f0f12 + b2 + state0 | 0x760f463f - flags0 | 0x77dcc51b ^ 0xee9796d ^ 0x717a207c + 0x15a799dd | 0x6c5f0f12 | 0x38d2bdd3 - u16_0
     dispatch: next_entry = dispatch_table[u16(ip+0)]
     ip: ip += 0x3
     unresolved: algebraic_state_or_slot_formula;state_formula_not_named
-block 3@0xda38f-0xda607+0x6e
   0xda3fd..0xda401 vmop_337_plus0x4_state_add_const_slot_multi_path bytes=0b91604b family=obfuscated_table_dispatch grade=readable_with_structural_algebra target=176@0x9c10b:1 delta=+0x4
     state: vm_state = add/constant-style update over state, flags, and operands; formula=state0 - flags0 - u16_2 + state0 - flags0 + flags0 + 0x2051de91 & flags0 + 0x61f749a7 | 0x51d7631a ^ flags0 + 0x61f749a7 ^ 0x3de72107 & 0xe04b834 | u16_0 + state0 - flags0 - u16_2 + state0 - flags0 + ...#13a
     dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=85=(mask32((mask32(u16_0 + (mask32((mask32((mask32((mask32((mask32((mask32(state0 - flags0)) - (mask32((mask32(u16_2 + (mask32(state0 - flags0)))) + flags0)))) + 0x2051de91)) & (mask32(flags0 + 0x61f7...#12f
     ip: ip += 0x4
     unresolved: algebraic_state_or_slot_formula
-block 3@0xda38f-0xda607+0x72
   0xda401..0xda405 vmop_176_plus0x4_state_add_const_slot_multi_path bytes=e801fec0 family=obfuscated_table_dispatch grade=readable_with_structural_algebra target=181@0x9d13f:1 delta=+0x4
     state: vm_state = add/constant-style update over state, flags, and operands; formula=state0 & flags0 & 0x2c46ace3 | flags0 - 0x14b22a15
     dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=78=(mask32((mask32(u16_2 - (mask32((mask32((mask32(state0 & flags0)) & 0x2c46ace3)) | flags0)))) ^ 0x37839d72)) & 0xffff | 50=(mask32((mask32(u16_2 - (mask32((mask32((mask32(state0 & flags0)) & 0x2c46...#10a
     ip: ip += 0x4
     unresolved: algebraic_state_or_slot_formula
-block 3@0xda38f-0xda607+0x76
   0xda405..0xda40b vmop_181_plus0x6_state_add_const_slot_mba_stateful bytes=3d01e8013430 family=obfuscated_table_dispatch grade=readable_with_structural_algebra target=258@0xadf2c:1 delta=+0x6
     state: vm_state = add/constant-style update over state, flags, and operands; formula=state0 - u16_4 - state0
     dispatch: next_entry = MBA(state, flags, operands) dispatch slot; per-row concrete target is resolved; expression=128=(mask32(u16_4 - state0)) & 0xffff
     ip: ip += 0x6
     unresolved: algebraic_state_or_slot_formula
-block 3@0xda38f-0xda607+0x7c
   0xda40b..0xda40f vmop_258_plus0x4_state_add_const_slot_multi_path bytes=74c7fd5d family=obfuscated_table_dispatch grade=readable_with_structural_algebra target=18@0x7be9b:1 delta=+0x4
     state: vm_state = add/constant-style update over state, flags, and operands; formula=state0 ^ 0x11095fd5 + flags0 - 0x1510614f | 0xa1b079a ^ 0x1769756e ^ u16_2 - flags0 - 0x1510614f | 0xa1b079a ^ 0x1769756e & u16_0 - state0 ^ 0x11095fd5 + flags0 - 0x1510614f | 0xa1b079a ^ 0x1769756e ^...#10a
     dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=70=(mask32((mask32(u16_0 - (mask32((mask32((mask32(state0 ^ 0x11095fd5)) + (mask32(flags0 ^ 0x1769756e)))) ^ (mask32(u16_2 - (mask32(flags0 ^ 0x1769756e)))))))) ^ 0x5812e92c)) & 0xffff | 58=(mask32((m...#12f
     ip: ip += 0x4
     unresolved: algebraic_state_or_slot_formula
-block 3@0xda38f-0xda607+0x80
   0xda40f..0xda412 vmop_018_plus0x3_state_add_const_slot_multi_path bytes=282636 family=obfuscated_table_dispatch grade=readable_with_structural_algebra target=161@0x9975a:1 delta=+0x3
     state: vm_state = add/constant-style update over state, flags, and operands; formula=state0 & flags0 | 0x954df65 + 0x5b466f3b - 0x6382ce20 & flags0 | 0x954df65 + 0x5b466f3b - u16_0 - state0 & flags0 | 0x954df65 + 0x5b466f3b - 0x6382ce20 & flags0 | 0x954df65 + 0x5b466f3b
     dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=99=(mask32(u16_0 - (mask32((mask32((mask32(state0 & flags0)) - 0x6382ce20)) & flags0)))) & 0xffff | 29=(mask32(u16_0 - (mask32((mask32((mask32(state0 & (mask32((mask32(flags0 | 0x954df65)) + 0x5b466f3...#11f
     ip: ip += 0x3
     unresolved: algebraic_state_or_slot_formula
-block 3@0xda38f-0xda607+0x83
   0xda412..0xda416 vmop_161_plus0x4_state_add_const_slot_multi_path bytes=f270e801 family=obfuscated_table_dispatch grade=readable_with_structural_algebra target=64@0x85059:1 delta=+0x4
     state: vm_state = add/constant-style update over state, flags, and operands; formula=state0 | 0x69145e52
     dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=128=(mask32((mask32(u16_0 + (mask32(state0 | 0x69145e52)))) + 0x4c0132b4)) & 0xffff
     ip: ip += 0x4
     unresolved: algebraic_state_or_slot_formula
-block 3@0xda38f-0xda607+0x87
   0xda416..0xda41a vmop_064_plus0x4_state_add_const_slot_multi_path bytes=e0f13035 family=obfuscated_table_dispatch grade=readable_with_structural_algebra target=215@0xa4609:1 delta=+0x4
     state: vm_state = add/constant-style update over state, flags, and operands; formula=state0 - 0x79614de5 ^ u16_2 + flags0 + 0x4cd0c9ae + 0x711675f2 & 0x5b249a06 ^ flags0 + 0x4cd0c9ae + 0x711675f2 & 0x5b249a06 + 0x729dddb0
     dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=77=(mask32((mask32(u16_0 - (mask32((mask32((mask32(state0 - 0x79614de5)) ^ (mask32(u16_2 + flags0)))) ^ (mask32(flags0 + 0x729dddb0)))))) + 0x2701cdcd)) & 0xffff | 51=(mask32((mask32(u16_0 - (mask32((...#12f
     ip: ip += 0x4
     unresolved: algebraic_state_or_slot_formula
-block 3@0xda38f-0xda607+0x8b
   0xda41a..0xda41d vmop_215_plus0x3_state_mixed_slot_u16_0 bytes=7005e3 family=operand_table_dispatch grade=readable_with_structural_algebra target=174@0x9bd8f:1 delta=+0x3
     state: vm_state = mixed MBA update over state, flags, and operands; formula=state0 | 0x760f463f - flags0 | 0x77dcc51b ^ 0xee9796d ^ 0x717a207c + 0x15a799dd | 0x6c5f0f12 + b2 + state0 | 0x760f463f - flags0 | 0x77dcc51b ^ 0xee9796d ^ 0x717a207c + 0x15a799dd | 0x6c5f0f12 | 0x38d2bdd3 - u16_0
     dispatch: next_entry = dispatch_table[u16(ip+0)]
     ip: ip += 0x3
     unresolved: algebraic_state_or_slot_formula;state_formula_not_named
-block 3@0xda38f-0xda607+0x8e
   0xda41d..0xda421 vmop_174_plus0x4_state_add_const_slot_mba_stateful bytes=1bbee801 family=obfuscated_table_dispatch grade=readable_with_structural_algebra target=18@0x7be9b:1 delta=+0x4
     state: vm_state = add/constant-style update over state, flags, and operands; formula=state0 - flags0 & flags0 ^ flags0 + flags0 ^ 0x5fa9d2b1 | u16_0 + state0 - flags0 & flags0 ^ flags0 + flags0 ^ 0x5fa9d2b1 + 0x397fd954
     dispatch: next_entry = MBA(state, flags, operands) dispatch slot; per-row concrete target is resolved; expression=128=(mask32((mask32(u16_0 + (mask32((mask32((mask32((mask32((mask32(state0 - flags0)) & flags0)) ^ flags0)) + flags0)) ^ 0x5fa9d2b1)))) + 0x397fd954)) & 0xffff
     ip: ip += 0x4
     unresolved: algebraic_state_or_slot_formula
-block 3@0xda38f-0xda607+0x92
   0xda421..0xda424 vmop_018_plus0x3_state_add_const_slot_multi_path bytes=e01d1a family=obfuscated_table_dispatch grade=readable_with_structural_algebra target=114@0x90319:1 delta=+0x3
     state: vm_state = add/constant-style update over state, flags, and operands; formula=state0 & flags0 | 0x954df65 + 0x5b466f3b - 0x6382ce20 & flags0 | 0x954df65 + 0x5b466f3b - u16_0 - state0 & flags0 | 0x954df65 + 0x5b466f3b - 0x6382ce20 & flags0 | 0x954df65 + 0x5b466f3b
     dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=99=(mask32(u16_0 - (mask32((mask32((mask32(state0 & flags0)) - 0x6382ce20)) & flags0)))) & 0xffff | 29=(mask32(u16_0 - (mask32((mask32((mask32(state0 & (mask32((mask32(flags0 | 0x954df65)) + 0x5b466f3...#11f
     ip: ip += 0x3
     unresolved: algebraic_state_or_slot_formula
-block 3@0xda38f-0xda607+0x95
   0xda424..0xda428 vmop_114_plus0x4_state_add_const_slot_multi_path bytes=99798ec4 family=obfuscated_table_dispatch grade=readable_with_structural_algebra target=123@0x91a59:1 delta=+0x4
     state: vm_state = add/constant-style update over state, flags, and operands; formula=state0 ^ flags0 & state0 | 0x6729b5bf - 0x3dca653f ^ 0x671da5f4 + state0 & 0x48367f78 ^ 0x63bb548f + flags0 & state0 | 0x6729b5bf - 0x3dca653f ^ 0x671da5f4 + state0 & 0x292b555d ^ u16_2 + state0 ^ fla...#12f
     dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=51=(mask32((mask32(u16_0 + (mask32((mask32((mask32((mask32((mask32((mask32(state0 ^ (mask32((mask32((mask32(flags0 & (mask32(state0 | 0x6729b5bf)))) + state0)) & 0x48367f78)))) ^ 0x63bb548f)) + (mask3...#12f
     ip: ip += 0x4
     unresolved: algebraic_state_or_slot_formula
-block 3@0xda38f-0xda607+0x99
   0xda428..0xda42c vmop_123_plus0x4_state_add_const_slot_mba_stateful bytes=7469e801 family=obfuscated_table_dispatch grade=readable_with_structural_algebra target=258@0xadf2c:1 delta=+0x4
     state: vm_state = add/constant-style update over state, flags, and operands; formula=state0 + 0x3da77425 - u16_0 - state0 + 0x3da77425 ^ 0x1603b0a9
     dispatch: next_entry = MBA(state, flags, operands) dispatch slot; per-row concrete target is resolved; expression=128=(mask32((mask32(u16_0 - (mask32(state0 + 0x3da77425)))) ^ 0x1603b0a9)) & 0xffff
     ip: ip += 0x4
     unresolved: algebraic_state_or_slot_formula
-block 3@0xda38f-0xda607+0x9d
   0xda42c..0xda430 vmop_258_plus0x4_state_add_const_slot_multi_path bytes=3151ff79 family=obfuscated_table_dispatch grade=readable_with_structural_algebra target=307@0xb8064:1 delta=+0x4
     state: vm_state = add/constant-style update over state, flags, and operands; formula=state0 ^ 0x11095fd5 + flags0 - 0x1510614f | 0xa1b079a ^ 0x1769756e ^ u16_2 - flags0 - 0x1510614f | 0xa1b079a ^ 0x1769756e & u16_0 - state0 ^ 0x11095fd5 + flags0 - 0x1510614f | 0xa1b079a ^ 0x1769756e ^...#10a
     dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=70=(mask32((mask32(u16_0 - (mask32((mask32((mask32(state0 ^ 0x11095fd5)) + (mask32(flags0 ^ 0x1769756e)))) ^ (mask32(u16_2 - (mask32(flags0 ^ 0x1769756e)))))))) ^ 0x5812e92c)) & 0xffff | 58=(mask32((m...#12f
     ip: ip += 0x4
     unresolved: algebraic_state_or_slot_formula
-block 3@0xda38f-0xda607+0xa1
   0xda430..0xda433 vmop_307_plus0x3_state_add_const_slot_u16_1_sub_const bytes=e455aa family=operand_table_dispatch grade=readable_control_semantics target=20@0x7c62b:1 delta=+0x3
     state: vm_state = add/constant-style update over state, flags, and operands; formula=state0 ^ b0 - flags0 & flags0 & 0x5792b958 ^ flags0 & 0x5792b958
     dispatch: next_entry = dispatch_table[(u16(ip+1) - constant) & 0xffff]
     ip: ip += 0x3
-block 3@0xda38f-0xda607+0xa4
   0xda433..0xda437 vmop_020_plus0x4_state_add_const_slot_multi_path bytes=e8011e40 family=obfuscated_table_dispatch grade=readable_with_structural_algebra target=199@0xa0631:1 delta=+0x4
     state: vm_state = add/constant-style update over state, flags, and operands; formula=state0 | flags0 | 0x180e72f2 - 0x36332ac8 - flags0 ^ 0x58f71b08 & 0x17188826 & 0x1fa2014f | 0x38e67f26 - flags0 ^ 0x58f71b08 & 0x17188826 & u16_2 ^ state0 | flags0 | 0x180e72f2 - 0x36332ac8 - flags0 ^...#11d
     dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=67=(mask32(u16_2 ^ (mask32((mask32((mask32((mask32((mask32(state0 | (mask32(flags0 | 0x180e72f2)))) - 0x36332ac8)) - (mask32(flags0 & 0x1fa2014f)))) | 0x38e67f26)) - flags0)))) & 0xffff | 61=(mask32(u...#12f
     ip: ip += 0x4
     unresolved: algebraic_state_or_slot_formula
-block 3@0xda38f-0xda607+0xa8
   0xda437..0xda43a vmop_199_plus0x3_state_add_const_slot_multi_path bytes=1250ad family=obfuscated_table_dispatch grade=readable_with_structural_algebra target=258@0xadf2c:1 delta=+0x3
     state: vm_state = add/constant-style update over state, flags, and operands; formula=state0 + b2 + flags0 ^ 0x7353b039 - 0x24d1328a ^ 0x7e708197 & 0x20d5418 + flags0 ^ 0x7353b039 - 0x24d1328a
     dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=106=(mask32((mask32(u16_0 ^ (mask32((mask32((mask32((mask32(state0 + (mask32(b2 + flags0)))) ^ 0x7e708197)) & 0x20d5418)) + flags0)))) + 0x3030bb89)) & 0xffff | 22=(mask32((mask32(u16_0 ^ (mask32((mas...#12f
     ip: ip += 0x3
     unresolved: algebraic_state_or_slot_formula
-block 3@0xda38f-0xda607+0xab
   0xda43a..0xda43e vmop_258_plus0x4_state_add_const_slot_multi_path bytes=85a17570 family=obfuscated_table_dispatch grade=readable_with_structural_algebra target=158@0x99029:1 delta=+0x4
     state: vm_state = add/constant-style update over state, flags, and operands; formula=state0 ^ 0x11095fd5 + flags0 - 0x1510614f | 0xa1b079a ^ 0x1769756e ^ u16_2 - flags0 - 0x1510614f | 0xa1b079a ^ 0x1769756e & u16_0 - state0 ^ 0x11095fd5 + flags0 - 0x1510614f | 0xa1b079a ^ 0x1769756e ^...#10a
     dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=70=(mask32((mask32(u16_0 - (mask32((mask32((mask32(state0 ^ 0x11095fd5)) + (mask32(flags0 ^ 0x1769756e)))) ^ (mask32(u16_2 - (mask32(flags0 ^ 0x1769756e)))))))) ^ 0x5812e92c)) & 0xffff | 58=(mask32((m...#12f
     ip: ip += 0x4
     unresolved: algebraic_state_or_slot_formula
-block 3@0xda38f-0xda607+0xaf
   0xda43e..0xda442 vmop_158_plus0x4_state_add_const_slot_multi_path bytes=e80130d6 family=obfuscated_table_dispatch grade=readable_with_structural_algebra target=189@0x9e7af:1 delta=+0x4
     state: vm_state = add/constant-style update over state, flags, and operands; formula=state0 ^ 0x1fbfc3f3 ^ flags0 ^ 0x3c39b020 ^ 0x1f711c95 | 0xfb6049e ^ flags0 ^ 0x3c39b020 + u16_2 + state0 ^ 0x1fbfc3f3 ^ flags0 ^ 0x3c39b020 ^ 0x1f711c95 | 0xfb6049e ^ flags0 ^ 0x3c39b020 ^ 0x3ffdb46c
     dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=79=(mask32((mask32(u16_2 + (mask32((mask32((mask32((mask32(state0 ^ 0x1fbfc3f3)) ^ (mask32(flags0 ^ 0x1f711c95)))) | 0xfb6049e)) ^ flags0)))) ^ 0x3ffdb46c)) & 0xffff | 49=(mask32((mask32(u16_2 + (mask...#12f
     ip: ip += 0x4
     unresolved: algebraic_state_or_slot_formula
-block 3@0xda38f-0xda607+0xb3
   0xda442..0xda446 vmop_189_plus0x4_state_add_const_slot_mba_stateful bytes=db2218ab family=obfuscated_table_dispatch grade=readable_with_structural_algebra target=185@0x9d964:1 delta=+0x4
     state: vm_state = add/constant-style update over state, flags, and operands; formula=state0 & 0x160e4f34 + u16_2 + state0 & 0x160e4f34 ^ 0x2a1ce984
     dispatch: next_entry = MBA(state, flags, operands) dispatch slot; per-row concrete target is resolved; expression=128=(mask32((mask32(u16_2 + (mask32(state0 & 0x160e4f34)))) ^ 0x2a1ce984)) & 0xffff
     ip: ip += 0x4
     unresolved: algebraic_state_or_slot_formula
-block 3@0xda38f-0xda607+0xb7
   0xda446..0xda449 vmop_185_plus0x3_state_add_const_slot_multi_path bytes=9f053a family=obfuscated_table_dispatch grade=readable_with_structural_algebra target=176@0x9c10b:1 delta=+0x3
     state: vm_state = add/constant-style update over state, flags, and operands; formula=state0 ^ flags0 | 0x17e55682 ^ 0x2000c224 & 0x1f29f35 + flags0 | 0x17e55682 + 0x28030c24 ^ 0x30d03eec | 0x7fa981a ^ 0x5ea8d1c5 | u16_0 ^ state0 ^ flags0 | 0x17e55682 ^ 0x2000c224 & 0x1f29f35 + flags0 ...#107
     dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=128=(mask32(u16_0 ^ (mask32((mask32((mask32((mask32(state0 ^ (mask32(flags0 | 0x17e55682)))) ^ 0x2000c224)) & 0x1f29f35)) + (mask32((mask32((mask32((mask32((mask32(flags0 | 0x17e55682)) + 0x28030c24))...#df
     ip: ip += 0x3
     unresolved: algebraic_state_or_slot_formula
-block 3@0xda38f-0xda607+0xba
   0xda449..0xda44d vmop_176_plus0x4_state_add_const_slot_multi_path bytes=e80179e5 family=obfuscated_table_dispatch grade=readable_with_structural_algebra target=28@0x7e390:1 delta=+0x4
     state: vm_state = add/constant-style update over state, flags, and operands; formula=state0 & flags0 & 0x2c46ace3 | flags0 - 0x14b22a15
     dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=78=(mask32((mask32(u16_2 - (mask32((mask32((mask32(state0 & flags0)) & 0x2c46ace3)) | flags0)))) ^ 0x37839d72)) & 0xffff | 50=(mask32((mask32(u16_2 - (mask32((mask32((mask32(state0 & flags0)) & 0x2c46...#10a
     ip: ip += 0x4
     unresolved: algebraic_state_or_slot_formula
-block 3@0xda38f-0xda607+0xbe
   0xda44d..0xda450 vmop_028_plus0x3_state_add_const_slot_u16_0 bytes=10084a family=operand_table_dispatch grade=readable_control_semantics target=258@0xadf2c:1 delta=+0x3
     state: vm_state = add/constant-style update over state, flags, and operands; formula=state0 | flags0 ^ state0 | 0xb9ad02a & 0x3fb85e48 - state0 ^ 0x6e3e6f1a | flags0 ^ state0 | 0xb9ad02a & 0x3fb85e48 - state0 ^ 0x6e3e6f1a + 0x43078fb1 & 0x282416bb ^ 0x53f50e0b ^ state0 | flags0 ^ stat...#12f
     dispatch: next_entry = dispatch_table[u16(ip+0)]
     ip: ip += 0x3
-block 3@0xda38f-0xda607+0xc1
   0xda450..0xda454 vmop_258_plus0x4_state_add_const_slot_multi_path bytes=a71ea9fb family=obfuscated_table_dispatch grade=readable_with_structural_algebra target=174@0x9bd8f:1 delta=+0x4
     state: vm_state = add/constant-style update over state, flags, and operands; formula=state0 ^ 0x11095fd5 + flags0 - 0x1510614f | 0xa1b079a ^ 0x1769756e ^ u16_2 - flags0 - 0x1510614f | 0xa1b079a ^ 0x1769756e & u16_0 - state0 ^ 0x11095fd5 + flags0 - 0x1510614f | 0xa1b079a ^ 0x1769756e ^...#10a
     dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=70=(mask32((mask32(u16_0 - (mask32((mask32((mask32(state0 ^ 0x11095fd5)) + (mask32(flags0 ^ 0x1769756e)))) ^ (mask32(u16_2 - (mask32(flags0 ^ 0x1769756e)))))))) ^ 0x5812e92c)) & 0xffff | 58=(mask32((m...#12f
     ip: ip += 0x4
     unresolved: algebraic_state_or_slot_formula
-block 3@0xda38f-0xda607+0xc5
   0xda454..0xda458 vmop_174_plus0x4_state_add_const_slot_mba_stateful bytes=69d5e801 family=obfuscated_table_dispatch grade=readable_with_structural_algebra target=18@0x7be9b:1 delta=+0x4
     state: vm_state = add/constant-style update over state, flags, and operands; formula=state0 - flags0 & flags0 ^ flags0 + flags0 ^ 0x5fa9d2b1 | u16_0 + state0 - flags0 & flags0 ^ flags0 + flags0 ^ 0x5fa9d2b1 + 0x397fd954
     dispatch: next_entry = MBA(state, flags, operands) dispatch slot; per-row concrete target is resolved; expression=128=(mask32((mask32(u16_0 + (mask32((mask32((mask32((mask32((mask32(state0 - flags0)) & flags0)) ^ flags0)) + flags0)) ^ 0x5fa9d2b1)))) + 0x397fd954)) & 0xffff
     ip: ip += 0x4
     unresolved: algebraic_state_or_slot_formula
-block 3@0xda38f-0xda607+0xc9
   0xda458..0xda45b vmop_018_plus0x3_state_add_const_slot_multi_path bytes=424a14 family=obfuscated_table_dispatch grade=readable_with_structural_algebra target=258@0xadf2c:1 delta=+0x3
     state: vm_state = add/constant-style update over state, flags, and operands; formula=state0 & flags0 | 0x954df65 + 0x5b466f3b - 0x6382ce20 & flags0 | 0x954df65 + 0x5b466f3b - u16_0 - state0 & flags0 | 0x954df65 + 0x5b466f3b - 0x6382ce20 & flags0 | 0x954df65 + 0x5b466f3b
     dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=99=(mask32(u16_0 - (mask32((mask32((mask32(state0 & flags0)) - 0x6382ce20)) & flags0)))) & 0xffff | 29=(mask32(u16_0 - (mask32((mask32((mask32(state0 & (mask32((mask32(flags0 | 0x954df65)) + 0x5b466f3...#11f
     ip: ip += 0x3
     unresolved: algebraic_state_or_slot_formula
-block 3@0xda38f-0xda607+0xcc
   0xda45b..0xda45f vmop_258_plus0x4_state_add_const_slot_multi_path bytes=d3bb286b family=obfuscated_table_dispatch grade=readable_with_structural_algebra target=123@0x91a59:1 delta=+0x4
     state: vm_state = add/constant-style update over state, flags, and operands; formula=state0 ^ 0x11095fd5 + flags0 - 0x1510614f | 0xa1b079a ^ 0x1769756e ^ u16_2 - flags0 - 0x1510614f | 0xa1b079a ^ 0x1769756e & u16_0 - state0 ^ 0x11095fd5 + flags0 - 0x1510614f | 0xa1b079a ^ 0x1769756e ^...#10a
     dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=70=(mask32((mask32(u16_0 - (mask32((mask32((mask32(state0 ^ 0x11095fd5)) + (mask32(flags0 ^ 0x1769756e)))) ^ (mask32(u16_2 - (mask32(flags0 ^ 0x1769756e)))))))) ^ 0x5812e92c)) & 0xffff | 58=(mask32((m...#12f
     ip: ip += 0x4
     unresolved: algebraic_state_or_slot_formula
-block 3@0xda38f-0xda607+0xd0
   0xda45f..0xda463 vmop_123_plus0x4_state_add_const_slot_mba_stateful bytes=6e2fe801 family=obfuscated_table_dispatch grade=readable_with_structural_algebra target=347@0xc088d:1 delta=+0x4
     state: vm_state = add/constant-style update over state, flags, and operands; formula=state0 + 0x3da77425 - u16_0 - state0 + 0x3da77425 ^ 0x1603b0a9
     dispatch: next_entry = MBA(state, flags, operands) dispatch slot; per-row concrete target is resolved; expression=128=(mask32((mask32(u16_0 - (mask32(state0 + 0x3da77425)))) ^ 0x1603b0a9)) & 0xffff
     ip: ip += 0x4
     unresolved: algebraic_state_or_slot_formula
-block 3@0xda38f-0xda607+0xd4
   0xda463..0xda467 vmop_347_plus0x4_state_add_const_slot_multi_path bytes=d20a4c08 family=obfuscated_table_dispatch grade=readable_with_structural_algebra target=215@0xa4609:1 delta=+0x4
     state: vm_state = add/constant-style update over state, flags, and operands; formula=state0 | flags0 + 0x6fa972f0 | flags0 ^ state0 | flags0 + 0x6fa972f0 & 0x45223942 + state0 | flags0 + 0x6fa972f0 | 0x2efc96c5 ^ 0x5cf483c7 & flags0 ^ state0 | flags0 + 0x6fa972f0 & 0x45223942 + state0...#12f
     dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=92=(mask32((mask32(u16_0 ^ (mask32((mask32((mask32((mask32((mask32((mask32((mask32(state0 | (mask32(flags0 + 0x6fa972f0)))) | (mask32((mask32(flags0 ^ (mask32((mask32(state0 | (mask32(flags0 + 0x6fa97...#12f
     ip: ip += 0x4
     unresolved: algebraic_state_or_slot_formula
-block 3@0xda38f-0xda607+0xd8
   0xda467..0xda46a vmop_215_plus0x3_state_mixed_slot_u16_0 bytes=f004dc family=operand_table_dispatch grade=readable_with_structural_algebra target=158@0x99029:1 delta=+0x3
     state: vm_state = mixed MBA update over state, flags, and operands; formula=state0 | 0x760f463f - flags0 | 0x77dcc51b ^ 0xee9796d ^ 0x717a207c + 0x15a799dd | 0x6c5f0f12 + b2 + state0 | 0x760f463f - flags0 | 0x77dcc51b ^ 0xee9796d ^ 0x717a207c + 0x15a799dd | 0x6c5f0f12 | 0x38d2bdd3 - u16_0
     dispatch: next_entry = dispatch_table[u16(ip+0)]
     ip: ip += 0x3
     unresolved: algebraic_state_or_slot_formula;state_formula_not_named
-block 3@0xda38f-0xda607+0xdb
   0xda46a..0xda46e vmop_158_plus0x4_state_add_const_slot_multi_path bytes=e801d150 family=obfuscated_table_dispatch grade=readable_with_structural_algebra target=199@0xa0631:1 delta=+0x4
     state: vm_state = add/constant-style update over state, flags, and operands; formula=state0 ^ 0x1fbfc3f3 ^ flags0 ^ 0x3c39b020 ^ 0x1f711c95 | 0xfb6049e ^ flags0 ^ 0x3c39b020 + u16_2 + state0 ^ 0x1fbfc3f3 ^ flags0 ^ 0x3c39b020 ^ 0x1f711c95 | 0xfb6049e ^ flags0 ^ 0x3c39b020 ^ 0x3ffdb46c
     dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=79=(mask32((mask32(u16_2 + (mask32((mask32((mask32((mask32(state0 ^ 0x1fbfc3f3)) ^ (mask32(flags0 ^ 0x1f711c95)))) | 0xfb6049e)) ^ flags0)))) ^ 0x3ffdb46c)) & 0xffff | 49=(mask32((mask32(u16_2 + (mask...#12f
     ip: ip += 0x4
     unresolved: algebraic_state_or_slot_formula
-block 3@0xda38f-0xda607+0xdf
   0xda46e..0xda471 vmop_199_plus0x3_state_add_const_slot_multi_path bytes=23e3be family=obfuscated_table_dispatch grade=readable_with_structural_algebra target=189@0x9e7af:1 delta=+0x3
     state: vm_state = add/constant-style update over state, flags, and operands; formula=state0 + b2 + flags0 ^ 0x7353b039 - 0x24d1328a ^ 0x7e708197 & 0x20d5418 + flags0 ^ 0x7353b039 - 0x24d1328a
     dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=106=(mask32((mask32(u16_0 ^ (mask32((mask32((mask32((mask32(state0 + (mask32(b2 + flags0)))) ^ 0x7e708197)) & 0x20d5418)) + flags0)))) + 0x3030bb89)) & 0xffff | 22=(mask32((mask32(u16_0 ^ (mask32((mas...#12f
     ip: ip += 0x3
     unresolved: algebraic_state_or_slot_formula
-block 3@0xda38f-0xda607+0xe2
   0xda471..0xda475 vmop_189_plus0x4_state_add_const_slot_mba_stateful bytes=db9128e1 family=obfuscated_table_dispatch grade=readable_with_structural_algebra target=123@0x91a59:1 delta=+0x4
     state: vm_state = add/constant-style update over state, flags, and operands; formula=state0 & 0x160e4f34 + u16_2 + state0 & 0x160e4f34 ^ 0x2a1ce984
     dispatch: next_entry = MBA(state, flags, operands) dispatch slot; per-row concrete target is resolved; expression=128=(mask32((mask32(u16_2 + (mask32(state0 & 0x160e4f34)))) ^ 0x2a1ce984)) & 0xffff
     ip: ip += 0x4
     unresolved: algebraic_state_or_slot_formula
-block 3@0xda38f-0xda607+0xe6
   0xda475..0xda479 vmop_123_plus0x4_state_add_const_slot_mba_stateful bytes=c237e801 family=obfuscated_table_dispatch grade=readable_with_structural_algebra target=199@0xa0631:1 delta=+0x4
     state: vm_state = add/constant-style update over state, flags, and operands; formula=state0 + 0x3da77425 - u16_0 - state0 + 0x3da77425 ^ 0x1603b0a9
     dispatch: next_entry = MBA(state, flags, operands) dispatch slot; per-row concrete target is resolved; expression=128=(mask32((mask32(u16_0 - (mask32(state0 + 0x3da77425)))) ^ 0x1603b0a9)) & 0xffff
     ip: ip += 0x4
     unresolved: algebraic_state_or_slot_formula
-block 3@0xda38f-0xda607+0xea
   0xda479..0xda47c vmop_199_plus0x3_state_add_const_slot_multi_path bytes=f74bba family=obfuscated_table_dispatch grade=readable_with_structural_algebra target=64@0x85059:1 delta=+0x3
     state: vm_state = add/constant-style update over state, flags, and operands; formula=state0 + b2 + flags0 ^ 0x7353b039 - 0x24d1328a ^ 0x7e708197 & 0x20d5418 + flags0 ^ 0x7353b039 - 0x24d1328a
     dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=106=(mask32((mask32(u16_0 ^ (mask32((mask32((mask32((mask32(state0 + (mask32(b2 + flags0)))) ^ 0x7e708197)) & 0x20d5418)) + flags0)))) + 0x3030bb89)) & 0xffff | 22=(mask32((mask32(u16_0 ^ (mask32((mas...#12f
     ip: ip += 0x3
     unresolved: algebraic_state_or_slot_formula
-block 3@0xda38f-0xda607+0xed
   0xda47c..0xda480 vmop_064_plus0x4_state_add_const_slot_multi_path bytes=87df0fc7 family=obfuscated_table_dispatch grade=readable_with_structural_algebra target=123@0x91a59:1 delta=+0x4
     state: vm_state = add/constant-style update over state, flags, and operands; formula=state0 - 0x79614de5 ^ u16_2 + flags0 + 0x4cd0c9ae + 0x711675f2 & 0x5b249a06 ^ flags0 + 0x4cd0c9ae + 0x711675f2 & 0x5b249a06 + 0x729dddb0
     dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=77=(mask32((mask32(u16_0 - (mask32((mask32((mask32(state0 - 0x79614de5)) ^ (mask32(u16_2 + flags0)))) ^ (mask32(flags0 + 0x729dddb0)))))) + 0x2701cdcd)) & 0xffff | 51=(mask32((mask32(u16_0 - (mask32((...#12f
     ip: ip += 0x4
     unresolved: algebraic_state_or_slot_formula
-block 3@0xda38f-0xda607+0xf1
   0xda480..0xda484 vmop_123_plus0x4_state_add_const_slot_mba_stateful bytes=e2d2e801 family=obfuscated_table_dispatch grade=readable_with_structural_algebra target=189@0x9e7af:1 delta=+0x4
     state: vm_state = add/constant-style update over state, flags, and operands; formula=state0 + 0x3da77425 - u16_0 - state0 + 0x3da77425 ^ 0x1603b0a9
     dispatch: next_entry = MBA(state, flags, operands) dispatch slot; per-row concrete target is resolved; expression=128=(mask32((mask32(u16_0 - (mask32(state0 + 0x3da77425)))) ^ 0x1603b0a9)) & 0xffff
     ip: ip += 0x4
     unresolved: algebraic_state_or_slot_formula
-block 3@0xda38f-0xda607+0xf5
   0xda484..0xda488 vmop_189_plus0x4_state_add_const_slot_mba_stateful bytes=2ff01ce5 family=obfuscated_table_dispatch grade=readable_with_structural_algebra target=185@0x9d964:1 delta=+0x4
     state: vm_state = add/constant-style update over state, flags, and operands; formula=state0 & 0x160e4f34 + u16_2 + state0 & 0x160e4f34 ^ 0x2a1ce984
     dispatch: next_entry = MBA(state, flags, operands) dispatch slot; per-row concrete target is resolved; expression=128=(mask32((mask32(u16_2 + (mask32(state0 & 0x160e4f34)))) ^ 0x2a1ce984)) & 0xffff
     ip: ip += 0x4
     unresolved: algebraic_state_or_slot_formula
-block 3@0xda38f-0xda607+0xf9
   0xda488..0xda48b vmop_185_plus0x3_state_add_const_slot_multi_path bytes=137d3a family=obfuscated_table_dispatch grade=readable_with_structural_algebra target=20@0x7c62b:1 delta=+0x3
     state: vm_state = add/constant-style update over state, flags, and operands; formula=state0 ^ flags0 | 0x17e55682 ^ 0x2000c224 & 0x1f29f35 + flags0 | 0x17e55682 + 0x28030c24 ^ 0x30d03eec | 0x7fa981a ^ 0x5ea8d1c5 | u16_0 ^ state0 ^ flags0 | 0x17e55682 ^ 0x2000c224 & 0x1f29f35 + flags0 ...#107
     dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=128=(mask32(u16_0 ^ (mask32((mask32((mask32((mask32(state0 ^ (mask32(flags0 | 0x17e55682)))) ^ 0x2000c224)) & 0x1f29f35)) + (mask32((mask32((mask32((mask32((mask32(flags0 | 0x17e55682)) + 0x28030c24))...#df
     ip: ip += 0x3
     unresolved: algebraic_state_or_slot_formula
-block 3@0xda38f-0xda607+0xfc
   0xda48b..0xda48f vmop_020_plus0x4_state_add_const_slot_multi_path bytes=e801d17f family=obfuscated_table_dispatch grade=readable_with_structural_algebra target=28@0x7e390:1 delta=+0x4
     state: vm_state = add/constant-style update over state, flags, and operands; formula=state0 | flags0 | 0x180e72f2 - 0x36332ac8 - flags0 ^ 0x58f71b08 & 0x17188826 & 0x1fa2014f | 0x38e67f26 - flags0 ^ 0x58f71b08 & 0x17188826 & u16_2 ^ state0 | flags0 | 0x180e72f2 - 0x36332ac8 - flags0 ^...#11d
     dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=67=(mask32(u16_2 ^ (mask32((mask32((mask32((mask32((mask32(state0 | (mask32(flags0 | 0x180e72f2)))) - 0x36332ac8)) - (mask32(flags0 & 0x1fa2014f)))) | 0x38e67f26)) - flags0)))) & 0xffff | 61=(mask32(u...#12f
     ip: ip += 0x4
     unresolved: algebraic_state_or_slot_formula
-block 3@0xda38f-0xda607+0x100
   0xda48f..0xda492 vmop_028_plus0x3_state_add_const_slot_u16_0 bytes=0002fd family=operand_table_dispatch grade=readable_control_semantics target=64@0x85059:1 delta=+0x3
     state: vm_state = add/constant-style update over state, flags, and operands; formula=state0 | flags0 ^ state0 | 0xb9ad02a & 0x3fb85e48 - state0 ^ 0x6e3e6f1a | flags0 ^ state0 | 0xb9ad02a & 0x3fb85e48 - state0 ^ 0x6e3e6f1a + 0x43078fb1 & 0x282416bb ^ 0x53f50e0b ^ state0 | flags0 ^ stat...#12f
     dispatch: next_entry = dispatch_table[u16(ip+0)]
     ip: ip += 0x3
-block 3@0xda38f-0xda607+0x103
   0xda492..0xda496 vmop_064_plus0x4_state_add_const_slot_multi_path bytes=d2cd688b family=obfuscated_table_dispatch grade=readable_with_structural_algebra target=20@0x7c62b:1 delta=+0x4
     state: vm_state = add/constant-style update over state, flags, and operands; formula=state0 - 0x79614de5 ^ u16_2 + flags0 + 0x4cd0c9ae + 0x711675f2 & 0x5b249a06 ^ flags0 + 0x4cd0c9ae + 0x711675f2 & 0x5b249a06 + 0x729dddb0
     dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=77=(mask32((mask32(u16_0 - (mask32((mask32((mask32(state0 - 0x79614de5)) ^ (mask32(u16_2 + flags0)))) ^ (mask32(flags0 + 0x729dddb0)))))) + 0x2701cdcd)) & 0xffff | 51=(mask32((mask32(u16_0 - (mask32((...#12f
     ip: ip += 0x4
     unresolved: algebraic_state_or_slot_formula
-block 3@0xda38f-0xda607+0x107
   0xda496..0xda49a vmop_020_plus0x4_state_add_const_slot_multi_path bytes=e80185a7 family=obfuscated_table_dispatch grade=readable_with_structural_algebra target=340@0xbf435:1 delta=+0x4
     state: vm_state = add/constant-style update over state, flags, and operands; formula=state0 | flags0 | 0x180e72f2 - 0x36332ac8 - flags0 ^ 0x58f71b08 & 0x17188826 & 0x1fa2014f | 0x38e67f26 - flags0 ^ 0x58f71b08 & 0x17188826 & u16_2 ^ state0 | flags0 | 0x180e72f2 - 0x36332ac8 - flags0 ^...#11d
     dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=67=(mask32(u16_2 ^ (mask32((mask32((mask32((mask32((mask32(state0 | (mask32(flags0 | 0x180e72f2)))) - 0x36332ac8)) - (mask32(flags0 & 0x1fa2014f)))) | 0x38e67f26)) - flags0)))) & 0xffff | 61=(mask32(u...#12f
     ip: ip += 0x4
     unresolved: algebraic_state_or_slot_formula
-block 3@0xda38f-0xda607+0x10b
   0xda49a..0xda49e vmop_340_plus0x4_state_add_const_slot_multi_path bytes=041fab00 family=obfuscated_table_dispatch grade=readable_with_structural_algebra target=307@0xb8064:1 delta=+0x4
     state: vm_state = add/constant-style update over state, flags, and operands; formula=state0 - 0x2b2e5a26 ^ 0x7535dd25 | u16_2 - u16_0 + state0 - 0x2b2e5a26 ^ 0x7535dd25 | u16_2 + 0x9097995
     dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=128=(mask32((mask32(u16_0 + (mask32((mask32((mask32(state0 - 0x2b2e5a26)) ^ 0x7535dd25)) | u16_2)))) + 0x9097995)) & 0xffff
     ip: ip += 0x4
     unresolved: algebraic_state_or_slot_formula
-block 3@0xda38f-0xda607+0x10f
   0xda49e..0xda4a1 vmop_307_plus0x3_state_add_const_slot_u16_1_sub_const bytes=01bdae family=operand_table_dispatch grade=readable_control_semantics target=161@0x9975a:1 delta=+0x3
     state: vm_state = add/constant-style update over state, flags, and operands; formula=state0 ^ b0 - flags0 & flags0 & 0x5792b958 ^ flags0 & 0x5792b958
     dispatch: next_entry = dispatch_table[(u16(ip+1) - constant) & 0xffff]
     ip: ip += 0x3
-block 3@0xda38f-0xda607+0x112
   0xda4a1..0xda4a5 vmop_161_plus0x4_state_add_const_slot_multi_path bytes=3275e801 family=obfuscated_table_dispatch grade=readable_with_structural_algebra target=199@0xa0631:1 delta=+0x4
     state: vm_state = add/constant-style update over state, flags, and operands; formula=state0 | 0x69145e52
     dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=128=(mask32((mask32(u16_0 + (mask32(state0 | 0x69145e52)))) + 0x4c0132b4)) & 0xffff
     ip: ip += 0x4
     unresolved: algebraic_state_or_slot_formula
-block 3@0xda38f-0xda607+0x116
   0xda4a5..0xda4a8 vmop_199_plus0x3_state_add_const_slot_multi_path bytes=7aecd5 family=obfuscated_table_dispatch grade=readable_with_structural_algebra target=114@0x90319:1 delta=+0x3
     state: vm_state = add/constant-style update over state, flags, and operands; formula=state0 + b2 + flags0 ^ 0x7353b039 - 0x24d1328a ^ 0x7e708197 & 0x20d5418 + flags0 ^ 0x7353b039 - 0x24d1328a
     dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=106=(mask32((mask32(u16_0 ^ (mask32((mask32((mask32((mask32(state0 + (mask32(b2 + flags0)))) ^ 0x7e708197)) & 0x20d5418)) + flags0)))) + 0x3030bb89)) & 0xffff | 22=(mask32((mask32(u16_0 ^ (mask32((mas...#12f
     ip: ip += 0x3
     unresolved: algebraic_state_or_slot_formula
-block 3@0xda38f-0xda607+0x119
   0xda4a8..0xda4ac vmop_114_plus0x4_state_add_const_slot_multi_path bytes=6f2217db family=obfuscated_table_dispatch grade=readable_with_structural_algebra target=184@0x9d694:1 delta=+0x4
     state: vm_state = add/constant-style update over state, flags, and operands; formula=state0 ^ flags0 & state0 | 0x6729b5bf - 0x3dca653f ^ 0x671da5f4 + state0 & 0x48367f78 ^ 0x63bb548f + flags0 & state0 | 0x6729b5bf - 0x3dca653f ^ 0x671da5f4 + state0 & 0x292b555d ^ u16_2 + state0 ^ fla...#12f
     dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=51=(mask32((mask32(u16_0 + (mask32((mask32((mask32((mask32((mask32((mask32(state0 ^ (mask32((mask32((mask32(flags0 & (mask32(state0 | 0x6729b5bf)))) + state0)) & 0x48367f78)))) ^ 0x63bb548f)) + (mask3...#12f
     ip: ip += 0x4
     unresolved: algebraic_state_or_slot_formula
-block 3@0xda38f-0xda607+0x11d
   0xda4ac..0xda4b0 vmop_184_plus0x4_state_add_const_slot_multi_path bytes=ba68e801 family=obfuscated_table_dispatch grade=readable_with_structural_algebra target=264@0xaf4cf:1 delta=+0x4
     state: vm_state = add/constant-style update over state, flags, and operands; formula=state0 | flags0 | 0x19d0d4d + 0x3c030b15 ^ flags0 + 0x7db9efb0 ^ flags0 - flags0 ^ flags0 + u16_0 - state0 | flags0 | 0x19d0d4d + 0x3c030b15 ^ flags0 + 0x7db9efb0 ^ flags0 - flags0 ^ flags0 + 0x3f05b2f0
     dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=128=(mask32((mask32(u16_0 - (mask32((mask32((mask32((mask32((mask32((mask32(state0 | (mask32(flags0 | 0x19d0d4d)))) + 0x3c030b15)) ^ (mask32(flags0 + 0x7db9efb0)))) ^ flags0)) - flags0)) ^ flags0)))) ...#df
     ip: ip += 0x4
     unresolved: algebraic_state_or_slot_formula
-block 3@0xda38f-0xda607+0x12f
   0xda4be..0xda4c0 vmop_171_plus0x2_state_const_post_slot_const_or_affine bytes=3301 family=fixed_or_affine_dispatch grade=readable_control_semantics target=307@0xb8064:1 delta=+0x2
     state: vm_state is set to or checked against a post-dispatch constant marker
     dispatch: next_entry = fixed or affine dispatch slot; expression=128=u16_0 << 0x3
     ip: ip += 0x2
-block 3@0xda38f-0xda607+0x131
   0xda4c0..0xda4c3 vmop_307_plus0x3_state_add_const_slot_u16_1_sub_const bytes=3a9daf family=operand_table_dispatch grade=readable_control_semantics target=189@0x9e7af:1 delta=+0x3
     state: vm_state = add/constant-style update over state, flags, and operands; formula=state0 ^ b0 - flags0 & flags0 & 0x5792b958 ^ flags0 & 0x5792b958
     dispatch: next_entry = dispatch_table[(u16(ip+1) - constant) & 0xffff]
     ip: ip += 0x3
-block 3@0xda38f-0xda607+0x134
   0xda4c3..0xda4c7 vmop_189_plus0x4_state_add_const_slot_mba_stateful bytes=9900ece3 family=obfuscated_table_dispatch grade=readable_with_structural_algebra target=333@0xbd8af:1 delta=+0x4
     state: vm_state = add/constant-style update over state, flags, and operands; formula=state0 & 0x160e4f34 + u16_2 + state0 & 0x160e4f34 ^ 0x2a1ce984
     dispatch: next_entry = MBA(state, flags, operands) dispatch slot; per-row concrete target is resolved; expression=128=(mask32((mask32(u16_2 + (mask32(state0 & 0x160e4f34)))) ^ 0x2a1ce984)) & 0xffff
     ip: ip += 0x4
     unresolved: algebraic_state_or_slot_formula
-block 3@0xda38f-0xda607+0x138
   0xda4c7..0xda4cb vmop_333_plus0x4_state_add_const_slot_multi_path bytes=7b099900 family=obfuscated_table_dispatch grade=readable_with_structural_algebra target=305@0xb78b0:1 delta=+0x4
     state: vm_state = add/constant-style update over state, flags, and operands; formula=state0 ^ flags0 ^ state0 | 0x37ccc6ea - 0x61e56767 & flags0 ^ state0 + flags0 ^ state0 | 0x71cc1ee8 | 0x569ecec3 + u16_0 - state0 ^ flags0 ^ state0 | 0x37ccc6ea - 0x61e56767 & flags0 ^ state0 + flags0...#eb
     dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=128=(mask32(u16_0 - (mask32((mask32((mask32((mask32((mask32(state0 ^ (mask32((mask32(flags0 ^ state0)) | 0x37ccc6ea)))) - 0x61e56767)) & (mask32(flags0 ^ state0)))) + (mask32((mask32(flags0 ^ state0))...#df
     ip: ip += 0x4
     unresolved: algebraic_state_or_slot_formula
-block 3@0xda38f-0xda607+0x13c
   0xda4cb..0xda4cf vmop_305_plus0x4_state_add_const_slot_mba_stateful bytes=ddf7e801 family=obfuscated_table_dispatch grade=readable_with_structural_algebra target=43@0x8173d:1 delta=+0x4
     state: vm_state = add/constant-style update over state, flags, and operands; formula=state0 & u16_0 + state0
     dispatch: next_entry = MBA(state, flags, operands) dispatch slot; per-row concrete target is resolved; expression=128=(mask32(u16_0 + state0)) & 0xffff
     ip: ip += 0x4
     unresolved: algebraic_state_or_slot_formula
-block 3@0xda38f-0xda607+0x140
   0xda4cf..0xda4d3 vmop_043_plus0x4_state_add_const_slot_mba_stateful bytes=2f74f301 family=obfuscated_table_dispatch grade=readable_with_structural_algebra target=64@0x85059:1 delta=+0x4
     state: vm_state = add/constant-style update over state, flags, and operands; formula=state0 ^ u16_2 ^ state0
     dispatch: next_entry = MBA(state, flags, operands) dispatch slot; per-row concrete target is resolved; expression=128=(mask32((mask32(u16_0 ^ (mask32(state0 ^ (mask32(u16_2 ^ state0)))))) - 0x64d373dc)) & 0xffff
     ip: ip += 0x4
     unresolved: algebraic_state_or_slot_formula
-block 3@0xda38f-0xda607+0x144
   0xda4d3..0xda4d7 vmop_064_plus0x4_state_add_const_slot_multi_path bytes=289c9b00 family=obfuscated_table_dispatch grade=readable_with_structural_algebra target=18@0x7be9b:1 delta=+0x4
     state: vm_state = add/constant-style update over state, flags, and operands; formula=state0 - 0x79614de5 ^ u16_2 + flags0 + 0x4cd0c9ae + 0x711675f2 & 0x5b249a06 ^ flags0 + 0x4cd0c9ae + 0x711675f2 & 0x5b249a06 + 0x729dddb0
     dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=77=(mask32((mask32(u16_0 - (mask32((mask32((mask32(state0 - 0x79614de5)) ^ (mask32(u16_2 + flags0)))) ^ (mask32(flags0 + 0x729dddb0)))))) + 0x2701cdcd)) & 0xffff | 51=(mask32((mask32(u16_0 - (mask32((...#12f
     ip: ip += 0x4
     unresolved: algebraic_state_or_slot_formula
-block 3@0xda38f-0xda607+0x148
   0xda4d7..0xda4da vmop_018_plus0x3_state_add_const_slot_multi_path bytes=085afa family=obfuscated_table_dispatch grade=readable_with_structural_algebra target=33@0x7f7c4:1 delta=+0x3
     state: vm_state = add/constant-style update over state, flags, and operands; formula=state0 & flags0 | 0x954df65 + 0x5b466f3b - 0x6382ce20 & flags0 | 0x954df65 + 0x5b466f3b - u16_0 - state0 & flags0 | 0x954df65 + 0x5b466f3b - 0x6382ce20 & flags0 | 0x954df65 + 0x5b466f3b
     dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=99=(mask32(u16_0 - (mask32((mask32((mask32(state0 & flags0)) - 0x6382ce20)) & flags0)))) & 0xffff | 29=(mask32(u16_0 - (mask32((mask32((mask32(state0 & (mask32((mask32(flags0 | 0x954df65)) + 0x5b466f3...#11f
     ip: ip += 0x3
     unresolved: algebraic_state_or_slot_formula
-block 3@0xda38f-0xda607+0x14b
   0xda4da..0xda4de vmop_033_plus0x4_state_add_const_slot_multi_path bytes=e8019c76 family=obfuscated_table_dispatch grade=readable_with_structural_algebra target=337@0xbec0e:1 delta=+0x4
     state: vm_state = add/constant-style update over state, flags, and operands; formula=state0 | 0x15422921 & u16_2 + state0 | 0x15422921 + 0x2d0713f3
     dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=128=(mask32((mask32(u16_2 + (mask32(state0 | 0x15422921)))) + 0x2d0713f3)) & 0xffff
     ip: ip += 0x4
     unresolved: algebraic_state_or_slot_formula
-block 3@0xda38f-0xda607+0x14f
   0xda4de..0xda4e2 vmop_337_plus0x4_state_add_const_slot_multi_path bytes=737c01f6 family=obfuscated_table_dispatch grade=readable_with_structural_algebra target=18@0x7be9b:1 delta=+0x4
     state: vm_state = add/constant-style update over state, flags, and operands; formula=state0 - flags0 - u16_2 + state0 - flags0 + flags0 + 0x2051de91 & flags0 + 0x61f749a7 | 0x51d7631a ^ flags0 + 0x61f749a7 ^ 0x3de72107 & 0xe04b834 | u16_0 + state0 - flags0 - u16_2 + state0 - flags0 + ...#13a
     dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=85=(mask32((mask32(u16_0 + (mask32((mask32((mask32((mask32((mask32((mask32(state0 - flags0)) - (mask32((mask32(u16_2 + (mask32(state0 - flags0)))) + flags0)))) + 0x2051de91)) & (mask32(flags0 + 0x61f7...#12f
     ip: ip += 0x4
     unresolved: algebraic_state_or_slot_formula
-block 3@0xda38f-0xda607+0x153
   0xda4e2..0xda4e5 vmop_018_plus0x3_state_add_const_slot_multi_path bytes=750812 family=obfuscated_table_dispatch grade=readable_with_structural_algebra target=268@0xb0007:1 delta=+0x3
     state: vm_state = add/constant-style update over state, flags, and operands; formula=state0 & flags0 | 0x954df65 + 0x5b466f3b - 0x6382ce20 & flags0 | 0x954df65 + 0x5b466f3b - u16_0 - state0 & flags0 | 0x954df65 + 0x5b466f3b - 0x6382ce20 & flags0 | 0x954df65 + 0x5b466f3b
     dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=99=(mask32(u16_0 - (mask32((mask32((mask32(state0 & flags0)) - 0x6382ce20)) & flags0)))) & 0xffff | 29=(mask32(u16_0 - (mask32((mask32((mask32(state0 & (mask32((mask32(flags0 | 0x954df65)) + 0x5b466f3...#11f
     ip: ip += 0x3
     unresolved: algebraic_state_or_slot_formula
-block 3@0xda38f-0xda607+0x156
   0xda4e5..0xda4e9 vmop_268_plus0x4_state_add_const_slot_multi_path bytes=bb9d39a2 family=obfuscated_table_dispatch grade=readable_with_structural_algebra target=315@0xb9451:1 delta=+0x4
     state: vm_state = add/constant-style update over state, flags, and operands; formula=state0 | 0x71bd1bb1 + u16_0 - state0 | 0x71bd1bb1 - flags0 & flags0 + 0x33c0c75b & 0x174c40ef - 0x554d11ee & 0x30ef8696 | flags0 + 0x33c0c75b & 0x174c40ef - 0x554d11ee & 0x30ef8696 + 0x12696b26 ^ u16_...#12f
     dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=87=(mask32((mask32(u16_2 - (mask32((mask32((mask32((mask32(state0 | 0x71bd1bb1)) + (mask32((mask32(u16_0 - (mask32(state0 | 0x71bd1bb1)))) - flags0)))) & (mask32((mask32((mask32(flags0 + 0x33c0c75b)) ...#12f
     ip: ip += 0x4
     unresolved: algebraic_state_or_slot_formula
-block 3@0xda38f-0xda607+0x15a
   0xda4e9..0xda4ed vmop_315_plus0x4_state_mixed_slot_mba_stateful bytes=e80161f2 family=obfuscated_table_dispatch grade=readable_with_structural_algebra target=66@0x855ff:1 delta=+0x4
     state: vm_state = mixed MBA update over state, flags, and operands; formula=state0 & 0x7562ddb5 ^ 0x25ede89c - 0x19140c1b ^ flags0 ^ 0x285c750c | u16_2 ^ 0x42c7f071
     dispatch: next_entry = MBA(state, flags, operands) dispatch slot; per-row concrete target is resolved; expression=128=(mask32(u16_2 ^ 0x42c7f071)) & 0xffff
     ip: ip += 0x4
     unresolved: algebraic_state_or_slot_formula;state_formula_not_named
-block 3@0xda38f-0xda607+0x15e
   0xda4ed..0xda4f0 vmop_066_plus0x3_state_add_const_slot_multi_path bytes=61086a family=obfuscated_table_dispatch grade=readable_with_structural_algebra target=43@0x8173d:1 delta=+0x3
     state: vm_state = add/constant-style update over state, flags, and operands; formula=state0 & 0x2f6cb1f6 - b2 ^ state0 & 0x2f6cb1f6 ^ 0x745ff1d2 & 0x13de2cdd - flags0 - 0x50170614 | 0x7167293a ^ 0x42a6ffd6 ^ u16_0 - state0 & 0x2f6cb1f6 - b2 ^ state0 & 0x2f6cb1f6 ^ 0x745ff1d2 & 0x13de2...#108
     dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=99=(mask32((mask32(u16_0 - (mask32((mask32((mask32((mask32((mask32(state0 & 0x2f6cb1f6)) - (mask32(b2 ^ (mask32(state0 & 0x2f6cb1f6)))))) ^ 0x745ff1d2)) & 0x13de2cdd)) - (mask32(flags0 ^ 0x42a6ffd6)))...#12f
     ip: ip += 0x3
     unresolved: algebraic_state_or_slot_formula
-block 3@0xda38f-0xda607+0x161
   0xda4f0..0xda4f4 vmop_043_plus0x4_state_add_const_slot_mba_stateful bytes=72fac684 family=obfuscated_table_dispatch grade=readable_with_structural_algebra target=347@0xc088d:1 delta=+0x4
     state: vm_state = add/constant-style update over state, flags, and operands; formula=state0 ^ u16_2 ^ state0
     dispatch: next_entry = MBA(state, flags, operands) dispatch slot; per-row concrete target is resolved; expression=128=(mask32((mask32(u16_0 ^ (mask32(state0 ^ (mask32(u16_2 ^ state0)))))) - 0x64d373dc)) & 0xffff
     ip: ip += 0x4
     unresolved: algebraic_state_or_slot_formula
-block 3@0xda38f-0xda607+0x165
   0xda4f4..0xda4f8 vmop_347_plus0x4_state_add_const_slot_multi_path bytes=0d833702 family=obfuscated_table_dispatch grade=readable_with_structural_algebra target=315@0xb9451:1 delta=+0x4
     state: vm_state = add/constant-style update over state, flags, and operands; formula=state0 | flags0 + 0x6fa972f0 | flags0 ^ state0 | flags0 + 0x6fa972f0 & 0x45223942 + state0 | flags0 + 0x6fa972f0 | 0x2efc96c5 ^ 0x5cf483c7 & flags0 ^ state0 | flags0 + 0x6fa972f0 & 0x45223942 + state0...#12f
     dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=92=(mask32((mask32(u16_0 ^ (mask32((mask32((mask32((mask32((mask32((mask32((mask32(state0 | (mask32(flags0 + 0x6fa972f0)))) | (mask32((mask32(flags0 ^ (mask32((mask32(state0 | (mask32(flags0 + 0x6fa97...#12f
     ip: ip += 0x4
     unresolved: algebraic_state_or_slot_formula
-block 3@0xda38f-0xda607+0x169
   0xda4f8..0xda4fc vmop_315_plus0x4_state_mixed_slot_mba_stateful bytes=e80171f2 family=obfuscated_table_dispatch grade=readable_with_structural_algebra target=64@0x85059:1 delta=+0x4
     state: vm_state = mixed MBA update over state, flags, and operands; formula=state0 & 0x7562ddb5 ^ 0x25ede89c - 0x19140c1b ^ flags0 ^ 0x285c750c | u16_2 ^ 0x42c7f071
     dispatch: next_entry = MBA(state, flags, operands) dispatch slot; per-row concrete target is resolved; expression=128=(mask32(u16_2 ^ 0x42c7f071)) & 0xffff
     ip: ip += 0x4
     unresolved: algebraic_state_or_slot_formula;state_formula_not_named
-block 3@0xda38f-0xda607+0x16d
   0xda4fc..0xda500 vmop_064_plus0x4_state_add_const_slot_multi_path bytes=7a065b4d family=obfuscated_table_dispatch grade=readable_with_structural_algebra target=333@0xbd8af:1 delta=+0x4
     state: vm_state = add/constant-style update over state, flags, and operands; formula=state0 - 0x79614de5 ^ u16_2 + flags0 + 0x4cd0c9ae + 0x711675f2 & 0x5b249a06 ^ flags0 + 0x4cd0c9ae + 0x711675f2 & 0x5b249a06 + 0x729dddb0
     dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=77=(mask32((mask32(u16_0 - (mask32((mask32((mask32(state0 - 0x79614de5)) ^ (mask32(u16_2 + flags0)))) ^ (mask32(flags0 + 0x729dddb0)))))) + 0x2701cdcd)) & 0xffff | 51=(mask32((mask32(u16_0 - (mask32((...#12f
     ip: ip += 0x4
     unresolved: algebraic_state_or_slot_formula
-block 3@0xda38f-0xda607+0x171
   0xda500..0xda504 vmop_333_plus0x4_state_add_const_slot_multi_path bytes=83f02301 family=obfuscated_table_dispatch grade=readable_with_structural_algebra target=18@0x7be9b:1 delta=+0x4
     state: vm_state = add/constant-style update over state, flags, and operands; formula=state0 ^ flags0 ^ state0 | 0x37ccc6ea - 0x61e56767 & flags0 ^ state0 + flags0 ^ state0 | 0x71cc1ee8 | 0x569ecec3 + u16_0 - state0 ^ flags0 ^ state0 | 0x37ccc6ea - 0x61e56767 & flags0 ^ state0 + flags0...#eb
     dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=128=(mask32(u16_0 - (mask32((mask32((mask32((mask32((mask32(state0 ^ (mask32((mask32(flags0 ^ state0)) | 0x37ccc6ea)))) - 0x61e56767)) & (mask32(flags0 ^ state0)))) + (mask32((mask32(flags0 ^ state0))...#df
     ip: ip += 0x4
     unresolved: algebraic_state_or_slot_formula
-block 3@0xda38f-0xda607+0x175
   0xda504..0xda507 vmop_018_plus0x3_state_add_const_slot_multi_path bytes=f88922 family=obfuscated_table_dispatch grade=readable_with_structural_algebra target=287@0xb45d2:1 delta=+0x3
     state: vm_state = add/constant-style update over state, flags, and operands; formula=state0 & flags0 | 0x954df65 + 0x5b466f3b - 0x6382ce20 & flags0 | 0x954df65 + 0x5b466f3b - u16_0 - state0 & flags0 | 0x954df65 + 0x5b466f3b - 0x6382ce20 & flags0 | 0x954df65 + 0x5b466f3b
     dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=99=(mask32(u16_0 - (mask32((mask32((mask32(state0 & flags0)) - 0x6382ce20)) & flags0)))) & 0xffff | 29=(mask32(u16_0 - (mask32((mask32((mask32(state0 & (mask32((mask32(flags0 | 0x954df65)) + 0x5b466f3...#11f
     ip: ip += 0x3
     unresolved: algebraic_state_or_slot_formula
-block 3@0xda38f-0xda607+0x178
   0xda507..0xda50b vmop_287_plus0x4_state_add_const_slot_multi_path bytes=3cbee801 family=obfuscated_table_dispatch grade=readable_with_structural_algebra target=18@0x7be9b:1 delta=+0x4
     state: vm_state = add/constant-style update over state, flags, and operands; formula=state0 & 0xa6ddb71 - flags0 - 0x67686890 + 0x609b810a + 0x6975e1b1 - 0x4988e425 | 0x3ab14dd1 - u16_0 + state0 & 0xa6ddb71 - flags0 - 0x67686890 + 0x609b810a + 0x6975e1b1 - 0x4988e425 | 0x3ab14dd1 ^ 0xa841ebd
     dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=76=(mask32((mask32(u16_0 + (mask32((mask32((mask32((mask32(state0 & 0xa6ddb71)) - (mask32(flags0 + 0x6975e1b1)))) - 0x4988e425)) | 0x3ab14dd1)))) ^ 0xa841ebd)) & 0xffff | 52=(mask32((mask32(u16_0 + (m...#12f
     ip: ip += 0x4
     unresolved: algebraic_state_or_slot_formula
-block 3@0xda38f-0xda607+0x17c
   0xda50b..0xda50e vmop_018_plus0x3_state_add_const_slot_multi_path bytes=990282 family=obfuscated_table_dispatch grade=readable_with_structural_algebra target=43@0x8173d:1 delta=+0x3
     state: vm_state = add/constant-style update over state, flags, and operands; formula=state0 & flags0 | 0x954df65 + 0x5b466f3b - 0x6382ce20 & flags0 | 0x954df65 + 0x5b466f3b - u16_0 - state0 & flags0 | 0x954df65 + 0x5b466f3b - 0x6382ce20 & flags0 | 0x954df65 + 0x5b466f3b
     dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=99=(mask32(u16_0 - (mask32((mask32((mask32(state0 & flags0)) - 0x6382ce20)) & flags0)))) & 0xffff | 29=(mask32(u16_0 - (mask32((mask32((mask32(state0 & (mask32((mask32(flags0 | 0x954df65)) + 0x5b466f3...#11f
     ip: ip += 0x3
     unresolved: algebraic_state_or_slot_formula
-block 3@0xda38f-0xda607+0x17f
   0xda50e..0xda512 vmop_043_plus0x4_state_add_const_slot_mba_stateful bytes=c289aefe family=obfuscated_table_dispatch grade=readable_with_structural_algebra target=114@0x90319:1 delta=+0x4
     state: vm_state = add/constant-style update over state, flags, and operands; formula=state0 ^ u16_2 ^ state0
     dispatch: next_entry = MBA(state, flags, operands) dispatch slot; per-row concrete target is resolved; expression=128=(mask32((mask32(u16_0 ^ (mask32(state0 ^ (mask32(u16_2 ^ state0)))))) - 0x64d373dc)) & 0xffff
     ip: ip += 0x4
     unresolved: algebraic_state_or_slot_formula
-block 3@0xda38f-0xda607+0x183
   0xda512..0xda516 vmop_114_plus0x4_state_add_const_slot_multi_path bytes=21a3aeef family=obfuscated_table_dispatch grade=readable_with_structural_algebra target=26@0x7dbbb:1 delta=+0x4
     state: vm_state = add/constant-style update over state, flags, and operands; formula=state0 ^ flags0 & state0 | 0x6729b5bf - 0x3dca653f ^ 0x671da5f4 + state0 & 0x48367f78 ^ 0x63bb548f + flags0 & state0 | 0x6729b5bf - 0x3dca653f ^ 0x671da5f4 + state0 & 0x292b555d ^ u16_2 + state0 ^ fla...#12f
     dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=51=(mask32((mask32(u16_0 + (mask32((mask32((mask32((mask32((mask32((mask32(state0 ^ (mask32((mask32((mask32(flags0 & (mask32(state0 | 0x6729b5bf)))) + state0)) & 0x48367f78)))) ^ 0x63bb548f)) + (mask3...#12f
     ip: ip += 0x4
     unresolved: algebraic_state_or_slot_formula
-block 3@0xda38f-0xda607+0x187
   0xda516..0xda51a vmop_026_plus0x4_state_add_const_slot_multi_path bytes=5a74e801 family=obfuscated_table_dispatch grade=readable_with_structural_algebra target=189@0x9e7af:1 delta=+0x4
     state: vm_state = add/constant-style update over state, flags, and operands; formula=state0 - 0x471264ca + flags0 - state0 ^ 0x5fcdb203 & 0x637d285c + 0x44b4a975 ^ state0 - 0x471264ca | 0x2a01f150 | 0x7bdf07f3 + 0x104dd6df ^ 0x505df542 ^ 0xe71ae1d & 0x6dbe9345 + 0x521a2f7b + state0 - ...#12f
     dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=48=(mask32((mask32(u16_0 ^ (mask32((mask32(state0 - 0x471264ca)) + (mask32((mask32((mask32((mask32((mask32((mask32((mask32(flags0 - (mask32(state0 ^ 0x5fcdb203)))) ^ (mask32((mask32(state0 - 0x471264c...#12f
     ip: ip += 0x4
     unresolved: algebraic_state_or_slot_formula
-block 3@0xda38f-0xda607+0x18b
   0xda51a..0xda51e vmop_189_plus0x4_state_add_const_slot_mba_stateful bytes=c394b0a9 family=obfuscated_table_dispatch grade=readable_with_structural_algebra target=168@0x9aa83:1 delta=+0x4
     state: vm_state = add/constant-style update over state, flags, and operands; formula=state0 & 0x160e4f34 + u16_2 + state0 & 0x160e4f34 ^ 0x2a1ce984
     dispatch: next_entry = MBA(state, flags, operands) dispatch slot; per-row concrete target is resolved; expression=128=(mask32((mask32(u16_2 + (mask32(state0 & 0x160e4f34)))) ^ 0x2a1ce984)) & 0xffff
     ip: ip += 0x4
     unresolved: algebraic_state_or_slot_formula
-block 3@0xda38f-0xda607+0x18f
   0xda51e..0xda522 vmop_168_plus0x4_state_add_const_slot_multi_path bytes=9e6e7ecf family=obfuscated_table_dispatch grade=readable_with_structural_algebra target=28@0x7e390:1 delta=+0x4
     state: vm_state = add/constant-style update over state, flags, and operands; formula=state0 | 0x6899d5d4 & u16_0 + flags0 & 0x66031b5e - 0x2eab70d9 ^ 0x7c2abc25 & 0x46cbe42d & 0x69af076d | 0x4ee70776 & u16_2 + state0 | 0x6899d5d4 & u16_0 + flags0 & 0x66031b5e - 0x2eab70d9 ^ 0x7c2abc25...#fc
     dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=74=(mask32((mask32(u16_2 + (mask32((mask32(state0 | 0x6899d5d4)) & (mask32(u16_0 + flags0)))))) + 0x553030a2)) & 0xffff | 54=(mask32((mask32(u16_2 + (mask32((mask32(state0 | 0x6899d5d4)) & (mask32(u16...#11f
     ip: ip += 0x4
     unresolved: algebraic_state_or_slot_formula
-block 3@0xda38f-0xda607+0x193
   0xda522..0xda525 vmop_028_plus0x3_state_add_const_slot_u16_0 bytes=d0000c family=operand_table_dispatch grade=readable_control_semantics target=26@0x7dbbb:1 delta=+0x3
     state: vm_state = add/constant-style update over state, flags, and operands; formula=state0 | flags0 ^ state0 | 0xb9ad02a & 0x3fb85e48 - state0 ^ 0x6e3e6f1a | flags0 ^ state0 | 0xb9ad02a & 0x3fb85e48 - state0 ^ 0x6e3e6f1a + 0x43078fb1 & 0x282416bb ^ 0x53f50e0b ^ state0 | flags0 ^ stat...#12f
     dispatch: next_entry = dispatch_table[u16(ip+0)]
     ip: ip += 0x3
-block 3@0xda38f-0xda607+0x196
   0xda525..0xda529 vmop_026_plus0x4_state_add_const_slot_multi_path bytes=dad4e801 family=obfuscated_table_dispatch grade=readable_with_structural_algebra target=18@0x7be9b:1 delta=+0x4
     state: vm_state = add/constant-style update over state, flags, and operands; formula=state0 - 0x471264ca + flags0 - state0 ^ 0x5fcdb203 & 0x637d285c + 0x44b4a975 ^ state0 - 0x471264ca | 0x2a01f150 | 0x7bdf07f3 + 0x104dd6df ^ 0x505df542 ^ 0xe71ae1d & 0x6dbe9345 + 0x521a2f7b + state0 - ...#12f
     dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=48=(mask32((mask32(u16_0 ^ (mask32((mask32(state0 - 0x471264ca)) + (mask32((mask32((mask32((mask32((mask32((mask32((mask32(flags0 - (mask32(state0 ^ 0x5fcdb203)))) ^ (mask32((mask32(state0 - 0x471264c...#12f
     ip: ip += 0x4
     unresolved: algebraic_state_or_slot_formula
-block 3@0xda38f-0xda607+0x19a
   0xda529..0xda52c vmop_018_plus0x3_state_add_const_slot_multi_path bytes=fc4c1a family=obfuscated_table_dispatch grade=readable_with_structural_algebra target=157@0x98a9a:1 delta=+0x3
     state: vm_state = add/constant-style update over state, flags, and operands; formula=state0 & flags0 | 0x954df65 + 0x5b466f3b - 0x6382ce20 & flags0 | 0x954df65 + 0x5b466f3b - u16_0 - state0 & flags0 | 0x954df65 + 0x5b466f3b - 0x6382ce20 & flags0 | 0x954df65 + 0x5b466f3b
     dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=99=(mask32(u16_0 - (mask32((mask32((mask32(state0 & flags0)) - 0x6382ce20)) & flags0)))) & 0xffff | 29=(mask32(u16_0 - (mask32((mask32((mask32(state0 & (mask32((mask32(flags0 | 0x954df65)) + 0x5b466f3...#11f
     ip: ip += 0x3
     unresolved: algebraic_state_or_slot_formula
-block 3@0xda38f-0xda607+0x19d
   0xda52c..0xda530 vmop_157_plus0x4_state_add_const_slot_multi_path bytes=5bd13800 family=obfuscated_table_dispatch grade=readable_with_structural_algebra target=114@0x90319:1 delta=+0x4
     state: vm_state = add/constant-style update over state, flags, and operands; formula=state0 ^ 0x2f4dfd84 + u16_2 | 0x1f5cd114 - flags0 + 0x3f0d8c6a + 0x2832271c ^ 0x520e3305 & 0x7edaa354 ^ 0x68e1604d ^ 0x3d2638af & state0 ^ 0x2f4dfd84 + u16_2 ^ u16_0 + state0 ^ 0x2f4dfd84 + u16_2 | 0x...#12f
     dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=79=(mask32((mask32(u16_0 + (mask32((mask32((mask32((mask32(state0 ^ 0x2f4dfd84)) + u16_2)) | 0x1f5cd114)) - (mask32((mask32(flags0 ^ 0x3d2638af)) & (mask32((mask32(state0 ^ 0x2f4dfd84)) + u16_2)))))))...#12f
     ip: ip += 0x4
     unresolved: algebraic_state_or_slot_formula
-block 3@0xda38f-0xda607+0x1a1
   0xda530..0xda534 vmop_114_plus0x4_state_add_const_slot_multi_path bytes=46ab07f0 family=obfuscated_table_dispatch grade=readable_with_structural_algebra target=287@0xb45d2:1 delta=+0x4
     state: vm_state = add/constant-style update over state, flags, and operands; formula=state0 ^ flags0 & state0 | 0x6729b5bf - 0x3dca653f ^ 0x671da5f4 + state0 & 0x48367f78 ^ 0x63bb548f + flags0 & state0 | 0x6729b5bf - 0x3dca653f ^ 0x671da5f4 + state0 & 0x292b555d ^ u16_2 + state0 ^ fla...#12f
     dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=51=(mask32((mask32(u16_0 + (mask32((mask32((mask32((mask32((mask32((mask32(state0 ^ (mask32((mask32((mask32(flags0 & (mask32(state0 | 0x6729b5bf)))) + state0)) & 0x48367f78)))) ^ 0x63bb548f)) + (mask3...#12f
     ip: ip += 0x4
     unresolved: algebraic_state_or_slot_formula
-block 3@0xda38f-0xda607+0x1a5
   0xda534..0xda538 vmop_287_plus0x4_state_add_const_slot_multi_path bytes=fec9e801 family=obfuscated_table_dispatch grade=readable_with_structural_algebra target=297@0xb64d7:1 delta=+0x4
     state: vm_state = add/constant-style update over state, flags, and operands; formula=state0 & 0xa6ddb71 - flags0 - 0x67686890 + 0x609b810a + 0x6975e1b1 - 0x4988e425 | 0x3ab14dd1 - u16_0 + state0 & 0xa6ddb71 - flags0 - 0x67686890 + 0x609b810a + 0x6975e1b1 - 0x4988e425 | 0x3ab14dd1 ^ 0xa841ebd
     dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=76=(mask32((mask32(u16_0 + (mask32((mask32((mask32((mask32(state0 & 0xa6ddb71)) - (mask32(flags0 + 0x6975e1b1)))) - 0x4988e425)) | 0x3ab14dd1)))) ^ 0xa841ebd)) & 0xffff | 52=(mask32((mask32(u16_0 + (m...#12f
     ip: ip += 0x4
     unresolved: algebraic_state_or_slot_formula
-block 3@0xda38f-0xda607+0x1a9
   0xda538..0xda53b vmop_297_plus0x3_state_add_const_slot_multi_path bytes=3c9f51 family=obfuscated_table_dispatch grade=readable_with_structural_algebra target=168@0x9aa83:1 delta=+0x3
     state: vm_state = add/constant-style update over state, flags, and operands; formula=state0 - 0x48220942 | flags0 + 0x283684b4 ^ 0x4a5a939a | 0x6650e9bb ^ 0x6b7f38b7 + b0 + state0 - 0x48220942 | flags0 + 0x283684b4 ^ 0x4a5a939a | 0x6650e9bb ^ 0x6b7f38b7 + flags0 + 0x283684b4 ^ 0x4a5a9...#12f
     dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=90=(mask32((mask32(u16_1 - (mask32((mask32((mask32((mask32(state0 - 0x48220942)) | flags0)) ^ 0x6b7f38b7)) + (mask32((mask32(b0 + (mask32((mask32((mask32(state0 - 0x48220942)) | flags0)) ^ 0x6b7f38b7)...#12f
     ip: ip += 0x3
     unresolved: algebraic_state_or_slot_formula
-block 3@0xda38f-0xda607+0x1ac
   0xda53b..0xda53f vmop_168_plus0x4_state_add_const_slot_multi_path bytes=de584ed1 family=obfuscated_table_dispatch grade=readable_with_structural_algebra target=64@0x85059:1 delta=+0x4
     state: vm_state = add/constant-style update over state, flags, and operands; formula=state0 | 0x6899d5d4 & u16_0 + flags0 & 0x66031b5e - 0x2eab70d9 ^ 0x7c2abc25 & 0x46cbe42d & 0x69af076d | 0x4ee70776 & u16_2 + state0 | 0x6899d5d4 & u16_0 + flags0 & 0x66031b5e - 0x2eab70d9 ^ 0x7c2abc25...#fc
     dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=74=(mask32((mask32(u16_2 + (mask32((mask32(state0 | 0x6899d5d4)) & (mask32(u16_0 + flags0)))))) + 0x553030a2)) & 0xffff | 54=(mask32((mask32(u16_2 + (mask32((mask32(state0 | 0x6899d5d4)) & (mask32(u16...#11f
     ip: ip += 0x4
     unresolved: algebraic_state_or_slot_formula
-block 3@0xda38f-0xda607+0x1b0
   0xda53f..0xda543 vmop_064_plus0x4_state_add_const_slot_multi_path bytes=3f478f37 family=obfuscated_table_dispatch grade=readable_with_structural_algebra target=26@0x7dbbb:1 delta=+0x4
     state: vm_state = add/constant-style update over state, flags, and operands; formula=state0 - 0x79614de5 ^ u16_2 + flags0 + 0x4cd0c9ae + 0x711675f2 & 0x5b249a06 ^ flags0 + 0x4cd0c9ae + 0x711675f2 & 0x5b249a06 + 0x729dddb0
     dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=77=(mask32((mask32(u16_0 - (mask32((mask32((mask32(state0 - 0x79614de5)) ^ (mask32(u16_2 + flags0)))) ^ (mask32(flags0 + 0x729dddb0)))))) + 0x2701cdcd)) & 0xffff | 51=(mask32((mask32(u16_0 - (mask32((...#12f
     ip: ip += 0x4
     unresolved: algebraic_state_or_slot_formula
-block 3@0xda38f-0xda607+0x1b4
   0xda543..0xda547 vmop_026_plus0x4_state_add_const_slot_multi_path bytes=da8ae801 family=obfuscated_table_dispatch grade=readable_with_structural_algebra target=258@0xadf2c:1 delta=+0x4
     state: vm_state = add/constant-style update over state, flags, and operands; formula=state0 - 0x471264ca + flags0 - state0 ^ 0x5fcdb203 & 0x637d285c + 0x44b4a975 ^ state0 - 0x471264ca | 0x2a01f150 | 0x7bdf07f3 + 0x104dd6df ^ 0x505df542 ^ 0xe71ae1d & 0x6dbe9345 + 0x521a2f7b + state0 - ...#12f
     dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=48=(mask32((mask32(u16_0 ^ (mask32((mask32(state0 - 0x471264ca)) + (mask32((mask32((mask32((mask32((mask32((mask32((mask32(flags0 - (mask32(state0 ^ 0x5fcdb203)))) ^ (mask32((mask32(state0 - 0x471264c...#12f
     ip: ip += 0x4
     unresolved: algebraic_state_or_slot_formula
-block 3@0xda38f-0xda607+0x1b8
   0xda547..0xda54b vmop_258_plus0x4_state_add_const_slot_multi_path bytes=c477d70f family=obfuscated_table_dispatch grade=readable_with_structural_algebra target=157@0x98a9a:1 delta=+0x4
     state: vm_state = add/constant-style update over state, flags, and operands; formula=state0 ^ 0x11095fd5 + flags0 - 0x1510614f | 0xa1b079a ^ 0x1769756e ^ u16_2 - flags0 - 0x1510614f | 0xa1b079a ^ 0x1769756e & u16_0 - state0 ^ 0x11095fd5 + flags0 - 0x1510614f | 0xa1b079a ^ 0x1769756e ^...#10a
     dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=70=(mask32((mask32(u16_0 - (mask32((mask32((mask32(state0 ^ 0x11095fd5)) + (mask32(flags0 ^ 0x1769756e)))) ^ (mask32(u16_2 - (mask32(flags0 ^ 0x1769756e)))))))) ^ 0x5812e92c)) & 0xffff | 58=(mask32((m...#12f
     ip: ip += 0x4
     unresolved: algebraic_state_or_slot_formula
-block 3@0xda38f-0xda607+0x1bc
   0xda54b..0xda54f vmop_157_plus0x4_state_add_const_slot_multi_path bytes=4b759d01 family=obfuscated_table_dispatch grade=readable_with_structural_algebra target=28@0x7e390:1 delta=+0x4
     state: vm_state = add/constant-style update over state, flags, and operands; formula=state0 ^ 0x2f4dfd84 + u16_2 | 0x1f5cd114 - flags0 + 0x3f0d8c6a + 0x2832271c ^ 0x520e3305 & 0x7edaa354 ^ 0x68e1604d ^ 0x3d2638af & state0 ^ 0x2f4dfd84 + u16_2 ^ u16_0 + state0 ^ 0x2f4dfd84 + u16_2 | 0x...#12f
     dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=79=(mask32((mask32(u16_0 + (mask32((mask32((mask32((mask32(state0 ^ 0x2f4dfd84)) + u16_2)) | 0x1f5cd114)) - (mask32((mask32(flags0 ^ 0x3d2638af)) & (mask32((mask32(state0 ^ 0x2f4dfd84)) + u16_2)))))))...#12f
     ip: ip += 0x4
     unresolved: algebraic_state_or_slot_formula
-block 3@0xda38f-0xda607+0x1c0
   0xda54f..0xda552 vmop_028_plus0x3_state_add_const_slot_u16_0 bytes=980767 family=operand_table_dispatch grade=readable_control_semantics target=243@0xaab6a:1 delta=+0x3
     state: vm_state = add/constant-style update over state, flags, and operands; formula=state0 | flags0 ^ state0 | 0xb9ad02a & 0x3fb85e48 - state0 ^ 0x6e3e6f1a | flags0 ^ state0 | 0xb9ad02a & 0x3fb85e48 - state0 ^ 0x6e3e6f1a + 0x43078fb1 & 0x282416bb ^ 0x53f50e0b ^ state0 | flags0 ^ stat...#12f
     dispatch: next_entry = dispatch_table[u16(ip+0)]
     ip: ip += 0x3
-block 3@0xda38f-0xda607+0x1c3
   0xda552..0xda556 vmop_243_plus0x4_state_add_const_slot_multi_path bytes=3698e801 family=obfuscated_table_dispatch grade=readable_with_structural_algebra target=18@0x7be9b:1 delta=+0x4
     state: vm_state = add/constant-style update over state, flags, and operands; formula=state0 ^ 0x47b31677 | flags0 | state0 | 0x5f60d018 + state0 + 0x398f70f4 & 0x4ec4a2f1 ^ 0x57df388c & flags0 | state0 | 0x5f60d018 + state0 + 0x398f70f4 & 0x4ec4a2f1 & state0 ^ 0x47b31677 | flags0 | st...#12f
     dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=66=(mask32((mask32(u16_0 - (mask32((mask32((mask32((mask32(state0 ^ 0x47b31677)) | (mask32((mask32(flags0 | (mask32(state0 | 0x5f60d018)))) + state0)))) ^ 0x57df388c)) & (mask32((mask32((mask32(flags0...#12f
     ip: ip += 0x4
     unresolved: algebraic_state_or_slot_formula
-block 3@0xda38f-0xda607+0x1c7
   0xda556..0xda559 vmop_018_plus0x3_state_add_const_slot_multi_path bytes=61053a family=obfuscated_table_dispatch grade=readable_with_structural_algebra target=172@0x9b68a:1 delta=+0x3
     state: vm_state = add/constant-style update over state, flags, and operands; formula=state0 & flags0 | 0x954df65 + 0x5b466f3b - 0x6382ce20 & flags0 | 0x954df65 + 0x5b466f3b - u16_0 - state0 & flags0 | 0x954df65 + 0x5b466f3b - 0x6382ce20 & flags0 | 0x954df65 + 0x5b466f3b
     dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=99=(mask32(u16_0 - (mask32((mask32((mask32(state0 & flags0)) - 0x6382ce20)) & flags0)))) & 0xffff | 29=(mask32(u16_0 - (mask32((mask32((mask32(state0 & (mask32((mask32(flags0 | 0x954df65)) + 0x5b466f3...#11f
     ip: ip += 0x3
     unresolved: algebraic_state_or_slot_formula
-block 3@0xda38f-0xda607+0x1ca
   0xda559..0xda55d vmop_172_plus0x4_state_add_const_slot_mba_stateful bytes=d216a309 family=obfuscated_table_dispatch grade=readable_with_structural_algebra target=114@0x90319:1 delta=+0x4
     state: vm_state = add/constant-style update over state, flags, and operands; formula=state0 ^ 0x7070916c - 0x6ecee241 + u16_0 ^ state0 ^ 0x7070916c - 0x6ecee241 ^ flags0 ^ 0x15bf847f & state0 | 0x3eba9edf | u16_2 ^ 0x715f0a33
     dispatch: next_entry = MBA(state, flags, operands) dispatch slot; per-row concrete target is resolved; expression=128=(mask32(u16_2 ^ 0x715f0a33)) & 0xffff
     ip: ip += 0x4
     unresolved: algebraic_state_or_slot_formula
-block 3@0xda38f-0xda607+0x1ce
   0xda55d..0xda561 vmop_114_plus0x4_state_add_const_slot_multi_path bytes=34797bc1 family=obfuscated_table_dispatch grade=readable_with_structural_algebra target=33@0x7f7c4:1 delta=+0x4
     state: vm_state = add/constant-style update over state, flags, and operands; formula=state0 ^ flags0 & state0 | 0x6729b5bf - 0x3dca653f ^ 0x671da5f4 + state0 & 0x48367f78 ^ 0x63bb548f + flags0 & state0 | 0x6729b5bf - 0x3dca653f ^ 0x671da5f4 + state0 & 0x292b555d ^ u16_2 + state0 ^ fla...#12f
     dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=51=(mask32((mask32(u16_0 + (mask32((mask32((mask32((mask32((mask32((mask32(state0 ^ (mask32((mask32((mask32(flags0 & (mask32(state0 | 0x6729b5bf)))) + state0)) & 0x48367f78)))) ^ 0x63bb548f)) + (mask3...#12f
     ip: ip += 0x4
     unresolved: algebraic_state_or_slot_formula
-block 3@0xda38f-0xda607+0x1d2
   0xda561..0xda565 vmop_033_plus0x4_state_add_const_slot_multi_path bytes=e801b2b8 family=obfuscated_table_dispatch grade=readable_with_structural_algebra target=340@0xbf435:1 delta=+0x4
     state: vm_state = add/constant-style update over state, flags, and operands; formula=state0 | 0x15422921 & u16_2 + state0 | 0x15422921 + 0x2d0713f3
     dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=128=(mask32((mask32(u16_2 + (mask32(state0 | 0x15422921)))) + 0x2d0713f3)) & 0xffff
     ip: ip += 0x4
     unresolved: algebraic_state_or_slot_formula
-block 3@0xda38f-0xda607+0x1d6
   0xda565..0xda569 vmop_340_plus0x4_state_add_const_slot_multi_path bytes=9c149100 family=obfuscated_table_dispatch grade=readable_with_structural_algebra target=66@0x855ff:1 delta=+0x4
     state: vm_state = add/constant-style update over state, flags, and operands; formula=state0 - 0x2b2e5a26 ^ 0x7535dd25 | u16_2 - u16_0 + state0 - 0x2b2e5a26 ^ 0x7535dd25 | u16_2 + 0x9097995
     dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=128=(mask32((mask32(u16_0 + (mask32((mask32((mask32(state0 - 0x2b2e5a26)) ^ 0x7535dd25)) | u16_2)))) + 0x9097995)) & 0xffff
     ip: ip += 0x4
     unresolved: algebraic_state_or_slot_formula
-block 3@0xda38f-0xda607+0x1da
   0xda569..0xda56c vmop_066_plus0x3_state_add_const_slot_multi_path bytes=8790fc family=obfuscated_table_dispatch grade=readable_with_structural_algebra target=168@0x9aa83:1 delta=+0x3
     state: vm_state = add/constant-style update over state, flags, and operands; formula=state0 & 0x2f6cb1f6 - b2 ^ state0 & 0x2f6cb1f6 ^ 0x745ff1d2 & 0x13de2cdd - flags0 - 0x50170614 | 0x7167293a ^ 0x42a6ffd6 ^ u16_0 - state0 & 0x2f6cb1f6 - b2 ^ state0 & 0x2f6cb1f6 ^ 0x745ff1d2 & 0x13de2...#108
     dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=99=(mask32((mask32(u16_0 - (mask32((mask32((mask32((mask32((mask32(state0 & 0x2f6cb1f6)) - (mask32(b2 ^ (mask32(state0 & 0x2f6cb1f6)))))) ^ 0x745ff1d2)) & 0x13de2cdd)) - (mask32(flags0 ^ 0x42a6ffd6)))...#12f
     ip: ip += 0x3
     unresolved: algebraic_state_or_slot_formula
-block 3@0xda38f-0xda607+0x1dd
   0xda56c..0xda570 vmop_168_plus0x4_state_add_const_slot_multi_path bytes=29ea9ed9 family=obfuscated_table_dispatch grade=readable_with_structural_algebra target=346@0xc0535:1 delta=+0x4
     state: vm_state = add/constant-style update over state, flags, and operands; formula=state0 | 0x6899d5d4 & u16_0 + flags0 & 0x66031b5e - 0x2eab70d9 ^ 0x7c2abc25 & 0x46cbe42d & 0x69af076d | 0x4ee70776 & u16_2 + state0 | 0x6899d5d4 & u16_0 + flags0 & 0x66031b5e - 0x2eab70d9 ^ 0x7c2abc25...#fc
     dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=74=(mask32((mask32(u16_2 + (mask32((mask32(state0 | 0x6899d5d4)) & (mask32(u16_0 + flags0)))))) + 0x553030a2)) & 0xffff | 54=(mask32((mask32(u16_2 + (mask32((mask32(state0 | 0x6899d5d4)) & (mask32(u16...#11f
     ip: ip += 0x4
     unresolved: algebraic_state_or_slot_formula
-block 3@0xda38f-0xda607+0x1e1
   0xda570..0xda574 vmop_346_plus0x4_state_add_const_slot_multi_path bytes=9c54e801 family=obfuscated_table_dispatch grade=readable_with_structural_algebra target=215@0xa4609:1 delta=+0x4
     state: vm_state = add/constant-style update over state, flags, and operands; formula=state0 ^ flags0 ^ 0x3f746ab3 ^ 0x3f5501a6 ^ 0x45fbcef1
     dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=74=(mask32((mask32(u16_0 ^ (mask32(state0 ^ (mask32(flags0 ^ 0x45fbcef1)))))) + 0x7f7eb061)) & 0xffff | 54=(mask32((mask32(u16_0 ^ (mask32(state0 ^ (mask32((mask32((mask32(flags0 ^ 0x3f746ab3)) ^ 0x3f...#fb
     ip: ip += 0x4
     unresolved: algebraic_state_or_slot_formula
-block 3@0xda38f-0xda607+0x1e5
   0xda574..0xda577 vmop_215_plus0x3_state_mixed_slot_u16_0 bytes=40055f family=operand_table_dispatch grade=readable_with_structural_algebra target=168@0x9aa83:1 delta=+0x3
     state: vm_state = mixed MBA update over state, flags, and operands; formula=state0 | 0x760f463f - flags0 | 0x77dcc51b ^ 0xee9796d ^ 0x717a207c + 0x15a799dd | 0x6c5f0f12 + b2 + state0 | 0x760f463f - flags0 | 0x77dcc51b ^ 0xee9796d ^ 0x717a207c + 0x15a799dd | 0x6c5f0f12 | 0x38d2bdd3 - u16_0
     dispatch: next_entry = dispatch_table[u16(ip+0)]
     ip: ip += 0x3
     unresolved: algebraic_state_or_slot_formula;state_formula_not_named
-block 3@0xda38f-0xda607+0x1e8
   0xda577..0xda57b vmop_168_plus0x4_state_add_const_slot_multi_path bytes=bd18ddd6 family=obfuscated_table_dispatch grade=readable_with_structural_algebra target=258@0xadf2c:1 delta=+0x4
     state: vm_state = add/constant-style update over state, flags, and operands; formula=state0 | 0x6899d5d4 & u16_0 + flags0 & 0x66031b5e - 0x2eab70d9 ^ 0x7c2abc25 & 0x46cbe42d & 0x69af076d | 0x4ee70776 & u16_2 + state0 | 0x6899d5d4 & u16_0 + flags0 & 0x66031b5e - 0x2eab70d9 ^ 0x7c2abc25...#fc
     dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=74=(mask32((mask32(u16_2 + (mask32((mask32(state0 | 0x6899d5d4)) & (mask32(u16_0 + flags0)))))) + 0x553030a2)) & 0xffff | 54=(mask32((mask32(u16_2 + (mask32((mask32(state0 | 0x6899d5d4)) & (mask32(u16...#11f
     ip: ip += 0x4
     unresolved: algebraic_state_or_slot_formula
-block 3@0xda38f-0xda607+0x1ec
   0xda57b..0xda57f vmop_258_plus0x4_state_add_const_slot_multi_path bytes=d81341d3 family=obfuscated_table_dispatch grade=readable_with_structural_algebra target=315@0xb9451:1 delta=+0x4
     state: vm_state = add/constant-style update over state, flags, and operands; formula=state0 ^ 0x11095fd5 + flags0 - 0x1510614f | 0xa1b079a ^ 0x1769756e ^ u16_2 - flags0 - 0x1510614f | 0xa1b079a ^ 0x1769756e & u16_0 - state0 ^ 0x11095fd5 + flags0 - 0x1510614f | 0xa1b079a ^ 0x1769756e ^...#10a
     dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=70=(mask32((mask32(u16_0 - (mask32((mask32((mask32(state0 ^ 0x11095fd5)) + (mask32(flags0 ^ 0x1769756e)))) ^ (mask32(u16_2 - (mask32(flags0 ^ 0x1769756e)))))))) ^ 0x5812e92c)) & 0xffff | 58=(mask32((m...#12f
     ip: ip += 0x4
     unresolved: algebraic_state_or_slot_formula
-block 3@0xda38f-0xda607+0x1f0
   0xda57f..0xda583 vmop_315_plus0x4_state_mixed_slot_mba_stateful bytes=e801a9fa family=obfuscated_table_dispatch grade=readable_with_structural_algebra target=347@0xc088d:1 delta=+0x4
     state: vm_state = mixed MBA update over state, flags, and operands; formula=state0 & 0x7562ddb5 ^ 0x25ede89c - 0x19140c1b ^ flags0 ^ 0x285c750c | u16_2 ^ 0x42c7f071
     dispatch: next_entry = MBA(state, flags, operands) dispatch slot; per-row concrete target is resolved; expression=128=(mask32(u16_2 ^ 0x42c7f071)) & 0xffff
     ip: ip += 0x4
     unresolved: algebraic_state_or_slot_formula;state_formula_not_named
-block 3@0xda38f-0xda607+0x1f4
   0xda583..0xda587 vmop_347_plus0x4_state_add_const_slot_multi_path bytes=fe8a1803 family=obfuscated_table_dispatch grade=readable_with_structural_algebra target=66@0x855ff:1 delta=+0x4
     state: vm_state = add/constant-style update over state, flags, and operands; formula=state0 | flags0 + 0x6fa972f0 | flags0 ^ state0 | flags0 + 0x6fa972f0 & 0x45223942 + state0 | flags0 + 0x6fa972f0 | 0x2efc96c5 ^ 0x5cf483c7 & flags0 ^ state0 | flags0 + 0x6fa972f0 & 0x45223942 + state0...#12f
     dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=92=(mask32((mask32(u16_0 ^ (mask32((mask32((mask32((mask32((mask32((mask32((mask32(state0 | (mask32(flags0 + 0x6fa972f0)))) | (mask32((mask32(flags0 ^ (mask32((mask32(state0 | (mask32(flags0 + 0x6fa97...#12f
     ip: ip += 0x4
     unresolved: algebraic_state_or_slot_formula
-block 3@0xda38f-0xda607+0x1f8
   0xda587..0xda58a vmop_066_plus0x3_state_add_const_slot_multi_path bytes=e35758 family=obfuscated_table_dispatch grade=readable_with_structural_algebra target=268@0xb0007:1 delta=+0x3
     state: vm_state = add/constant-style update over state, flags, and operands; formula=state0 & 0x2f6cb1f6 - b2 ^ state0 & 0x2f6cb1f6 ^ 0x745ff1d2 & 0x13de2cdd - flags0 - 0x50170614 | 0x7167293a ^ 0x42a6ffd6 ^ u16_0 - state0 & 0x2f6cb1f6 - b2 ^ state0 & 0x2f6cb1f6 ^ 0x745ff1d2 & 0x13de2...#108
     dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=99=(mask32((mask32(u16_0 - (mask32((mask32((mask32((mask32((mask32(state0 & 0x2f6cb1f6)) - (mask32(b2 ^ (mask32(state0 & 0x2f6cb1f6)))))) ^ 0x745ff1d2)) & 0x13de2cdd)) - (mask32(flags0 ^ 0x42a6ffd6)))...#12f
     ip: ip += 0x3
     unresolved: algebraic_state_or_slot_formula
-block 3@0xda38f-0xda607+0x1fb
   0xda58a..0xda58e vmop_268_plus0x4_state_add_const_slot_multi_path bytes=6c336e22 family=obfuscated_table_dispatch grade=readable_with_structural_algebra target=26@0x7dbbb:1 delta=+0x4
     state: vm_state = add/constant-style update over state, flags, and operands; formula=state0 | 0x71bd1bb1 + u16_0 - state0 | 0x71bd1bb1 - flags0 & flags0 + 0x33c0c75b & 0x174c40ef - 0x554d11ee & 0x30ef8696 | flags0 + 0x33c0c75b & 0x174c40ef - 0x554d11ee & 0x30ef8696 + 0x12696b26 ^ u16_...#12f
     dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=87=(mask32((mask32(u16_2 - (mask32((mask32((mask32((mask32(state0 | 0x71bd1bb1)) + (mask32((mask32(u16_0 - (mask32(state0 | 0x71bd1bb1)))) - flags0)))) & (mask32((mask32((mask32(flags0 + 0x33c0c75b)) ...#12f
     ip: ip += 0x4
     unresolved: algebraic_state_or_slot_formula
-block 3@0xda38f-0xda607+0x1ff
   0xda58e..0xda592 vmop_026_plus0x4_state_add_const_slot_multi_path bytes=d865e801 family=obfuscated_table_dispatch grade=readable_with_structural_algebra target=64@0x85059:1 delta=+0x4
     state: vm_state = add/constant-style update over state, flags, and operands; formula=state0 - 0x471264ca + flags0 - state0 ^ 0x5fcdb203 & 0x637d285c + 0x44b4a975 ^ state0 - 0x471264ca | 0x2a01f150 | 0x7bdf07f3 + 0x104dd6df ^ 0x505df542 ^ 0xe71ae1d & 0x6dbe9345 + 0x521a2f7b + state0 - ...#12f
     dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=48=(mask32((mask32(u16_0 ^ (mask32((mask32(state0 - 0x471264ca)) + (mask32((mask32((mask32((mask32((mask32((mask32((mask32(flags0 - (mask32(state0 ^ 0x5fcdb203)))) ^ (mask32((mask32(state0 - 0x471264c...#12f
     ip: ip += 0x4
     unresolved: algebraic_state_or_slot_formula
-block 3@0xda38f-0xda607+0x203
   0xda592..0xda596 vmop_064_plus0x4_state_add_const_slot_multi_path bytes=aa94a0ba family=obfuscated_table_dispatch grade=readable_with_structural_algebra target=203@0xa1484:1 delta=+0x4
     state: vm_state = add/constant-style update over state, flags, and operands; formula=state0 - 0x79614de5 ^ u16_2 + flags0 + 0x4cd0c9ae + 0x711675f2 & 0x5b249a06 ^ flags0 + 0x4cd0c9ae + 0x711675f2 & 0x5b249a06 + 0x729dddb0
     dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=77=(mask32((mask32(u16_0 - (mask32((mask32((mask32(state0 - 0x79614de5)) ^ (mask32(u16_2 + flags0)))) ^ (mask32(flags0 + 0x729dddb0)))))) + 0x2701cdcd)) & 0xffff | 51=(mask32((mask32(u16_0 - (mask32((...#12f
     ip: ip += 0x4
     unresolved: algebraic_state_or_slot_formula
-block 3@0xda38f-0xda607+0x207
   0xda596..0xda59a vmop_203_plus0x4_state_add_const_slot_mba_stateful bytes=97981597 family=obfuscated_table_dispatch grade=readable_with_structural_algebra target=18@0x7be9b:1 delta=+0x4
     state: vm_state = add/constant-style update over state, flags, and operands; formula=state0 - flags0 + 0x97da242 & flags0 + 0x97da242 ^ 0x370370f1 | 0x1f1759c | flags0 + 0x97da242 & state0 - flags0 + 0x97da242 & flags0 + 0x97da242 ^ 0x370370f1 | 0x1f1759c & 0x71376753 + 0x2c217984 | 0...#12f
     dispatch: next_entry = MBA(state, flags, operands) dispatch slot; per-row concrete target is resolved; expression=128=(mask32(u16_0 ^ 0x4ccb9807)) & 0xffff
     ip: ip += 0x4
     unresolved: algebraic_state_or_slot_formula
-block 3@0xda38f-0xda607+0x20b
   0xda59a..0xda59d vmop_018_plus0x3_state_add_const_slot_multi_path bytes=50113e family=obfuscated_table_dispatch grade=readable_with_structural_algebra target=26@0x7dbbb:1 delta=+0x3
     state: vm_state = add/constant-style update over state, flags, and operands; formula=state0 & flags0 | 0x954df65 + 0x5b466f3b - 0x6382ce20 & flags0 | 0x954df65 + 0x5b466f3b - u16_0 - state0 & flags0 | 0x954df65 + 0x5b466f3b - 0x6382ce20 & flags0 | 0x954df65 + 0x5b466f3b
     dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=99=(mask32(u16_0 - (mask32((mask32((mask32(state0 & flags0)) - 0x6382ce20)) & flags0)))) & 0xffff | 29=(mask32(u16_0 - (mask32((mask32((mask32(state0 & (mask32((mask32(flags0 | 0x954df65)) + 0x5b466f3...#11f
     ip: ip += 0x3
     unresolved: algebraic_state_or_slot_formula
-block 3@0xda38f-0xda607+0x20e
   0xda59d..0xda5a1 vmop_026_plus0x4_state_add_const_slot_multi_path bytes=9207e801 family=obfuscated_table_dispatch grade=readable_with_structural_algebra target=199@0xa0631:1 delta=+0x4
     state: vm_state = add/constant-style update over state, flags, and operands; formula=state0 - 0x471264ca + flags0 - state0 ^ 0x5fcdb203 & 0x637d285c + 0x44b4a975 ^ state0 - 0x471264ca | 0x2a01f150 | 0x7bdf07f3 + 0x104dd6df ^ 0x505df542 ^ 0xe71ae1d & 0x6dbe9345 + 0x521a2f7b + state0 - ...#12f
     dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=48=(mask32((mask32(u16_0 ^ (mask32((mask32(state0 - 0x471264ca)) + (mask32((mask32((mask32((mask32((mask32((mask32((mask32(flags0 - (mask32(state0 ^ 0x5fcdb203)))) ^ (mask32((mask32(state0 - 0x471264c...#12f
     ip: ip += 0x4
     unresolved: algebraic_state_or_slot_formula
-block 3@0xda38f-0xda607+0x212
   0xda5a1..0xda5a4 vmop_199_plus0x3_state_add_const_slot_multi_path bytes=07b07a family=obfuscated_table_dispatch grade=readable_with_structural_algebra target=333@0xbd8af:1 delta=+0x3
     state: vm_state = add/constant-style update over state, flags, and operands; formula=state0 + b2 + flags0 ^ 0x7353b039 - 0x24d1328a ^ 0x7e708197 & 0x20d5418 + flags0 ^ 0x7353b039 - 0x24d1328a
     dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=106=(mask32((mask32(u16_0 ^ (mask32((mask32((mask32((mask32(state0 + (mask32(b2 + flags0)))) ^ 0x7e708197)) & 0x20d5418)) + flags0)))) + 0x3030bb89)) & 0xffff | 22=(mask32((mask32(u16_0 ^ (mask32((mas...#12f
     ip: ip += 0x3
     unresolved: algebraic_state_or_slot_formula
-block 3@0xda38f-0xda607+0x215
   0xda5a4..0xda5a8 vmop_333_plus0x4_state_add_const_slot_multi_path bytes=9beab300 family=obfuscated_table_dispatch grade=readable_with_structural_algebra target=340@0xbf435:1 delta=+0x4
     state: vm_state = add/constant-style update over state, flags, and operands; formula=state0 ^ flags0 ^ state0 | 0x37ccc6ea - 0x61e56767 & flags0 ^ state0 + flags0 ^ state0 | 0x71cc1ee8 | 0x569ecec3 + u16_0 - state0 ^ flags0 ^ state0 | 0x37ccc6ea - 0x61e56767 & flags0 ^ state0 + flags0...#eb
     dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=128=(mask32(u16_0 - (mask32((mask32((mask32((mask32((mask32(state0 ^ (mask32((mask32(flags0 ^ state0)) | 0x37ccc6ea)))) - 0x61e56767)) & (mask32(flags0 ^ state0)))) + (mask32((mask32(flags0 ^ state0))...#df
     ip: ip += 0x4
     unresolved: algebraic_state_or_slot_formula
-block 3@0xda38f-0xda607+0x219
   0xda5a8..0xda5ac vmop_340_plus0x4_state_add_const_slot_multi_path bytes=0042b300 family=obfuscated_table_dispatch grade=readable_with_structural_algebra target=305@0xb78b0:1 delta=+0x4
     state: vm_state = add/constant-style update over state, flags, and operands; formula=state0 - 0x2b2e5a26 ^ 0x7535dd25 | u16_2 - u16_0 + state0 - 0x2b2e5a26 ^ 0x7535dd25 | u16_2 + 0x9097995
     dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=128=(mask32((mask32(u16_0 + (mask32((mask32((mask32(state0 - 0x2b2e5a26)) ^ 0x7535dd25)) | u16_2)))) + 0x9097995)) & 0xffff
     ip: ip += 0x4
     unresolved: algebraic_state_or_slot_formula
-block 3@0xda38f-0xda607+0x21d
   0xda5ac..0xda5b0 vmop_305_plus0x4_state_add_const_slot_mba_stateful bytes=cdc0e801 family=obfuscated_table_dispatch grade=readable_with_structural_algebra target=167@0x9a8d2:1 delta=+0x4
     state: vm_state = add/constant-style update over state, flags, and operands; formula=state0 & u16_0 + state0
     dispatch: next_entry = MBA(state, flags, operands) dispatch slot; per-row concrete target is resolved; expression=128=(mask32(u16_0 + state0)) & 0xffff
     ip: ip += 0x4
     unresolved: algebraic_state_or_slot_formula
-block 3@0xda38f-0xda607+0x221
   0xda5b0..0xda5b6 vmop_167_plus0x6_state_add_const_slot_mba_stateful bytes=e8013d01e52a family=obfuscated_table_dispatch grade=readable_with_structural_algebra target=283@0xb3612:1 delta=+0x6
     state: vm_state = add/constant-style update over state, flags, and operands; formula=state0 - u16_4 ^ state0 ^ 0x5f92615
     dispatch: next_entry = MBA(state, flags, operands) dispatch slot; per-row concrete target is resolved; expression=128=(mask32((mask32(u16_4 ^ state0)) ^ 0x5f92615)) & 0xffff
     ip: ip += 0x6
     unresolved: algebraic_state_or_slot_formula
-block 3@0xda38f-0xda607+0x227
   0xda5b6..0xda5bb vmop_283_plus0x5_state_preserve_slot_mba_stateful bytes=10e801945b family=obfuscated_table_dispatch grade=readable_with_structural_algebra target=28@0x7e390:1 delta=+0x5
     state: vm_state is preserved
     dispatch: next_entry = MBA(state, flags, operands) dispatch slot; per-row concrete target is resolved; expression=128=(mask32(u16_3 - 0x8ad5ab4)) & 0xffff
     ip: ip += 0x5
     unresolved: algebraic_state_or_slot_formula
-block 3@0xda38f-0xda607+0x22c
   0xda5bb..0xda5be vmop_028_plus0x3_state_add_const_slot_u16_0 bytes=200628 family=operand_table_dispatch grade=readable_control_semantics target=196@0x9fbcd:1 delta=+0x3
     state: vm_state = add/constant-style update over state, flags, and operands; formula=state0 | flags0 ^ state0 | 0xb9ad02a & 0x3fb85e48 - state0 ^ 0x6e3e6f1a | flags0 ^ state0 | 0xb9ad02a & 0x3fb85e48 - state0 ^ 0x6e3e6f1a + 0x43078fb1 & 0x282416bb ^ 0x53f50e0b ^ state0 | flags0 ^ stat...#12f
     dispatch: next_entry = dispatch_table[u16(ip+0)]
     ip: ip += 0x3
-block 3@0xda38f-0xda607+0x22f
   0xda5be..0xda5c2 vmop_196_plus0x4_state_add_const_slot_multi_path bytes=d2141ce2 family=obfuscated_table_dispatch grade=readable_with_structural_algebra target=347@0xc088d:1 delta=+0x4
     state: vm_state = add/constant-style update over state, flags, and operands; formula=state0 | 0x52e5924a + flags0 | 0x4083ed99 & state0 | 0x52e5924a ^ 0x20047816 & 0x7ca762c5 - 0x5ff2f608 + 0x789b1461 + 0x37b5a024 + 0x2e12e35a ^ 0x44fb7fdb + flags0 | 0x4083ed99 & state0 | 0x52e5924a ^...#114
     dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=128=(mask32((mask32(u16_2 + (mask32((mask32((mask32((mask32((mask32((mask32((mask32(state0 | 0x52e5924a)) + (mask32((mask32((mask32(flags0 | 0x4083ed99)) & (mask32((mask32(state0 | 0x52e5924a)) ^ 0x20...#df
     ip: ip += 0x4
     unresolved: algebraic_state_or_slot_formula
-block 3@0xda38f-0xda607+0x233
   0xda5c2..0xda5c6 vmop_347_plus0x4_state_add_const_slot_multi_path bytes=abb6b748 family=obfuscated_table_dispatch grade=readable_with_structural_algebra target=345@0xc02e4:1 delta=+0x4
     state: vm_state = add/constant-style update over state, flags, and operands; formula=state0 | flags0 + 0x6fa972f0 | flags0 ^ state0 | flags0 + 0x6fa972f0 & 0x45223942 + state0 | flags0 + 0x6fa972f0 | 0x2efc96c5 ^ 0x5cf483c7 & flags0 ^ state0 | flags0 + 0x6fa972f0 & 0x45223942 + state0...#12f
     dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=92=(mask32((mask32(u16_0 ^ (mask32((mask32((mask32((mask32((mask32((mask32((mask32(state0 | (mask32(flags0 + 0x6fa972f0)))) | (mask32((mask32(flags0 ^ (mask32((mask32(state0 | (mask32(flags0 + 0x6fa97...#12f
     ip: ip += 0x4
     unresolved: algebraic_state_or_slot_formula
-block 3@0xda38f-0xda607+0x237
   0xda5c6..0xda5cc vmop_345_plus0x6_state_add_const_slot_mba_stateful bytes=e12fc2dc22ad family=obfuscated_table_dispatch grade=readable_with_structural_algebra target=348@0xc0d7d:1 delta=+0x6
     state: vm_state = add/constant-style update over state, flags, and operands; formula=state0 + u32_2 ^ state0 + flags0 + u16_0 + state0 + u32_2 ^ state0 + flags0
     dispatch: next_entry = MBA(state, flags, operands) dispatch slot; per-row concrete target is resolved; expression=128=(mask32(u16_0 + (mask32(state0 + (mask32((mask32(u32_2 ^ state0)) + flags0)))))) & 0xffff
     ip: ip += 0x6
     unresolved: algebraic_state_or_slot_formula
-block 3@0xda38f-0xda607+0x23d
   0xda5cc..0xda5d1 vmop_348_plus0x5_state_add_const_slot_multi_path bytes=27753d01e5 family=obfuscated_table_dispatch grade=readable_with_structural_algebra target=108@0x8f24b:1 delta=+0x5
     state: vm_state = add/constant-style update over state, flags, and operands; formula=state0 & 0x4ead272 + flags0 | flags0 | 0x2730b0cc - 0x5c278a20 & 0x31691179 - 0x5c3efee3 & 0x19c08712 & u16_0 ^ state0 & 0x4ead272 + flags0 | flags0 | 0x2730b0cc - 0x5c278a20 & 0x31691179 - 0x5c3efee3...#e2
     dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=19=(mask32((mask32(u16_0 ^ (mask32((mask32((mask32((mask32(state0 & 0x4ead272)) + flags0)) | (mask32(flags0 | 0x2730b0cc)))) & 0x19c08712)))) - 0x369ef0d5)) & 0xffff | 9=(mask32((mask32(u16_0 ^ (mask3...#12f
     ip: ip += 0x5
     unresolved: algebraic_state_or_slot_formula
-block 3@0xda38f-0xda607+0x242
   0xda5d1..0xda5d3 vmop_108_plus0x2_state_add_const_slot_mba_stateful bytes=4968 family=obfuscated_table_dispatch grade=readable_with_structural_algebra target=203@0xa1484:1 delta=+0x2
     state: vm_state = add/constant-style update over state, flags, and operands; formula=state0 + 0x11961dc7 ^ 0x5fa19cc7 - flags0
     dispatch: next_entry = MBA(state, flags, operands) dispatch slot; per-row concrete target is resolved; expression=128=(mask32((mask32(u16_0 ^ (mask32((mask32((mask32(state0 + 0x11961dc7)) ^ 0x5fa19cc7)) - flags0)))) + 0x36f124db)) & 0xffff
     ip: ip += 0x2
     unresolved: algebraic_state_or_slot_formula
-block 3@0xda38f-0xda607+0x244
   0xda5d3..0xda5d7 vmop_203_plus0x4_state_add_const_slot_mba_stateful bytes=979b6f56 family=obfuscated_table_dispatch grade=readable_with_structural_algebra target=114@0x90319:1 delta=+0x4
     state: vm_state = add/constant-style update over state, flags, and operands; formula=state0 - flags0 + 0x97da242 & flags0 + 0x97da242 ^ 0x370370f1 | 0x1f1759c | flags0 + 0x97da242 & state0 - flags0 + 0x97da242 & flags0 + 0x97da242 ^ 0x370370f1 | 0x1f1759c & 0x71376753 + 0x2c217984 | 0...#12f
     dispatch: next_entry = MBA(state, flags, operands) dispatch slot; per-row concrete target is resolved; expression=128=(mask32(u16_0 ^ 0x4ccb9807)) & 0xffff
     ip: ip += 0x4
     unresolved: algebraic_state_or_slot_formula
-block 3@0xda38f-0xda607+0x248
   0xda5d7..0xda5db vmop_114_plus0x4_state_add_const_slot_multi_path bytes=21629e18 family=obfuscated_table_dispatch grade=readable_with_structural_algebra target=260@0xae90b:1 delta=+0x4
     state: vm_state = add/constant-style update over state, flags, and operands; formula=state0 ^ flags0 & state0 | 0x6729b5bf - 0x3dca653f ^ 0x671da5f4 + state0 & 0x48367f78 ^ 0x63bb548f + flags0 & state0 | 0x6729b5bf - 0x3dca653f ^ 0x671da5f4 + state0 & 0x292b555d ^ u16_2 + state0 ^ fla...#12f
     dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=51=(mask32((mask32(u16_0 + (mask32((mask32((mask32((mask32((mask32((mask32(state0 ^ (mask32((mask32((mask32(flags0 & (mask32(state0 | 0x6729b5bf)))) + state0)) & 0x48367f78)))) ^ 0x63bb548f)) + (mask3...#12f
     ip: ip += 0x4
     unresolved: algebraic_state_or_slot_formula
-block 3@0xda38f-0xda607+0x24c
   0xda5db..0xda5df vmop_260_plus0x4_state_add_const_slot_multi_path bytes=d00a10fe family=obfuscated_table_dispatch grade=readable_with_structural_algebra target=66@0x855ff:1 delta=+0x4
     state: vm_state = add/constant-style update over state, flags, and operands; formula=state0 + 0x581f6275 ^ flags0 - 0x705f9ad2 + 0x760922e2 & 0x2efb7283 | 0x7ba7e961 + flags0 - 0x705f9ad2 + 0x760922e2 | flags0 - 0x705f9ad2 + 0x760922e2 & 0x5af0e1db | 0x17270855 | flags0 - 0x705f9ad2 +...#12f
     dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=65=(mask32((mask32(u16_0 - (mask32((mask32((mask32((mask32((mask32((mask32((mask32((mask32((mask32(state0 + 0x581f6275)) ^ (mask32((mask32((mask32(flags0 - 0x705f9ad2)) + 0x760922e2)) & 0x2efb7283))))...#12f
     ip: ip += 0x4
     unresolved: algebraic_state_or_slot_formula
-block 3@0xda38f-0xda607+0x250
   0xda5df..0xda5e2 vmop_066_plus0x3_state_add_const_slot_multi_path bytes=8a22c0 family=obfuscated_table_dispatch grade=readable_with_structural_algebra target=242@0xaa87d:1 delta=+0x3
     state: vm_state = add/constant-style update over state, flags, and operands; formula=state0 & 0x2f6cb1f6 - b2 ^ state0 & 0x2f6cb1f6 ^ 0x745ff1d2 & 0x13de2cdd - flags0 - 0x50170614 | 0x7167293a ^ 0x42a6ffd6 ^ u16_0 - state0 & 0x2f6cb1f6 - b2 ^ state0 & 0x2f6cb1f6 ^ 0x745ff1d2 & 0x13de2...#108
     dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=99=(mask32((mask32(u16_0 - (mask32((mask32((mask32((mask32((mask32(state0 & 0x2f6cb1f6)) - (mask32(b2 ^ (mask32(state0 & 0x2f6cb1f6)))))) ^ 0x745ff1d2)) & 0x13de2cdd)) - (mask32(flags0 ^ 0x42a6ffd6)))...#12f
     ip: ip += 0x3
     unresolved: algebraic_state_or_slot_formula
-block 3@0xda38f-0xda607+0x253
   0xda5e2..0xda5e7 vmop_242_plus0x5_state_formula_slot_mba_stateful bytes=3d01715c8d family=obfuscated_table_dispatch grade=readable_with_structural_algebra target=210@0xa2da3:1 delta=+0x5
     state: vm_state = unresolved formula; formula=state0 | u16_3 - state0 ^ 0x5c05e9b5
     dispatch: next_entry = MBA(state, flags, operands) dispatch slot; per-row concrete target is resolved; expression=43=(mask32((mask32(u16_3 - state0)) ^ 0x5c05e9b5)) & 0xffff
     ip: ip += 0x5
     unresolved: algebraic_state_or_slot_formula;state_formula_not_named
-block 3@0xda38f-0xda607+0x258
   0xda5e7..0xdac57 vmop_210_plus0x30_sampled_long_or_sparse_slot_unknown bytes=a5000000700600003d0122 family=long_or_backedge_control grade=unresolved_dispatch_details target=165@0x9a24c delta=+0x670
     state: control-special state class sampled_long_or_sparse; formula=state0
     dispatch: dispatch slot expression not recovered; use per-row target evidence when available

@@ -323,7 +323,7 @@ def main() -> int:
         ]
         current_block = None
         for row in rows:
-            block = str(row.get("source_block", ""))
+            block = str(row.get("source_block", "")).split("@", 1)[0]
             if block != current_block:
                 current_block = block
                 lines.append(f"block {block}")
