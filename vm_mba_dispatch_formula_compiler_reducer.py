@@ -344,7 +344,7 @@ def main() -> int:
     root = args.root
 
     transfer_path = root / "vm_static_transfer_expr_full_python.tsv"
-    isa_path = root / "vm_readable_isa_state_reduced.tsv"
+    isa_path = root / "vm_readable_isa.tsv"
     if not transfer_path.exists():
         raise SystemExit(f"missing input: {transfer_path}; run full transfer-expression extraction first")
     if not isa_path.exists():

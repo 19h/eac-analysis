@@ -44,7 +44,7 @@ def main() -> int:
     root = args.root
 
     paths = {
-        "state_reduced_isa": root / "vm_readable_isa_state_reduced.tsv",
+        "readable_isa": root / "vm_readable_isa.tsv",
         "full_transfer_expr": root / "vm_static_transfer_expr_full_python.tsv",
         "dispatch_reductions": root / "vm_mba_dispatch_formula_compiler_reductions.tsv",
         "dispatch_reductions_by_entry": root / "vm_mba_dispatch_formula_compiler_reductions_by_entry.tsv",
@@ -60,7 +60,7 @@ def main() -> int:
     if not ok:
         return 1
 
-    isa = read_tsv(paths["state_reduced_isa"])
+    isa = read_tsv(paths["readable_isa"])
     transfer = read_tsv(paths["full_transfer_expr"])
     reductions = read_tsv(paths["dispatch_reductions"])
     summary = read_tsv(paths["dispatch_reductions_by_entry"])
