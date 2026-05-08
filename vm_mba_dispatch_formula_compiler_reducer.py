@@ -470,6 +470,7 @@ def main() -> int:
     for source, entry_rows in sorted(by_entry.items(), key=lambda item: parse_int(item[0])):
         proved = [row for row in entry_rows if row["proof_status"] == "proved_equivalent"]
         target_statuses = Counter(str(row["target_binding_status"]) for row in entry_rows)
+        target_bases = Counter(str(row["target_binding_basis"]) for row in entry_rows)
         summary_rows.append(
             {
                 "source_entry": source,
@@ -479,8 +480,13 @@ def main() -> int:
                 "proved_variants": len(proved),
                 "proof_status_mix": ";".join(f"{key}:{value}" for key, value in Counter(str(row["proof_status"]) for row in entry_rows).most_common()),
                 "target_binding_mix": ";".join(f"{key}:{value}" for key, value in target_statuses.most_common()),
+                "target_binding_basis_mix": ";".join(f"{key}:{value}" for key, value in target_bases.most_common()),
                 "target_coverage_pct": entry_rows[0]["target_coverage_pct"],
                 "target_mismatched_events": entry_rows[0]["target_mismatched_events"],
+                "second_stage_events": entry_rows[0].get("second_stage_events", ""),
+                "second_stage_idx_mix": entry_rows[0].get("second_stage_idx_mix", ""),
+                "second_stage_target_entry_mix": entry_rows[0].get("second_stage_target_entry_mix", ""),
+                "second_stage_dispatch_site_mix": entry_rows[0].get("second_stage_dispatch_site_mix", ""),
                 "reduced_dispatch_preview": " ; ".join(
                     f"{row['observed_expr_count']}={row['candidate_c']}" for row in entry_rows if row["proof_status"] == "proved_equivalent"
                 ),
@@ -504,6 +510,11 @@ def main() -> int:
             "target_coverage_pct",
             "target_mismatched_events",
             "target_binding_status",
+            "target_binding_basis",
+            "second_stage_events",
+            "second_stage_idx_mix",
+            "second_stage_target_entry_mix",
+            "second_stage_dispatch_site_mix",
             "reduction_status",
             "proof_status",
             "original_chars",
@@ -526,8 +537,13 @@ def main() -> int:
             "proved_variants",
             "proof_status_mix",
             "target_binding_mix",
+            "target_binding_basis_mix",
             "target_coverage_pct",
             "target_mismatched_events",
+            "second_stage_events",
+            "second_stage_idx_mix",
+            "second_stage_target_entry_mix",
+            "second_stage_dispatch_site_mix",
             "reduced_dispatch_preview",
         ],
     )
@@ -545,7 +561,7 @@ def main() -> int:
             [
                 "# MBA Dispatch Formula Compiler Reductions",
                 "",
-                "This pass uses the full, unclipped Python transfer-expression extraction, translates GCC -O3 assembly for each dispatch slot expression back into C-like arithmetic, and proves equivalence with Z3. The proof covers the slot expression only. The `observed_expr_count` prefix is the number of observed rows using that expression, not a target entry.",
+                "This pass uses the full, unclipped Python transfer-expression extraction, translates GCC -O3 assembly for each dispatch slot expression back into C-like arithmetic, and proves equivalence with Z3. The proof covers the slot expression only. The `observed_expr_count` prefix is the number of observed rows using that expression, not a target entry. Some first-stage MBA tails enter a central second-stage dispatcher; those target bindings are validated by observed `[DISPATCH] idx` evidence.",
                 "",
                 "## Summary",
                 "",
@@ -568,7 +584,7 @@ def main() -> int:
                 "## Entry Summary",
                 "",
                 markdown_table(
-                    ["entry", "kind", "variants", "proofs", "target binding", "preview"],
+                    ["entry", "kind", "variants", "proofs", "target binding", "basis", "preview"],
                     [
                         [
                             row["source_entry"],
@@ -576,6 +592,7 @@ def main() -> int:
                             row["variant_count"],
                             row["proof_status_mix"],
                             row["target_binding_mix"],
+                            row["target_binding_basis_mix"],
                             row["reduced_dispatch_preview"],
                         ]
                         for row in summary_rows[:80]
@@ -584,7 +601,7 @@ def main() -> int:
                 "",
                 "## Caveat",
                 "",
-                "`proved_equivalent` proves only that the reduced slot expression matches the original slot expression under byte/u16 range constraints. Rows with `target_binding_not_validated` still need dispatch-table/second-stage target binding work. Slot-unknown opcodes are not solved by this pass.",
+                "`proved_equivalent` proves only that the reduced slot expression matches the original slot expression under byte/u16 range constraints. Rows marked `target_binding_second_stage_validated` use observed central-dispatch evidence from `vm_dispatch_second_stage_binding_summary.tsv` for final target binding. Rows with `target_binding_not_validated` still need dispatch-table/second-stage target binding work. Slot-unknown opcodes are not solved by this pass.",
             ]
         )
         + "\n"
