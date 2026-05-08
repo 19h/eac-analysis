@@ -97,6 +97,10 @@ MBA_DISPATCH_COMPILER_REDUCTIONS_BY_ENTRY_TSV := $(PRIMARY_DIR)/vm_mba_dispatch_
 MBA_DISPATCH_COMPILER_REDUCTIONS_MD := $(PRIMARY_DIR)/vm_mba_dispatch_formula_compiler_reductions.md
 MBA_DISPATCH_COMPILER_REDUCER_HARNESS_C := $(PRIMARY_DIR)/vm_mba_dispatch_formula_compiler_reducer_harness.c
 MBA_DISPATCH_COMPILER_REDUCER_ASM := $(PRIMARY_DIR)/vm_mba_dispatch_formula_compiler_reducer.s
+SLOT_UNKNOWN_DISPATCH_ROWS_TSV := $(PRIMARY_DIR)/vm_slot_unknown_dispatch_rows.tsv
+SLOT_UNKNOWN_DISPATCH_SUMMARY_TSV := $(PRIMARY_DIR)/vm_slot_unknown_dispatch_summary.tsv
+SLOT_UNKNOWN_DISPATCH_C := $(PRIMARY_DIR)/vm_slot_unknown_dispatch_tables.c
+SLOT_UNKNOWN_DISPATCH_MD := $(PRIMARY_DIR)/vm_slot_unknown_dispatch_tables.md
 READABLE_STATE_REDUCED_ISA_TSV := $(PRIMARY_DIR)/vm_readable_isa_state_reduced.tsv
 READABLE_STATE_REDUCED_OPS_TSV := $(PRIMARY_DIR)/vm_program_readable_ops_state_reduced.tsv
 READABLE_STATE_REDUCED_OPS_MANIFEST := $(PRIMARY_DIR)/vm_program_readable_ops_state_reduced_manifest.tsv
@@ -1235,8 +1239,17 @@ mba-dispatch-formula-compiler-reducer: $(MBA_DISPATCH_COMPILER_REDUCTIONS_TSV) $
 mba-dispatch-formula-compiler-reducer-audit: $(MBA_DISPATCH_COMPILER_REDUCTIONS_TSV) $(MBA_DISPATCH_COMPILER_REDUCTIONS_BY_ENTRY_TSV) $(MBA_DISPATCH_COMPILER_REDUCTIONS_MD) $(MBA_DISPATCH_COMPILER_REDUCER_HARNESS_C) $(MBA_DISPATCH_COMPILER_REDUCER_ASM)
 	python3 vm_mba_dispatch_formula_compiler_reducer_audit.py --root $(PRIMARY_DIR)
 
+.PHONY: slot-unknown-dispatch-tables slot-unknown-dispatch-tables-audit
+$(SLOT_UNKNOWN_DISPATCH_ROWS_TSV) $(SLOT_UNKNOWN_DISPATCH_SUMMARY_TSV) $(SLOT_UNKNOWN_DISPATCH_C) $(SLOT_UNKNOWN_DISPATCH_MD) &: vm_slot_unknown_dispatch_tables.py $(READABLE_ISA_TSV) $(PROGRAM_READABLE_OPS_TSV)
+	python3 vm_slot_unknown_dispatch_tables.py --root $(PRIMARY_DIR)
+
+slot-unknown-dispatch-tables: $(SLOT_UNKNOWN_DISPATCH_ROWS_TSV) $(SLOT_UNKNOWN_DISPATCH_SUMMARY_TSV) $(SLOT_UNKNOWN_DISPATCH_C) $(SLOT_UNKNOWN_DISPATCH_MD)
+
+slot-unknown-dispatch-tables-audit: $(SLOT_UNKNOWN_DISPATCH_ROWS_TSV) $(SLOT_UNKNOWN_DISPATCH_SUMMARY_TSV) $(SLOT_UNKNOWN_DISPATCH_C) $(SLOT_UNKNOWN_DISPATCH_MD)
+	python3 vm_slot_unknown_dispatch_tables_audit.py --root $(PRIMARY_DIR)
+
 .PHONY: readable-state-reduced readable-state-reduced-audit
-$(READABLE_STATE_REDUCED_ISA_TSV) $(READABLE_STATE_REDUCED_OPS_TSV) $(READABLE_STATE_REDUCED_OPS_MANIFEST) $(READABLE_STATE_REDUCED_MD) $(READABLE_STATE_REDUCED_C_MANIFEST) &: vm_readable_state_reduced.py $(READABLE_ISA_TSV) $(PROGRAM_READABLE_OPS_TSV) $(MBA_STATE_COMPILER_REDUCTIONS_TSV) $(MBA_DISPATCH_COMPILER_REDUCTIONS_BY_ENTRY_TSV) $(PROGRAM_CONTROL_GRAPH_EDGES_TSV) $(NATIVE_SIDE_EFFECT_VM_REFS_TSV) $(PROGRAM_BEHAVIOR_DOSSIERS_TSV)
+$(READABLE_STATE_REDUCED_ISA_TSV) $(READABLE_STATE_REDUCED_OPS_TSV) $(READABLE_STATE_REDUCED_OPS_MANIFEST) $(READABLE_STATE_REDUCED_MD) $(READABLE_STATE_REDUCED_C_MANIFEST) &: vm_readable_state_reduced.py $(READABLE_ISA_TSV) $(PROGRAM_READABLE_OPS_TSV) $(MBA_STATE_COMPILER_REDUCTIONS_TSV) $(MBA_DISPATCH_COMPILER_REDUCTIONS_BY_ENTRY_TSV) $(SLOT_UNKNOWN_DISPATCH_SUMMARY_TSV) $(PROGRAM_CONTROL_GRAPH_EDGES_TSV) $(NATIVE_SIDE_EFFECT_VM_REFS_TSV) $(PROGRAM_BEHAVIOR_DOSSIERS_TSV)
 	python3 vm_readable_state_reduced.py --root $(PRIMARY_DIR)
 
 readable-state-reduced: $(READABLE_STATE_REDUCED_ISA_TSV) $(READABLE_STATE_REDUCED_OPS_TSV) $(READABLE_STATE_REDUCED_OPS_MANIFEST) $(READABLE_STATE_REDUCED_MD) $(READABLE_STATE_REDUCED_C_MANIFEST)
@@ -1254,7 +1267,7 @@ x-behavior-model-audit: $(X_RUNTIME_EVENT_SEQUENCE_TSV) $(X_BEHAVIOR_PHASE_SUMMA
 	python3 vm_x_behavior_model_audit.py --root $(PRIMARY_DIR)
 
 .PHONY: behavior-understanding-audit
-behavior-understanding-audit: behavior-inventory-audit semantic-opcode-catalog-audit string-reference-context-audit program-behavior-hypotheses-audit program-control-graph-audit trace-program-path-audit x-program-timeline-audit string-role-annotations-audit native-side-effect-map-audit program-behavior-dossiers-audit readable-isa-audit program-readable-c-audit mba-solution-corpus-audit mba-state-formula-reducer-audit mba-state-formula-prover-audit mba-state-formula-compiler-reducer-audit mba-dispatch-formula-compiler-reducer-audit readable-state-reduced-audit x-behavior-model-audit
+behavior-understanding-audit: behavior-inventory-audit semantic-opcode-catalog-audit string-reference-context-audit program-behavior-hypotheses-audit program-control-graph-audit trace-program-path-audit x-program-timeline-audit string-role-annotations-audit native-side-effect-map-audit program-behavior-dossiers-audit readable-isa-audit program-readable-c-audit mba-solution-corpus-audit mba-state-formula-reducer-audit mba-state-formula-prover-audit mba-state-formula-compiler-reducer-audit mba-dispatch-formula-compiler-reducer-audit slot-unknown-dispatch-tables-audit readable-state-reduced-audit x-behavior-model-audit
 
 $(HANDLERS_PSEUDOCODE_C): vm_handler_pseudocode_dump.py $(PRIMARY_DIR)/vm_handler_semantics.tsv $(PRIMARY_DIR)/vm_handler_table.tsv $(STATIC_ONLY_HANDLER_QUEUE_TSV) $(STATIC_ONLY_TIER0_MODELS_TSV) $(STATIC_ONLY_TIER1_MODELS_TSV) $(STATIC_ONLY_TIER2_SPLIT_TSV) $(STATIC_ONLY_TIER3_SHARED_TSV) $(STATIC_ONLY_TIER4_CALLRET_TSV) $(STATIC_ONLY_TIER5_LARGE_TSV)
 	python3 vm_handler_pseudocode_dump.py --all > $@
