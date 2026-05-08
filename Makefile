@@ -76,6 +76,11 @@ PROGRAM_READABLE_OPS_DIR := $(PRIMARY_DIR)/vm_programs_readable_ops
 PROGRAM_READABLE_C_MANIFEST := $(PRIMARY_DIR)/vm_program_readable_c_manifest.tsv
 PROGRAM_READABLE_C_MD := $(PRIMARY_DIR)/vm_program_readable_c.md
 PROGRAM_READABLE_C_DIR := $(PRIMARY_DIR)/vm_programs_readable_c
+MBA_PROBLEM_INVENTORY_TSV := $(PRIMARY_DIR)/vm_mba_problem_inventory.tsv
+MBA_OBSERVATION_ROWS_TSV := $(PRIMARY_DIR)/vm_mba_observation_rows.tsv
+MBA_FORMULA_ATOMS_TSV := $(PRIMARY_DIR)/vm_mba_formula_atoms.tsv
+MBA_TRACE_INPUTS_TSV := $(PRIMARY_DIR)/vm_mba_trace_inputs.tsv
+MBA_SOLUTION_CORPUS_MD := $(PRIMARY_DIR)/vm_mba_solution_corpus.md
 X_RUNTIME_EVENT_SEQUENCE_TSV := $(PRIMARY_DIR)/vm_x_runtime_event_sequence.tsv
 X_BEHAVIOR_PHASE_SUMMARY_TSV := $(PRIMARY_DIR)/vm_x_behavior_phase_summary.tsv
 X_PROGRAM_PHASE_OVERLAY_TSV := $(PRIMARY_DIR)/vm_x_program_phase_overlay.tsv
@@ -1160,6 +1165,15 @@ program-readable-c: $(PROGRAM_READABLE_C_MANIFEST) $(PROGRAM_READABLE_C_MD)
 program-readable-c-audit: $(PROGRAM_READABLE_C_MANIFEST) $(PROGRAM_READABLE_C_MD)
 	python3 vm_program_readable_c_audit.py --root $(PRIMARY_DIR) --syntax --jobs 8
 
+.PHONY: mba-solution-corpus mba-solution-corpus-audit
+$(MBA_PROBLEM_INVENTORY_TSV) $(MBA_OBSERVATION_ROWS_TSV) $(MBA_FORMULA_ATOMS_TSV) $(MBA_TRACE_INPUTS_TSV) $(MBA_SOLUTION_CORPUS_MD) &: vm_mba_solution_corpus.py $(SEMANTIC_OPCODE_CATALOG_TSV) $(PROGRAM_READABLE_OPS_TSV) $(NATIVE_SIDE_EFFECT_VM_REFS_TSV) $(PRIMARY_DIR)/vm_instruction_trace.tsv $(PRIMARY_DIR)/vm_instruction_trace_filefill_hiddenfill_frontierfill_footprintfill.tsv
+	python3 vm_mba_solution_corpus.py --root $(PRIMARY_DIR)
+
+mba-solution-corpus: $(MBA_PROBLEM_INVENTORY_TSV) $(MBA_OBSERVATION_ROWS_TSV) $(MBA_FORMULA_ATOMS_TSV) $(MBA_TRACE_INPUTS_TSV) $(MBA_SOLUTION_CORPUS_MD)
+
+mba-solution-corpus-audit: $(MBA_PROBLEM_INVENTORY_TSV) $(MBA_OBSERVATION_ROWS_TSV) $(MBA_FORMULA_ATOMS_TSV) $(MBA_TRACE_INPUTS_TSV) $(MBA_SOLUTION_CORPUS_MD)
+	python3 vm_mba_solution_corpus_audit.py --root $(PRIMARY_DIR)
+
 .PHONY: x-behavior-model x-behavior-model-audit
 $(X_RUNTIME_EVENT_SEQUENCE_TSV) $(X_BEHAVIOR_PHASE_SUMMARY_TSV) $(X_PROGRAM_PHASE_OVERLAY_TSV) $(X_BEHAVIOR_MODEL_MD) &: vm_x_behavior_model.py $(PRIMARY_DIR)/vm_trace_coverage_matrix.tsv $(X_PROGRAM_TIMELINE_TSV) $(X_PROGRAM_FIRST_SEEN_TSV) $(PROGRAM_BEHAVIOR_DOSSIERS_TSV) $(NATIVE_SIDE_EFFECT_RUNTIME_TSV)
 	python3 vm_x_behavior_model.py --root $(PRIMARY_DIR)
@@ -1170,7 +1184,7 @@ x-behavior-model-audit: $(X_RUNTIME_EVENT_SEQUENCE_TSV) $(X_BEHAVIOR_PHASE_SUMMA
 	python3 vm_x_behavior_model_audit.py --root $(PRIMARY_DIR)
 
 .PHONY: behavior-understanding-audit
-behavior-understanding-audit: behavior-inventory-audit semantic-opcode-catalog-audit string-reference-context-audit program-behavior-hypotheses-audit program-control-graph-audit trace-program-path-audit x-program-timeline-audit string-role-annotations-audit native-side-effect-map-audit program-behavior-dossiers-audit readable-isa-audit program-readable-c-audit x-behavior-model-audit
+behavior-understanding-audit: behavior-inventory-audit semantic-opcode-catalog-audit string-reference-context-audit program-behavior-hypotheses-audit program-control-graph-audit trace-program-path-audit x-program-timeline-audit string-role-annotations-audit native-side-effect-map-audit program-behavior-dossiers-audit readable-isa-audit program-readable-c-audit mba-solution-corpus-audit x-behavior-model-audit
 
 $(HANDLERS_PSEUDOCODE_C): vm_handler_pseudocode_dump.py $(PRIMARY_DIR)/vm_handler_semantics.tsv $(PRIMARY_DIR)/vm_handler_table.tsv $(STATIC_ONLY_HANDLER_QUEUE_TSV) $(STATIC_ONLY_TIER0_MODELS_TSV) $(STATIC_ONLY_TIER1_MODELS_TSV) $(STATIC_ONLY_TIER2_SPLIT_TSV) $(STATIC_ONLY_TIER3_SHARED_TSV) $(STATIC_ONLY_TIER4_CALLRET_TSV) $(STATIC_ONLY_TIER5_LARGE_TSV)
 	python3 vm_handler_pseudocode_dump.py --all > $@
