@@ -102,17 +102,20 @@ def bin_expr(left: str, op: str, right: str) -> str:
     return f"{parenthesize(left)} {op} {parenthesize(right)}"
 
 
-def mem_to_var(operand: str) -> str | None:
-    match = re.fullmatch(r"DWORD PTR (?:([+-]?\d+))?\[rdi\]", operand)
+def mem_to_var(operand: str, pointer_regs: set[str]) -> str | None:
+    match = re.fullmatch(r"DWORD PTR (?:([+-]?\d+))?\[([A-Za-z0-9]+)\]", operand)
     if not match:
+        return None
+    base = norm_reg(match.group(2))
+    if base not in pointer_regs:
         return None
     offset = int(match.group(1) or "0")
     return OFFSET_TO_FIELD.get(offset)
 
 
-def parse_atom(atom: str, regs: dict[str, str]) -> str:
+def parse_atom(atom: str, regs: dict[str, str], pointer_regs: set[str]) -> str:
     atom = atom.strip()
-    mem = mem_to_var(atom)
+    mem = mem_to_var(atom, pointer_regs)
     if mem:
         return mem
     if re.fullmatch(r"-?\d+", atom):
@@ -125,7 +128,7 @@ def parse_atom(atom: str, regs: dict[str, str]) -> str:
     raise ValueError(f"unknown operand {atom!r}")
 
 
-def parse_lea(operand: str, regs: dict[str, str]) -> str:
+def parse_lea(operand: str, regs: dict[str, str], pointer_regs: set[str]) -> str:
     operand = operand.strip()
     disp = 0
     inner = operand
@@ -142,9 +145,9 @@ def parse_lea(operand: str, regs: dict[str, str]) -> str:
             continue
         if "*" in term:
             reg, scale = [part.strip() for part in term.split("*", 1)]
-            terms.append(bin_expr(parse_atom(reg, regs), "*", hex_u32(int(scale))))
+            terms.append(bin_expr(parse_atom(reg, regs, pointer_regs), "*", hex_u32(int(scale))))
         else:
-            terms.append(parse_atom(term, regs))
+            terms.append(parse_atom(term, regs, pointer_regs))
     if not terms:
         return "0x0u"
     expr = terms[0]
@@ -191,36 +194,50 @@ def parse_functions(asm_path: Path) -> dict[str, list[str]]:
 
 def translate_function(instructions: list[str]) -> str:
     regs: dict[str, str] = {}
+    pointer_regs: set[str] = {"rdi"}
     for instruction in instructions:
         op, rest = instruction.split(None, 1)
         operands = split_operands(rest)
         if op == "mov":
             dest, src = operands
-            regs[norm_reg(dest)] = parse_atom(src, regs)
+            dest_reg = norm_reg(dest)
+            src_reg = norm_reg(src)
+            if src_reg in pointer_regs:
+                pointer_regs.add(dest_reg)
+                regs.pop(dest_reg, None)
+            else:
+                pointer_regs.discard(dest_reg)
+                regs[dest_reg] = parse_atom(src, regs, pointer_regs)
         elif op == "lea":
             dest, src = operands
-            regs[norm_reg(dest)] = parse_lea(src, regs)
+            dest_reg = norm_reg(dest)
+            pointer_regs.discard(dest_reg)
+            regs[dest_reg] = parse_lea(src, regs, pointer_regs)
         elif op in {"add", "sub", "xor", "or", "and"}:
             dest, src = operands
             dest_reg = norm_reg(dest)
             if dest_reg not in regs:
                 raise ValueError(f"{op} before register init: {dest}")
             symbol = {"add": "+", "sub": "-", "xor": "^", "or": "|", "and": "&"}[op]
-            regs[dest_reg] = bin_expr(regs[dest_reg], symbol, parse_atom(src, regs))
+            pointer_regs.discard(dest_reg)
+            regs[dest_reg] = bin_expr(regs[dest_reg], symbol, parse_atom(src, regs, pointer_regs))
         elif op in {"sal", "shl", "shr"}:
             dest, src = operands
             dest_reg = norm_reg(dest)
             if dest_reg not in regs:
                 raise ValueError(f"{op} before register init: {dest}")
             symbol = "<<" if op in {"sal", "shl"} else ">>"
-            regs[dest_reg] = bin_expr(regs[dest_reg], symbol, parse_atom(src, regs))
+            pointer_regs.discard(dest_reg)
+            regs[dest_reg] = bin_expr(regs[dest_reg], symbol, parse_atom(src, regs, pointer_regs))
         elif op == "not":
             (dest,) = operands
             dest_reg = norm_reg(dest)
+            pointer_regs.discard(dest_reg)
             regs[dest_reg] = f"~{parenthesize(regs[dest_reg])}"
         elif op == "neg":
             (dest,) = operands
             dest_reg = norm_reg(dest)
+            pointer_regs.discard(dest_reg)
             regs[dest_reg] = bin_expr("0x0u", "-", regs[dest_reg])
         else:
             raise ValueError(f"unsupported instruction: {instruction}")
@@ -232,7 +249,7 @@ def translate_function(instructions: list[str]) -> str:
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--root", type=Path, default=Path("dumps/vmtail-wide-1m-w16"))
-    parser.add_argument("--timeout", type=int, default=5)
+    parser.add_argument("--timeout", type=int, default=20)
     args = parser.parse_args()
     root = args.root
 
