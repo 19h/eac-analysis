@@ -81,6 +81,10 @@ MBA_OBSERVATION_ROWS_TSV := $(PRIMARY_DIR)/vm_mba_observation_rows.tsv
 MBA_FORMULA_ATOMS_TSV := $(PRIMARY_DIR)/vm_mba_formula_atoms.tsv
 MBA_TRACE_INPUTS_TSV := $(PRIMARY_DIR)/vm_mba_trace_inputs.tsv
 MBA_SOLUTION_CORPUS_MD := $(PRIMARY_DIR)/vm_mba_solution_corpus.md
+MBA_STATE_REDUCTIONS_TSV := $(PRIMARY_DIR)/vm_mba_state_formula_reductions.tsv
+MBA_STATE_REDUCER_HARNESS_C := $(PRIMARY_DIR)/vm_mba_state_formula_reducer_harness.c
+MBA_STATE_REDUCER_HARNESS_SO := $(PRIMARY_DIR)/vm_mba_state_formula_reducer_harness.so
+MBA_STATE_REDUCTIONS_MD := $(PRIMARY_DIR)/vm_mba_state_formula_reductions.md
 X_RUNTIME_EVENT_SEQUENCE_TSV := $(PRIMARY_DIR)/vm_x_runtime_event_sequence.tsv
 X_BEHAVIOR_PHASE_SUMMARY_TSV := $(PRIMARY_DIR)/vm_x_behavior_phase_summary.tsv
 X_PROGRAM_PHASE_OVERLAY_TSV := $(PRIMARY_DIR)/vm_x_program_phase_overlay.tsv
@@ -1174,6 +1178,15 @@ mba-solution-corpus: $(MBA_PROBLEM_INVENTORY_TSV) $(MBA_OBSERVATION_ROWS_TSV) $(
 mba-solution-corpus-audit: $(MBA_PROBLEM_INVENTORY_TSV) $(MBA_OBSERVATION_ROWS_TSV) $(MBA_FORMULA_ATOMS_TSV) $(MBA_TRACE_INPUTS_TSV) $(MBA_SOLUTION_CORPUS_MD)
 	python3 vm_mba_solution_corpus_audit.py --root $(PRIMARY_DIR)
 
+.PHONY: mba-state-formula-reducer mba-state-formula-reducer-audit
+$(MBA_STATE_REDUCTIONS_TSV) $(MBA_STATE_REDUCER_HARNESS_C) $(MBA_STATE_REDUCER_HARNESS_SO) $(MBA_STATE_REDUCTIONS_MD) &: vm_mba_state_formula_reducer.py $(MBA_PROBLEM_INVENTORY_TSV)
+	python3 vm_mba_state_formula_reducer.py --root $(PRIMARY_DIR)
+
+mba-state-formula-reducer: $(MBA_STATE_REDUCTIONS_TSV) $(MBA_STATE_REDUCER_HARNESS_C) $(MBA_STATE_REDUCER_HARNESS_SO) $(MBA_STATE_REDUCTIONS_MD)
+
+mba-state-formula-reducer-audit: $(MBA_STATE_REDUCTIONS_TSV) $(MBA_STATE_REDUCER_HARNESS_C) $(MBA_STATE_REDUCER_HARNESS_SO) $(MBA_STATE_REDUCTIONS_MD)
+	python3 vm_mba_state_formula_reducer_audit.py --root $(PRIMARY_DIR)
+
 .PHONY: x-behavior-model x-behavior-model-audit
 $(X_RUNTIME_EVENT_SEQUENCE_TSV) $(X_BEHAVIOR_PHASE_SUMMARY_TSV) $(X_PROGRAM_PHASE_OVERLAY_TSV) $(X_BEHAVIOR_MODEL_MD) &: vm_x_behavior_model.py $(PRIMARY_DIR)/vm_trace_coverage_matrix.tsv $(X_PROGRAM_TIMELINE_TSV) $(X_PROGRAM_FIRST_SEEN_TSV) $(PROGRAM_BEHAVIOR_DOSSIERS_TSV) $(NATIVE_SIDE_EFFECT_RUNTIME_TSV)
 	python3 vm_x_behavior_model.py --root $(PRIMARY_DIR)
@@ -1184,7 +1197,7 @@ x-behavior-model-audit: $(X_RUNTIME_EVENT_SEQUENCE_TSV) $(X_BEHAVIOR_PHASE_SUMMA
 	python3 vm_x_behavior_model_audit.py --root $(PRIMARY_DIR)
 
 .PHONY: behavior-understanding-audit
-behavior-understanding-audit: behavior-inventory-audit semantic-opcode-catalog-audit string-reference-context-audit program-behavior-hypotheses-audit program-control-graph-audit trace-program-path-audit x-program-timeline-audit string-role-annotations-audit native-side-effect-map-audit program-behavior-dossiers-audit readable-isa-audit program-readable-c-audit mba-solution-corpus-audit x-behavior-model-audit
+behavior-understanding-audit: behavior-inventory-audit semantic-opcode-catalog-audit string-reference-context-audit program-behavior-hypotheses-audit program-control-graph-audit trace-program-path-audit x-program-timeline-audit string-role-annotations-audit native-side-effect-map-audit program-behavior-dossiers-audit readable-isa-audit program-readable-c-audit mba-solution-corpus-audit mba-state-formula-reducer-audit x-behavior-model-audit
 
 $(HANDLERS_PSEUDOCODE_C): vm_handler_pseudocode_dump.py $(PRIMARY_DIR)/vm_handler_semantics.tsv $(PRIMARY_DIR)/vm_handler_table.tsv $(STATIC_ONLY_HANDLER_QUEUE_TSV) $(STATIC_ONLY_TIER0_MODELS_TSV) $(STATIC_ONLY_TIER1_MODELS_TSV) $(STATIC_ONLY_TIER2_SPLIT_TSV) $(STATIC_ONLY_TIER3_SHARED_TSV) $(STATIC_ONLY_TIER4_CALLRET_TSV) $(STATIC_ONLY_TIER5_LARGE_TSV)
 	python3 vm_handler_pseudocode_dump.py --all > $@
