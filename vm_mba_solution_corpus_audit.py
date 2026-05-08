@@ -98,10 +98,11 @@ def main() -> int:
         var
         for row in atoms
         for var in row.get("variables", "").split(";")
-        if var.startswith("b") or var.startswith("u16_")
+        if var.startswith("b") or var.startswith("u16_") or var.startswith("u32_")
     }
     missing_operand_columns = [field for field in sorted(required_operand_columns) if field not in observation_header]
     ok &= check("observations_include_operand_columns", not missing_operand_columns, f"missing={missing_operand_columns}")
+    operand_columns += [f"u32_{offset}" for offset in range(16)]
     missing_standard_operand_columns = [field for field in operand_columns if field not in observation_header]
     ok &= check("observations_include_standard_operand_window", not missing_standard_operand_columns, f"missing={missing_standard_operand_columns[:8]}")
     bad_observation_rows = [row.get("start_vm_ip", "") for row in observations if not row.get("bytes") or not row.get("state_semantics") or not row.get("dispatch_semantics")]

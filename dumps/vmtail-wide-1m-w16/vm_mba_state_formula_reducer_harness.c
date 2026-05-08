@@ -36,6 +36,22 @@ typedef struct VMBAInputs {
     uint32_t u16_13;
     uint32_t u16_14;
     uint32_t u16_15;
+    uint32_t u32_0;
+    uint32_t u32_1;
+    uint32_t u32_2;
+    uint32_t u32_3;
+    uint32_t u32_4;
+    uint32_t u32_5;
+    uint32_t u32_6;
+    uint32_t u32_7;
+    uint32_t u32_8;
+    uint32_t u32_9;
+    uint32_t u32_10;
+    uint32_t u32_11;
+    uint32_t u32_12;
+    uint32_t u32_13;
+    uint32_t u32_14;
+    uint32_t u32_15;
 } VMBAInputs;
 
 static inline uint32_t mask32(uint64_t x) { return (uint32_t)x; }
@@ -75,6 +91,22 @@ uint32_t vm_mba_eval_state_0(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0 ^ 0x1966e0e7 - u16_0 + state0 ^ 0x1966e0e7 - 0x251a0141);
 }
 
@@ -113,6 +145,22 @@ uint32_t vm_mba_eval_state_3(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0 - flags0 - 0x1c03cc82 - flags0 | 0x38c49877 - 0x742d9511 + 0x4ddaed7b ^ u16_0 ^ state0 - flags0 - 0x1c03cc82 - flags0 | 0x38c49877 - 0x742d9511 + 0x4ddaed7b + 0x4bc0d288);
 }
 
@@ -151,6 +199,22 @@ uint32_t vm_mba_eval_state_9(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0 & u16_3 - state0 ^ 0x25d88329);
 }
 
@@ -189,6 +253,22 @@ uint32_t vm_mba_eval_state_13(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0 ^ 0x67934603 ^ flags0 - 0x1c36555 | 0x771fee31 | 0x1490ac71 - 0x2de02e8);
 }
 
@@ -227,6 +307,22 @@ uint32_t vm_mba_eval_state_17(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0 | flags0 ^ 0x4365071c & u16_0 ^ state0 | flags0 ^ 0x4365071c + flags0 ^ 0x4365071c ^ 0x95f9698 + u16_3 - state0 | flags0 ^ 0x4365071c & u16_0 ^ state0 | flags0 ^ 0x4365071c + flags0 ^ 0x4365071c ^ 0x95f9698);
 }
 
@@ -265,6 +361,22 @@ uint32_t vm_mba_eval_state_18(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0 & flags0 | 0x954df65 + 0x5b466f3b - 0x6382ce20 & flags0 | 0x954df65 + 0x5b466f3b - u16_0 - state0 & flags0 | 0x954df65 + 0x5b466f3b - 0x6382ce20 & flags0 | 0x954df65 + 0x5b466f3b);
 }
 
@@ -303,6 +415,22 @@ uint32_t vm_mba_eval_state_20(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0 | flags0 | 0x180e72f2 - 0x36332ac8 - flags0 ^ 0x58f71b08 & 0x17188826 & 0x1fa2014f | 0x38e67f26 - flags0 ^ 0x58f71b08 & 0x17188826 & u16_2 ^ state0 | flags0 | 0x180e72f2 - 0x36332ac8 - flags0 ^ 0x58f71b08 & 0x17188826 & 0x1fa2014f | 0x38e67f26 - flags0 ^ 0x58f71b08 & 0x17188826);
 }
 
@@ -341,6 +469,22 @@ uint32_t vm_mba_eval_state_26(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0 - 0x471264ca + flags0 - state0 ^ 0x5fcdb203 & 0x637d285c + 0x44b4a975 ^ state0 - 0x471264ca | 0x2a01f150 | 0x7bdf07f3 + 0x104dd6df ^ 0x505df542 ^ 0xe71ae1d & 0x6dbe9345 + 0x521a2f7b + state0 - 0x471264ca + 0x1bfb4659 - u16_0 ^ state0 - 0x471264ca + flags0 - state0 ^ 0x5fcdb203 & 0x637d285c + 0x44b4a975 ^ state0 - 0x471264ca | 0x2a01f150 | 0x7bdf07f3 + 0x104dd6df ^ 0x505df542 ^ 0xe71ae1d & 0x6dbe9345 + 0x521a2f7b + state0 - 0x471264ca + 0x1bfb4659 ^ 0x6f23a80c);
 }
 
@@ -379,6 +523,22 @@ uint32_t vm_mba_eval_state_30(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0 | flags0 & 0x614d4b17 + 0x64fd160c);
 }
 
@@ -417,6 +577,22 @@ uint32_t vm_mba_eval_state_31(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0);
 }
 
@@ -455,6 +631,22 @@ uint32_t vm_mba_eval_state_33(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0 | 0x15422921 & u16_2 + state0 | 0x15422921 + 0x2d0713f3);
 }
 
@@ -493,6 +685,22 @@ uint32_t vm_mba_eval_state_35(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0);
 }
 
@@ -531,6 +739,22 @@ uint32_t vm_mba_eval_state_36(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0 + flags0 ^ flags0 & 0x73966fc6 & 0x348b11be ^ 0x72d0ef43 | 0x7af5a860 ^ u16_0 - state0 + flags0 ^ flags0 & 0x73966fc6 & 0x348b11be ^ 0x72d0ef43 | 0x7af5a860);
 }
 
@@ -569,6 +793,22 @@ uint32_t vm_mba_eval_state_37(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0 - flags0 + 0x504fc3d - 0x4eca0e49 | u16_0 ^ state0 - flags0 + 0x504fc3d - 0x4eca0e49 ^ 0x384e1c86);
 }
 
@@ -607,6 +847,22 @@ uint32_t vm_mba_eval_state_40(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0 & u16_4 ^ state0);
 }
 
@@ -645,6 +901,22 @@ uint32_t vm_mba_eval_state_42(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0 - flags0 ^ state0 - 0x327f38a4 - 0x471012ae ^ 0x160c3a44);
 }
 
@@ -683,6 +955,22 @@ uint32_t vm_mba_eval_state_43(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0 ^ u16_2 ^ state0);
 }
 
@@ -721,6 +1009,22 @@ uint32_t vm_mba_eval_state_48(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0 & u16_3 + state0 ^ flags0 ^ 0x8881ae0 - 0x1accc893 + 0x4f1a7667 - flags0 ^ 0x8881ae0 - 0x1accc893 & 0x6134e706 & 0x7e86fbd3 ^ 0x41ba58a6 & flags0 ^ 0x8881ae0 - 0x1accc893 & 0x6134e706 & 0x7e86fbd3 ^ 0x41ba58a6 ^ 0x79fc8ff4 | flags0 ^ 0x8881ae0 - 0x1accc893 & 0x6134e706 & 0x7e86fbd3 ^ 0x41ba58a6 - 0x430c028c & flags0 ^ 0x8881ae0 - 0x1accc893 & 0x6134e706 & 0x7e86fbd3 ^ 0x41ba58a6 + 0x157b2443 - u16_0 + state0 & u16_3 + state0 ^ flags0 ^ 0x8881ae0 - 0x1accc893 + 0x4f1a7667 - flags0 ^ 0x8881ae0 - 0x1accc893 & 0x6134e706 & 0x7e86fbd3 ^ 0x41ba58a6 & flags0 ^ 0x8881ae0 - 0x1accc893 & 0x6134e706 & 0x7e86fbd3 ^ 0x41ba58a6 ^ 0x79fc8ff4 | flags0 ^ 0x8881ae0 - 0x1accc893 & 0x6134e706 & 0x7e86fbd3 ^ 0x41ba58a6 - 0x430c028c & flags0 ^ 0x8881ae0 - 0x1accc893 & 0x6134e706 & 0x7e86fbd3 ^ 0x41ba58a6 + 0x157b2443);
 }
 
@@ -759,6 +1063,22 @@ uint32_t vm_mba_eval_state_49(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0 & flags0 + flags0 - 0x353700ed + 0x55a592d8 - u16_1 + state0 & flags0 + flags0 - 0x353700ed + 0x55a592d8 + 0x55b8ef8d);
 }
 
@@ -797,6 +1117,22 @@ uint32_t vm_mba_eval_state_52(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0 + u16_0 + state0 ^ 0x7823b2da);
 }
 
@@ -835,6 +1171,22 @@ uint32_t vm_mba_eval_state_54(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0 & flags0 - 0x68b4ad2f);
 }
 
@@ -873,6 +1225,22 @@ uint32_t vm_mba_eval_state_56(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0 + u16_0 - state0 ^ 0x5380ff71);
 }
 
@@ -911,6 +1279,22 @@ uint32_t vm_mba_eval_state_62(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0 | u16_2 ^ flags0 + 0xd90ded5 ^ 0x5dbb6647 + u16_0 ^ state0 | u16_2 ^ flags0 + 0xd90ded5 ^ 0x5dbb6647 + 0x7ebb48a2);
 }
 
@@ -949,6 +1333,22 @@ uint32_t vm_mba_eval_state_64(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0 - 0x79614de5 ^ u16_2 + flags0 + 0x4cd0c9ae + 0x711675f2 & 0x5b249a06 ^ flags0 + 0x4cd0c9ae + 0x711675f2 & 0x5b249a06 + 0x729dddb0);
 }
 
@@ -987,6 +1387,22 @@ uint32_t vm_mba_eval_state_65(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0);
 }
 
@@ -1025,6 +1441,22 @@ uint32_t vm_mba_eval_state_66(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0 & 0x2f6cb1f6 - b2 ^ state0 & 0x2f6cb1f6 ^ 0x745ff1d2 & 0x13de2cdd - flags0 - 0x50170614 | 0x7167293a ^ 0x42a6ffd6 ^ u16_0 - state0 & 0x2f6cb1f6 - b2 ^ state0 & 0x2f6cb1f6 ^ 0x745ff1d2 & 0x13de2cdd - flags0 - 0x50170614 | 0x7167293a ^ 0x42a6ffd6 - 0x3cd18153);
 }
 
@@ -1063,6 +1495,22 @@ uint32_t vm_mba_eval_state_69(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0 ^ flags0 ^ flags0 - flags0 + state0 ^ flags0 ^ flags0 + 0x55fafa0c - 0x5abc12af ^ state0 ^ flags0 ^ flags0 | 0x58fb4a0c ^ 0x62ac6845 ^ flags0 + state0 ^ flags0 ^ flags0 + 0x55fafa0c - 0x5abc12af ^ state0 ^ flags0 ^ flags0 | 0x58fb4a0c ^ state0 ^ flags0 ^ flags0 - flags0 + state0 ^ flags0 ^ flags0 + 0x55fafa0c - 0x5abc12af ^ state0 ^ flags0 ^ flags0 | 0x58fb4a0c ^ 0x62ac6845 | 0x528cef01);
 }
 
@@ -1101,6 +1549,22 @@ uint32_t vm_mba_eval_state_70(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0 ^ flags0 ^ flags0 - flags0 + state0 ^ flags0 ^ flags0 + 0x55fafa0c - 0x5abc12af ^ state0 ^ flags0 ^ flags0 | 0x58fb4a0c ^ 0x62ac6845 ^ flags0 + state0 ^ flags0 ^ flags0 + 0x55fafa0c - 0x5abc12af ^ state0 ^ flags0 ^ flags0 | 0x58fb4a0c ^ state0 ^ flags0 ^ flags0 - flags0 + state0 ^ flags0 ^ flags0 + 0x55fafa0c - 0x5abc12af ^ state0 ^ flags0 ^ flags0 | 0x58fb4a0c ^ 0x62ac6845 | 0x528cef01);
 }
 
@@ -1139,6 +1603,22 @@ uint32_t vm_mba_eval_state_74(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0 - flags0 & state0 - 0x7af5a4e2 - 0x619b65dc ^ 0x65dcaffc + 0x33d7fc12);
 }
 
@@ -1177,6 +1657,22 @@ uint32_t vm_mba_eval_state_75(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0);
 }
 
@@ -1215,6 +1711,22 @@ uint32_t vm_mba_eval_state_78(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0 - flags0 ^ 0xc7e744f ^ 0x623ccce4 & 0xd4da920 | flags0 ^ 0xc7e744f ^ 0x225dfa31 - 0x6110d031 ^ 0x3fcb6e9a ^ flags0 ^ 0xc7e744f + 0x60a9dba6 | u16_0 ^ state0 - flags0 ^ 0xc7e744f ^ 0x623ccce4 & 0xd4da920 | flags0 ^ 0xc7e744f ^ 0x225dfa31 - 0x6110d031 ^ 0x3fcb6e9a ^ flags0 ^ 0xc7e744f + 0x60a9dba6);
 }
 
@@ -1253,6 +1765,22 @@ uint32_t vm_mba_eval_state_79(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0 - flags0 ^ 0xc7e744f ^ 0x623ccce4 & 0xd4da920 | flags0 ^ 0xc7e744f ^ 0x225dfa31 - 0x6110d031 ^ 0x3fcb6e9a ^ flags0 ^ 0xc7e744f + 0x60a9dba6 | u16_0 ^ state0 - flags0 ^ 0xc7e744f ^ 0x623ccce4 & 0xd4da920 | flags0 ^ 0xc7e744f ^ 0x225dfa31 - 0x6110d031 ^ 0x3fcb6e9a ^ flags0 ^ 0xc7e744f + 0x60a9dba6);
 }
 
@@ -1291,6 +1819,22 @@ uint32_t vm_mba_eval_state_82(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0 + flags0 + 0x1bc90d20 | 0x2d688b3e - u16_0 + state0 + flags0 + 0x1bc90d20 | 0x2d688b3e + 0x5cc5e4d8);
 }
 
@@ -1329,6 +1873,22 @@ uint32_t vm_mba_eval_state_83(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0 & 0x122d7f19 | flags0 + 0x60e2eab8 - 0x34a4c404 - u16_0 + state0 & 0x122d7f19 | flags0 + 0x60e2eab8 - 0x34a4c404 ^ 0x4b7ebb84);
 }
 
@@ -1367,6 +1927,22 @@ uint32_t vm_mba_eval_state_88(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0 | flags0 - 0x1c9cfcea ^ u16_1 + state0 | flags0 - 0x1c9cfcea ^ 0x415462f5);
 }
 
@@ -1405,6 +1981,22 @@ uint32_t vm_mba_eval_state_90(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0 + flags0 + flags0 + 0x1c1030c0 + flags0 & 0x4b6fdae0 | 0x4357e3c2 & u16_2 - state0 + flags0 + flags0 + 0x1c1030c0 + flags0 & 0x4b6fdae0 | 0x4357e3c2 + flags0 & 0x4b6fdae0 | 0x59296ab9 | flags0 & 0x4b6fdae0 | 0x3296b63d ^ 0x6ee390ce ^ u16_0 + 0x224914c1);
 }
 
@@ -1443,6 +2035,22 @@ uint32_t vm_mba_eval_state_91(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0 ^ u16_0 ^ state0);
 }
 
@@ -1481,6 +2089,22 @@ uint32_t vm_mba_eval_state_92(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0 & u16_2 ^ state0 ^ flags0 | 0x39591837 | flags0 | 0x39591837 | 0x1002fee7 + 0x2efa2a96 ^ u16_0 + state0 & u16_2 ^ state0 ^ flags0 | 0x39591837 | flags0 | 0x39591837 | 0x1002fee7 + 0x2efa2a96 + 0x604aa997);
 }
 
@@ -1519,6 +2143,22 @@ uint32_t vm_mba_eval_state_94(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0 & flags0 ^ state0 + 0x551fa912 & 0x7af574e5 + flags0 ^ state0 + 0x551fa912 | 0x23f8268c - u16_1 ^ state0 & flags0 ^ state0 + 0x551fa912 & 0x7af574e5 + flags0 ^ state0 + 0x551fa912 | 0x23f8268c);
 }
 
@@ -1557,6 +2197,22 @@ uint32_t vm_mba_eval_state_95(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0 ^ u16_4 + 0x1f18e1aa);
 }
 
@@ -1595,6 +2251,22 @@ uint32_t vm_mba_eval_state_99(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0 & u16_1 ^ state0 - 0x48503105);
 }
 
@@ -1633,6 +2305,22 @@ uint32_t vm_mba_eval_state_101(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0 & u16_11 ^ state0 ^ 0x44422ebb);
 }
 
@@ -1671,6 +2359,22 @@ uint32_t vm_mba_eval_state_102(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0);
 }
 
@@ -1709,6 +2413,22 @@ uint32_t vm_mba_eval_state_107(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0 - u16_0 ^ state0);
 }
 
@@ -1747,6 +2467,22 @@ uint32_t vm_mba_eval_state_108(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0 + 0x11961dc7 ^ 0x5fa19cc7 - flags0);
 }
 
@@ -1785,6 +2521,22 @@ uint32_t vm_mba_eval_state_112(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0 & flags0 ^ 0x40561547 - flags0 & 0x1340e310 + 0x2d8111d9 | flags0 & state0 & flags0 ^ 0x40561547 - flags0 & 0x1340e310 + 0x2d8111d9 & 0x25637e96 | 0x488765f3 + state0 & flags0 ^ 0x40561547 - flags0 & 0x1340e310 + 0x2d8111d9 + 0x2aab3c50 ^ state0 & flags0 ^ 0x40561547 - flags0 & 0x1340e310 + 0x2d8111d9 + 0x7d6325a & 0x26dc7059 ^ u16_3 ^ state0 & flags0 ^ 0x40561547 - flags0 & 0x1340e310 + 0x2d8111d9 | flags0 & state0 & flags0 ^ 0x40561547 - flags0 & 0x1340e310 + 0x2d8111d9 & 0x25637e96 | 0x488765f3 + state0 & flags0 ^ 0x40561547 - flags0 & 0x1340e310 + 0x2d8111d9 + 0x2aab3c50 ^ state0 & flags0 ^ 0x40561547 - flags0 & 0x1340e310 + 0x2d8111d9 + 0x7d6325a & 0x26dc7059 + 0x2bd71820);
 }
 
@@ -1823,6 +2575,22 @@ uint32_t vm_mba_eval_state_114(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0 ^ flags0 & state0 | 0x6729b5bf - 0x3dca653f ^ 0x671da5f4 + state0 & 0x48367f78 ^ 0x63bb548f + flags0 & state0 | 0x6729b5bf - 0x3dca653f ^ 0x671da5f4 + state0 & 0x292b555d ^ u16_2 + state0 ^ flags0 & state0 | 0x6729b5bf - 0x3dca653f ^ 0x671da5f4 + state0 & 0x48367f78 ^ 0x63bb548f + flags0 & state0 | 0x6729b5bf - 0x3dca653f ^ 0x671da5f4 + state0 & 0x292b555d + flags0 & state0 | 0x6729b5bf - 0x3dca653f ^ 0x671da5f4 + state0 - 0x3b2cb159 & 0xfc7215c & 0x662844c - 0x7bdaf9d9 ^ 0x257a9d7d ^ 0x665346b9 + flags0 & state0 | 0x6729b5bf - 0x3dca653f ^ 0x671da5f4 + state0 - 0x3b2cb159 & 0xfc7215c & 0x662844c - 0x7bdaf9d9 ^ 0x257a9d7d ^ 0x665346b9 & 0x1c8b6fee ^ 0x6b040388 - u16_0 + state0 ^ flags0 & state0 | 0x6729b5bf - 0x3dca653f ^ 0x671da5f4 + state0 & 0x48367f78 ^ 0x63bb548f + flags0 & state0 | 0x6729b5bf - 0x3dca653f ^ 0x671da5f4 + state0 & 0x292b555d ^ u16_2 + state0 ^ flags0 & state0 | 0x6729b5bf - 0x3dca653f ^ 0x671da5f4 + state0 & 0x48367f78 ^ 0x63bb548f + flags0 & state0 | 0x6729b5bf - 0x3dca653f ^ 0x671da5f4 + state0 & 0x292b555d + flags0 & state0 | 0x6729b5bf - 0x3dca653f ^ 0x671da5f4 + state0 - 0x3b2cb159 & 0xfc7215c & 0x662844c - 0x7bdaf9d9 ^ 0x257a9d7d ^ 0x665346b9 + flags0 & state0 | 0x6729b5bf - 0x3dca653f ^ 0x671da5f4 + state0 - 0x3b2cb159 & 0xfc7215c & 0x662844c - 0x7bdaf9d9 ^ 0x257a9d7d ^ 0x665346b9 & 0x1c8b6fee ^ 0x6b040388 + 0x667e49d1);
 }
 
@@ -1861,6 +2629,22 @@ uint32_t vm_mba_eval_state_117(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0);
 }
 
@@ -1899,6 +2683,22 @@ uint32_t vm_mba_eval_state_118(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0 & u16_1 ^ state0 - 0x52d3aa4);
 }
 
@@ -1937,6 +2737,22 @@ uint32_t vm_mba_eval_state_119(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0 | u16_4 ^ state0 + 0x7e7974a5);
 }
 
@@ -1975,6 +2791,22 @@ uint32_t vm_mba_eval_state_121(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0 ^ flags0 + 0x3154e54a - 0x288d43ba + u16_0 + state0 ^ flags0 + 0x3154e54a - 0x288d43ba - flags0);
 }
 
@@ -2013,6 +2845,22 @@ uint32_t vm_mba_eval_state_122(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0 + flags0 - u16_0 + state0 + flags0 + 0x1af9be18);
 }
 
@@ -2051,6 +2899,22 @@ uint32_t vm_mba_eval_state_123(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0 + 0x3da77425 - u16_0 - state0 + 0x3da77425 ^ 0x1603b0a9);
 }
 
@@ -2089,6 +2953,22 @@ uint32_t vm_mba_eval_state_124(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0 - 0x7c31e804 ^ flags0 + 0x57b29524 - 0x2c2f20af ^ 0x2bb25e3 | 0x50ef8024 + flags0 + 0x57b29524 - 0x2c2f20af - state0 - 0x7c31e804 ^ flags0 + 0x57b29524 - 0x2c2f20af ^ 0x2bb25e3 | 0x50ef8024 ^ flags0 + 0x57b29524 - 0x2c2f20af - state0 - 0x7c31e804 ^ flags0 + 0x57b29524 - 0x2c2f20af ^ 0x2bb25e3 | 0x50ef8024 & u32_0 - state0 - 0x7c31e804 ^ flags0 + 0x57b29524 - 0x2c2f20af ^ 0x2bb25e3 | 0x50ef8024 + flags0 + 0x57b29524 - 0x2c2f20af - state0 - 0x7c31e804 ^ flags0 + 0x57b29524 - 0x2c2f20af ^ 0x2bb25e3 | 0x50ef8024 ^ flags0 + 0x57b29524 - 0x2c2f20af - state0 - 0x7c31e804 ^ flags0 + 0x57b29524 - 0x2c2f20af ^ 0x2bb25e3 | 0x50ef8024 - u16_4 + state0 - 0x7c31e804 ^ flags0 + 0x57b29524 - 0x2c2f20af ^ 0x2bb25e3 | 0x50ef8024 + flags0 + 0x57b29524 - 0x2c2f20af - state0 - 0x7c31e804 ^ flags0 + 0x57b29524 - 0x2c2f20af ^ 0x2bb25e3 | 0x50ef8024 ^ flags0 + 0x57b29524 - 0x2c2f20af - state0 - 0x7c31e804 ^ flags0 + 0x57b29524 - 0x2c2f20af ^ 0x2bb25e3 | 0x50ef8024 & u32_0 - state0 - 0x7c31e804 ^ flags0 + 0x57b29524 - 0x2c2f20af ^ 0x2bb25e3 | 0x50ef8024 + flags0 + 0x57b29524 - 0x2c2f20af - state0 - 0x7c31e804 ^ flags0 + 0x57b29524 - 0x2c2f20af ^ 0x2bb25e3 | 0x50ef8024 ^ flags0 + 0x57b29524 - 0x2c2f20af - state0 - 0x7c31e804 ^ flags0 + 0x57b29524 - 0x2c2f20af ^ 0x2bb25e3 | 0x50ef8024 ^ 0x3654c1a7);
 }
 
@@ -2127,6 +3007,22 @@ uint32_t vm_mba_eval_state_125(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0 & u16_0 + state0 - 0x7b275316);
 }
 
@@ -2165,6 +3061,22 @@ uint32_t vm_mba_eval_state_127(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0 | u16_0 - state0 + 0xf376a6a);
 }
 
@@ -2203,6 +3115,22 @@ uint32_t vm_mba_eval_state_128(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0 & flags0 & 0x7036ea56 + 0x277b426c - 0x57b04ce2 - flags0 ^ 0x46f37ee7 & 0x706a6a76 - 0x32c25a60 + 0x63f5af32 | 0x36a392ff | 0x38cd3aec - u16_1 + state0 & flags0 & 0x7036ea56 + 0x277b426c - 0x57b04ce2 - flags0 ^ 0x46f37ee7 & 0x706a6a76 - 0x32c25a60 + 0x63f5af32 | 0x36a392ff | 0x38cd3aec + flags0 ^ 0x46f37ee7 & 0x706a6a76 - 0x32c25a60 + 0x63f5af32 - 0x1a4f949c - 0x4e6b72c6 | 0x7b467141 & u16_3 ^ state0 & flags0 & 0x7036ea56 + 0x277b426c - 0x57b04ce2 - flags0 ^ 0x46f37ee7 & 0x706a6a76 - 0x32c25a60 + 0x63f5af32 | 0x36a392ff | 0x38cd3aec - u16_1 + state0 & flags0 & 0x7036ea56 + 0x277b426c - 0x57b04ce2 - flags0 ^ 0x46f37ee7 & 0x706a6a76 - 0x32c25a60 + 0x63f5af32 | 0x36a392ff | 0x38cd3aec + flags0 ^ 0x46f37ee7 & 0x706a6a76 - 0x32c25a60 + 0x63f5af32 - 0x1a4f949c - 0x4e6b72c6 | 0x7b467141 + 0x539da50e);
 }
 
@@ -2241,6 +3169,22 @@ uint32_t vm_mba_eval_state_129(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0 & flags0 | 0x77ecded8 + 0x14f8aa88 + 0x5f119f37 + flags0 + state0 & flags0 | 0x77ecded8 + 0x14f8aa88 + 0x5f119f37 - 0x42c8b2fa - 0x3f4e9109 + 0x5d5f2ae2 & 0x63b683d & u16_0 - state0 & flags0 | 0x77ecded8 + 0x14f8aa88 + 0x5f119f37 + flags0 + state0 & flags0 | 0x77ecded8 + 0x14f8aa88 + 0x5f119f37 - 0x42c8b2fa - 0x3f4e9109 + 0x5d5f2ae2 & 0x63b683d);
 }
 
@@ -2279,6 +3223,22 @@ uint32_t vm_mba_eval_state_130(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0 | flags0 - state0 + 0x42718c2a + flags0 - state0 + 0x42718c2a + 0x3941798 - 0x1b3f106e & 0x3a044344 | u16_0 + state0 | flags0 - state0 + 0x42718c2a + flags0 - state0 + 0x42718c2a + 0x3941798 - 0x1b3f106e & 0x3a044344 - 0x5121ff33);
 }
 
@@ -2317,6 +3277,22 @@ uint32_t vm_mba_eval_state_131(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0 | 0x8fb57c3 - 0x45a18ca4 | flags0 + 0x75229706 - 0x1ec4fc3d - state0 | 0x8fb57c3 + 0x4674713d ^ 0x4382f497 - 0x95703a1 ^ 0xea909d9 - flags0 + 0x75229706 - 0x1ec4fc3d - state0 | 0x8fb57c3 + 0x4674713d ^ 0x4382f497 - 0x95703a1 ^ 0xea909d9 ^ 0x7099ef27 - 0x248dd823 - flags0 + 0x75229706 - 0x1ec4fc3d - state0 | 0x8fb57c3 + 0x4674713d ^ 0x4382f497 - 0x95703a1 ^ 0xea909d9 ^ 0x7099ef27 - 0x248dd823 - u16_1 + state0 | 0x8fb57c3 - 0x45a18ca4 | flags0 + 0x75229706 - 0x1ec4fc3d - state0 | 0x8fb57c3 + 0x4674713d ^ 0x4382f497 - 0x95703a1 ^ 0xea909d9 - flags0 + 0x75229706 - 0x1ec4fc3d - state0 | 0x8fb57c3 + 0x4674713d ^ 0x4382f497 - 0x95703a1 ^ 0xea909d9 ^ 0x7099ef27 - 0x248dd823 - flags0 + 0x75229706 - 0x1ec4fc3d - state0 | 0x8fb57c3 + 0x4674713d ^ 0x4382f497 - 0x95703a1 ^ 0xea909d9 ^ 0x7099ef27 - 0x248dd823 ^ 0x1d802c44);
 }
 
@@ -2355,6 +3331,22 @@ uint32_t vm_mba_eval_state_136(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0 | u16_0 ^ state0 - 0x2eae4eac);
 }
 
@@ -2393,6 +3385,22 @@ uint32_t vm_mba_eval_state_140(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0 - flags0 - 0x6f549f79 - state0 | 0xf17c331 | 0x16a9ca8c + u16_0 ^ state0 - flags0 - 0x6f549f79 - state0 | 0xf17c331 | 0x16a9ca8c ^ 0x6e089feb);
 }
 
@@ -2431,6 +3439,22 @@ uint32_t vm_mba_eval_state_142(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0 ^ flags0 ^ 0x7e4feaa1 ^ 0x2968389e | flags0 | state0 ^ flags0 ^ 0x7e4feaa1 ^ 0x2968389e ^ 0x2de9e0a2 + 0x295d79d4 | 0x6a70639e - 0x2ed5a434 | flags0 | state0 ^ flags0 ^ 0x7e4feaa1 ^ 0x2968389e ^ 0x2de9e0a2 - 0x5f23a362 ^ 0x5f9390ae ^ 0x6209aa88 + u32_0 ^ state0 ^ flags0 ^ 0x7e4feaa1 ^ 0x2968389e | flags0 | state0 ^ flags0 ^ 0x7e4feaa1 ^ 0x2968389e ^ 0x2de9e0a2 + 0x295d79d4 | 0x6a70639e - 0x2ed5a434 | flags0 | state0 ^ flags0 ^ 0x7e4feaa1 ^ 0x2968389e ^ 0x2de9e0a2 - 0x5f23a362 ^ 0x5f9390ae ^ 0x6209aa88 + flags0 | state0 ^ flags0 ^ 0x7e4feaa1 ^ 0x2968389e ^ 0x2de9e0a2 ^ state0 ^ flags0 ^ 0x7e4feaa1 ^ 0x2968389e | flags0 | state0 ^ flags0 ^ 0x7e4feaa1 ^ 0x2968389e ^ 0x2de9e0a2 + 0x295d79d4 | 0x6a70639e - 0x2ed5a434 | flags0 | state0 ^ flags0 ^ 0x7e4feaa1 ^ 0x2968389e ^ 0x2de9e0a2 - 0x5f23a362 ^ 0x5f9390ae | 0x2fd9e422 | state0 ^ flags0 ^ 0x7e4feaa1 ^ 0x2968389e | flags0 | state0 ^ flags0 ^ 0x7e4feaa1 ^ 0x2968389e ^ 0x2de9e0a2 + 0x295d79d4 | 0x6a70639e - 0x2ed5a434 | flags0 | state0 ^ flags0 ^ 0x7e4feaa1 ^ 0x2968389e ^ 0x2de9e0a2 - 0x5f23a362 ^ 0x5f9390ae + 0x56d385ee ^ flags0 | state0 ^ flags0 ^ 0x7e4feaa1 ^ 0x2968389e ^ 0x2de9e0a2 ^ state0 ^ flags0 ^ 0x7e4feaa1 ^ 0x2968389e | flags0 | state0 ^ flags0 ^ 0x7e4feaa1 ^ 0x2968389e ^ 0x2de9e0a2 + 0x295d79d4 | 0x6a70639e - 0x2ed5a434 | flags0 | state0 ^ flags0 ^ 0x7e4feaa1 ^ 0x2968389e ^ 0x2de9e0a2 - 0x5f23a362 ^ 0x5f9390ae | 0x2fd9e422 | state0 ^ flags0 ^ 0x7e4feaa1 ^ 0x2968389e | flags0 | state0 ^ flags0 ^ 0x7e4feaa1 ^ 0x2968389e ^ 0x2de9e0a2 + 0x295d79d4 | 0x6a70639e - 0x2ed5a434 | flags0 | state0 ^ flags0 ^ 0x7e4feaa1 ^ 0x2968389e ^ 0x2de9e0a2 - 0x5f23a362 ^ 0x5f9390ae + 0x56d385ee - 0x18594029 - u16_8);
 }
 
@@ -2469,6 +3493,22 @@ uint32_t vm_mba_eval_state_144(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0 & 0x61f88068 & 0x1d022eee ^ 0x6367b3dd & u16_0 ^ state0 & 0x61f88068 & 0x1d022eee ^ 0x6367b3dd - 0x2f1222e2);
 }
 
@@ -2507,6 +3547,22 @@ uint32_t vm_mba_eval_state_145(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0);
 }
 
@@ -2545,6 +3601,22 @@ uint32_t vm_mba_eval_state_146(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0 + flags0 ^ 0x2e312e01 & flags0 & 0xa6d4251 ^ 0x409c2e61 + 0x7d882664 + 0x4a5b7e16 ^ u16_3 + flags0 & 0xa6d4251 ^ 0x409c2e61 ^ u16_1 - state0 + flags0 ^ 0x2e312e01 & flags0 & 0xa6d4251 ^ 0x409c2e61 + 0x7d882664 + 0x4a5b7e16 ^ u16_3 + flags0 & 0xa6d4251 ^ 0x409c2e61 + 0x2cff1885);
 }
 
@@ -2583,6 +3655,22 @@ uint32_t vm_mba_eval_state_148(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0 & flags0);
 }
 
@@ -2621,6 +3709,22 @@ uint32_t vm_mba_eval_state_151(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0 + flags0 ^ u16_3 + state0 + flags0 + 0x77236c60);
 }
 
@@ -2659,6 +3763,22 @@ uint32_t vm_mba_eval_state_153(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0 + u16_0 - state0 ^ 0x6f642592);
 }
 
@@ -2697,6 +3817,22 @@ uint32_t vm_mba_eval_state_154(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0 - u16_2 ^ state0 - flags0 + 0x60c316f3 & 0x56154baf + 0xbc52893 & 0x57dbe69e | 0x7ed018fb + flags0 + 0x60c316f3 & 0x56154baf + 0xbc52893 & 0x57dbe69e | 0x7ed018fb ^ 0x18426e67 - u16_0 - state0 - u16_2 ^ state0 - flags0 + 0x60c316f3 & 0x56154baf + 0xbc52893 & 0x57dbe69e | 0x7ed018fb + flags0 + 0x60c316f3 & 0x56154baf + 0xbc52893 & 0x57dbe69e | 0x7ed018fb ^ 0x18426e67 - 0x6535d747);
 }
 
@@ -2735,6 +3871,22 @@ uint32_t vm_mba_eval_state_157(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0 ^ 0x2f4dfd84 + u16_2 | 0x1f5cd114 - flags0 + 0x3f0d8c6a + 0x2832271c ^ 0x520e3305 & 0x7edaa354 ^ 0x68e1604d ^ 0x3d2638af & state0 ^ 0x2f4dfd84 + u16_2 ^ u16_0 + state0 ^ 0x2f4dfd84 + u16_2 | 0x1f5cd114 - flags0 + 0x3f0d8c6a + 0x2832271c ^ 0x520e3305 & 0x7edaa354 ^ 0x68e1604d ^ 0x3d2638af & state0 ^ 0x2f4dfd84 + u16_2 ^ 0x17d39c9f);
 }
 
@@ -2773,6 +3925,22 @@ uint32_t vm_mba_eval_state_158(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0 ^ 0x1fbfc3f3 ^ flags0 ^ 0x3c39b020 ^ 0x1f711c95 | 0xfb6049e ^ flags0 ^ 0x3c39b020 + u16_2 + state0 ^ 0x1fbfc3f3 ^ flags0 ^ 0x3c39b020 ^ 0x1f711c95 | 0xfb6049e ^ flags0 ^ 0x3c39b020 ^ 0x3ffdb46c);
 }
 
@@ -2811,6 +3979,22 @@ uint32_t vm_mba_eval_state_160(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0 | 0x67f1fed6 & 0x256c03d7 | 0x72df8f7a & 0x5a1beb81 | u16_0 ^ state0 | 0x67f1fed6 & 0x256c03d7 | 0x72df8f7a & 0x5a1beb81 - 0x4cf19f11);
 }
 
@@ -2849,6 +4033,22 @@ uint32_t vm_mba_eval_state_161(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0 | 0x69145e52);
 }
 
@@ -2887,6 +4087,22 @@ uint32_t vm_mba_eval_state_167(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0 - u16_4 ^ state0 ^ 0x5f92615);
 }
 
@@ -2925,6 +4141,22 @@ uint32_t vm_mba_eval_state_168(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0 | 0x6899d5d4 & u16_0 + flags0 & 0x66031b5e - 0x2eab70d9 ^ 0x7c2abc25 & 0x46cbe42d & 0x69af076d | 0x4ee70776 & u16_2 + state0 | 0x6899d5d4 & u16_0 + flags0 & 0x66031b5e - 0x2eab70d9 ^ 0x7c2abc25 & 0x46cbe42d & 0x69af076d | 0x4ee70776 + 0x553030a2);
 }
 
@@ -2963,6 +4195,22 @@ uint32_t vm_mba_eval_state_172(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0 ^ 0x7070916c - 0x6ecee241 + u16_0 ^ state0 ^ 0x7070916c - 0x6ecee241 ^ flags0 ^ 0x15bf847f & state0 | 0x3eba9edf | u16_2 ^ 0x715f0a33);
 }
 
@@ -3001,6 +4249,22 @@ uint32_t vm_mba_eval_state_173(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0 + 0x5eced92d ^ 0x456d7018 | 0xebbbd20 & flags0 - state0 + 0x5eced92d | 0x1f8bac4c & 0x74128b65 & u16_0 ^ state0 + 0x5eced92d ^ 0x456d7018 | 0xebbbd20 & flags0 - state0 + 0x5eced92d | 0x1f8bac4c & 0x74128b65 + 0x1f118051);
 }
 
@@ -3039,6 +4303,22 @@ uint32_t vm_mba_eval_state_174(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0 - flags0 & flags0 ^ flags0 + flags0 ^ 0x5fa9d2b1 | u16_0 + state0 - flags0 & flags0 ^ flags0 + flags0 ^ 0x5fa9d2b1 + 0x397fd954);
 }
 
@@ -3077,6 +4357,22 @@ uint32_t vm_mba_eval_state_175(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0 & flags0 & 0x2c46ace3 | flags0 - 0x14b22a15);
 }
 
@@ -3115,6 +4411,22 @@ uint32_t vm_mba_eval_state_176(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0 & flags0 & 0x2c46ace3 | flags0 - 0x14b22a15);
 }
 
@@ -3153,6 +4465,22 @@ uint32_t vm_mba_eval_state_179(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0 | flags0 ^ u16_3 ^ flags0 + 0x7ef33dc5 ^ u16_1 - state0 | flags0 ^ u16_3 ^ flags0 + 0x7ef33dc5 - 0x263c3887);
 }
 
@@ -3191,6 +4519,22 @@ uint32_t vm_mba_eval_state_180(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0 | u16_0 + 0x7920fa05);
 }
 
@@ -3229,6 +4573,22 @@ uint32_t vm_mba_eval_state_181(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0 - u16_4 - state0);
 }
 
@@ -3267,6 +4627,22 @@ uint32_t vm_mba_eval_state_183(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0 + 0xfaa325c ^ 0x694e1f66 | u16_2 - state0 + 0xfaa325c ^ 0x694e1f66 - 0x1aed554c);
 }
 
@@ -3305,6 +4681,22 @@ uint32_t vm_mba_eval_state_184(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0 | flags0 | 0x19d0d4d + 0x3c030b15 ^ flags0 + 0x7db9efb0 ^ flags0 - flags0 ^ flags0 + u16_0 - state0 | flags0 | 0x19d0d4d + 0x3c030b15 ^ flags0 + 0x7db9efb0 ^ flags0 - flags0 ^ flags0 + 0x3f05b2f0);
 }
 
@@ -3343,6 +4735,22 @@ uint32_t vm_mba_eval_state_185(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0 ^ flags0 | 0x17e55682 ^ 0x2000c224 & 0x1f29f35 + flags0 | 0x17e55682 + 0x28030c24 ^ 0x30d03eec | 0x7fa981a ^ 0x5ea8d1c5 | u16_0 ^ state0 ^ flags0 | 0x17e55682 ^ 0x2000c224 & 0x1f29f35 + flags0 | 0x17e55682 + 0x28030c24 ^ 0x30d03eec | 0x7fa981a ^ 0x5ea8d1c5);
 }
 
@@ -3381,6 +4789,22 @@ uint32_t vm_mba_eval_state_186(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0 & u16_3 + state0 + 0x72198f10);
 }
 
@@ -3419,6 +4843,22 @@ uint32_t vm_mba_eval_state_187(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0 + u16_3 - state0);
 }
 
@@ -3457,6 +4897,22 @@ uint32_t vm_mba_eval_state_188(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0 + 0x2bd68549 + flags0 - 0x4a4532ca + flags0 - u16_0 ^ state0 + 0x2bd68549 + flags0 - 0x4a4532ca + flags0 + 0x62c32dd8);
 }
 
@@ -3495,6 +4951,22 @@ uint32_t vm_mba_eval_state_189(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0 & 0x160e4f34 + u16_2 + state0 & 0x160e4f34 ^ 0x2a1ce984);
 }
 
@@ -3533,6 +5005,22 @@ uint32_t vm_mba_eval_state_190(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0 & u16_3 + state0 + 0x20f4b909);
 }
 
@@ -3571,6 +5059,22 @@ uint32_t vm_mba_eval_state_192(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0 + flags0 + flags0 + state0 + flags0 ^ 0x5d641cd7 | 0x76a1e6e7 ^ 0x1ea5bfdc & 0x4f4379b7 | 0x563159ce + flags0 + state0 + flags0 ^ 0x5d641cd7 | 0x76a1e6e7 ^ 0x1ea5bfdc & 0x4f4379b7 | 0x563159ce - u16_0 ^ state0 + flags0 + flags0 + state0 + flags0 ^ 0x5d641cd7 | 0x76a1e6e7 ^ 0x1ea5bfdc & 0x4f4379b7 | 0x563159ce + flags0 + state0 + flags0 ^ 0x5d641cd7 | 0x76a1e6e7 ^ 0x1ea5bfdc & 0x4f4379b7 | 0x563159ce);
 }
 
@@ -3609,6 +5113,22 @@ uint32_t vm_mba_eval_state_195(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0 | 0x52e5924a + flags0 | 0x4083ed99 & state0 | 0x52e5924a ^ 0x20047816 & 0x7ca762c5 - 0x5ff2f608 + 0x789b1461 + 0x37b5a024 + 0x2e12e35a ^ 0x44fb7fdb + flags0 | 0x4083ed99 & state0 | 0x52e5924a ^ 0x20047816 & 0x7ca762c5 - 0x5ff2f608 + 0x789b1461 + 0x32c4b127 & 0x7c737923);
 }
 
@@ -3647,6 +5167,22 @@ uint32_t vm_mba_eval_state_196(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0 | 0x52e5924a + flags0 | 0x4083ed99 & state0 | 0x52e5924a ^ 0x20047816 & 0x7ca762c5 - 0x5ff2f608 + 0x789b1461 + 0x37b5a024 + 0x2e12e35a ^ 0x44fb7fdb + flags0 | 0x4083ed99 & state0 | 0x52e5924a ^ 0x20047816 & 0x7ca762c5 - 0x5ff2f608 + 0x789b1461 + 0x32c4b127 & 0x7c737923);
 }
 
@@ -3685,6 +5221,22 @@ uint32_t vm_mba_eval_state_198(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0 + flags0 - 0x5e173fc7 - 0x3cd02127 + flags0 + 0x15b2dfa5 - u16_0 - state0 + flags0 - 0x5e173fc7 - 0x3cd02127 + flags0 + 0x15b2dfa5 ^ 0x3fe99379);
 }
 
@@ -3723,6 +5275,22 @@ uint32_t vm_mba_eval_state_199(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0 + b2 + flags0 ^ 0x7353b039 - 0x24d1328a ^ 0x7e708197 & 0x20d5418 + flags0 ^ 0x7353b039 - 0x24d1328a);
 }
 
@@ -3761,6 +5329,22 @@ uint32_t vm_mba_eval_state_201(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0 ^ flags0 ^ 0x1940e110 ^ 0x5efd26e6 & flags0 ^ 0x71fea721 ^ flags0 & 0x3f73d5c3 | 0x4f2c497c | 0x6499103 & flags0 & state0 ^ flags0 ^ 0x1940e110 ^ 0x5efd26e6 & flags0 ^ 0x71fea721 ^ flags0 & 0x3f73d5c3 | 0x4f2c497c + 0x2daa0966 - 0x708b6fb1 - 0x7e894c58 - u16_2 - 0x289c039);
 }
 
@@ -3799,6 +5383,22 @@ uint32_t vm_mba_eval_state_203(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0 - flags0 + 0x97da242 & flags0 + 0x97da242 ^ 0x370370f1 | 0x1f1759c | flags0 + 0x97da242 & state0 - flags0 + 0x97da242 & flags0 + 0x97da242 ^ 0x370370f1 | 0x1f1759c & 0x71376753 + 0x2c217984 | 0x24d2add8 & 0x6ef19bee - flags0 + 0x97da242 & state0 - flags0 + 0x97da242 & flags0 + 0x97da242 ^ 0x370370f1 | 0x1f1759c & 0x71376753 + 0x2c217984 - 0x32825086 - 0x1f5b0269 & u16_0 ^ 0x4ccb9807);
 }
 
@@ -3837,6 +5437,22 @@ uint32_t vm_mba_eval_state_208(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0 + flags0 - 0x24472eba ^ 0x60ff2036 + 0x7627b830 - 0x42fb6768 ^ state0 + 0x7ad87935 ^ 0x39b69246 ^ state0 | 0x7a909dc0 ^ 0x58abcfc7 | 0x1477a707 - flags0 - 0x24472eba ^ 0x60ff2036 + 0x7627b830 - 0x42fb6768 ^ state0 + 0x7ad87935 ^ 0x39b69246 ^ state0 | 0x7a909dc0 ^ 0x58abcfc7 | 0x72f7690f & flags0 - 0x24472eba ^ 0x60ff2036 + 0x7627b830 - 0x42fb6768 ^ state0 + 0x7ad87935 ^ 0x39b69246 ^ state0 | 0x7a909dc0 ^ 0x58abcfc7 | 0x7be050b - 0x790391ce & 0x37c3d0a5 | 0x73f21f4d - u16_3 - state0 + flags0 - 0x24472eba ^ 0x60ff2036 + 0x7627b830 - 0x42fb6768 ^ state0 + 0x7ad87935 ^ 0x39b69246 ^ state0 | 0x7a909dc0 ^ 0x58abcfc7 | 0x1477a707 - flags0 - 0x24472eba ^ 0x60ff2036 + 0x7627b830 - 0x42fb6768 ^ state0 + 0x7ad87935 ^ 0x39b69246 ^ state0 | 0x7a909dc0 ^ 0x58abcfc7 | 0x72f7690f & flags0 - 0x24472eba ^ 0x60ff2036 + 0x7627b830 - 0x42fb6768 ^ state0 + 0x7ad87935 ^ 0x39b69246 ^ state0 | 0x7a909dc0 ^ 0x58abcfc7 | 0x7be050b - 0x790391ce & 0x37c3d0a5 | 0x73f21f4d);
 }
 
@@ -3875,6 +5491,22 @@ uint32_t vm_mba_eval_state_209(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0 & flags0 | 0x57058be5 ^ 0x36c108d8 | 0x22939484 ^ 0x55c2f3a2 - u16_0 ^ state0 & flags0 | 0x57058be5 ^ 0x36c108d8 | 0x22939484 ^ 0x55c2f3a2);
 }
 
@@ -3913,6 +5545,22 @@ uint32_t vm_mba_eval_state_210(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0);
 }
 
@@ -3951,6 +5599,22 @@ uint32_t vm_mba_eval_state_214(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0 ^ flags0 + 0x784f7133 ^ 0x7e64782 & 0x5bda5c23 + 0x352ca91c | flags0 + 0x784f7133 & 0x4cc9d7b & 0x79233229 - 0x234dc07a - 0x2ce4baee - 0x3231759e - u16_0 + state0 ^ flags0 + 0x784f7133 ^ 0x7e64782 & 0x5bda5c23 + 0x352ca91c | flags0 + 0x784f7133 & 0x4cc9d7b & 0x79233229 - 0x234dc07a - 0x2ce4baee - 0x3231759e - 0x74a805eb);
 }
 
@@ -3989,6 +5653,22 @@ uint32_t vm_mba_eval_state_215(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0 | 0x760f463f - flags0 | 0x77dcc51b ^ 0xee9796d ^ 0x717a207c + 0x15a799dd | 0x6c5f0f12 + b2 + state0 | 0x760f463f - flags0 | 0x77dcc51b ^ 0xee9796d ^ 0x717a207c + 0x15a799dd | 0x6c5f0f12 | 0x38d2bdd3 - u16_0);
 }
 
@@ -4027,6 +5707,22 @@ uint32_t vm_mba_eval_state_216(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0 ^ flags0);
 }
 
@@ -4065,6 +5761,22 @@ uint32_t vm_mba_eval_state_217(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0 ^ flags0);
 }
 
@@ -4103,6 +5815,22 @@ uint32_t vm_mba_eval_state_220(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0 | flags0 + 0x46462807 & 0x2332d827 - flags0 - state0 | flags0 & 0x4297c9dd + 0x6f8e6e16 ^ u16_3 - state0 | flags0 + 0x46462807 & 0x2332d827 - flags0 - state0 | flags0 & 0x4297c9dd + 0x6f8e6e16 + 0x8f8037a);
 }
 
@@ -4141,6 +5869,22 @@ uint32_t vm_mba_eval_state_222(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0 + flags0 | 0x11da3648 & 0x169ceafa & u16_0 - state0 + flags0 | 0x11da3648 & 0x169ceafa + flags0 | 0x5b15ab43 | 0x4cc95222 | 0x70d72f46 | 0x30319008 | 0x39a63024 + flags0 | 0x5b15ab43 | 0x4cc95222 | 0x70d72f46 | 0x30319008 + 0x17d780ca ^ u16_2 + state0 + flags0 | 0x11da3648 & 0x169ceafa & u16_0 - state0 + flags0 | 0x11da3648 & 0x169ceafa + flags0 | 0x5b15ab43 | 0x4cc95222 | 0x70d72f46 | 0x30319008 | 0x39a63024 + flags0 | 0x5b15ab43 | 0x4cc95222 | 0x70d72f46 | 0x30319008 + 0x17d780ca - 0x29e369df);
 }
 
@@ -4179,6 +5923,22 @@ uint32_t vm_mba_eval_state_225(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0 | flags0 & u16_0 ^ state0 | flags0);
 }
 
@@ -4217,6 +5977,22 @@ uint32_t vm_mba_eval_state_229(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0 ^ flags0 ^ 0x4a304ad7 - u16_3 ^ state0 ^ flags0 ^ 0x4a304ad7 ^ 0x381ae5a5);
 }
 
@@ -4255,6 +6031,22 @@ uint32_t vm_mba_eval_state_231(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0 + flags0 + 0x37d0b9a9 ^ 0x6307e167 + flags0 + 0x37d0b9a9 ^ 0x6307e167 ^ 0x69e2cccd ^ 0x500184b - 0x796ead7f & u16_3 - state0 + flags0 + 0x37d0b9a9 ^ 0x6307e167 + flags0 + 0x37d0b9a9 ^ 0x6307e167 ^ 0x69e2cccd ^ 0x500184b - 0x796ead7f + 0x5041c185);
 }
 
@@ -4293,6 +6085,22 @@ uint32_t vm_mba_eval_state_237(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0 - flags0 ^ 0x22900c8 - flags0 + 0x3fbeaa1d ^ 0x8178b71 - 0x4813dbc ^ u16_1 ^ state0 - flags0 ^ 0x22900c8 - flags0 + 0x3fbeaa1d ^ 0x8178b71 - 0x4813dbc - 0x4f4105f2);
 }
 
@@ -4331,6 +6139,22 @@ uint32_t vm_mba_eval_state_239(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0 + 0x40a7aa16 + flags0 & 0x39d16b3e & u32_0 - state0 + 0x40a7aa16 + flags0 & 0x39d16b3e - u16_4 + state0 + 0x40a7aa16 + flags0 & 0x39d16b3e & u32_0 - state0 + 0x40a7aa16 + flags0 & 0x39d16b3e - 0x3650a0ae);
 }
 
@@ -4369,6 +6193,22 @@ uint32_t vm_mba_eval_state_240(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0 - u16_3 - state0 - 0x7bec2197);
 }
 
@@ -4407,6 +6247,22 @@ uint32_t vm_mba_eval_state_241(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0 - u16_11 + state0);
 }
 
@@ -4445,6 +6301,22 @@ uint32_t vm_mba_eval_state_242(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0 | u16_3 - state0 ^ 0x5c05e9b5);
 }
 
@@ -4483,6 +6355,22 @@ uint32_t vm_mba_eval_state_243(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0 ^ 0x47b31677 | flags0 | state0 | 0x5f60d018 + state0 + 0x398f70f4 & 0x4ec4a2f1 ^ 0x57df388c & flags0 | state0 | 0x5f60d018 + state0 + 0x398f70f4 & 0x4ec4a2f1 & state0 ^ 0x47b31677 | flags0 | state0 | 0x5f60d018 + state0 + 0x398f70f4 & 0x4ec4a2f1 - 0x289ce9b6 + u16_0 - state0 ^ 0x47b31677 | flags0 | state0 | 0x5f60d018 + state0 + 0x398f70f4 & 0x4ec4a2f1 ^ 0x57df388c & flags0 | state0 | 0x5f60d018 + state0 + 0x398f70f4 & 0x4ec4a2f1 & state0 ^ 0x47b31677 | flags0 | state0 | 0x5f60d018 + state0 + 0x398f70f4 & 0x4ec4a2f1 - 0x289ce9b6 ^ 0xbdd98a5);
 }
 
@@ -4521,6 +6409,22 @@ uint32_t vm_mba_eval_state_245(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0 ^ u16_0 + state0 ^ 0x3a835417);
 }
 
@@ -4559,6 +6463,22 @@ uint32_t vm_mba_eval_state_246(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0);
 }
 
@@ -4597,6 +6517,22 @@ uint32_t vm_mba_eval_state_248(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0 ^ flags0 - state0 | 0x5188b16e & 0x6764746a - state0 ^ 0x46157a61 + 0x17fe21ad ^ 0x35ad1d25 - 0x496039c5 ^ u16_2 ^ 0x4160066b);
 }
 
@@ -4635,6 +6571,22 @@ uint32_t vm_mba_eval_state_250(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0 ^ flags0 + flags0 ^ flags0 | 0x75c2d7ad + 0x3d28c7fc - 0xb911f97 | u16_1 - state0 ^ flags0 + flags0 ^ flags0 | 0x75c2d7ad + 0x3d28c7fc - 0xb911f97 + 0x71ad6fc6);
 }
 
@@ -4673,6 +6625,22 @@ uint32_t vm_mba_eval_state_251(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0 & u16_3 - state0 ^ 0x7cf1b821);
 }
 
@@ -4711,6 +6679,22 @@ uint32_t vm_mba_eval_state_253(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0 | 0x764111b0 + 0x6d2270cb + u32_2 ^ flags0 + flags0 | 0x62c3b0dd | 0x2b96d1d1 & 0x2d46e2e3 ^ u16_0 + 0x7c5d4802);
 }
 
@@ -4749,6 +6733,22 @@ uint32_t vm_mba_eval_state_254(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0 + flags0 - u16_0 ^ state0 + flags0 | flags0 | 0x617339d9 | 0x5635509 | 0x15874263 ^ 0x5bf4e999 & flags0 - 0x35a18ac8 | 0x5feb6979 & 0x3e80b852 | u16_2 - 0x228a41a2);
 }
 
@@ -4787,6 +6787,22 @@ uint32_t vm_mba_eval_state_256(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0 ^ 0x3e93f8db + 0x1734aabd ^ flags0 - state0 ^ 0x3e93f8db ^ 0x7a7f365a | flags0 - state0 ^ 0x3e93f8db ^ 0x7a7f365a ^ 0x30de4dc1 & u16_0 + state0 ^ 0x3e93f8db + 0x1734aabd ^ flags0 - state0 ^ 0x3e93f8db ^ 0x7a7f365a | flags0 - state0 ^ 0x3e93f8db ^ 0x7a7f365a ^ 0x30de4dc1 - 0x3817cdcc);
 }
 
@@ -4825,6 +6841,22 @@ uint32_t vm_mba_eval_state_257(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0 - 0x509f61c9 + 0x1b9def5 - 0x7d4ca123 | 0x1d2af87 ^ u16_0 - state0 - 0x509f61c9 + 0x1b9def5 - 0x7d4ca123 | 0x1d2af87);
 }
 
@@ -4863,6 +6895,22 @@ uint32_t vm_mba_eval_state_258(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0 ^ 0x11095fd5 + flags0 - 0x1510614f | 0xa1b079a ^ 0x1769756e ^ u16_2 - flags0 - 0x1510614f | 0xa1b079a ^ 0x1769756e & u16_0 - state0 ^ 0x11095fd5 + flags0 - 0x1510614f | 0xa1b079a ^ 0x1769756e ^ u16_2 - flags0 - 0x1510614f | 0xa1b079a ^ 0x1769756e ^ 0x5812e92c);
 }
 
@@ -4901,6 +6949,22 @@ uint32_t vm_mba_eval_state_259(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0 | flags0 ^ 0x5b05419c + 0x792f3332 ^ 0x8bcb284 - 0x36b43160 ^ 0x674120fe - 0x57f37797 | 0x5190c117 + 0x5ad08ad1 & u32_2 - state0 | flags0 ^ 0x5b05419c + 0x792f3332 ^ 0x8bcb284 - 0x36b43160 ^ 0x674120fe - 0x57f37797 | 0x5190c117 + 0x5ad08ad1 + flags0 ^ 0x5b05419c + 0x792f3332 ^ 0x8bcb284 - 0x36b43160 ^ 0x674120fe - 0x57f37797 | 0x5190c117 + 0x5ad08ad1 ^ 0x71457984 + flags0 ^ 0x5b05419c + 0x792f3332 ^ 0x8bcb284 - 0x36b43160 ^ 0x674120fe - 0x57f37797 | 0x5190c117 + 0x5ad08ad1 ^ 0x76155fd ^ 0x2e1ba290 ^ 0x61a2d9b ^ flags0 ^ 0x5b05419c + 0x792f3332 ^ 0x8bcb284 - 0x36b43160 ^ 0x674120fe - 0x57f37797 | 0x5190c117 + 0x5ad08ad1 ^ 0x76155fd ^ 0x2e1ba290 ^ 0x61a2d9b | u16_0);
 }
 
@@ -4939,6 +7003,22 @@ uint32_t vm_mba_eval_state_260(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0 + 0x581f6275 ^ flags0 - 0x705f9ad2 + 0x760922e2 & 0x2efb7283 | 0x7ba7e961 + flags0 - 0x705f9ad2 + 0x760922e2 | flags0 - 0x705f9ad2 + 0x760922e2 & 0x5af0e1db | 0x17270855 | flags0 - 0x705f9ad2 + 0x760922e2 | flags0 - 0x705f9ad2 + 0x760922e2 & u16_2 + state0 + 0x581f6275 ^ flags0 - 0x705f9ad2 + 0x760922e2 & 0x2efb7283 | 0x7ba7e961 + flags0 - 0x705f9ad2 + 0x760922e2 | flags0 - 0x705f9ad2 + 0x760922e2 & 0x5af0e1db | 0x17270855 | flags0 - 0x705f9ad2 + 0x760922e2 | flags0 - 0x705f9ad2 + 0x760922e2 - flags0 - 0x705f9ad2 + 0x760922e2 ^ 0x34525a09 ^ 0x17010cf2 | state0 + 0x581f6275 ^ flags0 - 0x705f9ad2 + 0x760922e2 & 0x2efb7283 | 0x7ba7e961 + flags0 - 0x705f9ad2 + 0x760922e2 | flags0 - 0x705f9ad2 + 0x760922e2 & 0x5af0e1db | 0x17270855 | flags0 - 0x705f9ad2 + 0x760922e2 | flags0 - 0x705f9ad2 + 0x760922e2 & 0x624bad50 - u16_0 - state0 + 0x581f6275 ^ flags0 - 0x705f9ad2 + 0x760922e2 & 0x2efb7283 | 0x7ba7e961 + flags0 - 0x705f9ad2 + 0x760922e2 | flags0 - 0x705f9ad2 + 0x760922e2 & 0x5af0e1db | 0x17270855 | flags0 - 0x705f9ad2 + 0x760922e2 | flags0 - 0x705f9ad2 + 0x760922e2 & u16_2 + state0 + 0x581f6275 ^ flags0 - 0x705f9ad2 + 0x760922e2 & 0x2efb7283 | 0x7ba7e961 + flags0 - 0x705f9ad2 + 0x760922e2 | flags0 - 0x705f9ad2 + 0x760922e2 & 0x5af0e1db | 0x17270855 | flags0 - 0x705f9ad2 + 0x760922e2 | flags0 - 0x705f9ad2 + 0x760922e2 - flags0 - 0x705f9ad2 + 0x760922e2 ^ 0x34525a09 ^ 0x17010cf2 | state0 + 0x581f6275 ^ flags0 - 0x705f9ad2 + 0x760922e2 & 0x2efb7283 | 0x7ba7e961 + flags0 - 0x705f9ad2 + 0x760922e2 | flags0 - 0x705f9ad2 + 0x760922e2 & 0x5af0e1db | 0x17270855 | flags0 - 0x705f9ad2 + 0x760922e2 | flags0 - 0x705f9ad2 + 0x760922e2 & 0x624bad50 ^ 0x470c080d);
 }
 
@@ -4977,6 +7057,22 @@ uint32_t vm_mba_eval_state_261(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0 + u16_2 + 0x4c539d29);
 }
 
@@ -5015,6 +7111,22 @@ uint32_t vm_mba_eval_state_264(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0 & u16_8 + state0 - 0x6fba3362);
 }
 
@@ -5053,6 +7165,22 @@ uint32_t vm_mba_eval_state_266(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0);
 }
 
@@ -5091,6 +7219,22 @@ uint32_t vm_mba_eval_state_267(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0 & 0x22c7ea36 | flags0 | 0x10c4506b ^ 0x5cdc1fad + 0x50bb45db - 0x13e853fe & flags0 | 0x10c4506b ^ 0x5cdc1fad + 0x50bb45db - 0x13e853fe & 0x18f9e0e8 - 0x376fe1fd | 0x2bce070c + u16_0 + state0 & 0x22c7ea36 | flags0 | 0x10c4506b ^ 0x5cdc1fad + 0x50bb45db - 0x13e853fe & flags0 | 0x10c4506b ^ 0x5cdc1fad + 0x50bb45db - 0x13e853fe & 0x18f9e0e8 - 0x376fe1fd | 0x2bce070c ^ 0x17e28bdf);
 }
 
@@ -5129,6 +7273,22 @@ uint32_t vm_mba_eval_state_268(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0 | 0x71bd1bb1 + u16_0 - state0 | 0x71bd1bb1 - flags0 & flags0 + 0x33c0c75b & 0x174c40ef - 0x554d11ee & 0x30ef8696 | flags0 + 0x33c0c75b & 0x174c40ef - 0x554d11ee & 0x30ef8696 + 0x12696b26 ^ u16_2 - state0 | 0x71bd1bb1 + u16_0 - state0 | 0x71bd1bb1 - flags0 & flags0 + 0x33c0c75b & 0x174c40ef - 0x554d11ee & 0x30ef8696 | flags0 + 0x33c0c75b & 0x174c40ef - 0x554d11ee & 0x30ef8696 + 0x12696b26 + 0x73efcc77);
 }
 
@@ -5167,6 +7327,22 @@ uint32_t vm_mba_eval_state_269(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0 ^ flags0 & state0 & 0x6f7fff69 & flags0 & state0 | flags0 & state0 ^ 0x4f60a287 + u16_3 + state0 ^ flags0 & state0 & 0x6f7fff69 & flags0 & state0 | flags0 & state0 ^ 0x4f60a287 + 0x4faa382);
 }
 
@@ -5205,6 +7381,22 @@ uint32_t vm_mba_eval_state_273(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0 - flags0 + 0x4b959cd0 + flags0 & 0x908616e + u16_2 - state0 - flags0 + 0x4b959cd0 + flags0 & 0x908616e ^ flags0 | u16_0 + state0 - flags0 + 0x4b959cd0 + flags0 & 0x908616e + u16_2 - state0 - flags0 + 0x4b959cd0 + flags0 & 0x908616e ^ flags0 - 0x2e0be660);
 }
 
@@ -5243,6 +7435,22 @@ uint32_t vm_mba_eval_state_276(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0 & 0x7246aa41 ^ flags0 | 0x47166ef1 - flags0 | flags0 - u32_2 - 0x332a16a ^ u16_0 + state0 & 0x7246aa41 ^ flags0 | 0x47166ef1 - flags0 | flags0 - u32_2 - 0x332a16a - 0x63f74381);
 }
 
@@ -5281,6 +7489,22 @@ uint32_t vm_mba_eval_state_278(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0 | flags0 | u16_2 - state0 | flags0 + 0x68baea26);
 }
 
@@ -5319,6 +7543,22 @@ uint32_t vm_mba_eval_state_281(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0 - 0x31642a8c ^ 0x5b9839d1 | flags0 & u16_2 + state0 - 0x31642a8c ^ 0x5b9839d1 | flags0 - flags0 - flags0 - 0x1ec23851 ^ 0x6445395f + u16_0 ^ state0 - 0x31642a8c ^ 0x5b9839d1 | flags0 & u16_2 + state0 - 0x31642a8c ^ 0x5b9839d1 | flags0 - flags0 - flags0 - 0x1ec23851 ^ 0x6445395f - 0x519e8380);
 }
 
@@ -5357,6 +7597,22 @@ uint32_t vm_mba_eval_state_282(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0 ^ flags0 - 0x54c8658a & 0x259f380d & 0x41d706e9 - 0x334721c0);
 }
 
@@ -5395,6 +7651,22 @@ uint32_t vm_mba_eval_state_283(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0);
 }
 
@@ -5433,6 +7705,22 @@ uint32_t vm_mba_eval_state_284(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0 - u16_11 - 0x14b96a4c);
 }
 
@@ -5471,6 +7759,22 @@ uint32_t vm_mba_eval_state_285(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0 ^ flags0 + u16_2 - state0 ^ flags0);
 }
 
@@ -5509,6 +7813,22 @@ uint32_t vm_mba_eval_state_287(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0 & 0xa6ddb71 - flags0 - 0x67686890 + 0x609b810a + 0x6975e1b1 - 0x4988e425 | 0x3ab14dd1 - u16_0 + state0 & 0xa6ddb71 - flags0 - 0x67686890 + 0x609b810a + 0x6975e1b1 - 0x4988e425 | 0x3ab14dd1 ^ 0xa841ebd);
 }
 
@@ -5547,6 +7867,22 @@ uint32_t vm_mba_eval_state_290(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0 | flags0 & 0x3acb356d & u16_2 + state0 | flags0 & 0x3acb356d ^ 0x29d9517b);
 }
 
@@ -5585,6 +7921,22 @@ uint32_t vm_mba_eval_state_291(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0 ^ flags0 ^ u16_0 - flags0 ^ 0x5acd2fa ^ 0x12648cbe - flags0 ^ 0x5acd2fa ^ 0x12648cbe ^ 0x2e91bd1c + 0x610956a9 & flags0 ^ 0x5acd2fa ^ 0x12648cbe ^ 0x2e91bd1c | 0x55d764bb ^ 0x17a0094a - 0x1f6881d8 | u16_2 + state0 ^ flags0 ^ u16_0 - flags0 ^ 0x5acd2fa ^ 0x12648cbe - flags0 ^ 0x5acd2fa ^ 0x12648cbe ^ 0x2e91bd1c + 0x610956a9 & flags0 ^ 0x5acd2fa ^ 0x12648cbe ^ 0x2e91bd1c | 0x55d764bb ^ 0x17a0094a - 0x1f6881d8 + 0xa61c44c);
 }
 
@@ -5623,6 +7975,22 @@ uint32_t vm_mba_eval_state_292(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0 | flags0 + u16_1 - state0 | flags0 & u16_3 ^ state0 | flags0 + u16_1 - state0 | flags0 + 0x628c34bc);
 }
 
@@ -5661,6 +8029,22 @@ uint32_t vm_mba_eval_state_295(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0 | u16_2 - 0x396ecbf2);
 }
 
@@ -5699,6 +8083,22 @@ uint32_t vm_mba_eval_state_297(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0 - 0x48220942 | flags0 + 0x283684b4 ^ 0x4a5a939a | 0x6650e9bb ^ 0x6b7f38b7 + b0 + state0 - 0x48220942 | flags0 + 0x283684b4 ^ 0x4a5a939a | 0x6650e9bb ^ 0x6b7f38b7 + flags0 + 0x283684b4 ^ 0x4a5a939a | 0x6650e9bb - u16_1 - state0 - 0x48220942 | flags0 + 0x283684b4 ^ 0x4a5a939a | 0x6650e9bb ^ 0x6b7f38b7 + b0 + state0 - 0x48220942 | flags0 + 0x283684b4 ^ 0x4a5a939a | 0x6650e9bb ^ 0x6b7f38b7 + flags0 + 0x283684b4 ^ 0x4a5a939a | 0x6650e9bb ^ 0x9f24ccb);
 }
 
@@ -5737,6 +8137,22 @@ uint32_t vm_mba_eval_state_299(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0 & 0x2b7e7713 & 0x515f6307 - u16_0 + state0 & 0x2b7e7713 & 0x515f6307 + flags0 & 0x742354d + 0x2ff05a2b | flags0 & 0x742354d + 0x2ff05a2b & 0x1011ba33 ^ u16_2 - state0 & 0x2b7e7713 & 0x515f6307 - u16_0 + state0 & 0x2b7e7713 & 0x515f6307 + flags0 & 0x742354d + 0x2ff05a2b | flags0 & 0x742354d + 0x2ff05a2b & 0x1011ba33);
 }
 
@@ -5775,6 +8191,22 @@ uint32_t vm_mba_eval_state_300(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0 & 0x2b7e7713 & 0x515f6307 - u16_0 + state0 & 0x2b7e7713 & 0x515f6307 + flags0 & 0x742354d + 0x2ff05a2b | flags0 & 0x742354d + 0x2ff05a2b & 0x1011ba33 ^ u16_2 - state0 & 0x2b7e7713 & 0x515f6307 - u16_0 + state0 & 0x2b7e7713 & 0x515f6307 + flags0 & 0x742354d + 0x2ff05a2b | flags0 & 0x742354d + 0x2ff05a2b & 0x1011ba33);
 }
 
@@ -5813,6 +8245,22 @@ uint32_t vm_mba_eval_state_301(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0 & flags0 ^ u16_3 - state0 & flags0 - 0x2c0febdf);
 }
 
@@ -5851,6 +8299,22 @@ uint32_t vm_mba_eval_state_302(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0);
 }
 
@@ -5889,6 +8353,22 @@ uint32_t vm_mba_eval_state_305(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0 & u16_0 + state0);
 }
 
@@ -5927,6 +8407,22 @@ uint32_t vm_mba_eval_state_308(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0);
 }
 
@@ -5965,6 +8461,22 @@ uint32_t vm_mba_eval_state_311(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0 - 0x1889c111 - flags0 - state0 - 0x1889c111 + 0x3cae9026 | 0x2b959efa | 0x35e8abc1 - u16_3 ^ state0 - 0x1889c111 - flags0 - state0 - 0x1889c111 + 0x3cae9026 | 0x2b959efa | 0x35e8abc1 ^ 0xa9f4228);
 }
 
@@ -6003,6 +8515,22 @@ uint32_t vm_mba_eval_state_313(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0 - flags0 + 0x40989976 | 0x2f39160a ^ flags0 - state0 - flags0 + 0x40989976 | 0x2f39160a ^ 0x7af00ac1 ^ state0 - flags0 + 0x40989976 | 0x2f39160a ^ 0x3764731 - state0 - flags0 + 0x40989976 | 0x2f39160a | 0x6ecf352a & flags0 - state0 - flags0 + 0x40989976 | 0x2f39160a ^ 0x7af00ac1 ^ state0 - flags0 + 0x40989976 | 0x2f39160a ^ 0x3764731 - state0 - flags0 + 0x40989976 | 0x2f39160a - 0x344abbda ^ flags0 - state0 - flags0 + 0x40989976 | 0x2f39160a ^ 0x7af00ac1 ^ state0 - flags0 + 0x40989976 | 0x2f39160a ^ 0x3764731 - state0 - flags0 + 0x40989976 | 0x2f39160a + 0x52bb641c - 0x2d0c0392 ^ u16_2 + state0 - flags0 + 0x40989976 | 0x2f39160a ^ flags0 - state0 - flags0 + 0x40989976 | 0x2f39160a ^ 0x7af00ac1 ^ state0 - flags0 + 0x40989976 | 0x2f39160a ^ 0x3764731 - state0 - flags0 + 0x40989976 | 0x2f39160a | 0x6ecf352a & flags0 - state0 - flags0 + 0x40989976 | 0x2f39160a ^ 0x7af00ac1 ^ state0 - flags0 + 0x40989976 | 0x2f39160a ^ 0x3764731 - state0 - flags0 + 0x40989976 | 0x2f39160a - 0x344abbda ^ flags0 - state0 - flags0 + 0x40989976 | 0x2f39160a ^ 0x7af00ac1 ^ state0 - flags0 + 0x40989976 | 0x2f39160a ^ 0x3764731 - state0 - flags0 + 0x40989976 | 0x2f39160a + 0x52bb641c - 0x2d0c0392 ^ 0x35363d0a);
 }
 
@@ -6041,6 +8569,22 @@ uint32_t vm_mba_eval_state_314(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0 - u32_0 ^ state0 + 0x477d7abb);
 }
 
@@ -6079,6 +8623,22 @@ uint32_t vm_mba_eval_state_315(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0 & 0x7562ddb5 ^ 0x25ede89c - 0x19140c1b ^ flags0 ^ 0x285c750c | u16_2 ^ 0x42c7f071);
 }
 
@@ -6117,6 +8677,22 @@ uint32_t vm_mba_eval_state_316(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0);
 }
 
@@ -6155,6 +8731,22 @@ uint32_t vm_mba_eval_state_317(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0 - flags0 + 0x189c9c80 - 0x4373d071 ^ 0x12461866 & 0x2d8e67e2 | flags0 + 0x189c9c80 - 0x4373d071 ^ 0x12461866 & 0x2d8e67e2 ^ u16_2 + flags0 + 0x189c9c80 - 0x4373d071 ^ 0x12461866 & 0x2d8e67e2 & flags0 + 0x189c9c80 - 0x4373d071 ^ 0x12461866 & 0x2d8e67e2 & 0x19a77ba + flags0 + 0x189c9c80 - 0x4373d071 ^ 0x12461866 & 0x2d8e67e2 | flags0 + 0x189c9c80 - 0x4373d071 ^ 0x12461866 & 0x2d8e67e2 ^ flags0 + 0x189c9c80 - 0x4373d071 ^ 0x12461866 & 0x2d8e67e2 | 0x501e3e6c ^ flags0 + 0x189c9c80 - 0x4373d071 ^ 0x12461866 & 0x2d8e67e2 + u16_0 - state0 - flags0 + 0x189c9c80 - 0x4373d071 ^ 0x12461866 & 0x2d8e67e2 | flags0 + 0x189c9c80 - 0x4373d071 ^ 0x12461866 & 0x2d8e67e2 ^ u16_2 + flags0 + 0x189c9c80 - 0x4373d071 ^ 0x12461866 & 0x2d8e67e2 & flags0 + 0x189c9c80 - 0x4373d071 ^ 0x12461866 & 0x2d8e67e2 & 0x19a77ba + flags0 + 0x189c9c80 - 0x4373d071 ^ 0x12461866 & 0x2d8e67e2 | flags0 + 0x189c9c80 - 0x4373d071 ^ 0x12461866 & 0x2d8e67e2 ^ flags0 + 0x189c9c80 - 0x4373d071 ^ 0x12461866 & 0x2d8e67e2 | 0x501e3e6c ^ flags0 + 0x189c9c80 - 0x4373d071 ^ 0x12461866 & 0x2d8e67e2 + 0x18e7b255);
 }
 
@@ -6193,6 +8785,22 @@ uint32_t vm_mba_eval_state_319(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0 & flags0 | 0x6be63b72 ^ 0x55d6ffe2 ^ 0x655e4f3b | 0x27c134ad & state0 + 0x4fa9822e | 0x5ed258f1 | flags0 | 0x6be63b72 ^ 0x55d6ffe2 ^ 0x655e4f3b | 0x27c134ad & state0 + 0x4fa9822e ^ flags0 | 0x6be63b72 ^ 0x55d6ffe2 ^ 0x655e4f3b | 0x27c134ad & state0 + 0x4fa9822e + 0x2ba77993 + u16_2 + state0 & flags0 | 0x6be63b72 ^ 0x55d6ffe2 ^ 0x655e4f3b | 0x27c134ad & state0 + 0x4fa9822e | 0x5ed258f1 | flags0 | 0x6be63b72 ^ 0x55d6ffe2 ^ 0x655e4f3b | 0x27c134ad & state0 + 0x4fa9822e ^ flags0 | 0x6be63b72 ^ 0x55d6ffe2 ^ 0x655e4f3b | 0x27c134ad & state0 + 0x4fa9822e + 0x2ba77993 + 0x7f20b820);
 }
 
@@ -6231,6 +8839,22 @@ uint32_t vm_mba_eval_state_320(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0 & flags0 - flags0 - 0x7e143884);
 }
 
@@ -6269,6 +8893,22 @@ uint32_t vm_mba_eval_state_321(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0 + u16_0 ^ flags0 | 0x2d680d90 + 0x69cbe1a0 & u16_2 - state0 + u16_0 ^ flags0 | 0x2d680d90 + 0x69cbe1a0 + 0x7ba65dc4);
 }
 
@@ -6307,6 +8947,22 @@ uint32_t vm_mba_eval_state_322(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0 + u16_0 ^ flags0 | 0x2d680d90 + 0x69cbe1a0 & u16_2 - state0 + u16_0 ^ flags0 | 0x2d680d90 + 0x69cbe1a0 + 0x7ba65dc4);
 }
 
@@ -6345,6 +9001,22 @@ uint32_t vm_mba_eval_state_326(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0 & flags0 + u16_1 ^ 0x50d4eebe);
 }
 
@@ -6383,6 +9055,22 @@ uint32_t vm_mba_eval_state_331(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0 & 0x3eb8b067 + flags0 & flags0 ^ 0x1f891278 + flags0 + 0x6859cefd | 0x47dd4277 + u16_0 - state0 & 0x3eb8b067 + flags0 & flags0 ^ 0x1f891278 + flags0 + 0x6859cefd | 0x47dd4277 - 0x35a6d51);
 }
 
@@ -6421,6 +9109,22 @@ uint32_t vm_mba_eval_state_332(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0 | 0x30661b97 & 0x57d9fe65 | flags0 & state0 | 0x2f0ca7d2 & state0 | 0x30661b97 - 0x23cebdbc ^ state0 | 0x30661b97 & 0x57d9fe65 & flags0 & state0 | 0x2f0ca7d2 & state0 | 0x30661b97 - 0x23cebdbc ^ state0 | 0x30661b97 & 0x57d9fe65 + 0x149316fa + flags0 & state0 | 0x2f0ca7d2 & state0 | 0x30661b97 - 0x23cebdbc ^ state0 | 0x30661b97 & 0x57d9fe65 ^ u16_2 ^ state0 | 0x30661b97 & 0x57d9fe65 | flags0 & state0 | 0x2f0ca7d2 & state0 | 0x30661b97 - 0x23cebdbc ^ state0 | 0x30661b97 & 0x57d9fe65 & flags0 & state0 | 0x2f0ca7d2 & state0 | 0x30661b97 - 0x23cebdbc ^ state0 | 0x30661b97 & 0x57d9fe65 + 0x149316fa + flags0 & state0 | 0x2f0ca7d2 & state0 | 0x30661b97 - 0x23cebdbc ^ state0 | 0x30661b97 & 0x57d9fe65 + 0x42097e5d);
 }
 
@@ -6459,6 +9163,22 @@ uint32_t vm_mba_eval_state_333(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0 ^ flags0 ^ state0 | 0x37ccc6ea - 0x61e56767 & flags0 ^ state0 + flags0 ^ state0 | 0x71cc1ee8 | 0x569ecec3 + u16_0 - state0 ^ flags0 ^ state0 | 0x37ccc6ea - 0x61e56767 & flags0 ^ state0 + flags0 ^ state0 | 0x71cc1ee8 | 0x569ecec3);
 }
 
@@ -6497,6 +9217,22 @@ uint32_t vm_mba_eval_state_334(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0);
 }
 
@@ -6535,6 +9271,22 @@ uint32_t vm_mba_eval_state_336(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0 & u16_2 ^ 0x114009e8);
 }
 
@@ -6573,6 +9325,22 @@ uint32_t vm_mba_eval_state_337(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0 - flags0 - u16_2 + state0 - flags0 + flags0 + 0x2051de91 & flags0 + 0x61f749a7 | 0x51d7631a ^ flags0 + 0x61f749a7 ^ 0x3de72107 & 0xe04b834 | u16_0 + state0 - flags0 - u16_2 + state0 - flags0 + flags0 + 0x2051de91 & flags0 + 0x61f749a7 | 0x51d7631a ^ flags0 + 0x61f749a7 ^ 0x3de72107 & 0xe04b834 ^ 0x2060ddea);
 }
 
@@ -6611,6 +9379,22 @@ uint32_t vm_mba_eval_state_338(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0 - u16_0 - state0 - 0x4bf8be0c);
 }
 
@@ -6649,6 +9433,22 @@ uint32_t vm_mba_eval_state_340(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0 - 0x2b2e5a26 ^ 0x7535dd25 | u16_2 - u16_0 + state0 - 0x2b2e5a26 ^ 0x7535dd25 | u16_2 + 0x9097995);
 }
 
@@ -6687,6 +9487,22 @@ uint32_t vm_mba_eval_state_345(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0 + u32_2 ^ state0 + flags0 + u16_0 + state0 + u32_2 ^ state0 + flags0);
 }
 
@@ -6725,6 +9541,22 @@ uint32_t vm_mba_eval_state_346(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0 ^ flags0 ^ 0x3f746ab3 ^ 0x3f5501a6 ^ 0x45fbcef1);
 }
 
@@ -6763,6 +9595,22 @@ uint32_t vm_mba_eval_state_347(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0 | flags0 + 0x6fa972f0 | flags0 ^ state0 | flags0 + 0x6fa972f0 & 0x45223942 + state0 | flags0 + 0x6fa972f0 | 0x2efc96c5 ^ 0x5cf483c7 & flags0 ^ state0 | flags0 + 0x6fa972f0 & 0x45223942 + state0 | flags0 + 0x6fa972f0 | 0x2efc96c5 | 0x6630614f ^ 0x1a7ef2ae | state0 | flags0 + 0x6fa972f0 | flags0 ^ state0 | flags0 + 0x6fa972f0 & 0x45223942 + state0 | flags0 + 0x6fa972f0 | 0x2efc96c5 ^ 0x5cf483c7 & flags0 ^ state0 | flags0 + 0x6fa972f0 & 0x45223942 + state0 | flags0 + 0x6fa972f0 | 0x2efc96c5 | 0x6630614f ^ 0x1a7ef2ae | state0 | flags0 + 0x6fa972f0 | flags0 ^ state0 | flags0 + 0x6fa972f0 & 0x45223942 + state0 | flags0 + 0x6fa972f0 | 0x2efc96c5 ^ 0x5cf483c7 + u16_2 + flags0 ^ state0 | flags0 + 0x6fa972f0 & 0x45223942 + state0 | flags0 + 0x6fa972f0 | 0x2efc96c5 | 0x6630614f ^ 0x1a7ef2ae | state0 | flags0 + 0x6fa972f0 | flags0 ^ state0 | flags0 + 0x6fa972f0 & 0x45223942 + state0 | flags0 + 0x6fa972f0 | 0x2efc96c5 ^ 0x5cf483c7 - flags0 ^ state0 | flags0 + 0x6fa972f0 & 0x45223942 + state0 | flags0 + 0x6fa972f0 | 0x2efc96c5 | 0x6630614f ^ 0x1a7ef2ae | state0 | flags0 + 0x6fa972f0 | flags0 ^ state0 | flags0 + 0x6fa972f0 & 0x45223942 + state0 | flags0 + 0x6fa972f0 | 0x2efc96c5 ^ 0x5cf483c7 ^ 0x7bd54e39 - 0x10871fd8);
 }
 
@@ -6801,6 +9649,22 @@ uint32_t vm_mba_eval_state_348(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0 & 0x4ead272 + flags0 | flags0 | 0x2730b0cc - 0x5c278a20 & 0x31691179 - 0x5c3efee3 & 0x19c08712 & u16_0 ^ state0 & 0x4ead272 + flags0 | flags0 | 0x2730b0cc - 0x5c278a20 & 0x31691179 - 0x5c3efee3 & 0x19c08712 - 0x369ef0d5);
 }
 
@@ -6839,6 +9703,22 @@ uint32_t vm_mba_eval_state_350(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0 + 0x5c4fb994 - 0x33be5a8b ^ flags0 & state0 + 0x5c4fb994 + 0x261f270f & u16_0 ^ state0 + 0x5c4fb994 - 0x33be5a8b ^ flags0 & state0 + 0x5c4fb994 + 0x261f270f & u16_2 ^ state0 + 0x5c4fb994 - 0x33be5a8b ^ flags0 & state0 + 0x5c4fb994 + 0x261f270f & u16_0 ^ state0 + 0x5c4fb994 - 0x33be5a8b ^ flags0 & state0 + 0x5c4fb994 + 0x261f270f ^ 0x678e3cb6);
 }
 
@@ -6877,6 +9757,22 @@ uint32_t vm_mba_eval_state_351(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0 | u16_2 + state0 - 0x7b3a2d18);
 }
 
@@ -6915,6 +9811,22 @@ uint32_t vm_mba_eval_state_352(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0 & 0x31863366 | u16_0 + state0 & 0x31863366 + 0x331dfc06);
 }
 
@@ -6953,6 +9865,22 @@ uint32_t vm_mba_eval_state_356(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0 ^ flags0);
 }
 
@@ -6991,6 +9919,22 @@ uint32_t vm_mba_eval_state_357(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0 ^ flags0);
 }
 
@@ -7029,6 +9973,22 @@ uint32_t vm_mba_eval_state_358(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0 + flags0 - 0x3bcc6446 ^ 0x50eab96 - flags0 + flags0 | 0x4ea692e8 ^ flags0 ^ flags0 ^ 0x3b02b16c + 0x63b77c87 | flags0 | u16_0 ^ state0 + flags0 - 0x3bcc6446 ^ 0x50eab96 - flags0 + flags0 | 0x4ea692e8 ^ flags0 ^ flags0 ^ 0x3b02b16c + 0x63b77c87 | flags0 - 0x45b1cde1);
 }
 
@@ -7067,5 +10027,21 @@ uint32_t vm_mba_eval_state_359(const VMBAInputs *in) {
     const uint32_t u16_13 = in->u16_13;
     const uint32_t u16_14 = in->u16_14;
     const uint32_t u16_15 = in->u16_15;
+    const uint32_t u32_0 = in->u32_0;
+    const uint32_t u32_1 = in->u32_1;
+    const uint32_t u32_2 = in->u32_2;
+    const uint32_t u32_3 = in->u32_3;
+    const uint32_t u32_4 = in->u32_4;
+    const uint32_t u32_5 = in->u32_5;
+    const uint32_t u32_6 = in->u32_6;
+    const uint32_t u32_7 = in->u32_7;
+    const uint32_t u32_8 = in->u32_8;
+    const uint32_t u32_9 = in->u32_9;
+    const uint32_t u32_10 = in->u32_10;
+    const uint32_t u32_11 = in->u32_11;
+    const uint32_t u32_12 = in->u32_12;
+    const uint32_t u32_13 = in->u32_13;
+    const uint32_t u32_14 = in->u32_14;
+    const uint32_t u32_15 = in->u32_15;
     return (uint32_t)(state0 & flags0 | 0x16bae797 | u16_2 + state0 & flags0 | 0x16bae797 - 0x6683bbe1);
 }

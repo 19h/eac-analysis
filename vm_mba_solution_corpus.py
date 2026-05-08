@@ -14,10 +14,11 @@ TRACE_PREFERENCE = [
     "vm_instruction_trace.tsv",
     "vm_instruction_trace_filefill_hiddenfill_frontierfill_footprintfill.tsv",
 ]
-VAR_RE = re.compile(r"\b(?:state0|flags0|u16_[0-9]+|b[0-9]+)\b")
+VAR_RE = re.compile(r"\b(?:state0|flags0|u32_[0-9]+|u16_[0-9]+|b[0-9]+)\b")
 CONST_RE = re.compile(r"0x[0-9a-fA-F]+")
 BYTE_COLUMNS = [f"b{index}" for index in range(16)]
 WORD_COLUMNS = [f"u16_{offset}" for offset in range(16)]
+DWORD_COLUMNS = [f"u32_{offset}" for offset in range(16)]
 
 
 def read_tsv(path: Path) -> list[dict[str, str]]:
@@ -89,6 +90,13 @@ def bytes_to_values(hex_bytes: str) -> dict[str, str]:
         key = f"u16_{offset}"
         if offset + 1 < len(data):
             values[key] = f"0x{data[offset] | (data[offset + 1] << 8):04x}"
+        else:
+            values[key] = ""
+    for offset in range(16):
+        key = f"u32_{offset}"
+        if offset + 3 < len(data):
+            value = data[offset] | (data[offset + 1] << 8) | (data[offset + 2] << 16) | (data[offset + 3] << 24)
+            values[key] = f"0x{value:08x}"
         else:
             values[key] = ""
     return values
@@ -175,7 +183,7 @@ def required_inputs(vars_: set[str]) -> str:
         requirements.append("pre_state")
     if "flags0" in vars_:
         requirements.append("pre_flags")
-    byte_vars = sorted(var for var in vars_ if var.startswith("b") or var.startswith("u16_"))
+    byte_vars = sorted(var for var in vars_ if var.startswith("b") or var.startswith("u16_") or var.startswith("u32_"))
     if byte_vars:
         requirements.append("raw_vm_bytes:" + ",".join(byte_vars))
     return ";".join(requirements) if requirements else "none"
@@ -428,6 +436,7 @@ def main() -> int:
         "bytes",
         *BYTE_COLUMNS,
         *WORD_COLUMNS,
+        *DWORD_COLUMNS,
         "target_entry",
         "target",
         "delta",

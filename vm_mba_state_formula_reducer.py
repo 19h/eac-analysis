@@ -15,8 +15,9 @@ from pathlib import Path
 
 BYTE_COLUMNS = [f"b{index}" for index in range(16)]
 WORD_COLUMNS = [f"u16_{offset}" for offset in range(16)]
-ALL_VARS = ["state0", "flags0", *BYTE_COLUMNS, *WORD_COLUMNS]
-VAR_RE = re.compile(r"\b(?:state0|flags0|u16_[0-9]+|b[0-9]+)\b")
+DWORD_COLUMNS = [f"u32_{offset}" for offset in range(16)]
+ALL_VARS = ["state0", "flags0", *BYTE_COLUMNS, *WORD_COLUMNS, *DWORD_COLUMNS]
+VAR_RE = re.compile(r"\b(?:state0|flags0|u32_[0-9]+|u16_[0-9]+|b[0-9]+)\b")
 MASK32 = 0xFFFFFFFF
 
 
@@ -119,6 +120,8 @@ def make_samples(count: int) -> list[VMBAInputs]:
             setattr(item, name, (seed >> ((index % 4) * 8)) & 0xFF)
         for index, name in enumerate(WORD_COLUMNS):
             setattr(item, name, (seed + index * 0x1111) & 0xFFFF)
+        for index, name in enumerate(DWORD_COLUMNS):
+            setattr(item, name, (seed + index * 0x11111111) & MASK32)
         samples.append(item)
     for _ in range(count):
         item = VMBAInputs()
@@ -128,6 +131,8 @@ def make_samples(count: int) -> list[VMBAInputs]:
             setattr(item, name, rng.getrandbits(8))
         for name in WORD_COLUMNS:
             setattr(item, name, rng.getrandbits(16))
+        for name in DWORD_COLUMNS:
+            setattr(item, name, rng.getrandbits(32))
         samples.append(item)
     return samples
 
