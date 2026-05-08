@@ -10,6 +10,7 @@ import random
 import re
 import shutil
 import subprocess
+from itertools import combinations
 from pathlib import Path
 
 
@@ -149,6 +150,59 @@ def verify(outputs: list[int], samples: list[VMBAInputs], expr) -> bool:
     return all(((expr(sample) & MASK32) == output) for sample, output in zip(samples, outputs))
 
 
+def synthesized_features(vars_: list[str]) -> list[tuple[str, str, object]]:
+    features: list[tuple[str, str, object]] = []
+    for var in vars_:
+        features.append(("var", var, lambda sample, v=var: get_var(sample, v)))
+    for left, right in combinations(vars_, 2):
+        features.extend(
+            [
+                ("add2", f"{left} + {right}", lambda sample, a=left, b=right: get_var(sample, a) + get_var(sample, b)),
+                ("sub2", f"{left} - {right}", lambda sample, a=left, b=right: get_var(sample, a) - get_var(sample, b)),
+                ("rsub2", f"{right} - {left}", lambda sample, a=left, b=right: get_var(sample, b) - get_var(sample, a)),
+                ("xor2", f"{left} ^ {right}", lambda sample, a=left, b=right: get_var(sample, a) ^ get_var(sample, b)),
+                ("or2", f"{left} | {right}", lambda sample, a=left, b=right: get_var(sample, a) | get_var(sample, b)),
+                ("and2", f"{left} & {right}", lambda sample, a=left, b=right: get_var(sample, a) & get_var(sample, b)),
+            ]
+        )
+    for first, second, third in combinations(vars_, 3):
+        features.extend(
+            [
+                (
+                    "add3",
+                    f"{first} + {second} + {third}",
+                    lambda sample, a=first, b=second, c=third: get_var(sample, a) + get_var(sample, b) + get_var(sample, c),
+                ),
+                (
+                    "xor3",
+                    f"{first} ^ {second} ^ {third}",
+                    lambda sample, a=first, b=second, c=third: get_var(sample, a) ^ get_var(sample, b) ^ get_var(sample, c),
+                ),
+                (
+                    "or3",
+                    f"{first} | {second} | {third}",
+                    lambda sample, a=first, b=second, c=third: get_var(sample, a) | get_var(sample, b) | get_var(sample, c),
+                ),
+                (
+                    "and3",
+                    f"{first} & {second} & {third}",
+                    lambda sample, a=first, b=second, c=third: get_var(sample, a) & get_var(sample, b) & get_var(sample, c),
+                ),
+                (
+                    "xor_or3",
+                    f"({first} | {second}) ^ {third}",
+                    lambda sample, a=first, b=second, c=third: (get_var(sample, a) | get_var(sample, b)) ^ get_var(sample, c),
+                ),
+                (
+                    "xor_and3",
+                    f"({first} & {second}) ^ {third}",
+                    lambda sample, a=first, b=second, c=third: (get_var(sample, a) & get_var(sample, b)) ^ get_var(sample, c),
+                ),
+            ]
+        )
+    return features
+
+
 def candidate_templates(vars_: list[str], outputs: list[int], samples: list[VMBAInputs]) -> list[tuple[str, str, object]]:
     if not outputs:
         return []
@@ -221,6 +275,65 @@ def candidate_templates(vars_: list[str], outputs: list[int], samples: list[VMBA
             for name, c_expr, fn in tests:
                 if verify(outputs, samples, fn):
                     candidates.append((name, c_expr, fn))
+    if candidates:
+        return candidates
+
+    seen_exprs: set[str] = set()
+    for feature_name, feature_expr, feature_fn in synthesized_features(vars_):
+        f0 = feature_fn(first) & MASK32
+        variants = [
+            (
+                f"{feature_name}_identity",
+                feature_expr,
+                lambda sample, fn=feature_fn: fn(sample),
+            ),
+            (
+                f"{feature_name}_add_const",
+                f"({feature_expr}) + {hex_u32((y0 - f0) & MASK32)}",
+                lambda sample, fn=feature_fn, c=(y0 - f0) & MASK32: fn(sample) + c,
+            ),
+            (
+                f"{feature_name}_sub_const",
+                f"({feature_expr}) - {hex_u32((f0 - y0) & MASK32)}",
+                lambda sample, fn=feature_fn, c=(f0 - y0) & MASK32: fn(sample) - c,
+            ),
+            (
+                f"{feature_name}_const_sub",
+                f"{hex_u32((y0 + f0) & MASK32)} - ({feature_expr})",
+                lambda sample, fn=feature_fn, c=(y0 + f0) & MASK32: c - fn(sample),
+            ),
+            (
+                f"{feature_name}_xor_const",
+                f"({feature_expr}) ^ {hex_u32(y0 ^ f0)}",
+                lambda sample, fn=feature_fn, c=y0 ^ f0: fn(sample) ^ c,
+            ),
+        ]
+        and_mask = 0
+        for output in outputs:
+            and_mask |= output
+        variants.append(
+            (
+                f"{feature_name}_and_mask",
+                f"({feature_expr}) & {hex_u32(and_mask)}",
+                lambda sample, fn=feature_fn, c=and_mask: fn(sample) & c,
+            )
+        )
+        or_mask = MASK32
+        for output in outputs:
+            or_mask &= output
+        variants.append(
+            (
+                f"{feature_name}_or_mask",
+                f"({feature_expr}) | {hex_u32(or_mask)}",
+                lambda sample, fn=feature_fn, c=or_mask: fn(sample) | c,
+            )
+        )
+        for name, c_expr, fn in variants:
+            if c_expr in seen_exprs:
+                continue
+            seen_exprs.add(c_expr)
+            if verify(outputs, samples, fn):
+                candidates.append((name, c_expr, fn))
     return candidates
 
 
