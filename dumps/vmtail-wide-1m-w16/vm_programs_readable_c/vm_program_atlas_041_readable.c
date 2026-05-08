@@ -8512,7 +8512,7 @@ static const VMReadableOp vm_program_atlas_041_ops[] = {
     {0x31666eu, 0x316672u, 123u, 175u, "vmop_123_plus0x4_state_add_const_slot_mba_stateful", "f6c9e801", "obfuscated_table_dispatch", "readable_with_structural_algebra", "vm_state = add/constant-style update over state, flags, and operands; formula=state0 + 0x3da77425 - u16_0 - state0 + 0x3da77425 ^ 0x1603b0a9", "next_entry = MBA(state, flags, operands) dispatch slot; per-row concrete target is resolved; expression=128=(mask32((mask32(u16_0 - (mask32(state0 + 0x3da77425)))) ^ 0x1603b0a9)) & 0xffff", "ip += 0x4", "175@0x9c08f:1", "", "", "algebraic_state_or_slot_formula"},
     {0x316672u, 0x343569u, 175u, 310u, "vmop_175_plus0x2cef7_central_or_long_slot_unknown", "513307008000", "long_or_backedge_control", "unresolved_dispatch_details", "control-special state class central_or_long; formula=state0 & flags0 & 0x2c46ace3 | flags0 - 0x14b22a15", "dispatch slot expression not recovered; use per-row target evidence when available", "ip += 0x2cef7", "310@0xb8556", "", "", "dispatch_slot_unknown;static_model_or_runtime_validation_incomplete"},
 };
-enum { VM_PROGRAM_ATLAS_041_OP_COUNT = (int)(sizeof(vm_program_atlas_041_ops) / sizeof(vm_program_atlas_041_ops[0])) };
+enum { VM_PROGRAM_ATLAS_041_OP_COUNT = 8444 };
 
 static const VMReadableEdge vm_program_atlas_041_edges[] = {
     {0x30e872u, 0x30eea2u, 165, "041", "intra_program", "fallthrough", "+0x2", "next = 165@0x9a24c:1, ip += +0x2; dispatch_model=static_100; state=state_add_const"},
@@ -8529,7 +8529,7 @@ static const VMReadableEdge vm_program_atlas_041_edges[] = {
     {0x31580eu, 0x310b1cu, 171, "041", "intra_program", "decoded_control", "-0x51a4", "next = table[171], ip -= 0x51a4"},
     {0x315cc8u, 0x343569u, 310, "055", "inter_program", "decoded_control", "+0x2cef7", "sampled operand footprint 0x6; observed target table[310], delta +0x2cef7"},
 };
-enum { VM_PROGRAM_ATLAS_041_EDGE_COUNT = (int)(sizeof(vm_program_atlas_041_edges) / sizeof(vm_program_atlas_041_edges[0])) };
+enum { VM_PROGRAM_ATLAS_041_EDGE_COUNT = 13 };
 
 static const VMReadableStringRef vm_program_atlas_041_strings[] = {
     {7u, 0x30eebdu, 0x30eebau, "_ITM_registerTMCloneTable", ".dynstr", "gnu_transactional_memory_runtime_symbol", "cxx_runtime", "vmop_210_plus0x30_sampled_long_or_sparse_slot_unknown", "reference_observed_in_recovered_vm_program_not_call_proof"},
@@ -8538,7 +8538,7 @@ static const VMReadableStringRef vm_program_atlas_041_strings[] = {
     {10u, 0x310859u, 0x310857u, "unsigned __int128", ".rodata", "compiler_type_name", "compiler_metadata", "vmop_330_plus0x5_state_add_const_slot_u16_0", "reference_observed_in_recovered_vm_program_not_call_proof"},
     {11u, 0x315809u, 0x310dbau, "zydis_decoder_tree_root", ".dynstr", "disassembly_metadata_symbol", "disassembly_metadata", "vmop_075_minus0x6d_sampled_backedge_slot_unknown", "reference_observed_in_recovered_vm_program_not_call_proof"},
 };
-enum { VM_PROGRAM_ATLAS_041_STRING_REF_COUNT = (int)(sizeof(vm_program_atlas_041_strings) / sizeof(vm_program_atlas_041_strings[0])) };
+enum { VM_PROGRAM_ATLAS_041_STRING_REF_COUNT = 5 };
 
 static const VMReadableProgram vm_program_atlas_041_readable_program = {
     "041", 0x30e872u, 0x316692u,

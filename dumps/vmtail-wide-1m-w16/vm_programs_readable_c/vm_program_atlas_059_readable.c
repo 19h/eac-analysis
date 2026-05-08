@@ -2536,7 +2536,7 @@ static const VMReadableOp vm_program_atlas_059_ops[] = {
     {0x369a6eu, 0x369a73u, 242u, 145u, "vmop_242_plus0x5_state_formula_slot_mba_stateful", "3d0179dbdc", "obfuscated_table_dispatch", "readable_with_structural_algebra", "vm_state = unresolved formula; formula=state0 | u16_3 - state0 ^ 0x5c05e9b5", "next_entry = MBA(state, flags, operands) dispatch slot; per-row concrete target is resolved; expression=43=(mask32((mask32(u16_3 - state0)) ^ 0x5c05e9b5)) & 0xffff", "ip += 0x5", "145@0x95b5c:3", "", "", "algebraic_state_or_slot_formula;state_formula_not_named"},
     {0x369a73u, 0x369ad3u, 145u, 354u, "vmop_145_plus0x139_sampled_long_or_sparse_slot_unknown", "62010000600000003d0122", "long_or_backedge_control", "unresolved_dispatch_details", "control-special state class sampled_long_or_sparse; formula=state0", "dispatch slot expression not recovered; use per-row target evidence when available", "ip += 0x139", "354@0xc2241", "", "", "dispatch_slot_unknown;static_model_or_runtime_validation_incomplete"},
 };
-enum { VM_PROGRAM_ATLAS_059_OP_COUNT = (int)(sizeof(vm_program_atlas_059_ops) / sizeof(vm_program_atlas_059_ops[0])) };
+enum { VM_PROGRAM_ATLAS_059_OP_COUNT = 2468 };
 
 static const VMReadableEdge vm_program_atlas_059_edges[] = {
     {0x3674c3u, 0x3676e5u, 171, "059", "intra_program", "fallthrough", "+0x2", "next = 171@0x9b4b3:1, ip += +0x2; dispatch_model=static_100"},
@@ -2564,7 +2564,7 @@ static const VMReadableEdge vm_program_atlas_059_edges[] = {
     {0x36978au, 0x369951u, 69, "059", "intra_program", "covered_synthetic_fallthrough", "+0x4", "next = 69@0x85f24:3, ip += +0x4; dispatch_model=static_100"},
     {0x369962u, 0x369ad3u, 354, "060", "inter_program", "decoded_control", "+0x60", "next = table[354], ip += 0x60"},
 };
-enum { VM_PROGRAM_ATLAS_059_EDGE_COUNT = (int)(sizeof(vm_program_atlas_059_edges) / sizeof(vm_program_atlas_059_edges[0])) };
+enum { VM_PROGRAM_ATLAS_059_EDGE_COUNT = 24 };
 
 static const VMReadableStringRef vm_program_atlas_059_strings[] = {
     {41u, 0x367607u, 0x367605u, "QmK3TAsJm8V/J5AWpLEV6jAFgRGymGGHnof0DXzVWZidrcZJWTNuGEX90nB3ee2w", ".rodata", "embedded_token_or_encoded_blob", "embedded_data_or_token", "vmop_199_plus0x3_state_add_const_slot_multi_path", "reference_observed_in_recovered_vm_program_not_call_proof"},
@@ -2572,7 +2572,7 @@ static const VMReadableStringRef vm_program_atlas_059_strings[] = {
     {43u, 0x367728u, 0x3676fdu, "__freelocale", ".dynstr", "locale_runtime_symbol", "locale_i18n", "vmop_334_plus0x2a5_sampled_long_or_sparse_slot_unknown", "reference_observed_in_recovered_vm_program_not_call_proof"},
     {44u, 0x367ee7u, 0x367ee5u, "basic_string::_S_construct null not valid", ".rodata", "cxx_runtime_type_or_exception_text", "cxx_runtime", "vmop_350_plus0x4_state_add_const_slot_mba_stateful", "reference_observed_in_recovered_vm_program_not_call_proof"},
 };
-enum { VM_PROGRAM_ATLAS_059_STRING_REF_COUNT = (int)(sizeof(vm_program_atlas_059_strings) / sizeof(vm_program_atlas_059_strings[0])) };
+enum { VM_PROGRAM_ATLAS_059_STRING_REF_COUNT = 4 };
 
 static const VMReadableProgram vm_program_atlas_059_readable_program = {
     "059", 0x3674c3u, 0x369a93u,

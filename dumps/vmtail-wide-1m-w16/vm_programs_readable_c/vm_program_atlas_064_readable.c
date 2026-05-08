@@ -103,17 +103,18 @@ static const VMReadableOp vm_program_atlas_064_ops[] = {
     {0x371747u, 0x37174cu, 242u, 246u, "vmop_242_plus0x5_state_formula_slot_mba_stateful", "3d01595345", "obfuscated_table_dispatch", "readable_with_structural_algebra", "vm_state = unresolved formula; formula=state0 | u16_3 - state0 ^ 0x5c05e9b5", "next_entry = MBA(state, flags, operands) dispatch slot; per-row concrete target is resolved; expression=43=(mask32((mask32(u16_3 - state0)) ^ 0x5c05e9b5)) & 0xffff", "ip += 0x5", "246@0xab427:25", "", "", "algebraic_state_or_slot_formula;state_formula_not_named"},
     {0x37174cu, 0x3717c4u, 246u, 165u, "vmop_246_plus0x78_sampled_long_or_sparse_slot_unknown", "a5000000780000003d0122", "long_or_backedge_control", "unresolved_dispatch_details", "control-special state class sampled_long_or_sparse; formula=state0", "dispatch slot expression not recovered; use per-row target evidence when available", "ip += 0x78", "165@0x9a24c", "", "", "dispatch_slot_unknown;static_model_or_runtime_validation_incomplete"},
 };
-enum { VM_PROGRAM_ATLAS_064_OP_COUNT = (int)(sizeof(vm_program_atlas_064_ops) / sizeof(vm_program_atlas_064_ops[0])) };
+enum { VM_PROGRAM_ATLAS_064_OP_COUNT = 35 };
 
 static const VMReadableEdge vm_program_atlas_064_edges[] = {
     {0x3716c7u, 0x37142cu, 354, "063", "inter_program", "decoded_control", "-0x2e8", "next = table[354], ip -= 0x2e8"},
     {0x37171cu, 0x3717c4u, 165, "065", "inter_program", "decoded_control", "+0x78", "next = table[165], ip += 0x78"},
 };
-enum { VM_PROGRAM_ATLAS_064_EDGE_COUNT = (int)(sizeof(vm_program_atlas_064_edges) / sizeof(vm_program_atlas_064_edges[0])) };
+enum { VM_PROGRAM_ATLAS_064_EDGE_COUNT = 2 };
 
 static const VMReadableStringRef vm_program_atlas_064_strings[] = {
+    {0u, 0u, 0u, "", "", "", "", "", ""},
 };
-enum { VM_PROGRAM_ATLAS_064_STRING_REF_COUNT = (int)(sizeof(vm_program_atlas_064_strings) / sizeof(vm_program_atlas_064_strings[0])) };
+enum { VM_PROGRAM_ATLAS_064_STRING_REF_COUNT = 0 };
 
 static const VMReadableProgram vm_program_atlas_064_readable_program = {
     "064", 0x3716c7u, 0x37176cu,

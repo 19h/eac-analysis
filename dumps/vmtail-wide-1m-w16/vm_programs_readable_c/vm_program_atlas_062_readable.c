@@ -455,7 +455,7 @@ static const VMReadableOp vm_program_atlas_062_ops[] = {
     {0x36dae9u, 0x36daedu, 158u, 195u, "vmop_158_plus0x4_state_add_const_slot_multi_path", "e8016f8f", "obfuscated_table_dispatch", "readable_with_structural_algebra", "vm_state = add/constant-style update over state, flags, and operands; formula=state0 ^ 0x1fbfc3f3 ^ flags0 ^ 0x3c39b020 ^ 0x1f711c95 | 0xfb6049e ^ flags0 ^ 0x3c39b020 + u16_2 + state0 ^ 0x1fbfc3f3 ^ flags0 ^ 0x3c39b020 ^ 0x1f711c95 | 0xfb6049e ^ flags0 ^ 0x3c39b020 ^ 0x3ffdb46c", "next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=79=(mask32((mask32(u16_2 + (mask32((mask32((mask32((mask32(state0 ^ 0x1fbfc3f3)) ^ (mask32(flags0 ^ 0x1f711c95)))) | 0xfb6049e)) ^ flags0)))) ^ 0x3ffdb46c)) & 0xffff | 49=(mask32((mask32(u16_2 + (mask...#12f", "ip += 0x4", "195@0x9fb50:1", "", "", "algebraic_state_or_slot_formula"},
     {0x36daedu, 0x364e5fu, 195u, 310u, "vmop_195_minus0x2306_sampled_backedge_slot_unknown", "ad7e07008000", "long_or_backedge_control", "unresolved_dispatch_details", "control-special state class sampled_backedge; formula=state0 | 0x52e5924a + flags0 | 0x4083ed99 & state0 | 0x52e5924a ^ 0x20047816 & 0x7ca762c5 - 0x5ff2f608 + 0x789b1461 + 0x37b5a024 + 0x2e12e35a ^ 0x44fb7fdb + flags0 | 0x4083ed99 & state0 | 0x52e5924a ^...#114", "dispatch slot expression not recovered; use per-row target evidence when available", "ip -= 0x2306 (backedge)", "310@0xb8556", "", "", "dispatch_slot_unknown;static_model_or_runtime_validation_incomplete"},
 };
-enum { VM_PROGRAM_ATLAS_062_OP_COUNT = (int)(sizeof(vm_program_atlas_062_ops) / sizeof(vm_program_atlas_062_ops[0])) };
+enum { VM_PROGRAM_ATLAS_062_OP_COUNT = 387 };
 
 static const VMReadableEdge vm_program_atlas_062_edges[] = {
     {0x36d524u, 0x36c9b1u, 354, "061", "inter_program", "decoded_control", "-0xbc0", "next = table[354], ip -= 0xbc0"},
@@ -463,12 +463,12 @@ static const VMReadableEdge vm_program_atlas_062_edges[] = {
     {0x36d6a9u, 0x36d92cu, 264, "062", "intra_program", "covered_synthetic_fallthrough", "+0x4", "next = 264@0xaf4cf:1, ip += +0x4; dispatch_model=static_100"},
     {0x36d93au, 0x364e5fu, 310, "056", "inter_program", "decoded_control", "-0x8c8e", "sampled operand footprint 0x6; observed target table[310], delta -0x8c8e"},
 };
-enum { VM_PROGRAM_ATLAS_062_EDGE_COUNT = (int)(sizeof(vm_program_atlas_062_edges) / sizeof(vm_program_atlas_062_edges[0])) };
+enum { VM_PROGRAM_ATLAS_062_EDGE_COUNT = 4 };
 
 static const VMReadableStringRef vm_program_atlas_062_strings[] = {
     {47u, 0x36d81eu, 0x36d819u, ":$23", ".rodata", "unclassified_data_string", "unclassified_data", "vmop_140_plus0x6_state_add_const_slot_multi_path", "reference_observed_in_recovered_vm_program_not_call_proof"},
 };
-enum { VM_PROGRAM_ATLAS_062_STRING_REF_COUNT = (int)(sizeof(vm_program_atlas_062_strings) / sizeof(vm_program_atlas_062_strings[0])) };
+enum { VM_PROGRAM_ATLAS_062_STRING_REF_COUNT = 1 };
 
 static const VMReadableProgram vm_program_atlas_062_readable_program = {
     "062", 0x36d524u, 0x36db0du,

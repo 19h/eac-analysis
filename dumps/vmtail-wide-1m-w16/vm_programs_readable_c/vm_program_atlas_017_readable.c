@@ -225,17 +225,18 @@ static const VMReadableOp vm_program_atlas_017_ops[] = {
     {0x1222c8u, 0x1222cdu, 245u, 145u, "vmop_245_plus0x5_state_affine_slot_mba_stateful", "7c2b3d0153", "obfuscated_table_dispatch", "readable_with_structural_algebra", "vm_state = affine expression; formula=state0 ^ u16_0 + state0 ^ 0x3a835417", "next_entry = MBA(state, flags, operands) dispatch slot; per-row concrete target is resolved; expression=12=(mask32((mask32(u16_0 + state0)) ^ 0x3a835417)) & 0xffff", "ip += 0x5", "145@0x95b5c:1", "", "", "algebraic_state_or_slot_formula"},
     {0x1222cdu, 0x122344u, 145u, 171u, "vmop_145_plus0x139_sampled_long_or_sparse_slot_unknown", "ab000000770000003d0122", "long_or_backedge_control", "unresolved_dispatch_details", "control-special state class sampled_long_or_sparse; formula=state0", "dispatch slot expression not recovered; use per-row target evidence when available", "ip += 0x139", "171@0x9b4b3", "", "", "dispatch_slot_unknown;static_model_or_runtime_validation_incomplete"},
 };
-enum { VM_PROGRAM_ATLAS_017_OP_COUNT = (int)(sizeof(vm_program_atlas_017_ops) / sizeof(vm_program_atlas_017_ops[0])) };
+enum { VM_PROGRAM_ATLAS_017_OP_COUNT = 157 };
 
 static const VMReadableEdge vm_program_atlas_017_edges[] = {
     {0x122074u, 0x122196u, 356, "017", "intra_program", "covered_synthetic_fallthrough", "+0x4", "next = 356@0xc291a:1, ip += +0x4; dispatch_model=static_100"},
     {0x1221a4u, 0x122344u, 171, "018", "inter_program", "decoded_control", "+0x77", "next = table[171], ip += 0x77"},
 };
-enum { VM_PROGRAM_ATLAS_017_EDGE_COUNT = (int)(sizeof(vm_program_atlas_017_edges) / sizeof(vm_program_atlas_017_edges[0])) };
+enum { VM_PROGRAM_ATLAS_017_EDGE_COUNT = 2 };
 
 static const VMReadableStringRef vm_program_atlas_017_strings[] = {
+    {0u, 0u, 0u, "", "", "", "", "", ""},
 };
-enum { VM_PROGRAM_ATLAS_017_STRING_REF_COUNT = (int)(sizeof(vm_program_atlas_017_strings) / sizeof(vm_program_atlas_017_strings[0])) };
+enum { VM_PROGRAM_ATLAS_017_STRING_REF_COUNT = 0 };
 
 static const VMReadableProgram vm_program_atlas_017_readable_program = {
     "017", 0x122074u, 0x1222edu,

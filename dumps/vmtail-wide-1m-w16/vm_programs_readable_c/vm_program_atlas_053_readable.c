@@ -921,7 +921,7 @@ static const VMReadableOp vm_program_atlas_053_ops[] = {
     {0x33e824u, 0x33e829u, 245u, 75u, "vmop_245_plus0x5_state_affine_slot_mba_stateful", "a7503d01df", "obfuscated_table_dispatch", "readable_with_structural_algebra", "vm_state = affine expression; formula=state0 ^ u16_0 + state0 ^ 0x3a835417", "next_entry = MBA(state, flags, operands) dispatch slot; per-row concrete target is resolved; expression=12=(mask32((mask32(u16_0 + state0)) ^ 0x3a835417)) & 0xffff", "ip += 0x5", "75@0x873fc:9", "", "", "algebraic_state_or_slot_formula"},
     {0x33e829u, 0x33e889u, 75u, 165u, "vmop_075_minus0x6d_sampled_backedge_slot_unknown", "a5000000600000003d0122", "long_or_backedge_control", "unresolved_dispatch_details", "control-special state class sampled_backedge; formula=state0", "dispatch slot expression not recovered; use per-row target evidence when available", "ip -= 0x6d (backedge)", "165@0x9a24c", "", "", "dispatch_slot_unknown;static_model_or_runtime_validation_incomplete"},
 };
-enum { VM_PROGRAM_ATLAS_053_OP_COUNT = (int)(sizeof(vm_program_atlas_053_ops) / sizeof(vm_program_atlas_053_ops[0])) };
+enum { VM_PROGRAM_ATLAS_053_OP_COUNT = 853 };
 
 static const VMReadableEdge vm_program_atlas_053_edges[] = {
     {0x33db28u, 0x33dcbdu, 210, "053", "intra_program", "covered_synthetic_fallthrough", "+0x5", "next = 210@0xa2da3:3, ip += +0x5; dispatch_model=static_100; state=state_add_const"},
@@ -934,11 +934,12 @@ static const VMReadableEdge vm_program_atlas_053_edges[] = {
     {0x33e540u, 0x33e707u, 69, "053", "intra_program", "covered_synthetic_fallthrough", "+0x4", "next = 69@0x85f24:9, ip += +0x4; dispatch_model=static_100; state=state_add_const"},
     {0x33e718u, 0x33e889u, 165, "054", "inter_program", "decoded_control", "+0x60", "next = table[165], ip += 0x60"},
 };
-enum { VM_PROGRAM_ATLAS_053_EDGE_COUNT = (int)(sizeof(vm_program_atlas_053_edges) / sizeof(vm_program_atlas_053_edges[0])) };
+enum { VM_PROGRAM_ATLAS_053_EDGE_COUNT = 9 };
 
 static const VMReadableStringRef vm_program_atlas_053_strings[] = {
+    {0u, 0u, 0u, "", "", "", "", "", ""},
 };
-enum { VM_PROGRAM_ATLAS_053_STRING_REF_COUNT = (int)(sizeof(vm_program_atlas_053_strings) / sizeof(vm_program_atlas_053_strings[0])) };
+enum { VM_PROGRAM_ATLAS_053_STRING_REF_COUNT = 0 };
 
 static const VMReadableProgram vm_program_atlas_053_readable_program = {
     "053", 0x33db28u, 0x33e849u,

@@ -6608,7 +6608,7 @@ static const VMReadableOp vm_program_atlas_055_ops[] = {
     {0x345564u, 0x345568u, 337u, 176u, "vmop_337_plus0x4_state_add_const_slot_multi_path", "d064997f", "obfuscated_table_dispatch", "readable_with_structural_algebra", "vm_state = add/constant-style update over state, flags, and operands; formula=state0 - flags0 - u16_2 + state0 - flags0 + flags0 + 0x2051de91 & flags0 + 0x61f749a7 | 0x51d7631a ^ flags0 + 0x61f749a7 ^ 0x3de72107 & 0xe04b834 | u16_0 + state0 - flags0 - u16_2 + state0 - flags0 + ...#13a", "next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=85=(mask32((mask32(u16_0 + (mask32((mask32((mask32((mask32((mask32((mask32(state0 - flags0)) - (mask32((mask32(u16_2 + (mask32(state0 - flags0)))) + flags0)))) + 0x2051de91)) & (mask32(flags0 + 0x61f7...#12f", "ip += 0x4", "176@0x9c10b:1", "", "", "algebraic_state_or_slot_formula"},
     {0x345568u, 0x34556cu, 176u, 175u, "vmop_176_plus0x4_state_add_const_slot_multi_path", "e8012a30", "obfuscated_table_dispatch", "readable_with_structural_algebra", "vm_state = add/constant-style update over state, flags, and operands; formula=state0 & flags0 & 0x2c46ace3 | flags0 - 0x14b22a15", "next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=78=(mask32((mask32(u16_2 - (mask32((mask32((mask32(state0 & flags0)) & 0x2c46ace3)) | flags0)))) ^ 0x37839d72)) & 0xffff | 50=(mask32((mask32(u16_2 - (mask32((mask32((mask32(state0 & flags0)) & 0x2c46...#10a", "ip += 0x4", "175@0x9c08f:1", "", "", "algebraic_state_or_slot_formula"},
 };
-enum { VM_PROGRAM_ATLAS_055_OP_COUNT = (int)(sizeof(vm_program_atlas_055_ops) / sizeof(vm_program_atlas_055_ops[0])) };
+enum { VM_PROGRAM_ATLAS_055_OP_COUNT = 6540 };
 
 static const VMReadableEdge vm_program_atlas_055_edges[] = {
     {0x33f278u, 0x33f6c8u, 354, "055", "intra_program", "fallthrough", "+0x2", "next = 354@0xc2241:1, ip += +0x2; dispatch_model=static_100; state=state_const_post"},
@@ -6657,7 +6657,7 @@ static const VMReadableEdge vm_program_atlas_055_edges[] = {
     {0x343f22u, 0x343ef4u, 354, "055", "intra_program", "decoded_control", "-0x40", "next = table[354], ip -= 0x40"},
     {0x343f3cu, 0x34556cu, 175, "", "external_or_exit", "covered_synthetic_fallthrough", "+0x4", "next = 175@0x9c08f:1, ip += +0x4; dispatch_model=static_100"},
 };
-enum { VM_PROGRAM_ATLAS_055_EDGE_COUNT = (int)(sizeof(vm_program_atlas_055_edges) / sizeof(vm_program_atlas_055_edges[0])) };
+enum { VM_PROGRAM_ATLAS_055_EDGE_COUNT = 45 };
 
 static const VMReadableStringRef vm_program_atlas_055_strings[] = {
     {24u, 0x33f6e3u, 0x33f6e0u, "_ITM_registerTMCloneTable", ".dynstr", "gnu_transactional_memory_runtime_symbol", "cxx_runtime", "vmop_334_plus0x2a5_sampled_long_or_sparse_slot_unknown", "reference_observed_in_recovered_vm_program_not_call_proof"},
@@ -6678,7 +6678,7 @@ static const VMReadableStringRef vm_program_atlas_055_strings[] = {
     {39u, 0x343f37u, 0x343f0cu, "__freelocale", ".dynstr", "locale_runtime_symbol", "locale_i18n", "vmop_316_minus0x3c4_sampled_backedge_slot_unknown", "reference_observed_in_recovered_vm_program_not_call_proof"},
     {40u, 0x34448eu, 0x34448du, "uname", ".dynstr", "process_or_host_import_symbol", "process_or_shell;host_environment_inventory", "vmop_172_plus0x4_state_add_const_slot_mba_stateful", "reference_observed_in_recovered_vm_program_not_call_proof"},
 };
-enum { VM_PROGRAM_ATLAS_055_STRING_REF_COUNT = (int)(sizeof(vm_program_atlas_055_strings) / sizeof(vm_program_atlas_055_strings[0])) };
+enum { VM_PROGRAM_ATLAS_055_STRING_REF_COUNT = 17 };
 
 static const VMReadableProgram vm_program_atlas_055_readable_program = {
     "055", 0x33f278u, 0x34556cu,

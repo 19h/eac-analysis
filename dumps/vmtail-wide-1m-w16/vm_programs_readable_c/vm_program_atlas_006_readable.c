@@ -262,17 +262,18 @@ static const VMReadableOp vm_program_atlas_006_ops[] = {
     {0xdaf32u, 0xdaf35u, 307u, 184u, "vmop_307_plus0x3_state_add_const_slot_u16_1_sub_const", "ba75af", "operand_table_dispatch", "readable_control_semantics", "vm_state = add/constant-style update over state, flags, and operands; formula=state0 ^ b0 - flags0 & flags0 & 0x5792b958 ^ flags0 & 0x5792b958", "next_entry = dispatch_table[(u16(ip+1) - constant) & 0xffff]", "ip += 0x3", "184@0x9d694:1", "", "", "none"},
     {0xdaf35u, 0xdaf39u, 184u, 195u, "vmop_184_plus0x4_state_add_const_slot_multi_path", "fa5ae801", "obfuscated_table_dispatch", "readable_with_structural_algebra", "vm_state = add/constant-style update over state, flags, and operands; formula=state0 | flags0 | 0x19d0d4d + 0x3c030b15 ^ flags0 + 0x7db9efb0 ^ flags0 - flags0 ^ flags0 + u16_0 - state0 | flags0 | 0x19d0d4d + 0x3c030b15 ^ flags0 + 0x7db9efb0 ^ flags0 - flags0 ^ flags0 + 0x3f05b2f0", "next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=128=(mask32((mask32(u16_0 - (mask32((mask32((mask32((mask32((mask32((mask32(state0 | (mask32(flags0 | 0x19d0d4d)))) + 0x3c030b15)) ^ (mask32(flags0 + 0x7db9efb0)))) ^ flags0)) - flags0)) ^ flags0)))) ...#df", "ip += 0x4", "195@0x9fb50:1", "", "", "algebraic_state_or_slot_formula"},
 };
-enum { VM_PROGRAM_ATLAS_006_OP_COUNT = (int)(sizeof(vm_program_atlas_006_ops) / sizeof(vm_program_atlas_006_ops[0])) };
+enum { VM_PROGRAM_ATLAS_006_OP_COUNT = 194 };
 
 static const VMReadableEdge vm_program_atlas_006_edges[] = {
     {0xdac57u, 0xdad78u, 264, "006", "intra_program", "covered_synthetic_fallthrough", "+0x4", "next = 264@0xaf4cf:1, ip += +0x4; dispatch_model=static_100; state=state_add_const"},
     {0xdad86u, 0xdaf39u, 195, "", "external_or_exit", "covered_synthetic_fallthrough", "+0x4", "next = 195@0x9fb50:1, ip += +0x4; dispatch_model=static_100; state=state_add_const"},
 };
-enum { VM_PROGRAM_ATLAS_006_EDGE_COUNT = (int)(sizeof(vm_program_atlas_006_edges) / sizeof(vm_program_atlas_006_edges[0])) };
+enum { VM_PROGRAM_ATLAS_006_EDGE_COUNT = 2 };
 
 static const VMReadableStringRef vm_program_atlas_006_strings[] = {
+    {0u, 0u, 0u, "", "", "", "", "", ""},
 };
-enum { VM_PROGRAM_ATLAS_006_STRING_REF_COUNT = (int)(sizeof(vm_program_atlas_006_strings) / sizeof(vm_program_atlas_006_strings[0])) };
+enum { VM_PROGRAM_ATLAS_006_STRING_REF_COUNT = 0 };
 
 static const VMReadableProgram vm_program_atlas_006_readable_program = {
     "006", 0xdac57u, 0xdaf39u,
