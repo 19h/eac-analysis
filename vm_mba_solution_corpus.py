@@ -16,6 +16,8 @@ TRACE_PREFERENCE = [
 ]
 VAR_RE = re.compile(r"\b(?:state0|flags0|u16_[0-9]+|b[0-9]+)\b")
 CONST_RE = re.compile(r"0x[0-9a-fA-F]+")
+BYTE_COLUMNS = [f"b{index}" for index in range(16)]
+WORD_COLUMNS = [f"u16_{offset}" for offset in range(16)]
 
 
 def read_tsv(path: Path) -> list[dict[str, str]]:
@@ -81,9 +83,9 @@ def bytes_to_values(hex_bytes: str) -> dict[str, str]:
     except ValueError:
         data = b""
     values: dict[str, str] = {}
-    for index in range(6):
+    for index in range(16):
         values[f"b{index}"] = f"0x{data[index]:02x}" if index < len(data) else ""
-    for offset in [0, 1, 2, 4]:
+    for offset in range(16):
         key = f"u16_{offset}"
         if offset + 1 < len(data):
             values[key] = f"0x{data[offset] | (data[offset + 1] << 8):04x}"
@@ -424,16 +426,8 @@ def main() -> int:
         "source_entry",
         "opcode_name",
         "bytes",
-        "b0",
-        "b1",
-        "b2",
-        "b3",
-        "b4",
-        "b5",
-        "u16_0",
-        "u16_1",
-        "u16_2",
-        "u16_4",
+        *BYTE_COLUMNS,
+        *WORD_COLUMNS,
         "target_entry",
         "target",
         "delta",

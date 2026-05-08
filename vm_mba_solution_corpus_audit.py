@@ -92,9 +92,18 @@ def main() -> int:
     ok &= check("problem_kinds_present", "algebraic_mba" in kind_counts and (kind_counts.get("dispatch_unknown", 0) or kind_counts.get("row_level_unresolved", 0)), f"kinds={dict(kind_counts)}")
     ok &= check("status_marks_reduction_and_trace_work", "ready_for_symbolic_reduction" in status_counts and "needs_dispatch_resolution_or_trace" in status_counts, f"statuses={dict(status_counts)}")
 
-    operand_columns = ["b0", "b1", "b2", "b3", "b4", "b5", "u16_0", "u16_1", "u16_2", "u16_4"]
-    missing_operand_columns = [field for field in operand_columns if field not in (observations[0].keys() if observations else set())]
+    observation_header = set(observations[0].keys() if observations else set())
+    operand_columns = [f"b{index}" for index in range(16)] + [f"u16_{offset}" for offset in range(16)]
+    required_operand_columns = {
+        var
+        for row in atoms
+        for var in row.get("variables", "").split(";")
+        if var.startswith("b") or var.startswith("u16_")
+    }
+    missing_operand_columns = [field for field in sorted(required_operand_columns) if field not in observation_header]
     ok &= check("observations_include_operand_columns", not missing_operand_columns, f"missing={missing_operand_columns}")
+    missing_standard_operand_columns = [field for field in operand_columns if field not in observation_header]
+    ok &= check("observations_include_standard_operand_window", not missing_standard_operand_columns, f"missing={missing_standard_operand_columns[:8]}")
     bad_observation_rows = [row.get("start_vm_ip", "") for row in observations if not row.get("bytes") or not row.get("state_semantics") or not row.get("dispatch_semantics")]
     ok &= check("observation_rows_have_core_evidence", not bad_observation_rows, f"bad={bad_observation_rows[:8]}")
 
