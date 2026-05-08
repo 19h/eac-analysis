@@ -38,7 +38,9 @@ def parse_int(text: str | None) -> int | None:
 
 
 def hx(value: int | None) -> str:
-    return "" if value is None else f"0x{value:x}"
+    if value is None:
+        return ""
+    return f"-0x{-value:x}" if value < 0 else f"0x{value:x}"
 
 
 def c_string(text: object) -> str:
