@@ -149,16 +149,17 @@ def verify(outputs: list[int], samples: list[VMBAInputs], expr) -> bool:
     return all(((expr(sample) & MASK32) == output) for sample, output in zip(samples, outputs))
 
 
-def candidate_templates(vars_: list[str], outputs: list[int], samples: list[VMBAInputs]) -> list[tuple[str, str]]:
+def candidate_templates(vars_: list[str], outputs: list[int], samples: list[VMBAInputs]) -> list[tuple[str, str, object]]:
     if not outputs:
         return []
-    candidates: list[tuple[str, str]] = []
+    candidates: list[tuple[str, str, object]] = []
     first = samples[0]
     y0 = outputs[0]
 
     const = y0
-    if verify(outputs, samples, lambda _sample, c=const: c):
-        candidates.append(("constant", hex_u32(const)))
+    const_fn = lambda _sample, c=const: c
+    if verify(outputs, samples, const_fn):
+        candidates.append(("constant", hex_u32(const), const_fn))
 
     for var in vars_:
         x0 = get_var(first, var)
@@ -179,7 +180,7 @@ def candidate_templates(vars_: list[str], outputs: list[int], samples: list[VMBA
         tests.append(("or_mask", f"{var} | {hex_u32(or_mask)}", lambda sample, v=var, c=or_mask: get_var(sample, v) | c))
         for name, c_expr, fn in tests:
             if verify(outputs, samples, fn):
-                candidates.append((name, c_expr))
+                candidates.append((name, c_expr, fn))
 
     for left_index, left in enumerate(vars_):
         for right in vars_[left_index + 1 :]:
@@ -219,8 +220,35 @@ def candidate_templates(vars_: list[str], outputs: list[int], samples: list[VMBA
             ]
             for name, c_expr, fn in tests:
                 if verify(outputs, samples, fn):
-                    candidates.append((name, c_expr))
+                    candidates.append((name, c_expr, fn))
     return candidates
+
+
+def exhaustive_validation(fn, candidate_fn, vars_: list[str]) -> str:
+    if not vars_:
+        sample = VMBAInputs()
+        original = int(fn(ctypes.byref(sample))) & MASK32
+        candidate = int(candidate_fn(sample)) & MASK32
+        return "exhaustive_constant" if original == candidate else "exhaustive_constant_failed"
+    if len(vars_) != 1:
+        return "random_differential_against_compiled_original_not_formal_proof"
+    var = vars_[0]
+    if var.startswith("b"):
+        limit = 256
+        label = "exhaustive_8bit_operand"
+    elif var.startswith("u16_"):
+        limit = 65536
+        label = "exhaustive_16bit_operand"
+    else:
+        return "random_differential_against_compiled_original_not_formal_proof"
+    sample = VMBAInputs()
+    for value in range(limit):
+        setattr(sample, var, value)
+        original = int(fn(ctypes.byref(sample))) & MASK32
+        candidate = int(candidate_fn(sample)) & MASK32
+        if original != candidate:
+            return f"{label}_failed"
+    return label
 
 
 def main() -> int:
@@ -257,11 +285,13 @@ def main() -> int:
         vars_ = variables(row.get("state_formula", ""))
         candidates = candidate_templates(vars_, outputs, samples)
         if candidates:
-            template, expr = min(candidates, key=lambda item: (len(item[1]), item[0]))
+            template, expr, candidate_fn = min(candidates, key=lambda item: (len(item[1]), item[0]))
             status = "candidate_simplified"
+            validation = exhaustive_validation(fn, candidate_fn, vars_)
         else:
             template, expr = "", ""
             status = "unsolved_by_current_templates"
+            validation = "random_differential_no_candidate"
         reduction_rows.append(
             {
                 "source_entry": row["source_entry"],
@@ -273,7 +303,7 @@ def main() -> int:
                 "template": template,
                 "candidate_c": expr,
                 "random_tests": len(samples),
-                "validation": "random_differential_against_compiled_original_not_formal_proof",
+                "validation": validation,
                 "original_state_formula": row.get("state_formula", ""),
             }
         )

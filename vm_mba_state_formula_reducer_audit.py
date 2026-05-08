@@ -54,10 +54,12 @@ def main() -> int:
     ok &= check("reductions_have_one_row_per_source", len(reductions) == len(reduction_sources), f"rows={len(reductions)} sources={len(reduction_sources)}")
 
     status_counts = Counter(row.get("status", "") for row in reductions)
+    validation_counts = Counter(row.get("validation", "") for row in reductions)
     ok &= check("reducer_found_some_candidates", status_counts.get("candidate_simplified", 0) > 0, f"statuses={dict(status_counts)}")
     ok &= check("unsolved_rows_remain_visible", status_counts.get("unsolved_by_current_templates", 0) > 0, f"statuses={dict(status_counts)}")
     empty_validation = [row["source_entry"] for row in reductions if not row.get("validation")]
     ok &= check("reduction_rows_mark_validation_strength", not empty_validation, f"empty={empty_validation[:8]}")
+    ok &= check("validation_strengths_reported", bool(validation_counts), f"validations={dict(validation_counts)}")
 
     compiler = shutil.which("gcc") or shutil.which("clang")
     ok &= check("c_compiler_available", compiler is not None, compiler or "not found")
