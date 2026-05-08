@@ -4,6 +4,6 @@
 (declare-fun state0 () (_ BitVec 32))
 (declare-fun u16_2 () (_ BitVec 32))
 (assert (= ((_ extract 31 16) u16_2) #x0000))
-(assert (not (= (bvand (bvxor u16_2 (bvsub (bvor (bvsub (bvsub (bvor state0 (bvor flags0 #x180e72f2)) #x36332ac8) (bvand flags0 #x1fa2014f)) #x38e67f26) flags0)) #x0000ffff) (bvxor (bvsub (bvor (bvsub (bvsub (bvor (bvor state0 flags0) #x180e72f2) (bvand flags0 #x1fa2014f)) #x36332ac8) #x38e67f26) flags0) u16_2))))
+(assert (not (= (bvand (bvxor u16_2 (bvsub (bvor (bvsub (bvsub (bvor state0 (bvor flags0 #x180e72f2)) #x36332ac8) (bvand flags0 #x1fa2014f)) #x38e67f26) flags0)) #x0000ffff) (bvand (bvand (bvxor (bvsub (bvor (bvsub (bvsub (bvor (bvor state0 flags0) #x180e72f2) (bvand flags0 #x1fa2014f)) #x36332ac8) #x38e67f26) flags0) u16_2) #x0000ffff) #x0000ffff))))
 (check-sat)
 (get-model)

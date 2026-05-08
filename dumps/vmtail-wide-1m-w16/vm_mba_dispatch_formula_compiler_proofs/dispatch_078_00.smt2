@@ -4,6 +4,6 @@
 (declare-fun state0 () (_ BitVec 32))
 (declare-fun u16_0 () (_ BitVec 32))
 (assert (= ((_ extract 31 16) u16_0) #x0000))
-(assert (not (= (bvand (bvxor u16_0 (bvadd (bvxor (bvxor (bvsub (bvor (bvand (bvsub state0 (bvxor (bvxor flags0 #x0c7e744f) #x623ccce4)) #x0d4da920) (bvxor (bvxor flags0 #x0c7e744f) #x225dfa31)) #x6110d031) #x3fcb6e9a) (bvxor flags0 #x0c7e744f)) #x60a9dba6)) #x0000ffff) (bvxor (bvadd (bvxor (bvxor (bvsub (bvor (bvand (bvsub state0 (bvxor flags0 #x6e42b8ab)) #x0d4da920) (bvxor flags0 #x2e238e7e)) #x6110d031) flags0) #x33b51ad5) #x60a9dba6) u16_0))))
+(assert (not (= (bvand (bvxor u16_0 (bvadd (bvxor (bvxor (bvsub (bvor (bvand (bvsub state0 (bvxor (bvxor flags0 #x0c7e744f) #x623ccce4)) #x0d4da920) (bvxor (bvxor flags0 #x0c7e744f) #x225dfa31)) #x6110d031) #x3fcb6e9a) (bvxor flags0 #x0c7e744f)) #x60a9dba6)) #x0000ffff) (bvand (bvand (bvxor (bvadd (bvxor (bvxor (bvsub (bvor (bvand (bvsub state0 (bvxor flags0 #x6e42b8ab)) #x0d4da920) (bvxor flags0 #x2e238e7e)) #x6110d031) flags0) #x33b51ad5) #x60a9dba6) u16_0) #x0000ffff) #x0000ffff))))
 (check-sat)
 (get-model)

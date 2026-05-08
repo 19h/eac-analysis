@@ -99,12 +99,12 @@ def norm_reg(reg: str) -> str:
 
 def source_width(operand: str) -> int:
     operand = operand.strip()
-    if re.fullmatch(r"(?:[er]?[abcd]x|[er]?[sd]i|[er]?[sb]p|r(?:8|9|10|11|12|13|14|15)d?)", operand):
-        return 32
-    if re.fullmatch(r"(?:[abcd]x|[sd]i|[sb]p|r(?:8|9|10|11|12|13|14|15)w)", operand):
-        return 16
     if re.fullmatch(r"(?:[abcd][lh]|[sd]il|[sb]pl|r(?:8|9|10|11|12|13|14|15)b)", operand):
         return 8
+    if re.fullmatch(r"(?:[abcd]x|[sd]i|[sb]p|r(?:8|9|10|11|12|13|14|15)w)", operand):
+        return 16
+    if re.fullmatch(r"(?:e[abcd]x|r[abcd]x|e[sd]i|r[sd]i|e[sb]p|r[sb]p|r(?:8|9|10|11|12|13|14|15)d?|[abcd]x)", operand):
+        return 32
     if operand.startswith("BYTE PTR"):
         return 8
     if operand.startswith("WORD PTR"):
