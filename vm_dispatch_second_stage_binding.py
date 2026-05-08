@@ -53,13 +53,22 @@ def compact(counter: Counter[str], limit: int = 8) -> str:
 
 
 def open_dispatch_entries(root: Path) -> set[int]:
-    path = root / "vm_mba_dispatch_formula_compiler_reductions_by_entry.tsv"
+    isa_path = root / "vm_readable_isa.tsv"
+    transfer_path = root / "vm_static_transfer_expr_full_python.tsv"
     out: set[int] = set()
-    for row in read_tsv(path):
-        if "target_binding_not_validated" in row.get("target_binding_mix", ""):
-            entry = parse_int(row.get("source_entry"))
-            if entry is not None:
-                out.add(entry)
+    algebraic_entries = {
+        parse_int(row.get("source_entry"))
+        for row in read_tsv(isa_path)
+        if row.get("dispatch_slot_kind") in {"slot_multi_path", "slot_mba_stateful"}
+    }
+    algebraic_entries.discard(None)
+    for row in read_tsv(transfer_path):
+        entry = parse_int(row.get("source_entry"))
+        if entry not in algebraic_entries:
+            continue
+        target_ok = row.get("target_coverage_pct") == "100.0" and row.get("target_mismatched_events") == "0"
+        if not target_ok:
+            out.add(entry)
     return out
 
 

@@ -354,6 +354,12 @@ def main() -> int:
         raise SystemExit("missing z3 binary")
 
     transfer = {row["source_entry"]: row for row in read_tsv(transfer_path)}
+    second_stage_path = root / "vm_dispatch_second_stage_binding_summary.tsv"
+    second_stage = {
+        row["source_entry"]: row
+        for row in read_tsv(second_stage_path)
+        if row.get("validation_status") == "second_stage_dispatch_validated"
+    } if second_stage_path.exists() else {}
     isa_rows = read_tsv(isa_path)
     algebraic_entries = [
         row
@@ -416,11 +422,17 @@ def main() -> int:
             proof_status = "not_proved"
             solver_excerpt = str(exc)
             variables = ""
-        target_status = (
-            "target_binding_validated"
-            if str(item.get("target_coverage_pct", "")) == "100.0" and str(item.get("target_mismatched_events", "")) == "0"
-            else "target_binding_not_validated"
-        )
+        direct_target_ok = str(item.get("target_coverage_pct", "")) == "100.0" and str(item.get("target_mismatched_events", "")) == "0"
+        second_stage_row = second_stage.get(source, {})
+        if direct_target_ok:
+            target_status = "target_binding_validated"
+            target_basis = "direct_static_transfer"
+        elif second_stage_row:
+            target_status = "target_binding_second_stage_validated"
+            target_basis = "observed_second_stage_dispatch"
+        else:
+            target_status = "target_binding_not_validated"
+            target_basis = "not_validated"
         rows.append(
             {
                 "source_entry": source,
@@ -433,6 +445,11 @@ def main() -> int:
                 "target_coverage_pct": item.get("target_coverage_pct", ""),
                 "target_mismatched_events": item.get("target_mismatched_events", ""),
                 "target_binding_status": target_status,
+                "target_binding_basis": target_basis,
+                "second_stage_events": second_stage_row.get("events", ""),
+                "second_stage_idx_mix": second_stage_row.get("idx_mix", ""),
+                "second_stage_target_entry_mix": second_stage_row.get("target_entry_mix", ""),
+                "second_stage_dispatch_site_mix": second_stage_row.get("dispatch_site_mix", ""),
                 "reduction_status": reduction_status,
                 "proof_status": proof_status,
                 "original_chars": len(original),

@@ -1231,11 +1231,19 @@ mba-state-formula-compiler-reducer: $(MBA_STATE_COMPILER_REDUCTIONS_TSV) $(MBA_S
 mba-state-formula-compiler-reducer-audit: $(MBA_STATE_COMPILER_REDUCTIONS_TSV) $(MBA_STATE_COMPILER_REDUCTIONS_MD) $(MBA_STATE_COMPILER_REDUCER_ASM)
 	python3 vm_mba_state_formula_compiler_reducer_audit.py --root $(PRIMARY_DIR)
 
-.PHONY: mba-dispatch-formula-compiler-reducer mba-dispatch-formula-compiler-reducer-audit
+.PHONY: dispatch-second-stage-binding dispatch-second-stage-binding-audit mba-dispatch-formula-compiler-reducer mba-dispatch-formula-compiler-reducer-audit
 $(STATIC_TRANSFER_EXPR_FULL_PYTHON_TSV): vm_static_transfer_expr.py $(STATE_DIR)/vm_instruction_trace.tsv eac.elf
 	python3 vm_static_transfer_expr.py $(STATE_DIR)/vm_instruction_trace.tsv --max-rows-per-source $(XFER_ROWS) --max-expr-len 20000 --top 8 > $@
 
-$(MBA_DISPATCH_COMPILER_REDUCTIONS_TSV) $(MBA_DISPATCH_COMPILER_REDUCTIONS_BY_ENTRY_TSV) $(MBA_DISPATCH_COMPILER_REDUCTIONS_MD) $(MBA_DISPATCH_COMPILER_REDUCER_HARNESS_C) $(MBA_DISPATCH_COMPILER_REDUCER_ASM) &: vm_mba_dispatch_formula_compiler_reducer.py $(STATIC_TRANSFER_EXPR_FULL_PYTHON_TSV) $(READABLE_ISA_TSV)
+$(DISPATCH_SECOND_STAGE_BINDING_ROWS_TSV) $(DISPATCH_SECOND_STAGE_BINDING_SUMMARY_TSV) $(DISPATCH_SECOND_STAGE_BINDING_C) $(DISPATCH_SECOND_STAGE_BINDING_MD) &: vm_dispatch_second_stage_binding.py $(READABLE_ISA_TSV) $(PRIMARY_DIR)/vm_table.tsv $(STATE_DIR)/run.stderr $(STATIC_TRANSFER_EXPR_FULL_PYTHON_TSV)
+	python3 vm_dispatch_second_stage_binding.py --root $(PRIMARY_DIR) --run $(STATE_DIR)/run.stderr
+
+dispatch-second-stage-binding: $(DISPATCH_SECOND_STAGE_BINDING_ROWS_TSV) $(DISPATCH_SECOND_STAGE_BINDING_SUMMARY_TSV) $(DISPATCH_SECOND_STAGE_BINDING_C) $(DISPATCH_SECOND_STAGE_BINDING_MD)
+
+dispatch-second-stage-binding-audit: $(DISPATCH_SECOND_STAGE_BINDING_ROWS_TSV) $(DISPATCH_SECOND_STAGE_BINDING_SUMMARY_TSV) $(DISPATCH_SECOND_STAGE_BINDING_C) $(DISPATCH_SECOND_STAGE_BINDING_MD)
+	python3 vm_dispatch_second_stage_binding_audit.py --root $(PRIMARY_DIR)
+
+$(MBA_DISPATCH_COMPILER_REDUCTIONS_TSV) $(MBA_DISPATCH_COMPILER_REDUCTIONS_BY_ENTRY_TSV) $(MBA_DISPATCH_COMPILER_REDUCTIONS_MD) $(MBA_DISPATCH_COMPILER_REDUCER_HARNESS_C) $(MBA_DISPATCH_COMPILER_REDUCER_ASM) &: vm_mba_dispatch_formula_compiler_reducer.py $(STATIC_TRANSFER_EXPR_FULL_PYTHON_TSV) $(READABLE_ISA_TSV) $(DISPATCH_SECOND_STAGE_BINDING_SUMMARY_TSV)
 	python3 vm_mba_dispatch_formula_compiler_reducer.py --root $(PRIMARY_DIR)
 
 mba-dispatch-formula-compiler-reducer: $(MBA_DISPATCH_COMPILER_REDUCTIONS_TSV) $(MBA_DISPATCH_COMPILER_REDUCTIONS_BY_ENTRY_TSV) $(MBA_DISPATCH_COMPILER_REDUCTIONS_MD) $(MBA_DISPATCH_COMPILER_REDUCER_HARNESS_C) $(MBA_DISPATCH_COMPILER_REDUCER_ASM)
