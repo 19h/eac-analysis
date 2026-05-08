@@ -1,0 +1,7 @@
+(set-logic QF_BV)
+(set-option :produce-models true)
+(declare-fun flags0 () (_ BitVec 32))
+(declare-fun state0 () (_ BitVec 32))
+(assert (not (= (bvxor (bvxor (bvxor (bvxor state0 flags0) #x3f746ab3) #x3f5501a6) #x45fbcef1) (bvxor (bvxor state0 flags0) #x45daa5e4))))
+(check-sat)
+(get-model)

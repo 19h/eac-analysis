@@ -1,0 +1,7 @@
+(set-logic QF_BV)
+(set-option :produce-models true)
+(declare-fun flags0 () (_ BitVec 32))
+(declare-fun state0 () (_ BitVec 32))
+(assert (not (= (bvor (bvor (bvor (bvor (bvxor (bvxor (bvxor (bvxor (bvxor (bvxor (bvxor state0 flags0) (bvadd (bvsub flags0 flags0) state0)) flags0) (bvsub (bvadd flags0 #x55fafa0c) #x5abc12af)) state0) flags0) flags0) (bvxor (bvxor (bvxor (bvxor (bvxor (bvxor (bvxor #x58fb4a0c #x62ac6845) (bvadd flags0 state0)) flags0) (bvsub (bvadd flags0 #x55fafa0c) #x5abc12af)) state0) flags0) flags0)) (bvxor (bvxor (bvxor (bvxor (bvxor (bvxor (bvxor (bvxor #x58fb4a0c state0) flags0) (bvadd (bvsub flags0 flags0) state0)) flags0) (bvsub (bvadd flags0 #x55fafa0c) #x5abc12af)) state0) flags0) flags0)) (bvxor #x58fb4a0c #x62ac6845)) #x528cef01) (bvor (bvor (bvor (bvxor (bvxor (bvxor (bvadd state0 flags0) (bvxor state0 flags0)) (bvadd #xfb3ee75d flags0)) #x3a572249) (bvxor state0 (bvadd #xfb3ee75d flags0))) (bvxor (bvxor state0 (bvadd #xfb3ee75d flags0)) #x58fb4a0c)) #x7adfef49))))
+(check-sat)
+(get-model)
