@@ -8,7 +8,7 @@ This pass compiles the original C-like state formulas and tests compact candidat
 | --- | --- |
 | source entries | 185 |
 | random tests per entry | 4107 |
-| status counts | candidate_simplified:35; unsolved_by_current_templates:150 |
+| status counts | candidate_simplified:38; unsolved_by_current_templates:147 |
 | harness | dumps/vmtail-wide-1m-w16/vm_mba_state_formula_reducer_harness.c |
 | reductions | dumps/vmtail-wide-1m-w16/vm_mba_state_formula_reductions.tsv |
 
@@ -88,7 +88,7 @@ This pass compiles the original C-like state formulas and tests compact candidat
 | 154 | unsolved_by_current_templates |  |  |
 | 157 | unsolved_by_current_templates |  |  |
 | 158 | unsolved_by_current_templates |  |  |
-| 160 | unsolved_by_current_templates |  |  |
+| 160 | candidate_simplified | or2_or_mask | (state0 \| u16_0) \| 0x777b8ff6u |
 | 161 | candidate_simplified | or_mask | state0 \| 0x69145e52u |
 | 167 | unsolved_by_current_templates |  |  |
 | 168 | unsolved_by_current_templates |  |  |
