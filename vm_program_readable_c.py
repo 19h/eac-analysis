@@ -189,57 +189,66 @@ def emit_program(
             f"static const VMReadableOp vm_program_atlas_{program}_ops[] = {{",
         ]
     )
-    for row in ops:
-        lines.append(
-            "    {"
-            f"{h(row.get('start_vm_ip'))}, {h(row.get('end_vm_ip'))}, "
-            f"{dec(row.get('source_entry'))}u, {dec(row.get('target_entry'))}u, "
-            f"{c_string(row.get('opcode_name', ''))}, {c_string(row.get('bytes', ''))}, "
-            f"{c_string(row.get('operation_family', ''))}, {c_string(row.get('readability_grade', ''))}, "
-            f"{c_string(row.get('state_semantics', ''))}, {c_string(row.get('dispatch_semantics', ''))}, "
-            f"{c_string(row.get('ip_semantics', ''))}, {c_string(row.get('target', ''))}, "
-            f"{c_string(row.get('string_refs', ''))}, {c_string(row.get('side_effect_categories', ''))}, "
-            f"{c_string(row.get('unresolved', ''))}"
-            "},"
-        )
+    if ops:
+        for row in ops:
+            lines.append(
+                "    {"
+                f"{h(row.get('start_vm_ip'))}, {h(row.get('end_vm_ip'))}, "
+                f"{dec(row.get('source_entry'))}u, {dec(row.get('target_entry'))}u, "
+                f"{c_string(row.get('opcode_name', ''))}, {c_string(row.get('bytes', ''))}, "
+                f"{c_string(row.get('operation_family', ''))}, {c_string(row.get('readability_grade', ''))}, "
+                f"{c_string(row.get('state_semantics', ''))}, {c_string(row.get('dispatch_semantics', ''))}, "
+                f"{c_string(row.get('ip_semantics', ''))}, {c_string(row.get('target', ''))}, "
+                f"{c_string(row.get('string_refs', ''))}, {c_string(row.get('side_effect_categories', ''))}, "
+                f"{c_string(row.get('unresolved', ''))}"
+                "},"
+            )
+    else:
+        lines.append('    {0u, 0u, 0u, 0u, "", "", "", "", "", "", "", "", "", "", ""},')
     lines.extend(
         [
             "};",
-            f"enum {{ {macro}_OP_COUNT = (int)(sizeof(vm_program_atlas_{program}_ops) / sizeof(vm_program_atlas_{program}_ops[0])) }};",
+            f"enum {{ {macro}_OP_COUNT = {len(ops)} }};",
             "",
             f"static const VMReadableEdge vm_program_atlas_{program}_edges[] = {{",
         ]
     )
-    for row in edges:
-        lines.append(
-            "    {"
-            f"{h(row.get('case_state'))}, {h(row.get('successor_vm_ip'))}, {dec(row.get('successor_entry'))}, "
-            f"{c_string(row.get('target_program', ''))}, {c_string(row.get('relation', ''))}, "
-            f"{c_string(row.get('edge_kind', ''))}, {c_string(row.get('edge_delta', ''))}, "
-            f"{c_string(row.get('edge_semantic_ir', ''))}"
-            "},"
-        )
+    if edges:
+        for row in edges:
+            lines.append(
+                "    {"
+                f"{h(row.get('case_state'))}, {h(row.get('successor_vm_ip'))}, {dec(row.get('successor_entry'))}, "
+                f"{c_string(row.get('target_program', ''))}, {c_string(row.get('relation', ''))}, "
+                f"{c_string(row.get('edge_kind', ''))}, {c_string(row.get('edge_delta', ''))}, "
+                f"{c_string(row.get('edge_semantic_ir', ''))}"
+                "},"
+            )
+    else:
+        lines.append('    {0u, 0u, 0, "", "", "", "", ""},')
     lines.extend(
         [
             "};",
-            f"enum {{ {macro}_EDGE_COUNT = (int)(sizeof(vm_program_atlas_{program}_edges) / sizeof(vm_program_atlas_{program}_edges[0])) }};",
+            f"enum {{ {macro}_EDGE_COUNT = {len(edges)} }};",
             "",
             f"static const VMReadableStringRef vm_program_atlas_{program}_strings[] = {{",
         ]
     )
-    for row in refs:
-        lines.append(
-            "    {"
-            f"{dec(row.get('ref_index'))}u, {h(row.get('site'))}, {h(row.get('row_start'))}, "
-            f"{c_string(row.get('text', ''))}, {c_string(row.get('section_name', ''))}, "
-            f"{c_string(row.get('role', ''))}, {c_string(row.get('categories', ''))}, "
-            f"{c_string(row.get('opcode_name', ''))}, {c_string(row.get('execution_claim', ''))}"
-            "},"
-        )
+    if refs:
+        for row in refs:
+            lines.append(
+                "    {"
+                f"{dec(row.get('ref_index'))}u, {h(row.get('site'))}, {h(row.get('row_start'))}, "
+                f"{c_string(row.get('text', ''))}, {c_string(row.get('section_name', ''))}, "
+                f"{c_string(row.get('role', ''))}, {c_string(row.get('categories', ''))}, "
+                f"{c_string(row.get('opcode_name', ''))}, {c_string(row.get('execution_claim', ''))}"
+                "},"
+            )
+    else:
+        lines.append('    {0u, 0u, 0u, "", "", "", "", "", ""},')
     lines.extend(
         [
             "};",
-            f"enum {{ {macro}_STRING_REF_COUNT = (int)(sizeof(vm_program_atlas_{program}_strings) / sizeof(vm_program_atlas_{program}_strings[0])) }};",
+            f"enum {{ {macro}_STRING_REF_COUNT = {len(refs)} }};",
             "",
             f"static const VMReadableProgram vm_program_atlas_{program}_readable_program = {{",
             f"    {c_string(program)}, {h(start)}, {h(end)},",
