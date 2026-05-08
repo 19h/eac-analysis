@@ -2,7 +2,7 @@ VM program atlas 010 state-reduced readable operations
 rows: 1823
 state_reduced_rows: 1685
 dispatch_reduced_rows: 1634
-unresolved_rows: 3
+unresolved_rows: 1
 family_mix: obfuscated_table_dispatch:1634,operand_table_dispatch:171,fixed_or_affine_dispatch:17,long_or_backedge_control:1
 
 block 5
@@ -9441,13 +9441,12 @@ block 5
     ip: ip += 0x4
     state_proof: dumps/vmtail-wide-1m-w16/vm_mba_state_formula_compiler_proofs/state_158.smt2
     dispatch_proof: proved_equivalent:2
-  0x11db08..0x33f278 vmop_278_plus0xa_state_preserve_slot_multi_path bytes=9d451200800020540700 grade=state_and_dispatch_reduced_target_binding_open target=323@0xbb6e6 delta=+0x221770
+  0x11db08..0x33f278 vmop_278_plus0xa_state_preserve_slot_multi_path bytes=9d451200800020540700 grade=state_and_dispatch_reduced_readable_control_semantics target=323@0xbb6e6 delta=+0x221770
     state: vm_state = Z3-proved simplified expression; formula=((u16_2 - state0) | (state0 | flags0)) | (flags0 + 0x68baea26u)
-    dispatch: next_slot = Z3-proved simplified dispatch expression(s); variants=1; target_binding=target_binding_not_validated; formula=82=(((u16_2 + 0x68baea26u) - (state0 | flags0)) & 0xffffu) & 0xffffu
+    dispatch: first_stage_slot = Z3-proved simplified dispatch expression(s) into central dispatcher; variants=1; final_target_binding=observed second-stage DISPATCH idx; idx_mix=0x548:56,0x9b0:26,0xa18:1; targets=169:56,310:26,323:1; formula=82=(((u16_2 + 0x68baea26u) - (state0 | flags0)) & 0xffffu) & 0xffffu
     ip: ip += 0xa
     state_proof: dumps/vmtail-wide-1m-w16/vm_mba_state_formula_compiler_proofs/state_278.smt2
     dispatch_proof: proved_equivalent:1
-    unresolved: dispatch_target_binding_not_validated
   0x11db16..0x11db18 vmop_354_plus0x2_state_const_post_slot_const_or_affine bytes=cb00 grade=state_and_dispatch_reduced_readable_control_semantics target=203@0xa1484:1 delta=+0x2
     state: vm_state is set to or checked against a post-dispatch constant marker
     dispatch: next_entry = fixed or affine dispatch slot; expression=128=u16_0 << 0x3
@@ -10153,13 +10152,12 @@ block 5
     ip: ip += 0x4
     state_proof: dumps/vmtail-wide-1m-w16/vm_mba_state_formula_compiler_proofs/state_184.smt2
     dispatch_proof: proved_equivalent:1
-  0x11dcf5..0x3603af vmop_278_plus0xa_state_preserve_slot_multi_path bytes=11471200800040750700 grade=state_and_dispatch_reduced_target_binding_open target=86@0x8a37f delta=+0x2426ba
+  0x11dcf5..0x3603af vmop_278_plus0xa_state_preserve_slot_multi_path bytes=11471200800040750700 grade=state_and_dispatch_reduced_readable_control_semantics target=86@0x8a37f delta=+0x2426ba
     state: vm_state = Z3-proved simplified expression; formula=((u16_2 - state0) | (state0 | flags0)) | (flags0 + 0x68baea26u)
-    dispatch: next_slot = Z3-proved simplified dispatch expression(s); variants=1; target_binding=target_binding_not_validated; formula=82=(((u16_2 + 0x68baea26u) - (state0 | flags0)) & 0xffffu) & 0xffffu
+    dispatch: first_stage_slot = Z3-proved simplified dispatch expression(s) into central dispatcher; variants=1; final_target_binding=observed second-stage DISPATCH idx; idx_mix=0x548:56,0x9b0:26,0xa18:1; targets=169:56,310:26,323:1; formula=82=(((u16_2 + 0x68baea26u) - (state0 | flags0)) & 0xffffu) & 0xffffu
     ip: ip += 0xa
     state_proof: dumps/vmtail-wide-1m-w16/vm_mba_state_formula_compiler_proofs/state_278.smt2
     dispatch_proof: proved_equivalent:1
-    unresolved: dispatch_target_binding_not_validated
   0x11dd03..0x11dd05 vmop_165_plus0x2_state_const_post_slot_const_or_affine bytes=2b00 grade=state_and_dispatch_reduced_readable_control_semantics target=43@0x8173d:1 delta=+0x2
     state: vm_state is set to or checked against a post-dispatch constant marker
     dispatch: next_entry = fixed or affine dispatch slot; expression=128=u16_0 << 0x3

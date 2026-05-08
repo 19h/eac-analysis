@@ -167,6 +167,7 @@ def main() -> int:
 
     bad_dispatch_rows: list[str] = []
     target_binding_open: list[str] = []
+    second_stage_bound: list[str] = []
     for entry, proof in dispatch_proved.items():
         row = reduced_isa_by_entry.get(entry)
         if not row:
@@ -182,11 +183,20 @@ def main() -> int:
             target_binding_open.append(entry)
             if row.get("dispatch_target_binding_status") != "target_binding_not_validated":
                 bad_dispatch_rows.append(f"{entry}:target_binding_not_visible")
+        elif "target_binding_second_stage_validated" in proof.get("target_binding_mix", ""):
+            second_stage_bound.append(entry)
+            if row.get("dispatch_target_binding_status") != "target_binding_second_stage_validated":
+                bad_dispatch_rows.append(f"{entry}:second_stage_status_not_visible")
+            elif "observed second-stage DISPATCH idx" not in row.get("dispatch_semantics", ""):
+                bad_dispatch_rows.append(f"{entry}:second_stage_semantics_missing")
+            elif not row.get("dispatch_second_stage_idx_mix", ""):
+                bad_dispatch_rows.append(f"{entry}:second_stage_idx_missing")
         else:
             if "dispatch_formula_not_reduced" in row.get("unresolved", ""):
                 bad_dispatch_rows.append(f"{entry}:stale_dispatch_formula_gap")
     ok &= check("proved_dispatch_reductions_promoted_to_dispatch_semantics", not bad_dispatch_rows, f"bad={bad_dispatch_rows[:8]} total={len(dispatch_proved)}")
-    ok &= check("dispatch_target_binding_open_entries_visible", len(target_binding_open) == 8, f"entries={target_binding_open[:12]}")
+    ok &= check("dispatch_target_binding_open_entries_absent", not target_binding_open, f"entries={target_binding_open[:12]}")
+    ok &= check("dispatch_target_binding_second_stage_entries_promoted", len(second_stage_bound) == 8, f"entries={second_stage_bound[:12]}")
 
     slot_unknown_entries = {
         row["source_entry"]
@@ -228,6 +238,8 @@ def main() -> int:
             dispatch_reduced_program_row_count += 1
             if row.get("dispatch_reduction_status") != "applied_proved_equivalent" or "Z3-proved simplified dispatch" not in row.get("dispatch_semantics", ""):
                 missing_dispatch_program_promotions.append(f"{row.get('program')}:{row.get('start_vm_ip')}:{entry}")
+            elif "target_binding_second_stage_validated" in dispatch_proved[entry].get("target_binding_mix", "") and "observed second-stage DISPATCH idx" not in row.get("dispatch_semantics", ""):
+                missing_dispatch_program_promotions.append(f"{row.get('program')}:{row.get('start_vm_ip')}:{entry}:second_stage")
         if entry in slot_unknown_tables:
             slot_unknown_program_row_count += 1
             if row.get("slot_unknown_dispatch_status") != "exact_observed_table_no_formula" or "exact observed target-by-bytecode table" not in row.get("dispatch_semantics", ""):

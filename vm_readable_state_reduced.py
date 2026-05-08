@@ -476,6 +476,9 @@ def main() -> int:
     slot_unknown_table_entries = {
         row["source_entry"] for row in reduced_isa_rows if row["slot_unknown_dispatch_status"] == "exact_observed_table_no_formula"
     }
+    second_stage_dispatch_entries = {
+        row["source_entry"] for row in reduced_isa_rows if row.get("dispatch_target_binding_status") == "target_binding_second_stage_validated"
+    }
     applied_program_rows = sum(1 for row in reduced_program_rows if row.get("state_reduction_status") == "applied_proved_equivalent")
     dispatch_applied_program_rows = sum(
         1 for row in reduced_program_rows if row.get("dispatch_reduction_status") == "applied_proved_equivalent"
@@ -500,6 +503,7 @@ def main() -> int:
                 ["proved state reductions applied", len(applied_entries)],
                 ["proved dispatch reductions available", len(dispatch_by_entry)],
                 ["proved dispatch reductions applied", len(dispatch_applied_entries)],
+                ["dispatch bindings validated through second-stage DISPATCH", len(second_stage_dispatch_entries)],
                 ["slot-unknown exact tables available", len(slot_unknown_by_entry)],
                 ["slot-unknown exact tables applied", len(slot_unknown_table_entries)],
                 ["program rows", len(reduced_program_rows)],
@@ -541,6 +545,7 @@ def main() -> int:
     print(f"proved_state_reductions_applied={len(applied_entries)}")
     print(f"proved_dispatch_reductions_available={len(dispatch_by_entry)}")
     print(f"proved_dispatch_reductions_applied={len(dispatch_applied_entries)}")
+    print(f"second_stage_dispatch_bindings_applied={len(second_stage_dispatch_entries)}")
     print(f"slot_unknown_tables_available={len(slot_unknown_by_entry)}")
     print(f"slot_unknown_tables_applied={len(slot_unknown_table_entries)}")
     print(f"state_reduced_program_rows={applied_program_rows}")

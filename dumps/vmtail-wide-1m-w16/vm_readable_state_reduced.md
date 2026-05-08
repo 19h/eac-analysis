@@ -11,6 +11,7 @@ This layer applies compiler-recovered MBA state and dispatch slot expressions th
 | proved state reductions applied | 185 |
 | proved dispatch reductions available | 160 |
 | proved dispatch reductions applied | 160 |
+| dispatch bindings validated through second-stage DISPATCH | 8 |
 | slot-unknown exact tables available | 23 |
 | slot-unknown exact tables applied | 23 |
 | program rows | 71522 |
@@ -19,8 +20,8 @@ This layer applies compiler-recovered MBA state and dispatch slot expressions th
 | program rows with slot-unknown exact tables | 164 |
 | program files | 66 |
 | C output dir | dumps/vmtail-wide-1m-w16/vm_programs_state_reduced_readable_c |
-| readability grades | state_and_dispatch_reduced_readable_control_semantics:171,state_reduced_exact_observed_dispatch_table:23,state_and_dispatch_reduced_targe... |
-| unresolved mix | none:171,slot_unknown_formula_not_recovered_exact_table_only:23,dispatch_target_binding_not_validated:8 |
+| readability grades | state_and_dispatch_reduced_readable_control_semantics:179,state_reduced_exact_observed_dispatch_table:23 |
+| unresolved mix | none:179,slot_unknown_formula_not_recovered_exact_table_only:23 |
 
 ## Reduced Entries
 
@@ -56,7 +57,7 @@ This layer applies compiler-recovered MBA state and dispatch slot expressions th
 | 70 | vmop_070_plus0x5_state_add_const_slot_mba_stateful | vm_state = Z3-proved simplified expression; formula=((((((state0 + flags0) ^ (state0 ^ flags0)) ^ (0xfb3ee75du + flags0)) ^ 0x3a572249u) ... | next_slot = Z3-proved simplified dispatch expression(s); variants=1; target_binding=target_binding_validated; formula=128=(((0x37bbf653u ... | none |
 | 74 | vmop_074_plus0x5_state_add_const_slot_mba_stateful | vm_state = Z3-proved simplified expression; formula=((state0 - flags0) & (state0 + 0x236ef542u)) ^ 0x99b4ac0eu | next_slot = Z3-proved simplified dispatch expression(s); variants=1; target_binding=target_binding_validated; formula=25=(((u16_0 - 0x33d... | none |
 | 75 | vmop_075_minus0x6d_sampled_backedge_slot_unknown | vm_state = Z3-proved simplified expression; formula=state0 | next_entry = exact observed target-by-bytecode table; rows=14; byte_patterns=12; targets=165:8,354:4,171:2; formula_status=not_recovered | slot_unknown_formula_not_recovered_exact_table_only |
-| 78 | vmop_078_plus0xd_state_preserve_slot_multi_path | vm_state = Z3-proved simplified expression; formula=(((state0 - flags0) ^ 0xc72fc6fu) \| u16_0) \| 0x9fd07f20u | next_slot = Z3-proved simplified dispatch expression(s); variants=1; target_binding=target_binding_not_validated; formula=1=(((((((((stat... | dispatch_target_binding_not_validated |
+| 78 | vmop_078_plus0xd_state_preserve_slot_multi_path | vm_state = Z3-proved simplified expression; formula=(((state0 - flags0) ^ 0xc72fc6fu) \| u16_0) \| 0x9fd07f20u | first_stage_slot = Z3-proved simplified dispatch expression(s) into central dispatcher; variants=1; final_target_binding=observed second-... | none |
 | 79 | vmop_079_plus0x5_state_add_const_slot_multi_path | vm_state = Z3-proved simplified expression; formula=(((state0 - flags0) ^ 0xc72fc6fu) \| u16_0) \| 0x9fd07f20u | next_slot = Z3-proved simplified dispatch expression(s); variants=1; target_binding=target_binding_validated; formula=128=(((((((((state0... | none |
 | 82 | vmop_082_plus0x3_state_add_const_slot_mba_stateful | vm_state = Z3-proved simplified expression; formula=((((flags0 + state0) - u16_0) + 0x4931985eu) \| ((flags0 + state0) + 0x1bc90d20u)) \|... | next_slot = Z3-proved simplified dispatch expression(s); variants=1; target_binding=target_binding_validated; formula=128=(((0x5cc5e4d8u ... | none |
 | 83 | vmop_083_plus0x5_state_add_const_slot_multi_path | vm_state = Z3-proved simplified expression; formula=(((((0x2c3e26b4u + state0) + flags0) - u16_0) \| state0) & 0x122d7f19u) \| ((flags0 +... | next_slot = Z3-proved simplified dispatch expression(s); variants=1; target_binding=target_binding_validated; formula=128=((((0x2c3e26b4u... | none |
@@ -65,7 +66,7 @@ This layer applies compiler-recovered MBA state and dispatch slot expressions th
 | 91 | vmop_091_plus0x4_state_add_const_slot_mba_stateful | vm_state = Z3-proved simplified expression; formula=u16_0 | next_slot = Z3-proved simplified dispatch expression(s); variants=1; target_binding=target_binding_validated; formula=128=((state0 ^ u16_... | none |
 | 92 | vmop_092_plus0x4_state_add_const_slot_multi_path | vm_state = Z3-proved simplified expression; formula=((((((u16_0 + state0) & u16_2) ^ (state0 ^ flags0)) ^ 0x3efd297du) \| flags0) \| ((~u... | next_slot = Z3-proved simplified dispatch expression(s); variants=2; target_binding=target_binding_validated; formula=84=(((0x8f44d42du +... | none |
 | 94 | vmop_094_plus0x5_state_add_const_slot_multi_path | vm_state = Z3-proved simplified expression; formula=((((0x7af574e5u + flags0) & (0x551fa912u + state0)) ^ ((state0 & flags0) ^ (0x551fa91... | next_slot = Z3-proved simplified dispatch expression(s); variants=1; target_binding=target_binding_validated; formula=74=((((((state0 & (... | none |
-| 95 | vmop_095_plus0xa_state_preserve_slot_mba_stateful | vm_state = Z3-proved simplified expression; formula=(u16_4 + 0x1f18e1aau) ^ state0 | next_slot = Z3-proved simplified dispatch expression(s); variants=1; target_binding=target_binding_not_validated; formula=92=((u16_4 + 0x... | dispatch_target_binding_not_validated |
+| 95 | vmop_095_plus0xa_state_preserve_slot_mba_stateful | vm_state = Z3-proved simplified expression; formula=(u16_4 + 0x1f18e1aau) ^ state0 | first_stage_slot = Z3-proved simplified dispatch expression(s) into central dispatcher; variants=1; final_target_binding=observed second-... | none |
 | 99 | vmop_099_plus0x5_state_add_const_slot_mba_stateful | vm_state = Z3-proved simplified expression; formula=(u16_1 & state0) ^ (state0 - 0x48503105u) | next_slot = Z3-proved simplified dispatch expression(s); variants=1; target_binding=target_binding_validated; formula=128=(((state0 ^ u16... | none |
 | 101 | vmop_101_plus0xd_state_add_const_slot_mba_stateful | vm_state = Z3-proved simplified expression; formula=((~u16_11) & state0) ^ 0x44422ebbu | next_slot = Z3-proved simplified dispatch expression(s); variants=1; target_binding=target_binding_validated; formula=1=(((state0 ^ u16_1... | none |
 | 102 | vmop_102_plus0xd_state_preserve_slot_mba_stateful | vm_state = Z3-proved simplified expression; formula=state0 | next_slot = Z3-proved simplified dispatch expression(s); variants=1; target_binding=target_binding_validated; formula=64=(((state0 + u16_... | none |
