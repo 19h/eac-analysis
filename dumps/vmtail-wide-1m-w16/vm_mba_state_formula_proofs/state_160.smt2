@@ -1,0 +1,8 @@
+(set-logic QF_BV)
+(set-option :produce-models true)
+(declare-fun state0 () (_ BitVec 32))
+(declare-fun u16_0 () (_ BitVec 32))
+(assert (= ((_ extract 31 16) u16_0) #x0000))
+(assert (not (= (bvor (bvor (bvor (bvor (bvor state0 (bvand #x67f1fed6 #x256c03d7)) (bvand #x72df8f7a #x5a1beb81)) (bvxor u16_0 state0)) (bvand #x67f1fed6 #x256c03d7)) (bvand #x72df8f7a (bvsub #x5a1beb81 #x4cf19f11))) (bvor (bvor state0 u16_0) #x777b8ff6))))
+(check-sat)
+(get-model)
