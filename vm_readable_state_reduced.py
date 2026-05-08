@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
-"""Promote proved MBA state reductions into readable VM program artifacts."""
+"""Promote proved MBA state/dispatch reductions into readable VM program artifacts."""
 
 from __future__ import annotations
 
 import argparse
+import hashlib
 from collections import Counter, defaultdict
 from pathlib import Path
 
@@ -11,6 +12,14 @@ from vm_program_readable_c import emit_program, group_by, markdown_table, parse_
 
 
 OBFUSCATED_DISPATCH_KINDS = {"slot_multi_path", "slot_mba_stateful"}
+
+
+def trim(text: str, limit: int = 520) -> str:
+    value = (text or "").replace("\n", " ")
+    if len(value) <= limit:
+        return value
+    digest = hashlib.sha256(value.encode()).hexdigest()[:12]
+    return value[: max(32, limit - 18)] + f"...#{digest}"
 
 
 def split_reasons(text: str) -> list[str]:
@@ -39,8 +48,12 @@ def reduced_unresolved(row: dict[str, str]) -> str:
         if reason not in {"algebraic_state_or_slot_formula", "state_formula_not_named"}
     ]
     slot_kind = row.get("dispatch_slot_kind", "")
-    if slot_kind in OBFUSCATED_DISPATCH_KINDS:
+    dispatch_status = row.get("dispatch_reduction_status", "")
+    target_status = row.get("dispatch_target_binding_status", "")
+    if slot_kind in OBFUSCATED_DISPATCH_KINDS and dispatch_status != "applied_proved_equivalent":
         reasons.append("dispatch_formula_not_reduced")
+    if target_status == "target_binding_not_validated":
+        reasons.append("dispatch_target_binding_not_validated")
     return join_reasons(reasons)
 
 
@@ -52,9 +65,11 @@ def reduced_grade(row: dict[str, str], unresolved: str) -> str:
         return "state_reduced_partial_runtime_or_static_model"
     if "dispatch_formula_not_reduced" in reasons:
         return "state_reduced_dispatch_formula_open"
+    if "dispatch_target_binding_not_validated" in reasons:
+        return "state_and_dispatch_reduced_target_binding_open"
     if unresolved == "none":
-        return "state_reduced_readable_control_semantics"
-    return "state_reduced_with_notes"
+        return "state_and_dispatch_reduced_readable_control_semantics"
+    return "state_and_dispatch_reduced_with_notes"
 
 
 def proof_map(rows: list[dict[str, str]]) -> dict[str, dict[str, str]]:
@@ -65,8 +80,23 @@ def proof_map(rows: list[dict[str, str]]) -> dict[str, dict[str, str]]:
     return proved
 
 
+def dispatch_map(rows: list[dict[str, str]]) -> dict[str, dict[str, str]]:
+    proved: dict[str, dict[str, str]] = {}
+    for row in rows:
+        try:
+            variant_count = int(row.get("variant_count", "0") or 0)
+            proved_variants = int(row.get("proved_variants", "0") or 0)
+        except ValueError:
+            continue
+        if variant_count > 0 and variant_count == proved_variants and row.get("reduced_dispatch_preview"):
+            proved[row["source_entry"]] = row
+    return proved
+
+
 def reduce_isa_rows(
-    isa_rows: list[dict[str, str]], reductions_by_entry: dict[str, dict[str, str]]
+    isa_rows: list[dict[str, str]],
+    reductions_by_entry: dict[str, dict[str, str]],
+    dispatch_by_entry: dict[str, dict[str, str]],
 ) -> tuple[list[dict[str, object]], Counter[str]]:
     out_rows: list[dict[str, object]] = []
     status_counts: Counter[str] = Counter()
@@ -74,6 +104,35 @@ def reduce_isa_rows(
         out: dict[str, object] = dict(row)
         entry = row.get("source_entry", "")
         proof = reductions_by_entry.get(entry)
+        dispatch = dispatch_by_entry.get(entry)
+        out["original_dispatch_semantics"] = row.get("dispatch_semantics", "")
+        out["original_dispatch_slot_preview"] = row.get("dispatch_slot_preview", "")
+        if dispatch:
+            dispatch_preview = dispatch.get("reduced_dispatch_preview", "")
+            target_mix = dispatch.get("target_binding_mix", "")
+            target_status = "target_binding_not_validated" if "target_binding_not_validated" in target_mix else "target_binding_validated"
+            out["dispatch_semantics"] = (
+                "next_slot = Z3-proved simplified dispatch expression(s); "
+                f"variants={dispatch.get('variant_count', '')}; "
+                f"target_binding={target_status}; "
+                f"formula={trim(dispatch_preview)}"
+            )
+            out["dispatch_slot_preview"] = dispatch_preview
+            out["dispatch_reduction_status"] = "applied_proved_equivalent"
+            out["dispatch_reduction_proof_status"] = dispatch.get("proof_status_mix", "")
+            out["dispatch_target_binding_status"] = target_status
+            out["dispatch_variant_count"] = dispatch.get("variant_count", "")
+            out["dispatch_proved_variants"] = dispatch.get("proved_variants", "")
+            out["dispatch_target_mismatched_events"] = dispatch.get("target_mismatched_events", "")
+            status_counts["dispatch_applied"] += 1
+        else:
+            out["dispatch_reduction_status"] = "not_applicable_or_unproved"
+            out["dispatch_reduction_proof_status"] = ""
+            out["dispatch_target_binding_status"] = ""
+            out["dispatch_variant_count"] = ""
+            out["dispatch_proved_variants"] = ""
+            out["dispatch_target_mismatched_events"] = ""
+            status_counts["dispatch_not_applicable_or_unproved"] += 1
         if proof:
             candidate = proof["candidate_c"]
             out["original_state_semantics"] = row.get("state_semantics", "")
@@ -98,6 +157,9 @@ def reduce_isa_rows(
             out["state_reduction_original_chars"] = ""
             out["state_reduction_candidate_chars"] = ""
             status_counts["not_applicable_or_unproved"] += 1
+        out["unresolved"] = reduced_unresolved({k: str(v) for k, v in out.items()})
+        out["readability_grade"] = reduced_grade({k: str(v) for k, v in out.items()}, str(out["unresolved"]))
+        out["semantic_c"] = semantic_c({k: str(v) for k, v in out.items()})
         out_rows.append(out)
     return out_rows, status_counts
 
@@ -121,6 +183,12 @@ def reduce_program_rows(
             "state_reduction_status",
             "state_reduction_proof_status",
             "state_reduction_smt2",
+            "dispatch_reduction_status",
+            "dispatch_reduction_proof_status",
+            "dispatch_target_binding_status",
+            "dispatch_variant_count",
+            "dispatch_proved_variants",
+            "dispatch_target_mismatched_events",
         ]:
             if field in isa:
                 out[field] = isa[field]
@@ -141,6 +209,7 @@ def emit_vmpseudo_files(root: Path, rows_by_program: dict[str, list[dict[str, ob
         rows = rows_by_program[program]
         path = out_dir / f"vm_program_atlas_{program}.vmpseudo"
         reduced_rows = [row for row in rows if row.get("state_reduction_status") == "applied_proved_equivalent"]
+        dispatch_reduced_rows = [row for row in rows if row.get("dispatch_reduction_status") == "applied_proved_equivalent"]
         unresolved_rows = [row for row in rows if row.get("unresolved") and row.get("unresolved") != "none"]
         string_refs = [row for row in rows if row.get("string_ref_indexes")]
         family_mix = Counter(str(row.get("operation_family", "")) for row in rows)
@@ -148,6 +217,7 @@ def emit_vmpseudo_files(root: Path, rows_by_program: dict[str, list[dict[str, ob
             f"VM program atlas {program} state-reduced readable operations",
             f"rows: {len(rows)}",
             f"state_reduced_rows: {len(reduced_rows)}",
+            f"dispatch_reduced_rows: {len(dispatch_reduced_rows)}",
             f"unresolved_rows: {len(unresolved_rows)}",
             f"family_mix: {','.join(f'{key}:{count}' for key, count in family_mix.most_common(8) if key)}",
             "",
@@ -166,7 +236,9 @@ def emit_vmpseudo_files(root: Path, rows_by_program: dict[str, list[dict[str, ob
             lines.append(f"    dispatch: {row['dispatch_semantics']}")
             lines.append(f"    ip: {row['ip_semantics']}")
             if row.get("state_reduction_status") == "applied_proved_equivalent":
-                lines.append(f"    proof: {row.get('state_reduction_smt2', '')}")
+                lines.append(f"    state_proof: {row.get('state_reduction_smt2', '')}")
+            if row.get("dispatch_reduction_status") == "applied_proved_equivalent":
+                lines.append(f"    dispatch_proof: {row.get('dispatch_reduction_proof_status', '')}")
             if row.get("string_refs"):
                 lines.append(f"    data: {row['string_refs']} categories={row['side_effect_categories']}")
             if row.get("unresolved") and row.get("unresolved") != "none":
@@ -178,6 +250,7 @@ def emit_vmpseudo_files(root: Path, rows_by_program: dict[str, list[dict[str, ob
                 "path": str(path),
                 "rows": len(rows),
                 "state_reduced_rows": len(reduced_rows),
+                "dispatch_reduced_rows": len(dispatch_reduced_rows),
                 "string_ref_rows": len(string_refs),
                 "unresolved_rows": len(unresolved_rows),
                 "family_mix": ",".join(f"{key}:{count}" for key, count in family_mix.most_common(8) if key),
@@ -212,6 +285,7 @@ def emit_c_files(
                 "path": str(path),
                 "ops": len(ops),
                 "state_reduced_ops": sum(1 for row in ops if row.get("state_reduction_status") == "applied_proved_equivalent"),
+                "dispatch_reduced_ops": sum(1 for row in ops if row.get("dispatch_reduction_status") == "applied_proved_equivalent"),
                 "edges": len(edges),
                 "string_refs": len(refs),
                 "range": dossier.get("range", ""),
@@ -233,6 +307,7 @@ def main() -> int:
         root / "vm_readable_isa.tsv",
         root / "vm_program_readable_ops.tsv",
         root / "vm_mba_state_formula_compiler_reductions.tsv",
+        root / "vm_mba_dispatch_formula_compiler_reductions_by_entry.tsv",
         root / "vm_program_control_graph_edges.tsv",
         root / "vm_native_side_effect_vm_refs.tsv",
         root / "vm_program_behavior_dossiers.tsv",
@@ -244,12 +319,14 @@ def main() -> int:
     isa_rows = read_tsv(root / "vm_readable_isa.tsv")
     program_rows = read_tsv(root / "vm_program_readable_ops.tsv")
     reductions = read_tsv(root / "vm_mba_state_formula_compiler_reductions.tsv")
+    dispatch_reductions = read_tsv(root / "vm_mba_dispatch_formula_compiler_reductions_by_entry.tsv")
     edges_by_program = group_by(read_tsv(root / "vm_program_control_graph_edges.tsv"), "source_program")
     refs_by_program = group_by(read_tsv(root / "vm_native_side_effect_vm_refs.tsv"), "program")
     dossiers = {row["program"]: row for row in read_tsv(root / "vm_program_behavior_dossiers.tsv")}
 
     reductions_by_entry = proof_map(reductions)
-    reduced_isa_rows, status_counts = reduce_isa_rows(isa_rows, reductions_by_entry)
+    dispatch_by_entry = dispatch_map(dispatch_reductions)
+    reduced_isa_rows, status_counts = reduce_isa_rows(isa_rows, reductions_by_entry, dispatch_by_entry)
     reduced_isa_by_entry = {str(row["source_entry"]): row for row in reduced_isa_rows}
     reduced_program_rows, rows_by_program = reduce_program_rows(program_rows, reduced_isa_by_entry)
     vmpseudo_manifest = emit_vmpseudo_files(root, rows_by_program)
@@ -263,17 +340,32 @@ def main() -> int:
         "state_reduction_smt2",
         "state_reduction_original_chars",
         "state_reduction_candidate_chars",
+        "original_dispatch_semantics",
+        "original_dispatch_slot_preview",
+        "dispatch_reduction_status",
+        "dispatch_reduction_proof_status",
+        "dispatch_target_binding_status",
+        "dispatch_variant_count",
+        "dispatch_proved_variants",
+        "dispatch_target_mismatched_events",
     ]
     program_fields = list(program_rows[0].keys()) + [
         "state_reduction_status",
         "state_reduction_proof_status",
         "state_reduction_smt2",
+        "dispatch_reduction_status",
+        "dispatch_reduction_proof_status",
+        "dispatch_target_binding_status",
+        "dispatch_variant_count",
+        "dispatch_proved_variants",
+        "dispatch_target_mismatched_events",
     ]
     vmpseudo_manifest_fields = [
         "program",
         "path",
         "rows",
         "state_reduced_rows",
+        "dispatch_reduced_rows",
         "string_ref_rows",
         "unresolved_rows",
         "family_mix",
@@ -283,6 +375,7 @@ def main() -> int:
         "path",
         "ops",
         "state_reduced_ops",
+        "dispatch_reduced_ops",
         "edges",
         "string_refs",
         "range",
@@ -296,13 +389,19 @@ def main() -> int:
     write_tsv(root / "vm_program_state_reduced_readable_c_manifest.tsv", c_manifest, c_manifest_fields)
 
     applied_entries = {row["source_entry"] for row in reduced_isa_rows if row["state_reduction_status"] == "applied_proved_equivalent"}
+    dispatch_applied_entries = {
+        row["source_entry"] for row in reduced_isa_rows if row["dispatch_reduction_status"] == "applied_proved_equivalent"
+    }
     applied_program_rows = sum(1 for row in reduced_program_rows if row.get("state_reduction_status") == "applied_proved_equivalent")
+    dispatch_applied_program_rows = sum(
+        1 for row in reduced_program_rows if row.get("dispatch_reduction_status") == "applied_proved_equivalent"
+    )
     unresolved_mix = Counter(str(row.get("unresolved", "")) for row in reduced_isa_rows)
     grade_mix = Counter(str(row.get("readability_grade", "")) for row in reduced_isa_rows)
     md_lines = [
         "# VM Readable State-Reduced Artifacts",
         "",
-        "This layer applies only compiler-recovered MBA state expressions that were proven equivalent with Z3. It preserves dispatch formulas, concrete row targets, string/data references, and native side-effect evidence instead of treating state reduction as full program understanding.",
+        "This layer applies compiler-recovered MBA state and dispatch slot expressions that were proven equivalent with Z3. It preserves concrete row targets, string/data references, and native side-effect evidence instead of treating formula reduction as full program understanding.",
         "",
         "## Summary",
         "",
@@ -312,8 +411,11 @@ def main() -> int:
                 ["readable ISA entries", len(reduced_isa_rows)],
                 ["proved state reductions available", len(reductions_by_entry)],
                 ["proved state reductions applied", len(applied_entries)],
+                ["proved dispatch reductions available", len(dispatch_by_entry)],
+                ["proved dispatch reductions applied", len(dispatch_applied_entries)],
                 ["program rows", len(reduced_program_rows)],
                 ["program rows with reduced state", applied_program_rows],
+                ["program rows with reduced dispatch", dispatch_applied_program_rows],
                 ["program files", len(c_manifest)],
                 ["C output dir", str(root / "vm_programs_state_reduced_readable_c")],
                 ["readability grades", ",".join(f"{k}:{v}" for k, v in grade_mix.most_common(10))],
@@ -340,14 +442,17 @@ def main() -> int:
         "",
         "## Remaining Gaps",
         "",
-        "State MBA formulas covered by `vm_mba_state_formula_compiler_reductions.tsv` are reduced here. Dispatch formulas, unknown dispatch slots, native-call binding, real-server path coverage, and human intent remain separate open gaps before claiming full C/C++ reconstruction.",
+        "State MBA formulas covered by `vm_mba_state_formula_compiler_reductions.tsv` and dispatch slot formulas covered by `vm_mba_dispatch_formula_compiler_reductions_by_entry.tsv` are reduced here. Slot-unknown dispatch opcodes, unvalidated dispatch target binding rows, native-call binding, real-server path coverage, and human intent remain separate open gaps before claiming full C/C++ reconstruction.",
     ]
     (root / "vm_readable_state_reduced.md").write_text("\n".join(md_lines) + "\n")
 
     print(f"state_reduced_isa_entries={len(reduced_isa_rows)}")
     print(f"proved_state_reductions_available={len(reductions_by_entry)}")
     print(f"proved_state_reductions_applied={len(applied_entries)}")
+    print(f"proved_dispatch_reductions_available={len(dispatch_by_entry)}")
+    print(f"proved_dispatch_reductions_applied={len(dispatch_applied_entries)}")
     print(f"state_reduced_program_rows={applied_program_rows}")
+    print(f"dispatch_reduced_program_rows={dispatch_applied_program_rows}")
     print(f"program_files={len(c_manifest)}")
     print(f"status_counts={dict(status_counts)}")
     return 0
