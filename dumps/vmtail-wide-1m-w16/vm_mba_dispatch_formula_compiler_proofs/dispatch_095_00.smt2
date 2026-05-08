@@ -1,0 +1,7 @@
+(set-logic QF_BV)
+(set-option :produce-models true)
+(declare-fun u16_4 () (_ BitVec 32))
+(assert (= ((_ extract 31 16) u16_4) #x0000))
+(assert (not (= (bvand (bvadd u16_4 #x1f18e1aa) #x0000ffff) (bvadd u16_4 #x1f18e1aa))))
+(check-sat)
+(get-model)
