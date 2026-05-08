@@ -8358,9 +8358,10 @@ block 19
     ip: ip += 0x4
     state_proof: dumps/vmtail-wide-1m-w16/vm_mba_state_formula_compiler_proofs/state_161.smt2
     dispatch_proof: proved_equivalent:1
-  0x26f077..0x26cd71 vmop_195_minus0x2306_sampled_backedge_slot_unknown bytes=7e5606008000 grade=state_reduced_unresolved_dispatch_details target=86@0x8a37f delta=-0x2306
+  0x26f077..0x26cd71 vmop_195_minus0x2306_sampled_backedge_slot_unknown bytes=7e5606008000 grade=state_reduced_exact_observed_dispatch_table target=86@0x8a37f delta=-0x2306
     state: vm_state = Z3-proved simplified expression; formula=(((((0x44fb7fdbu + flags0) ^ 0x72e5925eu) | state0) | (flags0 + 0x52e5924au)) | (state0 & 0x4083ed99u)) | 0x52e5a24au
-    dispatch: dispatch slot expression not recovered; use per-row target evidence when available
+    dispatch: next_entry = exact observed target-by-bytecode table; rows=3; byte_patterns=3; targets=310:2,86:1; formula_status=not_recovered
     ip: ip -= 0x2306 (backedge)
     state_proof: dumps/vmtail-wide-1m-w16/vm_mba_state_formula_compiler_proofs/state_195.smt2
-    unresolved: dispatch_slot_unknown;static_model_or_runtime_validation_incomplete
+    dispatch_table: exact observed slot-unknown table, formula not recovered
+    unresolved: slot_unknown_formula_not_recovered_exact_table_only

@@ -76,9 +76,10 @@ block 33
     ip: ip += 0x5
     state_proof: dumps/vmtail-wide-1m-w16/vm_mba_state_formula_compiler_proofs/state_242.smt2
     dispatch_proof: proved_equivalent:1
-  0x365488..0x3654e0 vmop_334_plus0x2a5_sampled_long_or_sparse_slot_unknown bytes=62010000580000003d0122 grade=state_reduced_unresolved_dispatch_details target=354@0xc2241 delta=+0x58
+  0x365488..0x3654e0 vmop_334_plus0x2a5_sampled_long_or_sparse_slot_unknown bytes=62010000580000003d0122 grade=state_reduced_exact_observed_dispatch_table target=354@0xc2241 delta=+0x58
     state: vm_state = Z3-proved simplified expression; formula=state0
-    dispatch: dispatch slot expression not recovered; use per-row target evidence when available
+    dispatch: next_entry = exact observed target-by-bytecode table; rows=18; byte_patterns=18; targets=354:9,171:5,165:4; formula_status=not_recovered
     ip: ip += 0x2a5
     state_proof: dumps/vmtail-wide-1m-w16/vm_mba_state_formula_compiler_proofs/state_334.smt2
-    unresolved: dispatch_slot_unknown;static_model_or_runtime_validation_incomplete
+    dispatch_table: exact observed slot-unknown table, formula not recovered
+    unresolved: slot_unknown_formula_not_recovered_exact_table_only

@@ -308,7 +308,7 @@ def main() -> int:
     ok &= check("state_reduced_c_file_count_matches_manifest", len(generated_c_files) == len(c_manifest), f"files={len(generated_c_files)} manifest={len(c_manifest)}")
     ok &= check(
         "markdown_caveats_remaining_gaps",
-        "symbolic formulas remain unrecovered" in md_text and "unvalidated dispatch target binding" in md_text and "native-call binding" in md_text and "real-server path coverage" in md_text,
+        "symbolic formulas remain unrecovered" in md_text.lower() and "unvalidated dispatch target binding" in md_text.lower() and "native-call binding" in md_text.lower() and "real-server path coverage" in md_text.lower(),
         "required caveats present",
     )
 

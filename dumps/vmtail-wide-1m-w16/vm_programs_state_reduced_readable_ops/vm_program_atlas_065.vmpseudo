@@ -944,12 +944,13 @@ block 36
     ip: ip += 0x2
     state_proof: dumps/vmtail-wide-1m-w16/vm_mba_state_formula_compiler_proofs/state_144.smt2
     dispatch_proof: proved_equivalent:1
-  0x371a43..0x370256 vmop_308_plus0x20_exact_slot_unknown bytes=ab000000ed170080 grade=state_reduced_unresolved_dispatch_details target=171@0x9b4b3 delta=-0x17ed
+  0x371a43..0x370256 vmop_308_plus0x20_exact_slot_unknown bytes=ab000000ed170080 grade=state_reduced_exact_observed_dispatch_table target=171@0x9b4b3 delta=-0x17ed
     state: vm_state = Z3-proved simplified expression; formula=state0
-    dispatch: dispatch slot expression not recovered; use per-row target evidence when available
+    dispatch: next_entry = exact observed target-by-bytecode table; rows=19; byte_patterns=17; targets=171:12,354:7; formula_status=not_recovered
     ip: ip += 0x20
     state_proof: dumps/vmtail-wide-1m-w16/vm_mba_state_formula_compiler_proofs/state_308.smt2
-    unresolved: dispatch_slot_unknown;static_model_or_runtime_validation_incomplete
+    dispatch_table: exact observed slot-unknown table, formula not recovered
+    unresolved: slot_unknown_formula_not_recovered_exact_table_only
   0x371a63..0x371a65 vmop_165_plus0x2_state_const_post_slot_const_or_affine bytes=4c01 grade=state_and_dispatch_reduced_readable_control_semantics target=332@0xbd36d:1 delta=+0x2
     state: vm_state is set to or checked against a post-dispatch constant marker
     dispatch: next_entry = fixed or affine dispatch slot; expression=128=u16_0 << 0x3
@@ -3055,9 +3056,10 @@ block 36
     ip: ip += 0x4
     state_proof: dumps/vmtail-wide-1m-w16/vm_mba_state_formula_compiler_proofs/state_174.smt2
     dispatch_proof: proved_equivalent:1
-  0x371fd7..0x36504c vmop_299_minus0x7fe6_sampled_backedge_slot_unknown bytes=f68107008000 grade=state_reduced_unresolved_dispatch_details target=310@0xb8556 delta=-0xcf8b
+  0x371fd7..0x36504c vmop_299_minus0x7fe6_sampled_backedge_slot_unknown bytes=f68107008000 grade=state_reduced_exact_observed_dispatch_table target=310@0xb8556 delta=-0xcf8b
     state: vm_state = Z3-proved simplified expression; formula=((((((u16_2 - state0) & (0x515f6307u + flags0)) & ((0x515f6307u + state0) - u16_0)) & 0x23320710u) ^ (flags0 & 0x10108a30u)) | (((((0x515f6307u + state0) - u16_0) & state0) & (0x515f6307u + flags0)) & 0x23320710u)) | (flags0 & 0x10108a30u)
-    dispatch: dispatch slot expression not recovered; use per-row target evidence when available
+    dispatch: next_entry = exact observed target-by-bytecode table; rows=2; byte_patterns=2; targets=169:1,310:1; formula_status=not_recovered
     ip: ip -= 0x7fe6 (backedge)
     state_proof: dumps/vmtail-wide-1m-w16/vm_mba_state_formula_compiler_proofs/state_299.smt2
-    unresolved: dispatch_slot_unknown;static_model_or_runtime_validation_incomplete
+    dispatch_table: exact observed slot-unknown table, formula not recovered
+    unresolved: slot_unknown_formula_not_recovered_exact_table_only

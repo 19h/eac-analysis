@@ -1091,9 +1091,10 @@ block 5
     ip: ip += 0x2
     state_proof: dumps/vmtail-wide-1m-w16/vm_mba_state_formula_compiler_proofs/state_257.smt2
     dispatch_proof: proved_equivalent:1
-  0x11bf09..0x11bf5d vmop_266_minus0x2e8_sampled_backedge_slot_unknown bytes=6201000054000000 grade=state_reduced_unresolved_dispatch_details target=354@0xc2241 delta=+0x54
+  0x11bf09..0x11bf5d vmop_266_minus0x2e8_sampled_backedge_slot_unknown bytes=6201000054000000 grade=state_reduced_exact_observed_dispatch_table target=354@0xc2241 delta=+0x54
     state: vm_state = Z3-proved simplified expression; formula=state0
-    dispatch: dispatch slot expression not recovered; use per-row target evidence when available
+    dispatch: next_entry = exact observed target-by-bytecode table; rows=16; byte_patterns=13; targets=171:7,354:5,165:4; formula_status=not_recovered
     ip: ip -= 0x2e8 (backedge)
     state_proof: dumps/vmtail-wide-1m-w16/vm_mba_state_formula_compiler_proofs/state_266.smt2
-    unresolved: dispatch_slot_unknown;static_model_or_runtime_validation_incomplete
+    dispatch_table: exact observed slot-unknown table, formula not recovered
+    unresolved: slot_unknown_formula_not_recovered_exact_table_only
