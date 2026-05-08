@@ -47,10 +47,10 @@ def main() -> int:
     reductions = read_tsv(reductions_path)
     md_text = md_path.read_text(errors="replace")
 
-    open_entries = {
+    second_stage_entries = {
         row["source_entry"]
         for row in reductions
-        if "target_binding_not_validated" in row.get("target_binding_mix", "")
+        if "target_binding_second_stage_validated" in row.get("target_binding_mix", "")
     }
     summary_entries = {row["source_entry"] for row in summary}
     statuses = Counter(row.get("validation_status", "") for row in summary)
@@ -68,7 +68,7 @@ def main() -> int:
     ]
 
     ok = True
-    ok &= check("second_stage_binding_covers_open_dispatch_entries", summary_entries == open_entries, f"summary={sorted(summary_entries)} open={sorted(open_entries)}")
+    ok &= check("second_stage_binding_covers_second_stage_dispatch_entries", summary_entries == second_stage_entries, f"summary={sorted(summary_entries)} second_stage={sorted(second_stage_entries)}")
     ok &= check("second_stage_binding_all_validated", statuses == {"second_stage_dispatch_validated": len(summary)}, f"statuses={dict(statuses)}")
     ok &= check("second_stage_binding_rows_match_dispatch_idx", not bad_rows, f"bad={bad_rows[:8]} rows={len(rows)}")
     ok &= check("second_stage_binding_summary_consistent", not bad_summary, f"bad={bad_summary[:8]}")
