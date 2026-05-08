@@ -1,0 +1,232 @@
+/* Auto-generated exact observed dispatch tables for slot-unknown VM opcodes. */
+#include <stdint.h>
+#include <stddef.h>
+
+#ifndef VM_SLOT_UNKNOWN_DISPATCH_TABLES_C
+#define VM_SLOT_UNKNOWN_DISPATCH_TABLES_C
+
+typedef struct VMSlotUnknownDispatchRow {
+    uint32_t source_entry;
+    const char *opcode_name;
+    const char *program;
+    uint64_t start_vm_ip;
+    uint64_t end_vm_ip;
+    const char *bytes;
+    int32_t target_entry;
+    const char *target;
+    const char *delta;
+} VMSlotUnknownDispatchRow;
+
+typedef struct VMSlotUnknownDispatchSummary {
+    uint32_t source_entry;
+    const char *opcode_name;
+    uint32_t rows;
+    uint32_t byte_pattern_count;
+    const char *target_mix;
+    const char *resolution_status;
+} VMSlotUnknownDispatchSummary;
+
+static const VMSlotUnknownDispatchRow vm_slot_unknown_dispatch_rows[] = {
+    {246u, "vmop_246_plus0x78_sampled_long_or_sparse_slot_unknown", "000", 0xd0c75u, 0xd0eb3u, "620100003e0200003d0122", 354, "354@0xc2241", "+0x23e"},
+    {302u, "vmop_302_minus0x40_sampled_backedge_slot_unknown", "000", 0xd0eabu, 0xd0c5fu, "620100004c020080", 354, "354@0xc2241", "-0x24c"},
+    {334u, "vmop_334_plus0x2a5_sampled_long_or_sparse_slot_unknown", "001", 0xd4561u, 0xd476eu, "620100000d0200003d019a", 354, "354@0xc2241", "+0x20d"},
+    {75u, "vmop_075_minus0x6d_sampled_backedge_slot_unknown", "002", 0xd57d4u, 0xd5a12u, "620100003e0200003d0122", 354, "354@0xc2241", "+0x23e"},
+    {75u, "vmop_075_minus0x6d_sampled_backedge_slot_unknown", "004", 0xd78eau, 0xda38fu, "ab000000a52a00003d0122", 171, "171@0x9b4b3", "+0x2aa5"},
+    {210u, "vmop_210_plus0x30_sampled_long_or_sparse_slot_unknown", "005", 0xda5e7u, 0xdac57u, "a5000000700600003d0122", 165, "165@0x9a24c", "+0x670"},
+    {308u, "vmop_308_plus0x20_exact_slot_unknown", "007", 0x11bbd4u, 0x11bc28u, "ab00000054000000", 171, "171@0x9b4b3", "+0x54"},
+    {266u, "vmop_266_minus0x2e8_sampled_backedge_slot_unknown", "008", 0x11bf09u, 0x11bf5du, "6201000054000000", 354, "354@0xc2241", "+0x54"},
+    {117u, "vmop_117_minus0x40_sampled_backedge_slot_unknown", "009", 0x11c256u, 0x11c2aau, "a500000054000000", 165, "165@0x9a24c", "+0x54"},
+    {266u, "vmop_266_minus0x2e8_sampled_backedge_slot_unknown", "010", 0x11de39u, 0x11de9fu, "ab00000066000000", 171, "171@0x9b4b3", "+0x66"},
+    {75u, "vmop_075_minus0x6d_sampled_backedge_slot_unknown", "011", 0x11e39bu, 0x11e574u, "a5000000d90100003d0122", 165, "165@0x9a24c", "+0x1d9"},
+    {210u, "vmop_210_plus0x30_sampled_long_or_sparse_slot_unknown", "012", 0x11eeeeu, 0x11ef65u, "ab000000770000003d0122", 171, "171@0x9b4b3", "+0x77"},
+    {334u, "vmop_334_plus0x2a5_sampled_long_or_sparse_slot_unknown", "013", 0x11f4bau, 0x1209d2u, "62010000181500003d0122", 354, "354@0xc2241", "+0x1518"},
+    {334u, "vmop_334_plus0x2a5_sampled_long_or_sparse_slot_unknown", "014", 0x120e9eu, 0x1210d6u, "a5000000380200003d0122", 165, "165@0x9a24c", "+0x238"},
+    {334u, "vmop_334_plus0x2a5_sampled_long_or_sparse_slot_unknown", "015", 0x121a5bu, 0x121a8au, "ab0000002f0000003d0122", 171, "171@0x9b4b3", "+0x2f"},
+    {145u, "vmop_145_plus0x139_sampled_long_or_sparse_slot_unknown", "015", 0x121abau, 0x121b31u, "ab000000770000003d0122", 171, "171@0x9b4b3", "+0x77"},
+    {334u, "vmop_334_plus0x2a5_sampled_long_or_sparse_slot_unknown", "016", 0x121ffdu, 0x122074u, "62010000770000003d0122", 354, "354@0xc2241", "+0x77"},
+    {145u, "vmop_145_plus0x139_sampled_long_or_sparse_slot_unknown", "017", 0x1222cdu, 0x122344u, "ab000000770000003d0122", 171, "171@0x9b4b3", "+0x77"},
+    {334u, "vmop_334_plus0x2a5_sampled_long_or_sparse_slot_unknown", "018", 0x1226c6u, 0x122a46u, "ab000000800300003d019a", 171, "171@0x9b4b3", "+0x380"},
+    {308u, "vmop_308_plus0x20_exact_slot_unknown", "019", 0x122aaau, 0x122acau, "ab00000020000000a800b3006ed94c0bb30020088416018e00003d0150e514cf", 171, "171@0x9b4b3:1", "+0x20"},
+    {246u, "vmop_246_plus0x78_sampled_long_or_sparse_slot_unknown", "022", 0x1772fcu, 0x177353u, "62010000570000003d019a", 354, "354@0xc2241", "+0x57"},
+    {358u, "vmop_358_plus0x5_state_formula_slot_unknown", "023", 0x177a0du, 0x177a12u, "7d1a3d0100", 144, "144@0x95887:1", "+0x5"},
+    {308u, "vmop_308_plus0x20_exact_slot_unknown", "023", 0x177c82u, 0x179f43u, "62010000c1220000", 354, "354@0xc2241", "+0x22c1"},
+    {229u, "vmop_229_plus0x5_state_formula_slot_unknown", "026", 0x1a4de4u, 0x1a4de9u, "3d01005947", 352, "352@0xc1ec4:1", "+0x5"},
+    {112u, "vmop_112_plus0x5_state_formula_slot_unknown", "026", 0x1a4ed5u, 0x1a4edau, "003d01f9d3", 160, "160@0x994cf:1", "+0x5"},
+    {259u, "vmop_259_plus0xa_state_formula_slot_unknown", "026", 0x1a55beu, 0x1a55c8u, "e000ffff13050000ecfa", 28, "28@0x7e390:1", "+0xa"},
+    {188u, "vmop_188_plus0x5_state_formula_slot_unknown", "026", 0x1a5ac4u, 0x1a5ac9u, "fffe3d0100", 173, "173@0x9ba74:1", "+0x5"},
+    {117u, "vmop_117_minus0x40_sampled_backedge_slot_unknown", "026", 0x1a5ee8u, 0x1a5f3du, "a500000055000000", 165, "165@0x9a24c", "+0x55"},
+    {75u, "vmop_075_minus0x6d_sampled_backedge_slot_unknown", "029", 0x22ffb1u, 0x22ff44u, "ab0000006d0000803d019a", 171, "171@0x9b4b3", "-0x6d"},
+    {316u, "vmop_316_minus0x3c4_sampled_backedge_slot_unknown", "029", 0x2303aeu, 0x22ffeau, "a5000000c40300803d019a", 165, "165@0x9a24c", "-0x3c4"},
+    {308u, "vmop_308_plus0x20_exact_slot_unknown", "030", 0x231217u, 0x230839u, "ab000000de090080", 171, "171@0x9b4b3", "-0x9de"},
+    {145u, "vmop_145_plus0x139_sampled_long_or_sparse_slot_unknown", "033", 0x26cf1bu, 0x26db07u, "a5000000ec0b00003d0122", 165, "165@0x9a24c", "+0xbec"},
+    {195u, "vmop_195_minus0x2306_sampled_backedge_slot_unknown", "034", 0x26f077u, 0x26cd71u, "7e5606008000", 86, "86@0x8a37f", "-0x2306"},
+    {75u, "vmop_075_minus0x6d_sampled_backedge_slot_unknown", "036", 0x2bf048u, 0x2bf297u, "a50000004f0200003d0122", 165, "165@0x9a24c", "+0x24f"},
+    {334u, "vmop_334_plus0x2a5_sampled_long_or_sparse_slot_unknown", "037", 0x2bf4efu, 0x2bf97cu, "a50000008d0400003d0122", 165, "165@0x9a24c", "+0x48d"},
+    {316u, "vmop_316_minus0x3c4_sampled_backedge_slot_unknown", "038", 0x2bf9acu, 0x2bfe6fu, "62010000c30400003d0122", 354, "354@0xc2241", "+0x4c3"},
+    {334u, "vmop_334_plus0x2a5_sampled_long_or_sparse_slot_unknown", "039", 0x2c0591u, 0x2c1156u, "ab000000c50b00003d0122", 171, "171@0x9b4b3", "+0xbc5"},
+    {266u, "vmop_266_minus0x2e8_sampled_backedge_slot_unknown", "040", 0x2c13cdu, 0x292f3eu, "ab0000008fe40280", 171, "171@0x9b4b3", "-0x2e48f"},
+    {210u, "vmop_210_plus0x30_sampled_long_or_sparse_slot_unknown", "041", 0x30eebau, 0x30eeeau, "a5000000300000003d0122", 165, "165@0x9a24c", "+0x30"},
+    {117u, "vmop_117_minus0x40_sampled_backedge_slot_unknown", "041", 0x30eee2u, 0x30eea2u, "a500000040000080", 165, "165@0x9a24c", "-0x40"},
+    {316u, "vmop_316_minus0x3c4_sampled_backedge_slot_unknown", "041", 0x30f3c5u, 0x30f64du, "ab000000880200003d0100", 171, "171@0x9b4b3", "+0x288"},
+    {266u, "vmop_266_minus0x2e8_sampled_backedge_slot_unknown", "041", 0x30f645u, 0x30f0eeu, "6201000057050080", 354, "354@0xc2241", "-0x557"},
+    {75u, "vmop_075_minus0x6d_sampled_backedge_slot_unknown", "041", 0x310dbau, 0x315cc8u, "620100000e4f00003d0122", 354, "354@0xc2241", "+0x4f0e"},
+    {316u, "vmop_316_minus0x3c4_sampled_backedge_slot_unknown", "041", 0x31297du, 0x3129aau, "620100002d0000003d0122", 354, "354@0xc2241", "+0x2d"},
+    {316u, "vmop_316_minus0x3c4_sampled_backedge_slot_unknown", "041", 0x3157e1u, 0x31580eu, "ab0000002d0000003d0122", 171, "171@0x9b4b3", "+0x2d"},
+    {308u, "vmop_308_plus0x20_exact_slot_unknown", "041", 0x315cc0u, 0x310b1cu, "ab000000a4510080", 171, "171@0x9b4b3", "-0x51a4"},
+    {175u, "vmop_175_plus0x2cef7_central_or_long_slot_unknown", "041", 0x316672u, 0x343569u, "513307008000", 310, "310@0xb8556", "+0x2cef7"},
+    {316u, "vmop_316_minus0x3c4_sampled_backedge_slot_unknown", "042", 0x31b31bu, 0x31b34bu, "a5000000300000003d0122", 165, "165@0x9a24c", "+0x30"},
+    {308u, "vmop_308_plus0x20_exact_slot_unknown", "042", 0x31b343u, 0x31b303u, "ab00000040000080", 171, "171@0x9b4b3", "-0x40"},
+    {75u, "vmop_075_minus0x6d_sampled_backedge_slot_unknown", "042", 0x31b82cu, 0x31ba3du, "62010000110200003d019a", 354, "354@0xc2241", "+0x211"},
+    {308u, "vmop_308_plus0x20_exact_slot_unknown", "042", 0x31ba35u, 0x31b54fu, "62010000e6040080", 354, "354@0xc2241", "-0x4e6"},
+    {145u, "vmop_145_plus0x139_sampled_long_or_sparse_slot_unknown", "042", 0x31bbf9u, 0x31be84u, "620100008b0200003d0100", 354, "354@0xc2241", "+0x28b"},
+    {302u, "vmop_302_minus0x40_sampled_backedge_slot_unknown", "042", 0x31be7cu, 0x31bbaeu, "a5000000ce020080", 165, "165@0x9a24c", "-0x2ce"},
+    {75u, "vmop_075_minus0x6d_sampled_backedge_slot_unknown", "042", 0x31c005u, 0x31c035u, "a5000000300000003d0122", 165, "165@0x9a24c", "+0x30"},
+    {266u, "vmop_266_minus0x2e8_sampled_backedge_slot_unknown", "042", 0x31c02du, 0x31bfedu, "ab00000040000080", 171, "171@0x9b4b3", "-0x40"},
+    {210u, "vmop_210_plus0x30_sampled_long_or_sparse_slot_unknown", "042", 0x31c596u, 0x31c7a7u, "62010000110200003d019a", 354, "354@0xc2241", "+0x211"},
+    {266u, "vmop_266_minus0x2e8_sampled_backedge_slot_unknown", "042", 0x31c79fu, 0x31c239u, "a500000066050080", 165, "165@0x9a24c", "-0x566"},
+    {210u, "vmop_210_plus0x30_sampled_long_or_sparse_slot_unknown", "042", 0x31c963u, 0x31cbeeu, "620100008b0200003d0100", 354, "354@0xc2241", "+0x28b"},
+    {117u, "vmop_117_minus0x40_sampled_backedge_slot_unknown", "042", 0x31cbe6u, 0x31c918u, "ab000000ce020080", 171, "171@0x9b4b3", "-0x2ce"},
+    {334u, "vmop_334_plus0x2a5_sampled_long_or_sparse_slot_unknown", "042", 0x31dd95u, 0x31df8fu, "ab000000fa0100003d019a", 171, "171@0x9b4b3", "+0x1fa"},
+    {117u, "vmop_117_minus0x40_sampled_backedge_slot_unknown", "043", 0x31e75du, 0x31e77fu, "6201000022000000", 354, "354@0xc2241", "+0x22"},
+    {246u, "vmop_246_plus0x78_sampled_long_or_sparse_slot_unknown", "043", 0x31e842u, 0x31ea5cu, "620100001a0200003d0122", 354, "354@0xc2241", "+0x21a"},
+    {316u, "vmop_316_minus0x3c4_sampled_backedge_slot_unknown", "044", 0x31ea8cu, 0x31eae4u, "62010000580000003d0122", 354, "354@0xc2241", "+0x58"},
+    {210u, "vmop_210_plus0x30_sampled_long_or_sparse_slot_unknown", "046", 0x331945u, 0x331975u, "ab000000300000003d0122", 171, "171@0x9b4b3", "+0x30"},
+    {308u, "vmop_308_plus0x20_exact_slot_unknown", "046", 0x33196du, 0x33192du, "ab00000040000080", 171, "171@0x9b4b3", "-0x40"},
+    {334u, "vmop_334_plus0x2a5_sampled_long_or_sparse_slot_unknown", "046", 0x331e7du, 0x332105u, "62010000880200003d0100", 354, "354@0xc2241", "+0x288"},
+    {117u, "vmop_117_minus0x40_sampled_backedge_slot_unknown", "046", 0x3320fdu, 0x331b79u, "6201000084050080", 354, "354@0xc2241", "-0x584"},
+    {302u, "vmop_302_minus0x40_sampled_backedge_slot_unknown", "046", 0x33382du, 0x333882u, "ab00000055000000", 171, "171@0x9b4b3", "+0x55"},
+    {145u, "vmop_145_plus0x139_sampled_long_or_sparse_slot_unknown", "048", 0x334c7bu, 0x334cabu, "62010000300000003d0122", 354, "354@0xc2241", "+0x30"},
+    {117u, "vmop_117_minus0x40_sampled_backedge_slot_unknown", "048", 0x334ca3u, 0x334c63u, "a500000040000080", 165, "165@0x9a24c", "-0x40"},
+    {75u, "vmop_075_minus0x6d_sampled_backedge_slot_unknown", "048", 0x33518cu, 0x335414u, "a5000000880200003d0100", 165, "165@0x9a24c", "+0x288"},
+    {266u, "vmop_266_minus0x2e8_sampled_backedge_slot_unknown", "048", 0x33540cu, 0x334eafu, "ab0000005d050080", 171, "171@0x9b4b3", "-0x55d"},
+    {210u, "vmop_210_plus0x30_sampled_long_or_sparse_slot_unknown", "048", 0x3355d0u, 0x33585bu, "ab0000008b0200003d0100", 171, "171@0x9b4b3", "+0x28b"},
+    {308u, "vmop_308_plus0x20_exact_slot_unknown", "048", 0x335853u, 0x335585u, "62010000ce020080", 354, "354@0xc2241", "-0x2ce"},
+    {302u, "vmop_302_minus0x40_sampled_backedge_slot_unknown", "048", 0x336d73u, 0x336dc8u, "a500000055000000", 165, "165@0x9a24c", "+0x55"},
+    {145u, "vmop_145_plus0x139_sampled_long_or_sparse_slot_unknown", "050", 0x3386cdu, 0x338e18u, "a50000004b0700003d0100", 165, "165@0x9a24c", "+0x74b"},
+    {266u, "vmop_266_minus0x2e8_sampled_backedge_slot_unknown", "050", 0x338e10u, 0x338682u, "620100008e070080", 354, "354@0xc2241", "-0x78e"},
+    {308u, "vmop_308_plus0x20_exact_slot_unknown", "050", 0x33a330u, 0x33a385u, "6201000055000000", 354, "354@0xc2241", "+0x55"},
+    {246u, "vmop_246_plus0x78_sampled_long_or_sparse_slot_unknown", "052", 0x33be94u, 0x33c5b8u, "ab000000240700003d0100", 171, "171@0x9b4b3", "+0x724"},
+    {117u, "vmop_117_minus0x40_sampled_backedge_slot_unknown", "052", 0x33c5b0u, 0x33be49u, "6201000067070080", 354, "354@0xc2241", "-0x767"},
+    {246u, "vmop_246_plus0x78_sampled_long_or_sparse_slot_unknown", "053", 0x33e14cu, 0x33e8deu, "a5000000920700003d0122", 165, "165@0x9a24c", "+0x792"},
+    {75u, "vmop_075_minus0x6d_sampled_backedge_slot_unknown", "053", 0x33e829u, 0x33e889u, "a5000000600000003d0122", 165, "165@0x9a24c", "+0x60"},
+    {117u, "vmop_117_minus0x40_sampled_backedge_slot_unknown", "054", 0x33e8d6u, 0x33dd15u, "a5000000c10b0080", 165, "165@0x9a24c", "-0xbc1"},
+    {299u, "vmop_299_minus0x7fe6_sampled_backedge_slot_unknown", "054", 0x33e9e2u, 0x3369fcu, "795007008000", 169, "169@0x9af18", "-0x7fe6"},
+    {334u, "vmop_334_plus0x2a5_sampled_long_or_sparse_slot_unknown", "055", 0x33f6e0u, 0x33f710u, "ab000000300000003d0122", 171, "171@0x9b4b3", "+0x30"},
+    {117u, "vmop_117_minus0x40_sampled_backedge_slot_unknown", "055", 0x33f708u, 0x33f6c8u, "6201000040000080", 354, "354@0xc2241", "-0x40"},
+    {246u, "vmop_246_plus0x78_sampled_long_or_sparse_slot_unknown", "055", 0x33fbf1u, 0x33fe02u, "a5000000110200003d019a", 165, "165@0x9a24c", "+0x211"},
+    {308u, "vmop_308_plus0x20_exact_slot_unknown", "055", 0x33fdfau, 0x33f914u, "ab000000e6040080", 171, "171@0x9b4b3", "-0x4e6"},
+    {210u, "vmop_210_plus0x30_sampled_long_or_sparse_slot_unknown", "055", 0x340193u, 0x3401c3u, "ab000000300000003d0122", 171, "171@0x9b4b3", "+0x30"},
+    {308u, "vmop_308_plus0x20_exact_slot_unknown", "055", 0x3401bbu, 0x34017bu, "6201000040000080", 354, "354@0xc2241", "-0x40"},
+    {316u, "vmop_316_minus0x3c4_sampled_backedge_slot_unknown", "055", 0x3406cbu, 0x340953u, "62010000880200003d0100", 354, "354@0xc2241", "+0x288"},
+    {117u, "vmop_117_minus0x40_sampled_backedge_slot_unknown", "055", 0x34094bu, 0x3403c7u, "6201000084050080", 354, "354@0xc2241", "-0x584"},
+    {210u, "vmop_210_plus0x30_sampled_long_or_sparse_slot_unknown", "055", 0x340b0fu, 0x340d9au, "ab0000008b0200003d0100", 171, "171@0x9b4b3", "+0x28b"},
+    {266u, "vmop_266_minus0x2e8_sampled_backedge_slot_unknown", "055", 0x340d92u, 0x340ac4u, "62010000ce020080", 354, "354@0xc2241", "-0x2ce"},
+    {75u, "vmop_075_minus0x6d_sampled_backedge_slot_unknown", "055", 0x340f1bu, 0x340f4bu, "a5000000300000003d0122", 165, "165@0x9a24c", "+0x30"},
+    {266u, "vmop_266_minus0x2e8_sampled_backedge_slot_unknown", "055", 0x340f43u, 0x340f03u, "ab00000040000080", 171, "171@0x9b4b3", "-0x40"},
+    {334u, "vmop_334_plus0x2a5_sampled_long_or_sparse_slot_unknown", "055", 0x34142cu, 0x3416b4u, "a5000000880200003d0100", 165, "165@0x9a24c", "+0x288"},
+    {266u, "vmop_266_minus0x2e8_sampled_backedge_slot_unknown", "055", 0x3416acu, 0x34114fu, "a50000005d050080", 165, "165@0x9a24c", "-0x55d"},
+    {145u, "vmop_145_plus0x139_sampled_long_or_sparse_slot_unknown", "055", 0x341a45u, 0x341a75u, "62010000300000003d0122", 354, "354@0xc2241", "+0x30"},
+    {266u, "vmop_266_minus0x2e8_sampled_backedge_slot_unknown", "055", 0x341a6du, 0x341a2du, "ab00000040000080", 171, "171@0x9b4b3", "-0x40"},
+    {246u, "vmop_246_plus0x78_sampled_long_or_sparse_slot_unknown", "055", 0x341f7du, 0x342205u, "ab000000880200003d0100", 171, "171@0x9b4b3", "+0x288"},
+    {308u, "vmop_308_plus0x20_exact_slot_unknown", "055", 0x3421fdu, 0x341c79u, "6201000084050080", 354, "354@0xc2241", "-0x584"},
+    {246u, "vmop_246_plus0x78_sampled_long_or_sparse_slot_unknown", "055", 0x3423c1u, 0x34264cu, "620100008b0200003d0100", 354, "354@0xc2241", "+0x28b"},
+    {117u, "vmop_117_minus0x40_sampled_backedge_slot_unknown", "055", 0x342644u, 0x342376u, "a5000000ce020080", 165, "165@0x9a24c", "-0x2ce"},
+    {210u, "vmop_210_plus0x30_sampled_long_or_sparse_slot_unknown", "055", 0x3427cdu, 0x3427fdu, "ab000000300000003d0122", 171, "171@0x9b4b3", "+0x30"},
+    {266u, "vmop_266_minus0x2e8_sampled_backedge_slot_unknown", "055", 0x3427f5u, 0x3427b5u, "ab00000040000080", 171, "171@0x9b4b3", "-0x40"},
+    {145u, "vmop_145_plus0x139_sampled_long_or_sparse_slot_unknown", "055", 0x342cdeu, 0x342f66u, "a5000000880200003d0100", 165, "165@0x9a24c", "+0x288"},
+    {308u, "vmop_308_plus0x20_exact_slot_unknown", "055", 0x342f5eu, 0x342a01u, "ab0000005d050080", 171, "171@0x9b4b3", "-0x55d"},
+    {75u, "vmop_075_minus0x6d_sampled_backedge_slot_unknown", "055", 0x343122u, 0x3433adu, "620100008b0200003d0100", 354, "354@0xc2241", "+0x28b"},
+    {302u, "vmop_302_minus0x40_sampled_backedge_slot_unknown", "055", 0x3433a5u, 0x3430d7u, "ab000000ce020080", 171, "171@0x9b4b3", "-0x2ce"},
+    {112u, "vmop_112_plus0x5_state_formula_slot_unknown", "055", 0x343e2au, 0x343e2fu, "133d01a9f4", 108, "108@0x8f24b:1", "+0x5"},
+    {316u, "vmop_316_minus0x3c4_sampled_backedge_slot_unknown", "055", 0x343f0cu, 0x343f3cu, "62010000300000003d0122", 354, "354@0xc2241", "+0x30"},
+    {117u, "vmop_117_minus0x40_sampled_backedge_slot_unknown", "055", 0x343f34u, 0x343ef4u, "6201000040000080", 354, "354@0xc2241", "-0x40"},
+    {9u, "vmop_009_plus0x5_state_formula_slot_unknown", "056", 0x36109au, 0x36109fu, "693d01b44a", 256, "256@0xad849:3", "+0x5"},
+    {75u, "vmop_075_minus0x6d_sampled_backedge_slot_unknown", "056", 0x361133u, 0x3613bbu, "a5000000880200003d0100", 165, "165@0x9a24c", "+0x288"},
+    {308u, "vmop_308_plus0x20_exact_slot_unknown", "056", 0x3613b3u, 0x360dfdu, "ab000000b6050080", 171, "171@0x9b4b3", "-0x5b6"},
+    {246u, "vmop_246_plus0x78_sampled_long_or_sparse_slot_unknown", "056", 0x361577u, 0x361802u, "620100008b0200003d0100", 354, "354@0xc2241", "+0x28b"},
+    {308u, "vmop_308_plus0x20_exact_slot_unknown", "056", 0x3617fau, 0x36152cu, "ab000000ce020080", 171, "171@0x9b4b3", "-0x2ce"},
+    {69u, "vmop_069_plus0xd_state_formula_slot_unknown", "056", 0x362716u, 0x362723u, "0009c98e9a2065ea5536008000", 310, "310@0xb8556:2", "+0xd"},
+    {316u, "vmop_316_minus0x3c4_sampled_backedge_slot_unknown", "056", 0x362919u, 0x362b2au, "ab000000110200003d019a", 171, "171@0x9b4b3", "+0x211"},
+    {117u, "vmop_117_minus0x40_sampled_backedge_slot_unknown", "056", 0x362b22u, 0x362615u, "620100000d050080", 354, "354@0xc2241", "-0x50d"},
+    {334u, "vmop_334_plus0x2a5_sampled_long_or_sparse_slot_unknown", "056", 0x362ce6u, 0x362f71u, "620100008b0200003d0100", 354, "354@0xc2241", "+0x28b"},
+    {302u, "vmop_302_minus0x40_sampled_backedge_slot_unknown", "056", 0x362f69u, 0x362c9bu, "ab000000ce020080", 171, "171@0x9b4b3", "-0x2ce"},
+    {316u, "vmop_316_minus0x3c4_sampled_backedge_slot_unknown", "056", 0x36405bu, 0x36426cu, "a5000000110200003d019a", 165, "165@0x9a24c", "+0x211"},
+    {266u, "vmop_266_minus0x2e8_sampled_backedge_slot_unknown", "056", 0x364264u, 0x363d84u, "a5000000e0040080", 165, "165@0x9a24c", "-0x4e0"},
+    {334u, "vmop_334_plus0x2a5_sampled_long_or_sparse_slot_unknown", "056", 0x365161u, 0x365190u, "a50000002f0000003d0122", 165, "165@0x9a24c", "+0x2f"},
+    {246u, "vmop_246_plus0x78_sampled_long_or_sparse_slot_unknown", "056", 0x36523eu, 0x365458u, "a50000001a0200003d0122", 165, "165@0x9a24c", "+0x21a"},
+    {334u, "vmop_334_plus0x2a5_sampled_long_or_sparse_slot_unknown", "057", 0x365488u, 0x3654e0u, "62010000580000003d0122", 354, "354@0xc2241", "+0x58"},
+    {334u, "vmop_334_plus0x2a5_sampled_long_or_sparse_slot_unknown", "059", 0x3676fdu, 0x36772du, "62010000300000003d0122", 354, "354@0xc2241", "+0x30"},
+    {302u, "vmop_302_minus0x40_sampled_backedge_slot_unknown", "059", 0x367725u, 0x3676e5u, "ab00000040000080", 171, "171@0x9b4b3", "-0x40"},
+    {210u, "vmop_210_plus0x30_sampled_long_or_sparse_slot_unknown", "059", 0x367c0eu, 0x367e96u, "62010000880200003d0100", 354, "354@0xc2241", "+0x288"},
+    {302u, "vmop_302_minus0x40_sampled_backedge_slot_unknown", "059", 0x367e8eu, 0x367931u, "a50000005d050080", 165, "165@0x9a24c", "-0x55d"},
+    {75u, "vmop_075_minus0x6d_sampled_backedge_slot_unknown", "059", 0x368052u, 0x3682ddu, "a50000008b0200003d0100", 165, "165@0x9a24c", "+0x28b"},
+    {308u, "vmop_308_plus0x20_exact_slot_unknown", "059", 0x3682d5u, 0x368007u, "62010000ce020080", 354, "354@0xc2241", "-0x2ce"},
+    {276u, "vmop_276_plus0xa_state_formula_slot_unknown", "059", 0x368e1bu, 0x368e25u, "d969ffffffffffffffff", 157, "157@0x98a9a:1", "+0xa"},
+    {246u, "vmop_246_plus0x78_sampled_long_or_sparse_slot_unknown", "059", 0x369397u, 0x369b28u, "62010000910700003d0122", 354, "354@0xc2241", "+0x791"},
+    {145u, "vmop_145_plus0x139_sampled_long_or_sparse_slot_unknown", "059", 0x369a73u, 0x369ad3u, "62010000600000003d0122", 354, "354@0xc2241", "+0x60"},
+    {117u, "vmop_117_minus0x40_sampled_backedge_slot_unknown", "060", 0x369b20u, 0x368f60u, "a5000000c00b0080", 165, "165@0x9a24c", "-0xbc0"},
+    {195u, "vmop_195_minus0x2306_sampled_backedge_slot_unknown", "060", 0x36a09cu, 0x364c72u, "517c07008000", 310, "310@0xb8556", "-0x542a"},
+    {316u, "vmop_316_minus0x3c4_sampled_backedge_slot_unknown", "061", 0x36b35eu, 0x36b38eu, "ab000000300000003d0122", 171, "171@0x9b4b3", "+0x30"},
+    {117u, "vmop_117_minus0x40_sampled_backedge_slot_unknown", "061", 0x36b386u, 0x36b346u, "6201000040000080", 354, "354@0xc2241", "-0x40"},
+    {210u, "vmop_210_plus0x30_sampled_long_or_sparse_slot_unknown", "061", 0x36b896u, 0x36bb1eu, "62010000880200003d0100", 354, "354@0xc2241", "+0x288"},
+    {308u, "vmop_308_plus0x20_exact_slot_unknown", "061", 0x36bb16u, 0x36b592u, "ab00000084050080", 171, "171@0x9b4b3", "-0x584"},
+    {142u, "vmop_142_plus0xa_state_formula_slot_unknown", "061", 0x36c873u, 0x36c87du, "c9c7f0c636380f399802", 83, "83@0x8947b:1", "+0xa"},
+    {334u, "vmop_334_plus0x2a5_sampled_long_or_sparse_slot_unknown", "061", 0x36cde8u, 0x36d579u, "62010000910700003d0122", 354, "354@0xc2241", "+0x791"},
+    {210u, "vmop_210_plus0x30_sampled_long_or_sparse_slot_unknown", "061", 0x36d4c4u, 0x36d524u, "62010000600000003d0122", 354, "354@0xc2241", "+0x60"},
+    {117u, "vmop_117_minus0x40_sampled_backedge_slot_unknown", "062", 0x36d571u, 0x36c9b1u, "62010000c00b0080", 354, "354@0xc2241", "-0xbc0"},
+    {195u, "vmop_195_minus0x2306_sampled_backedge_slot_unknown", "062", 0x36daedu, 0x364e5fu, "ad7e07008000", 310, "310@0xb8556", "-0x8c8e"},
+    {145u, "vmop_145_plus0x139_sampled_long_or_sparse_slot_unknown", "063", 0x36ef16u, 0x36ef46u, "ab000000300000003d0122", 171, "171@0x9b4b3", "+0x30"},
+    {302u, "vmop_302_minus0x40_sampled_backedge_slot_unknown", "063", 0x36ef3eu, 0x36eefeu, "a500000040000080", 165, "165@0x9a24c", "-0x40"},
+    {225u, "vmop_225_plus0x5_state_formula_slot_unknown", "063", 0x36f3d7u, 0x36f3dcu, "ce133d0187", 144, "144@0x95887:6", "+0x5"},
+    {246u, "vmop_246_plus0x78_sampled_long_or_sparse_slot_unknown", "063", 0x36f427u, 0x36f6afu, "a5000000880200003d0100", 165, "165@0x9a24c", "+0x288"},
+    {117u, "vmop_117_minus0x40_sampled_backedge_slot_unknown", "063", 0x36f6a7u, 0x36f14au, "a50000005d050080", 165, "165@0x9a24c", "-0x55d"},
+    {145u, "vmop_145_plus0x139_sampled_long_or_sparse_slot_unknown", "063", 0x36f86bu, 0x36faf6u, "ab0000008b0200003d0100", 171, "171@0x9b4b3", "+0x28b"},
+    {266u, "vmop_266_minus0x2e8_sampled_backedge_slot_unknown", "063", 0x36faeeu, 0x36f820u, "a5000000ce020080", 165, "165@0x9a24c", "-0x2ce"},
+    {145u, "vmop_145_plus0x139_sampled_long_or_sparse_slot_unknown", "063", 0x3704f7u, 0x370770u, "62010000790200003d0122", 354, "354@0xc2241", "+0x279"},
+    {302u, "vmop_302_minus0x40_sampled_backedge_slot_unknown", "063", 0x370768u, 0x37078au, "ab00000022000000", 171, "171@0x9b4b3", "+0x22"},
+    {316u, "vmop_316_minus0x3c4_sampled_backedge_slot_unknown", "063", 0x3707a0u, 0x371a63u, "a5000000c31200003d0122", 165, "165@0x9a24c", "+0x12c3"},
+    {334u, "vmop_334_plus0x2a5_sampled_long_or_sparse_slot_unknown", "063", 0x371477u, 0x37171cu, "62010000a50200003d0100", 354, "354@0xc2241", "+0x2a5"},
+    {145u, "vmop_145_plus0x139_sampled_long_or_sparse_slot_unknown", "063", 0x37158eu, 0x3716c7u, "62010000390100003d019a", 354, "354@0xc2241", "+0x139"},
+    {266u, "vmop_266_minus0x2e8_sampled_backedge_slot_unknown", "064", 0x371714u, 0x37142cu, "62010000e8020080", 354, "354@0xc2241", "-0x2e8"},
+    {246u, "vmop_246_plus0x78_sampled_long_or_sparse_slot_unknown", "064", 0x37174cu, 0x3717c4u, "a5000000780000003d0122", 165, "165@0x9a24c", "+0x78"},
+    {308u, "vmop_308_plus0x20_exact_slot_unknown", "065", 0x371a43u, 0x370256u, "ab000000ed170080", 171, "171@0x9b4b3", "-0x17ed"},
+    {299u, "vmop_299_minus0x7fe6_sampled_backedge_slot_unknown", "065", 0x371fd7u, 0x36504cu, "f68107008000", 310, "310@0xb8556", "-0xcf8b"},
+};
+enum { VM_SLOT_UNKNOWN_DISPATCH_ROW_COUNT = 164 };
+
+static const VMSlotUnknownDispatchSummary vm_slot_unknown_dispatch_summary[] = {
+    {9u, "vmop_009_plus0x5_state_formula_slot_unknown", 1u, 1u, "256:1", "exact_observed_table_no_formula"},
+    {69u, "vmop_069_plus0xd_state_formula_slot_unknown", 1u, 1u, "310:1", "exact_observed_table_no_formula"},
+    {75u, "vmop_075_minus0x6d_sampled_backedge_slot_unknown", 14u, 12u, "165:8,354:4,171:2", "exact_observed_table_no_formula"},
+    {112u, "vmop_112_plus0x5_state_formula_slot_unknown", 2u, 2u, "160:1,108:1", "exact_observed_table_no_formula"},
+    {117u, "vmop_117_minus0x40_sampled_backedge_slot_unknown", 18u, 14u, "354:9,165:8,171:1", "exact_observed_table_no_formula"},
+    {142u, "vmop_142_plus0xa_state_formula_slot_unknown", 1u, 1u, "83:1", "exact_observed_table_no_formula"},
+    {145u, "vmop_145_plus0x139_sampled_long_or_sparse_slot_unknown", 13u, 11u, "354:6,171:4,165:3", "exact_observed_table_no_formula"},
+    {175u, "vmop_175_plus0x2cef7_central_or_long_slot_unknown", 1u, 1u, "310:1", "exact_observed_table_no_formula"},
+    {188u, "vmop_188_plus0x5_state_formula_slot_unknown", 1u, 1u, "173:1", "exact_observed_table_no_formula"},
+    {195u, "vmop_195_minus0x2306_sampled_backedge_slot_unknown", 3u, 3u, "310:2,86:1", "exact_observed_table_no_formula"},
+    {210u, "vmop_210_plus0x30_sampled_long_or_sparse_slot_unknown", 13u, 9u, "171:6,354:5,165:2", "exact_observed_table_no_formula"},
+    {225u, "vmop_225_plus0x5_state_formula_slot_unknown", 1u, 1u, "144:1", "exact_observed_table_no_formula"},
+    {229u, "vmop_229_plus0x5_state_formula_slot_unknown", 1u, 1u, "352:1", "exact_observed_table_no_formula"},
+    {246u, "vmop_246_plus0x78_sampled_long_or_sparse_slot_unknown", 13u, 12u, "354:6,165:5,171:2", "exact_observed_table_no_formula"},
+    {259u, "vmop_259_plus0xa_state_formula_slot_unknown", 1u, 1u, "28:1", "exact_observed_table_no_formula"},
+    {266u, "vmop_266_minus0x2e8_sampled_backedge_slot_unknown", 16u, 13u, "171:7,354:5,165:4", "exact_observed_table_no_formula"},
+    {276u, "vmop_276_plus0xa_state_formula_slot_unknown", 1u, 1u, "157:1", "exact_observed_table_no_formula"},
+    {299u, "vmop_299_minus0x7fe6_sampled_backedge_slot_unknown", 2u, 2u, "169:1,310:1", "exact_observed_table_no_formula"},
+    {302u, "vmop_302_minus0x40_sampled_backedge_slot_unknown", 10u, 9u, "171:5,165:4,354:1", "exact_observed_table_no_formula"},
+    {308u, "vmop_308_plus0x20_exact_slot_unknown", 19u, 17u, "171:12,354:7", "exact_observed_table_no_formula"},
+    {316u, "vmop_316_minus0x3c4_sampled_backedge_slot_unknown", 13u, 13u, "354:5,165:4,171:4", "exact_observed_table_no_formula"},
+    {334u, "vmop_334_plus0x2a5_sampled_long_or_sparse_slot_unknown", 18u, 18u, "354:9,171:5,165:4", "exact_observed_table_no_formula"},
+    {358u, "vmop_358_plus0x5_state_formula_slot_unknown", 1u, 1u, "144:1", "exact_observed_table_no_formula"},
+};
+enum { VM_SLOT_UNKNOWN_DISPATCH_SUMMARY_COUNT = 23 };
+
+const VMSlotUnknownDispatchRow *vm_slot_unknown_dispatch_row(size_t index) {
+    return index < (size_t)VM_SLOT_UNKNOWN_DISPATCH_ROW_COUNT ? &vm_slot_unknown_dispatch_rows[index] : 0;
+}
+
+const VMSlotUnknownDispatchSummary *vm_slot_unknown_dispatch_entry(size_t index) {
+    return index < (size_t)VM_SLOT_UNKNOWN_DISPATCH_SUMMARY_COUNT ? &vm_slot_unknown_dispatch_summary[index] : 0;
+}
+
+#endif /* VM_SLOT_UNKNOWN_DISPATCH_TABLES_C */

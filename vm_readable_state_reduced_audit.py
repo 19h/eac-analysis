@@ -71,6 +71,7 @@ def main() -> int:
         "source_program_ops": root / "vm_program_readable_ops.tsv",
         "compiler_reductions": root / "vm_mba_state_formula_compiler_reductions.tsv",
         "dispatch_reductions_by_entry": root / "vm_mba_dispatch_formula_compiler_reductions_by_entry.tsv",
+        "slot_unknown_summary": root / "vm_slot_unknown_dispatch_summary.tsv",
         "control_edges": root / "vm_program_control_graph_edges.tsv",
         "vm_refs": root / "vm_native_side_effect_vm_refs.tsv",
         "dossiers": root / "vm_program_behavior_dossiers.tsv",
@@ -93,6 +94,7 @@ def main() -> int:
     source_ops = read_tsv(paths["source_program_ops"])
     reductions = read_tsv(paths["compiler_reductions"])
     dispatch_reductions = read_tsv(paths["dispatch_reductions_by_entry"])
+    slot_unknown_summary = read_tsv(paths["slot_unknown_summary"])
     edges = read_tsv(paths["control_edges"])
     refs = read_tsv(paths["vm_refs"])
     dossiers = read_tsv(paths["dossiers"])
@@ -115,6 +117,11 @@ def main() -> int:
         if parse_int(row.get("variant_count")) > 0
         and parse_int(row.get("variant_count")) == parse_int(row.get("proved_variants"))
         and row.get("reduced_dispatch_preview")
+    }
+    slot_unknown_tables = {
+        row["source_entry"]: row
+        for row in slot_unknown_summary
+        if row.get("resolution_status") == "exact_observed_table_no_formula"
     }
 
     ok &= check("state_reduced_isa_row_count_matches_source", len(reduced_isa) == len(source_isa), f"reduced={len(reduced_isa)} source={len(source_isa)}")
@@ -181,12 +188,32 @@ def main() -> int:
     ok &= check("proved_dispatch_reductions_promoted_to_dispatch_semantics", not bad_dispatch_rows, f"bad={bad_dispatch_rows[:8]} total={len(dispatch_proved)}")
     ok &= check("dispatch_target_binding_open_entries_visible", len(target_binding_open) == 8, f"entries={target_binding_open[:12]}")
 
+    slot_unknown_entries = {
+        row["source_entry"]
+        for row in source_isa
+        if row.get("dispatch_slot_kind") == "slot_unknown"
+    }
+    bad_slot_unknown: list[str] = []
+    for entry in slot_unknown_entries:
+        row = reduced_isa_by_entry.get(entry, {})
+        if entry not in slot_unknown_tables:
+            bad_slot_unknown.append(f"{entry}:missing_table")
+        elif row.get("slot_unknown_dispatch_status") != "exact_observed_table_no_formula":
+            bad_slot_unknown.append(f"{entry}:status={row.get('slot_unknown_dispatch_status')}")
+        elif "exact observed target-by-bytecode table" not in row.get("dispatch_semantics", ""):
+            bad_slot_unknown.append(f"{entry}:semantics_not_promoted")
+        elif "slot_unknown_formula_not_recovered_exact_table_only" not in row.get("unresolved", ""):
+            bad_slot_unknown.append(f"{entry}:formula_gap_not_visible")
+    ok &= check("slot_unknown_exact_tables_promoted_to_dispatch_semantics", not bad_slot_unknown, f"bad={bad_slot_unknown[:8]} total={len(slot_unknown_entries)}")
+
     missing_program_promotions: list[str] = []
     missing_dispatch_program_promotions: list[str] = []
+    missing_slot_unknown_program_promotions: list[str] = []
     source_ref_indexes: set[str] = set()
     reduced_ref_indexes: set[str] = set()
     reduced_program_row_count = 0
     dispatch_reduced_program_row_count = 0
+    slot_unknown_program_row_count = 0
     for row in source_ops:
         source_ref_indexes.update(split_refs(row.get("string_ref_indexes", "")))
     for row in reduced_ops:
@@ -201,8 +228,13 @@ def main() -> int:
             dispatch_reduced_program_row_count += 1
             if row.get("dispatch_reduction_status") != "applied_proved_equivalent" or "Z3-proved simplified dispatch" not in row.get("dispatch_semantics", ""):
                 missing_dispatch_program_promotions.append(f"{row.get('program')}:{row.get('start_vm_ip')}:{entry}")
+        if entry in slot_unknown_tables:
+            slot_unknown_program_row_count += 1
+            if row.get("slot_unknown_dispatch_status") != "exact_observed_table_no_formula" or "exact observed target-by-bytecode table" not in row.get("dispatch_semantics", ""):
+                missing_slot_unknown_program_promotions.append(f"{row.get('program')}:{row.get('start_vm_ip')}:{entry}")
     ok &= check("program_rows_promote_proved_state_reductions", not missing_program_promotions, f"bad={missing_program_promotions[:8]} rows={reduced_program_row_count}")
     ok &= check("program_rows_promote_proved_dispatch_reductions", not missing_dispatch_program_promotions, f"bad={missing_dispatch_program_promotions[:8]} rows={dispatch_reduced_program_row_count}")
+    ok &= check("program_rows_promote_slot_unknown_exact_tables", not missing_slot_unknown_program_promotions, f"bad={missing_slot_unknown_program_promotions[:8]} rows={slot_unknown_program_row_count}")
     ok &= check("string_ref_indexes_preserved", source_ref_indexes == reduced_ref_indexes, f"source={len(source_ref_indexes)} reduced={len(reduced_ref_indexes)} missing={sorted(source_ref_indexes - reduced_ref_indexes)[:8]}")
 
     ops_counts: Counter[str] = Counter(row["program"] for row in reduced_ops)
@@ -243,6 +275,7 @@ def main() -> int:
     bad_file_counts: list[str] = []
     missing_reduced_text: list[str] = []
     missing_dispatch_text: list[str] = []
+    missing_slot_unknown_text: list[str] = []
     for program, path in c_paths:
         if not path.exists():
             continue
@@ -264,15 +297,18 @@ def main() -> int:
             missing_reduced_text.append(program)
         if dispatch_reduced_counts.get(program, 0) and "Z3-proved simplified dispatch" not in text:
             missing_dispatch_text.append(program)
+        if any(row.get("program") == program for row in reduced_ops if row.get("slot_unknown_dispatch_status") == "exact_observed_table_no_formula") and "exact observed target-by-bytecode table" not in text:
+            missing_slot_unknown_text.append(program)
     ok &= check("state_reduced_c_enum_counts_match_inputs", not bad_file_counts, f"bad={bad_file_counts[:8]}")
     ok &= check("state_reduced_c_files_contain_reduced_state_text", not missing_reduced_text, f"bad={missing_reduced_text[:8]}")
     ok &= check("state_reduced_c_files_contain_reduced_dispatch_text", not missing_dispatch_text, f"bad={missing_dispatch_text[:8]}")
+    ok &= check("state_reduced_c_files_contain_slot_unknown_table_text", not missing_slot_unknown_text, f"bad={missing_slot_unknown_text[:8]}")
 
     generated_c_files = sorted(paths["state_reduced_c_dir"].glob("vm_program_atlas_*_readable.c"))
     ok &= check("state_reduced_c_file_count_matches_manifest", len(generated_c_files) == len(c_manifest), f"files={len(generated_c_files)} manifest={len(c_manifest)}")
     ok &= check(
         "markdown_caveats_remaining_gaps",
-        "Slot-unknown dispatch" in md_text and "unvalidated dispatch target binding" in md_text and "native-call binding" in md_text and "real-server path coverage" in md_text,
+        "symbolic formulas remain unrecovered" in md_text and "unvalidated dispatch target binding" in md_text and "native-call binding" in md_text and "real-server path coverage" in md_text,
         "required caveats present",
     )
 

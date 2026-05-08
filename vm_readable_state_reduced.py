@@ -42,10 +42,12 @@ def semantic_c(row: dict[str, str]) -> str:
 
 
 def reduced_unresolved(row: dict[str, str]) -> str:
+    slot_table_status = row.get("slot_unknown_dispatch_status", "")
     reasons = [
         reason
         for reason in split_reasons(row.get("unresolved", ""))
         if reason not in {"algebraic_state_or_slot_formula", "state_formula_not_named"}
+        and not (slot_table_status == "exact_observed_table_no_formula" and reason in {"dispatch_slot_unknown", "static_model_or_runtime_validation_incomplete"})
     ]
     slot_kind = row.get("dispatch_slot_kind", "")
     dispatch_status = row.get("dispatch_reduction_status", "")
@@ -54,6 +56,8 @@ def reduced_unresolved(row: dict[str, str]) -> str:
         reasons.append("dispatch_formula_not_reduced")
     if target_status == "target_binding_not_validated":
         reasons.append("dispatch_target_binding_not_validated")
+    if slot_table_status == "exact_observed_table_no_formula":
+        reasons.append("slot_unknown_formula_not_recovered_exact_table_only")
     return join_reasons(reasons)
 
 
@@ -61,6 +65,8 @@ def reduced_grade(row: dict[str, str], unresolved: str) -> str:
     reasons = set(split_reasons(unresolved))
     if "dispatch_slot_unknown" in reasons:
         return "state_reduced_unresolved_dispatch_details"
+    if "slot_unknown_formula_not_recovered_exact_table_only" in reasons:
+        return "state_reduced_exact_observed_dispatch_table"
     if "static_model_or_runtime_validation_incomplete" in reasons:
         return "state_reduced_partial_runtime_or_static_model"
     if "dispatch_formula_not_reduced" in reasons:
@@ -93,10 +99,19 @@ def dispatch_map(rows: list[dict[str, str]]) -> dict[str, dict[str, str]]:
     return proved
 
 
+def slot_unknown_map(rows: list[dict[str, str]]) -> dict[str, dict[str, str]]:
+    return {
+        row["source_entry"]: row
+        for row in rows
+        if row.get("resolution_status") == "exact_observed_table_no_formula"
+    }
+
+
 def reduce_isa_rows(
     isa_rows: list[dict[str, str]],
     reductions_by_entry: dict[str, dict[str, str]],
     dispatch_by_entry: dict[str, dict[str, str]],
+    slot_unknown_by_entry: dict[str, dict[str, str]],
 ) -> tuple[list[dict[str, object]], Counter[str]]:
     out_rows: list[dict[str, object]] = []
     status_counts: Counter[str] = Counter()
@@ -105,6 +120,7 @@ def reduce_isa_rows(
         entry = row.get("source_entry", "")
         proof = reductions_by_entry.get(entry)
         dispatch = dispatch_by_entry.get(entry)
+        slot_unknown = slot_unknown_by_entry.get(entry)
         out["original_dispatch_semantics"] = row.get("dispatch_semantics", "")
         out["original_dispatch_slot_preview"] = row.get("dispatch_slot_preview", "")
         if dispatch:
@@ -133,6 +149,22 @@ def reduce_isa_rows(
             out["dispatch_proved_variants"] = ""
             out["dispatch_target_mismatched_events"] = ""
             status_counts["dispatch_not_applicable_or_unproved"] += 1
+        if slot_unknown:
+            out["dispatch_semantics"] = (
+                "next_entry = exact observed target-by-bytecode table; "
+                f"rows={slot_unknown.get('rows', '')}; "
+                f"byte_patterns={slot_unknown.get('byte_pattern_count', '')}; "
+                f"targets={slot_unknown.get('target_mix', '')}; "
+                "formula_status=not_recovered"
+            )
+            out["slot_unknown_dispatch_status"] = slot_unknown.get("resolution_status", "")
+            out["slot_unknown_dispatch_rows"] = slot_unknown.get("rows", "")
+            out["slot_unknown_dispatch_targets"] = slot_unknown.get("target_mix", "")
+            status_counts["slot_unknown_table_applied"] += 1
+        else:
+            out["slot_unknown_dispatch_status"] = ""
+            out["slot_unknown_dispatch_rows"] = ""
+            out["slot_unknown_dispatch_targets"] = ""
         if proof:
             candidate = proof["candidate_c"]
             out["original_state_semantics"] = row.get("state_semantics", "")
@@ -189,6 +221,9 @@ def reduce_program_rows(
             "dispatch_variant_count",
             "dispatch_proved_variants",
             "dispatch_target_mismatched_events",
+            "slot_unknown_dispatch_status",
+            "slot_unknown_dispatch_rows",
+            "slot_unknown_dispatch_targets",
         ]:
             if field in isa:
                 out[field] = isa[field]
@@ -239,6 +274,8 @@ def emit_vmpseudo_files(root: Path, rows_by_program: dict[str, list[dict[str, ob
                 lines.append(f"    state_proof: {row.get('state_reduction_smt2', '')}")
             if row.get("dispatch_reduction_status") == "applied_proved_equivalent":
                 lines.append(f"    dispatch_proof: {row.get('dispatch_reduction_proof_status', '')}")
+            if row.get("slot_unknown_dispatch_status") == "exact_observed_table_no_formula":
+                lines.append("    dispatch_table: exact observed slot-unknown table, formula not recovered")
             if row.get("string_refs"):
                 lines.append(f"    data: {row['string_refs']} categories={row['side_effect_categories']}")
             if row.get("unresolved") and row.get("unresolved") != "none":
@@ -308,6 +345,7 @@ def main() -> int:
         root / "vm_program_readable_ops.tsv",
         root / "vm_mba_state_formula_compiler_reductions.tsv",
         root / "vm_mba_dispatch_formula_compiler_reductions_by_entry.tsv",
+        root / "vm_slot_unknown_dispatch_summary.tsv",
         root / "vm_program_control_graph_edges.tsv",
         root / "vm_native_side_effect_vm_refs.tsv",
         root / "vm_program_behavior_dossiers.tsv",
@@ -320,13 +358,15 @@ def main() -> int:
     program_rows = read_tsv(root / "vm_program_readable_ops.tsv")
     reductions = read_tsv(root / "vm_mba_state_formula_compiler_reductions.tsv")
     dispatch_reductions = read_tsv(root / "vm_mba_dispatch_formula_compiler_reductions_by_entry.tsv")
+    slot_unknown_summary = read_tsv(root / "vm_slot_unknown_dispatch_summary.tsv")
     edges_by_program = group_by(read_tsv(root / "vm_program_control_graph_edges.tsv"), "source_program")
     refs_by_program = group_by(read_tsv(root / "vm_native_side_effect_vm_refs.tsv"), "program")
     dossiers = {row["program"]: row for row in read_tsv(root / "vm_program_behavior_dossiers.tsv")}
 
     reductions_by_entry = proof_map(reductions)
     dispatch_by_entry = dispatch_map(dispatch_reductions)
-    reduced_isa_rows, status_counts = reduce_isa_rows(isa_rows, reductions_by_entry, dispatch_by_entry)
+    slot_unknown_by_entry = slot_unknown_map(slot_unknown_summary)
+    reduced_isa_rows, status_counts = reduce_isa_rows(isa_rows, reductions_by_entry, dispatch_by_entry, slot_unknown_by_entry)
     reduced_isa_by_entry = {str(row["source_entry"]): row for row in reduced_isa_rows}
     reduced_program_rows, rows_by_program = reduce_program_rows(program_rows, reduced_isa_by_entry)
     vmpseudo_manifest = emit_vmpseudo_files(root, rows_by_program)
@@ -348,6 +388,9 @@ def main() -> int:
         "dispatch_variant_count",
         "dispatch_proved_variants",
         "dispatch_target_mismatched_events",
+        "slot_unknown_dispatch_status",
+        "slot_unknown_dispatch_rows",
+        "slot_unknown_dispatch_targets",
     ]
     program_fields = list(program_rows[0].keys()) + [
         "state_reduction_status",
@@ -359,6 +402,9 @@ def main() -> int:
         "dispatch_variant_count",
         "dispatch_proved_variants",
         "dispatch_target_mismatched_events",
+        "slot_unknown_dispatch_status",
+        "slot_unknown_dispatch_rows",
+        "slot_unknown_dispatch_targets",
     ]
     vmpseudo_manifest_fields = [
         "program",
@@ -392,9 +438,15 @@ def main() -> int:
     dispatch_applied_entries = {
         row["source_entry"] for row in reduced_isa_rows if row["dispatch_reduction_status"] == "applied_proved_equivalent"
     }
+    slot_unknown_table_entries = {
+        row["source_entry"] for row in reduced_isa_rows if row["slot_unknown_dispatch_status"] == "exact_observed_table_no_formula"
+    }
     applied_program_rows = sum(1 for row in reduced_program_rows if row.get("state_reduction_status") == "applied_proved_equivalent")
     dispatch_applied_program_rows = sum(
         1 for row in reduced_program_rows if row.get("dispatch_reduction_status") == "applied_proved_equivalent"
+    )
+    slot_unknown_program_rows = sum(
+        1 for row in reduced_program_rows if row.get("slot_unknown_dispatch_status") == "exact_observed_table_no_formula"
     )
     unresolved_mix = Counter(str(row.get("unresolved", "")) for row in reduced_isa_rows)
     grade_mix = Counter(str(row.get("readability_grade", "")) for row in reduced_isa_rows)
@@ -413,9 +465,12 @@ def main() -> int:
                 ["proved state reductions applied", len(applied_entries)],
                 ["proved dispatch reductions available", len(dispatch_by_entry)],
                 ["proved dispatch reductions applied", len(dispatch_applied_entries)],
+                ["slot-unknown exact tables available", len(slot_unknown_by_entry)],
+                ["slot-unknown exact tables applied", len(slot_unknown_table_entries)],
                 ["program rows", len(reduced_program_rows)],
                 ["program rows with reduced state", applied_program_rows],
                 ["program rows with reduced dispatch", dispatch_applied_program_rows],
+                ["program rows with slot-unknown exact tables", slot_unknown_program_rows],
                 ["program files", len(c_manifest)],
                 ["C output dir", str(root / "vm_programs_state_reduced_readable_c")],
                 ["readability grades", ",".join(f"{k}:{v}" for k, v in grade_mix.most_common(10))],
@@ -442,7 +497,7 @@ def main() -> int:
         "",
         "## Remaining Gaps",
         "",
-        "State MBA formulas covered by `vm_mba_state_formula_compiler_reductions.tsv` and dispatch slot formulas covered by `vm_mba_dispatch_formula_compiler_reductions_by_entry.tsv` are reduced here. Slot-unknown dispatch opcodes, unvalidated dispatch target binding rows, native-call binding, real-server path coverage, and human intent remain separate open gaps before claiming full C/C++ reconstruction.",
+        "State MBA formulas covered by `vm_mba_state_formula_compiler_reductions.tsv` and dispatch slot formulas covered by `vm_mba_dispatch_formula_compiler_reductions_by_entry.tsv` are reduced here. Slot-unknown dispatch opcodes are represented by exact observed target tables from `vm_slot_unknown_dispatch_summary.tsv`, but their symbolic formulas remain unrecovered. Unvalidated dispatch target binding rows, native-call binding, real-server path coverage, and human intent remain separate open gaps before claiming full C/C++ reconstruction.",
     ]
     (root / "vm_readable_state_reduced.md").write_text("\n".join(md_lines) + "\n")
 
@@ -451,8 +506,11 @@ def main() -> int:
     print(f"proved_state_reductions_applied={len(applied_entries)}")
     print(f"proved_dispatch_reductions_available={len(dispatch_by_entry)}")
     print(f"proved_dispatch_reductions_applied={len(dispatch_applied_entries)}")
+    print(f"slot_unknown_tables_available={len(slot_unknown_by_entry)}")
+    print(f"slot_unknown_tables_applied={len(slot_unknown_table_entries)}")
     print(f"state_reduced_program_rows={applied_program_rows}")
     print(f"dispatch_reduced_program_rows={dispatch_applied_program_rows}")
+    print(f"slot_unknown_table_program_rows={slot_unknown_program_rows}")
     print(f"program_files={len(c_manifest)}")
     print(f"status_counts={dict(status_counts)}")
     return 0
