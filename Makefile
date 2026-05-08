@@ -91,6 +91,12 @@ MBA_STATE_PROOFS_DIR := $(PRIMARY_DIR)/vm_mba_state_formula_proofs
 MBA_STATE_COMPILER_REDUCTIONS_TSV := $(PRIMARY_DIR)/vm_mba_state_formula_compiler_reductions.tsv
 MBA_STATE_COMPILER_REDUCTIONS_MD := $(PRIMARY_DIR)/vm_mba_state_formula_compiler_reductions.md
 MBA_STATE_COMPILER_REDUCER_ASM := $(PRIMARY_DIR)/vm_mba_state_formula_compiler_reducer.s
+STATIC_TRANSFER_EXPR_FULL_PYTHON_TSV := $(PRIMARY_DIR)/vm_static_transfer_expr_full_python.tsv
+MBA_DISPATCH_COMPILER_REDUCTIONS_TSV := $(PRIMARY_DIR)/vm_mba_dispatch_formula_compiler_reductions.tsv
+MBA_DISPATCH_COMPILER_REDUCTIONS_BY_ENTRY_TSV := $(PRIMARY_DIR)/vm_mba_dispatch_formula_compiler_reductions_by_entry.tsv
+MBA_DISPATCH_COMPILER_REDUCTIONS_MD := $(PRIMARY_DIR)/vm_mba_dispatch_formula_compiler_reductions.md
+MBA_DISPATCH_COMPILER_REDUCER_HARNESS_C := $(PRIMARY_DIR)/vm_mba_dispatch_formula_compiler_reducer_harness.c
+MBA_DISPATCH_COMPILER_REDUCER_ASM := $(PRIMARY_DIR)/vm_mba_dispatch_formula_compiler_reducer.s
 READABLE_STATE_REDUCED_ISA_TSV := $(PRIMARY_DIR)/vm_readable_isa_state_reduced.tsv
 READABLE_STATE_REDUCED_OPS_TSV := $(PRIMARY_DIR)/vm_program_readable_ops_state_reduced.tsv
 READABLE_STATE_REDUCED_OPS_MANIFEST := $(PRIMARY_DIR)/vm_program_readable_ops_state_reduced_manifest.tsv
@@ -1217,8 +1223,20 @@ mba-state-formula-compiler-reducer: $(MBA_STATE_COMPILER_REDUCTIONS_TSV) $(MBA_S
 mba-state-formula-compiler-reducer-audit: $(MBA_STATE_COMPILER_REDUCTIONS_TSV) $(MBA_STATE_COMPILER_REDUCTIONS_MD) $(MBA_STATE_COMPILER_REDUCER_ASM)
 	python3 vm_mba_state_formula_compiler_reducer_audit.py --root $(PRIMARY_DIR)
 
+.PHONY: mba-dispatch-formula-compiler-reducer mba-dispatch-formula-compiler-reducer-audit
+$(STATIC_TRANSFER_EXPR_FULL_PYTHON_TSV): vm_static_transfer_expr.py $(STATE_DIR)/vm_instruction_trace.tsv eac.elf
+	python3 vm_static_transfer_expr.py $(STATE_DIR)/vm_instruction_trace.tsv --max-rows-per-source $(XFER_ROWS) --max-expr-len 20000 --top 8 > $@
+
+$(MBA_DISPATCH_COMPILER_REDUCTIONS_TSV) $(MBA_DISPATCH_COMPILER_REDUCTIONS_BY_ENTRY_TSV) $(MBA_DISPATCH_COMPILER_REDUCTIONS_MD) $(MBA_DISPATCH_COMPILER_REDUCER_HARNESS_C) $(MBA_DISPATCH_COMPILER_REDUCER_ASM) &: vm_mba_dispatch_formula_compiler_reducer.py $(STATIC_TRANSFER_EXPR_FULL_PYTHON_TSV) $(READABLE_STATE_REDUCED_ISA_TSV)
+	python3 vm_mba_dispatch_formula_compiler_reducer.py --root $(PRIMARY_DIR)
+
+mba-dispatch-formula-compiler-reducer: $(MBA_DISPATCH_COMPILER_REDUCTIONS_TSV) $(MBA_DISPATCH_COMPILER_REDUCTIONS_BY_ENTRY_TSV) $(MBA_DISPATCH_COMPILER_REDUCTIONS_MD) $(MBA_DISPATCH_COMPILER_REDUCER_HARNESS_C) $(MBA_DISPATCH_COMPILER_REDUCER_ASM)
+
+mba-dispatch-formula-compiler-reducer-audit: $(MBA_DISPATCH_COMPILER_REDUCTIONS_TSV) $(MBA_DISPATCH_COMPILER_REDUCTIONS_BY_ENTRY_TSV) $(MBA_DISPATCH_COMPILER_REDUCTIONS_MD) $(MBA_DISPATCH_COMPILER_REDUCER_HARNESS_C) $(MBA_DISPATCH_COMPILER_REDUCER_ASM)
+	python3 vm_mba_dispatch_formula_compiler_reducer_audit.py --root $(PRIMARY_DIR)
+
 .PHONY: readable-state-reduced readable-state-reduced-audit
-$(READABLE_STATE_REDUCED_ISA_TSV) $(READABLE_STATE_REDUCED_OPS_TSV) $(READABLE_STATE_REDUCED_OPS_MANIFEST) $(READABLE_STATE_REDUCED_MD) $(READABLE_STATE_REDUCED_C_MANIFEST) &: vm_readable_state_reduced.py $(READABLE_ISA_TSV) $(PROGRAM_READABLE_OPS_TSV) $(MBA_STATE_COMPILER_REDUCTIONS_TSV) $(PROGRAM_CONTROL_GRAPH_EDGES_TSV) $(NATIVE_SIDE_EFFECT_VM_REFS_TSV) $(PROGRAM_BEHAVIOR_DOSSIERS_TSV)
+$(READABLE_STATE_REDUCED_ISA_TSV) $(READABLE_STATE_REDUCED_OPS_TSV) $(READABLE_STATE_REDUCED_OPS_MANIFEST) $(READABLE_STATE_REDUCED_MD) $(READABLE_STATE_REDUCED_C_MANIFEST) &: vm_readable_state_reduced.py $(READABLE_ISA_TSV) $(PROGRAM_READABLE_OPS_TSV) $(MBA_STATE_COMPILER_REDUCTIONS_TSV) $(MBA_DISPATCH_COMPILER_REDUCTIONS_BY_ENTRY_TSV) $(PROGRAM_CONTROL_GRAPH_EDGES_TSV) $(NATIVE_SIDE_EFFECT_VM_REFS_TSV) $(PROGRAM_BEHAVIOR_DOSSIERS_TSV)
 	python3 vm_readable_state_reduced.py --root $(PRIMARY_DIR)
 
 readable-state-reduced: $(READABLE_STATE_REDUCED_ISA_TSV) $(READABLE_STATE_REDUCED_OPS_TSV) $(READABLE_STATE_REDUCED_OPS_MANIFEST) $(READABLE_STATE_REDUCED_MD) $(READABLE_STATE_REDUCED_C_MANIFEST)
@@ -1236,7 +1254,7 @@ x-behavior-model-audit: $(X_RUNTIME_EVENT_SEQUENCE_TSV) $(X_BEHAVIOR_PHASE_SUMMA
 	python3 vm_x_behavior_model_audit.py --root $(PRIMARY_DIR)
 
 .PHONY: behavior-understanding-audit
-behavior-understanding-audit: behavior-inventory-audit semantic-opcode-catalog-audit string-reference-context-audit program-behavior-hypotheses-audit program-control-graph-audit trace-program-path-audit x-program-timeline-audit string-role-annotations-audit native-side-effect-map-audit program-behavior-dossiers-audit readable-isa-audit program-readable-c-audit mba-solution-corpus-audit mba-state-formula-reducer-audit mba-state-formula-prover-audit mba-state-formula-compiler-reducer-audit readable-state-reduced-audit x-behavior-model-audit
+behavior-understanding-audit: behavior-inventory-audit semantic-opcode-catalog-audit string-reference-context-audit program-behavior-hypotheses-audit program-control-graph-audit trace-program-path-audit x-program-timeline-audit string-role-annotations-audit native-side-effect-map-audit program-behavior-dossiers-audit readable-isa-audit program-readable-c-audit mba-solution-corpus-audit mba-state-formula-reducer-audit mba-state-formula-prover-audit mba-state-formula-compiler-reducer-audit mba-dispatch-formula-compiler-reducer-audit readable-state-reduced-audit x-behavior-model-audit
 
 $(HANDLERS_PSEUDOCODE_C): vm_handler_pseudocode_dump.py $(PRIMARY_DIR)/vm_handler_semantics.tsv $(PRIMARY_DIR)/vm_handler_table.tsv $(STATIC_ONLY_HANDLER_QUEUE_TSV) $(STATIC_ONLY_TIER0_MODELS_TSV) $(STATIC_ONLY_TIER1_MODELS_TSV) $(STATIC_ONLY_TIER2_SPLIT_TSV) $(STATIC_ONLY_TIER3_SHARED_TSV) $(STATIC_ONLY_TIER4_CALLRET_TSV) $(STATIC_ONLY_TIER5_LARGE_TSV)
 	python3 vm_handler_pseudocode_dump.py --all > $@
