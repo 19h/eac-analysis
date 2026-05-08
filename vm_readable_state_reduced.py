@@ -126,17 +126,36 @@ def reduce_isa_rows(
         if dispatch:
             dispatch_preview = dispatch.get("reduced_dispatch_preview", "")
             target_mix = dispatch.get("target_binding_mix", "")
-            target_status = "target_binding_not_validated" if "target_binding_not_validated" in target_mix else "target_binding_validated"
-            out["dispatch_semantics"] = (
-                "next_slot = Z3-proved simplified dispatch expression(s); "
-                f"variants={dispatch.get('variant_count', '')}; "
-                f"target_binding={target_status}; "
-                f"formula={trim(dispatch_preview)}"
-            )
+            if "target_binding_not_validated" in target_mix:
+                target_status = "target_binding_not_validated"
+            elif "target_binding_second_stage_validated" in target_mix:
+                target_status = "target_binding_second_stage_validated"
+            else:
+                target_status = "target_binding_validated"
+            if target_status == "target_binding_second_stage_validated":
+                out["dispatch_semantics"] = (
+                    "first_stage_slot = Z3-proved simplified dispatch expression(s) into central dispatcher; "
+                    f"variants={dispatch.get('variant_count', '')}; "
+                    "final_target_binding=observed second-stage DISPATCH idx; "
+                    f"idx_mix={dispatch.get('second_stage_idx_mix', '')}; "
+                    f"targets={dispatch.get('second_stage_target_entry_mix', '')}; "
+                    f"formula={trim(dispatch_preview)}"
+                )
+            else:
+                out["dispatch_semantics"] = (
+                    "next_slot = Z3-proved simplified dispatch expression(s); "
+                    f"variants={dispatch.get('variant_count', '')}; "
+                    f"target_binding={target_status}; "
+                    f"formula={trim(dispatch_preview)}"
+                )
             out["dispatch_slot_preview"] = dispatch_preview
             out["dispatch_reduction_status"] = "applied_proved_equivalent"
             out["dispatch_reduction_proof_status"] = dispatch.get("proof_status_mix", "")
             out["dispatch_target_binding_status"] = target_status
+            out["dispatch_target_binding_basis"] = dispatch.get("target_binding_basis_mix", "")
+            out["dispatch_second_stage_events"] = dispatch.get("second_stage_events", "")
+            out["dispatch_second_stage_idx_mix"] = dispatch.get("second_stage_idx_mix", "")
+            out["dispatch_second_stage_target_entry_mix"] = dispatch.get("second_stage_target_entry_mix", "")
             out["dispatch_variant_count"] = dispatch.get("variant_count", "")
             out["dispatch_proved_variants"] = dispatch.get("proved_variants", "")
             out["dispatch_target_mismatched_events"] = dispatch.get("target_mismatched_events", "")
@@ -145,6 +164,10 @@ def reduce_isa_rows(
             out["dispatch_reduction_status"] = "not_applicable_or_unproved"
             out["dispatch_reduction_proof_status"] = ""
             out["dispatch_target_binding_status"] = ""
+            out["dispatch_target_binding_basis"] = ""
+            out["dispatch_second_stage_events"] = ""
+            out["dispatch_second_stage_idx_mix"] = ""
+            out["dispatch_second_stage_target_entry_mix"] = ""
             out["dispatch_variant_count"] = ""
             out["dispatch_proved_variants"] = ""
             out["dispatch_target_mismatched_events"] = ""
@@ -218,6 +241,10 @@ def reduce_program_rows(
             "dispatch_reduction_status",
             "dispatch_reduction_proof_status",
             "dispatch_target_binding_status",
+            "dispatch_target_binding_basis",
+            "dispatch_second_stage_events",
+            "dispatch_second_stage_idx_mix",
+            "dispatch_second_stage_target_entry_mix",
             "dispatch_variant_count",
             "dispatch_proved_variants",
             "dispatch_target_mismatched_events",
@@ -385,6 +412,10 @@ def main() -> int:
         "dispatch_reduction_status",
         "dispatch_reduction_proof_status",
         "dispatch_target_binding_status",
+        "dispatch_target_binding_basis",
+        "dispatch_second_stage_events",
+        "dispatch_second_stage_idx_mix",
+        "dispatch_second_stage_target_entry_mix",
         "dispatch_variant_count",
         "dispatch_proved_variants",
         "dispatch_target_mismatched_events",
@@ -399,6 +430,10 @@ def main() -> int:
         "dispatch_reduction_status",
         "dispatch_reduction_proof_status",
         "dispatch_target_binding_status",
+        "dispatch_target_binding_basis",
+        "dispatch_second_stage_events",
+        "dispatch_second_stage_idx_mix",
+        "dispatch_second_stage_target_entry_mix",
         "dispatch_variant_count",
         "dispatch_proved_variants",
         "dispatch_target_mismatched_events",

@@ -113,7 +113,13 @@ def main() -> int:
     target_statuses = Counter(row.get("target_binding_status", "") for row in reductions)
     ok &= check("all_dispatch_expressions_recovered", reduction_statuses == {"compiler_expression_recovered": len(reductions)}, f"statuses={dict(reduction_statuses)}")
     ok &= check("all_dispatch_expressions_proved", proof_statuses == {"proved_equivalent": len(reductions)}, f"proofs={dict(proof_statuses)}")
-    ok &= check("target_binding_gaps_remain_visible", target_statuses.get("target_binding_not_validated", 0) == 8 and target_statuses.get("target_binding_validated", 0) == 200, f"targets={dict(target_statuses)}")
+    ok &= check(
+        "target_binding_gaps_resolved_by_second_stage_dispatch",
+        target_statuses.get("target_binding_not_validated", 0) == 0
+        and target_statuses.get("target_binding_validated", 0) == 200
+        and target_statuses.get("target_binding_second_stage_validated", 0) == 8,
+        f"targets={dict(target_statuses)}",
+    )
 
     bad_summary: list[str] = []
     for row in summary:
@@ -130,7 +136,7 @@ def main() -> int:
 
     harness_ok, harness_detail = syntax_check(paths["dispatch_harness"])
     ok &= check("dispatch_harness_compiles_c11_syntax", harness_ok, harness_detail[:600])
-    ok &= check("markdown_states_dispatch_proof_scope", "slot expression only" in md_text and "Slot-unknown opcodes are not solved" in md_text, "scope caveat present")
+    ok &= check("markdown_states_dispatch_proof_scope", "slot expression only" in md_text and "target_binding_second_stage_validated" in md_text and "Slot-unknown opcodes are not solved" in md_text, "scope caveat present")
 
     print(f"mba_dispatch_formula_compiler_reducer_audit_status={'complete' if ok else 'not_complete'}")
     print("objective_status=not_complete_slot_unknown_dispatch_native_binding_and_program_intent_open")
