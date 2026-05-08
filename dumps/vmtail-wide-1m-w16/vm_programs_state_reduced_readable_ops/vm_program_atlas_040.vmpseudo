@@ -1,0 +1,964 @@
+VM program atlas 040 state-reduced readable operations
+rows: 165
+state_reduced_rows: 151
+unresolved_rows: 145
+family_mix: obfuscated_table_dispatch:144,operand_table_dispatch:18,fixed_or_affine_dispatch:2,long_or_backedge_control:1
+
+block 24
+  0x2c1156..0x2c1158 vmop_171_plus0x2_state_const_post_slot_const_or_affine bytes=1e00 grade=readable_control_semantics target=30@0x7e849:1 delta=+0x2
+    state: vm_state is set to or checked against a post-dispatch constant marker
+    dispatch: next_entry = fixed or affine dispatch slot; expression=128=u16_0 << 0x3
+    ip: ip += 0x2
+  0x2c1158..0x2c115c vmop_030_plus0x4_state_add_const_slot_multi_path bytes=101fe801 grade=state_reduced_dispatch_formula_open target=180@0x9cf32:1 delta=+0x4
+    state: vm_state = Z3-proved simplified expression; formula=(flags0 & 0xc64a6123u) | state0
+    dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=113=(mask32((mask32(u16_0 ^ (mask32((mask32(state0 | flags0)) + 0x64fd160c)))) + 0x5903fc84)) & 0xffff | 15=(mask32((mask32(u16_0 ^ (mask32((mask32(state0 | (mask32(flags0 & 0x614d4b17)))) + 0x64fd160...#e5
+    ip: ip += 0x4
+    proof: dumps/vmtail-wide-1m-w16/vm_mba_state_formula_compiler_proofs/state_030.smt2
+    unresolved: dispatch_formula_not_reduced
+  0x2c115c..0x2c1160 vmop_180_plus0x4_state_mixed_slot_mba_stateful bytes=0b0ee801 grade=state_reduced_dispatch_formula_open target=258@0xadf2c:1 delta=+0x4
+    state: vm_state = Z3-proved simplified expression; formula=(u16_0 + 0x7920fa05u) | state0
+    dispatch: next_entry = MBA(state, flags, operands) dispatch slot; per-row concrete target is resolved; expression=128=(mask32(u16_0 + 0x7920fa05)) & 0xffff
+    ip: ip += 0x4
+    proof: dumps/vmtail-wide-1m-w16/vm_mba_state_formula_compiler_proofs/state_180.smt2
+    unresolved: dispatch_formula_not_reduced
+  0x2c1160..0x2c1164 vmop_258_plus0x4_state_add_const_slot_multi_path bytes=b4295ff9 grade=state_reduced_dispatch_formula_open target=196@0x9fbcd:1 delta=+0x4
+    state: vm_state = Z3-proved simplified expression; formula=((((((u16_0 - state0) & 0x1769756eu) ^ (0xfbf8fe86u + flags0)) ^ 0xa1b079au) | ((0xfbf8fe86u + flags0) ^ state0)) | (((u16_2 - 0x1510614fu) - flags0) ^ 0x1d7272f4u)) | 0x45609bd8u
+    dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=70=(mask32((mask32(u16_0 - (mask32((mask32((mask32(state0 ^ 0x11095fd5)) + (mask32(flags0 ^ 0x1769756e)))) ^ (mask32(u16_2 - (mask32(flags0 ^ 0x1769756e)))))))) ^ 0x5812e92c)) & 0xffff | 58=(mask32((m...#12f
+    ip: ip += 0x4
+    proof: dumps/vmtail-wide-1m-w16/vm_mba_state_formula_compiler_proofs/state_258.smt2
+    unresolved: dispatch_formula_not_reduced
+  0x2c1164..0x2c1168 vmop_196_plus0x4_state_add_const_slot_multi_path bytes=f1acdcf7 grade=state_reduced_dispatch_formula_open target=307@0xb8064:1 delta=+0x4
+    state: vm_state = Z3-proved simplified expression; formula=(((((0x44fb7fdbu + flags0) ^ 0x72e5925eu) | state0) | (flags0 + 0x52e5924au)) | (state0 & 0x4083ed99u)) | 0x52e5a24au
+    dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=128=(mask32((mask32(u16_2 + (mask32((mask32((mask32((mask32((mask32((mask32((mask32(state0 | 0x52e5924a)) + (mask32((mask32((mask32(flags0 | 0x4083ed99)) & (mask32((mask32(state0 | 0x52e5924a)) ^ 0x20...#df
+    ip: ip += 0x4
+    proof: dumps/vmtail-wide-1m-w16/vm_mba_state_formula_compiler_proofs/state_196.smt2
+    unresolved: dispatch_formula_not_reduced
+  0x2c1168..0x2c116b vmop_307_plus0x3_state_add_const_slot_u16_1_sub_const bytes=614dac grade=readable_control_semantics target=83@0x8947b:1 delta=+0x3
+    state: vm_state = add/constant-style update over state, flags, and operands; formula=state0 ^ b0 - flags0 & flags0 & 0x5792b958 ^ flags0 & 0x5792b958
+    dispatch: next_entry = dispatch_table[(u16(ip+1) - constant) & 0xffff]
+    ip: ip += 0x3
+  0x2c116b..0x2c1170 vmop_083_plus0x5_state_add_const_slot_multi_path bytes=0086003d01 grade=state_reduced_dispatch_formula_open target=198@0xa037e:1 delta=+0x5
+    state: vm_state = Z3-proved simplified expression; formula=(((((0x2c3e26b4u + state0) + flags0) - u16_0) | state0) & 0x122d7f19u) | ((flags0 + 0x2c3e26b4u) ^ 0x4b7ebb84u)
+    dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=128=(mask32((mask32(u16_0 + (mask32((mask32((mask32((mask32(state0 & 0x122d7f19)) | flags0)) + 0x60e2eab8)) - 0x34a4c404)))) ^ 0x4b7ebb84)) & 0xffff
+    ip: ip += 0x5
+    proof: dumps/vmtail-wide-1m-w16/vm_mba_state_formula_compiler_proofs/state_083.smt2
+    unresolved: dispatch_formula_not_reduced
+  0x2c1170..0x2c1172 vmop_198_plus0x2_state_add_const_slot_mba_stateful bytes=cc68 grade=state_reduced_dispatch_formula_open target=189@0x9e7af:1 delta=+0x2
+    state: vm_state = Z3-proved simplified expression; formula=(((flags0 << 0x2u) - u16_0) - 0xa690292u) ^ 0x3fe99379u
+    dispatch: next_entry = MBA(state, flags, operands) dispatch slot; per-row concrete target is resolved; expression=128=(mask32((mask32(u16_0 - (mask32((mask32((mask32(state0 + (mask32(flags0 - 0x5e173fc7)))) - 0x3cd02127)) + (mask32(flags0 + 0x15b2dfa5)))))) ^ 0x3fe99379)) & 0xffff
+    ip: ip += 0x2
+    proof: dumps/vmtail-wide-1m-w16/vm_mba_state_formula_compiler_proofs/state_198.smt2
+    unresolved: dispatch_formula_not_reduced
+  0x2c1172..0x2c1176 vmop_189_plus0x4_state_add_const_slot_mba_stateful bytes=7a24dc97 grade=state_reduced_dispatch_formula_open target=333@0xbd8af:1 delta=+0x4
+    state: vm_state = Z3-proved simplified expression; formula=((((0x160e4f34u + u16_2) + state0) & state0) & 0x160e4f34u) ^ 0x2a1ce984u
+    dispatch: next_entry = MBA(state, flags, operands) dispatch slot; per-row concrete target is resolved; expression=128=(mask32((mask32(u16_2 + (mask32(state0 & 0x160e4f34)))) ^ 0x2a1ce984)) & 0xffff
+    ip: ip += 0x4
+    proof: dumps/vmtail-wide-1m-w16/vm_mba_state_formula_compiler_proofs/state_189.smt2
+    unresolved: dispatch_formula_not_reduced
+  0x2c1176..0x2c117a vmop_333_plus0x4_state_add_const_slot_multi_path bytes=53f66800 grade=state_reduced_dispatch_formula_open target=239@0xa991e:1 delta=+0x4
+    state: vm_state = Z3-proved simplified expression; formula=(((((u16_0 + 0x569ecec3u) - state0) ^ (state0 ^ flags0)) | (((flags0 & 0xd5e75f83u) ^ (state0 + flags0)) ^ state0)) | flags0) | 0x77dedeebu
+    dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=128=(mask32(u16_0 - (mask32((mask32((mask32((mask32((mask32(state0 ^ (mask32((mask32(flags0 ^ state0)) | 0x37ccc6ea)))) - 0x61e56767)) & (mask32(flags0 ^ state0)))) + (mask32((mask32(flags0 ^ state0))...#df
+    ip: ip += 0x4
+    proof: dumps/vmtail-wide-1m-w16/vm_mba_state_formula_compiler_proofs/state_333.smt2
+    unresolved: dispatch_formula_not_reduced
+  0x2c117a..0x2c1180 vmop_239_plus0x6_state_add_const_slot_mba_stateful bytes=102601013ea0 grade=state_reduced_dispatch_formula_open target=18@0x7be9b:1 delta=+0x6
+    state: vm_state = Z3-proved simplified expression; formula=(((((state0 + flags0) - u16_4) + 0x7a791554u) & (((flags0 + u32_0) + 0x40a7aa16u) - state0)) & ((state0 + flags0) + 0x40a7aa16u)) & 0x1804a10u
+    dispatch: next_entry = MBA(state, flags, operands) dispatch slot; per-row concrete target is resolved; expression=128=(mask32((mask32(u16_4 + (mask32((mask32((mask32((mask32(state0 + 0x40a7aa16)) + flags0)) & 0x39d16b3e)) & (mask32(u32_0 - (mask32((mask32((mask32(state0 + 0x40a7aa16)) + flags0)) & 0x39d16b3e)))))...#df
+    ip: ip += 0x6
+    proof: dumps/vmtail-wide-1m-w16/vm_mba_state_formula_compiler_proofs/state_239.smt2
+    unresolved: dispatch_formula_not_reduced
+  0x2c1180..0x2c1183 vmop_018_plus0x3_state_add_const_slot_multi_path bytes=f80a32 grade=state_reduced_dispatch_formula_open target=319@0xba72f:1 delta=+0x3
+    state: vm_state = Z3-proved simplified expression; formula=((((0x649b4ea0u - (u16_0 + state0)) | state0) | 0x1188080u) & flags0) | 0x649b4ea0u
+    dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=99=(mask32(u16_0 - (mask32((mask32((mask32(state0 & flags0)) - 0x6382ce20)) & flags0)))) & 0xffff | 29=(mask32(u16_0 - (mask32((mask32((mask32(state0 & (mask32((mask32(flags0 | 0x954df65)) + 0x5b466f3...#11f
+    ip: ip += 0x3
+    proof: dumps/vmtail-wide-1m-w16/vm_mba_state_formula_compiler_proofs/state_018.smt2
+    unresolved: dispatch_formula_not_reduced
+  0x2c1183..0x2c1188 vmop_319_plus0x5_state_add_const_slot_multi_path bytes=3d01f66b00 grade=state_reduced_dispatch_formula_open target=173@0x9ba74:1 delta=+0x5
+    state: vm_state = Z3-proved simplified expression; formula=(((flags0 | ((0x4fa9822eu + state0) & 0x27c134adu)) | ((state0 - 0x58e4c1fu) & 0x27c134adu)) | (((0x4fa9822eu + state0) & 0x27c134adu) ^ flags0)) | 0x5ffedbfbu
+    dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=72=(mask32((mask32(u16_2 + (mask32((mask32((mask32((mask32(state0 & (mask32(flags0 & (mask32(state0 + 0x4fa9822e)))))) | 0x5ed258f1)) | (mask32(flags0 & (mask32(state0 + 0x4fa9822e)))))) ^ (mask32((ma...#12f
+    ip: ip += 0x5
+    proof: dumps/vmtail-wide-1m-w16/vm_mba_state_formula_compiler_proofs/state_319.smt2
+    unresolved: dispatch_formula_not_reduced
+  0x2c1188..0x2c118a vmop_173_plus0x2_state_add_const_slot_multi_path bytes=4a0b grade=state_reduced_dispatch_formula_open target=332@0xbd36d:1 delta=+0x2
+    state: vm_state = Z3-proved simplified expression; formula=(((((flags0 + 0x5eced92du) - state0) & 0xebbbd20u) | (((u16_0 & 0x14028844u) ^ (0x5eced92du + state0)) ^ 0x456d7018u)) | ((0x5eced92du + state0) ^ 0x456d7018u)) | 0x13000804u
+    dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=128=(mask32((mask32(u16_0 ^ (mask32((mask32((mask32((mask32(state0 + 0x5eced92d)) ^ 0x456d7018)) | 0xebbbd20)) & (mask32((mask32(flags0 - (mask32((mask32(state0 + 0x5eced92d)) | 0x1f8bac4c)))) & 0x741...#df
+    ip: ip += 0x2
+    proof: dumps/vmtail-wide-1m-w16/vm_mba_state_formula_compiler_proofs/state_173.smt2
+    unresolved: dispatch_formula_not_reduced
+  0x2c118a..0x2c118e vmop_332_plus0x4_state_add_const_slot_multi_path bytes=1cd7ffc7 grade=state_reduced_dispatch_formula_open target=347@0xc088d:1 delta=+0x4
+    state: vm_state = Z3-proved simplified expression; formula=(((state0 ^ 0xc975ddbu) | state0) | ((state0 ^ u16_2) ^ 0x10401a05u)) | 0x1cf75fdfu
+    dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=128=(mask32((mask32(u16_2 ^ (mask32((mask32((mask32((mask32((mask32((mask32(state0 | 0x30661b97)) & 0x57d9fe65)) | (mask32((mask32((mask32(flags0 & (mask32(state0 | 0x2f0ca7d2)))) & (mask32((mask32(st...#df
+    ip: ip += 0x4
+    proof: dumps/vmtail-wide-1m-w16/vm_mba_state_formula_compiler_proofs/state_332.smt2
+    unresolved: dispatch_formula_not_reduced
+  0x2c118e..0x2c1192 vmop_347_plus0x4_state_add_const_slot_multi_path bytes=660bba82 grade=state_reduced_dispatch_formula_open target=43@0x8173d:1 delta=+0x4
+    state: vm_state = Z3-proved simplified expression; formula=((((((((((0x5cf483c7u + u16_2) + flags0) ^ state0) ^ 0x2efc96c5u) | state0) | (0x6fa972f0u + flags0)) | (state0 ^ flags0)) | ((0x45223942u + state0) & (0x6fa972f0u + flags0))) | (((flags0 & 0x5cf483c7u) ^ state0) ^ 0x2efc96c5u)) | (((0x5cf483c7u - flags0) ^ state0) ^ 0x2efc96c5u)) | 0x7ffebfe7u
+    dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=92=(mask32((mask32(u16_0 ^ (mask32((mask32((mask32((mask32((mask32((mask32((mask32(state0 | (mask32(flags0 + 0x6fa972f0)))) | (mask32((mask32(flags0 ^ (mask32((mask32(state0 | (mask32(flags0 + 0x6fa97...#12f
+    ip: ip += 0x4
+    proof: dumps/vmtail-wide-1m-w16/vm_mba_state_formula_compiler_proofs/state_347.smt2
+    unresolved: dispatch_formula_not_reduced
+  0x2c1192..0x2c1196 vmop_043_plus0x4_state_add_const_slot_mba_stateful bytes=44143069 grade=state_reduced_dispatch_formula_open target=307@0xb8064:1 delta=+0x4
+    state: vm_state = Z3-proved simplified expression; formula=u16_2
+    dispatch: next_entry = MBA(state, flags, operands) dispatch slot; per-row concrete target is resolved; expression=128=(mask32((mask32(u16_0 ^ (mask32(state0 ^ (mask32(u16_2 ^ state0)))))) - 0x64d373dc)) & 0xffff
+    ip: ip += 0x4
+    proof: dumps/vmtail-wide-1m-w16/vm_mba_state_formula_compiler_proofs/state_043.smt2
+    unresolved: dispatch_formula_not_reduced
+  0x2c1196..0x2c1199 vmop_307_plus0x3_state_add_const_slot_u16_1_sub_const bytes=7a95b0 grade=readable_control_semantics target=220@0xa522e:1 delta=+0x3
+    state: vm_state = add/constant-style update over state, flags, and operands; formula=state0 ^ b0 - flags0 & flags0 & 0x5792b958 ^ flags0 & 0x5792b958
+    dispatch: next_entry = dispatch_table[(u16(ip+1) - constant) & 0xffff]
+    ip: ip += 0x3
+  0x2c1199..0x2c119e vmop_220_plus0x5_state_add_const_slot_multi_path bytes=003d01a377 grade=state_reduced_dispatch_formula_open target=160@0x994cf:1 delta=+0x5
+    state: vm_state = Z3-proved simplified expression; formula=(((u16_3 - state0) ^ (flags0 & 0xb22637f3u)) | ((flags0 & 0xbb1e3b6du) | state0)) | ((flags0 + 0x46462807u) & (0x2332d827u - (state0 + flags0)))
+    dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=128=(mask32((mask32(u16_3 - (mask32((mask32((mask32((mask32((mask32(state0 | flags0)) + 0x46462807)) & 0x2332d827)) - (mask32(flags0 - (mask32((mask32(state0 | flags0)) & 0x4297c9dd)))))) + 0x6f8e6e16...#df
+    ip: ip += 0x5
+    proof: dumps/vmtail-wide-1m-w16/vm_mba_state_formula_compiler_proofs/state_220.smt2
+    unresolved: dispatch_formula_not_reduced
+  0x2c119e..0x2c11a0 vmop_160_plus0x2_state_const_post_slot_multi_path bytes=802c grade=state_reduced_dispatch_formula_open target=254@0xad32c:1 delta=+0x2
+    state: vm_state = Z3-proved simplified expression; formula=(state0 | u16_0) | 0x777b8ff6u
+    dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=128=(mask32((mask32(u16_0 ^ (mask32((mask32((mask32((mask32(state0 | 0x67f1fed6)) & 0x256c03d7)) | 0x72df8f7a)) & 0x5a1beb81)))) - 0x4cf19f11)) & 0xffff
+    ip: ip += 0x2
+    proof: dumps/vmtail-wide-1m-w16/vm_mba_state_formula_compiler_proofs/state_160.smt2
+    unresolved: dispatch_formula_not_reduced
+  0x2c11a0..0x2c11a4 vmop_254_plus0x4_state_add_const_slot_mba_stateful bytes=bd06fa42 grade=state_reduced_dispatch_formula_open target=43@0x8173d:1 delta=+0x4
+    state: vm_state = Z3-proved simplified expression; formula=((((((0xca5e7538u + flags0) & 0x5bf4e999u) ^ 0x15874263u) | flags0) | (0xdd75be5eu + u16_2)) | (((state0 + flags0) - u16_0) ^ (state0 + flags0))) | 0x7ff37dd9u
+    dispatch: next_entry = MBA(state, flags, operands) dispatch slot; per-row concrete target is resolved; expression=128=(mask32(u16_2 - 0x228a41a2)) & 0xffff
+    ip: ip += 0x4
+    proof: dumps/vmtail-wide-1m-w16/vm_mba_state_formula_compiler_proofs/state_254.smt2
+    unresolved: dispatch_formula_not_reduced
+  0x2c11a4..0x2c11a8 vmop_043_plus0x4_state_add_const_slot_mba_stateful bytes=97644b11 grade=state_reduced_dispatch_formula_open target=64@0x85059:1 delta=+0x4
+    state: vm_state = Z3-proved simplified expression; formula=u16_2
+    dispatch: next_entry = MBA(state, flags, operands) dispatch slot; per-row concrete target is resolved; expression=128=(mask32((mask32(u16_0 ^ (mask32(state0 ^ (mask32(u16_2 ^ state0)))))) - 0x64d373dc)) & 0xffff
+    ip: ip += 0x4
+    proof: dumps/vmtail-wide-1m-w16/vm_mba_state_formula_compiler_proofs/state_043.smt2
+    unresolved: dispatch_formula_not_reduced
+  0x2c11a8..0x2c11ac vmop_064_plus0x4_state_add_const_slot_multi_path bytes=a0570300 grade=state_reduced_dispatch_formula_open target=215@0xa4609:1 delta=+0x4
+    state: vm_state = Z3-proved simplified expression; formula=((state0 - 0x79614de5u) ^ ((0xbde73fa0u + flags0) & 0xcdc277b6u)) ^ (((flags0 + u16_2) - 0x4218c060u) & 0x5b249a06u)
+    dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=77=(mask32((mask32(u16_0 - (mask32((mask32((mask32(state0 - 0x79614de5)) ^ (mask32(u16_2 + flags0)))) ^ (mask32(flags0 + 0x729dddb0)))))) + 0x2701cdcd)) & 0xffff | 51=(mask32((mask32(u16_0 - (mask32((...#12f
+    ip: ip += 0x4
+    proof: dumps/vmtail-wide-1m-w16/vm_mba_state_formula_compiler_proofs/state_064.smt2
+    unresolved: dispatch_formula_not_reduced
+  0x2c11ac..0x2c11af vmop_215_plus0x3_state_mixed_slot_u16_0 bytes=680848 grade=state_reduced_readable_control_semantics target=269@0xb045b:1 delta=+0x3
+    state: vm_state = Z3-proved simplified expression; formula=(((((0x6c5f0f12u + b2) + state0) | state0) | (0x760f463fu - flags0)) | (0x38d2bdd3u - u16_0)) | 0xfe5f0f3fu
+    dispatch: next_entry = dispatch_table[u16(ip+0)]
+    ip: ip += 0x3
+    proof: dumps/vmtail-wide-1m-w16/vm_mba_state_formula_compiler_proofs/state_215.smt2
+  0x2c11af..0x2c11b4 vmop_269_plus0x5_state_add_const_slot_multi_path bytes=003d01564f grade=state_reduced_dispatch_formula_open target=173@0x9ba74:1 delta=+0x5
+    state: vm_state = Z3-proved simplified expression; formula=((((0x4f60a287u + u16_3) + state0) ^ ((flags0 & state0) & 0x6f7fff69u)) ^ (flags0 & state0)) | ((((flags0 & state0) & 0x6f7fff69u) ^ state0) | ((flags0 & state0) ^ 0x545b4609u))
+    dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=128=(mask32((mask32(u16_3 + (mask32((mask32((mask32((mask32(state0 ^ (mask32(flags0 & state0)))) & 0x6f7fff69)) & (mask32(flags0 & state0)))) | (mask32((mask32(flags0 & state0)) ^ 0x4f60a287)))))) + 0x4faa382)) & 0xffff
+    ip: ip += 0x5
+    proof: dumps/vmtail-wide-1m-w16/vm_mba_state_formula_compiler_proofs/state_269.smt2
+    unresolved: dispatch_formula_not_reduced
+  0x2c11b4..0x2c11b6 vmop_173_plus0x2_state_add_const_slot_multi_path bytes=6f03 grade=state_reduced_dispatch_formula_open target=340@0xbf435:1 delta=+0x2
+    state: vm_state = Z3-proved simplified expression; formula=(((((flags0 + 0x5eced92du) - state0) & 0xebbbd20u) | (((u16_0 & 0x14028844u) ^ (0x5eced92du + state0)) ^ 0x456d7018u)) | ((0x5eced92du + state0) ^ 0x456d7018u)) | 0x13000804u
+    dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=128=(mask32((mask32(u16_0 ^ (mask32((mask32((mask32((mask32(state0 + 0x5eced92d)) ^ 0x456d7018)) | 0xebbbd20)) & (mask32((mask32(flags0 - (mask32((mask32(state0 + 0x5eced92d)) | 0x1f8bac4c)))) & 0x741...#df
+    ip: ip += 0x2
+    proof: dumps/vmtail-wide-1m-w16/vm_mba_state_formula_compiler_proofs/state_173.smt2
+    unresolved: dispatch_formula_not_reduced
+  0x2c11b6..0x2c11ba vmop_340_plus0x4_state_add_const_slot_multi_path bytes=fc15b300 grade=state_reduced_dispatch_formula_open target=18@0x7be9b:1 delta=+0x4
+    state: vm_state = Z3-proved simplified expression; formula=((((0xd4d1a5dau + state0) + u16_2) - u16_0) ^ 0x7535dd25u) | (((state0 - 0x2b2e5a26u) ^ 0x7535dd25u) | (u16_2 + 0x9097995u))
+    dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=128=(mask32((mask32(u16_0 + (mask32((mask32((mask32(state0 - 0x2b2e5a26)) ^ 0x7535dd25)) | u16_2)))) + 0x9097995)) & 0xffff
+    ip: ip += 0x4
+    proof: dumps/vmtail-wide-1m-w16/vm_mba_state_formula_compiler_proofs/state_340.smt2
+    unresolved: dispatch_formula_not_reduced
+  0x2c11ba..0x2c11bd vmop_018_plus0x3_state_add_const_slot_multi_path bytes=f246c4 grade=state_reduced_dispatch_formula_open target=158@0x99029:1 delta=+0x3
+    state: vm_state = Z3-proved simplified expression; formula=((((0x649b4ea0u - (u16_0 + state0)) | state0) | 0x1188080u) & flags0) | 0x649b4ea0u
+    dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=99=(mask32(u16_0 - (mask32((mask32((mask32(state0 & flags0)) - 0x6382ce20)) & flags0)))) & 0xffff | 29=(mask32(u16_0 - (mask32((mask32((mask32(state0 & (mask32((mask32(flags0 | 0x954df65)) + 0x5b466f3...#11f
+    ip: ip += 0x3
+    proof: dumps/vmtail-wide-1m-w16/vm_mba_state_formula_compiler_proofs/state_018.smt2
+    unresolved: dispatch_formula_not_reduced
+  0x2c11bd..0x2c11c1 vmop_158_plus0x4_state_add_const_slot_multi_path bytes=e80198d3 grade=state_reduced_dispatch_formula_open target=66@0x855ff:1 delta=+0x4
+    state: vm_state = Z3-proved simplified expression; formula=(((0x3c39b020u + u16_2) + state0) ^ 0x33416bd8u) | (((state0 ^ flags0) ^ 0x3cf76f46u) | (flags0 ^ 0xc7200d2u))
+    dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=79=(mask32((mask32(u16_2 + (mask32((mask32((mask32((mask32(state0 ^ 0x1fbfc3f3)) ^ (mask32(flags0 ^ 0x1f711c95)))) | 0xfb6049e)) ^ flags0)))) ^ 0x3ffdb46c)) & 0xffff | 49=(mask32((mask32(u16_2 + (mask...#12f
+    ip: ip += 0x4
+    proof: dumps/vmtail-wide-1m-w16/vm_mba_state_formula_compiler_proofs/state_158.smt2
+    unresolved: dispatch_formula_not_reduced
+  0x2c11c1..0x2c11c4 vmop_066_plus0x3_state_add_const_slot_multi_path bytes=da96ce grade=state_reduced_dispatch_formula_open target=189@0x9e7af:1 delta=+0x3
+    state: vm_state = Z3-proved simplified expression; formula=((((((u16_0 - state0) & (0x2f6cb1f6u - b2)) ^ ((0xc3c726c9u - flags0) & 0x745ff1d2u)) ^ (state0 & 0x2f6cb1f6u)) ^ 0x33c1d6ecu) | ((((0x2f6cb1f6u - b2) ^ 0x2f6cb1f6u) & state0) ^ ((0xc3c726c9u - flags0) & 0x745ff1d2u))) | 0x74b257b9u
+    dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=99=(mask32((mask32(u16_0 - (mask32((mask32((mask32((mask32((mask32(state0 & 0x2f6cb1f6)) - (mask32(b2 ^ (mask32(state0 & 0x2f6cb1f6)))))) ^ 0x745ff1d2)) & 0x13de2cdd)) - (mask32(flags0 ^ 0x42a6ffd6)))...#12f
+    ip: ip += 0x3
+    proof: dumps/vmtail-wide-1m-w16/vm_mba_state_formula_compiler_proofs/state_066.smt2
+    unresolved: dispatch_formula_not_reduced
+  0x2c11c4..0x2c11c8 vmop_189_plus0x4_state_add_const_slot_mba_stateful bytes=a30540e3 grade=state_reduced_dispatch_formula_open target=158@0x99029:1 delta=+0x4
+    state: vm_state = Z3-proved simplified expression; formula=((((0x160e4f34u + u16_2) + state0) & state0) & 0x160e4f34u) ^ 0x2a1ce984u
+    dispatch: next_entry = MBA(state, flags, operands) dispatch slot; per-row concrete target is resolved; expression=128=(mask32((mask32(u16_2 + (mask32(state0 & 0x160e4f34)))) ^ 0x2a1ce984)) & 0xffff
+    ip: ip += 0x4
+    proof: dumps/vmtail-wide-1m-w16/vm_mba_state_formula_compiler_proofs/state_189.smt2
+    unresolved: dispatch_formula_not_reduced
+  0x2c11c8..0x2c11cc vmop_158_plus0x4_state_add_const_slot_multi_path bytes=e80166e7 grade=state_reduced_dispatch_formula_open target=261@0xaeda2:1 delta=+0x4
+    state: vm_state = Z3-proved simplified expression; formula=(((0x3c39b020u + u16_2) + state0) ^ 0x33416bd8u) | (((state0 ^ flags0) ^ 0x3cf76f46u) | (flags0 ^ 0xc7200d2u))
+    dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=79=(mask32((mask32(u16_2 + (mask32((mask32((mask32((mask32(state0 ^ 0x1fbfc3f3)) ^ (mask32(flags0 ^ 0x1f711c95)))) | 0xfb6049e)) ^ flags0)))) ^ 0x3ffdb46c)) & 0xffff | 49=(mask32((mask32(u16_2 + (mask...#12f
+    ip: ip += 0x4
+    proof: dumps/vmtail-wide-1m-w16/vm_mba_state_formula_compiler_proofs/state_158.smt2
+    unresolved: dispatch_formula_not_reduced
+  0x2c11cc..0x2c11d2 vmop_261_plus0x6_state_add_const_slot_mba_stateful bytes=e8015f6d3d01 grade=state_reduced_dispatch_formula_open target=337@0xbec0e:1 delta=+0x6
+    state: vm_state = Z3-proved simplified expression; formula=(state0 + u16_2) + 0x4c539d29u
+    dispatch: next_entry = MBA(state, flags, operands) dispatch slot; per-row concrete target is resolved; expression=128=(mask32(u16_2 + 0x4c539d29)) & 0xffff
+    ip: ip += 0x6
+    proof: dumps/vmtail-wide-1m-w16/vm_mba_state_formula_compiler_proofs/state_261.smt2
+    unresolved: dispatch_formula_not_reduced
+  0x2c11d2..0x2c11d6 vmop_337_plus0x4_state_add_const_slot_multi_path bytes=b4f82519 grade=state_reduced_dispatch_formula_open target=199@0xa0631:1 delta=+0x4
+    state: vm_state = Z3-proved simplified expression; formula=((((flags0 + 0x61f749a7u) ^ 0x5dd3431eu) | ((flags0 + 0x61f749a7u) ^ 0x7db39ef4u)) | ((((0x2051de91u + state0) + state0) - (u16_2 + flags0)) & (flags0 + 0x61f749a7u))) | (((u16_0 - (u16_2 + flags0)) + ((0x2051de91u + state0) + state0)) & (flags0 + 0x61f749a7u))
+    dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=85=(mask32((mask32(u16_0 + (mask32((mask32((mask32((mask32((mask32((mask32(state0 - flags0)) - (mask32((mask32(u16_2 + (mask32(state0 - flags0)))) + flags0)))) + 0x2051de91)) & (mask32(flags0 + 0x61f7...#12f
+    ip: ip += 0x4
+    proof: dumps/vmtail-wide-1m-w16/vm_mba_state_formula_compiler_proofs/state_337.smt2
+    unresolved: dispatch_formula_not_reduced
+  0x2c11d6..0x2c11d9 vmop_199_plus0x3_state_add_const_slot_multi_path bytes=3fa11a grade=state_reduced_dispatch_formula_open target=20@0x7c62b:1 delta=+0x3
+    state: vm_state = Z3-proved simplified expression; formula=((state0 + flags0) + b2) ^ ((flags0 + 0x20d5418u) & 0x7e708197u)
+    dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=106=(mask32((mask32(u16_0 ^ (mask32((mask32((mask32((mask32(state0 + (mask32(b2 + flags0)))) ^ 0x7e708197)) & 0x20d5418)) + flags0)))) + 0x3030bb89)) & 0xffff | 22=(mask32((mask32(u16_0 ^ (mask32((mas...#12f
+    ip: ip += 0x3
+    proof: dumps/vmtail-wide-1m-w16/vm_mba_state_formula_compiler_proofs/state_199.smt2
+    unresolved: dispatch_formula_not_reduced
+  0x2c11d9..0x2c11dd vmop_020_plus0x4_state_add_const_slot_multi_path bytes=e801aaef grade=state_reduced_dispatch_formula_open target=337@0xbec0e:1 delta=+0x4
+    state: vm_state = Z3-proved simplified expression; formula=((((0xe1db482au - flags0) ^ 0x10000000u) | (flags0 | state0)) | ((0x38e67f26u - flags0) ^ 0x10100800u)) | (((u16_2 & 0x10100800u) ^ (0x38e67f26u - flags0)) ^ state0)
+    dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=67=(mask32(u16_2 ^ (mask32((mask32((mask32((mask32((mask32(state0 | (mask32(flags0 | 0x180e72f2)))) - 0x36332ac8)) - (mask32(flags0 & 0x1fa2014f)))) | 0x38e67f26)) - flags0)))) & 0xffff | 61=(mask32(u...#12f
+    ip: ip += 0x4
+    proof: dumps/vmtail-wide-1m-w16/vm_mba_state_formula_compiler_proofs/state_020.smt2
+    unresolved: dispatch_formula_not_reduced
+  0x2c11dd..0x2c11e1 vmop_337_plus0x4_state_add_const_slot_multi_path bytes=4bb87900 grade=state_reduced_dispatch_formula_open target=215@0xa4609:1 delta=+0x4
+    state: vm_state = Z3-proved simplified expression; formula=((((flags0 + 0x61f749a7u) ^ 0x5dd3431eu) | ((flags0 + 0x61f749a7u) ^ 0x7db39ef4u)) | ((((0x2051de91u + state0) + state0) - (u16_2 + flags0)) & (flags0 + 0x61f749a7u))) | (((u16_0 - (u16_2 + flags0)) + ((0x2051de91u + state0) + state0)) & (flags0 + 0x61f749a7u))
+    dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=85=(mask32((mask32(u16_0 + (mask32((mask32((mask32((mask32((mask32((mask32(state0 - flags0)) - (mask32((mask32(u16_2 + (mask32(state0 - flags0)))) + flags0)))) + 0x2051de91)) & (mask32(flags0 + 0x61f7...#12f
+    ip: ip += 0x4
+    proof: dumps/vmtail-wide-1m-w16/vm_mba_state_formula_compiler_proofs/state_337.smt2
+    unresolved: dispatch_formula_not_reduced
+  0x2c11e1..0x2c11e4 vmop_215_plus0x3_state_mixed_slot_u16_0 bytes=08053f grade=state_reduced_readable_control_semantics target=161@0x9975a:1 delta=+0x3
+    state: vm_state = Z3-proved simplified expression; formula=(((((0x6c5f0f12u + b2) + state0) | state0) | (0x760f463fu - flags0)) | (0x38d2bdd3u - u16_0)) | 0xfe5f0f3fu
+    dispatch: next_entry = dispatch_table[u16(ip+0)]
+    ip: ip += 0x3
+    proof: dumps/vmtail-wide-1m-w16/vm_mba_state_formula_compiler_proofs/state_215.smt2
+  0x2c11e4..0x2c11e8 vmop_161_plus0x4_state_add_const_slot_multi_path bytes=d5d8e801 grade=state_reduced_dispatch_formula_open target=337@0xbec0e:1 delta=+0x4
+    state: vm_state = Z3-proved simplified expression; formula=state0 | 0x69145e52u
+    dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=128=(mask32((mask32(u16_0 + (mask32(state0 | 0x69145e52)))) + 0x4c0132b4)) & 0xffff
+    ip: ip += 0x4
+    proof: dumps/vmtail-wide-1m-w16/vm_mba_state_formula_compiler_proofs/state_161.smt2
+    unresolved: dispatch_formula_not_reduced
+  0x2c11e8..0x2c11ec vmop_337_plus0x4_state_add_const_slot_multi_path bytes=4c08d401 grade=state_reduced_dispatch_formula_open target=215@0xa4609:1 delta=+0x4
+    state: vm_state = Z3-proved simplified expression; formula=((((flags0 + 0x61f749a7u) ^ 0x5dd3431eu) | ((flags0 + 0x61f749a7u) ^ 0x7db39ef4u)) | ((((0x2051de91u + state0) + state0) - (u16_2 + flags0)) & (flags0 + 0x61f749a7u))) | (((u16_0 - (u16_2 + flags0)) + ((0x2051de91u + state0) + state0)) & (flags0 + 0x61f749a7u))
+    dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=85=(mask32((mask32(u16_0 + (mask32((mask32((mask32((mask32((mask32((mask32(state0 - flags0)) - (mask32((mask32(u16_2 + (mask32(state0 - flags0)))) + flags0)))) + 0x2051de91)) & (mask32(flags0 + 0x61f7...#12f
+    ip: ip += 0x4
+    proof: dumps/vmtail-wide-1m-w16/vm_mba_state_formula_compiler_proofs/state_337.smt2
+    unresolved: dispatch_formula_not_reduced
+  0x2c11ec..0x2c11ef vmop_215_plus0x3_state_mixed_slot_u16_0 bytes=f0049c grade=state_reduced_readable_control_semantics target=158@0x99029:1 delta=+0x3
+    state: vm_state = Z3-proved simplified expression; formula=(((((0x6c5f0f12u + b2) + state0) | state0) | (0x760f463fu - flags0)) | (0x38d2bdd3u - u16_0)) | 0xfe5f0f3fu
+    dispatch: next_entry = dispatch_table[u16(ip+0)]
+    ip: ip += 0x3
+    proof: dumps/vmtail-wide-1m-w16/vm_mba_state_formula_compiler_proofs/state_215.smt2
+  0x2c11ef..0x2c11f3 vmop_158_plus0x4_state_add_const_slot_multi_path bytes=e8016f57 grade=state_reduced_dispatch_formula_open target=258@0xadf2c:1 delta=+0x4
+    state: vm_state = Z3-proved simplified expression; formula=(((0x3c39b020u + u16_2) + state0) ^ 0x33416bd8u) | (((state0 ^ flags0) ^ 0x3cf76f46u) | (flags0 ^ 0xc7200d2u))
+    dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=79=(mask32((mask32(u16_2 + (mask32((mask32((mask32((mask32(state0 ^ 0x1fbfc3f3)) ^ (mask32(flags0 ^ 0x1f711c95)))) | 0xfb6049e)) ^ flags0)))) ^ 0x3ffdb46c)) & 0xffff | 49=(mask32((mask32(u16_2 + (mask...#12f
+    ip: ip += 0x4
+    proof: dumps/vmtail-wide-1m-w16/vm_mba_state_formula_compiler_proofs/state_158.smt2
+    unresolved: dispatch_formula_not_reduced
+  0x2c11f3..0x2c11f7 vmop_258_plus0x4_state_add_const_slot_multi_path bytes=d5c661ab grade=state_reduced_dispatch_formula_open target=28@0x7e390:1 delta=+0x4
+    state: vm_state = Z3-proved simplified expression; formula=((((((u16_0 - state0) & 0x1769756eu) ^ (0xfbf8fe86u + flags0)) ^ 0xa1b079au) | ((0xfbf8fe86u + flags0) ^ state0)) | (((u16_2 - 0x1510614fu) - flags0) ^ 0x1d7272f4u)) | 0x45609bd8u
+    dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=70=(mask32((mask32(u16_0 - (mask32((mask32((mask32(state0 ^ 0x11095fd5)) + (mask32(flags0 ^ 0x1769756e)))) ^ (mask32(u16_2 - (mask32(flags0 ^ 0x1769756e)))))))) ^ 0x5812e92c)) & 0xffff | 58=(mask32((m...#12f
+    ip: ip += 0x4
+    proof: dumps/vmtail-wide-1m-w16/vm_mba_state_formula_compiler_proofs/state_258.smt2
+    unresolved: dispatch_formula_not_reduced
+  0x2c11f7..0x2c11fa vmop_028_plus0x3_state_add_const_slot_u16_0 bytes=080514 grade=readable_control_semantics target=161@0x9975a:1 delta=+0x3
+    state: vm_state = add/constant-style update over state, flags, and operands; formula=state0 | flags0 ^ state0 | 0xb9ad02a & 0x3fb85e48 - state0 ^ 0x6e3e6f1a | flags0 ^ state0 | 0xb9ad02a & 0x3fb85e48 - state0 ^ 0x6e3e6f1a + 0x43078fb1 & 0x282416bb ^ 0x53f50e0b ^ state0 | flags0 ^ stat...#12f
+    dispatch: next_entry = dispatch_table[u16(ip+0)]
+    ip: ip += 0x3
+  0x2c11fa..0x2c11fe vmop_161_plus0x4_state_add_const_slot_multi_path bytes=d673e801 grade=state_reduced_dispatch_formula_open target=189@0x9e7af:1 delta=+0x4
+    state: vm_state = Z3-proved simplified expression; formula=state0 | 0x69145e52u
+    dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=128=(mask32((mask32(u16_0 + (mask32(state0 | 0x69145e52)))) + 0x4c0132b4)) & 0xffff
+    ip: ip += 0x4
+    proof: dumps/vmtail-wide-1m-w16/vm_mba_state_formula_compiler_proofs/state_161.smt2
+    unresolved: dispatch_formula_not_reduced
+  0x2c11fe..0x2c1202 vmop_189_plus0x4_state_add_const_slot_mba_stateful bytes=969f509a grade=state_reduced_dispatch_formula_open target=28@0x7e390:1 delta=+0x4
+    state: vm_state = Z3-proved simplified expression; formula=((((0x160e4f34u + u16_2) + state0) & state0) & 0x160e4f34u) ^ 0x2a1ce984u
+    dispatch: next_entry = MBA(state, flags, operands) dispatch slot; per-row concrete target is resolved; expression=128=(mask32((mask32(u16_2 + (mask32(state0 & 0x160e4f34)))) ^ 0x2a1ce984)) & 0xffff
+    ip: ip += 0x4
+    proof: dumps/vmtail-wide-1m-w16/vm_mba_state_formula_compiler_proofs/state_189.smt2
+    unresolved: dispatch_formula_not_reduced
+  0x2c1202..0x2c1205 vmop_028_plus0x3_state_add_const_slot_u16_0 bytes=7005ce grade=readable_control_semantics target=174@0x9bd8f:1 delta=+0x3
+    state: vm_state = add/constant-style update over state, flags, and operands; formula=state0 | flags0 ^ state0 | 0xb9ad02a & 0x3fb85e48 - state0 ^ 0x6e3e6f1a | flags0 ^ state0 | 0xb9ad02a & 0x3fb85e48 - state0 ^ 0x6e3e6f1a + 0x43078fb1 & 0x282416bb ^ 0x53f50e0b ^ state0 | flags0 ^ stat...#12f
+    dispatch: next_entry = dispatch_table[u16(ip+0)]
+    ip: ip += 0x3
+  0x2c1205..0x2c1209 vmop_174_plus0x4_state_add_const_slot_mba_stateful bytes=2828e801 grade=state_reduced_dispatch_formula_open target=114@0x90319:1 delta=+0x4
+    state: vm_state = Z3-proved simplified expression; formula=(((((u16_0 + state0) - flags0) & flags0) ^ (flags0 + flags0)) ^ 0x9929ac05u) | ((((state0 - flags0) & flags0) ^ (flags0 + flags0)) ^ 0x5fa9d2b1u)
+    dispatch: next_entry = MBA(state, flags, operands) dispatch slot; per-row concrete target is resolved; expression=128=(mask32((mask32(u16_0 + (mask32((mask32((mask32((mask32((mask32(state0 - flags0)) & flags0)) ^ flags0)) + flags0)) ^ 0x5fa9d2b1)))) + 0x397fd954)) & 0xffff
+    ip: ip += 0x4
+    proof: dumps/vmtail-wide-1m-w16/vm_mba_state_formula_compiler_proofs/state_174.smt2
+    unresolved: dispatch_formula_not_reduced
+  0x2c1209..0x2c120d vmop_114_plus0x4_state_add_const_slot_multi_path bytes=23658c9d grade=state_reduced_dispatch_formula_open target=28@0x7e390:1 delta=+0x4
+    state: vm_state = Z3-proved simplified expression; formula=((((((((0x63bb548fu + flags0) & state0) ^ ((0x671da5f4u + state0) & 0x48367f78u)) ^ 0x295f5080u) | (((~flags0) & state0) | (((0x2bf0f49bu + state0) & 0xa870050u) ^ 0xd9a4c60cu))) | ((((u16_2 + state0) ^ (state0 & flags0)) ^ ((0x671da5f4u + state0) & 0x292b555du)) ^ 0x295f5080u)) | ((((0x292b555du + flags0) & (0x671da5f4u + state0)) & state0) ^ 0x295f5080u)) | ((((flags0 + 0x665346b9u) & state0) ^ ((0x2bf0f49bu + state0) & 0xa870050u)) ^ 0xc25cdfdu)) | (((((state0 + 0x6b040388u) - u16_0) ^ ((0x2bf0f49bu + state0) & 0xa870050u)) ^ (state0 & flags0)) ^ 0x8268b55u)
+    dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=51=(mask32((mask32(u16_0 + (mask32((mask32((mask32((mask32((mask32((mask32(state0 ^ (mask32((mask32((mask32(flags0 & (mask32(state0 | 0x6729b5bf)))) + state0)) & 0x48367f78)))) ^ 0x63bb548f)) + (mask3...#12f
+    ip: ip += 0x4
+    proof: dumps/vmtail-wide-1m-w16/vm_mba_state_formula_compiler_proofs/state_114.smt2
+    unresolved: dispatch_formula_not_reduced
+  0x2c120d..0x2c1210 vmop_028_plus0x3_state_add_const_slot_u16_0 bytes=c005a4 grade=readable_control_semantics target=184@0x9d694:1 delta=+0x3
+    state: vm_state = add/constant-style update over state, flags, and operands; formula=state0 | flags0 ^ state0 | 0xb9ad02a & 0x3fb85e48 - state0 ^ 0x6e3e6f1a | flags0 ^ state0 | 0xb9ad02a & 0x3fb85e48 - state0 ^ 0x6e3e6f1a + 0x43078fb1 & 0x282416bb ^ 0x53f50e0b ^ state0 | flags0 ^ stat...#12f
+    dispatch: next_entry = dispatch_table[u16(ip+0)]
+    ip: ip += 0x3
+  0x2c1210..0x2c1214 vmop_184_plus0x4_state_add_const_slot_multi_path bytes=a270e801 grade=state_reduced_dispatch_formula_open target=28@0x7e390:1 delta=+0x4
+    state: vm_state = Z3-proved simplified expression; formula=((((u16_0 + flags0) - state0) ^ (0x7db9efb0u + flags0)) ^ 0x3da01862u) | ((((0x3f05b2f0u + flags0) ^ (0x7db9efb0u + flags0)) ^ 0x3da01862u) | (state0 | flags0))
+    dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=128=(mask32((mask32(u16_0 - (mask32((mask32((mask32((mask32((mask32((mask32(state0 | (mask32(flags0 | 0x19d0d4d)))) + 0x3c030b15)) ^ (mask32(flags0 + 0x7db9efb0)))) ^ flags0)) - flags0)) ^ flags0)))) ...#df
+    ip: ip += 0x4
+    proof: dumps/vmtail-wide-1m-w16/vm_mba_state_formula_compiler_proofs/state_184.smt2
+    unresolved: dispatch_formula_not_reduced
+  0x2c1214..0x2c1217 vmop_028_plus0x3_state_add_const_slot_u16_0 bytes=000280 grade=readable_control_semantics target=64@0x85059:1 delta=+0x3
+    state: vm_state = add/constant-style update over state, flags, and operands; formula=state0 | flags0 ^ state0 | 0xb9ad02a & 0x3fb85e48 - state0 ^ 0x6e3e6f1a | flags0 ^ state0 | 0xb9ad02a & 0x3fb85e48 - state0 ^ 0x6e3e6f1a + 0x43078fb1 & 0x282416bb ^ 0x53f50e0b ^ state0 | flags0 ^ stat...#12f
+    dispatch: next_entry = dispatch_table[u16(ip+0)]
+    ip: ip += 0x3
+  0x2c1217..0x2c121b vmop_064_plus0x4_state_add_const_slot_multi_path bytes=8896fe07 grade=state_reduced_dispatch_formula_open target=123@0x91a59:1 delta=+0x4
+    state: vm_state = Z3-proved simplified expression; formula=((state0 - 0x79614de5u) ^ ((0xbde73fa0u + flags0) & 0xcdc277b6u)) ^ (((flags0 + u16_2) - 0x4218c060u) & 0x5b249a06u)
+    dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=77=(mask32((mask32(u16_0 - (mask32((mask32((mask32(state0 - 0x79614de5)) ^ (mask32(u16_2 + flags0)))) ^ (mask32(flags0 + 0x729dddb0)))))) + 0x2701cdcd)) & 0xffff | 51=(mask32((mask32(u16_0 - (mask32((...#12f
+    ip: ip += 0x4
+    proof: dumps/vmtail-wide-1m-w16/vm_mba_state_formula_compiler_proofs/state_064.smt2
+    unresolved: dispatch_formula_not_reduced
+  0x2c121b..0x2c121f vmop_123_plus0x4_state_add_const_slot_mba_stateful bytes=338be801 grade=state_reduced_dispatch_formula_open target=199@0xa0631:1 delta=+0x4
+    state: vm_state = Z3-proved simplified expression; formula=(0x7b4ee84au - u16_0) ^ 0x1603b0a9u
+    dispatch: next_entry = MBA(state, flags, operands) dispatch slot; per-row concrete target is resolved; expression=128=(mask32((mask32(u16_0 - (mask32(state0 + 0x3da77425)))) ^ 0x1603b0a9)) & 0xffff
+    ip: ip += 0x4
+    proof: dumps/vmtail-wide-1m-w16/vm_mba_state_formula_compiler_proofs/state_123.smt2
+    unresolved: dispatch_formula_not_reduced
+  0x2c121f..0x2c1222 vmop_199_plus0x3_state_add_const_slot_multi_path bytes=9e1679 grade=state_reduced_dispatch_formula_open target=347@0xc088d:1 delta=+0x3
+    state: vm_state = Z3-proved simplified expression; formula=((state0 + flags0) + b2) ^ ((flags0 + 0x20d5418u) & 0x7e708197u)
+    dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=106=(mask32((mask32(u16_0 ^ (mask32((mask32((mask32((mask32(state0 + (mask32(b2 + flags0)))) ^ 0x7e708197)) & 0x20d5418)) + flags0)))) + 0x3030bb89)) & 0xffff | 22=(mask32((mask32(u16_0 ^ (mask32((mas...#12f
+    ip: ip += 0x3
+    proof: dumps/vmtail-wide-1m-w16/vm_mba_state_formula_compiler_proofs/state_199.smt2
+    unresolved: dispatch_formula_not_reduced
+  0x2c1222..0x2c1226 vmop_347_plus0x4_state_add_const_slot_multi_path bytes=450cfd80 grade=state_reduced_dispatch_formula_open target=176@0x9c10b:1 delta=+0x4
+    state: vm_state = Z3-proved simplified expression; formula=((((((((((0x5cf483c7u + u16_2) + flags0) ^ state0) ^ 0x2efc96c5u) | state0) | (0x6fa972f0u + flags0)) | (state0 ^ flags0)) | ((0x45223942u + state0) & (0x6fa972f0u + flags0))) | (((flags0 & 0x5cf483c7u) ^ state0) ^ 0x2efc96c5u)) | (((0x5cf483c7u - flags0) ^ state0) ^ 0x2efc96c5u)) | 0x7ffebfe7u
+    dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=92=(mask32((mask32(u16_0 ^ (mask32((mask32((mask32((mask32((mask32((mask32((mask32(state0 | (mask32(flags0 + 0x6fa972f0)))) | (mask32((mask32(flags0 ^ (mask32((mask32(state0 | (mask32(flags0 + 0x6fa97...#12f
+    ip: ip += 0x4
+    proof: dumps/vmtail-wide-1m-w16/vm_mba_state_formula_compiler_proofs/state_347.smt2
+    unresolved: dispatch_formula_not_reduced
+  0x2c1226..0x2c122a vmop_176_plus0x4_state_add_const_slot_multi_path bytes=e801cfc4 grade=state_reduced_dispatch_formula_open target=18@0x7be9b:1 delta=+0x4
+    state: vm_state = Z3-proved simplified expression; formula=((state0 & flags0) & 0x2c46ace3u) | (flags0 - 0x14b22a15u)
+    dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=78=(mask32((mask32(u16_2 - (mask32((mask32((mask32(state0 & flags0)) & 0x2c46ace3)) | flags0)))) ^ 0x37839d72)) & 0xffff | 50=(mask32((mask32(u16_2 - (mask32((mask32((mask32(state0 & flags0)) & 0x2c46...#10a
+    ip: ip += 0x4
+    proof: dumps/vmtail-wide-1m-w16/vm_mba_state_formula_compiler_proofs/state_176.smt2
+    unresolved: dispatch_formula_not_reduced
+  0x2c122a..0x2c122d vmop_018_plus0x3_state_add_const_slot_multi_path bytes=6d0b0a grade=state_reduced_dispatch_formula_open target=340@0xbf435:1 delta=+0x3
+    state: vm_state = Z3-proved simplified expression; formula=((((0x649b4ea0u - (u16_0 + state0)) | state0) | 0x1188080u) & flags0) | 0x649b4ea0u
+    dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=99=(mask32(u16_0 - (mask32((mask32((mask32(state0 & flags0)) - 0x6382ce20)) & flags0)))) & 0xffff | 29=(mask32(u16_0 - (mask32((mask32((mask32(state0 & (mask32((mask32(flags0 | 0x954df65)) + 0x5b466f3...#11f
+    ip: ip += 0x3
+    proof: dumps/vmtail-wide-1m-w16/vm_mba_state_formula_compiler_proofs/state_018.smt2
+    unresolved: dispatch_formula_not_reduced
+  0x2c122d..0x2c1231 vmop_340_plus0x4_state_add_const_slot_multi_path bytes=2045cb00 grade=state_reduced_dispatch_formula_open target=20@0x7c62b:1 delta=+0x4
+    state: vm_state = Z3-proved simplified expression; formula=((((0xd4d1a5dau + state0) + u16_2) - u16_0) ^ 0x7535dd25u) | (((state0 - 0x2b2e5a26u) ^ 0x7535dd25u) | (u16_2 + 0x9097995u))
+    dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=128=(mask32((mask32(u16_0 + (mask32((mask32((mask32(state0 - 0x2b2e5a26)) ^ 0x7535dd25)) | u16_2)))) + 0x9097995)) & 0xffff
+    ip: ip += 0x4
+    proof: dumps/vmtail-wide-1m-w16/vm_mba_state_formula_compiler_proofs/state_340.smt2
+    unresolved: dispatch_formula_not_reduced
+  0x2c1231..0x2c1235 vmop_020_plus0x4_state_add_const_slot_multi_path bytes=e8019975 grade=state_reduced_dispatch_formula_open target=337@0xbec0e:1 delta=+0x4
+    state: vm_state = Z3-proved simplified expression; formula=((((0xe1db482au - flags0) ^ 0x10000000u) | (flags0 | state0)) | ((0x38e67f26u - flags0) ^ 0x10100800u)) | (((u16_2 & 0x10100800u) ^ (0x38e67f26u - flags0)) ^ state0)
+    dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=67=(mask32(u16_2 ^ (mask32((mask32((mask32((mask32((mask32(state0 | (mask32(flags0 | 0x180e72f2)))) - 0x36332ac8)) - (mask32(flags0 & 0x1fa2014f)))) | 0x38e67f26)) - flags0)))) & 0xffff | 61=(mask32(u...#12f
+    ip: ip += 0x4
+    proof: dumps/vmtail-wide-1m-w16/vm_mba_state_formula_compiler_proofs/state_020.smt2
+    unresolved: dispatch_formula_not_reduced
+  0x2c1235..0x2c1239 vmop_337_plus0x4_state_add_const_slot_multi_path bytes=701a47f7 grade=state_reduced_dispatch_formula_open target=18@0x7be9b:1 delta=+0x4
+    state: vm_state = Z3-proved simplified expression; formula=((((flags0 + 0x61f749a7u) ^ 0x5dd3431eu) | ((flags0 + 0x61f749a7u) ^ 0x7db39ef4u)) | ((((0x2051de91u + state0) + state0) - (u16_2 + flags0)) & (flags0 + 0x61f749a7u))) | (((u16_0 - (u16_2 + flags0)) + ((0x2051de91u + state0) + state0)) & (flags0 + 0x61f749a7u))
+    dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=85=(mask32((mask32(u16_0 + (mask32((mask32((mask32((mask32((mask32((mask32(state0 - flags0)) - (mask32((mask32(u16_2 + (mask32(state0 - flags0)))) + flags0)))) + 0x2051de91)) & (mask32(flags0 + 0x61f7...#12f
+    ip: ip += 0x4
+    proof: dumps/vmtail-wide-1m-w16/vm_mba_state_formula_compiler_proofs/state_337.smt2
+    unresolved: dispatch_formula_not_reduced
+  0x2c1239..0x2c123c vmop_018_plus0x3_state_add_const_slot_multi_path bytes=b0a01a grade=state_reduced_dispatch_formula_open target=20@0x7c62b:1 delta=+0x3
+    state: vm_state = Z3-proved simplified expression; formula=((((0x649b4ea0u - (u16_0 + state0)) | state0) | 0x1188080u) & flags0) | 0x649b4ea0u
+    dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=99=(mask32(u16_0 - (mask32((mask32((mask32(state0 & flags0)) - 0x6382ce20)) & flags0)))) & 0xffff | 29=(mask32(u16_0 - (mask32((mask32((mask32(state0 & (mask32((mask32(flags0 | 0x954df65)) + 0x5b466f3...#11f
+    ip: ip += 0x3
+    proof: dumps/vmtail-wide-1m-w16/vm_mba_state_formula_compiler_proofs/state_018.smt2
+    unresolved: dispatch_formula_not_reduced
+  0x2c123c..0x2c1240 vmop_020_plus0x4_state_add_const_slot_multi_path bytes=e80129f9 grade=state_reduced_dispatch_formula_open target=199@0xa0631:1 delta=+0x4
+    state: vm_state = Z3-proved simplified expression; formula=((((0xe1db482au - flags0) ^ 0x10000000u) | (flags0 | state0)) | ((0x38e67f26u - flags0) ^ 0x10100800u)) | (((u16_2 & 0x10100800u) ^ (0x38e67f26u - flags0)) ^ state0)
+    dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=67=(mask32(u16_2 ^ (mask32((mask32((mask32((mask32((mask32(state0 | (mask32(flags0 | 0x180e72f2)))) - 0x36332ac8)) - (mask32(flags0 & 0x1fa2014f)))) | 0x38e67f26)) - flags0)))) & 0xffff | 61=(mask32(u...#12f
+    ip: ip += 0x4
+    proof: dumps/vmtail-wide-1m-w16/vm_mba_state_formula_compiler_proofs/state_020.smt2
+    unresolved: dispatch_formula_not_reduced
+  0x2c1240..0x2c1243 vmop_199_plus0x3_state_add_const_slot_multi_path bytes=1b50b6 grade=state_reduced_dispatch_formula_open target=258@0xadf2c:1 delta=+0x3
+    state: vm_state = Z3-proved simplified expression; formula=((state0 + flags0) + b2) ^ ((flags0 + 0x20d5418u) & 0x7e708197u)
+    dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=106=(mask32((mask32(u16_0 ^ (mask32((mask32((mask32((mask32(state0 + (mask32(b2 + flags0)))) ^ 0x7e708197)) & 0x20d5418)) + flags0)))) + 0x3030bb89)) & 0xffff | 22=(mask32((mask32(u16_0 ^ (mask32((mas...#12f
+    ip: ip += 0x3
+    proof: dumps/vmtail-wide-1m-w16/vm_mba_state_formula_compiler_proofs/state_199.smt2
+    unresolved: dispatch_formula_not_reduced
+  0x2c1243..0x2c1247 vmop_258_plus0x4_state_add_const_slot_multi_path bytes=40a09170 grade=state_reduced_dispatch_formula_open target=176@0x9c10b:1 delta=+0x4
+    state: vm_state = Z3-proved simplified expression; formula=((((((u16_0 - state0) & 0x1769756eu) ^ (0xfbf8fe86u + flags0)) ^ 0xa1b079au) | ((0xfbf8fe86u + flags0) ^ state0)) | (((u16_2 - 0x1510614fu) - flags0) ^ 0x1d7272f4u)) | 0x45609bd8u
+    dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=70=(mask32((mask32(u16_0 - (mask32((mask32((mask32(state0 ^ 0x11095fd5)) + (mask32(flags0 ^ 0x1769756e)))) ^ (mask32(u16_2 - (mask32(flags0 ^ 0x1769756e)))))))) ^ 0x5812e92c)) & 0xffff | 58=(mask32((m...#12f
+    ip: ip += 0x4
+    proof: dumps/vmtail-wide-1m-w16/vm_mba_state_formula_compiler_proofs/state_258.smt2
+    unresolved: dispatch_formula_not_reduced
+  0x2c1247..0x2c124b vmop_176_plus0x4_state_add_const_slot_multi_path bytes=e8013f23 grade=state_reduced_dispatch_formula_open target=347@0xc088d:1 delta=+0x4
+    state: vm_state = Z3-proved simplified expression; formula=((state0 & flags0) & 0x2c46ace3u) | (flags0 - 0x14b22a15u)
+    dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=78=(mask32((mask32(u16_2 - (mask32((mask32((mask32(state0 & flags0)) & 0x2c46ace3)) | flags0)))) ^ 0x37839d72)) & 0xffff | 50=(mask32((mask32(u16_2 - (mask32((mask32((mask32(state0 & flags0)) & 0x2c46...#10a
+    ip: ip += 0x4
+    proof: dumps/vmtail-wide-1m-w16/vm_mba_state_formula_compiler_proofs/state_176.smt2
+    unresolved: dispatch_formula_not_reduced
+  0x2c124b..0x2c124f vmop_347_plus0x4_state_add_const_slot_multi_path bytes=150a2f82 grade=state_reduced_dispatch_formula_open target=28@0x7e390:1 delta=+0x4
+    state: vm_state = Z3-proved simplified expression; formula=((((((((((0x5cf483c7u + u16_2) + flags0) ^ state0) ^ 0x2efc96c5u) | state0) | (0x6fa972f0u + flags0)) | (state0 ^ flags0)) | ((0x45223942u + state0) & (0x6fa972f0u + flags0))) | (((flags0 & 0x5cf483c7u) ^ state0) ^ 0x2efc96c5u)) | (((0x5cf483c7u - flags0) ^ state0) ^ 0x2efc96c5u)) | 0x7ffebfe7u
+    dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=92=(mask32((mask32(u16_0 ^ (mask32((mask32((mask32((mask32((mask32((mask32((mask32(state0 | (mask32(flags0 + 0x6fa972f0)))) | (mask32((mask32(flags0 ^ (mask32((mask32(state0 | (mask32(flags0 + 0x6fa97...#12f
+    ip: ip += 0x4
+    proof: dumps/vmtail-wide-1m-w16/vm_mba_state_formula_compiler_proofs/state_347.smt2
+    unresolved: dispatch_formula_not_reduced
+  0x2c124f..0x2c1252 vmop_028_plus0x3_state_add_const_slot_u16_0 bytes=800508 grade=readable_control_semantics target=176@0x9c10b:1 delta=+0x3
+    state: vm_state = add/constant-style update over state, flags, and operands; formula=state0 | flags0 ^ state0 | 0xb9ad02a & 0x3fb85e48 - state0 ^ 0x6e3e6f1a | flags0 ^ state0 | 0xb9ad02a & 0x3fb85e48 - state0 ^ 0x6e3e6f1a + 0x43078fb1 & 0x282416bb ^ 0x53f50e0b ^ state0 | flags0 ^ stat...#12f
+    dispatch: next_entry = dispatch_table[u16(ip+0)]
+    ip: ip += 0x3
+  0x2c1252..0x2c1256 vmop_176_plus0x4_state_add_const_slot_multi_path bytes=e80118e8 grade=state_reduced_dispatch_formula_open target=114@0x90319:1 delta=+0x4
+    state: vm_state = Z3-proved simplified expression; formula=((state0 & flags0) & 0x2c46ace3u) | (flags0 - 0x14b22a15u)
+    dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=78=(mask32((mask32(u16_2 - (mask32((mask32((mask32(state0 & flags0)) & 0x2c46ace3)) | flags0)))) ^ 0x37839d72)) & 0xffff | 50=(mask32((mask32(u16_2 - (mask32((mask32((mask32(state0 & flags0)) & 0x2c46...#10a
+    ip: ip += 0x4
+    proof: dumps/vmtail-wide-1m-w16/vm_mba_state_formula_compiler_proofs/state_176.smt2
+    unresolved: dispatch_formula_not_reduced
+  0x2c1256..0x2c125a vmop_114_plus0x4_state_add_const_slot_multi_path bytes=0eaa3870 grade=state_reduced_dispatch_formula_open target=66@0x855ff:1 delta=+0x4
+    state: vm_state = Z3-proved simplified expression; formula=((((((((0x63bb548fu + flags0) & state0) ^ ((0x671da5f4u + state0) & 0x48367f78u)) ^ 0x295f5080u) | (((~flags0) & state0) | (((0x2bf0f49bu + state0) & 0xa870050u) ^ 0xd9a4c60cu))) | ((((u16_2 + state0) ^ (state0 & flags0)) ^ ((0x671da5f4u + state0) & 0x292b555du)) ^ 0x295f5080u)) | ((((0x292b555du + flags0) & (0x671da5f4u + state0)) & state0) ^ 0x295f5080u)) | ((((flags0 + 0x665346b9u) & state0) ^ ((0x2bf0f49bu + state0) & 0xa870050u)) ^ 0xc25cdfdu)) | (((((state0 + 0x6b040388u) - u16_0) ^ ((0x2bf0f49bu + state0) & 0xa870050u)) ^ (state0 & flags0)) ^ 0x8268b55u)
+    dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=51=(mask32((mask32(u16_0 + (mask32((mask32((mask32((mask32((mask32((mask32(state0 ^ (mask32((mask32((mask32(flags0 & (mask32(state0 | 0x6729b5bf)))) + state0)) & 0x48367f78)))) ^ 0x63bb548f)) + (mask3...#12f
+    ip: ip += 0x4
+    proof: dumps/vmtail-wide-1m-w16/vm_mba_state_formula_compiler_proofs/state_114.smt2
+    unresolved: dispatch_formula_not_reduced
+  0x2c125a..0x2c125d vmop_066_plus0x3_state_add_const_slot_multi_path bytes=29a21a grade=state_reduced_dispatch_formula_open target=184@0x9d694:1 delta=+0x3
+    state: vm_state = Z3-proved simplified expression; formula=((((((u16_0 - state0) & (0x2f6cb1f6u - b2)) ^ ((0xc3c726c9u - flags0) & 0x745ff1d2u)) ^ (state0 & 0x2f6cb1f6u)) ^ 0x33c1d6ecu) | ((((0x2f6cb1f6u - b2) ^ 0x2f6cb1f6u) & state0) ^ ((0xc3c726c9u - flags0) & 0x745ff1d2u))) | 0x74b257b9u
+    dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=99=(mask32((mask32(u16_0 - (mask32((mask32((mask32((mask32((mask32(state0 & 0x2f6cb1f6)) - (mask32(b2 ^ (mask32(state0 & 0x2f6cb1f6)))))) ^ 0x745ff1d2)) & 0x13de2cdd)) - (mask32(flags0 ^ 0x42a6ffd6)))...#12f
+    ip: ip += 0x3
+    proof: dumps/vmtail-wide-1m-w16/vm_mba_state_formula_compiler_proofs/state_066.smt2
+    unresolved: dispatch_formula_not_reduced
+  0x2c125d..0x2c1261 vmop_184_plus0x4_state_add_const_slot_multi_path bytes=802ee801 grade=state_reduced_dispatch_formula_open target=215@0xa4609:1 delta=+0x4
+    state: vm_state = Z3-proved simplified expression; formula=((((u16_0 + flags0) - state0) ^ (0x7db9efb0u + flags0)) ^ 0x3da01862u) | ((((0x3f05b2f0u + flags0) ^ (0x7db9efb0u + flags0)) ^ 0x3da01862u) | (state0 | flags0))
+    dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=128=(mask32((mask32(u16_0 - (mask32((mask32((mask32((mask32((mask32((mask32(state0 | (mask32(flags0 | 0x19d0d4d)))) + 0x3c030b15)) ^ (mask32(flags0 + 0x7db9efb0)))) ^ flags0)) - flags0)) ^ flags0)))) ...#df
+    ip: ip += 0x4
+    proof: dumps/vmtail-wide-1m-w16/vm_mba_state_formula_compiler_proofs/state_184.smt2
+    unresolved: dispatch_formula_not_reduced
+  0x2c1261..0x2c1264 vmop_215_plus0x3_state_mixed_slot_u16_0 bytes=880ac8 grade=state_reduced_readable_control_semantics target=337@0xbec0e:1 delta=+0x3
+    state: vm_state = Z3-proved simplified expression; formula=(((((0x6c5f0f12u + b2) + state0) | state0) | (0x760f463fu - flags0)) | (0x38d2bdd3u - u16_0)) | 0xfe5f0f3fu
+    dispatch: next_entry = dispatch_table[u16(ip+0)]
+    ip: ip += 0x3
+    proof: dumps/vmtail-wide-1m-w16/vm_mba_state_formula_compiler_proofs/state_215.smt2
+  0x2c1264..0x2c1268 vmop_337_plus0x4_state_add_const_slot_multi_path bytes=0c6d344b grade=state_reduced_dispatch_formula_open target=184@0x9d694:1 delta=+0x4
+    state: vm_state = Z3-proved simplified expression; formula=((((flags0 + 0x61f749a7u) ^ 0x5dd3431eu) | ((flags0 + 0x61f749a7u) ^ 0x7db39ef4u)) | ((((0x2051de91u + state0) + state0) - (u16_2 + flags0)) & (flags0 + 0x61f749a7u))) | (((u16_0 - (u16_2 + flags0)) + ((0x2051de91u + state0) + state0)) & (flags0 + 0x61f749a7u))
+    dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=85=(mask32((mask32(u16_0 + (mask32((mask32((mask32((mask32((mask32((mask32(state0 - flags0)) - (mask32((mask32(u16_2 + (mask32(state0 - flags0)))) + flags0)))) + 0x2051de91)) & (mask32(flags0 + 0x61f7...#12f
+    ip: ip += 0x4
+    proof: dumps/vmtail-wide-1m-w16/vm_mba_state_formula_compiler_proofs/state_337.smt2
+    unresolved: dispatch_formula_not_reduced
+  0x2c1268..0x2c126c vmop_184_plus0x4_state_add_const_slot_multi_path bytes=eccbe801 grade=state_reduced_dispatch_formula_open target=307@0xb8064:1 delta=+0x4
+    state: vm_state = Z3-proved simplified expression; formula=((((u16_0 + flags0) - state0) ^ (0x7db9efb0u + flags0)) ^ 0x3da01862u) | ((((0x3f05b2f0u + flags0) ^ (0x7db9efb0u + flags0)) ^ 0x3da01862u) | (state0 | flags0))
+    dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=128=(mask32((mask32(u16_0 - (mask32((mask32((mask32((mask32((mask32((mask32(state0 | (mask32(flags0 | 0x19d0d4d)))) + 0x3c030b15)) ^ (mask32(flags0 + 0x7db9efb0)))) ^ flags0)) - flags0)) ^ flags0)))) ...#df
+    ip: ip += 0x4
+    proof: dumps/vmtail-wide-1m-w16/vm_mba_state_formula_compiler_proofs/state_184.smt2
+    unresolved: dispatch_formula_not_reduced
+  0x2c126c..0x2c126f vmop_307_plus0x3_state_add_const_slot_u16_1_sub_const bytes=3ac5b1 grade=readable_control_semantics target=258@0xadf2c:1 delta=+0x3
+    state: vm_state = add/constant-style update over state, flags, and operands; formula=state0 ^ b0 - flags0 & flags0 & 0x5792b958 ^ flags0 & 0x5792b958
+    dispatch: next_entry = dispatch_table[(u16(ip+1) - constant) & 0xffff]
+    ip: ip += 0x3
+  0x2c126f..0x2c1273 vmop_258_plus0x4_state_add_const_slot_multi_path bytes=b6c30776 grade=state_reduced_dispatch_formula_open target=158@0x99029:1 delta=+0x4
+    state: vm_state = Z3-proved simplified expression; formula=((((((u16_0 - state0) & 0x1769756eu) ^ (0xfbf8fe86u + flags0)) ^ 0xa1b079au) | ((0xfbf8fe86u + flags0) ^ state0)) | (((u16_2 - 0x1510614fu) - flags0) ^ 0x1d7272f4u)) | 0x45609bd8u
+    dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=70=(mask32((mask32(u16_0 - (mask32((mask32((mask32(state0 ^ 0x11095fd5)) + (mask32(flags0 ^ 0x1769756e)))) ^ (mask32(u16_2 - (mask32(flags0 ^ 0x1769756e)))))))) ^ 0x5812e92c)) & 0xffff | 58=(mask32((m...#12f
+    ip: ip += 0x4
+    proof: dumps/vmtail-wide-1m-w16/vm_mba_state_formula_compiler_proofs/state_258.smt2
+    unresolved: dispatch_formula_not_reduced
+  0x2c1273..0x2c1277 vmop_158_plus0x4_state_add_const_slot_multi_path bytes=e801f8dc grade=state_reduced_dispatch_formula_open target=264@0xaf4cf:1 delta=+0x4
+    state: vm_state = Z3-proved simplified expression; formula=(((0x3c39b020u + u16_2) + state0) ^ 0x33416bd8u) | (((state0 ^ flags0) ^ 0x3cf76f46u) | (flags0 ^ 0xc7200d2u))
+    dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=79=(mask32((mask32(u16_2 + (mask32((mask32((mask32((mask32(state0 ^ 0x1fbfc3f3)) ^ (mask32(flags0 ^ 0x1f711c95)))) | 0xfb6049e)) ^ flags0)))) ^ 0x3ffdb46c)) & 0xffff | 49=(mask32((mask32(u16_2 + (mask...#12f
+    ip: ip += 0x4
+    proof: dumps/vmtail-wide-1m-w16/vm_mba_state_formula_compiler_proofs/state_158.smt2
+    unresolved: dispatch_formula_not_reduced
+  0x2c1285..0x2c1287 vmop_171_plus0x2_state_const_post_slot_const_or_affine bytes=0201 grade=readable_control_semantics target=258@0xadf2c:1 delta=+0x2
+    state: vm_state is set to or checked against a post-dispatch constant marker
+    dispatch: next_entry = fixed or affine dispatch slot; expression=128=u16_0 << 0x3
+    ip: ip += 0x2
+  0x2c1287..0x2c128b vmop_258_plus0x4_state_add_const_slot_multi_path bytes=9ec30776 grade=state_reduced_dispatch_formula_open target=157@0x98a9a:1 delta=+0x4
+    state: vm_state = Z3-proved simplified expression; formula=((((((u16_0 - state0) & 0x1769756eu) ^ (0xfbf8fe86u + flags0)) ^ 0xa1b079au) | ((0xfbf8fe86u + flags0) ^ state0)) | (((u16_2 - 0x1510614fu) - flags0) ^ 0x1d7272f4u)) | 0x45609bd8u
+    dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=70=(mask32((mask32(u16_0 - (mask32((mask32((mask32(state0 ^ 0x11095fd5)) + (mask32(flags0 ^ 0x1769756e)))) ^ (mask32(u16_2 - (mask32(flags0 ^ 0x1769756e)))))))) ^ 0x5812e92c)) & 0xffff | 58=(mask32((m...#12f
+    ip: ip += 0x4
+    proof: dumps/vmtail-wide-1m-w16/vm_mba_state_formula_compiler_proofs/state_258.smt2
+    unresolved: dispatch_formula_not_reduced
+  0x2c128b..0x2c128f vmop_157_plus0x4_state_add_const_slot_multi_path bytes=53119900 grade=state_reduced_dispatch_formula_open target=199@0xa0631:1 delta=+0x4
+    state: vm_state = Z3-proved simplified expression; formula=((((u16_0 + state0) ^ (0x2f4dfd84u + u16_2)) ^ (((0x869c849au - flags0) ^ (0x2f4dfd84u + u16_2)) ^ (state0 & 0x3d2638afu))) ^ 0x3aeb4349u) | (((0x2f4dfd84u + u16_2) ^ state0) | ((((0x869c849au - flags0) ^ (0x2f4dfd84u + u16_2)) ^ (state0 & 0x3d2638afu)) ^ 0x2d38dfd6u))
+    dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=79=(mask32((mask32(u16_0 + (mask32((mask32((mask32((mask32(state0 ^ 0x2f4dfd84)) + u16_2)) | 0x1f5cd114)) - (mask32((mask32(flags0 ^ 0x3d2638af)) & (mask32((mask32(state0 ^ 0x2f4dfd84)) + u16_2)))))))...#12f
+    ip: ip += 0x4
+    proof: dumps/vmtail-wide-1m-w16/vm_mba_state_formula_compiler_proofs/state_157.smt2
+    unresolved: dispatch_formula_not_reduced
+  0x2c128f..0x2c1292 vmop_199_plus0x3_state_add_const_slot_multi_path bytes=fe3e99 grade=state_reduced_dispatch_formula_open target=315@0xb9451:1 delta=+0x3
+    state: vm_state = Z3-proved simplified expression; formula=((state0 + flags0) + b2) ^ ((flags0 + 0x20d5418u) & 0x7e708197u)
+    dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=106=(mask32((mask32(u16_0 ^ (mask32((mask32((mask32((mask32(state0 + (mask32(b2 + flags0)))) ^ 0x7e708197)) & 0x20d5418)) + flags0)))) + 0x3030bb89)) & 0xffff | 22=(mask32((mask32(u16_0 ^ (mask32((mas...#12f
+    ip: ip += 0x3
+    proof: dumps/vmtail-wide-1m-w16/vm_mba_state_formula_compiler_proofs/state_199.smt2
+    unresolved: dispatch_formula_not_reduced
+  0x2c1292..0x2c1296 vmop_315_plus0x4_state_mixed_slot_mba_stateful bytes=e801f9fa grade=state_reduced_dispatch_formula_open target=337@0xbec0e:1 delta=+0x4
+    state: vm_state = Z3-proved simplified expression; formula=(((state0 & 0x7562ddb5u) ^ flags0) ^ 0x2485a98du) | (u16_2 ^ 0x42c7f071u)
+    dispatch: next_entry = MBA(state, flags, operands) dispatch slot; per-row concrete target is resolved; expression=128=(mask32(u16_2 ^ 0x42c7f071)) & 0xffff
+    ip: ip += 0x4
+    proof: dumps/vmtail-wide-1m-w16/vm_mba_state_formula_compiler_proofs/state_315.smt2
+    unresolved: dispatch_formula_not_reduced
+  0x2c1296..0x2c129a vmop_337_plus0x4_state_add_const_slot_multi_path bytes=7c751d42 grade=state_reduced_dispatch_formula_open target=172@0x9b68a:1 delta=+0x4
+    state: vm_state = Z3-proved simplified expression; formula=((((flags0 + 0x61f749a7u) ^ 0x5dd3431eu) | ((flags0 + 0x61f749a7u) ^ 0x7db39ef4u)) | ((((0x2051de91u + state0) + state0) - (u16_2 + flags0)) & (flags0 + 0x61f749a7u))) | (((u16_0 - (u16_2 + flags0)) + ((0x2051de91u + state0) + state0)) & (flags0 + 0x61f749a7u))
+    dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=85=(mask32((mask32(u16_0 + (mask32((mask32((mask32((mask32((mask32((mask32(state0 - flags0)) - (mask32((mask32(u16_2 + (mask32(state0 - flags0)))) + flags0)))) + 0x2051de91)) & (mask32(flags0 + 0x61f7...#12f
+    ip: ip += 0x4
+    proof: dumps/vmtail-wide-1m-w16/vm_mba_state_formula_compiler_proofs/state_337.smt2
+    unresolved: dispatch_formula_not_reduced
+  0x2c129a..0x2c129e vmop_172_plus0x4_state_add_const_slot_mba_stateful bytes=5e13d30a grade=state_reduced_dispatch_formula_open target=28@0x7e390:1 delta=+0x4
+    state: vm_state = Z3-proved simplified expression; formula=(((((u16_0 + 0x1a1af2bu) ^ (state0 & 0x15bf847fu)) ^ flags0) ^ 0x1a1af2bu) | (u16_2 ^ 0x715f0a33u)) | 0x3eba9edfu
+    dispatch: next_entry = MBA(state, flags, operands) dispatch slot; per-row concrete target is resolved; expression=128=(mask32(u16_2 ^ 0x715f0a33)) & 0xffff
+    ip: ip += 0x4
+    proof: dumps/vmtail-wide-1m-w16/vm_mba_state_formula_compiler_proofs/state_172.smt2
+    unresolved: dispatch_formula_not_reduced
+  0x2c129e..0x2c12a1 vmop_028_plus0x3_state_add_const_slot_u16_0 bytes=d00a34 grade=readable_control_semantics target=346@0xc0535:1 delta=+0x3
+    state: vm_state = add/constant-style update over state, flags, and operands; formula=state0 | flags0 ^ state0 | 0xb9ad02a & 0x3fb85e48 - state0 ^ 0x6e3e6f1a | flags0 ^ state0 | 0xb9ad02a & 0x3fb85e48 - state0 ^ 0x6e3e6f1a + 0x43078fb1 & 0x282416bb ^ 0x53f50e0b ^ state0 | flags0 ^ stat...#12f
+    dispatch: next_entry = dispatch_table[u16(ip+0)]
+    ip: ip += 0x3
+  0x2c12a1..0x2c12a5 vmop_346_plus0x4_state_add_const_slot_multi_path bytes=542be801 grade=state_reduced_dispatch_formula_open target=64@0x85059:1 delta=+0x4
+    state: vm_state = Z3-proved simplified expression; formula=(state0 ^ flags0) ^ 0x45daa5e4u
+    dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=74=(mask32((mask32(u16_0 ^ (mask32(state0 ^ (mask32(flags0 ^ 0x45fbcef1)))))) + 0x7f7eb061)) & 0xffff | 54=(mask32((mask32(u16_0 ^ (mask32(state0 ^ (mask32((mask32((mask32(flags0 ^ 0x3f746ab3)) ^ 0x3f...#fb
+    ip: ip += 0x4
+    proof: dumps/vmtail-wide-1m-w16/vm_mba_state_formula_compiler_proofs/state_346.smt2
+    unresolved: dispatch_formula_not_reduced
+  0x2c12a5..0x2c12a9 vmop_064_plus0x4_state_add_const_slot_multi_path bytes=2902e8f8 grade=state_reduced_dispatch_formula_open target=215@0xa4609:1 delta=+0x4
+    state: vm_state = Z3-proved simplified expression; formula=((state0 - 0x79614de5u) ^ ((0xbde73fa0u + flags0) & 0xcdc277b6u)) ^ (((flags0 + u16_2) - 0x4218c060u) & 0x5b249a06u)
+    dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=77=(mask32((mask32(u16_0 - (mask32((mask32((mask32(state0 - 0x79614de5)) ^ (mask32(u16_2 + flags0)))) ^ (mask32(flags0 + 0x729dddb0)))))) + 0x2701cdcd)) & 0xffff | 51=(mask32((mask32(u16_0 - (mask32((...#12f
+    ip: ip += 0x4
+    proof: dumps/vmtail-wide-1m-w16/vm_mba_state_formula_compiler_proofs/state_064.smt2
+    unresolved: dispatch_formula_not_reduced
+  0x2c12a9..0x2c12ac vmop_215_plus0x3_state_mixed_slot_u16_0 bytes=e8043b grade=state_reduced_readable_control_semantics target=157@0x98a9a:1 delta=+0x3
+    state: vm_state = Z3-proved simplified expression; formula=(((((0x6c5f0f12u + b2) + state0) | state0) | (0x760f463fu - flags0)) | (0x38d2bdd3u - u16_0)) | 0xfe5f0f3fu
+    dispatch: next_entry = dispatch_table[u16(ip+0)]
+    ip: ip += 0x3
+    proof: dumps/vmtail-wide-1m-w16/vm_mba_state_formula_compiler_proofs/state_215.smt2
+  0x2c12ac..0x2c12b0 vmop_157_plus0x4_state_add_const_slot_multi_path bytes=63cd8900 grade=state_reduced_dispatch_formula_open target=33@0x7f7c4:1 delta=+0x4
+    state: vm_state = Z3-proved simplified expression; formula=((((u16_0 + state0) ^ (0x2f4dfd84u + u16_2)) ^ (((0x869c849au - flags0) ^ (0x2f4dfd84u + u16_2)) ^ (state0 & 0x3d2638afu))) ^ 0x3aeb4349u) | (((0x2f4dfd84u + u16_2) ^ state0) | ((((0x869c849au - flags0) ^ (0x2f4dfd84u + u16_2)) ^ (state0 & 0x3d2638afu)) ^ 0x2d38dfd6u))
+    dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=79=(mask32((mask32(u16_0 + (mask32((mask32((mask32((mask32(state0 ^ 0x2f4dfd84)) + u16_2)) | 0x1f5cd114)) - (mask32((mask32(flags0 ^ 0x3d2638af)) & (mask32((mask32(state0 ^ 0x2f4dfd84)) + u16_2)))))))...#12f
+    ip: ip += 0x4
+    proof: dumps/vmtail-wide-1m-w16/vm_mba_state_formula_compiler_proofs/state_157.smt2
+    unresolved: dispatch_formula_not_reduced
+  0x2c12b0..0x2c12b4 vmop_033_plus0x4_state_add_const_slot_multi_path bytes=e801f0f8 grade=state_reduced_dispatch_formula_open target=196@0x9fbcd:1 delta=+0x4
+    state: vm_state = Z3-proved simplified expression; formula=(((u16_2 + state0) & 0x15422921u) | state0) | 0x42493d14u
+    dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=128=(mask32((mask32(u16_2 + (mask32(state0 | 0x15422921)))) + 0x2d0713f3)) & 0xffff
+    ip: ip += 0x4
+    proof: dumps/vmtail-wide-1m-w16/vm_mba_state_formula_compiler_proofs/state_033.smt2
+    unresolved: dispatch_formula_not_reduced
+  0x2c12b4..0x2c12b8 vmop_196_plus0x4_state_add_const_slot_multi_path bytes=ca81ecf3 grade=state_reduced_dispatch_formula_open target=185@0x9d964:1 delta=+0x4
+    state: vm_state = Z3-proved simplified expression; formula=(((((0x44fb7fdbu + flags0) ^ 0x72e5925eu) | state0) | (flags0 + 0x52e5924au)) | (state0 & 0x4083ed99u)) | 0x52e5a24au
+    dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=128=(mask32((mask32(u16_2 + (mask32((mask32((mask32((mask32((mask32((mask32((mask32(state0 | 0x52e5924a)) + (mask32((mask32((mask32(flags0 | 0x4083ed99)) & (mask32((mask32(state0 | 0x52e5924a)) ^ 0x20...#df
+    ip: ip += 0x4
+    proof: dumps/vmtail-wide-1m-w16/vm_mba_state_formula_compiler_proofs/state_196.smt2
+    unresolved: dispatch_formula_not_reduced
+  0x2c12b8..0x2c12bb vmop_185_plus0x3_state_add_const_slot_multi_path bytes=239b3a grade=state_reduced_dispatch_formula_open target=64@0x85059:1 delta=+0x3
+    state: vm_state = Z3-proved simplified expression; formula=(((((0x1f29f35u + flags0) & 0x2000c224u) ^ 0x17e55682u) | (state0 ^ flags0)) | ((state0 ^ flags0) ^ u16_0)) | 0x5f7a5ddfu
+    dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=128=(mask32(u16_0 ^ (mask32((mask32((mask32((mask32(state0 ^ (mask32(flags0 | 0x17e55682)))) ^ 0x2000c224)) & 0x1f29f35)) + (mask32((mask32((mask32((mask32((mask32(flags0 | 0x17e55682)) + 0x28030c24))...#df
+    ip: ip += 0x3
+    proof: dumps/vmtail-wide-1m-w16/vm_mba_state_formula_compiler_proofs/state_185.smt2
+    unresolved: dispatch_formula_not_reduced
+  0x2c12bb..0x2c12bf vmop_064_plus0x4_state_add_const_slot_multi_path bytes=4d367c29 grade=state_reduced_dispatch_formula_open target=346@0xc0535:1 delta=+0x4
+    state: vm_state = Z3-proved simplified expression; formula=((state0 - 0x79614de5u) ^ ((0xbde73fa0u + flags0) & 0xcdc277b6u)) ^ (((flags0 + u16_2) - 0x4218c060u) & 0x5b249a06u)
+    dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=77=(mask32((mask32(u16_0 - (mask32((mask32((mask32(state0 - 0x79614de5)) ^ (mask32(u16_2 + flags0)))) ^ (mask32(flags0 + 0x729dddb0)))))) + 0x2701cdcd)) & 0xffff | 51=(mask32((mask32(u16_0 - (mask32((...#12f
+    ip: ip += 0x4
+    proof: dumps/vmtail-wide-1m-w16/vm_mba_state_formula_compiler_proofs/state_064.smt2
+    unresolved: dispatch_formula_not_reduced
+  0x2c12bf..0x2c12c3 vmop_346_plus0x4_state_add_const_slot_multi_path bytes=48d2e801 grade=state_reduced_dispatch_formula_open target=66@0x855ff:1 delta=+0x4
+    state: vm_state = Z3-proved simplified expression; formula=(state0 ^ flags0) ^ 0x45daa5e4u
+    dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=74=(mask32((mask32(u16_0 ^ (mask32(state0 ^ (mask32(flags0 ^ 0x45fbcef1)))))) + 0x7f7eb061)) & 0xffff | 54=(mask32((mask32(u16_0 ^ (mask32(state0 ^ (mask32((mask32((mask32(flags0 ^ 0x3f746ab3)) ^ 0x3f...#fb
+    ip: ip += 0x4
+    proof: dumps/vmtail-wide-1m-w16/vm_mba_state_formula_compiler_proofs/state_346.smt2
+    unresolved: dispatch_formula_not_reduced
+  0x2c12c3..0x2c12c6 vmop_066_plus0x3_state_add_const_slot_multi_path bytes=c560dc grade=state_reduced_dispatch_formula_open target=340@0xbf435:1 delta=+0x3
+    state: vm_state = Z3-proved simplified expression; formula=((((((u16_0 - state0) & (0x2f6cb1f6u - b2)) ^ ((0xc3c726c9u - flags0) & 0x745ff1d2u)) ^ (state0 & 0x2f6cb1f6u)) ^ 0x33c1d6ecu) | ((((0x2f6cb1f6u - b2) ^ 0x2f6cb1f6u) & state0) ^ ((0xc3c726c9u - flags0) & 0x745ff1d2u))) | 0x74b257b9u
+    dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=99=(mask32((mask32(u16_0 - (mask32((mask32((mask32((mask32((mask32(state0 & 0x2f6cb1f6)) - (mask32(b2 ^ (mask32(state0 & 0x2f6cb1f6)))))) ^ 0x745ff1d2)) & 0x13de2cdd)) - (mask32(flags0 ^ 0x42a6ffd6)))...#12f
+    ip: ip += 0x3
+    proof: dumps/vmtail-wide-1m-w16/vm_mba_state_formula_compiler_proofs/state_066.smt2
+    unresolved: dispatch_formula_not_reduced
+  0x2c12c6..0x2c12ca vmop_340_plus0x4_state_add_const_slot_multi_path bytes=68372301 grade=state_reduced_dispatch_formula_open target=333@0xbd8af:1 delta=+0x4
+    state: vm_state = Z3-proved simplified expression; formula=((((0xd4d1a5dau + state0) + u16_2) - u16_0) ^ 0x7535dd25u) | (((state0 - 0x2b2e5a26u) ^ 0x7535dd25u) | (u16_2 + 0x9097995u))
+    dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=128=(mask32((mask32(u16_0 + (mask32((mask32((mask32(state0 - 0x2b2e5a26)) ^ 0x7535dd25)) | u16_2)))) + 0x9097995)) & 0xffff
+    ip: ip += 0x4
+    proof: dumps/vmtail-wide-1m-w16/vm_mba_state_formula_compiler_proofs/state_340.smt2
+    unresolved: dispatch_formula_not_reduced
+  0x2c12ca..0x2c12ce vmop_333_plus0x4_state_add_const_slot_multi_path bytes=bfcf2301 grade=state_reduced_dispatch_formula_open target=26@0x7dbbb:1 delta=+0x4
+    state: vm_state = Z3-proved simplified expression; formula=(((((u16_0 + 0x569ecec3u) - state0) ^ (state0 ^ flags0)) | (((flags0 & 0xd5e75f83u) ^ (state0 + flags0)) ^ state0)) | flags0) | 0x77dedeebu
+    dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=128=(mask32(u16_0 - (mask32((mask32((mask32((mask32((mask32(state0 ^ (mask32((mask32(flags0 ^ state0)) | 0x37ccc6ea)))) - 0x61e56767)) & (mask32(flags0 ^ state0)))) + (mask32((mask32(flags0 ^ state0))...#df
+    ip: ip += 0x4
+    proof: dumps/vmtail-wide-1m-w16/vm_mba_state_formula_compiler_proofs/state_333.smt2
+    unresolved: dispatch_formula_not_reduced
+  0x2c12ce..0x2c12d2 vmop_026_plus0x4_state_add_const_slot_multi_path bytes=90b4e801 grade=state_reduced_dispatch_formula_open target=268@0xb0007:1 delta=+0x4
+    state: vm_state = Z3-proved simplified expression; formula=((((((state0 - 0x6b3e5bb1u) - u16_0) & 0xe71ae1du) ^ ((0xb8ed9b36u + flags0) ^ (0xb8ed9b36u + state0))) ^ 0xd470bb91u) | ((((state0 - 0x6b3e5bb1u) & 0xe71ae1du) ^ 0xb352839cu) | (((0xb8ed9b36u + flags0) ^ (0xb8ed9b36u + state0)) ^ 0x8019001u))) | 0x2a01f150u
+    dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=48=(mask32((mask32(u16_0 ^ (mask32((mask32(state0 - 0x471264ca)) + (mask32((mask32((mask32((mask32((mask32((mask32((mask32(flags0 - (mask32(state0 ^ 0x5fcdb203)))) ^ (mask32((mask32(state0 - 0x471264c...#12f
+    ip: ip += 0x4
+    proof: dumps/vmtail-wide-1m-w16/vm_mba_state_formula_compiler_proofs/state_026.smt2
+    unresolved: dispatch_formula_not_reduced
+  0x2c12d2..0x2c12d6 vmop_268_plus0x4_state_add_const_slot_multi_path bytes=4a09f2e8 grade=state_reduced_dispatch_formula_open target=185@0x9d964:1 delta=+0x4
+    state: vm_state = Z3-proved simplified expression; formula=(((((u16_0 + 0x71bd1bb1u) - state0) | ((0x33c0c75bu + flags0) & 0x81482e01u)) | state0) | (((0x71bd1bb1u - flags0) & (0x33c0c75bu + flags0)) & 0xef0600u)) | ((u16_2 - state0) ^ ((0x33c0c75bu + flags0) & 0x41582100u))
+    dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=87=(mask32((mask32(u16_2 - (mask32((mask32((mask32((mask32(state0 | 0x71bd1bb1)) + (mask32((mask32(u16_0 - (mask32(state0 | 0x71bd1bb1)))) - flags0)))) & (mask32((mask32((mask32(flags0 + 0x33c0c75b)) ...#12f
+    ip: ip += 0x4
+    proof: dumps/vmtail-wide-1m-w16/vm_mba_state_formula_compiler_proofs/state_268.smt2
+    unresolved: dispatch_formula_not_reduced
+  0x2c12d6..0x2c12d9 vmop_185_plus0x3_state_add_const_slot_multi_path bytes=320c3a grade=state_reduced_dispatch_formula_open target=258@0xadf2c:1 delta=+0x3
+    state: vm_state = Z3-proved simplified expression; formula=(((((0x1f29f35u + flags0) & 0x2000c224u) ^ 0x17e55682u) | (state0 ^ flags0)) | ((state0 ^ flags0) ^ u16_0)) | 0x5f7a5ddfu
+    dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=128=(mask32(u16_0 ^ (mask32((mask32((mask32((mask32(state0 ^ (mask32(flags0 | 0x17e55682)))) ^ 0x2000c224)) & 0x1f29f35)) + (mask32((mask32((mask32((mask32((mask32(flags0 | 0x17e55682)) + 0x28030c24))...#df
+    ip: ip += 0x3
+    proof: dumps/vmtail-wide-1m-w16/vm_mba_state_formula_compiler_proofs/state_185.smt2
+    unresolved: dispatch_formula_not_reduced
+  0x2c12d9..0x2c12dd vmop_258_plus0x4_state_add_const_slot_multi_path bytes=fbb9187c grade=state_reduced_dispatch_formula_open target=26@0x7dbbb:1 delta=+0x4
+    state: vm_state = Z3-proved simplified expression; formula=((((((u16_0 - state0) & 0x1769756eu) ^ (0xfbf8fe86u + flags0)) ^ 0xa1b079au) | ((0xfbf8fe86u + flags0) ^ state0)) | (((u16_2 - 0x1510614fu) - flags0) ^ 0x1d7272f4u)) | 0x45609bd8u
+    dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=70=(mask32((mask32(u16_0 - (mask32((mask32((mask32(state0 ^ 0x11095fd5)) + (mask32(flags0 ^ 0x1769756e)))) ^ (mask32(u16_2 - (mask32(flags0 ^ 0x1769756e)))))))) ^ 0x5812e92c)) & 0xffff | 58=(mask32((m...#12f
+    ip: ip += 0x4
+    proof: dumps/vmtail-wide-1m-w16/vm_mba_state_formula_compiler_proofs/state_258.smt2
+    unresolved: dispatch_formula_not_reduced
+  0x2c12dd..0x2c12e1 vmop_026_plus0x4_state_add_const_slot_multi_path bytes=0e56e801 grade=state_reduced_dispatch_formula_open target=189@0x9e7af:1 delta=+0x4
+    state: vm_state = Z3-proved simplified expression; formula=((((((state0 - 0x6b3e5bb1u) - u16_0) & 0xe71ae1du) ^ ((0xb8ed9b36u + flags0) ^ (0xb8ed9b36u + state0))) ^ 0xd470bb91u) | ((((state0 - 0x6b3e5bb1u) & 0xe71ae1du) ^ 0xb352839cu) | (((0xb8ed9b36u + flags0) ^ (0xb8ed9b36u + state0)) ^ 0x8019001u))) | 0x2a01f150u
+    dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=48=(mask32((mask32(u16_0 ^ (mask32((mask32(state0 - 0x471264ca)) + (mask32((mask32((mask32((mask32((mask32((mask32((mask32(flags0 - (mask32(state0 ^ 0x5fcdb203)))) ^ (mask32((mask32(state0 - 0x471264c...#12f
+    ip: ip += 0x4
+    proof: dumps/vmtail-wide-1m-w16/vm_mba_state_formula_compiler_proofs/state_026.smt2
+    unresolved: dispatch_formula_not_reduced
+  0x2c12e1..0x2c12e5 vmop_189_plus0x4_state_add_const_slot_mba_stateful bytes=2d691c9a grade=state_reduced_dispatch_formula_open target=307@0xb8064:1 delta=+0x4
+    state: vm_state = Z3-proved simplified expression; formula=((((0x160e4f34u + u16_2) + state0) & state0) & 0x160e4f34u) ^ 0x2a1ce984u
+    dispatch: next_entry = MBA(state, flags, operands) dispatch slot; per-row concrete target is resolved; expression=128=(mask32((mask32(u16_2 + (mask32(state0 & 0x160e4f34)))) ^ 0x2a1ce984)) & 0xffff
+    ip: ip += 0x4
+    proof: dumps/vmtail-wide-1m-w16/vm_mba_state_formula_compiler_proofs/state_189.smt2
+    unresolved: dispatch_formula_not_reduced
+  0x2c12e5..0x2c12e8 vmop_307_plus0x3_state_add_const_slot_u16_1_sub_const bytes=be0db0 grade=readable_control_semantics target=203@0xa1484:1 delta=+0x3
+    state: vm_state = add/constant-style update over state, flags, and operands; formula=state0 ^ b0 - flags0 & flags0 & 0x5792b958 ^ flags0 & 0x5792b958
+    dispatch: next_entry = dispatch_table[(u16(ip+1) - constant) & 0xffff]
+    ip: ip += 0x3
+  0x2c12e8..0x2c12ec vmop_203_plus0x4_state_add_const_slot_mba_stateful bytes=ff9067ff grade=state_reduced_dispatch_formula_open target=287@0xb45d2:1 delta=+0x4
+    state: vm_state = Z3-proved simplified expression; formula=(((((((0x786f3e30u - flags0) & (0x97da242u + flags0)) & ((0x97da242u + state0) - flags0)) & 0x24d2add8u) ^ 0x370370f1u) | ((u16_0 & 0x1710588u) ^ 0x4ccb9807u)) | ((((0x97da242u + state0) - flags0) & (0x97da242u + flags0)) ^ 0x370370f1u)) | 0x1f1759cu
+    dispatch: next_entry = MBA(state, flags, operands) dispatch slot; per-row concrete target is resolved; expression=128=(mask32(u16_0 ^ 0x4ccb9807)) & 0xffff
+    ip: ip += 0x4
+    proof: dumps/vmtail-wide-1m-w16/vm_mba_state_formula_compiler_proofs/state_203.smt2
+    unresolved: dispatch_formula_not_reduced
+  0x2c12ec..0x2c12f0 vmop_287_plus0x4_state_add_const_slot_multi_path bytes=7e4ce801 grade=state_reduced_dispatch_formula_open target=157@0x98a9a:1 delta=+0x4
+    state: vm_state = Z3-proved simplified expression; formula=((((0x3ab14dd1u + state0) - u16_0) | state0) & (0x238df177u - flags0)) | 0x3035536cu
+    dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=76=(mask32((mask32(u16_0 + (mask32((mask32((mask32((mask32(state0 & 0xa6ddb71)) - (mask32(flags0 + 0x6975e1b1)))) - 0x4988e425)) | 0x3ab14dd1)))) ^ 0xa841ebd)) & 0xffff | 52=(mask32((mask32(u16_0 + (m...#12f
+    ip: ip += 0x4
+    proof: dumps/vmtail-wide-1m-w16/vm_mba_state_formula_compiler_proofs/state_287.smt2
+    unresolved: dispatch_formula_not_reduced
+  0x2c12f0..0x2c12f4 vmop_157_plus0x4_state_add_const_slot_multi_path bytes=739f3800 grade=state_reduced_dispatch_formula_open target=307@0xb8064:1 delta=+0x4
+    state: vm_state = Z3-proved simplified expression; formula=((((u16_0 + state0) ^ (0x2f4dfd84u + u16_2)) ^ (((0x869c849au - flags0) ^ (0x2f4dfd84u + u16_2)) ^ (state0 & 0x3d2638afu))) ^ 0x3aeb4349u) | (((0x2f4dfd84u + u16_2) ^ state0) | ((((0x869c849au - flags0) ^ (0x2f4dfd84u + u16_2)) ^ (state0 & 0x3d2638afu)) ^ 0x2d38dfd6u))
+    dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=79=(mask32((mask32(u16_0 + (mask32((mask32((mask32((mask32(state0 ^ 0x2f4dfd84)) + u16_2)) | 0x1f5cd114)) - (mask32((mask32(flags0 ^ 0x3d2638af)) & (mask32((mask32(state0 ^ 0x2f4dfd84)) + u16_2)))))))...#12f
+    ip: ip += 0x4
+    proof: dumps/vmtail-wide-1m-w16/vm_mba_state_formula_compiler_proofs/state_157.smt2
+    unresolved: dispatch_formula_not_reduced
+  0x2c12f4..0x2c12f7 vmop_307_plus0x3_state_add_const_slot_u16_1_sub_const bytes=a1c5b1 grade=readable_control_semantics target=258@0xadf2c:1 delta=+0x3
+    state: vm_state = add/constant-style update over state, flags, and operands; formula=state0 ^ b0 - flags0 & flags0 & 0x5792b958 ^ flags0 & 0x5792b958
+    dispatch: next_entry = dispatch_table[(u16(ip+1) - constant) & 0xffff]
+    ip: ip += 0x3
+  0x2c12f7..0x2c12fb vmop_258_plus0x4_state_add_const_slot_multi_path bytes=1f3d66f5 grade=state_reduced_dispatch_formula_open target=33@0x7f7c4:1 delta=+0x4
+    state: vm_state = Z3-proved simplified expression; formula=((((((u16_0 - state0) & 0x1769756eu) ^ (0xfbf8fe86u + flags0)) ^ 0xa1b079au) | ((0xfbf8fe86u + flags0) ^ state0)) | (((u16_2 - 0x1510614fu) - flags0) ^ 0x1d7272f4u)) | 0x45609bd8u
+    dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=70=(mask32((mask32(u16_0 - (mask32((mask32((mask32(state0 ^ 0x11095fd5)) + (mask32(flags0 ^ 0x1769756e)))) ^ (mask32(u16_2 - (mask32(flags0 ^ 0x1769756e)))))))) ^ 0x5812e92c)) & 0xffff | 58=(mask32((m...#12f
+    ip: ip += 0x4
+    proof: dumps/vmtail-wide-1m-w16/vm_mba_state_formula_compiler_proofs/state_258.smt2
+    unresolved: dispatch_formula_not_reduced
+  0x2c12fb..0x2c12ff vmop_033_plus0x4_state_add_const_slot_multi_path bytes=e8012ccc grade=state_reduced_dispatch_formula_open target=297@0xb64d7:1 delta=+0x4
+    state: vm_state = Z3-proved simplified expression; formula=(((u16_2 + state0) & 0x15422921u) | state0) | 0x42493d14u
+    dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=128=(mask32((mask32(u16_2 + (mask32(state0 | 0x15422921)))) + 0x2d0713f3)) & 0xffff
+    ip: ip += 0x4
+    proof: dumps/vmtail-wide-1m-w16/vm_mba_state_formula_compiler_proofs/state_033.smt2
+    unresolved: dispatch_formula_not_reduced
+  0x2c12ff..0x2c1302 vmop_297_plus0x3_state_add_const_slot_multi_path bytes=49d6b0 grade=state_reduced_dispatch_formula_open target=114@0x90319:1 delta=+0x3
+    state: vm_state = Z3-proved simplified expression; formula=(((((0x1e2ee079u - (u16_1 + state0)) | (0xb7ddf6beu + state0)) | ((0x283684b4u + flags0) ^ 0x4a5a939au)) | ((flags0 - 0x6c4a4295u) ^ 0x2c0a7a21u)) | (((state0 + b0) + 0x235d2f75u) ^ 0x6650e9bbu)) | 0x6fa2a570u
+    dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=90=(mask32((mask32(u16_1 - (mask32((mask32((mask32((mask32(state0 - 0x48220942)) | flags0)) ^ 0x6b7f38b7)) + (mask32((mask32(b0 + (mask32((mask32((mask32(state0 - 0x48220942)) | flags0)) ^ 0x6b7f38b7)...#12f
+    ip: ip += 0x3
+    proof: dumps/vmtail-wide-1m-w16/vm_mba_state_formula_compiler_proofs/state_297.smt2
+    unresolved: dispatch_formula_not_reduced
+  0x2c1302..0x2c1306 vmop_114_plus0x4_state_add_const_slot_multi_path bytes=8883ffcb grade=state_reduced_dispatch_formula_open target=157@0x98a9a:1 delta=+0x4
+    state: vm_state = Z3-proved simplified expression; formula=((((((((0x63bb548fu + flags0) & state0) ^ ((0x671da5f4u + state0) & 0x48367f78u)) ^ 0x295f5080u) | (((~flags0) & state0) | (((0x2bf0f49bu + state0) & 0xa870050u) ^ 0xd9a4c60cu))) | ((((u16_2 + state0) ^ (state0 & flags0)) ^ ((0x671da5f4u + state0) & 0x292b555du)) ^ 0x295f5080u)) | ((((0x292b555du + flags0) & (0x671da5f4u + state0)) & state0) ^ 0x295f5080u)) | ((((flags0 + 0x665346b9u) & state0) ^ ((0x2bf0f49bu + state0) & 0xa870050u)) ^ 0xc25cdfdu)) | (((((state0 + 0x6b040388u) - u16_0) ^ ((0x2bf0f49bu + state0) & 0xa870050u)) ^ (state0 & flags0)) ^ 0x8268b55u)
+    dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=51=(mask32((mask32(u16_0 + (mask32((mask32((mask32((mask32((mask32((mask32(state0 ^ (mask32((mask32((mask32(flags0 & (mask32(state0 | 0x6729b5bf)))) + state0)) & 0x48367f78)))) ^ 0x63bb548f)) + (mask3...#12f
+    ip: ip += 0x4
+    proof: dumps/vmtail-wide-1m-w16/vm_mba_state_formula_compiler_proofs/state_114.smt2
+    unresolved: dispatch_formula_not_reduced
+  0x2c1306..0x2c130a vmop_157_plus0x4_state_add_const_slot_multi_path bytes=37be1300 grade=state_reduced_dispatch_formula_open target=315@0xb9451:1 delta=+0x4
+    state: vm_state = Z3-proved simplified expression; formula=((((u16_0 + state0) ^ (0x2f4dfd84u + u16_2)) ^ (((0x869c849au - flags0) ^ (0x2f4dfd84u + u16_2)) ^ (state0 & 0x3d2638afu))) ^ 0x3aeb4349u) | (((0x2f4dfd84u + u16_2) ^ state0) | ((((0x869c849au - flags0) ^ (0x2f4dfd84u + u16_2)) ^ (state0 & 0x3d2638afu)) ^ 0x2d38dfd6u))
+    dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=79=(mask32((mask32(u16_0 + (mask32((mask32((mask32((mask32(state0 ^ 0x2f4dfd84)) + u16_2)) | 0x1f5cd114)) - (mask32((mask32(flags0 ^ 0x3d2638af)) & (mask32((mask32(state0 ^ 0x2f4dfd84)) + u16_2)))))))...#12f
+    ip: ip += 0x4
+    proof: dumps/vmtail-wide-1m-w16/vm_mba_state_formula_compiler_proofs/state_157.smt2
+    unresolved: dispatch_formula_not_reduced
+  0x2c130a..0x2c130e vmop_315_plus0x4_state_mixed_slot_mba_stateful bytes=e80111f5 grade=state_reduced_dispatch_formula_open target=172@0x9b68a:1 delta=+0x4
+    state: vm_state = Z3-proved simplified expression; formula=(((state0 & 0x7562ddb5u) ^ flags0) ^ 0x2485a98du) | (u16_2 ^ 0x42c7f071u)
+    dispatch: next_entry = MBA(state, flags, operands) dispatch slot; per-row concrete target is resolved; expression=128=(mask32(u16_2 ^ 0x42c7f071)) & 0xffff
+    ip: ip += 0x4
+    proof: dumps/vmtail-wide-1m-w16/vm_mba_state_formula_compiler_proofs/state_315.smt2
+    unresolved: dispatch_formula_not_reduced
+  0x2c130e..0x2c1312 vmop_172_plus0x4_state_add_const_slot_mba_stateful bytes=4c392308 grade=state_reduced_dispatch_formula_open target=66@0x855ff:1 delta=+0x4
+    state: vm_state = Z3-proved simplified expression; formula=(((((u16_0 + 0x1a1af2bu) ^ (state0 & 0x15bf847fu)) ^ flags0) ^ 0x1a1af2bu) | (u16_2 ^ 0x715f0a33u)) | 0x3eba9edfu
+    dispatch: next_entry = MBA(state, flags, operands) dispatch slot; per-row concrete target is resolved; expression=128=(mask32(u16_2 ^ 0x715f0a33)) & 0xffff
+    ip: ip += 0x4
+    proof: dumps/vmtail-wide-1m-w16/vm_mba_state_formula_compiler_proofs/state_172.smt2
+    unresolved: dispatch_formula_not_reduced
+  0x2c1312..0x2c1315 vmop_066_plus0x3_state_add_const_slot_multi_path bytes=a93b48 grade=state_reduced_dispatch_formula_open target=114@0x90319:1 delta=+0x3
+    state: vm_state = Z3-proved simplified expression; formula=((((((u16_0 - state0) & (0x2f6cb1f6u - b2)) ^ ((0xc3c726c9u - flags0) & 0x745ff1d2u)) ^ (state0 & 0x2f6cb1f6u)) ^ 0x33c1d6ecu) | ((((0x2f6cb1f6u - b2) ^ 0x2f6cb1f6u) & state0) ^ ((0xc3c726c9u - flags0) & 0x745ff1d2u))) | 0x74b257b9u
+    dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=99=(mask32((mask32(u16_0 - (mask32((mask32((mask32((mask32((mask32(state0 & 0x2f6cb1f6)) - (mask32(b2 ^ (mask32(state0 & 0x2f6cb1f6)))))) ^ 0x745ff1d2)) & 0x13de2cdd)) - (mask32(flags0 ^ 0x42a6ffd6)))...#12f
+    ip: ip += 0x3
+    proof: dumps/vmtail-wide-1m-w16/vm_mba_state_formula_compiler_proofs/state_066.smt2
+    unresolved: dispatch_formula_not_reduced
+  0x2c1315..0x2c1319 vmop_114_plus0x4_state_add_const_slot_multi_path bytes=3a78b42c grade=state_reduced_dispatch_formula_open target=346@0xc0535:1 delta=+0x4
+    state: vm_state = Z3-proved simplified expression; formula=((((((((0x63bb548fu + flags0) & state0) ^ ((0x671da5f4u + state0) & 0x48367f78u)) ^ 0x295f5080u) | (((~flags0) & state0) | (((0x2bf0f49bu + state0) & 0xa870050u) ^ 0xd9a4c60cu))) | ((((u16_2 + state0) ^ (state0 & flags0)) ^ ((0x671da5f4u + state0) & 0x292b555du)) ^ 0x295f5080u)) | ((((0x292b555du + flags0) & (0x671da5f4u + state0)) & state0) ^ 0x295f5080u)) | ((((flags0 + 0x665346b9u) & state0) ^ ((0x2bf0f49bu + state0) & 0xa870050u)) ^ 0xc25cdfdu)) | (((((state0 + 0x6b040388u) - u16_0) ^ ((0x2bf0f49bu + state0) & 0xa870050u)) ^ (state0 & flags0)) ^ 0x8268b55u)
+    dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=51=(mask32((mask32(u16_0 + (mask32((mask32((mask32((mask32((mask32((mask32(state0 ^ (mask32((mask32((mask32(flags0 & (mask32(state0 | 0x6729b5bf)))) + state0)) & 0x48367f78)))) ^ 0x63bb548f)) + (mask3...#12f
+    ip: ip += 0x4
+    proof: dumps/vmtail-wide-1m-w16/vm_mba_state_formula_compiler_proofs/state_114.smt2
+    unresolved: dispatch_formula_not_reduced
+  0x2c1319..0x2c131d vmop_346_plus0x4_state_add_const_slot_multi_path bytes=27e0e801 grade=state_reduced_dispatch_formula_open target=258@0xadf2c:1 delta=+0x4
+    state: vm_state = Z3-proved simplified expression; formula=(state0 ^ flags0) ^ 0x45daa5e4u
+    dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=74=(mask32((mask32(u16_0 ^ (mask32(state0 ^ (mask32(flags0 ^ 0x45fbcef1)))))) + 0x7f7eb061)) & 0xffff | 54=(mask32((mask32(u16_0 ^ (mask32(state0 ^ (mask32((mask32((mask32(flags0 ^ 0x3f746ab3)) ^ 0x3f...#fb
+    ip: ip += 0x4
+    proof: dumps/vmtail-wide-1m-w16/vm_mba_state_formula_compiler_proofs/state_346.smt2
+    unresolved: dispatch_formula_not_reduced
+  0x2c131d..0x2c1321 vmop_258_plus0x4_state_add_const_slot_multi_path bytes=7cfee932 grade=state_reduced_dispatch_formula_open target=333@0xbd8af:1 delta=+0x4
+    state: vm_state = Z3-proved simplified expression; formula=((((((u16_0 - state0) & 0x1769756eu) ^ (0xfbf8fe86u + flags0)) ^ 0xa1b079au) | ((0xfbf8fe86u + flags0) ^ state0)) | (((u16_2 - 0x1510614fu) - flags0) ^ 0x1d7272f4u)) | 0x45609bd8u
+    dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=70=(mask32((mask32(u16_0 - (mask32((mask32((mask32(state0 ^ 0x11095fd5)) + (mask32(flags0 ^ 0x1769756e)))) ^ (mask32(u16_2 - (mask32(flags0 ^ 0x1769756e)))))))) ^ 0x5812e92c)) & 0xffff | 58=(mask32((m...#12f
+    ip: ip += 0x4
+    proof: dumps/vmtail-wide-1m-w16/vm_mba_state_formula_compiler_proofs/state_258.smt2
+    unresolved: dispatch_formula_not_reduced
+  0x2c1321..0x2c1325 vmop_333_plus0x4_state_add_const_slot_multi_path bytes=f7d10701 grade=state_reduced_dispatch_formula_open target=66@0x855ff:1 delta=+0x4
+    state: vm_state = Z3-proved simplified expression; formula=(((((u16_0 + 0x569ecec3u) - state0) ^ (state0 ^ flags0)) | (((flags0 & 0xd5e75f83u) ^ (state0 + flags0)) ^ state0)) | flags0) | 0x77dedeebu
+    dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=128=(mask32(u16_0 - (mask32((mask32((mask32((mask32((mask32(state0 ^ (mask32((mask32(flags0 ^ state0)) | 0x37ccc6ea)))) - 0x61e56767)) & (mask32(flags0 ^ state0)))) + (mask32((mask32(flags0 ^ state0))...#df
+    ip: ip += 0x4
+    proof: dumps/vmtail-wide-1m-w16/vm_mba_state_formula_compiler_proofs/state_333.smt2
+    unresolved: dispatch_formula_not_reduced
+  0x2c1325..0x2c1328 vmop_066_plus0x3_state_add_const_slot_multi_path bytes=592ccc grade=state_reduced_dispatch_formula_open target=305@0xb78b0:1 delta=+0x3
+    state: vm_state = Z3-proved simplified expression; formula=((((((u16_0 - state0) & (0x2f6cb1f6u - b2)) ^ ((0xc3c726c9u - flags0) & 0x745ff1d2u)) ^ (state0 & 0x2f6cb1f6u)) ^ 0x33c1d6ecu) | ((((0x2f6cb1f6u - b2) ^ 0x2f6cb1f6u) & state0) ^ ((0xc3c726c9u - flags0) & 0x745ff1d2u))) | 0x74b257b9u
+    dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=99=(mask32((mask32(u16_0 - (mask32((mask32((mask32((mask32((mask32(state0 & 0x2f6cb1f6)) - (mask32(b2 ^ (mask32(state0 & 0x2f6cb1f6)))))) ^ 0x745ff1d2)) & 0x13de2cdd)) - (mask32(flags0 ^ 0x42a6ffd6)))...#12f
+    ip: ip += 0x3
+    proof: dumps/vmtail-wide-1m-w16/vm_mba_state_formula_compiler_proofs/state_066.smt2
+    unresolved: dispatch_formula_not_reduced
+  0x2c1328..0x2c132c vmop_305_plus0x4_state_add_const_slot_mba_stateful bytes=1a59e801 grade=state_reduced_dispatch_formula_open target=66@0x855ff:1 delta=+0x4
+    state: vm_state = Z3-proved simplified expression; formula=(u16_0 + state0) & state0
+    dispatch: next_entry = MBA(state, flags, operands) dispatch slot; per-row concrete target is resolved; expression=128=(mask32(u16_0 + state0)) & 0xffff
+    ip: ip += 0x4
+    proof: dumps/vmtail-wide-1m-w16/vm_mba_state_formula_compiler_proofs/state_305.smt2
+    unresolved: dispatch_formula_not_reduced
+  0x2c132c..0x2c132f vmop_066_plus0x3_state_add_const_slot_multi_path bytes=3a432a grade=state_reduced_dispatch_formula_open target=258@0xadf2c:1 delta=+0x3
+    state: vm_state = Z3-proved simplified expression; formula=((((((u16_0 - state0) & (0x2f6cb1f6u - b2)) ^ ((0xc3c726c9u - flags0) & 0x745ff1d2u)) ^ (state0 & 0x2f6cb1f6u)) ^ 0x33c1d6ecu) | ((((0x2f6cb1f6u - b2) ^ 0x2f6cb1f6u) & state0) ^ ((0xc3c726c9u - flags0) & 0x745ff1d2u))) | 0x74b257b9u
+    dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=99=(mask32((mask32(u16_0 - (mask32((mask32((mask32((mask32((mask32(state0 & 0x2f6cb1f6)) - (mask32(b2 ^ (mask32(state0 & 0x2f6cb1f6)))))) ^ 0x745ff1d2)) & 0x13de2cdd)) - (mask32(flags0 ^ 0x42a6ffd6)))...#12f
+    ip: ip += 0x3
+    proof: dumps/vmtail-wide-1m-w16/vm_mba_state_formula_compiler_proofs/state_066.smt2
+    unresolved: dispatch_formula_not_reduced
+  0x2c132f..0x2c1333 vmop_258_plus0x4_state_add_const_slot_multi_path bytes=8803d427 grade=state_reduced_dispatch_formula_open target=157@0x98a9a:1 delta=+0x4
+    state: vm_state = Z3-proved simplified expression; formula=((((((u16_0 - state0) & 0x1769756eu) ^ (0xfbf8fe86u + flags0)) ^ 0xa1b079au) | ((0xfbf8fe86u + flags0) ^ state0)) | (((u16_2 - 0x1510614fu) - flags0) ^ 0x1d7272f4u)) | 0x45609bd8u
+    dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=70=(mask32((mask32(u16_0 - (mask32((mask32((mask32(state0 ^ 0x11095fd5)) + (mask32(flags0 ^ 0x1769756e)))) ^ (mask32(u16_2 - (mask32(flags0 ^ 0x1769756e)))))))) ^ 0x5812e92c)) & 0xffff | 58=(mask32((m...#12f
+    ip: ip += 0x4
+    proof: dumps/vmtail-wide-1m-w16/vm_mba_state_formula_compiler_proofs/state_258.smt2
+    unresolved: dispatch_formula_not_reduced
+  0x2c1333..0x2c1337 vmop_157_plus0x4_state_add_const_slot_multi_path bytes=be639100 grade=state_reduced_dispatch_formula_open target=26@0x7dbbb:1 delta=+0x4
+    state: vm_state = Z3-proved simplified expression; formula=((((u16_0 + state0) ^ (0x2f4dfd84u + u16_2)) ^ (((0x869c849au - flags0) ^ (0x2f4dfd84u + u16_2)) ^ (state0 & 0x3d2638afu))) ^ 0x3aeb4349u) | (((0x2f4dfd84u + u16_2) ^ state0) | ((((0x869c849au - flags0) ^ (0x2f4dfd84u + u16_2)) ^ (state0 & 0x3d2638afu)) ^ 0x2d38dfd6u))
+    dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=79=(mask32((mask32(u16_0 + (mask32((mask32((mask32((mask32(state0 ^ 0x2f4dfd84)) + u16_2)) | 0x1f5cd114)) - (mask32((mask32(flags0 ^ 0x3d2638af)) & (mask32((mask32(state0 ^ 0x2f4dfd84)) + u16_2)))))))...#12f
+    ip: ip += 0x4
+    proof: dumps/vmtail-wide-1m-w16/vm_mba_state_formula_compiler_proofs/state_157.smt2
+    unresolved: dispatch_formula_not_reduced
+  0x2c1337..0x2c133b vmop_026_plus0x4_state_add_const_slot_multi_path bytes=3097e801 grade=state_reduced_dispatch_formula_open target=189@0x9e7af:1 delta=+0x4
+    state: vm_state = Z3-proved simplified expression; formula=((((((state0 - 0x6b3e5bb1u) - u16_0) & 0xe71ae1du) ^ ((0xb8ed9b36u + flags0) ^ (0xb8ed9b36u + state0))) ^ 0xd470bb91u) | ((((state0 - 0x6b3e5bb1u) & 0xe71ae1du) ^ 0xb352839cu) | (((0xb8ed9b36u + flags0) ^ (0xb8ed9b36u + state0)) ^ 0x8019001u))) | 0x2a01f150u
+    dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=48=(mask32((mask32(u16_0 ^ (mask32((mask32(state0 - 0x471264ca)) + (mask32((mask32((mask32((mask32((mask32((mask32((mask32(flags0 - (mask32(state0 ^ 0x5fcdb203)))) ^ (mask32((mask32(state0 - 0x471264c...#12f
+    ip: ip += 0x4
+    proof: dumps/vmtail-wide-1m-w16/vm_mba_state_formula_compiler_proofs/state_026.smt2
+    unresolved: dispatch_formula_not_reduced
+  0x2c133b..0x2c133f vmop_189_plus0x4_state_add_const_slot_mba_stateful bytes=e032b8eb grade=state_reduced_dispatch_formula_open target=203@0xa1484:1 delta=+0x4
+    state: vm_state = Z3-proved simplified expression; formula=((((0x160e4f34u + u16_2) + state0) & state0) & 0x160e4f34u) ^ 0x2a1ce984u
+    dispatch: next_entry = MBA(state, flags, operands) dispatch slot; per-row concrete target is resolved; expression=128=(mask32((mask32(u16_2 + (mask32(state0 & 0x160e4f34)))) ^ 0x2a1ce984)) & 0xffff
+    ip: ip += 0x4
+    proof: dumps/vmtail-wide-1m-w16/vm_mba_state_formula_compiler_proofs/state_189.smt2
+    unresolved: dispatch_formula_not_reduced
+  0x2c133f..0x2c1343 vmop_203_plus0x4_state_add_const_slot_mba_stateful bytes=179a8df6 grade=state_reduced_dispatch_formula_open target=66@0x855ff:1 delta=+0x4
+    state: vm_state = Z3-proved simplified expression; formula=(((((((0x786f3e30u - flags0) & (0x97da242u + flags0)) & ((0x97da242u + state0) - flags0)) & 0x24d2add8u) ^ 0x370370f1u) | ((u16_0 & 0x1710588u) ^ 0x4ccb9807u)) | ((((0x97da242u + state0) - flags0) & (0x97da242u + flags0)) ^ 0x370370f1u)) | 0x1f1759cu
+    dispatch: next_entry = MBA(state, flags, operands) dispatch slot; per-row concrete target is resolved; expression=128=(mask32(u16_0 ^ 0x4ccb9807)) & 0xffff
+    ip: ip += 0x4
+    proof: dumps/vmtail-wide-1m-w16/vm_mba_state_formula_compiler_proofs/state_203.smt2
+    unresolved: dispatch_formula_not_reduced
+  0x2c1343..0x2c1346 vmop_066_plus0x3_state_add_const_slot_multi_path bytes=e5073a grade=state_reduced_dispatch_formula_open target=26@0x7dbbb:1 delta=+0x3
+    state: vm_state = Z3-proved simplified expression; formula=((((((u16_0 - state0) & (0x2f6cb1f6u - b2)) ^ ((0xc3c726c9u - flags0) & 0x745ff1d2u)) ^ (state0 & 0x2f6cb1f6u)) ^ 0x33c1d6ecu) | ((((0x2f6cb1f6u - b2) ^ 0x2f6cb1f6u) & state0) ^ ((0xc3c726c9u - flags0) & 0x745ff1d2u))) | 0x74b257b9u
+    dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=99=(mask32((mask32(u16_0 - (mask32((mask32((mask32((mask32((mask32(state0 & 0x2f6cb1f6)) - (mask32(b2 ^ (mask32(state0 & 0x2f6cb1f6)))))) ^ 0x745ff1d2)) & 0x13de2cdd)) - (mask32(flags0 ^ 0x42a6ffd6)))...#12f
+    ip: ip += 0x3
+    proof: dumps/vmtail-wide-1m-w16/vm_mba_state_formula_compiler_proofs/state_066.smt2
+    unresolved: dispatch_formula_not_reduced
+  0x2c1346..0x2c134a vmop_026_plus0x4_state_add_const_slot_multi_path bytes=6ee8e801 grade=state_reduced_dispatch_formula_open target=172@0x9b68a:1 delta=+0x4
+    state: vm_state = Z3-proved simplified expression; formula=((((((state0 - 0x6b3e5bb1u) - u16_0) & 0xe71ae1du) ^ ((0xb8ed9b36u + flags0) ^ (0xb8ed9b36u + state0))) ^ 0xd470bb91u) | ((((state0 - 0x6b3e5bb1u) & 0xe71ae1du) ^ 0xb352839cu) | (((0xb8ed9b36u + flags0) ^ (0xb8ed9b36u + state0)) ^ 0x8019001u))) | 0x2a01f150u
+    dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=48=(mask32((mask32(u16_0 ^ (mask32((mask32(state0 - 0x471264ca)) + (mask32((mask32((mask32((mask32((mask32((mask32((mask32(flags0 - (mask32(state0 ^ 0x5fcdb203)))) ^ (mask32((mask32(state0 - 0x471264c...#12f
+    ip: ip += 0x4
+    proof: dumps/vmtail-wide-1m-w16/vm_mba_state_formula_compiler_proofs/state_026.smt2
+    unresolved: dispatch_formula_not_reduced
+  0x2c134a..0x2c134e vmop_172_plus0x4_state_add_const_slot_mba_stateful bytes=7368eb00 grade=state_reduced_dispatch_formula_open target=347@0xc088d:1 delta=+0x4
+    state: vm_state = Z3-proved simplified expression; formula=(((((u16_0 + 0x1a1af2bu) ^ (state0 & 0x15bf847fu)) ^ flags0) ^ 0x1a1af2bu) | (u16_2 ^ 0x715f0a33u)) | 0x3eba9edfu
+    dispatch: next_entry = MBA(state, flags, operands) dispatch slot; per-row concrete target is resolved; expression=128=(mask32(u16_2 ^ 0x715f0a33)) & 0xffff
+    ip: ip += 0x4
+    proof: dumps/vmtail-wide-1m-w16/vm_mba_state_formula_compiler_proofs/state_172.smt2
+    unresolved: dispatch_formula_not_reduced
+  0x2c134e..0x2c1352 vmop_347_plus0x4_state_add_const_slot_multi_path bytes=e6035aa1 grade=state_reduced_dispatch_formula_open target=215@0xa4609:1 delta=+0x4
+    state: vm_state = Z3-proved simplified expression; formula=((((((((((0x5cf483c7u + u16_2) + flags0) ^ state0) ^ 0x2efc96c5u) | state0) | (0x6fa972f0u + flags0)) | (state0 ^ flags0)) | ((0x45223942u + state0) & (0x6fa972f0u + flags0))) | (((flags0 & 0x5cf483c7u) ^ state0) ^ 0x2efc96c5u)) | (((0x5cf483c7u - flags0) ^ state0) ^ 0x2efc96c5u)) | 0x7ffebfe7u
+    dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=92=(mask32((mask32(u16_0 ^ (mask32((mask32((mask32((mask32((mask32((mask32((mask32(state0 | (mask32(flags0 + 0x6fa972f0)))) | (mask32((mask32(flags0 ^ (mask32((mask32(state0 | (mask32(flags0 + 0x6fa97...#12f
+    ip: ip += 0x4
+    proof: dumps/vmtail-wide-1m-w16/vm_mba_state_formula_compiler_proofs/state_347.smt2
+    unresolved: dispatch_formula_not_reduced
+  0x2c1352..0x2c1355 vmop_215_plus0x3_state_mixed_slot_u16_0 bytes=8809c8 grade=state_reduced_readable_control_semantics target=305@0xb78b0:1 delta=+0x3
+    state: vm_state = Z3-proved simplified expression; formula=(((((0x6c5f0f12u + b2) + state0) | state0) | (0x760f463fu - flags0)) | (0x38d2bdd3u - u16_0)) | 0xfe5f0f3fu
+    dispatch: next_entry = dispatch_table[u16(ip+0)]
+    ip: ip += 0x3
+    proof: dumps/vmtail-wide-1m-w16/vm_mba_state_formula_compiler_proofs/state_215.smt2
+  0x2c1355..0x2c1359 vmop_305_plus0x4_state_add_const_slot_mba_stateful bytes=714ee801 grade=state_reduced_dispatch_formula_open target=157@0x98a9a:1 delta=+0x4
+    state: vm_state = Z3-proved simplified expression; formula=(u16_0 + state0) & state0
+    dispatch: next_entry = MBA(state, flags, operands) dispatch slot; per-row concrete target is resolved; expression=128=(mask32(u16_0 + state0)) & 0xffff
+    ip: ip += 0x4
+    proof: dumps/vmtail-wide-1m-w16/vm_mba_state_formula_compiler_proofs/state_305.smt2
+    unresolved: dispatch_formula_not_reduced
+  0x2c1359..0x2c135d vmop_157_plus0x4_state_add_const_slot_multi_path bytes=86a57900 grade=state_reduced_dispatch_formula_open target=66@0x855ff:1 delta=+0x4
+    state: vm_state = Z3-proved simplified expression; formula=((((u16_0 + state0) ^ (0x2f4dfd84u + u16_2)) ^ (((0x869c849au - flags0) ^ (0x2f4dfd84u + u16_2)) ^ (state0 & 0x3d2638afu))) ^ 0x3aeb4349u) | (((0x2f4dfd84u + u16_2) ^ state0) | ((((0x869c849au - flags0) ^ (0x2f4dfd84u + u16_2)) ^ (state0 & 0x3d2638afu)) ^ 0x2d38dfd6u))
+    dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=79=(mask32((mask32(u16_0 + (mask32((mask32((mask32((mask32(state0 ^ 0x2f4dfd84)) + u16_2)) | 0x1f5cd114)) - (mask32((mask32(flags0 ^ 0x3d2638af)) & (mask32((mask32(state0 ^ 0x2f4dfd84)) + u16_2)))))))...#12f
+    ip: ip += 0x4
+    proof: dumps/vmtail-wide-1m-w16/vm_mba_state_formula_compiler_proofs/state_157.smt2
+    unresolved: dispatch_formula_not_reduced
+  0x2c135d..0x2c1360 vmop_066_plus0x3_state_add_const_slot_multi_path bytes=65932a grade=state_reduced_dispatch_formula_open target=114@0x90319:1 delta=+0x3
+    state: vm_state = Z3-proved simplified expression; formula=((((((u16_0 - state0) & (0x2f6cb1f6u - b2)) ^ ((0xc3c726c9u - flags0) & 0x745ff1d2u)) ^ (state0 & 0x2f6cb1f6u)) ^ 0x33c1d6ecu) | ((((0x2f6cb1f6u - b2) ^ 0x2f6cb1f6u) & state0) ^ ((0xc3c726c9u - flags0) & 0x745ff1d2u))) | 0x74b257b9u
+    dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=99=(mask32((mask32(u16_0 - (mask32((mask32((mask32((mask32((mask32(state0 & 0x2f6cb1f6)) - (mask32(b2 ^ (mask32(state0 & 0x2f6cb1f6)))))) ^ 0x745ff1d2)) & 0x13de2cdd)) - (mask32(flags0 ^ 0x42a6ffd6)))...#12f
+    ip: ip += 0x3
+    proof: dumps/vmtail-wide-1m-w16/vm_mba_state_formula_compiler_proofs/state_066.smt2
+    unresolved: dispatch_formula_not_reduced
+  0x2c1360..0x2c1364 vmop_114_plus0x4_state_add_const_slot_multi_path bytes=226094a1 grade=state_reduced_dispatch_formula_open target=243@0xaab6a:1 delta=+0x4
+    state: vm_state = Z3-proved simplified expression; formula=((((((((0x63bb548fu + flags0) & state0) ^ ((0x671da5f4u + state0) & 0x48367f78u)) ^ 0x295f5080u) | (((~flags0) & state0) | (((0x2bf0f49bu + state0) & 0xa870050u) ^ 0xd9a4c60cu))) | ((((u16_2 + state0) ^ (state0 & flags0)) ^ ((0x671da5f4u + state0) & 0x292b555du)) ^ 0x295f5080u)) | ((((0x292b555du + flags0) & (0x671da5f4u + state0)) & state0) ^ 0x295f5080u)) | ((((flags0 + 0x665346b9u) & state0) ^ ((0x2bf0f49bu + state0) & 0xa870050u)) ^ 0xc25cdfdu)) | (((((state0 + 0x6b040388u) - u16_0) ^ ((0x2bf0f49bu + state0) & 0xa870050u)) ^ (state0 & flags0)) ^ 0x8268b55u)
+    dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=51=(mask32((mask32(u16_0 + (mask32((mask32((mask32((mask32((mask32((mask32(state0 ^ (mask32((mask32((mask32(flags0 & (mask32(state0 | 0x6729b5bf)))) + state0)) & 0x48367f78)))) ^ 0x63bb548f)) + (mask3...#12f
+    ip: ip += 0x4
+    proof: dumps/vmtail-wide-1m-w16/vm_mba_state_formula_compiler_proofs/state_114.smt2
+    unresolved: dispatch_formula_not_reduced
+  0x2c1364..0x2c1368 vmop_243_plus0x4_state_add_const_slot_multi_path bytes=3d1ae801 grade=state_reduced_dispatch_formula_open target=43@0x8173d:1 delta=+0x4
+    state: vm_state = Z3-proved simplified expression; formula=((((((0x98f0410cu + state0) & 0x4ec4a2f1u) ^ (flags0 & 0x57df388cu)) | ((flags0 | state0) | (state0 ^ 0x47b31677u))) | (((0x98f0410cu + state0) & 0x2627b93bu) ^ 0xbdd98a5u)) | ((((0x98f0410cu + state0) & state0) & 0x4ec4a2f1u) ^ 0x47b31677u)) | ((((u16_0 + 0x2627b93bu) - state0) & (0x98f0410cu + state0)) ^ 0x47b31677u)
+    dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=66=(mask32((mask32(u16_0 - (mask32((mask32((mask32((mask32(state0 ^ 0x47b31677)) | (mask32((mask32(flags0 | (mask32(state0 | 0x5f60d018)))) + state0)))) ^ 0x57df388c)) & (mask32((mask32((mask32(flags0...#12f
+    ip: ip += 0x4
+    proof: dumps/vmtail-wide-1m-w16/vm_mba_state_formula_compiler_proofs/state_243.smt2
+    unresolved: dispatch_formula_not_reduced
+  0x2c1368..0x2c136c vmop_043_plus0x4_state_add_const_slot_mba_stateful bytes=eff82b81 grade=state_reduced_dispatch_formula_open target=189@0x9e7af:1 delta=+0x4
+    state: vm_state = Z3-proved simplified expression; formula=u16_2
+    dispatch: next_entry = MBA(state, flags, operands) dispatch slot; per-row concrete target is resolved; expression=128=(mask32((mask32(u16_0 ^ (mask32(state0 ^ (mask32(u16_2 ^ state0)))))) - 0x64d373dc)) & 0xffff
+    ip: ip += 0x4
+    proof: dumps/vmtail-wide-1m-w16/vm_mba_state_formula_compiler_proofs/state_043.smt2
+    unresolved: dispatch_formula_not_reduced
+  0x2c136c..0x2c1370 vmop_189_plus0x4_state_add_const_slot_mba_stateful bytes=c87f9cee grade=state_reduced_dispatch_formula_open target=199@0xa0631:1 delta=+0x4
+    state: vm_state = Z3-proved simplified expression; formula=((((0x160e4f34u + u16_2) + state0) & state0) & 0x160e4f34u) ^ 0x2a1ce984u
+    dispatch: next_entry = MBA(state, flags, operands) dispatch slot; per-row concrete target is resolved; expression=128=(mask32((mask32(u16_2 + (mask32(state0 & 0x160e4f34)))) ^ 0x2a1ce984)) & 0xffff
+    ip: ip += 0x4
+    proof: dumps/vmtail-wide-1m-w16/vm_mba_state_formula_compiler_proofs/state_189.smt2
+    unresolved: dispatch_formula_not_reduced
+  0x2c1370..0x2c1373 vmop_199_plus0x3_state_add_const_slot_multi_path bytes=fffeba grade=state_reduced_dispatch_formula_open target=33@0x7f7c4:1 delta=+0x3
+    state: vm_state = Z3-proved simplified expression; formula=((state0 + flags0) + b2) ^ ((flags0 + 0x20d5418u) & 0x7e708197u)
+    dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=106=(mask32((mask32(u16_0 ^ (mask32((mask32((mask32((mask32(state0 + (mask32(b2 + flags0)))) ^ 0x7e708197)) & 0x20d5418)) + flags0)))) + 0x3030bb89)) & 0xffff | 22=(mask32((mask32(u16_0 ^ (mask32((mas...#12f
+    ip: ip += 0x3
+    proof: dumps/vmtail-wide-1m-w16/vm_mba_state_formula_compiler_proofs/state_199.smt2
+    unresolved: dispatch_formula_not_reduced
+  0x2c1373..0x2c1377 vmop_033_plus0x4_state_add_const_slot_multi_path bytes=e801fc3a grade=state_reduced_dispatch_formula_open target=338@0xbf128:1 delta=+0x4
+    state: vm_state = Z3-proved simplified expression; formula=(((u16_2 + state0) & 0x15422921u) | state0) | 0x42493d14u
+    dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=128=(mask32((mask32(u16_2 + (mask32(state0 | 0x15422921)))) + 0x2d0713f3)) & 0xffff
+    ip: ip += 0x4
+    proof: dumps/vmtail-wide-1m-w16/vm_mba_state_formula_compiler_proofs/state_033.smt2
+    unresolved: dispatch_formula_not_reduced
+  0x2c1377..0x2c137d vmop_338_plus0x6_state_add_const_slot_mba_stateful bytes=c4d13d01e801 grade=state_reduced_dispatch_formula_open target=295@0xb60e0:1 delta=+0x6
+    state: vm_state = Z3-proved simplified expression; formula=0xb40741f4u - u16_0
+    dispatch: next_entry = MBA(state, flags, operands) dispatch slot; per-row concrete target is resolved; expression=128=(mask32((mask32(u16_0 - state0)) - 0x4bf8be0c)) & 0xffff
+    ip: ip += 0x6
+    proof: dumps/vmtail-wide-1m-w16/vm_mba_state_formula_compiler_proofs/state_338.smt2
+    unresolved: dispatch_formula_not_reduced
+  0x2c137d..0x2c1382 vmop_295_plus0x5_state_mixed_slot_mba_stateful bytes=e8013ad510 grade=state_reduced_dispatch_formula_open target=297@0xb64d7:1 delta=+0x5
+    state: vm_state = Z3-proved simplified expression; formula=(u16_2 - 0x396ecbf2u) | state0
+    dispatch: next_entry = MBA(state, flags, operands) dispatch slot; per-row concrete target is resolved; expression=128=(mask32(u16_2 - 0x396ecbf2)) & 0xffff
+    ip: ip += 0x5
+    proof: dumps/vmtail-wide-1m-w16/vm_mba_state_formula_compiler_proofs/state_295.smt2
+    unresolved: dispatch_formula_not_reduced
+  0x2c1382..0x2c1385 vmop_297_plus0x3_state_add_const_slot_multi_path bytes=85fe98 grade=state_reduced_dispatch_formula_open target=333@0xbd8af:1 delta=+0x3
+    state: vm_state = Z3-proved simplified expression; formula=(((((0x1e2ee079u - (u16_1 + state0)) | (0xb7ddf6beu + state0)) | ((0x283684b4u + flags0) ^ 0x4a5a939au)) | ((flags0 - 0x6c4a4295u) ^ 0x2c0a7a21u)) | (((state0 + b0) + 0x235d2f75u) ^ 0x6650e9bbu)) | 0x6fa2a570u
+    dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=90=(mask32((mask32(u16_1 - (mask32((mask32((mask32((mask32(state0 - 0x48220942)) | flags0)) ^ 0x6b7f38b7)) + (mask32((mask32(b0 + (mask32((mask32((mask32(state0 - 0x48220942)) | flags0)) ^ 0x6b7f38b7)...#12f
+    ip: ip += 0x3
+    proof: dumps/vmtail-wide-1m-w16/vm_mba_state_formula_compiler_proofs/state_297.smt2
+    unresolved: dispatch_formula_not_reduced
+  0x2c1385..0x2c1389 vmop_333_plus0x4_state_add_const_slot_multi_path bytes=63d26800 grade=state_reduced_dispatch_formula_open target=114@0x90319:1 delta=+0x4
+    state: vm_state = Z3-proved simplified expression; formula=(((((u16_0 + 0x569ecec3u) - state0) ^ (state0 ^ flags0)) | (((flags0 & 0xd5e75f83u) ^ (state0 + flags0)) ^ state0)) | flags0) | 0x77dedeebu
+    dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=128=(mask32(u16_0 - (mask32((mask32((mask32((mask32((mask32(state0 ^ (mask32((mask32(flags0 ^ state0)) | 0x37ccc6ea)))) - 0x61e56767)) & (mask32(flags0 ^ state0)))) + (mask32((mask32(flags0 ^ state0))...#df
+    ip: ip += 0x4
+    proof: dumps/vmtail-wide-1m-w16/vm_mba_state_formula_compiler_proofs/state_333.smt2
+    unresolved: dispatch_formula_not_reduced
+  0x2c1389..0x2c138d vmop_114_plus0x4_state_add_const_slot_multi_path bytes=32bc5bff grade=state_reduced_dispatch_formula_open target=350@0xc1926:1 delta=+0x4
+    state: vm_state = Z3-proved simplified expression; formula=((((((((0x63bb548fu + flags0) & state0) ^ ((0x671da5f4u + state0) & 0x48367f78u)) ^ 0x295f5080u) | (((~flags0) & state0) | (((0x2bf0f49bu + state0) & 0xa870050u) ^ 0xd9a4c60cu))) | ((((u16_2 + state0) ^ (state0 & flags0)) ^ ((0x671da5f4u + state0) & 0x292b555du)) ^ 0x295f5080u)) | ((((0x292b555du + flags0) & (0x671da5f4u + state0)) & state0) ^ 0x295f5080u)) | ((((flags0 + 0x665346b9u) & state0) ^ ((0x2bf0f49bu + state0) & 0xa870050u)) ^ 0xc25cdfdu)) | (((((state0 + 0x6b040388u) - u16_0) ^ ((0x2bf0f49bu + state0) & 0xa870050u)) ^ (state0 & flags0)) ^ 0x8268b55u)
+    dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=51=(mask32((mask32(u16_0 + (mask32((mask32((mask32((mask32((mask32((mask32(state0 ^ (mask32((mask32((mask32(flags0 & (mask32(state0 | 0x6729b5bf)))) + state0)) & 0x48367f78)))) ^ 0x63bb548f)) + (mask3...#12f
+    ip: ip += 0x4
+    proof: dumps/vmtail-wide-1m-w16/vm_mba_state_formula_compiler_proofs/state_114.smt2
+    unresolved: dispatch_formula_not_reduced
+  0x2c138d..0x2c1391 vmop_350_plus0x4_state_add_const_slot_mba_stateful bytes=ee586e3f grade=state_reduced_dispatch_formula_open target=91@0x8b6de:1 delta=+0x4
+    state: vm_state = Z3-proved simplified expression; formula=(((state0 - 0x7d911f5du) & (~u16_2)) & flags0) ^ 0x678e3cb6u
+    dispatch: next_entry = MBA(state, flags, operands) dispatch slot; per-row concrete target is resolved; expression=128=(mask32((mask32(u16_2 ^ (mask32((mask32((mask32((mask32(state0 + 0x5c4fb994)) - 0x33be5a8b)) ^ (mask32(flags0 & (mask32((mask32(state0 + 0x5c4fb994)) + 0x261f270f)))))) & (mask32(u16_0 ^ (mask32((...#df
+    ip: ip += 0x4
+    proof: dumps/vmtail-wide-1m-w16/vm_mba_state_formula_compiler_proofs/state_350.smt2
+    unresolved: dispatch_formula_not_reduced
+  0x2c1391..0x2c1395 vmop_091_plus0x4_state_add_const_slot_mba_stateful bytes=8801e801 grade=state_reduced_dispatch_formula_open target=49@0x82820:1 delta=+0x4
+    state: vm_state = Z3-proved simplified expression; formula=u16_0
+    dispatch: next_entry = MBA(state, flags, operands) dispatch slot; per-row concrete target is resolved; expression=128=(mask32(u16_0 ^ state0)) & 0xffff
+    ip: ip += 0x4
+    proof: dumps/vmtail-wide-1m-w16/vm_mba_state_formula_compiler_proofs/state_091.smt2
+    unresolved: dispatch_formula_not_reduced
+  0x2c1395..0x2c139a vmop_049_plus0x5_state_add_const_slot_mba_stateful bytes=003c5a3d01 grade=state_reduced_dispatch_formula_open target=257@0xadbfd:1 delta=+0x5
+    state: vm_state = Z3-proved simplified expression; formula=(((0x206e91ebu + (flags0 + flags0)) + state0) - u16_1) & (((flags0 + flags0) + 0x76278178u) & state0)
+    dispatch: next_entry = MBA(state, flags, operands) dispatch slot; per-row concrete target is resolved; expression=128=(mask32((mask32(u16_1 + (mask32((mask32((mask32((mask32(state0 & flags0)) + flags0)) - 0x353700ed)) + 0x55a592d8)))) + 0x55b8ef8d)) & 0xffff
+    ip: ip += 0x5
+    proof: dumps/vmtail-wide-1m-w16/vm_mba_state_formula_compiler_proofs/state_049.smt2
+    unresolved: dispatch_formula_not_reduced
+  0x2c139a..0x2c139c vmop_257_plus0x2_state_add_const_slot_multi_path bytes=8fc5 grade=state_reduced_dispatch_formula_open target=185@0x9d964:1 delta=+0x2
+    state: vm_state = Z3-proved simplified expression; formula=((((u16_0 + 0x33cddc09u) - state0) ^ 0x1d2af87u) | (state0 + 0x33cddc09u)) | 0x1d2af87u
+    dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=128=(mask32(u16_0 - (mask32((mask32((mask32((mask32(state0 - 0x509f61c9)) + 0x1b9def5)) - 0x7d4ca123)) | 0x1d2af87)))) & 0xffff
+    ip: ip += 0x2
+    proof: dumps/vmtail-wide-1m-w16/vm_mba_state_formula_compiler_proofs/state_257.smt2
+    unresolved: dispatch_formula_not_reduced
+  0x2c139c..0x2c139f vmop_185_plus0x3_state_add_const_slot_multi_path bytes=60f03a grade=state_reduced_dispatch_formula_open target=140@0x94e5a:1 delta=+0x3
+    state: vm_state = Z3-proved simplified expression; formula=(((((0x1f29f35u + flags0) & 0x2000c224u) ^ 0x17e55682u) | (state0 ^ flags0)) | ((state0 ^ flags0) ^ u16_0)) | 0x5f7a5ddfu
+    dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=128=(mask32(u16_0 ^ (mask32((mask32((mask32((mask32(state0 ^ (mask32(flags0 | 0x17e55682)))) ^ 0x2000c224)) & 0x1f29f35)) + (mask32((mask32((mask32((mask32((mask32(flags0 | 0x17e55682)) + 0x28030c24))...#df
+    ip: ip += 0x3
+    proof: dumps/vmtail-wide-1m-w16/vm_mba_state_formula_compiler_proofs/state_185.smt2
+    unresolved: dispatch_formula_not_reduced
+  0x2c139f..0x2c13a5 vmop_140_plus0x6_state_add_const_slot_multi_path bytes=e88371cafc43 grade=state_reduced_dispatch_formula_open target=268@0xb0007:1 delta=+0x6
+    state: vm_state = Z3-proved simplified expression; formula=((u16_0 + 0x16a9ca8cu) | (0x90ab6087u - flags0)) | 0x7fb7d777u
+    dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=112=(mask32((mask32(u16_0 ^ (mask32(state0 - (mask32((mask32(flags0 - (mask32(state0 | 0xf17c331)))) | 0x16a9ca8c)))))) ^ 0x6e089feb)) & 0xffff | 16=(mask32((mask32(u16_0 ^ (mask32(state0 - (mask32((m...#137
+    ip: ip += 0x6
+    proof: dumps/vmtail-wide-1m-w16/vm_mba_state_formula_compiler_proofs/state_140.smt2
+    data: basic_string::append [cxx_runtime_type_or_exception_text] categories=cxx_runtime
+    unresolved: dispatch_formula_not_reduced
+  0x2c13a5..0x2c13a9 vmop_268_plus0x4_state_add_const_slot_multi_path bytes=580071de grade=state_reduced_dispatch_formula_open target=114@0x90319:1 delta=+0x4
+    state: vm_state = Z3-proved simplified expression; formula=(((((u16_0 + 0x71bd1bb1u) - state0) | ((0x33c0c75bu + flags0) & 0x81482e01u)) | state0) | (((0x71bd1bb1u - flags0) & (0x33c0c75bu + flags0)) & 0xef0600u)) | ((u16_2 - state0) ^ ((0x33c0c75bu + flags0) & 0x41582100u))
+    dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=87=(mask32((mask32(u16_2 - (mask32((mask32((mask32((mask32(state0 | 0x71bd1bb1)) + (mask32((mask32(u16_0 - (mask32(state0 | 0x71bd1bb1)))) - flags0)))) & (mask32((mask32((mask32(flags0 + 0x33c0c75b)) ...#12f
+    ip: ip += 0x4
+    proof: dumps/vmtail-wide-1m-w16/vm_mba_state_formula_compiler_proofs/state_268.smt2
+    unresolved: dispatch_formula_not_reduced
+  0x2c13a9..0x2c13ad vmop_114_plus0x4_state_add_const_slot_multi_path bytes=127243b2 grade=state_reduced_dispatch_formula_open target=319@0xba72f:1 delta=+0x4
+    state: vm_state = Z3-proved simplified expression; formula=((((((((0x63bb548fu + flags0) & state0) ^ ((0x671da5f4u + state0) & 0x48367f78u)) ^ 0x295f5080u) | (((~flags0) & state0) | (((0x2bf0f49bu + state0) & 0xa870050u) ^ 0xd9a4c60cu))) | ((((u16_2 + state0) ^ (state0 & flags0)) ^ ((0x671da5f4u + state0) & 0x292b555du)) ^ 0x295f5080u)) | ((((0x292b555du + flags0) & (0x671da5f4u + state0)) & state0) ^ 0x295f5080u)) | ((((flags0 + 0x665346b9u) & state0) ^ ((0x2bf0f49bu + state0) & 0xa870050u)) ^ 0xc25cdfdu)) | (((((state0 + 0x6b040388u) - u16_0) ^ ((0x2bf0f49bu + state0) & 0xa870050u)) ^ (state0 & flags0)) ^ 0x8268b55u)
+    dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=51=(mask32((mask32(u16_0 + (mask32((mask32((mask32((mask32((mask32((mask32(state0 ^ (mask32((mask32((mask32(flags0 & (mask32(state0 | 0x6729b5bf)))) + state0)) & 0x48367f78)))) ^ 0x63bb548f)) + (mask3...#12f
+    ip: ip += 0x4
+    proof: dumps/vmtail-wide-1m-w16/vm_mba_state_formula_compiler_proofs/state_114.smt2
+    unresolved: dispatch_formula_not_reduced
+  0x2c13ad..0x2c13b2 vmop_319_plus0x5_state_add_const_slot_multi_path bytes=3d017e6e00 grade=state_reduced_dispatch_formula_open target=256@0xad849:1 delta=+0x5
+    state: vm_state = Z3-proved simplified expression; formula=(((flags0 | ((0x4fa9822eu + state0) & 0x27c134adu)) | ((state0 - 0x58e4c1fu) & 0x27c134adu)) | (((0x4fa9822eu + state0) & 0x27c134adu) ^ flags0)) | 0x5ffedbfbu
+    dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=72=(mask32((mask32(u16_2 + (mask32((mask32((mask32((mask32(state0 & (mask32(flags0 & (mask32(state0 + 0x4fa9822e)))))) | 0x5ed258f1)) | (mask32(flags0 & (mask32(state0 + 0x4fa9822e)))))) ^ (mask32((ma...#12f
+    ip: ip += 0x5
+    proof: dumps/vmtail-wide-1m-w16/vm_mba_state_formula_compiler_proofs/state_319.smt2
+    unresolved: dispatch_formula_not_reduced
+  0x2c13b2..0x2c13b4 vmop_256_plus0x2_state_add_const_slot_multi_path bytes=7ee5 grade=state_reduced_dispatch_formula_open target=317@0xba1e2:1 delta=+0x2
+    state: vm_state = Z3-proved simplified expression; formula=((((u16_0 + state0) & 0x30de4dc1u) ^ 0x55c8a398u) | ((state0 ^ (flags0 - state0)) ^ 0x11246d19u)) | ((flags0 - state0) ^ 0xbc2ab174u)
+    dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=128=(mask32((mask32(u16_0 + (mask32((mask32((mask32((mask32((mask32(state0 ^ 0x3e93f8db)) + 0x1734aabd)) ^ (mask32((mask32(flags0 - (mask32(state0 ^ 0x3e93f8db)))) ^ 0x7a7f365a)))) | (mask32((mask32(f...#df
+    ip: ip += 0x2
+    proof: dumps/vmtail-wide-1m-w16/vm_mba_state_formula_compiler_proofs/state_256.smt2
+    unresolved: dispatch_formula_not_reduced
+  0x2c13b4..0x2c13b8 vmop_317_plus0x4_state_add_const_slot_multi_path bytes=6851934f grade=state_reduced_dispatch_formula_open target=124@0x91e81:1 delta=+0x4
+    state: vm_state = Z3-proved simplified expression; formula=(((((0xd528cc0fu + flags0) & 0xfff9ff9du) ^ ((0xd528cc0fu + u16_2) + flags0)) ^ ((0xd6c343c9u + flags0) & 0x60062u)) | ((((0xd528cc0fu + state0) - flags0) ^ 0x60062u) | ((0xd528cc0fu + flags0) ^ 0x5258264au))) | ((((((u16_0 + 0x2b733f1u) - state0) - flags0) & 0x12461866u) ^ (0xd528cc0fu + flags0)) ^ 0x50183e0eu)
+    dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=47=(mask32((mask32(u16_0 - (mask32((mask32((mask32((mask32((mask32((mask32((mask32((mask32(state0 - flags0)) | flags0)) ^ (mask32(u16_2 + flags0)))) & (mask32(flags0 & 0x19a77ba)))) + flags0)) | flags...#12f
+    ip: ip += 0x4
+    proof: dumps/vmtail-wide-1m-w16/vm_mba_state_formula_compiler_proofs/state_317.smt2
+    unresolved: dispatch_formula_not_reduced
+  0x2c13b8..0x2c13be vmop_124_plus0x6_state_add_const_slot_multi_path bytes=f4921326f6cb grade=state_reduced_dispatch_formula_open target=330@0xbc9b8:1 delta=+0x6
+    state: vm_state = Z3-proved simplified expression; formula=(((((((((u32_0 - 0x7c31e804u) - state0) & 0x50ef8024u) ^ (0x2b837475u + flags0)) ^ 0x2bb25e3u) | (((0x83ce17fcu + state0) ^ (0x2b837475u + flags0)) ^ 0x2bb25e3u)) | (((0x410c95u + (flags0 - state0)) ^ (0x2b837475u + flags0)) ^ 0x2bb25e3u)) | ((((flags0 - state0) - 0x50ae738fu) ^ (0x2b837475u + flags0)) ^ 0x5254a5c7u)) | ((((state0 - 0x2b4267e0u) - u16_4) ^ (0x2b837475u + flags0)) ^ 0x2bb25e3u)) | 0x66bb4183u
+    dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=71=(mask32((mask32(u16_4 + (mask32((mask32((mask32((mask32((mask32((mask32((mask32(state0 - 0x7c31e804)) ^ flags0)) ^ 0x2bb25e3)) | 0x50ef8024)) + (mask32(flags0 - (mask32((mask32((mask32((mask32(stat...#12f
+    ip: ip += 0x6
+    proof: dumps/vmtail-wide-1m-w16/vm_mba_state_formula_compiler_proofs/state_124.smt2
+    unresolved: dispatch_formula_not_reduced
+  0x2c13be..0x2c13c3 vmop_330_plus0x5_state_add_const_slot_u16_0 bytes=100250275f grade=readable_control_semantics target=66@0x855ff:1 delta=+0x5
+    state: vm_state = add/constant-style update over state, flags, and operands; formula=state0 | 0x6460b705 & 0x786588ba ^ 0x2897b354 + u16_0
+    dispatch: next_entry = dispatch_table[u16(ip+0)]
+    ip: ip += 0x5
+  0x2c13c3..0x2c13c6 vmop_066_plus0x3_state_add_const_slot_multi_path bytes=9158a4 grade=state_reduced_dispatch_formula_open target=192@0x9f00a:1 delta=+0x3
+    state: vm_state = Z3-proved simplified expression; formula=((((((u16_0 - state0) & (0x2f6cb1f6u - b2)) ^ ((0xc3c726c9u - flags0) & 0x745ff1d2u)) ^ (state0 & 0x2f6cb1f6u)) ^ 0x33c1d6ecu) | ((((0x2f6cb1f6u - b2) ^ 0x2f6cb1f6u) & state0) ^ ((0xc3c726c9u - flags0) & 0x745ff1d2u))) | 0x74b257b9u
+    dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=99=(mask32((mask32(u16_0 - (mask32((mask32((mask32((mask32((mask32(state0 & 0x2f6cb1f6)) - (mask32(b2 ^ (mask32(state0 & 0x2f6cb1f6)))))) ^ 0x745ff1d2)) & 0x13de2cdd)) - (mask32(flags0 ^ 0x42a6ffd6)))...#12f
+    ip: ip += 0x3
+    proof: dumps/vmtail-wide-1m-w16/vm_mba_state_formula_compiler_proofs/state_066.smt2
+    unresolved: dispatch_formula_not_reduced
+  0x2c13c6..0x2c13cb vmop_192_plus0x5_state_add_const_slot_multi_path bytes=863c3d0119 grade=state_reduced_dispatch_formula_open target=160@0x994cf:1 delta=+0x5
+    state: vm_state = Z3-proved simplified expression; formula=(((((state0 + (flags0 * 0x2u)) + 0x563159ceu) ^ 0x5d641cd7u) | (((flags0 + state0) + (state0 + (flags0 * 0x2u))) ^ 0x5d641cd7u)) | (((0x563159ceu - u16_0) ^ ((flags0 + state0) + (state0 + (flags0 * 0x2u)))) ^ 0x5d641cd7u)) | 0x7eb1dfffu
+    dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=118=(mask32(u16_0 ^ (mask32((mask32((mask32(state0 + flags0)) + (mask32((mask32((mask32((mask32((mask32(flags0 + (mask32((mask32(state0 + flags0)) ^ 0x5d641cd7)))) | 0x76a1e6e7)) ^ 0x1ea5bfdc)) & 0x4f...#12f
+    ip: ip += 0x5
+    proof: dumps/vmtail-wide-1m-w16/vm_mba_state_formula_compiler_proofs/state_192.smt2
+    unresolved: dispatch_formula_not_reduced
+  0x2c13cb..0x2c13cd vmop_160_plus0x2_state_const_post_slot_multi_path bytes=e12c grade=state_reduced_dispatch_formula_open target=266@0xaf8af:1 delta=+0x2
+    state: vm_state = Z3-proved simplified expression; formula=(state0 | u16_0) | 0x777b8ff6u
+    dispatch: next_entry = one of multiple algebraic dispatch slots; per-row concrete target is resolved; expression=128=(mask32((mask32(u16_0 ^ (mask32((mask32((mask32((mask32(state0 | 0x67f1fed6)) & 0x256c03d7)) | 0x72df8f7a)) & 0x5a1beb81)))) - 0x4cf19f11)) & 0xffff
+    ip: ip += 0x2
+    proof: dumps/vmtail-wide-1m-w16/vm_mba_state_formula_compiler_proofs/state_160.smt2
+    unresolved: dispatch_formula_not_reduced
+  0x2c13cd..0x292f3e vmop_266_minus0x2e8_sampled_backedge_slot_unknown bytes=ab0000008fe40280 grade=state_reduced_unresolved_dispatch_details target=171@0x9b4b3 delta=-0x2e48f
+    state: vm_state = Z3-proved simplified expression; formula=state0
+    dispatch: dispatch slot expression not recovered; use per-row target evidence when available
+    ip: ip -= 0x2e8 (backedge)
+    proof: dumps/vmtail-wide-1m-w16/vm_mba_state_formula_compiler_proofs/state_266.smt2
+    unresolved: dispatch_slot_unknown;static_model_or_runtime_validation_incomplete
