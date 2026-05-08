@@ -206,8 +206,9 @@ def translate_function(instructions: list[str]) -> str:
                 pointer_regs.add(dest_reg)
                 regs.pop(dest_reg, None)
             else:
+                value = parse_atom(src, regs, pointer_regs)
                 pointer_regs.discard(dest_reg)
-                regs[dest_reg] = parse_atom(src, regs, pointer_regs)
+                regs[dest_reg] = value
         elif op == "lea":
             dest, src = operands
             dest_reg = norm_reg(dest)

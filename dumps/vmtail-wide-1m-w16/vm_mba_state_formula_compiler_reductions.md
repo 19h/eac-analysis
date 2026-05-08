@@ -7,9 +7,9 @@ This pass translates GCC -O3 straight-line assembly for each original MBA state 
 | metric | value |
 | --- | --- |
 | source entries | 185 |
-| reduction statuses | compiler_expression_recovered:178; translator_or_proof_error:7 |
-| proof statuses | not_proved:7; proved_equivalent:176; solver_unparsed:2 |
-| proved and shorter | 112 |
+| reduction statuses | compiler_expression_recovered:180; translator_or_proof_error:5 |
+| proof statuses | not_proved:5; proved_equivalent:180 |
+| proved and shorter | 115 |
 | assembly | dumps/vmtail-wide-1m-w16/vm_mba_state_formula_compiler_reducer.s |
 | proof dir | dumps/vmtail-wide-1m-w16/vm_mba_state_formula_compiler_proofs |
 
@@ -34,7 +34,7 @@ This pass translates GCC -O3 straight-line assembly for each original MBA state 
 | 40 | proved_equivalent | 23 -> 17 | (~u16_4) & state0 |
 | 42 | proved_equivalent | 63 -> 58 | ((state0 - flags0) ^ (state0 - 0x798f4b52u)) ^ 0x160c3a44u |
 | 43 | proved_equivalent | 23 -> 5 | u16_2 |
-| 48 | not_proved | 813 -> 0 |  |
+| 48 | proved_equivalent | 813 -> 313 | ((((((((0x57357ce9u + state0) - u16_0) & (u16_3 + state0)) ^ flags0) ^ (0x3cd5c8b4u - flags0)) ^ (flags0 & 0x41ba58a6u)) ^ (flags0 & 0x15... |
 | 49 | proved_equivalent | 124 -> 101 | (((0x206e91ebu + (flags0 + flags0)) + state0) - u16_1) & (((flags0 + flags0) + 0x76278178u) & state0) |
 | 52 | proved_equivalent | 36 -> 39 | (u16_0 + (state0 * 0x2u)) ^ 0x7823b2dau |
 | 54 | proved_equivalent | 28 -> 31 | (flags0 - 0x68b4ad2fu) & state0 |
@@ -63,7 +63,7 @@ This pass translates GCC -O3 straight-line assembly for each original MBA state 
 | 107 | proved_equivalent | 23 -> 25 | (state0 - u16_0) ^ state0 |
 | 108 | proved_equivalent | 41 -> 47 | (state0 + 0x11961dc7u) ^ (0x5fa19cc7u - flags0) |
 | 112 | proved_equivalent | 692 -> 486 | (((((u16_3 ^ (state0 & flags0)) ^ ((0x40561547u - flags0) & 0x40c1f4e9u)) ^ ((0x40561547u - flags0) & 0x982041u)) ^ ((((0x488765f3u + sta... |
-| 114 | not_proved | 1374 -> 0 |  |
+| 114 | proved_equivalent | 1374 -> 567 | ((((((((0x63bb548fu + flags0) & state0) ^ ((0x671da5f4u + state0) & 0x48367f78u)) ^ 0x295f5080u) \| (((~flags0) & state0) \| (((0x2bf0f49... |
 | 117 | proved_equivalent | 6 -> 6 | state0 |
 | 118 | proved_equivalent | 35 -> 40 | (u16_1 & state0) ^ (state0 - 0x52d3aa4u) |
 | 119 | proved_equivalent | 36 -> 41 | ((0x7e7974a5u + state0) ^ u16_4) \| state0 |
