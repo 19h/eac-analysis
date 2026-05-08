@@ -7,9 +7,9 @@ This pass translates GCC -O3 straight-line assembly for each original MBA state 
 | metric | value |
 | --- | --- |
 | source entries | 185 |
-| reduction statuses | compiler_expression_recovered:180; translator_or_proof_error:5 |
-| proof statuses | not_proved:5; proved_equivalent:180 |
-| proved and shorter | 115 |
+| reduction statuses | compiler_expression_recovered:185 |
+| proof statuses | proved_equivalent:185 |
+| proved and shorter | 120 |
 | assembly | dumps/vmtail-wide-1m-w16/vm_mba_state_formula_compiler_reducer.s |
 | proof dir | dumps/vmtail-wide-1m-w16/vm_mba_state_formula_compiler_proofs |
 
@@ -73,7 +73,7 @@ This pass translates GCC -O3 straight-line assembly for each original MBA state 
 | 124 | proved_equivalent | 1298 -> 411 | (((((((((u32_0 - 0x7c31e804u) - state0) & 0x50ef8024u) ^ (0x2b837475u + flags0)) ^ 0x2bb25e3u) \| (((0x83ce17fcu + state0) ^ (0x2b837475u... |
 | 125 | proved_equivalent | 36 -> 41 | ((0x84d8aceau + u16_0) + state0) & state0 |
 | 127 | proved_equivalent | 35 -> 40 | ((u16_0 + 0xf376a6au) - state0) \| state0 |
-| 128 | not_proved | 810 -> 0 |  |
+| 128 | proved_equivalent | 810 -> 291 | ((((((u16_3 & 0x7b467141u) ^ ((state0 & flags0) & (0x4001dfe0u - flags0))) ^ 0x913e40u) \| ((0x38cd3aecu + flags0) ^ 0xe236e6u)) \| (((st... |
 | 129 | proved_equivalent | 353 -> 68 | ((((0xebf72897u + state0) + flags0) \| state0) & flags0) \| 0x63b0834u |
 | 130 | proved_equivalent | 236 -> 101 | (((0x6d381f7eu + (flags0 - state0)) + (flags0 - state0)) & 0xfae64754u) \| ((u16_0 + state0) \| state0) |
 | 131 | proved_equivalent | 826 -> 219 | (((((((0x4c0c1704u + state0) - u16_1) ^ 0x7bed302fu) \| state0) \| ((flags0 + 0x565d9ac9u) - state0)) \| ((0x6506a4a2u - (state0 + flags0... |
@@ -86,7 +86,7 @@ This pass translates GCC -O3 straight-line assembly for each original MBA state 
 | 148 | proved_equivalent | 15 -> 15 | state0 & flags0 |
 | 151 | proved_equivalent | 54 -> 63 | ((0x77236c60u + (flags0 + state0)) + u16_3) ^ (flags0 + state0) |
 | 153 | proved_equivalent | 36 -> 19 | u16_0 ^ 0x6f642592u |
-| 154 | not_proved | 388 -> 0 |  |
+| 154 | proved_equivalent | 388 -> 244 | ((((((0x18426e67u - (u16_0 + state0)) - u16_2) ^ (((0x60c316f3u + state0) - flags0) & 0x41da6402u)) ^ 0x7ed018fbu) \| ((flags0 - 0x206cd0... |
 | 157 | proved_equivalent | 338 -> 269 | ((((u16_0 + state0) ^ (0x2f4dfd84u + u16_2)) ^ (((0x869c849au - flags0) ^ (0x2f4dfd84u + u16_2)) ^ (state0 & 0x3d2638afu))) ^ 0x3aeb4349u... |
 | 158 | proved_equivalent | 200 -> 110 | (((0x3c39b020u + u16_2) + state0) ^ 0x33416bd8u) \| (((state0 ^ flags0) ^ 0x3cf76f46u) \| (flags0 ^ 0xc7200d2u)) |
 | 160 | proved_equivalent | 140 -> 30 | (state0 \| u16_0) \| 0x777b8ff6u |
